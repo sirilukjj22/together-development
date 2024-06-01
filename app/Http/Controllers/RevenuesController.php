@@ -12,11 +12,7 @@ use PHPUnit\Framework\Constraint\Count;
 
 class RevenuesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         $adate= date('Y-m 21:00:00');
