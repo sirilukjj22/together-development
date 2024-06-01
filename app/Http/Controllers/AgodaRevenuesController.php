@@ -11,7 +11,11 @@ use Illuminate\Support\Facades\DB;
 
 class AgodaRevenuesController extends Controller
 {
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $agoda_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
