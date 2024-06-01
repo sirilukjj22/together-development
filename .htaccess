@@ -1,0 +1,11 @@
+# Use PHP80 as default
+AddHandler application/x-httpd-php80 .php
+<IfModule mod_suphp.c>
+suPHP_ConfigPath /opt/php80/lib
+</IfModule>
+
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteCond %{REQUEST_URI} !^public
+RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
