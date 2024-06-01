@@ -288,7 +288,7 @@ class master_product_i extends Controller
     public function index_quantity()
     {
         $quantity = master_quantity::query()->get();
-        return view('quantity.index',compact('quantity'));
+        return view('master_quantity.index',compact('quantity'));
     }
     public function save_quantity(Request $request)
     {
@@ -343,7 +343,7 @@ class master_product_i extends Controller
             $query = master_quantity::query();
             $quantity = $query->where('status', '1')->get();
         }
-        return view('quantity.index',compact('quantity'));
+        return view('master_quantity.index',compact('quantity'));
     }
     public function no_quantity(Request $request)
     {
@@ -352,13 +352,13 @@ class master_product_i extends Controller
             $query = master_unit::query();
             $quantity = $query->where('status', '0')->get();
         }
-        return view('unit.index',compact('quantity'));
+        return view('master_quantity.index',compact('quantity'));
     }
     //------------------------Unit--------------------------------
     public function index_unit()
     {
         $unit = master_unit::query()->get();
-        return view('unit.index',compact('unit'));
+        return view('master_unit.index',compact('unit'));
     }
     public function save_unit(Request $request)
     {
@@ -413,7 +413,7 @@ class master_product_i extends Controller
             $query = master_unit::query();
             $unit = $query->where('status', '1')->get();
         }
-        return view('unit.index',compact('unit'));
+        return view('master_unit.index',compact('unit'));
     }
     public function no_unit(Request $request)
     {
@@ -422,6 +422,6 @@ class master_product_i extends Controller
             $query = master_unit::query();
             $unit = $query->where('status', '0')->get();
         }
-        return view('unit.index',compact('unit'));
+        return view('master_unit.index',compact('unit'));
     }
 }

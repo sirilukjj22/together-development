@@ -32,7 +32,7 @@
 
         <form enctype="multipart/form-data" id="form-id2">
             @csrf
-            <table id="example" class="display">
+            <table id="example" class="display3 display2">
                 <thead>
                     <tr>
                         <th>

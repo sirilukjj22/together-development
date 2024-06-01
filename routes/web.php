@@ -16,6 +16,10 @@ use App\Http\Controllers\Master_bank;
 use App\Http\Controllers\Master_prefix;
 use App\Http\Controllers\Master_Company_type;
 use App\Http\Controllers\Master_market;
+use App\Http\Controllers\FreelancerCheckedController;
+use App\Http\Controllers\FreelancerMemberController;
+
+
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -253,6 +257,46 @@ Route::controller(Master_market::class)->group(function() {
     Route::post('/Mmarket/master_Mmarket/Mmarket_update/{id}','update')->name('Mmarket.update');
 });
 
+
+Route::controller(FreelancerCheckedController::class)->group(function() {
+    Route::get('/Freelancer/checked/index','index')->name('freelancer.index');
+    Route::get('/Freelancer/checked/create','create')->name('freelancer.create');
+    Route::get('/Freelancer/checked/create/amphures/{id}','amphures')->name('freelancer.amphures');
+    Route::get('/Freelancer/checked/create/districts/{id}','district')->name('freelancer.districts');
+    Route::get('/Freelancer/checked/create/Tambon/{id}','Tambon')->name('freelancer.Tambon');
+    Route::post('/Freelancer/checked/create/Save_Agent','Save_Agent')->name('Save_Agent');
+    Route::post('/Freelancer/checked/change-status/','changeStatus')->name('freelancer.changeStatus');
+    Route::post('/Freelancer/checked/delete/{id}','delete');
+    Route::post('/Freelancer/checked/AgentM/delete/','AgentM_delete');
+    Route::get('/Freelancer/check/edit/{id}','edit')->name('freelancer.edit');
+    Route::post('/Freelancer/check/edit/update/{id}','ProfileAgent_update')->name('ProfileAgent_update');
+    Route::post('/Freelancer/check/save','savefreelancercheck')->name('savefreelancercheck');
+    Route::post('/Freelancer/check/save/update/{id}','updatefreelancercheck')->name('updatefreelancercheck');
+    Route::get('/Freelancer/check/view/{id}','view')->name('freelancer.view');
+
+});
+Route::controller(FreelancerMemberController::class)->group(function() {
+    Route::get('/Freelancer/member/index','index_member')->name('freelancer_member.index');
+    Route::get('/Freelancer/member/view/{id}','viewmember')->name('freelancer_member.view');
+    Route::get('/Freelancer/member/edit/{id}','editmember')->name('freelancer_member.edit');
+    Route::post('/Freelancer/member/save/update/{id}','updatefreelancermember')->name('updatefreelancermember');
+    Route::get('/Freelancer/member/order_list/{id}','order_list')->name('freelancer_member.Quotation');
+    Route::post('/Freelancer/member/get-representative','getRepresentative')->name('get.representative');
+    Route::post('/Freelancer/member/order_list/save/{id}','order_listsave')->name('quotationsave');
+    Route::get('/Freelancer/member/view/data/{Freeid}/{Comid}','viewdatamember')->name('freelancer_member.viewdata');
+    Route::get('/Freelancer/member/ac','ac')->name('freelancer_member.ac');
+    Route::get('/Freelancer/member/no','no')->name('freelancer_member.no');
+    Route::post('/Freelancer/member/change-status/','changeStatusmember')->name('freelancer.changeStatusmember');
+    //boss
+    Route::get('/Freelancer/boss/examine/viewcompany','examine')->name('freelancer.boss.examine');
+    Route::get('/Freelancer/boss/view/data/{id}','viewdataexamine')->name('freelancer.boss.viewdata.examine');
+    Route::get('/Freelancer/boss/examine/status{id}','examinestatus')->name('freelancer.boss.examine.status');
+    //Employee
+    Route::get('/Freelancer/employee/examine/viewcompany','examineemployee')->name('freelancer.employee.examine');
+    Route::get('/Freelancer/employee/view/data/{id}','viewdataexamineemployee')->name('freelancer.employee.viewdata.examine');
+    Route::get('/Freelancer/employee/examine/status{id}','examinestatusemployee')->name('freelancer.employee.examine.status');
+
+});
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');
     $exitCode = Artisan::call('cache:clear');
