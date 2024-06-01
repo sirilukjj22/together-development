@@ -377,7 +377,7 @@
             {!! csrf_field() !!}
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-12">
-                    <label for="Company_type">ประเภทบริษัท / Company Type</label>
+                    <label for="Company_type">ประเภทบริษัท / Company Type00</label>
                     <select name="Company_type" id="Company_type" class="form-select">
                         <option value="" selected disabled>Company Type</option>
                         @foreach($MCompany_type as $item)
