@@ -1,13 +1,12 @@
 @extends('layouts.test')
 
 @section('content')
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <div class="Usertable">
-        <a href="{{ route('Mbooking.create') }}">
-            <button type="button" class="submit-button" style="float: right;" >เพิ่มผู้ใช้งาน</button></a>
+        <div class="col-12">
+            <button type="button" class="submit-button" onclick="window.location.href='{{ route('Mproduct.create') }}'" style="float: right;" >เพิ่มผู้ใช้งาน</button>
+        </div>
         <div class="usertopic">
-            <h1>Master Booking Channal</h1>
+            <h1>Master Product Item</h1>
         </div>
 
         <div class="selectall" style="float: left; margin-bottom: 10px;">
@@ -19,17 +18,30 @@
 
         {{-- <button type="button" class="button-4 sa-buttons" style="float: right;" onclick="showSelectedRecords()">ลบหลายรายการ</button> --}}
 
+        <div>
+            <button class="statusbtn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                สถานะการใช้งาน &#11206;
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="{{ route('Mproduct.index') }}">ทั้งหมด</a>
+                <a class="dropdown-item" style="color: green;" href="{{ route('Mproduct.ac', ['value' => 1]) }}">เปิดใช้งาน</a>
+                <a class="dropdown-item" style="color: #f44336;" href="{{ route('Mproduct.no', ['value' => 0]) }}">ปิดใช้งาน</a>
+              </div>
+        </div>
 
-        <button class="statusbtn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            สถานะการใช้งาน &#11206;
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="{{ route('Mbooking.index') }}">ทั้งหมด</a>
-            <a class="dropdown-item" style="color: green;" href="{{ route('Mbooking.ac', ['value' => 1]) }}">เปิดใช้งาน</a>
-            <a class="dropdown-item" style="color: #f44336;" href="{{ route('Mbooking.no', ['value' => 0]) }}">ปิดใช้งาน</a>
+        <div>
+            <button class="statusbtn" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Product type &#11206;
+              </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+            <a class="dropdown-item" href="{{ route('Mproduct.index') }}">ทั้งหมด</a>
+            <a class="dropdown-item" href="{{ route('Mproduct.Room_Type', ['value' => 'Room_Type']) }}">Room Type</a>
+            <a class="dropdown-item" href="{{ route('Mproduct.Banquet', ['value' => 'Banquet']) }}">Banquet</a>
+            <a class="dropdown-item" href="{{ route('Mproduct.Meals', ['value' => 'Meals']) }}">Meals</a>
+            <a class="dropdown-item" href="{{ route('Mproduct.Entertainment', ['value' => 'Entertainment']) }}">Entertainment</a>
           </div>
-
-        <form enctype="multipart/form-data" id="form-id2">
+        </div>
+        <form enctype="multipart/form-data">
             @csrf
             <table id="example" class="display3 display2">
                 <thead>
@@ -41,15 +53,16 @@
                             </label>ทั้งหมด
                         </th>
                         <th style="text-align: center;">ลำดับ</th>
-                        <th>ตัวย่อ</th>
-                        <th>ชื่อผู้ใช้งาน</th>
+                        <th>Product item</th>
+                        <th>Name</th>
+                        <th>type</th>
                         <th>สถานะการใช้งาน</th>
                         <th style="text-align: center;">คำสั่ง</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (!empty($Mbooking))
-                        @foreach ($Mbooking as $key => $item)
+                    @if (!empty($product))
+                        @foreach ($product as $key => $item)
                             <tr>
                                 <td data-label="เลือก">
                                     <label class="custom-checkbox">
@@ -58,9 +71,9 @@
                                     </label>
                                 </td>
                                 <td data-label="#">{{ $key + 1 }}</td>
-                                <td data-label="ตัวย่อ">{{ $item->code }}</td>
-                                <td data-label="ชื่อผู้ใช้งาน">{{ $item->name_th }}</td>
-
+                                <td data-label="Product item">{{ $item->Category }}</td>
+                                <td data-label="Name">{{ $item->name_en }}</td>
+                                <td data-label="type">{{ $item->type }}</td>
                                 <td data-label="สถานะการใช้งาน">
                                     @if ($item->status == 1)
                                         <button type="button" class="button-1 status-toggle" data-id="{{ $item->id }}"data-status="{{ $item->status }}">ใช้งาน</button>
@@ -73,8 +86,7 @@
                                         <button class="button-18 button-17" type="button" data-toggle="dropdown">ทำรายการ
                                             <span class="caret"></span></button>
                                         <ul class="dropdown-menu">
-                                            <li class="licolor"><a href="{{ url('/Mbooking/edit/'.$item->id) }}">แก้ไขข้อมูล</a></li>
-                                            {{-- <li class="licolor"><a href="#" class="delete" title="Delete" data-toggle="tooltip" onclick="confirmDelete({{ $item->id }})">ลบข้อมูล</li> --}}
+                                            <li class="licolor"><a href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขข้อมูล</a></li>
                                         </ul>
                                 </td>
                             </tr>
@@ -94,7 +106,7 @@
 </script>
 
     <script>
-         $(document).ready(function() {
+        $(document).ready(function() {
             new DataTable('#example', {
 
                 //ajax: 'arrays.txt'
@@ -138,7 +150,7 @@
         // ทำ AJAX request
         $.ajax({
             type: 'GET',
-            url: "{{ url('/Mbooking/change-Status/') }}" + '/' + id + '/' + status,
+            url: "{{ url('/Mproduct/change-Status/') }}" + '/' + id + '/' + status,
             success: function(response) {
                 // ปรับเปลี่ยนสถานะบนหน้าเว็บ
                 console.log(response.success);

@@ -568,18 +568,18 @@ class CompanyController extends Controller
             ]);
 
         }else {
-            $ID_ContactA = $representative->Profile_ID;
-            $phone = representative_phone::where('Profile_ID', $ID_ContactA)->get();
+            $ID_ContactA = $representative->Company_ID;
+            $phone = representative_phone::where('Company_ID', $ID_ContactA)->get();
         }
 
-        $CompanyCount = representative::where('Company_Name', 'like', "%{$Company_Name}%")
-            ->where('Branch', 'like', "%{$Branch}%")->where('status', 0 )
-            ->count();
-        if ($CompanyCount) {
-            $CompanyCountA = $CompanyCount + 1;
-        }else{
-            $CompanyCountA = 1;
-        }
+            $CompanyCount = representative::where('Company_Name', 'like', "%{$Company_Name}%")
+                ->where('Branch', 'like', "%{$Branch}%")->where('status', 0 )
+                ->count();
+            if ($CompanyCount) {
+                $CompanyCountA = $CompanyCount + 1;
+            }else{
+                $CompanyCountA = 1;
+            }
 
         return response()->json([
             'representative' => $representative,

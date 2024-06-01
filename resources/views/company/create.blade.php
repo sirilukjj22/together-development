@@ -377,7 +377,7 @@
             {!! csrf_field() !!}
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-12">
-                    <label for="Company_type">ประเภทบริษัท / Company Type00</label>
+                    <label for="Company_type">ประเภทบริษัท / Company Type</label>
                     <select name="Company_type" id="Company_type" class="form-select">
                         <option value="" selected disabled>Company Type</option>
                         @foreach($MCompany_type as $item)
@@ -643,11 +643,12 @@
                                     <div id="phone-inputs-container">
                                         <div class="phone-input-group input-group">
                                             <div class="input-container">
-                                                <input type="text" name="phone[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
-                                                <button type="button" class="remove-input" disabled>ลบ</button>
+                                                <input type="text" name="phone[]" id="phone-main"class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                <button type="button" class="remove-input" id="remove-input" disabled>ลบ</button>
                                             </div>
                                         </div>
                                     </div>
+                                    <div id="add-phone-orther"></div>
                                 </div>
                             </div>
                         </div>
@@ -813,28 +814,31 @@
                         $('#countrySelectA').val(response.representative.Country).trigger('change').prop('disabled', true);
                         $('#provinceAgent').val(response.representative.City).trigger('change').prop('disabled', true);
                         $('#amphuresA').val(response.representative.Amphures).trigger('change').prop('disabled', true);
+
                         $('#TambonA').val(response.representative.Tambon).trigger('change').prop('disabled', true);
                         $('#zip_codeA').val(response.representative.Zip_Code).trigger('change').prop('disabled', true);
                         $('#addressAgent').val(response.representative.Address).prop('disabled', true);
                         $('#EmailAgent').val(response.representative.Email).prop('disabled', true);
                         $('#add-phone').prop('disabled', true);
                         $('#add-phone-orther').children().remove().end();
-                        console.log(response.phone);
-                        $.each(response.phone, function(key, val) {
+                       console.log(response.phone);
+                       $.each(response.phone, function(key, val) {
+                        // Disable the first phone input and set its value
+                        if (key == 0) {
+                            $('#phone-main').val(val.Phone_number).prop('disabled', true);
                             console.log(val.Phone_number);
-                            if (key == 0) {
-                                $('#phone-main').val(val.Phone_number).prop('disabled', true);
-                            } else {
-                                var phoneInput = $('<input type="text" id="phone-' + key + '" name="phone[]" value="' + val.Phone_number + '" class="form-control" maxlength="10">');
-                                phoneInput.prop('disabled', true); // ปิดการใช้งาน input field
-                                $('#add-phone-orther').append(phoneInput);
-                                // $('#add-phone-orther')
-                                // .append('<input type="text" id="phone-'+key+'" name="phone[]"value="'+val.Phone_number+'" class="form-control" maxlength="10">')
-                                // .prop('disabled',true);
-                            }
+                        } else {
+                            // Create a new input element for additional phone numbers
+                            var phoneInput = $('<input type="text" id="phone-' + key + '" name="phone[]" value="' + val.Phone_number + '" class="form-control" maxlength="10">');
+                            phoneInput.prop('disabled', true);
+                            // Disable the input fieldremove-input
+                            $('#add-phone-orther').append(phoneInput);
+                        }
 
-                            // $('#add-phone-orther').append('<button type="button" id="btn-delete-'+key+'" class="remove-phone" onclick="dele_phone('+key+')">ลบ</button>');
-                        });
+                        // Optionally add a delete button for each phone input (uncomment if needed)
+                        // $('#add-phone-orther').append('<button type="button" id="btn-delete-' + key + '" class="remove-phone" onclick="dele_phone(' + key + ')">ลบ</button>');
+                    });
+
 
                         //console.log(response.representative);
 
@@ -1044,12 +1048,13 @@
             async: false,
             success: function(result) {
                 jQuery('#amphuresA').children().remove().end();
-                console.log(result);
+
                 $('#amphuresA').append(new Option('', ''));
                 jQuery.each(result.data, function(key, value) {
                     var amphuresA = new Option(value.name_th, value.id);
                     //console.log(amphuresA);
                     $('#amphuresA').append(amphuresA);
+                    console.log(amphuresA);
                 });
             },
         })
@@ -1252,10 +1257,28 @@
     }
 </script>
 <script>
-    function confirmSubmit(event) {
+     function confirmSubmit(event) {
         event.preventDefault(); // Prevent the form from submitting
+
         var Company_Name = $('#Company_Name').val();
         var Branch = $('#Branch').val();
+
+        // Check if Company_Name or Branch is empty
+        if (!Company_Name || !Branch || !Company_type || !booking_channel || !address
+            || !Mmarket || !addressAgent || !EmailAgent || !Lastest_Introduce_By || !contract_rate_end_date || !contract_rate_start_date
+            || !Discount_Contract_Rate || !Taxpayer_Identification || !Company_Website || !Company_Email
+        ) {
+            // Display error message using Swal
+            Swal.fire({
+                title: "ข้อมูลไม่ครบถ้วน",
+                text: "กรุณากรอกข้อมูลบริษัทและสาขาให้ครบถ้วน",
+                icon: "error",
+                confirmButtonText: "ตกลง",
+                confirmButtonColor: "#dc3545"
+            });
+            return; // Stop further execution
+        }
+
         var message = `หากบันทึกข้อมูลบริษัท ${Company_Name} สาขา ${Branch} หรือไม่`;
         Swal.fire({
             title: "คุณต้องการบันทึกใช่หรือไม่?",

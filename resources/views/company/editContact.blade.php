@@ -737,9 +737,9 @@
     <script>
         function confirmSubmit(event) {
             event.preventDefault(); // Prevent the form from submitting
-            var Company_Name = $('#Company_Name').val();
-            var Branch = $('#Branch').val();
-            var message = `หากบันทึกข้อมูลบริษัท ${Company_Name} สาขา ${Branch} หรือไม่`;
+            var Company_Name = $('#first_nameAgent').val();
+            var Branch = $('#last_nameAgent').val();
+            var message = `ต้องการบันทึกข้อมูลของคุณ ${Company_Name} ${Branch} หรือไม่`;
             Swal.fire({
                 title: "คุณต้องการบันทึกใช่หรือไม่?",
                 text: message,

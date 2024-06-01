@@ -11,6 +11,11 @@ use App\Http\Controllers\AgodaRevenuesController;
 use App\Http\Controllers\master_booking;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\master_product_i;
+use App\Http\Controllers\Master_bank;
+use App\Http\Controllers\Master_prefix;
+use App\Http\Controllers\Master_Company_type;
+use App\Http\Controllers\Master_market;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -88,7 +93,7 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(MasterController::class)->group(function () {
         Route::get('master/{menu}', 'index')->name('master');
         Route::get('master/check/{category}/{field}/{datakey}', 'validate_field');
-        // Route::get('master/check2/{category}/{field}/{datakey}/{type_name}', [MasterController::class, 'validate_field2']); 
+        // Route::get('master/check2/{category}/{field}/{datakey}/{type_name}', [MasterController::class, 'validate_field2']);
         Route::get('master/check-edit/{id}/{category}/{field}/{datakey}', 'validate_field_edit');
         Route::get('master/check-dupicate-name/{category}/{datakey}/{type_name}', 'validate_dupicate_name');
         Route::get('master/check-dupicate-name-edit/{id}/{category}/{datakey}/{type_name}', 'validate_dupicate_name_edit');
@@ -171,7 +176,82 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
+Route::controller(master_product_i::class)->group(function() {
+    Route::get('/Mproduct/index','index')->name('Mproduct.index');
+    Route::get('/Mproduct/create','create')->name('Mproduct.create');
+    Route::get('/Mproduct/ac','ac')->name('Mproduct.ac');
+    Route::get('/Mproduct/no','no')->name('Mproduct.no');
+    Route::get('/Mproduct/Room_Type','Room_Type')->name('Mproduct.Room_Type');
+    Route::get('/Mproduct/Banquet','Banquet')->name('Mproduct.Banquet');
+    Route::get('/Mproduct/Meals','Meals')->name('Mproduct.Meals');
+    Route::get('/Mproduct/Entertainment','Entertainment')->name('Mproduct.Entertainment');
+    Route::get('/Mproduct/edit/{id}','edit')->name('Mproduct.edit');
+    Route::post('/Mproduct/Save','save')->name('Mproduct.save');
+    Route::get('/Mproduct/change-Status/{id}/{status}','changeStatus')->name('Mproduct.changeStatus');
+    Route::post('/Mproduct/master_Mproduct/Mproduct_update/{id}','update')->name('Mproduct.update');
+    Route::post('/Mproduct/check/Category','Category')->name('Mproduct.Category');
+    // ----------------------------------Quantity-----------------------------------------------
+    Route::get('/Mproduct/Quantity/index','index_quantity')->name('Mproduct.index.quantity');
+    Route::post('/Mproduct/Quantity/Save','save_quantity')->name('Mproduct.save.quantity');
+    Route::post('/Mproduct/Quantity/edit/','edit_quantity')->name('Mproduct.edit.quantity');
+    Route::get('/Mproduct/changeStatus_quantity/{id}/{status}','changeStatus_quantity')->name('Mproduct.changeStatus_quantity');
+    Route::get('/Mproduct/quantity/ac','ac_quantity')->name('Mproduct.quantity.ac');
+    Route::get('/Mproduct/quantity/no','no_quantity')->name('Mproduct.quantity.no');
+    //----------------------------------Unit-----------------------------------------------------
+    Route::get('/Mproduct/Unit/index','index_unit')->name('Mproduct.index.unit');
+    Route::post('/Mproduct/Unit/Save','save_unit')->name('Mproduct.save.unit');
+    Route::post('/Mproduct/Unit/edit/','edit_unit')->name('Mproduct.edit.unit');
+    Route::get('/Mproduct/changeStatus_unit/{id}/{status}','changeStatus_unit')->name('Mproduct.changeStatus_unit');
+    Route::get('/Mproduct/Unit/ac','ac_unit')->name('Mproduct.unit.ac');
+    Route::get('/Mproduct/Unit/no','no_unit')->name('Mproduct.unit.no');
+});
 
+Route::controller(Master_bank::class)->group(function() {
+    Route::get('/Mbank/index','index')->name('Mbank.index');
+    Route::get('/Mbank/create','create')->name('Mbank.create');
+    Route::get('/Mbank/ac','ac')->name('Mbank.ac');
+    Route::get('/Mbank/no','no')->name('Mbank.no');
+    Route::get('/Mbank/edit/{id}','edit')->name('Mbank.edit');
+    Route::post('/Mbank/Save','save')->name('Mbank.save');
+    // Route::post('/Mbank/delete/{id}','delete');
+    // Route::post('/Mbank/Mdelete/','Mdelete');
+    Route::post('/Mbank/master_bank/Mbank_update/{id}','update')->name('Mbank.update');
+    Route::get('/Mbank/change-Status/{id}/{status}','changeStatus')->name('Mbank.changeStatus');
+
+
+});
+Route::controller(Master_prefix::class)->group(function() {
+    Route::get('/Mprefix/index','index')->name('Mprefix.index');
+    Route::get('/Mprefix/create','create')->name('Mprefix.create');
+    Route::get('/Mprefix/ac','ac')->name('Mprefix.ac');
+    Route::get('/Mprefix/no','no')->name('Mprefix.no');
+    Route::get('/Mprefix/edit/{id}','edit')->name('Mprefix.edit');
+    Route::post('/Mprefix/Save','save')->name('Mprefix.save');
+    Route::get('/Mprefix/change-Status/{id}/{status}','changeStatus')->name('Mcomt.changeStatus');
+    Route::post('/Mprefix/master_prefix/Mprefix_update/{id}','update')->name('Mprefix.update');
+});
+
+Route::controller(Master_Company_type::class)->group(function() {
+    Route::get('/Mcomt/index','index')->name('Mcomt.index');
+    Route::get('/Mcomt/create','create')->name('Mcomt.create');
+    Route::get('/Mcomt/ac','ac')->name('Mcomt.ac');
+    Route::get('/Mcomt/no','no')->name('Mcomt.no');
+    Route::get('/Mcomt/edit/{id}','edit')->name('Mcomt.edit');
+    Route::post('/Mcomt/Save','save')->name('Mcomt.save');
+    Route::get('/Mcomt/change-Status/{id}/{status}','changeStatus')->name('Mcomt.changeStatus');
+    Route::post('/Mcomt/master_comt/Mcomt_update/{id}','update')->name('Mcomt.update');
+});
+
+Route::controller(Master_market::class)->group(function() {
+    Route::get('/Mmarket/index','index')->name('Mmarket.index');
+    Route::get('/Mmarket/create','create')->name('Mmarket.create');
+    Route::get('/Mmarket/ac','ac')->name('Mmarket.ac');
+    Route::get('/Mmarket/no','no')->name('Mmarket.no');
+    Route::get('/Mmarket/edit/{id}','edit')->name('Mmarket.edit');
+    Route::post('/Mmarket/Save','save')->name('Mmarket.save');
+    Route::get('/Mmarket/change-Status/{id}/{status}','changeStatus')->name('Mmarket.changeStatus');
+    Route::post('/Mmarket/master_Mmarket/Mmarket_update/{id}','update')->name('Mmarket.update');
+});
 
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');

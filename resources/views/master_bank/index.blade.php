@@ -29,7 +29,7 @@
 
         <form enctype="multipart/form-data" id="form-id2">
             @csrf
-            <table id="example" class="display">
+            <table id="example" class="display3 display2">
                 <thead>
                     <tr>
                         <th>
@@ -104,6 +104,13 @@
 </script>
 
     <script>
+         $(document).ready(function() {
+            new DataTable('#example', {
+
+                //ajax: 'arrays.txt'
+                // scrollX: true,
+            });
+        });
         function toggle(source) {
             checkboxes = document.getElementsByName('dummy');
             for (var i = 0, n = checkboxes.length; i < n; i++) {
