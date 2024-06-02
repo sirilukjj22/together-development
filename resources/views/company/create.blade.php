@@ -571,7 +571,7 @@
                             <div class="row">
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                     <label class="labelcontact" for="">First Name</label>
-                                    <input type="text" id="first_nameAgent" name="first_nameAgent" maxlength="70" requireds>
+                                    <input type="text" id="first_nameAgent" name="first_nameAgent" maxlength="70" required>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                     <label class="labelcontact" for="">Last Name</label>

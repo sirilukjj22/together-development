@@ -596,14 +596,14 @@ class CompanyController extends Controller
         $Company = companys::find($id);
 
         $number =  preg_replace("/[^0-9]/", "", $Company->City);
-         $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Company->City);
-         $provinceNames = province::select('name_th','id')->get();
-         $Tambon = districts::where('amphure_id', $Company->Amphures)->select('name_th','id')->get();
-         $amphures = amphures::where('province_id', $Company->City)->select('name_th','id')->get();
-         $Zip_code = districts::where('amphure_id', $Company->Amphures)->select('zip_code','id')->get();
+        $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Company->City);
+        $provinceNames = province::select('name_th','id')->get();
+        $Tambon = districts::where('amphure_id', $Company->Amphures)->select('name_th','id')->get();
+        $amphures = amphures::where('province_id', $Company->City)->select('name_th','id')->get();
+        $Zip_code = districts::where('amphure_id', $Company->Amphures)->select('zip_code','id')->get();
 
-         $Company_Contact = representative_phone::find($id);
-         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
+        $Company_Contact = representative_phone::find($id);
+        $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
         $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
         $Mmarket = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mmarket')->get();
         $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
@@ -615,13 +615,10 @@ class CompanyController extends Controller
         $fax = company_fax::where('Profile_ID', 'like', "%{$Profile_ID}%")->get();
         $faxcount = company_fax::where('Profile_ID', 'like', "%{$Profile_ID}%")->count();
         $faxArray = $fax->toArray();
-
-
         return view('company.edit',compact('Company','booking_channel','provinceNames','Tambon','amphures',
         'Zip_code','Other_City','faxArray','phoneDataArray','Company_Contact','Mmarket',
         'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID'));
     }
-
     public function Company_update(Request $request, $id) {
         $data = $request->all();
         $CountryOther = $request->countrydata;
@@ -679,6 +676,7 @@ class CompanyController extends Controller
                     $savephone->save();
                 }
             }
+            dd();
             foreach ($faxNumber as $index => $faxNumber) {
                 if ($faxNumber !== null) {
                     $savefax = new company_fax();

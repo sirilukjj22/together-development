@@ -24,8 +24,8 @@ class FreelancerCheckedController extends Controller
     {
         $provinceNames = province::select('name_th','id')->get();
         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
-        $prefix = master_document::select('name_th','id')->Where('Category','Mprefix')->get();
-        $Mbank = master_document::select('name_th','id')->Where('Category','Mbank')->get();
+        $prefix = master_document::select('name_th','id')->Where('Category','Mprefix')->where('status', 1)->get();
+        $Mbank = master_document::select('name_th','id')->Where('Category','Mbank')->where('status', 1)->get();
         return view('freelancer_checked.create',compact('provinceNames','booking_channel','prefix','Mbank'));
     }
     public function edit($id)
@@ -37,7 +37,7 @@ class FreelancerCheckedController extends Controller
         $Tambon = districts::where('amphure_id', $Freelancer_checked->Amphures)->select('name_th','id')->get();
         $amphures = amphures::where('province_id', $Freelancer_checked->City)->select('name_th','id')->get();
         $Zip_code = districts::where('amphure_id', $Freelancer_checked->Amphures)->select('zip_code','id')->get();
-        $Mbank = master_document::select('name_th','id')->Where('Category','Mbank')->get();
+        $Mbank = master_document::select('name_th','id')->Where('Category','Mbank')->where('status', 1)->get();
         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
         $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
         $Profile_ID = $Freelancer_checked->id;
@@ -56,7 +56,7 @@ class FreelancerCheckedController extends Controller
         $Tambon = districts::where('amphure_id', $Freelancer_checked->Amphures)->select('name_th','id')->get();
         $amphures = amphures::where('province_id', $Freelancer_checked->City)->select('name_th','id')->get();
         $Zip_code = districts::where('amphure_id', $Freelancer_checked->Amphures)->select('zip_code','id')->get();
-        $Mbank = master_document::select('name_th','id')->Where('Category','Mbank')->get();
+        $Mbank = master_document::select('name_th','id')->Where('Category','Mbank')->where('status', 1)->get();
         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
         $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
         $Profile_ID = $Freelancer_checked->id;

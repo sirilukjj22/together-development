@@ -68,7 +68,7 @@ class FreelancerMemberController extends Controller
         $Tambon = districts::where('amphure_id', $Freelancer_Main->Amphures)->select('name_th','id')->get();
         $amphures = amphures::where('province_id', $Freelancer_Main->City)->select('name_th','id')->get();
         $Zip_code = districts::where('amphure_id', $Freelancer_Main->Amphures)->select('zip_code','id')->get();
-        $Mbank = master_document::select('name_th','id')->Where('Category','Mbank')->get();
+        $Mbank = master_document::select('name_th','id')->Where('Category','Mbank')->where('status', 1)->get();
         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
         $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
         $Profile_ID = $Freelancer_Main->id;
@@ -103,7 +103,7 @@ class FreelancerMemberController extends Controller
         $Tambon = districts::where('amphure_id', $Freelancer_checked->Amphures)->select('name_th','id')->get();
         $amphures = amphures::where('province_id', $Freelancer_checked->City)->select('name_th','id')->get();
         $Zip_code = districts::where('amphure_id', $Freelancer_checked->Amphures)->select('zip_code','id')->get();
-        $Mbank = master_document::select('name_th','id')->Where('Category','Mbank')->get();
+        $Mbank = master_document::select('name_th','id')->Where('Category','Mbank')->where('status', 1)->get();
         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
         $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
         $Profile_ID = $Freelancer_checked->id;
