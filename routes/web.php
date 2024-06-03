@@ -312,8 +312,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/ac', 'ac')->name('Quotation.ac');
         Route::get('/Quotation/no', 'no')->name('Quotation.no');
         Route::get('/Quotation/create/company/Contact/{companyID}','Contact')->name('Quotation.company');
-        Route::get('/Quotation/create/company/{companyID}', 'create_view');
-        // Route::post('/Quotation/Event_Formate/save', 'save')->name('MEvent.save');
+        Route::post('/Quotation/Event_Formate/save', 'save')->name('MEvent.save');
+        Route::get('/Quotation/Event_Formate/company/product/{id}', function($id) {
+            return view('quotation.selectproduct', ['quotation_id' => $id]);
+        })->name('Quotation.SelectProduct');
         // Route::post('/Quotation/Event_Formate/update', 'update')->name('MEvent.update');
         // Route::get('/Quotation/changeStatus_Event/{id}/{status}','changeStatus')->name('MEvent.changeStatus');
     });

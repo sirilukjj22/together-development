@@ -277,6 +277,7 @@
                     @endif
                         <a class="menu2" href="{{ route('freelancer.index') }}">Freelancer Check</a>
                         <a class="menu2" href="{{ route('freelancer_member.index') }}">Freelancer Member</a>
+                        <a class="menu2" href="{{ route('Quotation.index') }}">Quotation</a>
                 </div>
             </div>
             @endif

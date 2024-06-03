@@ -10,6 +10,12 @@ use App\Models\representative;
 use App\Models\representative_phone;
 use App\Models\company_fax;
 use App\Models\company_phone;
+use App\Models\MasterEventFormate;
+use App\Models\Freelancer_Member;
+use App\Models\province;
+use App\Models\amphures;
+use App\Models\districts;
+use App\Models\master_document;
 class QuotationController extends Controller
 {
     public function index()
@@ -30,11 +36,14 @@ class QuotationController extends Controller
             $lastNumber = intval($lastRun->number);
             $nextNumber = $lastNumber + 1;
         }
+        $Issue_date = Carbon::parse($currentDate)->translatedFormat('d/m/Y');
+        $Valid_Until = Carbon::parse($currentDate)->addDays(7)->translatedFormat('d/m/Y');
         $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
         $Quotation_ID = $ID.$year.$month.$newRunNumber;
-        // $Company = companys::select('Company_Name','id')->where('status', '1')->get();
+        $Mevent = MasterEventFormate::select('name_th','id')->where('status', '1')->get();
+        $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
-        return view('quotation.create',compact('Quotation_ID','Company'));
+        return view('quotation.create',compact('Quotation_ID','Company','Mevent','Freelancer_member','Issue_date','Valid_Until'));
     }
     public function Contact($companyID)
     {
@@ -44,20 +53,24 @@ class QuotationController extends Controller
 
         ]);
     }
-    public function create_view($companyID)
-    {
-        $Company = companys::where('Profile_ID',$companyID)->first();
-        $company_fax = company_fax::where('Profile_ID',$companyID)->where('Sequence','main')->first();
-        $company_phone = company_phone::where('Profile_ID',$companyID)->where('Sequence','main')->first();
-        $Contact_name = representative::where('Company_ID',$companyID)->where('status',1)->first();
-        $Contact_phone = representative_phone::where('Company_ID',$companyID)->where('Sequence','main')->first();
-        return response()->json([
-            'Company' => $Company,
-            'Contact_name'=>$Contact_name,
-            'Contact_phone'=>$Contact_phone,
-            'company_fax'=>$company_fax,
-            'company_phone'=>$company_phone,
 
+    public function save(Request $request){
+        $data = $request->all();
+        $Quotation_ID = $request->Quotation_ID;
+        return redirect()->to(route('Quotation.SelectProduct',['id' => $Quotation_ID]))->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+    }
+    public function selectProduct($id)
+    {
+        $currentDate = Carbon::now();
+        $Issue_date = Carbon::parse($currentDate)->translatedFormat('d/m/Y');
+        $Valid_Until = Carbon::parse($currentDate)->addDays(7)->translatedFormat('d/m/Y');
+
+        // ดึงข้อมูล Quotation ที่ตรงกับ ID
+        $Quotation = Quotation::where('Quotation_ID', $id)->first();
+
+        // ส่งตัวแปรไปยัง view
+        return response()->json([
+            'Valid_Until' => $id,
 
         ]);
     }
