@@ -1560,7 +1560,7 @@ tr.disable-row:hover{
         padding: 0.5%;
         color: black;
         background: white;
-        
+
       }
       .creditrevenue{
         height: 330px !important;
@@ -1579,7 +1579,7 @@ tr.disable-row:hover{
         background-color: white;
         border-radius: 8px !important;
         background: radial-gradient(circle at 10% 20%, rgb(220, 217, 249) 0%, rgb(172, 224, 217) 89.8%) !important;
-        
+
       }
       .cash ,.bank,.manual,.fee ,.type,.monthly{
         background: radial-gradient(circle at 10% 20%, rgb(220, 217, 249) 0%, rgb(172, 224, 217) 89.8%) !important;
@@ -1953,21 +1953,11 @@ tr.disable-row:hover{
     height: 40px !important;
     padding-left: 30px;
   }
-<<<<<<< Updated upstream
-  
-  .dropdown a:hover {
-    color: white;
-    height: 40px !important;
-    padding: 10px 0 10px 30px;
-  }
-  
-=======
 
   .dropdown a:hover {color: white;
     height: 40px !important;
     padding: 10px 0 10px 30px;}
 
->>>>>>> Stashed changes
   .show {display: block;}
 
 
@@ -4353,12 +4343,5 @@ tr.disable-row:hover{
       font-size: 14px;
     }
 
-<<<<<<< Updated upstream
-    
-  }
-  
-}
-=======
   }
 }
->>>>>>> Stashed changes
