@@ -32,6 +32,7 @@ ul a{
     text-decoration: none !important;
     color: inherit;
 }
+
 /*0 - 767 (Mobile)
 /* ADD PAGE */
 
@@ -224,6 +225,14 @@ ul a{
 .Usertable{
   display: block;
   margin: auto;
+}
+.usertopic{
+  width:100%;
+}
+.usertopic h1{
+  font-size: 24px;
+  margin-top: 20px;
+  margin-left: 10px;
 }
 .dt-input{
   width: 16%;
@@ -437,447 +446,22 @@ table.dataTable td.dt-type-date {
   margin-left: 90%;
   object-fit: cover;
 }
-.revenue-box{
-  width: 99%;
-  margin:1% 1% 0 1%;
-  /* background-color: #008cba; */
-  height: 50vh;
-}
-.box{
-  position: relative;
-  width: 99%;
-  margin-right: 10px;
-  height: 100%;
-  background-color: white;
-  float: left;
-  border-radius: 16px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-}
-.box2{
-  position: relative;
-  width: 32.33%;
-  height: 100%;
-  margin-right: 1%;
-  background-color: white;
-  float: left;
-  border-radius: 16px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-}
-.box3{
-  position: relative;
-  width: 65.66%;
-  height: 100%;
-  margin-right: 1%;
-  background-color: white;
-  float: left;
-  border-radius: 16px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-}
-.box4{
-  position: relative;
-  width: 15.66%;
-  height: 100%;
-  margin-right: 1%;
-  background-color: white;
-  float: left;
-  border-radius: 16px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-}
-.add_user select{
-  height: 100px;
-}
-.btngraph{
+.btngraph {
   text-align: center;
-  width: 100%;
-  margin-top: 1%;
-  margin-bottom: 1%;
 }
-.btngraph select {
+.btngraph button {
+  margin: 0 5px;
   float: none;
-  width: 100%;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease; /* Adding transition for background color change */
-  display: block;
-  margin: auto;
-  background-color: #109699;
-  color: white;
-  height: 40px;
-}
-.custom-select-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 30%;
-}
-
-.custom-select {
-  appearance: none; /* Remove default styling */
-  -webkit-appearance: none; /* Remove default styling for Safari */
-  -moz-appearance: none; /* Remove default styling for Firefox */
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background: white; /* Background color of the select box */
-  width: 150px; /* Adjust width as needed */
-}
-/* Position the custom arrow */
-.custom-arrow {
-  position: absolute;
-  right: 10px; /* Adjust as needed */
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-top: 8px solid rgb(255, 255, 255); /* Arrow color */
-  pointer-events: none; /* Prevent click events */
-}
-
-/* Hide the default arrow in IE and Edge */
-.custom-select::-ms-expand {
-  display: none;
-}
-
-#overlay {
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-color: transparent;
-pointer-events: none; /* Allow pointer events to pass through */
-}
-.display.dataTable {
-  margin-bottom: 25px;
-}
-.dataTables_wrapper{
-  position: relative;
-}
-.all_revenue h1{
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  left: 0;
-  right: 0;
-  text-align: center;
-  bottom: 0;
-  margin-bottom: 100px;
-}
-.blockstyle button{
-  width: 100% !important;
-  text-align: left;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-.blockstyle2{
-  text-align: left;
-}
-
-/* Revenue */
-.title-box{
-  background-color: #109699;
-  border-radius: 16px 16px 0 0;
-  text-align: center;
-  color: white;
-  height: auto;
-  padding: 10px;
-}
-.title-box h2{
-  font-size: 20px;
-  font-weight: 600;
-  text-shadow: 1px 1px 8px #383838;
-  margin: 0;
-  
-}
-.title-box h1{
-  font-size: 24px;
-  font-weight: 600;
-  text-shadow: 1px 1px 8px #383838;
-  margin: 0;
-}
-.list-box:hover ,.list-box3:hover ,.list-box4:hover,.list-box4:hover,.list-box4:hover,.list-box5:hover,.list-box6:hover,.list-box7:hover{
-  /* transform: scale(1.05);
-  transition: 0.5s; */
-  background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-  color: inherit;
-  border: none;
-}
-.list-box2:hover{
-  /* transform: scale(1.05);
-  transition: 0.5s; */
-  background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-  color: #000;
-}
-.creditrevenue{
-  height: auto !important;
-  background-color: white;
-  border-radius: 8px !important;
-  background: white !important;
-}
-.trorevenue{
-  height: auto !important;
-  background-color: white;
-  border-radius: 8px !important;
-  background: white !important;
-}
-.cash ,.bank,.manual,.fee ,.type{
-  background: white !important;
-}
-
-.list-box{
-  width: 48%;
-  height: auto;
-  border-radius: 8px;
-  margin: 1%;
-  padding: 10% 0 0 0;
-  color: black;
-  background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-}  
-.list-box2{
-  width: 100%;
-  border-radius: 8px;
-  padding: 3%;
-  margin: 1%;
-  color: black;
-  background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-}   
-.list-box3{
-  width: 48%;
-  border-radius: 8px;
-  margin: 1%;
-  padding: 3% 0 0 0;
-  color: black;
-  background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-}
-.list-box4{
-  width: 100%;
-  border-radius: 8px;
-  margin: 1%;
-  padding: 0% 0 0 0;
-  color: black;
-  background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-}
-.list-box5{
-  width: 100%;
-  border-radius: 8px;
-  margin: 1%;
-  padding: 0% 0 0 0;
-  color: black;
-  background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-}
-.list-box6{
-  width: 100%;
-  border-radius: 8px;
-  padding: 3%;
-  margin: 1%;
-  color: black;
-  background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-}
-.list-box7{
-  width: 99%;
-  border-radius: 8px;
-  margin: 0.5%;
-  padding: 0% 0 0 0;
-  color: black;
-  background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-}
-.list-box8{
-  width: 99%;
-  border-radius: 8px;
-  margin: 0.5%;
-  padding: 0% 0 0 0;
-  color: black;
-  background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-}
-
-.list-box2 img{
-  float: left;
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  margin: 15px 25px 5px 50px;
-}
-.list-box4 img{
-  float: left;
-  width: 25px;
-  height: 25px;
-  object-fit: cover;
-  margin: 5px 10px 5px 10px;
-}
-.list-box5 img{
-  float: left;
-  width: 30px;
-  height: 30px;
-  object-fit: cover;
-  margin: 15px 10px 5px 10px;
-}
-.list-box6 img{
-  float: left;
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  margin: 20px 25px 5px 50px;
-}
-.list-box7 img{
-  float: left;
-  width: 30px;
-  height: 30px;
-  object-fit: cover;
-  margin: 15px 10px 5px 10px;
-}
-
-/* .list-box img{
-  float: left;
-  width: 25px;
-  height: 25px;
-  object-fit: cover;
-  margin-right: 10px;
-} */
-/* .list-box h2{
-  float: left;
-  width: auto;
-  margin-top :3px;
-} */
-.list-box h2{
-  text-align: center;
-  width: auto;
-  font-size: 18px;
-  margin: 0;
-  padding: 5px;
-}
-.list-box2 h2{
-  width: 100%;
-  font-size: 16px;
-  text-align: left;
-  margin-top: 10px;
-}
-.list-box3 h2{
-  text-align: center;
-  width: auto;
-  font-size: 16px;
-  margin: 0;
-}
-.list-box4 h2{
-  width: auto;
-  font-size: 16px;
-  display: block;
-  margin: auto;
-  float: left;
-  text-align: left;
-  margin-top: 2%;
-}
-.list-box5 h2{
-  width: auto;
-  font-size: 16px;
-  display: block;
-  margin: auto;
-  float: left;
-  text-align: left;
-  margin-top: 20px;
-}
-.list-box6 h2{
-  width: 100%;
-  font-size: 16px;
-  text-align: left;
-  margin-top: 10px;
-}
-.list-box7 h2{
-  font-size: 16px;
-  text-align: left;
-  margin-top: 15px;
-  float: left;
-  padding-left: 10px;
-}
-/* .list-box h3{
-  float: right;
-  width: auto;
-  margin-top :2px;
-  margin-right: 0px;
-} */
-
-.list-box h3{
-  width: auto;
-  text-align: center;
-  font-size: 18px;
-}
-.list-box2 h3{
-  font-size: 16px;
-}
-.list-box3 h3{
-  width: auto;
-  text-align: center;
-  font-size: 16px;
-  margin: 0;
-}
-.list-box4 h3{
-  text-align: center;
-  float: right;
-  width: auto;
-  font-size: 16px;
-  margin: 0;
-  margin-top: 10px;
-  margin-right: 20px;
-}
-.list-box5 h3{
-  text-align: center;
-  float: right;
-  width: auto;
-  font-size: 16px;
-  margin: 0;
-  margin-top: 20px;
-  margin-right: 20px;
-}
-
-.list-box6 h3{
-  font-size: 16px;
-}
-.list-box7 h3{
-  text-align: center;
-  float: right;
-  width: auto;
-  font-size: 16px;
-  margin: 0;
-  margin-top: 15px;
-  margin-right: 20px;
-}
-.list-box8 h3{
-  font-size: 16px;
-  text-align: center;
-  padding-top: 10px;
-}
-.title-box2 h1{
-  padding-top: 5px;
-  font-size: 18px;
-}
-.title-box2{
-  background-color: #109699;
-  border-radius: 16px 16px 0 0;
-  text-align: center;
-  color: white;
-  height: 30px;
-}
-
-.donut-graph{
-  padding: 10%;
-}
-.smallicon{
-  float: right;
-  width: 20px;
-  height: 20px;
-  object-fit: cover;
-  margin-right: 20px;
-}
-.custom-select-wrapper {
-  position: relative;
-  display: inline-block;
   width: 20%;
-}
-.navbar-nav .nav-link:hover{
-  background-color: #2D7F7B;
-  color: white !important;
+  height: 40px;
   border-radius: 8px;
+  border: 1px solid black; /* Shorter syntax for border */
+  margin-bottom: 20px;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease; /* Adding transition for background color change */
 }
+
 @media screen and (min-width:768px){
   .selectall{
     display: none;
@@ -1051,10 +635,6 @@ tr.disable-row:hover{
   margin-top: 30px;
   font-size: 18px;
 }
-.all_revenue h1{
-  margin: 0;
-  margin-bottom: 25px;
-}
 
   @media screen and (min-width:1024px){
     .transfer_date{
@@ -1181,10 +761,6 @@ tr.disable-row:hover{
       width: 100%;
       border-color: #9a9a9a;
       border-radius: 8px;
-    }
-    .all_revenue h1{
-      margin: 0;
-      margin-bottom: 25px;
     }
     
     @media screen and (min-width:1440px){
@@ -1329,49 +905,38 @@ tr.disable-row:hover{
         width: 200px;
       }
       .display2 th[data-dt-column="4"]{
-        width: 20%;
+        width: 150px;
+      }
+      .display2 th[data-dt-column="5"]{
+        width: 200px;
       }
       .display2 th[data-dt-column="1"]{
-        width: 25%;
-      }
-      .display2 th[data-dt-column="3"]{
-        width: 20%;
-      }
-      .display2 th[data-dt-column="2"]{
-        width: 25%;
+        width: 30px;
       }
       .display2 th[data-dt-column="0"]{
-        width: 10%;
+        width: 100px;
       }
-
+      .display2 th[data-dt-column="2"]{
+        width: auto;
+      }
       .display2 .dt-column-title{
         margin-left: 10px;
       }
-      .display2.display3 th[data-dt-column="0"]{
-        width: 7.5%;
-      }
-      .display2.display3 th[data-dt-column="1"]{
-        width: 7.5%;
-      }
       .display2.display3 th[data-dt-column="2"]{
-        width: 10%;
-      }
-      .display2.display3 th[data-dt-column="3"]{
-        width: 15%;
-      }
-      .display2.display3 th[data-dt-column="4"]{
-        width: 15%;
-      }
-      .display2.display3 th[data-dt-column="5"]{
-        width: 15%;
+        width: 100px;
       }
       .display2.display3 th[data-dt-column="6"]{
-        width: 15%;
+        width: 150px;
       }
       .display2.display3 th[data-dt-column="7"]{
-        width: 15%;
+        width: 200px;
       }
-      
+      .display2.display3 th[data-dt-column="3"]{
+        width: 200px;
+      }
+      .display2.display3 th[data-dt-column="4"]{
+        width: 200px;
+      }
       tr.disable-row{
         background-color: #dddddd !important;
         color: #545454;
@@ -1405,6 +970,7 @@ tr.disable-row:hover{
         height: 39vh;
       }
       .box{
+        position: relative;
         width: 24%;
         margin-right: 10px;
         height: 100%;
@@ -1413,6 +979,7 @@ tr.disable-row:hover{
         border-radius: 16px;
       }
       .box2{
+        position: relative;
         width: 32.33%;
         height: 100%;
         margin-right: 1%;
@@ -1421,6 +988,7 @@ tr.disable-row:hover{
         border-radius: 16px;
       }
       .box3{
+        position: relative;
         width: 65.66%;
         height: 100%;
         margin-right: 1%;
@@ -1429,6 +997,7 @@ tr.disable-row:hover{
         border-radius: 16px;
       }
       .box4{
+        position: relative;
         width: 15.66%;
         height: 100%;
         margin-right: 1%;
@@ -1436,14 +1005,11 @@ tr.disable-row:hover{
         float: left;
         border-radius: 16px;
       }
-      .box5{
-        background-color: white;
-        padding: 0 !important;
-        height: 100%;
-        border-radius: 8px !important;
+      .padding-lr{
+        padding-left: 10px;
+        padding-right: 10px;
       }
-  
-      /* .title-box{
+      .title-box{
         background-color: #109699;
         width: 100%;
         border-radius: 16px 16px 0 0;
@@ -1452,306 +1018,91 @@ tr.disable-row:hover{
         padding-top: 15px;
         float: left;
         margin-bottom: 5px;
-      } */
-      .title-box{
-        background-color: #109699;
-        border-radius: 16px 16px 0 0;
-        text-align: center;
-        color: white;
-        height: auto;
-        padding: 10px;
       }
       .title-box h2{
         font-size: 20px;
         font-weight: 600;
+        margin-bottom: 10px;
         text-shadow: 1px 1px 8px #383838;
-        margin: 0;
         
       }
       .title-box h1{
-        font-size: 24px;
+        font-size: 36px;
         font-weight: 600;
+        margin-bottom: 15px;
         text-shadow: 1px 1px 8px #383838;
-        margin: 0;
       }
-      .list-box:hover ,.list-box3:hover ,.list-box4:hover,.list-box4:hover,.list-box4:hover,.list-box5:hover,.list-box6:hover,.list-box7:hover{
-        transform: scale(1.05);
-        transition: 0.5s;
-        background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-        border: 1px solid #888;
-        color: #000;
-      }
-      .list-box2:hover{
-        transform: scale(1.05);
-        transition: 0.5s;
-        background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-        border: none;
-        color: #000;
-      }
-      .list-box{
-        width: 48%;
-        height: auto;
-        border: 1px solid #888;
-        border-radius: 8px;
-        margin: 1%;
-        padding: 10% 0 0 0;
-        color: black;
-        background: white;
-      }  
-      .list-box2{
+      .list-box a{
         width: 100%;
-        border: 1px solid #888;
-        border-radius: 8px;
-        padding: 10px;
-        margin: 1%;
-        color: black;
-        background: white;
-      }   
-      .list-box3{
-        width: 48%;
-        border: 1px solid #888;
-        border-radius: 8px;
-        margin: 1%;
-        padding: 3% 0 0 0;
-        color: black;
-        background: white;
-      }
-      .list-box4{
-        width: 100%;
-        border: 1px solid #888;
-        border-radius: 8px;
-        margin: 1%;
-        padding: 0% 0 0 0;
-        color: black;
-        background: white;
-      }
-      .list-box5{
-        width: 100%;
-        border: 1px solid #888;
-        border-radius: 8px;
-        margin: 1%;
-        padding: 0% 0 0 0;
-        color: black;
-        background: white;
-      }
-      .list-box6{
-        width: 100%;
-        border: 1px solid #888;
-        border-radius: 8px;
-        margin: 1%;
-        padding: 0% 0 0 0;
-        color: black;
-        background: white;
-      }
-      .list-box7{
-        width: 49%;
-        border: 1px solid #888;
-        border-radius: 8px;
-        margin: 0.5%;
-        padding: 0.5%;
-        color: black;
-        background: white;
-      }
-      .list-box8{
-        width: 98%;
-        border: 1px solid #888;
-        border-radius: 8px;
-        margin: 1%;
-        padding: 0.5%;
-        color: black;
-        background: white;
-        
-      }
-      .creditrevenue{
-        height: 330px !important;
-        background-color: white;
-        border-radius: 8px !important;
-        background: radial-gradient(circle at 10% 20%, rgb(220, 217, 249) 0%, rgb(172, 224, 217) 89.8%) !important;
-      }
-      .trorevenue{
-        height: 292px !important;
-        background-color: white;
-        border-radius: 8px !important;
-        background: radial-gradient(circle at 10% 20%, rgb(220, 217, 249) 0%, rgb(172, 224, 217) 89.8%) !important;
-      }
-      .monthly,.daily{
-        height: 97px !important;
-        background-color: white;
-        border-radius: 8px !important;
-        background: radial-gradient(circle at 10% 20%, rgb(220, 217, 249) 0%, rgb(172, 224, 217) 89.8%) !important;
-        
-      }
-      .cash ,.bank,.manual,.fee ,.type,.monthly{
-        background: radial-gradient(circle at 10% 20%, rgb(220, 217, 249) 0%, rgb(172, 224, 217) 89.8%) !important;
-      }
-      .list-box2 img{
+        color: #000000;
+        font-size: 16px;
         float: left;
-        width: 40px;
-        height: 40px;
-        object-fit: cover;
-        margin: 50px 25px 5px 50px;
+        display: block;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
       }
-      .list-box4 img{
-        float: left;
-        width: 25px;
-        height: 25px;
-        object-fit: cover;
-        margin: 5px 10px 5px 10px;
+      .list-box a:hover{
+        background-color: #109699;
+        border-radius: 16px;
+        text-decoration: none;
+        color: white;
+        transition: .2s ease-in-out;
       }
-      .list-box5 img{
-        float: left;
-        width: 30px;
-        height: 30px;
-        object-fit: cover;
-        margin: 15px 10px 5px 10px;
-      }
-      .list-box6 img{
-        float: left;
-        width: 30px;
-        height: 30px;
-        object-fit: cover;
-        margin: 50px 25px 5px 50px;
-      }
-      .list-box7 img{
-        float: left;
-        width: 30px;
-        height: 30px;
-        object-fit: cover;
-        margin: 15px 10px 5px 10px;
-      }
-      
-      /* .list-box img{
+      .list-box img{
         float: left;
         width: 25px;
         height: 25px;
         object-fit: cover;
         margin-right: 10px;
-      } */
-      /* .list-box h2{
+      }
+      .list-box h2{
         float: left;
         width: auto;
         margin-top :3px;
-      } */
-      .list-box h2{
-        text-align: center;
-        width: auto;
-        font-size: 16px;
-        margin: 0;
-        padding: 5px;
       }
-      .list-box2 h2{
-        width: 100%;
-        font-size: 16px;
-        text-align: left;
-        margin-top: 40px;
-      }
-      .list-box3 h2{
-        text-align: center;
-        width: auto;
-        font-size: 16px;
-        margin: 0;
-      }
-      .list-box4 h2{
-        width: auto;
-        font-size: 16px;
-        display: block;
-        margin: auto;
-        float: left;
-        text-align: left;
-        margin-top: 2%;
-      }
-      .list-box5 h2{
-        width: auto;
-        font-size: 16px;
-        display: block;
-        margin: auto;
-        float: left;
-        text-align: left;
-        margin-top: 20px;
-      }
-      .list-box6 h2{
-        width: 100%;
-        font-size: 16px;
-        text-align: left;
-        margin-top: 40px;
-      }
-      .list-box7 h2{
-        font-size: 16px;
-        text-align: left;
-        float: left;
-        margin-top: 0px;
-        margin-left: 1%;
-      }
-      /* .list-box h3{
+      .list-box h3{
         float: right;
         width: auto;
         margin-top :2px;
         margin-right: 0px;
-      } */
-
-      .list-box h3{
-        width: auto;
-        text-align: center;
-        font-size: 16px;
-      }
-      .list-box2 h3{
-        font-size: 16px;
-      }
-      .list-box3 h3{
-        width: auto;
-        text-align: center;
-        font-size: 16px;
-        margin: 0;
-      }
-      .list-box4 h3{
-        text-align: center;
-        float: right;
-        width: auto;
-        font-size: 16px;
-        margin: 0;
-        margin-top: 10px;
-        margin-right: 20px;
-      }
-      .list-box5 h3{
-        text-align: center;
-        float: right;
-        width: auto;
-        font-size: 16px;
-        margin: 0;
-        margin-top: 20px;
-        margin-right: 20px;
-      }
-      
-      .list-box6 h3{
-        font-size: 16px;
-      }
-      .list-box7 h3{
-        text-align: center;
-        float: right;
-        width: auto;
-        font-size: 16px;
-        margin: 0;
-        margin-top: 15px;
-        margin-right: 20px;
-      }
-      .list-box8 h3{
-        font-size: 16px;
-        display: block;
-        text-align: center;
-        padding-top: 30px;
-      }
-      .title-box2 h1{
-        padding-top: 5px;
-        font-size: 18px;
       }
       .title-box2{
         background-color: #109699;
+        width: 100%;
         border-radius: 16px 16px 0 0;
         text-align: center;
         color: white;
-        height: 30px;
+        padding-top: 10px;
+        float: left;
+        margin-bottom: 5px;
       }
-
+      .title-box2 h1{
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        text-shadow: 1px 1px 8px #383838;
+      }
+      .detail-box{
+        width: 99%;
+        margin: 1% 1% 0 1%;
+        margin-top: 1%;
+        float: left;
+        height: 28vh;
+        /* background-color: #008cba; */
+      }
+      .other-box{
+        width: 99%;
+        margin: 1% 1% 0 1%;
+        float: left;
+        height: 21vh;
+        /* background-color: #008cba; */
+      }
+      .half{
+        width: 50%;
+        float: left;
+      }
       .donut-graph{
         padding: 10%;
       }
@@ -1762,11 +1113,40 @@ tr.disable-row:hover{
         object-fit: cover;
         margin-right: 20px;
       }
-      .custom-select-wrapper {
-        position: relative;
-        display: inline-block;
+      .btngraph {
+        text-align: center;
+    }
+    
+    .btngraph button {
+        margin: 0 5px;
+        float: none;
         width: 20%;
-      }
+        height: 40px;
+        border-radius: 8px;
+        border: 1px solid black; /* Shorter syntax for border */
+        margin-bottom: 20px;
+        cursor: pointer;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease; /* Adding transition for background color change */
+    }
+    
+    .btngraph button.active {
+        background-color: #109699; /* Green background color for active button */
+        color: white; /* White text color for active button */
+    }
+    #overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      pointer-events: none; /* Allow pointer events to pass through */
+  }
+      
+
+      
+    
     }
   }
 }
@@ -1782,7 +1162,6 @@ tr.disable-row:hover{
   background: #e4e4e4;
   margin-left: 15%;
   overflow-x: hidden;
-  margin-bottom: 20px;
   /* display: block; */
   /* margin-left: auto; */
   /* margin-right: auto; */
@@ -1843,11 +1222,9 @@ tr.disable-row:hover{
     background-color: #002b28;
     width: 100%;
     height: 40px;
-    padding-top: 8px;
     color: white;
     text-align: center;
-    text-align: left;
-    padding-left: 30px;
+    padding: 8px;
   }
   .menu h1{
     font-size: 20px;
@@ -1858,8 +1235,7 @@ tr.disable-row:hover{
   }
   .menu2 {
     color: white;
-    text-align: left;
-    padding-left: 30px;
+    text-align: center;
     font-weight: 300;
     padding-top: 8px;
     height: 40px;
@@ -1936,29 +1312,27 @@ tr.disable-row:hover{
   
   .dropdown-content {
     display: none;
+    /* background-color: #f1f1f1; */
     overflow: auto;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     margin: auto;
     height: auto;
-    transition: max-height 0.3s ease-in-out;
+    transition: max-height 0.3s ease-in-out; /* Add transition here */
     overflow-y: hidden;
   }
   
-  .dropdown-content a{
+  .dropdown-content a {
     color: white;
     padding: 10px 0 10px 0;
     text-decoration: none;
     display: block;
     height: 40px !important;
-    padding-left: 30px;
   }
   
-  .dropdown a:hover {
-    color: white;
+  .dropdown a:hover {color: white;
     height: 40px !important;
-    padding: 10px 0 10px 30px;
-  }
+    padding: 10px 0 10px 0;}
   
   .show {display: block;}
 
@@ -2575,21 +1949,21 @@ tr.disable-row:hover{
     float: left;
     width: 48.5%;
     top: 4%;
-    margin-top: 1%;
+    margin-top: 20px;
     height: auto;
     background-color: #ffffff;
     border-radius: 8px;
     margin-left: 1%;
-    padding: 5px;
+    padding: 10px;
   }
+
   .Graph2 {
     position: relative;
     float: left;
     width: 48.5%;
     margin-left: 1%;
     top: 4%;
-    height: auto;
-    margin-top: 1%;
+    margin-top: 20px;
     background-color: #ffffff;
     border-radius: 8px;
     font-family: "Sarabun", sans-serif !important;
@@ -2601,8 +1975,7 @@ tr.disable-row:hover{
       height: 40px;
       display: block;
       margin: auto;
-      margin-bottom: 1%;
-      margin-top: 1%;
+      margin-bottom: 16px;
       background-color: #109699;
       color: #fff;
       border: none;
@@ -2642,7 +2015,7 @@ tr.disable-row:hover{
   }
   .date_from {
     /* background-color: rgb(255, 96, 96); */
-    width: 49%;
+    width: 60%;
     height: 100%;
     margin-top: 20px;
     margin-left: 1%;
@@ -2654,7 +2027,7 @@ tr.disable-row:hover{
     border-style: solid;
     border-width: 0.5px;
     border-radius: 8px;
-    width: 32.3%;
+    width: 24%;
     height: 50px;
     border-radius: 8px;
     float: left;
@@ -2664,7 +2037,7 @@ tr.disable-row:hover{
     border-style: solid;
     border-width: 0.5px;
     border-radius: 8px;
-    width: 32.3%;
+    width: 24%;
     height: 50px;
     border-color: #bfbfbf;
     border-width: 0.5px;
@@ -2678,7 +2051,7 @@ tr.disable-row:hover{
     border-style: solid;
     border-width: 0.5px;
     border-radius: 8px;
-    width: 32.3%;
+    width: 24%;
     height: 50px;
     border-color: #bfbfbf;
     border-width: 0.5px;
@@ -2713,7 +2086,7 @@ tr.disable-row:hover{
     height: 110px;
   }
   .button-6:hover{
-    transform: scale(1.08);
+    transform: scale(1.2);
     transition: 0.2s;
   }
   .button-7{
@@ -2793,7 +2166,7 @@ tr.disable-row:hover{
     border-style: solid;
     border-width: 0.5px;
     border-radius: 8px;
-    width: 45%;
+    width: 49%;
     height: 50px;
     border-color: #bfbfbf;
     border-width: 0.5px;
@@ -2806,134 +2179,14 @@ tr.disable-row:hover{
     border-style: solid;
     border-width: 0.5px;
     border-radius: 8px;
-    width: 45%;
+    width: 49%;
     height: 50px;
     border-color: #bfbfbf;
     border-width: 0.5px;
     border-radius: 8px;
     margin-top: 10px;
     margin-left: 1%;
-    float: left;
   }
-  /* .tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
-  } */
-.info-container {
-    position: relative;
-    display: inline-block;
-    width: 8%;
-    margin-top: 10px;
-  }
-  /* .info-container i{
-    width: 100%;
-    font-size: 32px;
-    margin-top: 10px;
-    text-align: center;
-  } */
-    /* 
-  .tooltip {
-    visibility: hidden;
-    width: 555px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 5px;
-    padding: 10px;
-    position: absolute;
-    z-index: 1;
-    bottom: -90%;
-    left: -400%;
-    margin-left: -100px;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  
-  .tooltip::after {
-    content: "";
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #555 transparent;
-  }
-  */
-  
-  /* .info-container:hover .tooltip {
-    visibility: visible;
-    opacity: 1;
-  }
-  
-  .info-container:hover .tooltip {
-    visibility: visible;
-    opacity: 1;
-  } */
-  .info-container .icon{
-    margin: 0 20px;
-    text-align: center;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    position: relative;
-    z-index: 2;
-    transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  }
-  .info-container .icon span{
-    display: block;
-    height: 50px;
-    width: 50px;
-    background: #fff;
-    border-radius: 50%;
-    position: relative;
-    z-index: 2;
-    transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  }
-  .info-container .icon span i{
-    line-height: 50px;
-    font-size: 24px;
-
-  }
-  .info-container .icon .tooltip{
-    position: absolute;
-    top: 0;
-    z-index: 1;
-    background: #fff;
-    color: #fff;
-    padding: 10px 18px;
-    font-size: 18px;
-    font-weight: 400;
-    border-radius: 25px;
-    text-shadow: none !important;
-    opacity: 0;
-    pointer-events: none;
-    box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
-    transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    width: 500px;
-  }
-  .info-container .icon:hover .tooltip{
-    top: 6vh;
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .info-container .icon:hover span{
-    color: #fff;
-  }
-  .info-container .icon:hover span,
-  .info-container .icon:hover .tooltip{
-    text-shadow: 0px -1px 0px rgba(0,0,0,0.4);
-  }
-  .info-container .facebook:hover span,
-  .info-container .facebook:hover .tooltip,
-  .info-container .facebook:hover .tooltip:before{
-    background: #109699;
-  }
-
   .button-17 {
     align-items: center;
     appearance: none;
@@ -3186,85 +2439,6 @@ tr.disable-row:hover{
     border-color: #000000;
     border-width: 1px;
   }
-  .select2-container {
-    float: left;
-    width: 45% !important;
-  }
-  .select2-1 + .select2-container {
-    margin-left: 1%; /* Adjust the value as needed */
-  }
-  .select2-2 + .select2-container {
-    width: 100% !important;
-    margin: 0;
-  }
-  .select2-3 + .select2-container {
-    width: 100% !important;
-  }
-  .select2-4 + .select2-container {
-    width: 100% !important;
-  }
-  .select2-2 + .select2-container .select2-selection--single{
-    padding: 0;
-    padding-top: 1%;
-    padding-left :1%;             /* Padding */
-    height: 40px !important;   /* Height */
-    margin: 0;
-  }
-  .select2-2 + .select2-container .select2-selection__arrow {
-    margin-top: 5px !important;
-}
-  .select2-container--default .select2-selection--single {
-    border: 1px solid #bfbfbf !important ;    /* Border color */
-    border-radius: 8px !important;       /* Rounded corners */
-    padding: 10px;             /* Padding */
-    height: 50px !important;             /* Height */
-    text-align: left !important;
-    margin-top: 10px;
-  }
-  .select2-style2 .select2-container--default .select2-selection--single {
-    height: 40px; /* Different height for this dropdown */
-    display: flex;
-    align-items: center; /* Center items vertically */
-    background-color: #f0f0f0; /* Different background color */
-    border: 1px solid #ccc; /* Different border */
-    margin-left: 1%; /* Left margin of 1% */
-}
-  .select2-selection__arrow{
-    margin-top: 20px !important; 
-  }
-  .select2-selection__rendered{
-    padding: 0px !important;
-    color: #000 !important;
-    font-weight: 300 !important;
-  }
-
-  /* Customize the dropdown */
-  .select2-container--default .select2-dropdown {
-    background-color: #f9f9f9; /* Dropdown background color */
-    border: 1px solid #aaa;    /* Border color */
-    border-radius: 4px;       /* Rounded corners */
-    
-  }
-
-  /* Customize selected item */
-  .select2-container--default .select2-results__option--selected {
-    background-color: #109699 !important; /* Selected item background color */
-    color: white;             /* Selected item text color */
-  }
-
-  /* Customize placeholder */
-  .select2-container--default .select2-selection--single .select2-selection__placeholder {
-    color: #999; /* Placeholder text color */
-  }
-
-  /* Customize dropdown item hover */
-  .select2-container--default .select2-results__option--highlighted {
-    background-color: rgb(16, 150, 153, 0.8)!important; /* Highlight background color */
-    color: black;             /* Highlight text color */
-  }
-  .select2-selection__arrow{
-    margin-top: 15px;
-  }
 
   @media screen and (max-width: 600px) {
     table {
@@ -3417,11 +2591,14 @@ tr.disable-row:hover{
       top: 35%;
       font-size: 24px;
     }
+    #month {
+      width: 9%;
+    }
     .date_from {
-      width: 60%;
+      width: 88%;
     }
     .day select ,.year select{
-      width: 32.33%;
+      width: 9%;
     }
     .detail input{
       width: 27.5% !important;
@@ -3641,13 +2818,13 @@ tr.disable-row:hover{
       margin-left: 1%;
     }
     .day select {
-      width: 32.33%;
+      width: 24%;
     }
     .month select {
-      width: 32.33%;
+      width: 24%;
     }
     .year select {
-      width: 32.33%;
+      width: 24%;
     }
     .time input {
       width: 24%;
@@ -3743,11 +2920,6 @@ tr.disable-row:hover{
       margin-top: 20px;
       font-size: 18px;
       margin-left: 2%;
-    }
-    .info-container .icon .tooltip{
-      right: 0px;
-      width: 350px;
-      font-size: 14px;
     }
   }
 
@@ -4292,60 +3464,23 @@ tr.disable-row:hover{
       transition: 0.2s;
     }
     .day select {
-      width: 32.33%;
-      font-size: 14px;
+      width: 24%;
     }
     .month select {
-      width: 32.33%;
-      font-size: 14px;
+      width: 24%;
     }
     .year select {
-      width: 32.33%;
-      font-size: 14px;
+      width: 24%;
+    }
+    .time input {
+      width: 24%;
     }
     .revenue_type select {
       width: 99%;
     }
     .acc_number select {
-      width: 80%;
+      width: 99%;
       margin: 10px 0 0 0;
     }
-    .info-container {
-      position: relative;
-      display: inline-block;
-      width: 5%;
-      margin-top: 10px;
-      margin-left: 1%;
-    }.info-container .icon .tooltip{
-      right: -37px;
-      width: 350px;
-      font-size: 12px;
-      margin-top: 15px;
-    }
-    .info-container .icon span{
-      display: block;
-      height: 40px;
-      width: 40px;
-      background: #fff;
-      border-radius: 50%;
-      position: relative;
-      z-index: 2;
-      margin-top: 5px;
-      transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-    .info-container .icon span i{
-      line-height: 50px;
-      font-size: 20px;
-      margin-top: -4px;
-  
-    }
-    .select2-container {
-      float: left;
-      width: 44% !important;
-      font-size: 14px;
-    }
-
-    
   }
-  
 }

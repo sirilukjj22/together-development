@@ -1,1462 +1,1232 @@
-@extends('layouts.masterLayout')
-
-@section('pretitle')
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col">
-                <small class="text-muted ">Welcome to Revenue.</small>
-                <h1 class="h4 mt-1">Revenue</h1>
-            </div>
-
-            <div class="col-auto">
-                <a href="#" title="Refresh" class="btn btn-outline-dark lift btn-revenue-reload"> 
-                    <i class="fa fa-refresh"></i> 
-                    Refresh
-                </a>
-
-                <a href="{{ route('revenue-export') }}" title="พิมพ์เอกสาร" class="btn btn-outline-dark lift"> 
-                    <i class="fa fa-print"></i> 
-                    พิมพ์เอกสาร
-                </a>
-            </div>
-        </div> <!-- .row end -->
-    </div>
-@endsection
+@extends('layouts.test')
 
 @section('content')
-<div class="container">
-    <div class="row clearfix">
-        <div class="row">
-            <?php
-                if (isset($day)) {
-                    $date_current = $year."-".$month."-".$day; 
-                } else {
-                    $date_current = date('Y-m-d');
-                }
 
-                $day_sum = isset($day) ? date('j', strtotime(date('2024-' . $month . '-' . $day))) : date('j');
-            ?>
+    <div class="container ml-auto mr-auto pt-3 pb-3 mb-3 rounded bg-light">
+
+        <style>
+            .logo img {
+                height: auto;
+            }
+
+            img {
+                display: block;
+                margin: auto;
+                width: 40px;
+                height: 40px;
+                object-fit: cover;
+            }
+
+            .row {
+                margin-bottom: 10px;
+            }
+        </style>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"
+            integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+        <?php
+            if (isset($day)) {
+                $date_current = $year."-".$month."-".$day; 
+            } else {
+                $date_current = date('Y-m-d');
+            }
+
+            $day_sum = isset($day) ? date('j', strtotime(date('2024-' . $month . '-' . $day))) : date('j');
+        ?>
+
+        <?php 
+            $total_cash_month = $total_front_month->front_cash + $total_guest_deposit_month->room_cash + $total_fb_month->fb_cash;
+            $total_bank_transfer_month = $total_front_month->front_transfer + $total_guest_deposit_month->room_transfer + $total_fb_month->fb_transfer;
+
+            $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month; 
+
+            $total_charge_month = $credit_revenue_month->total_credit ?? 0;
+
+            $total_wp_cash_bank_month = $total_wp_month->wp_cash + $total_wp_month->wp_transfer;
+
+            $total_wp_charge_month = $wp_charge[0]['total_month'];
+
+            $monthly_revenue = ($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) - $agoda_charge[0]['total'];
+
+            $sum_charge =  $front_charge[0]['revenue_credit_date'] + $guest_deposit_charge[0]['revenue_credit_date'] + $fb_charge[0]['revenue_credit_date'];
+        ?>
+
+        <?php 
+            $total_cash = $total_front_revenue->front_cash + $total_guest_deposit->room_cash + $total_fb_revenue->fb_cash;
+            $total_cash_month = $total_front_month->front_cash + $total_guest_deposit_month->room_cash + $total_fb_month->fb_cash;
+            $total_cash_year = $total_front_year->front_cash + $total_guest_deposit_year->room_cash + $total_fb_year->fb_cash;
+
+            $total_bank_transfer = $total_front_revenue->front_transfer + $total_guest_deposit->room_transfer + $total_fb_revenue->fb_transfer;
+            $total_bank_transfer_month = $total_front_month->front_transfer + $total_guest_deposit_month->room_transfer + $total_fb_month->fb_transfer;
+            $total_bank_transfer_year = $total_front_year->front_transfer + $total_guest_deposit_year->room_transfer + $total_fb_year->fb_transfer;
+
+            $total_wp_cash_bank = $total_wp_revenue->wp_cash + $total_wp_revenue->wp_transfer;
+            $total_wp_cash_bank_month = $total_wp_month->wp_cash + $total_wp_month->wp_transfer;
+            $total_wp_cash_bank_year = $total_wp_year->wp_cash + $total_wp_year->wp_transfer;    
+
+            $total_cash_bank = $total_cash + $total_bank_transfer;
+            $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month;
+            $total_cash_bank_year = $total_cash_year + $total_bank_transfer_year;
+        ?>
+
+        <div class="row g-2">
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div style="background-color: white; height:auto; border-radius: 8px !important;">
+                    <div class="donut-graph">
+                        <canvas id="myChart"></canvas>
+                        <div class="percent" style="text-align: left; width:auto; display: block; margin-left: 30px;">
+                            <h6 style=" float: left; width: 60%;"><i style="color: deepskyblue; margin-right: 10px;"
+                                    class="fa-solid fa-square"></i>CASH</h6>
+                            <h6>: 33.33%</h6>
+                            <h6 style="float: left;width: 60%;"><i style="color: hotpink; margin-right: 10px;"
+                                    class="fa-solid fa-square"></i>Bank Transfer</h6>
+                            <h6>: 33.33%</h6>
+                            <h6 style="float: left;width: 60%;"><i style="color: orange; margin-right: 10px;"
+                                    class="fa-solid fa-square"></i>Credit Card</h6>
+                            <h6>: 33.33%</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <!-- CASH -->
+
+                <input type="hidden" id="total_revenue_dashboard" value="{{ number_format($total_day + $credit_revenue->total_credit, 2) }}">
+
+                <div class="title-box">
+                    <h2>Cash</h2>
+                    <h1>{{ number_format($total_cash + $total_wp_revenue->wp_cash, 2) }}</h1>
+                    <input type="hidden" id="total_cash_dashboard" value="{{ $total_cash + $total_wp_revenue->wp_cash }}">
+                </div>
+
+                <div class="d-flex align-content-stratch flex-wrap cash"
+                    style=" height:330px; border-radius: 8px !important;">
+                    <a href="{{ route('revenue-detail', ['front', $date_current]) }}" class="list-box">
+                        <img src="../assets2/../assets2/images/front.png" alt="">
+                        <h2>Front Desk</h2>
+                        <h3>{{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_cash : 0, 2) }}</h3>
+                    </a>
+                    <a href="{{ route('revenue-detail', ['guest', $date_current]) }}" class="list-box">
+                        <img src="../assets2/../assets2/images/guest.png" alt="">
+                        <h2>Guest Deposit</h2>
+                        <h3>{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_cash : 0, 2) }}</h3>
+                    </a>
+                    <a href="{{ route('revenue-detail', ['all_outlet', $date_current]) }}" class="list-box">
+                        <img src="../assets2/../assets2/images/F&B.png" alt="">
+                        <h2>All Outlet </h2>
+                        <h3>{{ number_format($total_fb_revenue->fb_cash, 2) }}</h3>
+                    </a>
+                    <a href="{{ route('revenue-detail', ['wp', $date_current]) }}" class="list-box">
+                        <img src="../assets2/../assets2/images/water-park.png" alt="">
+                        <h2>Water Park</h2>
+                        <h3>{{ number_format($total_wp_revenue->wp_cash, 2) }}</h3>
+                    </a>
+                </div>
+            </div>
+
+
+            <div class="col-lg-3 col-md-6 col-sm-12 ">
+                <!-- BANK TRANSFER -->
+                <div class="title-box">
+                    <h2>Bank Transfer</h2>
+                    <h1>{{ number_format($total_bank_transfer + $total_wp_revenue->wp_transfer, 2) }}</h1>
+                    <input type="hidden" id="total_bank_dashboard" value="{{ ($total_bank_transfer + $total_wp_revenue->wp_transfer) }}">
+                </div>
+                <div class="d-flex align-content-stretch flex-wrap bank"
+                    style=" height: 330px; border-radius: 8px !important;">
+                    <a href="{{ route('revenue-detail', ['front', $date_current]) }}" class="list-box3">
+                        <img src="../assets2/images/front.png" alt="">
+                        <h2>Front Desk</h2>
+                        <h3>{{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_transfer : 0, 2) }}</h3>
+                    </a>
+                    <a href="{{ route('revenue-detail', ['guest', $date_current]) }}" class="list-box3">
+                        <img src="../assets2/images/guest.png" alt="">
+                        <h2>Guest Deposit</h2>
+                        <h3>{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_transfer : 0, 2) }}</h3>
+                    </a>
+                    <a href="{{ route('revenue-detail', ['all_outlet', $date_current]) }}" class="list-box3">
+                        <img src="../assets2/images/F&B.png" alt="">
+                        <h2>All Outlet</h2>
+                        <h3>{{ number_format($total_fb_revenue->fb_transfer, 2) }}</h3>
+                    </a>
+                    <a href="{{ route('revenue-detail', ['wp', $date_current]) }}" class="list-box3">
+                        <img src="../assets2/images/water-park.png" alt="">
+                        <h2>Water Park</h2>
+                        <h3>{{ number_format($total_wp_revenue->wp_transfer, 2) }}</h3>
+                    </a>
+                    <a href="{{ route('revenue-detail', ['agoda_revenue', $date_current]) }}" class="list-box3">
+                        <img src="../assets2/images/agoda.png" alt="">
+                        <h2>Agoda</h2>
+                        <h3>{{ number_format($total_agoda_revenue, 2) }}</h3>
+                    </a>
+                    <a href="{{ route('revenue-detail', ['elexa', $date_current]) }}" class="list-box3">
+                        <img src="../assets2/images/elexa.png" alt="">
+                        <h2>Elexa EGAT</h2>
+                        <h3>0.00</h3>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <!-- Credit -->
+                <div class="title-box">
+                    <h2>Credit Card</h2>
+                    <h1>{{ number_format(($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0), 2) }}</h1>
+                    <input type="hidden" id="total_credit_dashboard" value="{{ ($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0) }}">
+                </div>
+
+                <div class="d-flex align-content-stretch flex-wrap creditrevenue">
+                    <a href="{{ route('revenue-detail', ['credit_revenue', $date_current]) }}" class="list-box2">
+                        <img src="../assets2/images/hotel.png" alt="">
+                        <h2>Hotel</h2>
+                        <h3>{{ number_format($credit_revenue->total_credit ?? 0, 2) }}</h3>
+                    </a>
+
+
+                    <a href="{{ route('revenue-detail', ['wp', $date_current]) }}" class="list-box2">
+                        <img src="../assets2/images/water-park.png" alt="">
+                        <h2>Water park</h2>
+                        <h3>{{ number_format($total_revenue_today->wp_amount ?? 0, 2) }}</h3>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Manual Charge -->
+
+
+        <div class="row g-2">
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="title-box2">
+                    <h1>Manual Charge</h1>
+                </div>
+                <div class="d-flex align-content-stretch flex-wrap manual"
+                    style=" height: 292px; border-radius: 8px !important;">
+
+
+                    <a href="{{ route('revenue-detail', ['front', $date_current]) }}}" class="list-box4">
+                        <img src="../assets2/images/front.png" alt="">
+                        <h2>Credit Card Front Desk</h2>
+                        <h3>{{ number_format($front_charge[0]['revenue_credit_date'], 2) }}</h3>
+                    </a>
+
+                    <a href="{{ route('revenue-detail', ['room', $date_current]) }}" class="list-box4">
+                        <img src="../assets2/images/guest.png" alt="">
+                        <h2>Credit Card Guest Deposit</h2>
+                        <h3>{{ number_format($guest_deposit_charge[0]['revenue_credit_date'], 2) }}</h3>
+                    </a>
+
+                    <a href="{{ route('revenue-detail', ['fb', $date_current]) }}" class="list-box4">
+                        <img src="../assets2/images/F&B.png" alt="">
+                        <h2>Credit Card All Outlet</h2>
+                        <h3>{{ number_format($fb_charge[0]['revenue_credit_date'], 2) }}</h3>
+                    </a>
+
+                    <a href="{{ route('revenue-detail', ['wp', $date_current]) }}" class="list-box4">
+                        <img src="../assets2/images/water-park.png" alt="">
+                        <h2>Credit Card Water Park</h2>
+                        <h3>{{ number_format($wp_charge[0]['total'], 2) }}</h3>
+                    </a>
+
+                    <a href="{{ route('revenue-detail', ['agoda_revenue', $date_current]) }}" class="list-box4">
+                        <img src="../assets2/images/agoda.png" alt="">
+                        <h2>Agoda</h2>
+                        <h3>{{ number_format($agoda_charge[0]['revenue_credit_date'], 2) }}</h3>
+                    </a>
+
+                    <a href="{{ route('revenue-detail', ['elexa', $date_current]) }}" class="list-box4">
+                        <img src="../assets2/images/elexa.png" alt="">
+                        <h2>Elaxa EGAT</h2>
+                        <h3>{{ number_format($ev_charge[0]['total'], 2) }}</h3>
+                    </a>
+
+                </div>
+            </div>
+
+
+            <!-- Fee -->
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="title-box2">
+                    <h1>Fee</h1>
+                </div>
+                <div class="d-flex align-content-stretch flex-wrap fee"
+                    style=" height: 292px; border-radius: 8px !important;">
+                    <a href="{{ route('revenue-detail', ['credit_fee', $date_current]) }}" class="list-box5">
+                        <img src="../assets2/images/hotel.png" alt="">
+                        <h2>Credit Card Hotel Fee</h2>
+                        <h3>{{ number_format($sum_charge == 0 || $credit_revenue->total_credit == 0 ? 0 : $sum_charge - $credit_revenue->total_credit ?? 0, 2) }}</h3>
+                    </a>
+                    <a href="{{ route('revenue-detail', ['wp_fee', $date_current]) }}" class="list-box5">
+                        <img src="../assets2/images/water-park.png" alt="">
+                        <h2>Credit Card Water Park Fee</h2>
+                        <h3>{{ number_format($wp_charge[0]['fee_date'], 2) }}</h3>
+                    </a>
+                    <a href="{{ route('revenue-detail', ['agoda_fee', $date_current]) }}" class="list-box5">
+                        <img src="../assets2/images/agoda.png" alt="">
+                        <h2>Agoda Fee</h2>
+                        <h3>{{ number_format($agoda_charge[0]['fee_date'], 2) }}</h3>
+                    </a>
+                    <a href="{{ route('revenue-detail', ['ev_fee', $date_current]) }}" class="list-box5">
+                        <img src="../assets2/images/elexa.png" alt="">
+                        <h2>Elaxa EGAT Fee</h2>
+                        <h3>{{ number_format($ev_charge[0]['fee_date'], 2) }}</h3>
+                    </a>
+                </div>
+            </div>
+
+
+
+
+
+            <!-- Total Revenue Outstanding -->
+
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="title-box2">
+                    <h1>Total Revenue Outstanding</h1>
+                </div>
+                <div class="d-flex align-content-stretch flex-wrap trorevenue">
+                    <a href="{{ route('revenue-detail', ['total_agoda_outstanding', $date_current]) }}" class="list-box6">
+                        <img src="../assets2/images/agoda.png" alt="">
+                        <h2>Credit Card Agoda Revenue Outstanding</h2>
+                        <h3>{{ number_format($total_agoda_outstanding, 2) }}</h3>
+                    </a>
+
+                    <a href="{{ route('revenue-detail', ['total_ev_outstanding', $date_current]) }}" class="list-box6">
+                        <img src="../assets2/images/elexa.png" alt="">
+                        <h2>Elaxa EGAT Revenue Outstanding</h2>
+                        <h3>{{ number_format($total_ev_outstanding, 2) }}</h3>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-2">
+            <div class="col-lg-8 col-md-12 col-sm-12">
+                <div class="title-box2">
+                    <h1>Type</h1>
+                </div>
+                <div class="d-flex align-content-stretch flex-wrap type"
+                    style=" height: auto; border-radius: 8px !important;">
+                    <a href="{{ route('revenue-detail', ['transfer', $date_current]) }}" class="list-box7">
+                        <h2>Transfer Revenue</h2>
+                        <h3>{{ number_format($total_transfer, 2) }}</h3>
+                    </a>
+
+                    <a href="{{ route('revenue-detail', ['credit_transaction', $date_current]) }}" class="list-box7">
+                        <h2>Credit Card Hotel <br>
+                            Transfer Transaction</h2>
+                        <h3>{{ $total_credit_transaction ?? 0 }}</h3>
+                    </a>
+
+                    <a href="{{ route('revenue-detail', ['split_revenue', $date_current]) }}" class="list-box7">
+                        <h2>Split Credit Card Hotel Revenue</h2>
+                        <h3>{{ number_format($total_split, 2) }}</h3>
+                    </a>
+
+                    <a href="{{ route('revenue-detail', ['split_revenue', $date_current]) }}" class="list-box7">
+                        <h2>Split Credit Card Hotel Transaction</h2>
+                        <h3>{{ number_format($total_split) }}</h3>
+                    </a>
+
+                    <a href="{{ route('revenue-detail', ['no_income_revenue', $date_current]) }}" class="list-box7">
+                        <h2>No Income Revenue</h2>
+                        <h3>{{ number_format($total_not_type_revenue, 2) }}</h3>
+                    </a>
+
+                    <a href="{{ route('revenue-detail', ['total_transaction', $date_current]) }}" class="list-box7">
+                        <h2>Total Transaction</h2>
+                        <h3>{{ number_format($total_revenue_today->total_transaction ?? 0) }}</h3>
+                    </a>
+
+                    <a href="{{ route('revenue-detail', ['transfer_transaction', $date_current]) }}" class="list-box7">
+                        <h2>Tranfer Transaction</h2>
+                        <h3>{{ $total_transfer2 }}</h3>
+                    </a>
+
+                    <a href="{{ route('revenue-detail', ['status', $date_current]) }}" class="list-box7">
+                        <h2>No incoming Type</h2>
+                        <h3>{{ $total_not_type ?? 0 }}</h3>
+                    </a>
+                </div>
+            </div>
 
             @if (Auth::user()->permission > 0)
-                <?php 
-                    $total_cash_month = $total_front_month->front_cash + $total_guest_deposit_month->room_cash + $total_fb_month->fb_cash;
-                    $total_bank_transfer_month = $total_front_month->front_transfer + $total_guest_deposit_month->room_transfer + $total_fb_month->fb_transfer;
-
-                    $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month; 
-
-                    $total_charge_month = $credit_revenue_month->total_credit ?? 0;
-
-                    $total_wp_cash_bank_month = $total_wp_month->wp_cash + $total_wp_month->wp_transfer;
-
-                    $total_wp_charge_month = $wp_charge[0]['total_month'];
-
-                    // $monthly_revenue = ($total_cash_bank_month) + ($total_wp_cash_bank_month);
-
-                    $monthly_revenue = ($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) - $agoda_charge[0]['total'];
-
-                ?>
-
-                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
-                    <h4 class="fw-bold">Monthly Income</h4>
-                </div>
-
-                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                    <div class="card border-0 mb-3 bg-success">
-                        <div class="card-body p-5 text-light text-center">
-                            <h2 class="counter">{{ number_format($monthly_revenue, 2) }}</h2>
-                            <span>Monthly Revenue</span>
-                        </div>
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <div class="title-box2">
+                        <h1>Monthly Revenue</h1>
                     </div>
-                </div>
-
-                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                    <div class="card border-0 mb-3 bg-success">
-                        <div class="card-body p-5 text-light text-center">
-                            <h2 class="counter">{{ number_format(($monthly_revenue) / $day_sum, 2) }}</h2>
-                            <span>Daily Average Revenue</span>
-                        </div>
+                    <div class="d-flex align-content-stretch flex-wrap monthly"
+                        style="background-color: white; height: auto; border-radius: 8px !important;">
+                        <a href="#" class="list-box8">
+                            <h3>{{ number_format($monthly_revenue, 2) }} / Month</h3>
+                        </a>
                     </div>
-                </div>
-
-                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                    <div class="card border-0 mb-3 bg-success">
-                        <div class="btn-group position-absolute top-0 end-0">
-                            <a href="{{ route('revenue-detail', ['verified', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                        </div>
-                        <div class="card-body p-5 text-light text-center">
-                            <h2 class="counter">{{ $total_verified ?? 0 }}</h2>
-                            <span>Verified</span>
-                        </div>
+                    <div class="title-box2">
+                        <h1>Daily Avg. Revenue</h1>
                     </div>
-                </div>
-                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                    <div class="card border-0 mb-3 bg-warning">
-                        <div class="btn-group position-absolute top-0 end-0">
-                            <a href="{{ route('revenue-detail', ['unverified', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                        </div>
-                        <div class="card-body p-5 text-light text-center">
-                            <h2 class="counter">{{ $total_unverified ?? 0 }}</h2>
-                            <span>Unverified</span>
-                        </div>
+                    <div class="d-flex align-content-stretch flex-wrap daily"
+                        style="background-color: white; height: auto; border-radius: 8px !important;">
+                        <a href="#" class="list-box8">
+                            <h3>{{ number_format(($monthly_revenue) / $day_sum, 2) }} / Day</h3>
+                        </a>
                     </div>
                 </div>
             @endif
-
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3 mt-3">
-                <h4 class="fw-bold">Revenue</h4>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-success">
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($total_day + $credit_revenue->total_credit, 2) }}</h2>
-                        <span>Total Revenue</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-danger">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['front', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter" id="">{{ number_format($total_revenue_today->front_amount ?? 0, 2) }}</h2>
-                        <span>Front Desk Revenue</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-danger">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['room', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($total_revenue_today->room_amount ?? 0, 2) }}</h2>
-                        <span>Guest Deposit Revenue</span>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-primary">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['fb', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($total_revenue_today->fb_amount ?? 0, 2) }}</h2>
-                        <span>All Outlet Revenue</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-warning">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['credit_revenue', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($credit_revenue->total_credit ?? 0, 2) }}</h2>
-                        <span>Credit Card Hotel Revenue</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-primary">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['agoda_revenue', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format(isset($total_revenue_today) ? $total_revenue_today->total_credit_agoda : 0, 2) }}</h2>
-                        <span>Agoda Revenue</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 chart-color2">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['wp', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($total_revenue_today->wp_amount ?? 0, 2) }}</h2>
-                        <span>Water Park Revenue</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 chart-color2">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['wp_credit', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($total_revenue_today->wp_credit ?? 0, 2) }}</h2>
-                        <span>Credit Card Water Park Revenue</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 chart-color5">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['elexa', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">0.00</h2>
-                        <span>Elexa EGAT Revenue</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6"></div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6"></div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6"></div>
-            <div class="col-12 mt-3 mb-3">
-                <h4 class="fw-bold">Detail</h4>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-primary">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['agoda_outstanding', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($agoda_charge[0]['total'], 2) }}</h2>
-                        <span>Daily Credit Agoda Revenue Outstanding</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-primary">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['ev_outstanding', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($ev_charge[0]['total'], 2) }}</h2>
-                        <span>Daily Elexa EGAT Revenue Outstanding</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-danger">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['credit_charge', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <?php 
-                           $sum_charge =  $front_charge[0]['revenue_credit_date'] + $guest_deposit_charge[0]['revenue_credit_date'] + $fb_charge[0]['revenue_credit_date'];
-                        ?>
-
-                        <h2 class="counter" id="">{{ number_format($sum_charge ?? 0, 2) }}</h2>
-                        <span>Credit Card Hotel Charge</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-danger">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['credit_fee', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter" id="">{{ number_format($sum_charge == 0 || $credit_revenue->total_credit == 0 ? 0 : $sum_charge - $credit_revenue->total_credit ?? 0, 2) }}</h2>
-                        <span>Credit Card Hotel Fee</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-primary">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['agoda_charge', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($agoda_charge[0]['revenue_credit_date'], 2) }}</h2>
-                        <span>Credit Card Agoda Charge</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-primary">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['agoda_fee', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($agoda_charge[0]['fee_date'], 2) }}</h2>
-                        <span>Credit Card Agoda Fee</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-primary">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['wp_charge', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($wp_charge[0]['revenue_credit_date'], 2) }}</h2>
-                        <span>Credit Card Water Park Charge</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-primary">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['wp_fee', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($wp_charge[0]['fee_date'], 2) }}</h2>
-                        <span>Credit Card Warter Park Fee</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-primary">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['ev_charge', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($ev_charge[0]['revenue_credit_date'], 2) }}</h2>
-                        <span>Elexa EGAT Charge</span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 bg-primary">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['ev_fee', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($ev_charge[0]['fee_date'], 2) }}</h2>
-                        <span>Elexa Fee</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 chart-color3">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['total_agoda_outstanding', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($total_agoda_outstanding, 2) }}</h2>
-                        <span>Total Credit Agoda Revenue Outstanding</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 chart-color3">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['total_ev_outstanding', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($total_ev_outstanding, 2) }}</h2>
-                        <span>Total Elexa EGAT Revenue Outstanding</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6"></div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6"></div>
-            <div class="col-12 mt-3 mb-3">
-                <h4 class="fw-bold">Type</h4>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 chart-color4">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['transfer', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($total_transfer, 2) }}</h2>
-                        <span>Transfer Revenue</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 chart-color4">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['split_revenue', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($total_split, 2) }}</h2>
-                        <span>Split Credit Card Hotel Revenue</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 chart-color4">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['no_income_revenue', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($total_not_type_revenue, 2) }}</h2>
-                        <span>No Income Revenue</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 chart-color4">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['transfer_transaction', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ $total_transfer2 }}</h2>
-                        <span>Transfer Transaction</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 chart-color5">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['credit_transaction', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ $total_credit_transaction ?? 0 }}</h2>
-                        <span>Credit Card Hotel Transfer Transaction</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 chart-color5">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['split_transaction', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ $total_split_transaction }}</h2>
-                        <span>Split Credit Card Hotel Transaction</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 chart-color4">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['total_transaction', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ number_format($total_revenue_today->total_transaction ?? 0) }}</h2>
-                        <span>Total Transaction</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <div class="card border-0 mb-3 chart-color5">
-                    <div class="btn-group position-absolute top-0 end-0">
-                        <a href="{{ route('revenue-detail', ['status', $date_current]) }}" type="button" class="bg-white text-black mx-2 lift m-2 small tag py-2 px-3 border rounded">รายละเอียด</a>
-                    </div>
-                    <div class="card-body p-5 text-light text-center">
-                        <h2 class="counter">{{ $total_not_type ?? 0 }}</h2>
-                        <span>No Income Type</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <form action="{{ route('revenue-search-calendar') }}" method="POST" enctype="multipart/form-data" class="basic-form" id="form-revenue">
-            @csrf
-            <div class="col-12">
-                <div class="card p-4 mb-3">
-                    <div class="row g-3">
-                        <div class="col-sm-2 col-12">
-                            <select class="array-select form-control form-select" aria-label="example" name="day" id="day">
-                                <option value="0">ทั้งหมด</option>
-                                <?php $day_num = isset($day) ? date('d', strtotime('last day of this month', strtotime(date('2024-' . $month . '-' . $day)))) : date('t'); ?>
-                                @for ($i = 1; $i <= $day_num; $i++)
-                                    <?php $d = str_pad($i, 2, '0', STR_PAD_LEFT); ?>
-
-                                    @if (!isset($day) && date('d') == $d)
-                                        <option value="{{$d}}" selected>{{$i}}</option>
-                                    @else
-                                        <option value="{{$d}}" {{ isset($day) && $day == $d ? 'selected' : date('d') }}>{{$i}}</option>
-                                    @endif
-                                @endfor
-                            </select>
-                        </div>
-
-                        <div class="col-sm-2 col-12">
-                            <select class="array-select form-control form-select" aria-label="example" name="month" id="month">
-                                {{-- <option value="0">ทั้งหมด</option> --}}
-
-                                @if (isset($month))
-                                    <option value="01" {{ $month == '01' ? 'selected' : ''}}>มกราคม</option>
-                                    <option value="02" {{ $month == '02' ? 'selected' : ''}}>กุมภาพันธ์</option>
-                                    <option value="03" {{ $month == '03' ? 'selected' : ''}}>มีนาคม</option>
-                                    <option value="04" {{ $month == '04' ? 'selected' : ''}}>เมษายน</option>
-                                    <option value="05" {{ $month == '05' ? 'selected' : ''}}>พฤษภาคม</option>
-                                    <option value="06" {{ $month == '06' ? 'selected' : ''}}>มิถุนายน</option>
-                                    <option value="07" {{ $month == '07' ? 'selected' : ''}}>กรกฎาคม</option>
-                                    <option value="08" {{ $month == '08' ? 'selected' : ''}}>สิงหาคม</option>
-                                    <option value="09" {{ $month == '09' ? 'selected' : ''}}>กันยายน</option>
-                                    <option value="10" {{ $month == '10' ? 'selected' : ''}}>ตุลาคม</option>
-                                    <option value="11" {{ $month == '11' ? 'selected' : ''}}>พฤศจิกายน</option>
-                                    <option value="12" {{ $month == '12' ? 'selected' : ''}}>ธันวาคม</option>
-                                @else
-
-                                    <option value="01" {{ date('m') == '01' ? 'selected' : ''}}>มกราคม</option>
-                                    <option value="02" {{ date('m') == '02' ? 'selected' : ''}}>กุมภาพันธ์</option>
-                                    <option value="03" {{ date('m') == '03' ? 'selected' : ''}}>มีนาคม</option>
-                                    <option value="04" {{ date('m') == '04' ? 'selected' : ''}}>เมษายน</option>
-                                    <option value="05" {{ date('m') == '05' ? 'selected' : ''}}>พฤษภาคม</option>
-                                    <option value="06" {{ date('m') == '06' ? 'selected' : ''}}>มิถุนายน</option>
-                                    <option value="07" {{ date('m') == '07' ? 'selected' : ''}}>กรกฎาคม</option>
-                                    <option value="08" {{ date('m') == '08' ? 'selected' : ''}}>สิงหาคม</option>
-                                    <option value="09" {{ date('m') == '09' ? 'selected' : ''}}>กันยายน</option>
-                                    <option value="10" {{ date('m') == '10' ? 'selected' : ''}}>ตุลาคม</option>
-                                    <option value="11" {{ date('m') == '11' ? 'selected' : ''}}>พฤศจิกายน</option>
-                                    <option value="12" {{ date('m') == '12' ? 'selected' : ''}}>ธันวาคม</option>
-                                @endif
-
-                            </select>
-
-                        </div>
-
-                        <div class="col-sm-1 col-12">
-                            <select class="array-select form-control form-select" aria-label="example" name="year" id="year">
-                                @if (isset($year))
-                                    <option value="2024" {{ $year == '2024' ? 'selected' : ''}}>2024</option>
-                                @else
-                                    <option value="2024" {{ date('Y') == '2024' ? 'selected' : ''}}>2024</option>
-                                @endif
-                            </select>
-                        </div>
-                        <div class="col-sm-1 col-12 text-lg-end" style="float: left;">
-                            <button type="button" class="btn btn-md btn-primary btn-submit-search">Search</button>
-                        </div>
-                    </div> <!-- Row end  -->
-                </div>
-            </div>
-        </form>
-
-        <div class="col-md-12">
-            @if (session("success"))
-            <div class="alert alert-success" role="alert">
-                <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
-                <hr>
-                <p class="mb-0">{{ session('success') }}</p>
-            </div>
-            @endif
-            <div class="card p-4 mb-4">
-                <div class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0">
-                    <div>
-                        @if ($total_revenue_today->status == 1)
-
-                            <span class="fw-bold">สถานะ : <span class="text-danger">ตรวจสอบเรียบร้อยแล้ว</span></span>
-
-                        @endif
-                    </div>
-
-                    <div>
-                        <?php $date = date('Y-m-d'); ?>
-                        <div class="text-lg-end" style="float: left;">
-                            <button type="button" class="btn btn-md btn-primary" onclick="Add_data('{{$date}}')" 
-                            data-bs-toggle="modal" data-bs-target="#AddDataModalCenter" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>><i class="fa fa-plus"></i> เพิ่มข้อมูล</button>
-
-                            @if (Auth::user()->permission > 0)
-                                @if ($total_revenue_today->status == 0)
-                                    <button type="button" class="btn btn-md btn-warning btn-close-daily" value="1"><i class="icon-lock"></i> Lock</button>
-                                @else
-                                    <button type="button" class="btn btn-md btn-warning btn-open-daily" value="0"><i class="fa fa-unlock"></i> Unlock</button>
-                                @endif
-                            @endif
-                        </div>
-                    </div>
-                </div>
-
-                <table class="table align-middle table-bordered table-hover table_wrapper" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th class="text-center">No</th>
-                            <th class="text-center" style="width: 450px;">Description</th>
-                            <th class="text-center" style="width: 300px;">Today</th>
-                            <th class="text-center" style="width: 300px;">M-T-D</th>
-                            <th class="text-center" style="width: 300px;">Y-T-D</th>
-                        </tr>
-                        <tr>
-                            <th colspan="2" class="text-center">Hotel</th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="5" style="background-color: rgb(206, 234, 235);"><b>Front Desk Revenue</b></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Cash</td>
-                            <td>{{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_cash : 0, 2) }}</td>
-                            <td>{{ number_format(isset($total_front_revenue) ? $total_front_month->front_cash : 0, 2 ) }}</td>
-                            <td>{{ number_format(isset($total_front_revenue) ? $total_front_year->front_cash : 0, 2 ) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Bank Transfer</td>
-                            <td>{{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_transfer : 0, 2) }}</td>
-                            <td>{{ number_format(isset($total_front_month) ? $total_front_month->front_transfer : 0, 2  ) }}</td>
-                            <td>{{ number_format(isset($total_front_year) ? $total_front_year->front_transfer : 0, 2  ) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Credit Card Front Desk Charge</td>
-                            <td>{{ number_format($front_charge[0]['revenue_credit_date'], 2) }}</td>
-                            <td>{{ number_format($front_charge[0]['revenue_credit_month'], 2) }}</td>
-                            <td>{{ number_format($front_charge[0]['revenue_credit_year'], 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="5" style="background-color: rgb(206, 234, 235);"><b>Guest Deposit Revenue</b></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Cash</td>
-                            <td>{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_cash : 0, 2) }}</td>
-                            <td>{{ number_format(isset($total_guest_deposit_month) ? $total_guest_deposit_month->room_cash : 0, 2 ) }}</td>
-                            <td>{{ number_format(isset($total_guest_deposit_year) ? $total_guest_deposit_year->room_cash : 0, 2 ) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Bank Transfer</td>
-                            <td>{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_transfer : 0, 2) }}</td>
-                            <td>{{ number_format(isset($total_guest_deposit_month) ? $total_guest_deposit_month->room_transfer : 0, 2  ) }}</td>
-                            <td>{{ number_format(isset($total_guest_deposit_year) ? $total_guest_deposit_year->room_transfer : 0, 2  ) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Credit Card Guest Deposit Charge</td>
-                            <td>{{ number_format($guest_deposit_charge[0]['revenue_credit_date'], 2) }}</td>
-                            <td>{{ number_format($guest_deposit_charge[0]['revenue_credit_month'], 2) }}</td>
-                            <td>{{ number_format($guest_deposit_charge[0]['revenue_credit_year'], 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="5" style="background-color: rgb(206, 234, 235);"><b>All Outlet Revenue</b></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Cash</td>
-                            <td>{{ number_format($total_fb_revenue->fb_cash, 2) }}</td>
-                            <td>{{ number_format($total_fb_month->fb_cash, 2) }}</td>
-                            <td>{{ number_format($total_fb_year->fb_cash, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Bank Transfer</td>
-                            <td>{{ number_format($total_fb_revenue->fb_transfer, 2) }}</td>
-                            <td>{{ number_format($total_fb_month->fb_transfer, 2) }}</td>
-                            <td>{{ number_format($total_fb_year->fb_transfer, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Credit card All Outlet Charge</td>
-                            <td>{{ number_format($fb_charge[0]['revenue_credit_date'], 2) }}</td>
-                            <td>{{ number_format($fb_charge[0]['revenue_credit_month'], 2) }}</td>
-                            <td>{{ number_format($fb_charge[0]['revenue_credit_year'], 2) }}</td>
-                        </tr>
-
-                        {{-- ////////////////////////////////////////////////////////////// --}}
-
-                        <?php 
-
-                            $total_cash = $total_front_revenue->front_cash + $total_guest_deposit->room_cash + $total_fb_revenue->fb_cash;
-                            $total_cash_month = $total_front_month->front_cash + $total_guest_deposit_month->room_cash + $total_fb_month->fb_cash;
-                            $total_cash_year = $total_front_year->front_cash + $total_guest_deposit_year->room_cash + $total_fb_year->fb_cash;
-
-                            $total_bank_transfer = $total_front_revenue->front_transfer + $total_guest_deposit->room_transfer + $total_fb_revenue->fb_transfer;
-                            $total_bank_transfer_month = $total_front_month->front_transfer + $total_guest_deposit_month->room_transfer + $total_fb_month->fb_transfer;
-                            $total_bank_transfer_year = $total_front_year->front_transfer + $total_guest_deposit_year->room_transfer + $total_fb_year->fb_transfer;
-
-                            $total_cash_bank = $total_cash + $total_bank_transfer;
-                            $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month;
-                            $total_cash_bank_year = $total_cash_year + $total_bank_transfer_year;
-                        ?>
-
-                        <tr>
-                            <td style="text-align: right" colspan="2"><b>Total Cash</b></td>
-                            <td>{{ number_format($total_cash, 2) }}</td>
-                            <td>{{ number_format($total_cash_month, 2) }}</td>
-                            <td>{{ number_format($total_cash_year, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right" colspan="2"><b>Total Bank Transfer</b></td>
-                            <td>{{ number_format($total_bank_transfer, 2) }}</td>
-                            <td>{{ number_format($total_bank_transfer_month, 2) }}</td>
-                            <td>{{ number_format($total_bank_transfer_year, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right" colspan="2"><b>Cash And Bank Transfer Hotel Revenue</b></td>
-                            <td>{{ number_format($total_cash_bank, 2) }}</td>
-                            <td>{{ number_format($total_cash_bank_month, 2) }}</td>
-                            <td>{{ number_format($total_cash_bank_year, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: rgb(206, 234, 235);" colspan="5"></td>
-                        </tr>
-                        <tr>
-                            <?php
-                                $total_credit_card_revenue = $front_charge[0]['revenue_credit_date'] + $guest_deposit_charge[0]['revenue_credit_date'] + $fb_charge[0]['revenue_credit_date'];
-                                $total_credit_card_revenue_month = $front_charge[0]['revenue_credit_month'] + $guest_deposit_charge[0]['revenue_credit_month'] + $fb_charge[0]['revenue_credit_month'];
-                                $total_credit_card_revenue_year = $front_charge[0]['revenue_credit_year'] + $guest_deposit_charge[0]['revenue_credit_year'] + $fb_charge[0]['revenue_credit_year'];
-                            ?>
-
-                            <td style="text-align: right" colspan="2"><b>Total Credit Card Charge</b></td>
-                            <td>{{ number_format($total_credit_card_revenue, 2) }}</td>
-                            <td>{{ number_format($total_credit_card_revenue_month, 2) }}</td>
-                            <td>{{ number_format($total_credit_card_revenue_year, 2) }}</td>
-                        </tr>
-
-                        <tr>
-                            <td style="text-align: right" colspan="2"><b>Credit Card Fee</b></td>
-                            <td>{{ number_format($total_credit_card_revenue == 0 || $credit_revenue->total_credit == 0 ? 0 : $total_credit_card_revenue - $credit_revenue->total_credit ?? 0, 2) }}</td>
-                            <td>{{ number_format($total_credit_card_revenue_month - $credit_revenue_month->total_credit ?? 0, 2) }}</td>
-                            <td>{{ number_format($total_credit_card_revenue_year - $credit_revenue_year->total_credit ?? 0, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <?php
-                               $total_charge = $credit_revenue->total_credit ?? 0;
-                               $total_charge_month = $credit_revenue_month->total_credit ?? 0;
-                               $total_charge_year = $credit_revenue_year->total_credit ?? 0;
-                            ?>
-
-                            <td style="text-align: right" colspan="2"><b>Credit Card Hotel Revenue</b></td>
-                            <td>{{ number_format($credit_revenue->total_credit ?? 0, 2) }}</td>
-                            <td>{{ number_format($credit_revenue_month->total_credit ?? 0, 2) }}</td>
-                            <td>{{ number_format($credit_revenue_year->total_credit ?? 0, 2) }}</td>
-                        </tr>
-
-                        {{-- ////////////////////////////////////////////////////////////// --}}
-
-                        <tr>
-                            <td colspan="5" style="background-color: rgb(206, 234, 235);"><b>Agoda Revenue</b></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Credit Card Agoda Charge</td>
-                            <td>{{ number_format($agoda_charge[0]['revenue_credit_date'], 2) }}</td>
-                            <td>{{ number_format($agoda_charge[0]['revenue_credit_month'], 2) }}</td>
-                            <td>{{ number_format($agoda_charge[0]['revenue_credit_year'], 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Total Agoda Fee</td>
-                            <td>{{ number_format($agoda_charge[0]['fee_date'], 2) }}</td>
-                            <td>{{ number_format($agoda_charge[0]['fee_month'], 2) }}</td>
-                            <td>{{ number_format($agoda_charge[0]['fee_year'], 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Credit Agoda Revenue Outstanding</td>
-                            <td>{{ number_format($agoda_charge[0]['total'], 2) }}</td>
-                            <td>{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
-                            <td>{{ number_format($agoda_charge[0]['total_year'], 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; background-color: rgb(250, 211, 178);" colspan="2"><b>Total Hotel Revenue</b></td>
-                            <td style="background-color: rgb(250, 211, 178);">{{ number_format($total_cash_bank + $total_charge + $agoda_charge[0]['total'], 2) }}</td>
-                            <td style="background-color: rgb(250, 211, 178);">{{ number_format($total_cash_bank_month + $total_charge_month + $agoda_charge[0]['total_month'], 2) }}</td>
-                            <td style="background-color: rgb(250, 211, 178);">{{ number_format($total_cash_bank_year + $total_charge_year + $agoda_charge[0]['total_year'], 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="5" style="background-color: rgb(206, 234, 235);"><b>Water Park Revenue</b></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Cash</td>
-                            <td>{{ number_format($total_wp_revenue->wp_cash, 2) }}</td>
-                            <td>{{ number_format($total_wp_month->wp_cash, 2) }}</td>
-                            <td>{{ number_format($total_wp_year->wp_cash, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Bank Transfer</td>
-                            <td>{{ number_format($total_wp_revenue->wp_transfer, 2) }}</td>
-                            <td>{{ number_format($total_wp_month->wp_transfer, 2) }}</td>
-                            <td>{{ number_format($total_wp_year->wp_transfer, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <?php 
-                                $total_wp_cash_bank = $total_wp_revenue->wp_cash + $total_wp_revenue->wp_transfer;
-                                $total_wp_cash_bank_month = $total_wp_month->wp_cash + $total_wp_month->wp_transfer;
-                                $total_wp_cash_bank_year = $total_wp_year->wp_cash + $total_wp_year->wp_transfer;    
-                            ?>
-
-                            <td style="text-align: right" colspan="2"><b>Cash + Bank Transfer Water Park Revenue</b></td>
-                            <td>{{ number_format($total_wp_cash_bank, 2) }}</td>
-                            <td>{{ number_format($total_wp_cash_bank_month, 2) }}</td>
-                            <td>{{ number_format($total_wp_cash_bank_year, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: rgb(206, 234, 235);" colspan="5"></td>
-                        </tr>
-                        <tr>
-                            <?php
-                                $total_wp_credit_card_revenue = $wp_charge[0]['revenue_credit_date'];
-                                $total_wp_credit_card_revenue_month = $wp_charge[0]['revenue_credit_month'];
-                                $total_wp_credit_card_revenue_year = $wp_charge[0]['revenue_credit_year'];
-                            ?>
-
-                            <td style="text-align: right" colspan="2"><b>Credit Card Water Park Charge</b></td>
-                            <td>{{ number_format($total_wp_credit_card_revenue, 2) }}</td>
-                            <td>{{ number_format($total_wp_credit_card_revenue_month, 2) }}</td>
-                            <td>{{ number_format($total_wp_credit_card_revenue_year, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right" colspan="2"><b>Credit Card Fee</b></td>
-                            <td>{{ number_format($wp_charge[0]['fee_date'], 2) }}</td>
-                            <td>{{ number_format($wp_charge[0]['fee_month'], 2) }}</td>
-                            <td>{{ number_format($wp_charge[0]['fee_year'], 2) }}</td>
-                        </tr>
-                        <tr>
-                            <?php 
-                               $total_wp_charge = $wp_charge[0]['total'];
-                               $total_wp_charge_month = $wp_charge[0]['total_month'];
-                               $total_wp_charge_year = $wp_charge[0]['total_year'];
-                            ?>
-
-                            <td style="text-align: right" colspan="2"><b>Credit Card Water Park Revenue</b></td>
-                            <td>{{ number_format($total_wp_charge, 2) }}</td>
-                            <td>{{ number_format($total_wp_charge_month, 2) }}</td>
-                            <td>{{ number_format($total_wp_charge_year, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: rgb(206, 234, 235);" colspan="5"></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; background-color: rgb(250, 211, 178);" colspan="2"><b>Total Water Park Revenue</b></td>
-                            <td style="background-color: rgb(250, 211, 178);">{{ number_format($total_wp_cash_bank + $total_wp_charge, 2) }}</td>
-                            <td style="background-color: rgb(250, 211, 178);">{{ number_format($total_wp_cash_bank_month + $total_wp_charge_month, 2) }}</td>
-                            <td style="background-color: rgb(250, 211, 178);">{{ number_format($total_wp_cash_bank_year + $total_wp_charge_year, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="5" style="background-color: rgb(206, 234, 235);"><b>Elexa EGAT Revenue</b></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">EV Charging Charge</td>
-                            <td>{{ number_format($ev_charge[0]['revenue_credit_date'], 2) }}</td>
-                            <td>{{ number_format($ev_charge[0]['revenue_credit_month'], 2) }}</td>
-                            <td>{{ number_format($ev_charge[0]['revenue_credit_year'], 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Elexa Fee</td>
-                            <td>{{ number_format($ev_charge[0]['fee_date'], 2) }}</td>
-                            <td>{{ number_format($ev_charge[0]['fee_month'], 2) }}</td>
-                            <td>{{ number_format($ev_charge[0]['fee_year'], 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Elexa EGAT Revenue Outstanding</td>
-                            <td>{{ number_format($ev_charge[0]['total'], 2) }}</td>
-                            <td>{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
-                            <td>{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;" colspan="2" class="fw-bold">Total Elexa EGAT Revenue</td>
-                            <td>{{ number_format($ev_charge[0]['total'], 2) }}</td>
-                            <td>{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
-                            <td>{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: rgb(206, 234, 235);" colspan="5"></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; background-color: rgb(242, 243, 181);" colspan="2"><b>Total Hotel, Water Park And Elexa EGAT Revenue</b></td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $agoda_charge[0]['total'] + $ev_charge[0]['total'], 2) }}</td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $agoda_charge[0]['total_month'] + $ev_charge[0]['total_month'], 2) }}</td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $agoda_charge[0]['total_year'] + $ev_charge[0]['total_year'], 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; background-color: rgb(242, 243, 181);" colspan="2"><b>Credit Agoda Revenue Outstanding</b></td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format($agoda_charge[0]['total'], 2) }}</td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format($agoda_charge[0]['total_year'] - $total_agoda_year, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; background-color: rgb(242, 243, 181);" colspan="2"><b>Elexa EGAT Revenue Outstanding</b></td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format($ev_charge[0]['total'], 2) }}</td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; background-color: rgb(242, 243, 181);" colspan="2"><b>Agoda Revenue</b></td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format($total_agoda_revenue, 2) }}</td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format($total_agoda_month, 2) }}</td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format($total_agoda_year, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; background-color: rgb(242, 243, 181);" colspan="2"><b>Elexa EGAT Revenue</b></td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format(0, 2) }}</td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format(0, 2) }}</td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format(0, 2) }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right; background-color: rgb(242, 243, 181);" colspan="2"><b>Total Revenue</b></td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $ev_charge[0]['total'] + $total_agoda_revenue, 2) }}</td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month + $total_agoda_month) - $agoda_charge[0]['total_month'], 2) }}</td>
-                            <td style="background-color: rgb(242, 243, 181);">{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year + $total_agoda_year) - $agoda_charge[0]['total_year'], 2) }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div> <!-- .card end -->
-        </div>
-    </div> <!-- .row end -->
-</div>
-
-<!-- Add Modal Center-->
-<div class="modal fade" id="AddDataModalCenter" tabindex="-1" aria-labelledby="AddDataModalCenterTitle" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="AddDataModalCenterTitle">เพิ่มข้อมูลเงินสด / เครดิต</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="#" method="POST" enctype="multipart/form-data" class="basic-form form-store">
-                @csrf
-                <input type="hidden" name="id" id="id">
-                <div class="modal-body">
-                    <div class="col-12">
-                        <div class="card-body row">
-                            <div class="col-sm-6 col-12 mb-3">
-                                <label for="cash" class="form-label">วันที่</label>
-                                <input class="form-control" type="date" id="date" name="date" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>">
-                            </div>
-                                <div class="col-md-12 col-12">
-                                        <div class="card border-0">
-                                            <div class="card-body row align-items-center" id="heading1">
-                                                <div class="col">
-                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1">
-                                                        <span class="fw-bold">Front Desk Revenue</span>
-                                                    </h6>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <a href="#" class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1"> ย่อ/ขยาย </a>
-                                                </div>
-                                            </div>
-                                            <div id="faq1" class="collapse show" aria-labelledby="heading1" data-parent="#accordionExample">
-                                                <div class="card-body row">
-                                                    <div class="col-sm-6 col-12">
-                                                        <label for="cash" class="form-label">Cash</label>
-                                                        <input class="form-control" type="text" id="front_cash" name="front_cash" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-6 col-12">
-                                                        <label for="credit" class="form-label">Bank Transfer</label>
-                                                        <input class="form-control" type="text" id="front_transfer" name="front_transfer" placeholder="0.00" disabled>
-                                                    </div>
-                                                    <div class="col-sm-12 col-12 mt-3">
-                                                        <label for="" class="form-label"><b>Credit Card</b></label>
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">Batch</label>
-                                                        <input type="text" class="form-control" id="front_batch" name="">
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">ประเภทรายได้</label>
-                                                        <select class="array-select form-control form-select" aria-label="example" name="" id="front_revenue_type">
-                                                            <option value="6">Front Desk Revenue</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">Credit Card Room Charge</label>
-                                                        <input type="text" class="form-control" id="front_credit_amount" name="" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-12 col-12">
-                                                        <button type="button" class="btn btn-sm btn-success btn-front-add mt-2">เพิ่ม</button>
-                                                        <button type="button" class="btn btn-sm btn-secondary btn-front-hide mt-2" onclick="toggleHide3()">ลบทั้งหมด</button>
-                                                        <span class="front-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
-                                                    </div>
-                                                    <div class="col-sm-12 col-12 mt-3">
-                                                        <div class="table-responsive">
-                                                            <table id="myTablefrontCredit" class="table align-middle table-bordered">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Batch</th>
-                                                                        <th>ประเภทรายได้</th>
-                                                                        <th>Credit Card Room Charge</th>
-                                                                        <th></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody class="front-todo-list">
-
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <input type="hidden" id="front_number" value="0">
-                                                    <input type="hidden" id="front_list_num" name="front_list_num" value="0">
-                                                </div>
-                                            </div>
-                                            <div class="border-bottom"></div>
-                                        </div> <!-- .card - FAQ 1  -->
-                                        <div class="card border-0">
-                                            <div class="card-body row align-items-center" id="heading2">
-                                                <div class="col">
-                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="true" aria-controls="faq2">
-                                                        <span class="fw-bold">Guest Deposit Revenue</span>
-                                                    </h6>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <a href="#" class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="true" aria-controls="faq2"> ย่อ/ขยาย </a>
-                                                </div>
-                                            </div>
-                                            <div id="faq2" class="collapse" aria-labelledby="heading2" data-parent="#accordionExample">
-                                                <div class="card-body row">
-                                                    <div class="col-sm-6 col-12">
-                                                        <label for="cash" class="form-label">Cash</label>
-                                                        <input class="form-control" type="text" id="cash" name="cash" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-6 col-12">
-                                                        <label for="credit" class="form-label">Bank Transfer</label>
-                                                        <input class="form-control" type="text" id="room_transfer" name="room_transfer" placeholder="0.00" disabled>
-                                                    </div>
-                                                    <div class="col-sm-12 col-12 mt-3">
-                                                        <label for="" class="form-label"><b>Credit Card</b></label>
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">Batch</label>
-                                                        <input type="text" class="form-control" id="guest_batch" name="">
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">ประเภทรายได้</label>
-                                                        <select class="array-select form-control form-select" aria-label="example" name="" id="guest_revenue_type">
-                                                            <option value="1">Guest Deposit Revenue</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">Credit Card Room Charge</label>
-                                                        <input type="text" class="form-control" id="guest_credit_amount" name="" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-12 col-12">
-                                                        <button type="button" class="btn btn-sm btn-success btn-guest-add mt-2">เพิ่ม</button>
-                                                        <button type="button" class="btn btn-sm btn-secondary btn-guest-hide mt-2" onclick="toggleHide4()">ลบทั้งหมด</button>
-                                                        <span class="guest-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
-                                                    </div>
-                                                    <div class="col-sm-12 col-12 mt-3">
-                                                        <div class="table-responsive">
-                                                            <table id="myTableguestCredit" class="table align-middle table-bordered">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Batch</th>
-                                                                        <th>ประเภทรายได้</th>
-                                                                        <th>Credit Card Room Charge</th>
-                                                                        <th></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody class="guest-todo-list">
-
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <input type="hidden" id="guest_number" value="0">
-                                                    <input type="hidden" id="guest_list_num" name="guest_list_num" value="0">
-                                                </div>
-                                            </div>
-                                            <div class="border-bottom"></div>
-                                        </div> <!-- .card - FAQ 2  -->
-                                        <div class="card border-0">
-                                            <div class="card-body row align-items-center" id="heading3">
-                                                <div class="col">
-                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="true" aria-controls="faq3">
-                                                        <span class="fw-bold">All Outlet Revenue</span>
-                                                    </h6>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <a href="#" class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="true" aria-controls="faq3"> ย่อ/ขยาย </a>
-                                                </div>
-                                            </div>
-                                            <div id="faq3" class="collapse" aria-labelledby="heading3" data-parent="#accordionExample">
-                                                <div class="card-body row">
-                                                    <div class="col-sm-6 col-12">
-                                                        <label for="fb_cash" class="form-label">Cash</label>
-                                                        <input class="form-control" type="text" id="fb_cash" name="fb_cash" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-6 col-12">
-                                                        <label for="credit" class="form-label">Bank Transfer</label>
-                                                        <input class="form-control" type="text" id="fb_transfer" name="fb_transfer" placeholder="0.00" disabled>
-                                                    </div>
-                                                    <div class="col-sm-12 col-12 mt-3">
-                                                        <label for="" class="form-label"><b>Credit Card</b></label>
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">Batch</label>
-                                                        <input type="text" class="form-control" id="fb_batch" name="">
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">ประเภทรายได้</label>
-                                                        <select class="array-select form-control form-select" aria-label="example" name="" id="fb_revenue_type">
-                                                            <option value="2">All Outlet Revenue</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">Credit Card Room Charge</label>
-                                                        <input type="text" class="form-control" id="fb_credit_amount" name="" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-12 col-12">
-                                                        <button type="button" class="btn btn-sm btn-success btn-fb-add mt-2">เพิ่ม</button>
-                                                        <button type="button" class="btn btn-sm btn-secondary btn-fb-hide mt-2" onclick="toggleHide5()">ลบทั้งหมด</button>
-                                                        <span class="fb-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
-                                                    </div>
-                                                    <div class="col-sm-12 col-12 mt-3">
-                                                        <div class="table-responsive">
-                                                            <table id="myTablefbCredit" class="table align-middle table-bordered">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Batch</th>
-                                                                        <th>ประเภทรายได้</th>
-                                                                        <th>Credit Card Room Charge</th>
-                                                                        <th></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody class="fb-todo-list">
-
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <input type="hidden" id="fb_number" value="0">
-                                                    <input type="hidden" id="fb_list_num" name="fb_list_num" value="0">
-                                                </div>
-                                            </div>
-                                            <div class="border-bottom"></div>
-                                        </div> <!-- .card - FAQ 3  -->
-                                        <div class="card border-0">
-                                            <div class="card-body row align-items-center" id="heading4">
-                                                <div class="col">
-                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="true" aria-controls="faq4">
-                                                        <span class="fw-bold">Agoda Revenue</span>
-                                                    </h6>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <a href="#" class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="true" aria-controls="faq4"> ย่อ/ขยาย </a>
-                                                </div>
-                                            </div>
-                                            <div id="faq4" class="collapse" aria-labelledby="heading4" data-parent="#accordionExample">
-                                                <div class="card-body row">
-                                                    <div class="col-sm-12 col-12 mt-2">
-                                                        <label for="" class="form-label"><b>Credit Card</b></label>
-                                                    </div>
-                                                    <div class="col-sm-4 col-12">
-                                                        <label class="form-label">Booking Number</label>
-                                                        <input type="text" class="form-control" id="agoda_batch" name="">
-                                                    </div>
-                                                    <div class="col-sm-4 col-12">
-                                                        <label class="form-label">ประเภทรายได้</label>
-                                                        <select class="array-select form-control form-select" aria-label="example" name="" id="agoda_revenue_type">
-                                                            <option value="1">Guest Deposit Revenue</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-sm-4 col-12">
-                                                        <label class="form-label">Check in date</label>
-                                                        <input type="date" class="form-control" id="check_in" name="check_in">
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-2">
-                                                        <label class="form-label">Check out date</label>
-                                                        <input type="date" class="form-control" id="check_out" name="check_out">
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-2">
-                                                        <label class="form-label">Credit Card Agoda Charge</label>
-                                                        <input type="text" class="form-control" id="agoda_credit_amount" name="" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-2">
-                                                        <label class="form-label">Revenue Outstanding</label>
-                                                        <input type="text" class="form-control" id="agoda_credit_outstanding" name="" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-12 col-12">
-                                                        <button type="button" class="btn btn-sm btn-success btn-agoda-add mt-2">เพิ่ม</button>
-                                                        <button type="button" class="btn btn-sm btn-secondary btn-agoda-hide mt-2" onclick="toggleHide2()">ลบทั้งหมด</button>
-                                                        <span class="agoda-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
-                                                    </div>
-                                                    <div class="col-sm-12 col-12 mt-3">
-                                                        <div class="table-responsive">
-                                                            <table id="myTableAgodaCredit" class="table align-middle table-bordered">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Booking Number</th>
-                                                                        <th>ประเภทรายได้</th>
-                                                                        <th>Check in date</th>
-                                                                        <th>Check out date</th>
-                                                                        <th>Credit card Agoda Charge</th>
-                                                                        <th>Credit Agoda Revenue Outstanding</th>
-                                                                        <th></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody class="agoda-todo-list">
-
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <input type="hidden" id="agoda_number" value="0">
-                                                    <input type="hidden" id="agoda_list_num" name="agoda_list_num" value="0">
-                                                </div>
-                                            </div>
-                                            <div class="border-bottom"></div>
-                                        </div> <!-- .card - FAQ 4  -->
-                                        <div class="card border-0">
-                                            <div class="card-body row align-items-center" id="heading5">
-                                                <div class="col">
-                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="true" aria-controls="faq5">
-                                                        <span class="fw-bold">Water Park Revenue</span>
-                                                    </h6>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <a href="#" class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="true" aria-controls="faq5"> ย่อ/ขยาย </a>
-                                                </div>
-                                            </div>
-                                            <div id="faq5" class="collapse" aria-labelledby="heading5" data-parent="#accordionExample">
-                                                <div class="card-body row">
-                                                    <div class="col-sm-6 col-12">
-                                                        <label for="wp_cash" class="form-label">Cash</label>
-                                                        <input class="form-control" type="text" id="wp_cash" name="wp_cash" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-6 col-12">
-                                                        <label for="credit" class="form-label">Bank Transfer</label>
-                                                        <input class="form-control" type="text" id="wp_transfer" name="wp_transfer" placeholder="0.00" disabled>
-                                                    </div>
-                                                    <div class="col-sm-12 col-12 mt-3">
-                                                        <label for="" class="form-label"><b>Credit Card</b></label>
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">Batch</label>
-                                                        <input type="text" class="form-control" id="wp_batch" name="">
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">ประเภทรายได้</label>
-                                                        <select class="array-select form-control form-select" aria-label="example" name="" id="wp_revenue_type">
-                                                            <option value="3">Water Park Revenue</option>
-                                                            <option value="7">Credit Card Water Park Revenue</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">Credit Card Water Park Charge</label>
-                                                        <input type="text" class="form-control" id="wp_credit_amount" name="" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-12 col-12">
-                                                        <button type="button" class="btn btn-sm btn-success btn-wp-add mt-2">เพิ่ม</button>
-                                                        <button type="button" class="btn btn-sm btn-secondary btn-wp-hide mt-2" onclick="toggleHide6()">ลบทั้งหมด</button>
-                                                        <span class="wp-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
-                                                    </div>
-                                                    <div class="col-sm-12 col-12 mt-3">
-                                                        <div class="table-responsive">
-                                                            <table id="myTablewpCredit" class="table align-middle table-bordered">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Batch</th>
-                                                                        <th>ประเภทรายได้</th>
-                                                                        <th>Credit Card Water Park Charge</th>
-                                                                        <th></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody class="wp-todo-list">
-
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <input type="hidden" id="wp_number" value="0">
-                                                    <input type="hidden" id="wp_list_num" name="wp_list_num" value="0">
-                                                </div>
-                                            </div>
-                                            <div class="border-bottom"></div>
-                                        </div> <!-- .card - FAQ 5  -->
-                                        <div class="card border-0">
-                                            <div class="card-body row align-items-center" id="heading6">
-                                                <div class="col">
-                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq6" aria-expanded="true" aria-controls="faq6">
-                                                        <span class="fw-bold">Elexa EGAT Revenue</span>
-                                                    </h6>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <a href="#" class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq6" aria-expanded="true" aria-controls="faq6"> ย่อ/ขยาย </a>
-                                                </div>
-                                            </div>
-                                            <div id="faq6" class="collapse" aria-labelledby="heading6" data-parent="#accordionExample">
-                                                <div class="card-body row">
-                                                    {{-- <div class="col-sm-6 col-12">
-                                                        <label for="ev_cash" class="form-label">Cash</label>
-                                                        <input class="form-control" type="text" id="ev_cash" name="ev_cash" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-6 col-12">
-                                                        <label for="ev_transfer" class="form-label">Bank Transfer</label>
-                                                        <input class="form-control" type="text" id="ev_transfer" name="ev_transfer" placeholder="0.00" disabled>
-                                                    </div> --}}
-                                                    <div class="col-sm-12 col-12 mt-3">
-                                                        <label for="" class="form-label"><b>Credit Card</b></label>
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">Batch</label>
-                                                        <input type="text" class="form-control" id="ev_batch" name="">
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">ประเภทรายได้</label>
-                                                        <select class="array-select form-control form-select" aria-label="example" name="" id="ev_revenue_type">
-                                                            <option value="8">Elexa EGAT Revenue</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-3">
-                                                        <label class="form-label">EV Charging Charge</label>
-                                                        <input type="text" class="form-control" id="ev_credit_amount" name="" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-4 col-12 mt-2">
-                                                        <label class="form-label">Elexa EGAT Revenue Outstanding</label>
-                                                        <input type="text" class="form-control" id="ev_credit_outstanding" name="" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-12 col-12">
-                                                        <button type="button" class="btn btn-sm btn-success btn-ev-add mt-2">เพิ่ม</button>
-                                                        <button type="button" class="btn btn-sm btn-secondary btn-ev-hide mt-2" onclick="toggleHide6()">ลบทั้งหมด</button>
-                                                        <span class="ev-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
-                                                    </div>
-                                                    <div class="col-sm-12 col-12 mt-3">
-                                                        <div class="table-responsive">
-                                                            <table id="myTableEvCredit" class="table align-middle table-bordered">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Bacth</th>
-                                                                        <th>ประเภทรายได้</th>
-                                                                        <th>EV Charging Charge</th>
-                                                                        <th>Elexa EGAT Revenue Outstanding</th>
-                                                                        <th></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody class="ev-todo-list">
-
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <input type="hidden" id="ev_number" value="0">
-                                                    <input type="hidden" id="ev_list_num" name="ev_list_num" value="0">
-                                                </div>
-                                            </div>
-                                            <div class="border-bottom"></div>
-                                        </div> <!-- .card - FAQ 6  -->
-                                        <div class="card border-0">
-                                            <div class="card-body row align-items-center" id="heading7">
-                                                <div class="col">
-                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq7" aria-expanded="true" aria-controls="faq7">
-                                                        <span class="fw-bold">Credit Revenue <span class="text-danger" id="credit_card"> (ยอดเครดิต 0.00)</span></span>
-                                                    </h6>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <a href="#" class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq7" aria-expanded="true" aria-controls="faq7"> ย่อ/ขยาย </a>
-                                                </div>
-                                            </div>
-                                            <div id="faq7" class="collapse" aria-labelledby="heading7" data-parent="#accordionExample">
-                                                <div class="card-body row">
-                                                    <div class="col-sm-4 col-12">
-                                                        <label class="form-label">Batch</label>
-                                                        <input type="text" class="form-control" id="batch" name="">
-                                                    </div>
-                                                    <div class="col-sm-4 col-12">
-                                                        <label class="form-label">ประเภทรายได้</label>
-                                                        <select class="array-select form-control form-select" aria-label="example" name="" id="revenue_type">
-                                                            <option value="">เลือกประเภทรายได้</option>
-                                                            <option value="6">Front Desk Revenue</option>
-                                                            <option value="1">Guest Deposit Revenue</option>
-                                                            <option value="2">All Outlet Revenue</option>
-                                                            <option value="4">Credit Card Revenue</option>
-                                                            <option value="5">Credit Card Agoda Revenue</option>
-                                                            <option value="3">Water Park Revenue</option>
-                                                            <option value="7">Credit Card Water Park Revenue</option>
-                                                            <option value="8">Elexa EGAT Revenue</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-sm-4 col-12">
-                                                        <label class="form-label">ยอดเงิน</label>
-                                                        <input type="text" class="form-control" id="credit_amount" name="" placeholder="0.00">
-                                                    </div>
-                                                    <div class="col-sm-12 col-12">
-                                                        <button type="button" class="btn btn-sm btn-success btn-todo-add mt-2">เพิ่ม</button>
-                                                        <button type="button" class="btn btn-sm btn-secondary btn-todo-hide mt-2" onclick="toggleHide()">ลบทั้งหมด</button>
-                                                        <span class="todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
-                                                        <span class="stock-error text-danger small ms-3"style="display: none;">ระบบไม่สามารถทำรายการได้ เนื่องจากมีจำนวนสินค้าไม่เพียงพอ !</span>
-                                                    </div>
-                                                    <div class="col-sm-12 col-12 mt-3">
-                                                        <div class="table-responsive">
-                                                            <table id="myTableCredit" class="table align-middle table-bordered">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Batch</th>
-                                                                        <th>ประเภทรายได้</th>
-                                                                        <th>ยอดเงิน</th>
-                                                                        <th></th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody class="todo-list">
-                        
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <input type="hidden" id="number" value="0">
-                                                    <input type="hidden" id="list_num" name="list_num" value="0">
-                                                </div>
-                                            </div>
-                                            <div class="border-bottom"></div>
-                                        </div> <!-- .card - FAQ 7  -->
-                                </div>
-                        </div>
-                    </div><!-- Form Validation -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                    <button type="button" class="btn btn-primary" onclick="revenue_store()">ยืนยัน</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
+
+    @if (session("success"))
+        <div class="container p-0 rounded">
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">บันทึกสำเร็จ</h4>
+                <i class="fa-regular fa-circle-check">&nbsp;</i>{{ session('success') }}
+            </div>
+        </div>
+    @endif
+
+    <div class="container pt-3 pb-3 rounded bg-light">
+        <form action="{{ route('revenue-search-calendar') }}" method="POST" enctype="multipart/form-data" class="" id="form-revenue">
+            @csrf
+            <div class="row">
+                <div class="col-lg-8 col-md-2 col-sm-2 mb-2">
+                    <select class="form-select w-auto float-left mr-2" name="day" id="day">
+                        <?php $day_num = isset($day) ? date('d', strtotime('last day of this month', strtotime(date('2024-' . $month . '-' . $day)))) : date('t'); ?>
+                        @for ($i = 1; $i <= $day_num; $i++)
+                            <?php $d = str_pad($i, 2, '0', STR_PAD_LEFT); ?>
+
+                            @if (!isset($day) && date('d') == $d)
+                                <option value="{{$d}}" selected>{{$i}}</option>
+                            @else
+                                <option value="{{$d}}" {{ isset($day) && $day == $d ? 'selected' : date('d') }}>{{$i}}</option>
+                            @endif
+                        @endfor
+                    </select>
+                    <select class="form-select w-auto float-left mr-2" name="month" id="month">
+                        @if (isset($month))
+                            <option value="01" {{ $month == '01' ? 'selected' : ''}}>มกราคม</option>
+                            <option value="02" {{ $month == '02' ? 'selected' : ''}}>กุมภาพันธ์</option>
+                            <option value="03" {{ $month == '03' ? 'selected' : ''}}>มีนาคม</option>
+                            <option value="04" {{ $month == '04' ? 'selected' : ''}}>เมษายน</option>
+                            <option value="05" {{ $month == '05' ? 'selected' : ''}}>พฤษภาคม</option>
+                            <option value="06" {{ $month == '06' ? 'selected' : ''}}>มิถุนายน</option>
+                            <option value="07" {{ $month == '07' ? 'selected' : ''}}>กรกฎาคม</option>
+                            <option value="08" {{ $month == '08' ? 'selected' : ''}}>สิงหาคม</option>
+                            <option value="09" {{ $month == '09' ? 'selected' : ''}}>กันยายน</option>
+                            <option value="10" {{ $month == '10' ? 'selected' : ''}}>ตุลาคม</option>
+                            <option value="11" {{ $month == '11' ? 'selected' : ''}}>พฤศจิกายน</option>
+                            <option value="12" {{ $month == '12' ? 'selected' : ''}}>ธันวาคม</option>
+                        @else
+
+                            <option value="01" {{ date('m') == '01' ? 'selected' : ''}}>มกราคม</option>
+                            <option value="02" {{ date('m') == '02' ? 'selected' : ''}}>กุมภาพันธ์</option>
+                            <option value="03" {{ date('m') == '03' ? 'selected' : ''}}>มีนาคม</option>
+                            <option value="04" {{ date('m') == '04' ? 'selected' : ''}}>เมษายน</option>
+                            <option value="05" {{ date('m') == '05' ? 'selected' : ''}}>พฤษภาคม</option>
+                            <option value="06" {{ date('m') == '06' ? 'selected' : ''}}>มิถุนายน</option>
+                            <option value="07" {{ date('m') == '07' ? 'selected' : ''}}>กรกฎาคม</option>
+                            <option value="08" {{ date('m') == '08' ? 'selected' : ''}}>สิงหาคม</option>
+                            <option value="09" {{ date('m') == '09' ? 'selected' : ''}}>กันยายน</option>
+                            <option value="10" {{ date('m') == '10' ? 'selected' : ''}}>ตุลาคม</option>
+                            <option value="11" {{ date('m') == '11' ? 'selected' : ''}}>พฤศจิกายน</option>
+                            <option value="12" {{ date('m') == '12' ? 'selected' : ''}}>ธันวาคม</option>
+                        @endif
+                    </select>
+                    <select class="form-select w-auto float-left mr-2" name="year" id="year">
+                        @if (isset($year))
+                            <option value="2024" {{ $year == '2024' ? 'selected' : ''}}>2024</option>
+                        @else
+                            <option value="2024" {{ date('Y') == '2024' ? 'selected' : ''}}>2024</option>
+                        @endif
+                    </select>
+                    <button class="btn btn-success w-auto px-4 btn-submit-search" style="background-color: #109699;" type="button"
+                        role="button">ค้นหา</button>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <button type="button" class="btn btn-warning float-end ml-1">
+                        <i class="fa-solid fa-lock">&nbsp;</i>LOCK
+                    </button>
+                    <button type="button" class="btn btn-primary border-0 float-end" style="background-color: #109699;"
+                        data-bs-toggle="modal" data-bs-target="#AddDataModalCenter">
+                        เพิ่มข้อมูลเงินสด / เครดิต
+                    </button>
+                </div>
+
+                <div class="row mt-3 mb-0">
+                    <div class="col-12">
+                        <h5 class="float-start mr-1">สถานะ : </h5>
+                        <h5 class="text-danger"> ตรวจสอบเรียบร้อยแล้ว</h5>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+        <!-- Reset to Default Table -->
+        <style>
+            /* CSS Reset for tables */
+            table {
+                border-collapse: collapse;
+                border-spacing: 0;
+                width: 100%;
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+                table-layout: auto;
+            }
+
+            th,
+            td {
+                padding: 0;
+                margin: 0;
+                border: none;
+            }
+
+            /* Custom styles */
+            .table-responsive {
+                overflow-x: auto;
+            }
+
+            table {
+                border: 1px solid #ddd;
+            }
+
+            table caption {
+                font-size: 16px;
+            }
+
+            table thead {
+                border: initial;
+                clip: initial;
+                height: auto;
+                margin: initial;
+                overflow: visible;
+                padding: initial;
+                position: static;
+                width: auto;
+            }
+
+            table tr {
+                border-bottom: initial;
+                display: table-row;
+                margin-bottom: initial;
+            }
+
+            table th {
+                font-weight: 600;
+                text-transform: capitalize;
+                color: white !important;
+            }
+
+            table th,
+            table td {
+                border-bottom: 1px solid #ddd;
+                display: table-cell;
+                font-size: 16px;
+                text-align: left;
+                padding: 8px;
+                color: black !important;
+                letter-spacing: unset;
+            }
+
+            table td::before {
+                content: none;
+            }
+
+            table td:last-child {
+                border-bottom: 1px solid #ddd;
+            }
 
 
-<style> 
-    .table_wrapper{
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-</style>
+            .modal-body label {
+                font-size: 16px;
+                text-align: left;
+            }
 
-@if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="../assets/bundles/jquerycounterup.bundle.js"></script>
-    <script src="../assets/bundles/sweetalert2.bundle.js"></script>
-    {{-- <script src="../assets/bundles/dataTables.bundle.js"></script> --}}
-@else
-    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="../assets/bundles/jquerycounterup.bundle.js"></script>
-    <script src="../assets/bundles/sweetalert2.bundle.js"></script>
-    {{-- <script src="../assets/bundles/dataTables.bundle.js"></script> --}}
-@endif
+            .modal-body input {
+                width: 100%;
+                text-align: left;
+                padding: 8px;
+                border: 1px solid #ccc;
+                margin: 0px;
+                margin-bottom: 5px;
+            }
+
+            .accordion {
+                margin-bottom: 1%;
+            }
+
+            @media (max-width: 768px) {
+
+                table th,
+                table td {
+                    font-size: 14px;
+                    padding: 6px;
+                }
+            }
+
+            @media (max-width: 480px) {
+
+                table th,
+                table td {
+                    font-size: 12px;
+                    padding: 4px;
+                }
+            }
+        </style>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="table-bordered">
+                        <th class="text-center " colspan="2" scope="col">Description</th>
+                        <th scope="col">Today</th>
+                        <th scope="col">M-T-D</th>
+                        <th scope="col">Y-T-D</th>
+                    </tr>
+
+                    <th class="text-center" colspan="2">
+                        Hotel
+                    </th>
+                    <th colspan="5"></th>
+                </thead>
+                <tbody>
+                    <tr> <!--Front Desk table-->
+                        <th class="text-light" style="background-color: #109699;" colspan="8">Front Desk Revenue</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Cash</td>
+                        <td>{{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_cash : 0, 2) }}</td>
+                        <td>{{ number_format(isset($total_front_month) ? $total_front_month->front_cash : 0, 2 ) }}</td>
+                        <td>{{ number_format(isset($total_front_year) ? $total_front_year->front_cash : 0, 2 ) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Bank Transfer</td>
+                        <td>{{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_transfer : 0, 2) }}</td>
+                        <td>{{ number_format(isset($total_front_month) ? $total_front_month->front_transfer : 0, 2) }}</td>
+                        <td>{{ number_format(isset($total_front_year) ? $total_front_year->front_transfer : 0, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Credit Card Front Desk Charge</td>
+                        <td>{{ number_format($front_charge[0]['revenue_credit_date'], 2) }}</td>
+                        <td>{{ number_format($front_charge[0]['revenue_credit_month'], 2) }}</td>
+                        <td>{{ number_format($front_charge[0]['revenue_credit_year'], 2) }}</td>
+                    </tr>
+                    <tr> <!--Guest Deposit Revenue-->
+                        <th class="text-light" style="background-color: #109699; color: white;" colspan="8">
+                            Guest Deposit Revenue
+                        </th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Cash</td>
+                        <td>{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_cash : 0, 2) }}</td>
+                        <td>{{ number_format(isset($total_guest_deposit_month) ? $total_guest_deposit_month->room_cash : 0, 2) }}</td>
+                        <td>{{ number_format(isset($total_guest_deposit_year) ? $total_guest_deposit_year->room_cash : 0, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Bank Transfer</td>
+                        <td>{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_transfer : 0, 2) }}</td>
+                        <td>{{ number_format(isset($total_guest_deposit_month) ? $total_guest_deposit_month->room_transfer : 0, 2) }}</td>
+                        <td>{{ number_format(isset($total_guest_deposit_year) ? $total_guest_deposit_year->room_transfer : 0, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Credit Card Front Desk Charge</td>
+                        <td>{{ number_format($guest_deposit_charge[0]['revenue_credit_date'], 2) }}</td>
+                        <td>{{ number_format($guest_deposit_charge[0]['revenue_credit_month'], 2) }}</td>
+                        <td>{{ number_format($guest_deposit_charge[0]['revenue_credit_year'], 2) }}</td>
+                    </tr>
+
+                    <tr> <!--All Outlet Revenue-->
+                        <th class="text-light" style="background-color: #109699; color: white;" colspan="8">
+                            All Outlet Revenue
+                        </th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Cash</td>
+                        <td>{{ number_format($total_fb_revenue->fb_cash, 2) }}</td>
+                        <td>{{ number_format($total_fb_month->fb_cash, 2) }}</td>
+                        <td>{{ number_format($total_fb_year->fb_cash, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Bank Transfer</td>
+                        <td>{{ number_format($total_fb_revenue->fb_transfer, 2) }}</td>
+                        <td>{{ number_format($total_fb_month->fb_transfer, 2) }}</td>
+                        <td>{{ number_format($total_fb_year->fb_transfer, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Credit card All Outlet Charge</td>
+                        <td>{{ number_format($fb_charge[0]['revenue_credit_date'], 2) }}</td>
+                        <td>{{ number_format($fb_charge[0]['revenue_credit_month'], 2) }}</td>
+                        <td>{{ number_format($fb_charge[0]['revenue_credit_year'], 2) }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">Total Cash</th>
+                        <td>{{ number_format($total_cash, 2) }}</td>
+                        <td>{{ number_format($total_cash_month, 2) }}</td>
+                        <td>{{ number_format($total_cash_year, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">Total Bank Transfer</th>
+                        <td>{{ number_format($total_bank_transfer, 2) }}</td>
+                        <td>{{ number_format($total_bank_transfer_month, 2) }}</td>
+                        <td>{{ number_format($total_bank_transfer_year, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">
+                            Cash And Bank Transfer Hotel Revenue</th>
+                        <td>{{ number_format($total_cash_bank, 2) }}</td>
+                        <td>{{ number_format($total_cash_bank_month, 2) }}</td>
+                        <td>{{ number_format($total_cash_bank_year, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="8"></td> <!-- ช่องเปล่า-->
+                    </tr>
+                    <tr>
+                        <?php
+                            $total_credit_card_revenue = $front_charge[0]['revenue_credit_date'] + $guest_deposit_charge[0]['revenue_credit_date'] + $fb_charge[0]['revenue_credit_date'];
+                            $total_credit_card_revenue_month = $front_charge[0]['revenue_credit_month'] + $guest_deposit_charge[0]['revenue_credit_month'] + $fb_charge[0]['revenue_credit_month'];
+                            $total_credit_card_revenue_year = $front_charge[0]['revenue_credit_year'] + $guest_deposit_charge[0]['revenue_credit_year'] + $fb_charge[0]['revenue_credit_year'];
+                        ?>
+
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">Total Credit Card Charge</th>
+                        <td>{{ number_format($total_credit_card_revenue, 2) }}</td>
+                        <td>{{ number_format($total_credit_card_revenue_month, 2) }}</td>
+                        <td>{{ number_format($total_credit_card_revenue_year, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">Credit Card Fee</th>
+                        <td>{{ number_format($total_credit_card_revenue == 0 || $credit_revenue->total_credit == 0 ? 0 : $total_credit_card_revenue - $credit_revenue->total_credit ?? 0, 2) }}</td>
+                        <td>{{ number_format($total_credit_card_revenue_month - $credit_revenue_month->total_credit ?? 0, 2) }}</td>
+                        <td>{{ number_format($total_credit_card_revenue_year - $credit_revenue_year->total_credit ?? 0, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <?php
+                            $total_charge = $credit_revenue->total_credit ?? 0;
+                            $total_charge_month = $credit_revenue_month->total_credit ?? 0;
+                            $total_charge_year = $credit_revenue_year->total_credit ?? 0;
+                        ?>
+
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">Credit Card Hotel Revenue</th>
+                        <td>{{ number_format($credit_revenue->total_credit ?? 0, 2) }}</td>
+                        <td>{{ number_format($credit_revenue_month->total_credit ?? 0, 2) }}</td>
+                        <td>{{ number_format($credit_revenue_year->total_credit ?? 0, 2) }}</td>
+                    </tr>
+
+                    <tr> <!--Agoda-->
+                        <th class="text-light" style="background-color: #109699; color: white;" colspan="8">
+                            Agoda Revenue</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Credit Card Agoda Charge</td>
+                        <td>{{ number_format($agoda_charge[0]['revenue_credit_date'], 2) }}</td>
+                        <td>{{ number_format($agoda_charge[0]['revenue_credit_month'], 2) }}</td>
+                        <td>{{ number_format($agoda_charge[0]['revenue_credit_year'], 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Total Agoda Fee</td>
+                        <td>{{ number_format($agoda_charge[0]['fee_date'], 2) }}</td>
+                        <td>{{ number_format($agoda_charge[0]['fee_month'], 2) }}</td>
+                        <td>{{ number_format($agoda_charge[0]['fee_year'], 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Credit Agoda Revenue Outstanding</td>
+                        <td>{{ number_format($agoda_charge[0]['total'], 2) }}</td>
+                        <td>{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
+                        <td>{{ number_format($agoda_charge[0]['total_year'], 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="8"></td> <!-- ช่องเปล่า-->
+                    </tr>
+                    <tr style="background-color: bisque;">
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">Total Hotel Revenue</th>
+                        <td>{{ number_format($total_cash_bank + $total_charge + $agoda_charge[0]['total'], 2) }}</td>
+                        <td>{{ number_format($total_cash_bank_month + $total_charge_month + $agoda_charge[0]['total_month'], 2) }}</td>
+                        <td>{{ number_format($total_cash_bank_year + $total_charge_year + $agoda_charge[0]['total_year'], 2) }}</td>
+                    </tr>
+
+                    <tr> <!--Water Park-->
+                        <th class="text-light" style="background-color: #109699; color: white;" colspan="8">
+                            Water Park Revenue
+                        </th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Cash</td>
+                        <td>{{ number_format($total_wp_revenue->wp_cash, 2) }}</td>
+                        <td>{{ number_format($total_wp_month->wp_cash, 2) }}</td>
+                        <td>{{ number_format($total_wp_year->wp_cash, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Bank Transfer</td>
+                        <td>{{ number_format($total_wp_revenue->wp_transfer, 2) }}</td>
+                        <td>{{ number_format($total_wp_month->wp_transfer, 2) }}</td>
+                        <td>{{ number_format($total_wp_year->wp_transfer, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">
+                            Cash + Bank Transfer Water Park Revenue
+                        </th>
+                        <td>{{ number_format($total_wp_cash_bank, 2) }}</td>
+                        <td>{{ number_format($total_wp_cash_bank_month, 2) }}</td>
+                        <td>{{ number_format($total_wp_cash_bank_year, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="8"></td> <!-- ช่องเปล่า-->
+                    </tr>
+                    <tr>
+                        <?php
+                            $total_wp_credit_card_revenue = $wp_charge[0]['revenue_credit_date'];
+                            $total_wp_credit_card_revenue_month = $wp_charge[0]['revenue_credit_month'];
+                            $total_wp_credit_card_revenue_year = $wp_charge[0]['revenue_credit_year'];
+                        ?>
+
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">
+                            Credit Card Water Park Charge
+                        </th>
+                        <td>{{ number_format($total_wp_credit_card_revenue, 2) }}</td>
+                        <td>{{ number_format($total_wp_credit_card_revenue_month, 2) }}</td>
+                        <td>{{ number_format($total_wp_credit_card_revenue_year, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">Credit Card Fee</th>
+                        <td>{{ number_format($wp_charge[0]['fee_date'], 2) }}</td>
+                        <td>{{ number_format($wp_charge[0]['fee_month'], 2) }}</td>
+                        <td>{{ number_format($wp_charge[0]['fee_year'], 2) }}</td>
+                    </tr>
+                    <tr>
+                        <?php 
+                            $total_wp_charge = $wp_charge[0]['total'];
+                            $total_wp_charge_month = $wp_charge[0]['total_month'];
+                            $total_wp_charge_year = $wp_charge[0]['total_year'];
+                        ?>
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">
+                            Credit Card Water Park Revenue
+                        </th>
+                        <td>{{ number_format($total_wp_charge, 2) }}</td>
+                        <td>{{ number_format($total_wp_charge_month, 2) }}</td>
+                        <td>{{ number_format($total_wp_charge_year, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="8"></td> <!-- ช่องเปล่า-->
+                    </tr>
+                    <tr style="background-color: bisque;">
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">Total Water Park Revenue</th>
+                        <td>{{ number_format($total_wp_cash_bank + $total_wp_charge, 2) }}</td>
+                        <td>{{ number_format($total_wp_cash_bank_month + $total_wp_charge_month, 2) }}</td>
+                        <td>{{ number_format($total_wp_cash_bank_year + $total_wp_charge_year, 2) }}</td>
+                    </tr>
+                    <tr> <!--Elexa EGAT Revenue-->
+                        <th class="text-light" style="background-color: #109699; color: white;" colspan="8">
+                            Elexa EGAT Revenue
+                        </th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">EV Chargeing Charge</td>
+                        <td>{{ number_format($ev_charge[0]['revenue_credit_date'], 2) }}</td>
+                        <td>{{ number_format($ev_charge[0]['revenue_credit_month'], 2) }}</td>
+                        <td>{{ number_format($ev_charge[0]['revenue_credit_year'], 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Elexa Fee</td>
+                        <td>{{ number_format($ev_charge[0]['fee_date'], 2) }}</td>
+                        <td>{{ number_format($ev_charge[0]['fee_month'], 2) }}</td>
+                        <td>{{ number_format($ev_charge[0]['fee_year'], 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Elexa EGAT Revenue Outstanding</td>
+                        <td>{{ number_format($ev_charge[0]['total'], 2) }}</td>
+                        <td>{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
+                        <td>{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">Total Elexa EGAT Revenue</th>
+                        <td>{{ number_format($ev_charge[0]['total'], 2) }}</td>
+                        <td>{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
+                        <td>{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="8"></td> <!-- ช่องเปล่า-->
+                    </tr>
+                    <tr style="background-color: rgb(186, 229, 255);">
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">
+                            Total Hotel, Water Park And Elexa EGAT Revenue
+                        </th>
+                        <td>{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $agoda_charge[0]['total'] + $ev_charge[0]['total'], 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $agoda_charge[0]['total_month'] + $ev_charge[0]['total_month'], 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $agoda_charge[0]['total_year'] + $ev_charge[0]['total_year'], 2) }}</td>
+                    </tr>
+                    <tr style="background-color: rgb(186, 229, 255);">
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">
+                            Credit Agoda Revenue Outstanding
+                        </th>
+                        <td>{{ number_format($agoda_charge[0]['total'], 2) }}</td>
+                        <td>{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
+                        <td>{{ number_format($agoda_charge[0]['total_year'] - $total_agoda_year, 2) }}</td>
+                    </tr>
+                    <tr style="background-color: rgb(186, 229, 255);">
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">Elexa EGAT Revenue Outstanding
+                        </th>
+                        <td>{{ number_format($ev_charge[0]['total'], 2) }}</td>
+                        <td>{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
+                        <td>{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
+                    </tr>
+                    <tr style="background-color: rgb(186, 229, 255);">
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">Agoda Revenue</th>
+                        <td>{{ number_format($total_agoda_revenue, 2) }}</td>
+                        <td>{{ number_format($total_agoda_month, 2) }}</td>
+                        <td>{{ number_format($total_agoda_year, 2) }}</td>
+                    </tr>
+                    <tr style="background-color: rgb(186, 229, 255);">
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">Elexa EGAT Revenue</th>
+                        <td>{{ number_format(0, 2) }}</td>
+                        <td>{{ number_format(0, 2) }}</td>
+                        <td>{{ number_format(0, 2) }}</td>
+                    </tr>
+                    <tr style="background-color: rgb(186, 229, 255);">
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">Total Revenue</th>
+                        <td>{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $ev_charge[0]['total'] + $total_agoda_revenue, 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month + $total_agoda_month) - $agoda_charge[0]['total_month'], 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year + $total_agoda_year) - $agoda_charge[0]['total_year'], 2) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal fade" id="AddDataModalCenter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-label="Close">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">เพิ่มข้อมูลเงินสด / เครดิต</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="#" method="POST" enctype="multipart/form-data" class="form-store">
+                            @csrf
+
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label for="">วันที่</label>
+                                    <input type="date" id="date" name="date" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>">
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="flush-headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseOne" aria-expanded="true"
+                                            aria-controls="collapseOne">
+                                            Front Desk Revenue
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse"
+                                        aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <label for="">Cash</label>
+                                                    <input type="text" style="border: 1px solid #ccc;" id="front_cash" name="front_cash" placeholder="0.00">
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <label for="">Bank Transfer</label>
+                                                    <input type="text" style="border: 1px solid #ccc;" id="front_transfer" name="front_transfer" placeholder="0.00" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 text-left">
+                                                    <h5 class="m-0">Credit Card</h5>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label for="">Batch</label>
+                                                    <input type="text" style="border: 1px solid #ccc;" id="front_batch" name="">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label for="">ประเภทรายได้<label>
+                                                        <div class="acc_number">
+                                                            <select class="" name="" id="front_revenue_type">
+                                                                <option value="6">Front Desk Revenue</option>
+                                                            </select>
+                                                        </div>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label for="">Credit Card Room Charge</label>
+                                                    <input type="text" style="border: 1px solid #ccc;" id="front_credit_amount" name="" placeholder="0.00">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <button type="button" class="btn btn-primary border-0 btn-front-add"
+                                                        style="background-color: #109699;">เพิ่ม</button>
+                                                    <button class="btn btn-danger btn-front-hide" onclick="toggleHide3()">ลบทั้งหมด</button>
+                                                    <span class="front-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">Credit Card Room Charge</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="front-todo-list">
+                                                        
+                                                    </tbody>
+                                                </table>
+                                                <input type="hidden" id="front_number" value="0">
+                                                <input type="hidden" id="front_list_num" name="front_list_num" value="0">
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample"> <!--อันนี้หน้า collapse-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingTwo"> <!--ใส่ ID ให้ตรงกับ aria-labelledby -->
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseTwo" aria-expanded="true"
+                                            aria-controls="collapseTwo">
+                                            <!--ใส่ ID ให้ตรง -->
+                                            Guest Deposit
+                                        </button>
+                                    </h2>
+                                    <div id="collapseTwo" class="accordion-collapse collapse"
+                                        aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                        <!--ใส่ ID ให้ตรง -->
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <label for="">Cash</label>
+                                                    <input type="text" style="border: 1px solid #ccc;">
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <label for="">Bank Transfer</label>
+                                                    <input type="text" style="border: 1px solid #ccc;" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 text-left">
+                                                    <h5 class="m-0">Credit Card</h5>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label for="">Batch</label>
+                                                    <input type="text" style="border: 1px solid #ccc;">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label for="">ประเภทรายได้<label>
+                                                            <input type="text" style="border: 1px solid #ccc;">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label for="">Credit Card Room Charge</label>
+                                                    <input type="text" style="border: 1px solid #ccc;">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <button class="btn btn-primary border-0"
+                                                        style="background-color: #109699;">เพิ่ม</button>
+                                                    <button class="btn btn-danger">ลบทั้งหมด</button>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">Credit Card Room Charge</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Batch</td>
+                                                            <td>ประเภทรายได้</td>
+                                                            <td>Credit Card Room Charge</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Batch</td>
+                                                            <td>ประเภทรายได้</td>
+                                                            <td>Credit Card Room Charge</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Batch</td>
+                                                            <td>ประเภทรายได้</td>
+                                                            <td>Credit Card Room Charge</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample"> <!--อันนี้หน้า collapse-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingThree">
+                                        <!--ใส่ ID ให้ตรงกับ aria-labelledby -->
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseThree" aria-expanded="true"
+                                            aria-controls="collapseThree">
+                                            <!--ใส่ ID ให้ตรง -->
+                                            All Outlet Deposit
+                                        </button>
+                                    </h2>
+                                    <div id="collapseThree" class="accordion-collapse collapse"
+                                        aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                        <!--ใส่ ID ให้ตรง -->
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <label for="">Cash</label>
+                                                    <input type="text" style="border: 1px solid #ccc;">
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <label for="">Bank Transfer</label>
+                                                    <input type="text" style="border: 1px solid #ccc;" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 text-left">
+                                                    <h5 class="m-0">Credit Card</h5>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label for="">Batch</label>
+                                                    <input type="text" style="border: 1px solid #ccc;">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label for="">ประเภทรายได้<label>
+                                                            <input type="text" style="border: 1px solid #ccc;">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label for="">Credit Card Room Charge</label>
+                                                    <input type="text" style="border: 1px solid #ccc;">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <button class="btn btn-primary border-0"
+                                                        style="background-color: #109699;">เพิ่ม</button>
+                                                    <button class="btn btn-danger">ลบทั้งหมด</button>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">Credit Card Room Charge</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>Batch</td>
+                                                            <td>ประเภทรายได้</td>
+                                                            <td>Credit Card Room Charge</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Batch</td>
+                                                            <td>ประเภทรายได้</td>
+                                                            <td>Credit Card Room Charge</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Batch</td>
+                                                            <td>ประเภทรายได้</td>
+                                                            <td>Credit Card Room Charge</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Register the plugin to draw text in the center
+            const centerTextPlugin = {
+                id: 'centerTextPlugin',
+                beforeDraw: function(chart) {
+                    if (chart.config.type === 'doughnut') {
+                        const ctx = chart.ctx;
+                        const {
+                            width,
+                            height
+                        } = chart.chartArea;
+
+                        ctx.restore();
+                        const fontSize = (height / 200).toFixed(2);
+                        ctx.font = `500 ${fontSize}em 'Sarabun', sans-serif`;
+                        ctx.textBaseline = "middle";
+
+                        const text = $('#total_revenue_dashboard').val(); // ใส่ตัวเลขกลาง chart
+                        const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                        const textY = height / 2 + 60; // ปรับขึ้นลง
+
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }
+            };
+
+            // Register the plugin with Chart.js
+            Chart.register(centerTextPlugin);
+
+            var cash = $('#total_cash_dashboard').val();
+            var bank = $('#total_bank_dashboard').val();
+            var credit = $('#total_credit_dashboard').val();
+
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cash', 'Bank Transfer', 'Credit Card Revenue'],
+                    datasets: [{
+                        data: [cash, bank, credit],
+                        borderWidth: 0, // Set borderWidth to 0 to remove gaps
+                    }]
+                },
+                options: {
+                    // other options if any
+                }
+            });
+        });
+    </script>
 
 <script>
-    jQuery(document).ready(function($) {
-        $('.counter').counterUp({ delay: 20, time: 1500 });
-    });
 
     $('#date').on('change', function () {
         Add_data($(this).val());
@@ -1775,8 +1545,8 @@
                 '<tr>' +
                     '<td>' + batch +'</td>' +
                     '<td>' + type_name + '</td>' +
-                    '<td style="text-align: right;">' + currencyFormat(parseFloat(amount)) + '</td>' +
-                    '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose3(this)"></i></td>' +
+                    '<td>' + currencyFormat(parseFloat(amount)) + '</td>' +
+                    '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose3(this)"></i>ลบ</td>' +
                     '<input type="hidden" name="front_batch[]" value="' + batch + '">' +
                     '<input type="hidden" name="front_revenue_type[]" value="' + type + '">' +
                     '<input type="hidden" name="front_credit_amount[]" value="' + amount + '">' +
