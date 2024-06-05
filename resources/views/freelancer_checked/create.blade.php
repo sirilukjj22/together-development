@@ -55,27 +55,25 @@
         color: whitesmoke;
         border-color: #9a9a9a;
         border-style: solid;
-        width: 30%;
         border-width: 1px;
         border-radius: 8px;
-        float: right;
-        margin-Top: 10px;
-        margin-Left: 100px;
-        text-align: center;
+        width: 30%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        box-sizing: border-box;
 
     }
     .button-guest-end{
-        background-color:#ff0000;
+        background-color: #ff0000;
         color: whitesmoke;
         border-color: #9a9a9a;
         border-style: solid;
-        width: 30%;
-        float: left;
         border-width: 1px;
         border-radius: 8px;
-        margin-Top: 10px;
-        text-align: center;
-
+        width: 30%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        box-sizing: border-box;
     }
     .textarea{
         width: 100%;
@@ -167,17 +165,10 @@
         cursor: pointer;* เปลี่ยนรูปแบบของ cursor เมื่อวางเหนือปุ่ม */
         box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.8);
     }
-    /* .row .select2-selection {
-        margin: 0 !important;
-        margin-bottom: 2% !important;
-    }
-
-    .row .select2-selection .select2-selection__arrow {
-        margin: 10px !important;
-    } */
     .select2-container {
         width: 100% !important;
     }
+
 </style>
 
 
@@ -191,45 +182,45 @@
     <form action="{{url('/Freelancer/check/save')}}" method="POST" enctype="multipart/form-data">
         {!! csrf_field() !!}
         <div class="col-12 row">
-            <div class="col-4"></div>
-            <div class="col-4 d-flex justify-content-center">
+            <div class="col-lg-4 col-md-6 col-sm-12"></div>
+            <div class="col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center">
                 <div class="card">
                     <div class="image-container">
                         <button type="button" class="image-upload-button"></button>
                         <input type="file" name="imageFile" id="imageFile" accept="image/jpeg, image/png, image/svg" required style="display: none;">
-                        <img src="" width="400" height="400" class="image_preview" style="display: none;">
+                        <img src=""class="image_preview" style="display: none; width: 100%; height: 100%; object-fit:cover;">
                         <button class="deleteImage" type="button" id="deleteImage" style="display: none;"></button>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-12 row">
-            <div class="col-2"></div>
+            <div class="col-lg-2 col-md-6 col-sm-12"></div>
             <div class="col-2"><label for="Preface">Title</label><br>
-                <select name="Preface" id="PrefaceSelect" class="form-select" >
+                <select name="Preface" id="PrefaceSelect" class="select" >
                     <option value=""></option>
                         @foreach($prefix as $item)
                             <option value="{{ $item->id }}">{{ $item->name_th }}</option>
                         @endforeach
                 </select></div>
-            <div class="col-3" ><label for="first_name">First Name</label><br>
+            <div class="col-lg-3 col-md-6 col-sm-12" ><label for="first_name">First Name</label><br>
             <input type="text" id="first_name" name="first_name"maxlength="70" required></div>
-            <div class="col-3" ><label for="last_name" >Last Name</label><br>
+            <div class="col-lg-3 col-md-6 col-sm-12" ><label for="last_name" >Last Name</label><br>
             <input type="text" id="last_name" name="last_name"maxlength="70" required></div>
         </div>
         <div class="col-12 row mt-2">
-            <div class="col-2"></div>
-            <div class="col-4" ><label for="country">Country</label><br>
-                <select name="countrydata" id="countrySelect" class="form-select" onchange="showcityInput()">
+            <div class="col-lg-2 col-md-6 col-sm-12"></div>
+            <div class="col-lg-4 col-md-6 col-sm-12"><label for="country">Country</label><br>
+                <select name="countrydata" id="countrySelect" class="select" onchange="showcityInput()">
                     <option value="Thailand">ประเทศไทย</option>
                     <option value="Other_countries">ประเทศอื่นๆ</option>
                 </select>
             </div>
-            <div class="col-4" id="cityInput" style="display:none;">
+            <div class="col-lg-4 col-md-6 col-sm-12" id="cityInput" style="display:none;">
                 <label for="city">City</label><br>
                 <input type="text" id="city" name="city">
             </div>
-            <div class="col-4" id="citythai" style="display:block;">
+            <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:block;">
                 <label for="city">City</label><br>
                 <select name="province" id = "province" class="select2" onchange="select_province()"style="border: 1px solid #000">
                     <option value=""></option>
@@ -240,21 +231,21 @@
             </div>
         </div>
         <div class="col-12 row mt-2">
-            <div class="col-2"></div>
-            <div class="col-3">
+            <div class="col-lg-2 col-md-2 col-sm-12"></div>
+            <div class="col-lg-3 col-md-3 col-sm-12">
                 <label for="Amphures">Amphures</label><br>
                 <select name="amphures" id = "amphures" class="select2"  onchange="select_amphures()">
                     <option value=""></option>
 
                 </select>
             </div>
-            <div class="col-3">
+            <div class="col-lg-3 col-md-3 col-sm-12">
                 <label for="Tambon">Tambon  </label><br>
                 <select name="Tambon" id ="Tambon" class="select2" onchange="select_Tambon()">
                     <option value=""></option>
                 </select>
             </div>
-            <div class="col-2">
+            <div class="col-lg-2 col-md-3 col-sm-12">
                 <label for="zip_code">Zip Code</label><br>
                 <select name="zip_code" id ="zip_code" class="select2" >
                     <option value=""></option>
@@ -262,34 +253,34 @@
             </div>
         </div>
         <div class="col-12 row mt-2">
-            <div class="col-2"></div>
-            <div class="col-8" >
+            <div class="col-lg-2 col-md-6 col-sm-12"></div>
+            <div class="col-lg-8 col-md-8 col-sm-12" >
                 <label for="address">Address:</label><br>
                 <textarea type="text" id="address" name="address" rows="5" cols="35" class="textarea" aria-label="With textarea" required></textarea>
             </div>
 
         </div>
         <div class="col-12 row mt-2">
-            <div class="col-2"></div>
-            <div class="col-8" >
+            <div class="col-lg-2 col-md-6 col-sm-12"></div>
+            <div class="col-lg-8 col-md-8 col-sm-12" >
                 <label for="email">Email</label><br>
                 <input type="text" id="email" name="email"maxlength="70" required>
             </div>
         </div>
         <div class="col-12 row mt-2">
-            <div class="col-2"></div>
-            <div class="col-4" >
+            <div class="col-lg-2 col-md-6 col-sm-12"></div>
+            <div class="col-lg-4 col-md-6 col-sm-12" >
                 <label for="Birthday">Birthday</label><br>
                 <input type="date" id="Birthday" name="Birthday" required>
             </div>
-            <div class="col-4" >
+            <div class="col-lg-4 col-md-6 col-sm-12" >
                 <label for="First_day_work">First day of work</label><br>
                 <input type="date" id="First_day_work" name="First_day_work" required>
             </div>
         </div>
         <div class="col-12 row mt-2">
-            <div class="col-2"></div>
-            <div class="col-4" >
+            <div class="col-lg-2 col-md-6 col-sm-12"></div>
+            <div class="col-lg-4 col-md-6 col-sm-12" >
                 <label for="booking_channel">Booking Channel:</label><br>
                 <select name="booking_channel[]" id="booking_channel" class="select2" multiple>
                     <option value=""></option>
@@ -298,7 +289,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-4">
+            <div class="col-lg-4 col-md-6 col-sm-12">
                 <label for="Phone_number">Phone number</label><br>
                 <div id="phone-container" class="flex-container">
                     <!-- ตำแหน่งนี้จะใส่ input เดียวในตอนเริ่มต้น -->
@@ -313,32 +304,32 @@
             </div>
         </div>
         <div class="col-12 row mt-2">
-            <div class="col-2"></div>
-            <div class="col-4" >
+            <div class="col-lg-2 col-md-6 col-sm-12"></div>
+            <div class="col-lg-4 col-md-6 col-sm-12" >
                 <label for="identification_number">Identification Number</label><br>
                 <input type="text" id="identification_number" name="identification_number"maxlength="13" required>
 
             </div>
-            <div class="col-4 mt-2">
+            <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                 <label for="Identification_Number_file">Identification Number File</label><br>
                 <input type="file" id="Identification_Number_file" name="Identification_Number_file"
-                 required style="width: 420px;border: 2px solid  #b4b4b4"accept="image/jpeg, image/png, image/svg">
+                 required style="width: 100%;border: 2px solid  #b4b4b4"accept="image/jpeg, image/png, image/svg">
             </div>
         </div>
         <div class="col-12 row mt-2">
-            <div class="col-2"></div>
-            <div class="col-4 mt-2">
+            <div class="col-lg-2 col-md-6 col-sm-12"></div>
+            <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                 <label for="Bank_number">Bank Account Number</label><br>
                 <input type="text" id="Bank_number" name="Bank_number"maxlength="10" required>
             </div>
-            <div class="col-4 mt-2">
+            <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                 <label for="Account_Name">Bank Account Name</label><br>
                 <input type="text" id="Account_Name" name="Account_Name"maxlength="70" required>
             </div>
         </div>
         <div class="col-12 row mt-2">
-            <div class="col-2"></div>
-            <div class="col-4 mt-2">
+            <div class="col-lg-2 col-md-6 col-sm-12"></div>
+            <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                 <label for="Bank">Bank</label><br>
                     <select name="Mbank" id = "Mbank" class="select2">
                         <option value=""></option>
@@ -350,24 +341,25 @@
             <div class="col-4 mt-2" >
                 <label for="Bank_file">Bank File</label><br>
                 <input type="file" id="Bank_file" name="Bank_file"   required
-                style="width: 420px;  border: 2px solid  #b4b4b4"
+                style="width: 100%;  border: 2px solid  #b4b4b4"
                 accept="image/jpeg, image/png, image/svg">
 
             </div>
         </div>
-        <div class="col-12 row mt-2">
-            <div class="col-2"></div>
-            <div class="col-4">
-                <div class="button-guest">
-                    <button type="submit" class="btn">ตกลง</button>
+
+            <div class="col-12 mt-2">
+                <div class="row">
+                    <div class="col-lg-4 col-md-2 col-sm-12 "></div>
+                    <div class="col-lg-4 col-md-2 col-sm-12 "style="display:flex; justify-content:center;">
+                        <div >
+                            <button class="btn btn-animate-1" type="submit" style="background: #2D7F7B;" >ตกลง</button>
+                            <button class="btn btn-animate-1" type="button" style="background: #ff0000;" onclick="window.location.href='{{ route('freelancer.index') }}'" >{{ __('ย้อนกลับ') }}</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-2 col-sm-12 "></div>
                 </div>
             </div>
-            <div class="col-4">
-                <div class="button-guest-end">
-                    <button type="button" class="btn" onclick="window.location.href='{{ route('freelancer.index') }}'" >{{ __('ย้อนกลับ') }}</button>
-                </div>
-            </div>
-        </div>
+
     </form>
 </div>
 <script>

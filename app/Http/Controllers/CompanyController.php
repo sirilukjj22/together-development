@@ -26,17 +26,11 @@ class CompanyController extends Controller
     public function contact($id)
     {
         $Company = companys::find($id);
-        $Company_Name = $Company->Company_Name;
-        $Branch = $Company->Branch;
-        $representative = representative::where('Company_Name', 'like', "%{$Company_Name}%")
-                        ->where('Branch', 'like', "%{$Branch}%")->get();
-        $N_Profile_ID = representative::where('Company_Name', 'like', "%{$Company_Name}%")
-                        ->where('Branch', 'like', "%{$Branch}%")
-                        ->where('status', '1')->count();
-        $N_Profile_ID = $N_Profile_ID + 1 ;
+        $Company_ID = $Company->Profile_ID;
+        $representative = representative::where('Company_ID', 'like', "%{$Company_ID}%")->get();
         $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
         $provinceNames = province::select('name_th','id')->get();
-        return view('company.contact',compact('provinceNames','Mprefix','Company','N_Profile_ID','representative'));
+        return view('company.contact',compact('provinceNames','Mprefix','Company','representative'));
     }
     public function contactcreate(Request $request ,$id)
     {

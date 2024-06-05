@@ -1,7 +1,7 @@
-<!-- @extends('layouts.test')
+ @extends('layouts.test')
 
 @section('content')
- -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    
+
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"></script>
@@ -404,65 +404,6 @@
     background-color: white;
   }
 </style>
-    <!-- <div class="menu">
-        <div class="logo">
-            <a href="index.html"><img src="../images/Logo.png" alt="" id="logo_togeter"></a>
-        </div>
-        <h1>Menu</h1>
-        <a href="index.html">
-            <div class="active">SMS Alert</div>
-        </a>
-        <a href="revenue.html">
-            <div class="menu2">Revenue</div>
-        </a>
-        <a href="userhome.html">
-            <div class="menu2">Users</div>
-        </a>
-        <a href="bankhome.html">
-            <div class="menu2">Bank</div>
-        </a>
-
-        <div class="dropdown">
-            <button onclick="myFunction()" class="dropbtn">Profile &nbsp; <i class="fa-solid fa-caret-down"></i>
-            </button>
-            <div id="myDropdown" class="dropdown-content">
-                <a class="menu2" href="#home">Guest</a>
-                <a class="menu2" href="#about">Company / Agent</a>
-            </div>
-        </div>
-        <script>
-            /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
-            function myFunction() {
-                var dropdown = document.getElementById("myDropdown");
-                dropdown.classList.toggle("show");
-                if (dropdown.classList.contains("show")) {
-                    dropdown.style.maxHeight = dropdown.scrollHeight + "px";
-                } else {
-                    dropdown.style.maxHeight = "0";
-                }
-            }
-
-            // Close the dropdown if the user clicks outside of it
-            window.onclick = function(event) {
-                if (!event.target.matches(".dropbtn")) {
-                    var dropdowns = document.getElementsByClassName("dropdown-content");
-                    for (var i = 0; i < dropdowns.length; i++) {
-                        var openDropdown = dropdowns[i];
-                        if (openDropdown.classList.contains("show")) {
-                            openDropdown.classList.remove("show");
-                            openDropdown.style.maxHeight = "0";
-                        }
-                    }
-                }
-            }
-        </script>
-
-        <div>
-            <button type="button" class="menu3" style="width:100%;" data-toggle="modal" data-target="#exampleModalCenter3">
-                Logout
-            </button>
-        </div>
-    </div> -->
     <div class="container">
         <div class="row">
             <div class="titleh1 col-lg-6 col-md-6 col-sm-6">
@@ -955,7 +896,7 @@
 
 
 
-<!-- @if(Session::has('error')) -->
+@if(Session::has('error'))
 <script>
     swal({
         title: "{{ Session::get('error') }}",
@@ -971,8 +912,8 @@
         alert(msg);
     }
 </script>
-<!-- @endif
-@if(Session::has('alert')) -->
+ @endif
+@if(Session::has('alert'))
 <script>
     swal({
         title: "{{ Session::get('alert') }}",
@@ -988,6 +929,6 @@
         alert(msg);
     }
 </script>
-<!-- @endif
+@endif
 
-@endsection -->
+@endsection

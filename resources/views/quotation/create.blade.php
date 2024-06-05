@@ -1,7 +1,11 @@
 @extends('layouts.test')
-
 @section('content')
-
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <style>
     .container {
         margin-top: 40px;
@@ -262,20 +266,7 @@
             text-align: center;
         }
     }
-    .Customer-Information-container {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        text-align: left;
-    }
 
-    .Customer-Information-container  .info {
-        margin-top: 0;
-    }
-
-    .Customer-Information-container  .info p {
-        margin: 5px 0;
-    }
     .row p {
         margin: 0; /* ลบ margin ที่เกิดจากการใช้งานของบราวเซอร์ */
     }
@@ -292,6 +283,21 @@
     .Contact-Information-container  .info p {
         margin: 5px 0;
     }
+    .calendar-icon {
+        background: #fff no-repeat center center;
+        width: 50px; /* หรือขนาดที่คุณต้องการ */
+        height: 50px;
+        vertical-align: middle;
+        margin-right: 5px;
+        transition: background-color 0.3s, transform 0.3s;/* ระยะห่างจากข้อความ */
+    }
+    .calendar-icon:hover {
+        background: #fff ;
+        transform: scale(1.1);
+    }
+    .calendar-icon:active {
+        transform: scale(0.9);
+    }
 </style>
 <script>
     $(document).ready(function() {
@@ -307,7 +313,8 @@
         });
     });
 </script>
-
+<form id="myForm" action="{{route('MEvent.save')}}" method="POST">
+    {!! csrf_field() !!}
 <div class="container">
     <div class=" col-12">
         <div class="row">
@@ -321,25 +328,45 @@
                 <p></p>
             </div>
         </div>
-            <div class="col-lg-2 col-md-12 col-sm-12"></div>
-            <div class="col-lg-2 col-md-12 col-sm-12 quotation-container">
+            <div class="col-lg-1 col-md-12 col-sm-12"></div>
+            <div class="col-lg-3 col-md-12 col-sm-12 quotation-container">
                 <div class="row">
                     <p class="quotation-number">Quotation </p>
                     <p class="quotation-id ">{{$Quotation_ID}}</p>
                     <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
-                    <p class="quotation-id">Issue date : {{$Issue_date}}</p>
-                    <p class="quotation-id">Valid Until : {{$Valid_Until}}</p>
+                    <div id="reportrange1" style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;">
+                        <div class="row">
+                            <div class="col-5 col-md-5 col-sm-12" style="display:flex; justify-content:right; align-items:center;">
+                                <p>Issue Date:</p>
+                            </div>
+                            <div class="col-7 col-md-7 col-sm-12">
+                                <input type="text" id="datestart" name="IssueDate" style="text-align: left;"readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5 col-md-5 col-sm-12" style="display:flex; justify-content:center; align-items:center;">
+                                <p>Expiration Date:</p>
+                            </div>
+                            <div class="col-7 col-md-7 col-sm-12">
+                                <input type="text" id="dateex" name="Expiration" style="text-align: left;"readonly>
+                            </div>
+                        </div>
+                        <i class="fa fa-calendar"></i>&nbsp;
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div>
-        <div class="titleh1 col-7 mt-5">
-            <h1>Quotation</h1>
-        </div>
+
     </div>
-    <form id="myForm" action="{{route('MEvent.save')}}" method="POST">
-        {!! csrf_field() !!}
+
+        <div class="row">
+            <div class="titleh1 col-lg-6 col-md-6 col-sm-12 mt-5">
+                <h1>Quotation</h1>
+            </div>
+        </div>
+
         <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
         <div class="col-12 mt-3">
             <div class="row">
@@ -367,25 +394,27 @@
 
         <hr class="mt-3 my-3" style="border: 1px solid #000">
         <div class="col-12 mt-3">
-            <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-12">
-                    <label class="Select_a_date" for="">Select a date</label>
-                    <select name="Select_a_date" id="Select_a_date" class="form-select" required onchange="toggleDateInput()">
-                        <option value="No_date" id="No_date">ไม่ระบุวันที่ (Date not specified)</option>
-                        <option value="Yes_date" id="Yes_date">ระบุวันที่ (Specify date)</option>
-                    </select>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-12">
-                    <label for="Check_In_Date">Check in date</label><br>
-                    <div class="datestyle"><input type="date" id="Check_In_Date" name="Check_In_Date" readonly  onchange="Onclickreadonly()"></div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-12">
-                    <label for="Check_Out_Date">Check out date</label><br>
-                    <div class="datestyle">
-                    <input type="date" id="Check_Out_Date" name="Check_Out_Date" readonly>
+            <div class="row" >
+                <div class="col-lg-4 col-md-6 col-sm-12 ">
+                    <div id="reportrange" style="background: #fff; cursor: pointer; padding:10px; width: 100%;border-radius: 5px;">
+                        <div class="col-lg-12 col-md-6 col-sm-12">
+                            <div class="row">
+                                <div class="col-lg-5 col-md-6 col-sm-12">
+                                    <label  for="">Check in date</label>
+                                    <input type="text" id="date2" name="Checkin" readonly>
+                                </div>
+                                <div class="col-lg-5 col-md-6 col-sm-12">
+                                    <label  for="">Check out date</label>
+                                    <input type="text" id="date3" name="Checkout" readonly>
+                                </div>
+                                <div class="col-lg-2 col-md-6 col-sm-12 mt-4"style="display:flex; justify-content:center;">
+                                    <img src="{{ asset('assets2/images/calendar.png') }}" class="calendar-icon " id="calendarIcon">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="col-lg-4 col-md-6 col-sm-12">
                     <label for="">จำนวน</label>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control mt-2" name="Day" placeholder="จำนวนวัน" aria-label="Username" >
@@ -394,14 +423,14 @@
                         <span class="input-group-text custom-span-1" id="basic-addon2">Night</span>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="col-lg-2 col-md-6 col-sm-12">
                     <label  for="">Adult</label>
                     <div class="input-group mb-3" >
                         <input type="text" class="form-control mt-2" name="Adult" placeholder="จำนวนผู้ใหญ่" aria-describedby="basic-addon2">
                         <span class="input-group-text-Adult mt-2" id="basic-addon2" >Person</span>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="col-lg-2 col-md-6 col-sm-12">
                     <label  for="">Children</label>
                     <div class="input-group ">
                         <input type="text" class="form-control mt-2" name="Children" placeholder="จำนวนเด็ก" aria-describedby="basic-addon2">
@@ -468,8 +497,66 @@
         </div>
     </form>
 </div>
-<script>
+<script type="text/javascript">calendarIcon
+    $(function() {
+        var start = moment();
+        var end = moment().add(7, 'days');
+        function cb(start, end, label) {
+        if (label === 'ไม่ระบุ') {
+            $('#date2').val('');
+            $('#date3').val('');
+        } else {
+            $('#date2').val(start.format('DD/MM/YYYY'));
+            $('#date3').val(end.format('DD/MM/YYYY'));
+        }
+    }
 
+        $('#reportrange').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                '7 Days': [moment(), moment().add(7, 'days')],
+                '15 Days': [moment(), moment().add(15, 'days')],
+                '30 Days': [, moment().add(30, 'days')],
+                'ไม่ระบุ': [null, null]
+            }
+        },
+        cb);
+        $('#calendarIcon').on('click', function() {
+        $('#reportrange').daterangepicker(daterangepickerOptions, cb);
+        $('#reportrange').data('daterangepicker').show();
+    });
+        cb(start, end);
+    });
+</script>
+
+<script type="text/javascript">
+    $(function() {
+
+        var start = moment();
+        var end = moment().add(7, 'days');
+
+        function cb(start, end) {
+            $('#datestart').val(start.format('DD/MM/Y'));
+            $('#dateex').val(end.format('DD/MM/Y'));
+        }
+
+
+        $('#reportrange1').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                '7 Days': [moment(), moment().add(7, 'days')],
+               '15 Days': [moment(), moment().add(15, 'days')],
+               '30 Days': [moment(), moment().add(30, 'days')],
+            }
+        },
+        cb);
+        cb(start, end);
+    });
+    </script>
+
+<script>
     function Onclickreadonly() {
         var startDate = document.getElementById('contract_rate_start_date').value;
         if (startDate !== '') {

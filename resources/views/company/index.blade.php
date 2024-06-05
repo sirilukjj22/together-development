@@ -16,10 +16,6 @@
                     <span class="checkmark"></span>
                 </label>ทั้งหมด</th>
         </div>
-
-        {{-- <button type="button" class="button-4 sa-buttons" style="float: right;" onclick="showSelectedRecords()">ลบหลายรายการ</button> --}}
-
-
         <button class="statusbtn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">
             สถานะการใช้งาน &#11206;

@@ -9,6 +9,14 @@
         padding: 5% 5%;
         overflow-x: hidden;
     }
+    .form-select{
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
         input[type=text], select {
         width: 100%;
         padding: 12px 20px;
@@ -219,6 +227,7 @@
   .custom-accordion input[type="checkbox"]:checked + label + .custom-accordion-content {
     display: block;
   }
+
    .button1 {
             background-color: white;
             border: 2px solid #ccc;
@@ -261,7 +270,9 @@
     .titleh1 {
         font-size: 32px;
     }
-
+    .select2-container{
+            width: 100% !important;
+        }
     </style>
     <div class="container">
         <div class="row">
@@ -300,45 +311,42 @@
         </div>
         <div class="modal fade" id="createContart" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalCenter2Title" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">เพิ่มตัวแทนบริษัท</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body-split">
                     <form  id="myForm" action="{{url('/Company/edit/contact/create/'.$Company->id)}}"  method="POST">
                     {!! csrf_field() !!}
                         <div class="col-12 row">
-                            <div class="col-1"></div>
-                            <div class="col-2"><label for="prefix">Title</label><br>
+                            <div class="col-lg-1 col-md-1 col-sm-12"></div>
+                            <div class="col-lg-2 col-md-6 col-sm-12" ><label for="prefix">Title</label><br>
                                 <select name="prefix" id="PrefaceSelect" class="form-select" required>
                                     <option value=""></option>
                                         @foreach($Mprefix as $item)
                                             <option value="{{ $item->id }}">{{ $item->name_th }}</option>
                                         @endforeach
                                 </select></div>
-                            <div class="col-4" ><label for="first_name">First Name</label><br>
+                            <div class="col-lg-4 col-md-6 col-sm-12" ><label for="first_name">First Name</label><br>
                             <input type="text" id="first_nameAgent" name="first_nameAgent"maxlength="70" required></div>
-                            <div class="col-4" ><label for="last_name" >Last Name</label><br>
+                            <div class="col-lg-4 col-md-6 col-sm-12" ><label for="last_name" >Last Name</label><br>
                             <input type="text" id="last_nameAgent" name="last_nameAgent"maxlength="70" required></div>
                         </div>
                         <div class="col-12 row">
-                            <div class="col-1"></div>
-                            <div class="col-3">
+                            <div class="col-lg-1 col-md-1 col-sm-12"></div>
+                            <div class="col-lg-3 col-md-6 col-sm-12 mt-2">
                                 <label for="Country">Country</label><br>
                                 <select name="countrydataA" id="countrySelectA" class="form-select" onchange="showcityAInput()">
                                     <option value="Thailand">ประเทศไทย</option>
                                     <option value="Other_countries">ประเทศอื่นๆ</option>
                                 </select>
                             </div>
-                            <div class="col-3 mt-2" id="cityInputA" style="display:none;">
+                            <div class="col-lg-3 col-md-6 col-sm-12 mt-2" id="cityInputA" style="display:none;">
                                 <label for="City">City</label><br>
                                 <input type="text" id="cityA" name="cityA">
                             </div>
-                            <div class="col-3 mt-2" id="citythaiA" style="display:block;">
+                            <div class="col-lg-3 col-md-6 col-sm-12 mt-2" id="citythaiA" style="display:block;">
                                 <label for="City">City</label><br>
                                 <select name="provinceAgent" id="provinceAgent" class="select2" onchange="provinceA()" style="width: 100%;">
                                     <option value=""></option>
@@ -347,7 +355,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-4  mt-2">
+                            <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                                 <label for="Amphures">Amphures</label><br>
                                 <select name="amphuresA" id="amphuresA" class="select2" onchange="amphuresAgent()" >
                                     <option value=""></option>
@@ -355,34 +363,34 @@
                             </div>
                         </div>
                         <div class="col-12 row">
-                            <div class="col-1"></div>
-                            <div class="col-3 mt-2">
+                            <div class="col-lg-1 col-md-6 col-sm-12"></div>
+                            <div class="col-lg-3 col-md-6 col-sm-12 mt-2">
                                 <label for="Tambon">Tambon</label><br>
                                 <select name="TambonA" id ="TambonA" class="select2" onchange="TambonAgent()" style="width: 100%;">
                                     <option value=""></option>
                                 </select>
                             </div>
-                            <div class="col-3 mt-2">
+                            <div class="col-lg-3 col-md-6 col-sm-12 mt-2">
                                 <label for="zip_code">zip_code</label><br>
                                 <select name="zip_codeA" id ="zip_codeA" class="select2"  style="width: 100%;">
                                     <option value=""></option>
                                 </select>
                             </div>
-                            <div class="col-4">
+                            <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="Email">Email</label><br>
                                 <input type="text" id="EmailAgent" name="EmailAgent"maxlength="70" required>
                             </div>
                         </div>
                         <div class="col-12 row">
-                            <div class="col-1"></div>
-                            <div class="col-10" >
+                            <div class="col-lg-1 col-md-6 col-sm-12"></div>
+                            <div class="col-lg-10 col-md-10 col-sm-12" >
                                 <label for="Address">Address</label><br>
                                 <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="textarea" aria-label="With textarea" required></textarea>
                             </div>
                         </div>
                         <div class="col-12 row">
-                            <div class="col-1"></div>
-                            <div class="col-4" >
+                            <div class="col-lg-1 col-md-6 col-sm-12"></div>
+                            <div class="col-lg-4 col-md-6 col-sm-12" >
                                 <label for="Phone_number">Phone Number</label><br>
                                 <div id="phone-container" class="flex-container">
                                     <!-- ตำแหน่งนี้จะใส่ input เดียวในตอนเริ่มต้น -->
@@ -394,8 +402,8 @@
                             </div>
                         </div>
                         <div class="col-12 row">
-                            <div class="col-1"></div>
-                            <div class="col-4">
+                            <div class="col-lg-1 col-md-6 col-sm-12"></div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
                                 <button type="button" class="add-phone"id="add-phone" data-target="phone-container">เพิ่ม</button>
                                 <button type="button" class="remove-phone " >ลบ</button>
                             </div>
@@ -478,8 +486,10 @@
                 //ajax: 'arrays.txt'
                 // scrollX: true,
             });
-    
-            $('.select2').select2();
+
+            $('.select2').select2({
+                dropdownParent: $('#createContart')
+            });
         });
 
 

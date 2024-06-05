@@ -983,12 +983,12 @@ function updateWindowPhoneChanged() {
                     console.log("Form is about to be submitted.");
                     submitFormWithAjax(myForm).then(() => {
                         console.log("Form submitted."); // เพิ่ม log หลังการส่งฟอร์ม
-                        window.location.href = '{{ url('/Company/edit/contact/detail/ '.$Company->id) }}'; // เปลี่ยนหน้า
+                        window.location.href = '{{ url('/Company/edit/contact/detail/'.$Company->id) }}'; // เปลี่ยนหน้า
                     });
 
                 } else {
                     console.log("User cancelled the form submission.");
-                    window.location.href = '{{ url('/Company/edit/contact/detail/ '.$Company->id) }}';
+                    window.location.href = '{{ url('/Company/edit/contact/detail/'.$Company->id) }}';
                 }
             });
         } else {
@@ -1012,7 +1012,7 @@ function updateWindowPhoneChanged() {
                     console.log("Form is about to be submitted.");
                     submitFormWithAjax(myForm).then(() => {
                         console.log("Form submitted."); // เพิ่ม log หลังการส่งฟอร์ม
-                        window.location.href = '{{ url(' /Company/edit/contact/detail / '.$Company->id) }}'; // เปลี่ยนหน้า
+                        window.location.href = '{{ url(' /Company/edit/contact/detail/'.$Company->id) }}'; // เปลี่ยนหน้า
                     });
                 }
             });
@@ -1037,7 +1037,7 @@ function updateWindowPhoneChanged() {
                     console.log("Form is about to be submitted.");
                     submitFormWithAjax(myForm).then(() => {
                         console.log("Form submitted."); // เพิ่ม log หลังการส่งฟอร์ม
-                        window.location.href = '{{ url('/Company/edit/contact/ '.$Company->id) }}'; // เปลี่ยนหน้า
+                        window.location.href = '{{ url('/Company/edit/contact/'.$Company->id) }}'; // เปลี่ยนหน้า
                     });
                 }
             });
@@ -1165,12 +1165,12 @@ function updateWindowPhoneChanged() {
                     console.log("Form is about to be submitted.");
                     submitFormWithAjax(myForm).then(() => {
                         console.log("Form submitted."); // เพิ่ม log หลังการส่งฟอร์ม
-                        window.location.href = '{{ url('/Company/edit/contact/ '.$Company->id) }}'; // เปลี่ยนหน้า
+                        window.location.href = '{{ url('/Company/edit/contact/'.$Company->id) }}'; // เปลี่ยนหน้า
                     });
                 }
             });
         } else {
-            window.location.href = '{{ url('/Company/edit/contact/ '.$Company->id) }}';
+            window.location.href = '{{ url('/Company/edit/contact/'.$Company->id) }}';
         }
     }
 
@@ -1189,12 +1189,12 @@ function updateWindowPhoneChanged() {
                     console.log("Form is about to be submitted.");
                     submitFormWithAjax(myForm).then(() => {
                         console.log("Form submitted."); // เพิ่ม log หลังการส่งฟอร์ม
-                        window.location.href = '{{ url('/Company/edit/contact/detail/ '.$Company->id) }}'; // เปลี่ยนหน้า
+                        window.location.href = '{{ url('/Company/edit/contact/detail/'.$Company->id) }}'; // เปลี่ยนหน้า
                     });
                 }
             });
         } else {
-            window.location.href = '{{ url('/Company/edit/contact/detail/ '.$Company->id) }}';
+            window.location.href = '{{ url('/Company/edit/contact/detail/'.$Company->id) }}';
         }
     }
 

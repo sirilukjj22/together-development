@@ -35,7 +35,7 @@ ul a{
 /*0 - 767 (Mobile)
 /* ADD PAGE */
 
-.modal-body-split{
+/* .modal-body-split{
   padding: 10px;
   height: 100%;
 }
@@ -57,7 +57,7 @@ ul a{
   height: 30px;
   object-fit: cover;
   margin: auto;
-}
+} */
 .cancelbutton button{
   border-radius: 8px;
   border-style: solid;
@@ -375,7 +375,7 @@ ul a{
   margin-right: 10px;
   border-radius: 8px;
 }
-.dt-length label{ 
+.dt-length label{
   display: none;
 }
 .button-3, .button-1{
@@ -588,7 +588,7 @@ pointer-events: none; /* Allow pointer events to pass through */
   font-weight: 600;
   text-shadow: 1px 1px 8px #383838;
   margin: 0;
-  
+
 }
 .title-box h1{
   font-size: 24px;
@@ -633,7 +633,7 @@ pointer-events: none; /* Allow pointer events to pass through */
   padding: 10% 0 0 0;
   color: black;
   background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-}  
+}
 .list-box2{
   width: 100%;
   border-radius: 8px;
@@ -641,7 +641,7 @@ pointer-events: none; /* Allow pointer events to pass through */
   margin: 1%;
   color: black;
   background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
-}   
+}
 .list-box3{
   width: 48%;
   border-radius: 8px;
@@ -959,7 +959,7 @@ pointer-events: none; /* Allow pointer events to pass through */
   margin-left: 10px;
   border-radius: 8px;
 }
-.dt-length label{ 
+.dt-length label{
   display: block;
   margin-left: 10px;
 }
@@ -1186,7 +1186,7 @@ tr.disable-row:hover{
       margin: 0;
       margin-bottom: 25px;
     }
-    
+
     @media screen and (min-width:1440px){
       .add_user{
         display: block;
@@ -1200,7 +1200,7 @@ tr.disable-row:hover{
         padding: 40px;
         margin-top: 40px;
       }
-      
+
       .cancelbutton button{
         margin-left: 41.5%;
       }
@@ -1211,7 +1211,7 @@ tr.disable-row:hover{
         width: 49.5%;
         float: left;
       }
-  
+
       .transfer_time{
         width: 49.5%;
         float: left;
@@ -1312,7 +1312,7 @@ tr.disable-row:hover{
         margin-top: 20px;
         border-radius: 8px;
       }
-      #dt-length-2{      
+      #dt-length-2{
         width: 50%;
         float: left;
         margin-left: 10px;
@@ -1371,7 +1371,7 @@ tr.disable-row:hover{
       .display2.display3 th[data-dt-column="7"]{
         width: 15%;
       }
-      
+
       tr.disable-row{
         background-color: #dddddd !important;
         color: #545454;
@@ -1442,7 +1442,7 @@ tr.disable-row:hover{
         height: 100%;
         border-radius: 8px !important;
       }
-  
+
       /* .title-box{
         background-color: #109699;
         width: 100%;
@@ -1466,7 +1466,7 @@ tr.disable-row:hover{
         font-weight: 600;
         text-shadow: 1px 1px 8px #383838;
         margin: 0;
-        
+
       }
       .title-box h1{
         font-size: 24px;
@@ -1497,7 +1497,7 @@ tr.disable-row:hover{
         padding: 10% 0 0 0;
         color: black;
         background: white;
-      }  
+      }
       .list-box2{
         width: 100%;
         border: 1px solid #888;
@@ -1506,7 +1506,7 @@ tr.disable-row:hover{
         margin: 1%;
         color: black;
         background: white;
-      }   
+      }
       .list-box3{
         width: 48%;
         border: 1px solid #888;
@@ -1619,7 +1619,7 @@ tr.disable-row:hover{
         object-fit: cover;
         margin: 15px 10px 5px 10px;
       }
-      
+
       /* .list-box img{
         float: left;
         width: 25px;
@@ -1721,7 +1721,7 @@ tr.disable-row:hover{
         margin-top: 20px;
         margin-right: 20px;
       }
-      
+
       .list-box6 h3{
         font-size: 16px;
       }
@@ -1876,7 +1876,7 @@ tr.disable-row:hover{
     padding-top: 5px;
     margin-top: 20px;
     height: 40px;
-    
+
   }
   .menu3:hover {
     background-color: #002b28;
@@ -1933,7 +1933,7 @@ tr.disable-row:hover{
     text-align: left;
     text-decoration: none !important;
   }
-  
+
   .dropdown-content {
     display: none;
     overflow: auto;
@@ -1944,7 +1944,7 @@ tr.disable-row:hover{
     transition: max-height 0.3s ease-in-out;
     overflow-y: hidden;
   }
-  
+
   .dropdown-content a{
     color: white;
     padding: 10px 0 10px 0;
@@ -1953,6 +1953,7 @@ tr.disable-row:hover{
     height: 40px !important;
     padding-left: 30px;
   }
+<<<<<<< Updated upstream
   
   .dropdown a:hover {
     color: white;
@@ -1960,6 +1961,13 @@ tr.disable-row:hover{
     padding: 10px 0 10px 30px;
   }
   
+=======
+
+  .dropdown a:hover {color: white;
+    height: 40px !important;
+    padding: 10px 0 10px 30px;}
+
+>>>>>>> Stashed changes
   .show {display: block;}
 
 
@@ -2008,7 +2016,7 @@ tr.disable-row:hover{
       background-position: 0% 50%;
     } */
   }
-  
+
   .control {
     position: absolute;
     width: 40%;
@@ -2358,7 +2366,7 @@ tr.disable-row:hover{
     width: auto;
     height: auto;
   } */
-  
+
   .rectangle-FDB:hover {
     transition: 0.5s;
     background: #002b28;
@@ -2428,7 +2436,7 @@ tr.disable-row:hover{
   .frame-8.frame-9{
     background-color: #166d3b;
     background: linear-gradient(to right, #004e48, #000000);
-    width: 24%;  
+    width: 24%;
     top: 0%;
     height: 90px;
     margin-left: 0px;
@@ -2439,7 +2447,7 @@ tr.disable-row:hover{
     transform: scale(1.05);background-color: #166d3b;
     background-image: linear-gradient(147deg, #166d3b 0%, #000000 74%);
     transform: scale(1.05);
-    
+
   }
   .frame-7.frame-11{
     background-color: #166d3b;
@@ -2555,7 +2563,7 @@ tr.disable-row:hover{
     float: left;
     margin-left: 1%;
     box-shadow: 0px 4px 10px 4px rgba(0, 0, 0, 0.25);
-    
+
   }
   .frame-12:hover {
     transition: 0.5s;
@@ -2595,7 +2603,7 @@ tr.disable-row:hover{
     font-family: "Sarabun", sans-serif !important;
     padding: 5px;
     }
-    
+
     .iphone-button {
       width: 40%;
       height: 40px;
@@ -2612,21 +2620,21 @@ tr.disable-row:hover{
       transition: background-color 0.3s ease;
       /* Adding transition for background color change */
     }
-    
+
     .iphone-button:hover {
       background-color: #002b28;
     }
-    
+
     .Graph3 {
       width: 99%;
     background-color: white;
     height: auto;
     position: absolute;
-    top: 0%; 
+    top: 0%;
     padding: 0px;
     border-radius: 8px;
   }
-  
+
 
 
   .search {
@@ -2832,7 +2840,7 @@ tr.disable-row:hover{
     margin-top: 10px;
     text-align: center;
   } */
-    /* 
+    /*
   .tooltip {
     visibility: hidden;
     width: 555px;
@@ -2849,7 +2857,7 @@ tr.disable-row:hover{
     opacity: 0;
     transition: opacity 0.3s;
   }
-  
+
   .tooltip::after {
     content: "";
     position: absolute;
@@ -2861,12 +2869,12 @@ tr.disable-row:hover{
     border-color: transparent transparent #555 transparent;
   }
   */
-  
+
   /* .info-container:hover .tooltip {
     visibility: visible;
     opacity: 1;
   }
-  
+
   .info-container:hover .tooltip {
     visibility: visible;
     opacity: 1;
@@ -3106,7 +3114,7 @@ tr.disable-row:hover{
   }
   .dropdown li:hover {
     transition: 0.3s;
-    background-color: #325b4e;
+    /* background-color: #325b4e; */
     width: 100%;
     height: 40px;
     margin-top: 5px;
@@ -3230,7 +3238,7 @@ tr.disable-row:hover{
     margin-left: 1%; /* Left margin of 1% */
 }
   .select2-selection__arrow{
-    margin-top: 20px !important; 
+    margin-top: 20px !important;
   }
   .select2-selection__rendered{
     padding: 0px !important;
@@ -3243,7 +3251,7 @@ tr.disable-row:hover{
     background-color: #f9f9f9; /* Dropdown background color */
     border: 1px solid #aaa;    /* Border color */
     border-radius: 4px;       /* Rounded corners */
-    
+
   }
 
   /* Customize selected item */
@@ -3685,7 +3693,7 @@ tr.disable-row:hover{
       transform: scale(1.05);
       height: 110px;
       width: 24%;
-      
+
     }
     .frame-9{
       height: 110px;
@@ -4246,7 +4254,7 @@ tr.disable-row:hover{
       margin: 0;
       margin-top: 1%;
       margin-right: 1%;
-      
+
     }
     .frame-11{
       height: 110px;
@@ -4337,7 +4345,7 @@ tr.disable-row:hover{
       line-height: 50px;
       font-size: 20px;
       margin-top: -4px;
-  
+
     }
     .select2-container {
       float: left;
@@ -4345,7 +4353,12 @@ tr.disable-row:hover{
       font-size: 14px;
     }
 
+<<<<<<< Updated upstream
     
   }
   
 }
+=======
+  }
+}
+>>>>>>> Stashed changes
