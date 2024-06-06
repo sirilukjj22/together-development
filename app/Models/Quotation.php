@@ -26,4 +26,16 @@ class Quotation extends Model
         'event-format',
         'vat-type',
     ];
+    public function  company()
+    {
+        return $this->hasOne(companys::class, 'Profile_ID', 'Company_ID');
+    }
+    public function  contact()
+    {
+        return $this->hasOne(representative::class, 'Company_ID', 'Company_ID');
+    }
+    public function  freelancer()
+    {
+        return $this->hasOne(Freelancer_Member::class, 'Profile_ID', 'freelanceraiffiliate');
+    }
 }

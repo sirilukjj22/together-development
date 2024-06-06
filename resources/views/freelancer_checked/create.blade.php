@@ -108,14 +108,42 @@
     .remove-phone {
         /* เพิ่มสไตล์ที่คุณต้องการในส่วนนี้ */
         color: #fff;
-        background-color: #dc3545; /* สีแดง */
-        border-color: #dc3545; /* สีเหลือง */
+        background-color: #dc3545;
+        /* สีแดง */
+        border-color: #dc3545;
+        /* สีเหลือง */
         border-radius: 0.25rem;
         padding: 0.375rem 0.75rem;
         font-size: 1rem;
         line-height: 1.5;
         cursor: not-allowed;
     }
+    .remove-phone {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        margin-right: 6%;
+        margin-top: 10px;
+        height: 50%;
+        font-size: 14px !important;
+        border: none;
+        background: #dc3545;
+        /* Adjust the button style as needed */
+        padding: 0px 20px;
+        cursor: pointer;
+    }
+    .phone-group {
+        position: relative;
+    }
+
+    .phone-group input {
+        width: 100%;
+        padding-right: 40px;
+        /* space for the remove button */
+    }
+
     .card {
         width: 200px; /* กำหนดความกว้างตามต้องการ */
         height: 200px; /* กำหนดความสูงตามต้องการ */
@@ -168,7 +196,33 @@
     .select2-container {
         width: 100% !important;
     }
+    .flex-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .row label {
+        margin: 0;
+        margin-bottom: 5px;
+    }
+    .row input {
+        margin: 0;
+        margin-bottom: 2%;
+    }
 
+    .row select {
+        margin: 0;
+        margin-bottom: 2%;
+    }
+
+    .row .select2-selection {
+        margin: 0 !important;
+        margin-bottom: 2% !important;
+    }
+
+    .row .select2-selection .select2-selection__arrow {
+        margin: 10px !important;
+    }
 </style>
 
 
@@ -196,7 +250,7 @@
         </div>
         <div class="col-12 row">
             <div class="col-lg-2 col-md-6 col-sm-12"></div>
-            <div class="col-2"><label for="Preface">Title</label><br>
+            <div class="col-lg-2 col-md-6 col-sm-12"><label for="Preface">Title</label><br>
                 <select name="Preface" id="PrefaceSelect" class="select" >
                     <option value=""></option>
                         @foreach($prefix as $item)
@@ -280,7 +334,7 @@
         </div>
         <div class="col-12 row mt-2">
             <div class="col-lg-2 col-md-6 col-sm-12"></div>
-            <div class="col-lg-4 col-md-6 col-sm-12" >
+            <div class="col-lg-4 col-md-6 col-sm-12 mt-4" >
                 <label for="booking_channel">Booking Channel:</label><br>
                 <select name="booking_channel[]" id="booking_channel" class="select2" multiple>
                     <option value=""></option>
@@ -290,17 +344,21 @@
                 </select>
             </div>
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <label for="Phone_number">Phone number</label><br>
-                <div id="phone-container" class="flex-container">
-                    <!-- ตำแหน่งนี้จะใส่ input เดียวในตอนเริ่มต้น -->
-                    <div class="phone-group" >
-                        <input type="text" name="phone[]" id="phone-main"class="form-control" maxlength="10" required oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11);">
-                        <div id="add-phone-orther"></div>
+                <div class="row">
+                    <div class="col-lg-7 col-md-6 col-sm-12">
+                        <label for="Phone_number">หมายเลขโทรศัพท์ / Phone number</label>
+                    </div>
+                    <div class="col-lg-5 col-md-6 col-sm-12">
+                        <button type="button" class="add-phone" id="add-phone" data-target="phone-container">เพิ่มเบอร์โทรศัพท์</button>
                     </div>
                 </div>
-
-                <button type="button" class="add-phone"id="add-phone" data-target="phone-container">Add Phone</button>
-                <button type="button" class="remove-phone" >Remove</button>
+                <div id="phone-container" class="flex-container row">
+                    <!-- Initial input field -->
+                    <div class="col-lg-12 col-md-6 col-sm-12 phone-group">
+                        <input type="text" name="phone[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                        <button type="button" class="remove-phone">ลบ</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-12 row mt-2">
@@ -346,20 +404,20 @@
 
             </div>
         </div>
-
-            <div class="col-12 mt-2">
+        <div class="col-12 row mt-2">
+            <div class="col-lg-4 col-md-2 col-sm-12 "></div>
+            <div class="col-lg-4 col-md-2 col-sm-12 ">
                 <div class="row">
-                    <div class="col-lg-4 col-md-2 col-sm-12 "></div>
-                    <div class="col-lg-4 col-md-2 col-sm-12 "style="display:flex; justify-content:center;">
-                        <div >
-                            <button class="btn btn-animate-1" type="submit" style="background: #2D7F7B;" >ตกลง</button>
-                            <button class="btn btn-animate-1" type="button" style="background: #ff0000;" onclick="window.location.href='{{ route('freelancer.index') }}'" >{{ __('ย้อนกลับ') }}</button>
-                        </div>
+                    <div class="col-lg-6 col-md-2 col-sm-12 mt-2" >
+                        <button class="btn btn-animate-1" type="submit" style="background: #2D7F7B; width:100%" >ตกลง</button>
                     </div>
-                    <div class="col-lg-4 col-md-2 col-sm-12 "></div>
+                    <div class="col-lg-6 col-md-2 col-sm-12 mt-2" >
+                        <button class="btn btn-animate-1" type="button" style="background: #ff0000;width:100%" onclick="window.location.href='{{ route('freelancer.index') }}'" >{{ __('ย้อนกลับ') }}</button>
+                    </div>
                 </div>
             </div>
-
+            <div class="col-lg-4 col-md-2 col-sm-12 "></div>
+        </div>
     </form>
 </div>
 <script>
@@ -490,33 +548,25 @@ function select_Tambon(){
         },
     })
 }
+document.getElementById('add-phone').addEventListener('click', function() {
+    var phoneContainer = document.getElementById('phone-container');
+    var newPhoneGroup = phoneContainer.firstElementChild.cloneNode(true);
+    newPhoneGroup.querySelector('input').value = '';
+    phoneContainer.appendChild(newPhoneGroup);
+    attachRemoveEvent(newPhoneGroup.querySelector('.remove-phone'));
+});
 
-document.addEventListener("DOMContentLoaded", function() {
-    const addButton = document.getElementById('add-phone');
-    const removeButton = document.querySelector('.remove-phone');
-    const phoneContainer = document.getElementById('phone-container');
-
-    let phoneCount = 1;
-
-    addButton.addEventListener('click', function() {
-            const phoneGroup = document.createElement('div');
-            phoneGroup.classList.add('phone-group');
-            phoneGroup.innerHTML = `
-                <input type="text" name="phone[]" class="form-control" maxlength="10" >
-            `;
-            phoneContainer.appendChild(phoneGroup);
-            phoneCount++;
-    });
-
-    removeButton.addEventListener('click', function() {
-        if (phoneCount > 1) {
-            const phoneGroups = phoneContainer.querySelectorAll('.phone-group');
-            const lastPhoneGroup = phoneGroups[phoneGroups.length - 1];
-            phoneContainer.removeChild(lastPhoneGroup);
-            phoneCount--;
+function attachRemoveEvent(button) {
+    button.addEventListener('click', function() {
+        var phoneContainer = document.getElementById('phone-container');
+        if (phoneContainer.childElementCount > 1) {
+            phoneContainer.removeChild(button.parentElement);
         }
     });
-});
+}
+
+// Attach the remove event to the initial remove button
+attachRemoveEvent(document.querySelector('.remove-phone'));
 </script>
 <script>
     $(document).ready(function() {

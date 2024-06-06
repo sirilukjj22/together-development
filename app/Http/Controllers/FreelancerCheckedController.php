@@ -216,7 +216,7 @@ class FreelancerCheckedController extends Controller
     }
     public function updatefreelancercheck(Request $request ,$id)
     {
-       // dd($request->all());
+
         if ($request->hasFile('imageFile')) {
             $image = Freelancer_checked::find($id);
             $filePath = public_path($image->Imagefreelan);

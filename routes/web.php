@@ -314,8 +314,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/create/company/Contact/{companyID}','Contact')->name('Quotation.company');
         Route::post('/Quotation/Event_Formate/save', 'save')->name('MEvent.save');
         Route::get('/Quotation/Event_Formate/company/product/{id}', 'selectProduct')->name('Quotation.SelectProduct');
-        // Route::post('/Quotation/Event_Formate/update', 'update')->name('MEvent.update');
-        // Route::get('/Quotation/changeStatus_Event/{id}/{status}','changeStatus')->name('MEvent.changeStatus');
+        Route::post('/Quotation/Event_Formate/create/quotation/{Quotation_ID}', 'quotation')->name('Quotation.quotation');
+        Route::get('/Quotation/edit/quotation/{id}','edit')->name('Quotation.edit');
+        Route::post('/Quotation/edit/quotation/update/{id}', 'updateCompanyQuotation')->name('Quotation.updateCompanyQuotation');
     });
 
 Route::get('/clear-cache', function () {

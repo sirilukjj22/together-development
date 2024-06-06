@@ -3,7 +3,7 @@
 @section('content')
     <div class="Usertable">
         <div class="col-12">
-            <button type="button" class="submit-button" onclick="window.location.href='{{ route('Quotation.create') }}'" style="float: right;" >เพิ่มผู้ใช้งาน</button>
+            <button type="button" class="submit-button" onclick="window.location.href='{{ route('Quotation.create') }}'" style="float: right;" >เพิ่มใบเสนอราคา</button>
         </div>
         <div class="usertopic">
             <h1>Quotation</h1>
@@ -40,9 +40,9 @@
                             </label>ทั้งหมด
                         </th>
                         <th style="text-align: center;">ลำดับ</th>
-                        <th>Product item</th>
-                        <th>Name</th>
-                        <th>type</th>
+                        <th>Code</th>
+                        <th>Company Name</th>
+                        <th>Contact</th>
                         <th>สถานะการใช้งาน</th>
                         <th style="text-align: center;">คำสั่ง</th>
                     </tr>
@@ -58,9 +58,9 @@
                                     </label>
                                 </td>
                                 <td data-label="#">{{ $key + 1 }}</td>
-                                <td data-label="Product item">{{ $item->Category }}</td>
-                                <td data-label="Name">{{ $item->name_en }}</td>
-                                <td data-label="type">{{ $item->type }}</td>
+                                <td data-label="Product item">{{ $item->Quotation_ID }}</td>
+                                <td data-label="Name">{{ @$item->company->Company_Name}}</td>
+                                <td data-label="type">{{@$item->contact->First_name}} {{@$item->contact->Last_name}}</td>
                                 <td data-label="สถานะการใช้งาน">
                                     @if ($item->status == 1)
                                         <button type="button" class="button-1 status-toggle" data-id="{{ $item->id }}"data-status="{{ $item->status }}">ใช้งาน</button>
@@ -73,7 +73,8 @@
                                         <button class="button-18 button-17" type="button" data-toggle="dropdown">ทำรายการ
                                             <span class="caret"></span></button>
                                         <ul class="dropdown-menu">
-                                            <li class="licolor"><a href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขข้อมูล</a></li>
+                                            <li class="licolor"><a href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">แก้ไขข้อมูล</a></li>
+                                            <li class="licolor"><a href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">แก้ไขข้อมูล</a></li>
                                         </ul>
                                 </td>
                             </tr>

@@ -313,7 +313,7 @@
         });
     });
 </script>
-<form id="myForm" action="{{route('MEvent.save')}}" method="POST">
+<form id="myForm" action="{{url('/Quotation/edit/quotation/update/'.$Quotation->id)}}" method="POST">
     {!! csrf_field() !!}
 <div class="container">
     <div class=" col-12">
@@ -332,15 +332,15 @@
             <div class="col-lg-3 col-md-12 col-sm-12 quotation-container">
                 <div class="row">
                     <p class="quotation-number">Quotation </p>
-                    <p class="quotation-id ">{{$Quotation_ID}}</p>
-                    <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
+                    <p class="quotation-id ">{{$Quotation->Quotation_ID}}</p>
+                    <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation->Quotation_ID}}">
                     <div id="reportrange1" style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;">
                         <div class="row">
                             <div class="col-5 col-md-5 col-sm-12" style="display:flex; justify-content:right; align-items:center;">
                                 <p>Issue Date:</p>
                             </div>
                             <div class="col-7 col-md-7 col-sm-12">
-                                <input type="text" id="datestart" name="IssueDate" style="text-align: left;"readonly>
+                                <input type="text" id="datestart" name="IssueDate" style="text-align: left;"readonly value="{{$Quotation->issue_date}}">
                             </div>
                         </div>
                         <div class="row">
@@ -348,10 +348,10 @@
                                 <p>Expiration Date:</p>
                             </div>
                             <div class="col-7 col-md-7 col-sm-12">
-                                <input type="text" id="dateex" name="Expiration" style="text-align: left;"readonly>
+                                <input type="text" id="dateex" name="Expiration" style="text-align: left;"readonly value="{{$Quotation->ExpirationDate}}">
                             </div>
                         </div>
-                        <i class="fa fa-calendar"></i>&nbsp;
+                        <i class="fa fa-calendar" id="Iconcalendar"></i>&nbsp;
                     </div>
                 </div>
             </div>
@@ -367,27 +367,25 @@
             </div>
         </div>
 
-        <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
+        <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation->Quotation_ID}}">
         <div class="col-12 mt-3">
             <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <label class="labelcontact" for="">Customer Company</label>
-                    <select name="Company" id="Company" class="select2" onchange="companyContact()">
-                        <option value=""></option>
-                        @foreach($Company as $item)
-                            <option value="{{ $item->Profile_ID }}">{{ $item->Company_Name }}</option>
-                        @endforeach
+                    <select name="Company" id="Company" class="select2" disabled>
+                        <option value="{{@$Quotation->company->Company_Name}}">{{@$Quotation->company->Company_Name}}</option>
+
                     </select>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <label class="labelcontact" for="">Customer Contact</label>
-                    <select name="Company_Contact" id="Company_Contact" class="select2">
-                        <option value=""></option>
+                    <select name="Company_Contact" id="Company_Contact" class="select2" disabled>
+                        <option value="{{@$Quotation->contact->Company_ID}}">{{@$Quotation->contact->First_name}} {{@$Quotation->contact->Last_name}}</option>
                     </select>
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-12">
+                {{-- <div class="col-lg-6 col-md-6 col-sm-12">
                     <a style="font-size: 18px; float: right;"  onclick="window.location.href='{{ route('Company.index') }}'">+Add Company</a>
-                </div>
+                </div> --}}
             </div>
         </div>
 
@@ -401,11 +399,11 @@
                             <div class="row">
                                 <div class="col-lg-5 col-md-6 col-sm-12">
                                     <label  for="">Check in date</label>
-                                    <input type="text" id="date2" name="Checkin" readonly>
+                                    <input type="text" id="date2" name="Checkin" readonly value="{{$Quotation->checkin}}">
                                 </div>
                                 <div class="col-lg-5 col-md-6 col-sm-12">
                                     <label  for="">Check out date</label>
-                                    <input type="text" id="date3" name="Checkout" readonly>
+                                    <input type="text" id="date3" name="Checkout" readonly value="{{$Quotation->checkout}}">
                                 </div>
                                 <div class="col-lg-2 col-md-6 col-sm-12 mt-4"style="display:flex; justify-content:center;">
                                     <img src="{{ asset('assets2/images/calendar.png') }}" class="calendar-icon " id="calendarIcon">
@@ -417,30 +415,30 @@
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <label for="">จำนวน</label>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control mt-2" name="Day" placeholder="จำนวนวัน" aria-label="Username" >
+                        <input type="text" class="form-control mt-2" name="Day" placeholder="จำนวนวัน"  value="{{$Quotation->day}}">
                         <span class="input-group-text custom-span-1" id="basic-addon2"  >Day</span>
-                        <input type="text" class="form-control mt-2" name="Night" placeholder="จำนวนคืน" aria-label="Server" >
+                        <input type="text" class="form-control mt-2" name="Night" placeholder="จำนวนคืน" value="{{$Quotation->night}}" >
                         <span class="input-group-text custom-span-1" id="basic-addon2">Night</span>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-6 col-sm-12">
                     <label  for="">Adult</label>
                     <div class="input-group mb-3" >
-                        <input type="text" class="form-control mt-2" name="Adult" placeholder="จำนวนผู้ใหญ่" aria-describedby="basic-addon2">
+                        <input type="text" class="form-control mt-2" name="Adult" placeholder="ผู้ใหญ่" value="{{$Quotation->adult}}" >
                         <span class="input-group-text-Adult mt-2" id="basic-addon2" >Person</span>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-6 col-sm-12">
                     <label  for="">Children</label>
                     <div class="input-group ">
-                        <input type="text" class="form-control mt-2" name="Children" placeholder="จำนวนเด็ก" aria-describedby="basic-addon2">
+                        <input type="text" class="form-control mt-2" name="Children" placeholder="เด็ก" value="{{$Quotation->children}}">
                         <span class="input-group-text-Adult mt-2" id="basic-addon2" >Person</span>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-12 col-sm-12">
                     <label  for="">Max discount </label> <label style="color: #dc3545">(Your permission has max discount 10.00 %)</label>
                     <div class="input-group ">
-                        <input type="text" class="form-control" name="Max_discount" aria-describedby="basic-addon2">
+                        <input type="text" class="form-control" name="Max_discount" value="{{$Quotation->maxdiscount}}">
                         <span class="input-group-text-Adult" id="basic-addon2" >%</span>
                     </div>
                 </div>
@@ -448,68 +446,70 @@
                     <label  for="">Company Rate Code</label>
                     <div class="input-group mb-3">
                         <span class="input-group-text-Adult " id="basic-addon2" >DC</span>
-                        <input type="text" class="form-control" name="Company_Rate_Code" aria-label="Amount (to the nearest dollar)">
+                        <input type="text" class="form-control" name="Company_Rate_Code" value="{{$Quotation->ComRateCode}}">
                         <span class="input-group-text-Adult " id="basic-addon2" >%</span>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <label class="Freelancer_member" for="">Freelance Affiliate</label>
                     <select name="Freelancer_member" id="Freelancer_member" class="select2">
-                        <option value=""></option>
                         @foreach($Freelancer_member as $item)
-                            <option value="{{ $item->Profile_ID }}">{{ $item->First_name }}{{ $item->Last_name }}</option>
+                            <option value="{{ $item->Profile_ID }}{{$Quotation->freelanceraiffiliate == $item->Profile_ID ? 'selected' : ''}}">{{ $item->First_name }}{{ $item->Last_name }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <label  for="">Company Commission Rate Code</label>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control " name="Company_Commission_Rate_Code" aria-describedby="basic-addon2">
+                        <input type="text" class="form-control " name="Company_Commission_Rate_Code" value="{{$Quotation->commissionratecode}}">
                         <span class="input-group-text-Adult " id="basic-addon2" >%</span>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <label  for="">Place</label>
-                    <input type="text" class="form-control " name="place" aria-label="Amount (to the nearest dollar)">
+                    <input type="text" class="form-control" name="place" value="{{$Quotation->place}}" >
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <label  for="">Event Format</label>
                     <select name="Mevent" id="Mevent" class="select2" >
-                        <option value=""></option>
                         @foreach($Mevent as $item)
-                            <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                            <option value="{{ $item->id }}{{$Quotation->eventformat == $item->id ? 'selected' : ''}}">{{ $item->name_th }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <label  for="">Vat Type</label>
                     <select name="Vat_Type" id="Vat_Type" class="select2" >
-                        <option value="VAT_IN">VAT IN</option>
-                        <option value="VAT_OUT">VAT OUT</option>
+                        <option value="VAT_IN" {{$Quotation->vat_type == "VAT_IN" ? 'selected' : ''}}>VAT IN</option>
+                        <option value="VAT_OUT" {{$Quotation->vat_type == "VAT_OUT" ? 'selected' : ''}}>VAT OUT</option>
                     </select>
                 </div>
                 <div class="col-lg-12 col-md-6 col-sm-12 d-flex justify-content-center">
                     <button type="submit" class="btn btn-animate-submit" >
-                        {{ __('+ Product') }}
+                        {{ __('บันทึก') }}
                     </button>
                 </div>
             </div>
         </div>
     </form>
 </div>
-<script type="text/javascript">calendarIcon
-    $(function() {
-        var start = moment();
+<script type="text/javascript">
+document.getElementById('calendarIcon').addEventListener('click', function() {
+        // The function you want to execute
+        calendarIcon();
+});
+function calendarIcon() {
+    var start = moment();
         var end = moment().add(7, 'days');
         function cb(start, end, label) {
-        if (label === 'ไม่ระบุ') {
-            $('#date2').val('');
-            $('#date3').val('');
-        } else {
-            $('#date2').val(start.format('DD/MM/YYYY'));
-            $('#date3').val(end.format('DD/MM/YYYY'));
+            if (label === 'ไม่ระบุ') {
+                $('#date2').val('');
+                $('#date3').val('');
+            } else {
+                $('#date2').val(start.format('DD/MM/YYYY'));
+                $('#date3').val(end.format('DD/MM/YYYY'));
+            }
         }
-    }
 
         $('#reportrange').daterangepicker({
             startDate: start,
@@ -525,15 +525,17 @@
         $('#calendarIcon').on('click', function() {
         $('#reportrange').daterangepicker(daterangepickerOptions, cb);
         $('#reportrange').data('daterangepicker').show();
-    });
+        });
         cb(start, end);
-    });
+}
 </script>
-
-<script type="text/javascript">
-    $(function() {
-
-        var start = moment();
+<script>
+document.getElementById('Iconcalendar').addEventListener('click', function() {
+        // The function you want to execute
+        Iconcalendar();
+});
+function Iconcalendar() {
+    var start = moment();
         var end = moment().add(7, 'days');
 
         function cb(start, end) {
@@ -553,55 +555,8 @@
         },
         cb);
         cb(start, end);
-    });
-    </script>
-
-<script>
-    function Onclickreadonly() {
-        var startDate = document.getElementById('contract_rate_start_date').value;
-        if (startDate !== '') {
-            // หากมีค่า กำหนด input field ที่มี id เป็น contract_rate_end_date เป็น readonly
-            document.getElementById('contract_rate_end_date').readOnly = false;
-        } else {
-            // หากไม่มีค่า กำหนด input field ที่มี id เป็น contract_rate_end_date เป็น readonly
-            document.getElementById('contract_rate_end_date').readOnly = true;
-        }
     }
-    function toggleDateInput() {
-        var selectElement = document.getElementById('Select_a_date');
-        var dateInput = document.getElementById('contract_rate_start_date');
-        if (selectElement.value === 'Yes_date') {
-            dateInput.removeAttribute('readonly');
-        } else {
-            dateInput.setAttribute('readonly', true);
-        }
-    }
-
-    function companyContact() {
-    var companyID = $('#Company').val();
-    console.log(companyID);
-    jQuery.ajax({
-        type: "GET",
-        url: "{!! url('/Quotation/create/company/Contact/" + companyID + "') !!}",
-        datatype: "JSON",
-        async: false,
-        success: function(result) {
-            jQuery('#Company_Contact').children().remove().end();
-            $('#Company_Contact').append(new Option('', ''));
-            jQuery.each(result.data, function(key, value) {
-                var optionText = `${value.First_name} ${value.Last_name}`; // รวมชื่อกับนามสกุล
-                var optionValue = value.Profile_ID; // ใช้ Profile_ID เป็นค่า
-                var option = new Option(optionText, optionValue);
-                $('#Company_Contact').append(option);
-                console.log(option);
-            });
-        },
-        error: function(xhr, status, error) {
-            console.error("AJAX request failed: ", status, error);
-        }
-    });
-
-}
+</script>
 
 </script>
 @endsection

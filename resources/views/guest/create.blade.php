@@ -844,34 +844,7 @@
             timer: 1500
         });
     }
-    // document.addEventListener("DOMContentLoaded", function() {
-    //     const addButton = document.getElementById('add-phone');
-    //     const removeButton = document.querySelector('.remove-phone');
-    //     const phoneContainer = document.getElementById('phone-container');
 
-    //     let phoneCount = 1;
-
-    //     addButton.addEventListener('click', function() {
-    //         console.log('Add button clicked');
-    //         const phoneGroup = document.createElement('div');
-    //         phoneGroup.classList.add('phone-group');
-    //         phoneGroup.innerHTML = `
-    //         <input type="text" name="phone[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
-    //     `;
-    //         phoneContainer.appendChild(phoneGroup);
-    //         phoneCount++;
-    //     });
-
-    //     removeButton.addEventListener('click', function() {
-    //         console.log('Remove button clicked');
-    //         if (phoneCount > 1) {
-    //             const phoneGroups = phoneContainer.querySelectorAll('.phone-group');
-    //             const lastPhoneGroup = phoneGroups[phoneGroups.length - 1];
-    //             phoneContainer.removeChild(lastPhoneGroup);
-    //             phoneCount--;
-    //         }
-    //     });
-    // });
 </script>
 
 
