@@ -116,104 +116,126 @@ class QuotationController extends Controller
         $ContactamphuresID = amphures::where('id',$ContactamphuresID)->select('name_th','id')->first();
         $ContactTambonID = districts::where('id',$ContactTambonID)->select('name_th','id','Zip_Code')->first();
         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
-        $room_type = master_product_item::orderBy('Product_ID', 'asc')->where('status',1)->where('Category','Room_Type')->get();
-        $Banquet =  master_product_item::orderBy('Product_ID', 'asc')->where('status',1)->where('Category','Banquet')->get();
-        $Meals =  master_product_item::orderBy('Product_ID', 'asc')->where('status',1)->where('Category','Meals')->get();
-        $Entertainment = master_product_item::orderBy('Product_ID', 'asc')->where('status',1)->where('Category','Entertainment')->get();
+        $product = master_product_item::where('status',1)->get();
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
         return view('quotation.selectproduct',compact('Quotation','Company_ID','Company_type','amphuresID','TambonID','provinceNames','company_fax','company_phone'
-        ,'Contact_name','Contact_phone','ContactCity','ContactamphuresID','ContactTambonID','room_type','Banquet','Entertainment','Meals','unit','quantity'));
+        ,'Contact_name','Contact_phone','ContactCity','ContactamphuresID','ContactTambonID','product','unit','quantity'));
     }
-    public function quotation(Request $request ,$Quotation_ID)
-    {
+    public function addProduct($Quotation_ID, Request $request) {
+        $value = $request->input('value');
 
-        $RoomID= $request->RoomID;
-        $countroom= $request->countroom;
-        $BanquetID= $request->BanquetID;
-        $countBanquet= $request->countBanquet;
-        $MealsID= $request->MealsID;
-        $countMeals= $request->countMeals;
-        $EntertainmentID= $request->EntertainmentID;
-        $countEntertainment= $request->countEntertainment;
-        $Quotation_ID = $request->Quotation_ID;
-        $IssueDate = $request->IssueDate;
-        $ExpirationDate = $request->ExpirationDate;
-        $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
-        $Company_ID = $Quotation->Company_ID;
-        $freelanceraiffiliate = $Quotation->freelanceraiffiliate;
-        $rooms = $request->input('RoomID');
-        $roomCounts = $request->input('countroom');
-        if ($rooms !== null) {
-            foreach ($rooms as $index => $roomId) {
-                $saveRoom = new document_quotation();
-                $saveRoom->Quotation_ID = $Quotation_ID;
-                $saveRoom->Company_ID = $Company_ID;
-                $saveRoom->Product_ID = $roomId;
-                $saveRoom->Issue_date = $IssueDate;
-                $saveRoom->ExpirationDate = $ExpirationDate;
-                $saveRoom->freelanceraiffiliate = $freelanceraiffiliate;
-                $saveRoom->Quantity = $roomCounts[$index];
-                $saveRoom->save();
-            }
+        if ($value == 'Room_Type') {
+            $products = master_product_item::orderBy('Product_ID', 'asc')->where('status',1)->where('Category','Room_Type')->get();
+        }elseif ($value == 'Banquet') {
+            $products =  master_product_item::orderBy('Product_ID', 'asc')->where('status',1)->where('Category','Banquet')->get();
+        }elseif ($value == 'Meals') {
+            $products =  master_product_item::orderBy('Product_ID', 'asc')->where('status',1)->where('Category','Meals')->get();
+        }elseif ($value == 'Entertainment') {
+            $products = master_product_item::orderBy('Product_ID', 'asc')->where('status',1)->where('Category','Entertainment')->get();
+        }elseif ($value == 'all'){
+            $products = master_product_item::orderBy('Product_ID', 'desc')->where('status', 1)->get();
+        }else {
+            $products = master_product_item::orderBy('Product_ID', 'desc')->where('status', 1)->get();
         }
-
-        // จัดการ BanquetID
-        $banquets = $request->input('BanquetID');
-        $banquetCounts = $request->input('countBanquet');
-        if ($banquets !== null) {
-            foreach ($banquets as $index => $banquetId) {
-                $saveBanquet = new document_quotation();
-                $saveBanquet->Quotation_ID = $Quotation_ID;
-                $saveBanquet->Company_ID = $Company_ID;
-                $saveBanquet->Product_ID = $roomId;
-                $saveBanquet->Issue_date = $IssueDate;
-                $saveBanquet->ExpirationDate = $ExpirationDate;
-                $saveBanquet->freelanceraiffiliate = $freelanceraiffiliate;
-                $saveBanquet->Quantity = $banquetCounts[$index];
-                $saveBanquet->save();
-            }
-        }
-
-        // จัดการ MealsID
-        $meals = $request->input('MealsID');
-        $mealCounts = $request->input('countMeals');
-        if ($meals !== null) {
-            foreach ($meals as $index => $mealId) {
-                $saveMeal = new document_quotation();
-                $saveMeal->Quotation_ID = $Quotation_ID;
-                $saveMeal->Company_ID = $Company_ID;
-                $saveMeal->Product_ID = $roomId;
-                $saveMeal->Issue_date = $IssueDate;
-                $saveMeal->ExpirationDate = $ExpirationDate;
-                $saveMeal->freelanceraiffiliate = $freelanceraiffiliate;
-                $saveMeal->Quantity = $mealCounts[$index];
-                $saveMeal->save();
-            }
-        }
-
-        // จัดการ EntertainmentID
-        $entertainments = $request->input('EntertainmentID');
-        $entertainmentCounts = $request->input('countEntertainment');
-        if ($entertainments !== null) {
-            foreach ($entertainments as $index => $entertainmentId) {
-                $saveEntertainment = new document_quotation();
-                $saveEntertainment->Quotation_ID = $Quotation_ID;
-                $saveEntertainment->Company_ID = $Company_ID;
-                $saveEntertainment->Product_ID = $roomId;
-                $saveEntertainment->Issue_date = $IssueDate;
-                $saveEntertainment->ExpirationDate = $ExpirationDate;
-                $saveEntertainment->freelanceraiffiliate = $freelanceraiffiliate;
-                $saveEntertainment->Quantity = $entertainmentCounts[$index];
-                $saveEntertainment->save();
-            }
-        }
-        if ($saveEntertainment->save()) {
-            return redirect()->route('Quotation.index')->with('alert_', 'ส่งข้อมูลเรียบร้อย');
-        } else {
-            return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-        }
+        $units = master_unit::where('status',1)->get(); // Adjust this line based on your actual units fetching logic
+        $quantitys = master_quantity::where('status',1)->get();
+        return response()->json([
+            'products' => $products,
+            'units' => $units,
+            'quantitys'=>$quantitys
+        ]);
     }
+
+    // public function quotation(Request $request ,$Quotation_ID)
+    // {
+
+    //     $RoomID= $request->RoomID;
+    //     $countroom= $request->countroom;
+    //     $BanquetID= $request->BanquetID;
+    //     $countBanquet= $request->countBanquet;
+    //     $MealsID= $request->MealsID;
+    //     $countMeals= $request->countMeals;
+    //     $EntertainmentID= $request->EntertainmentID;
+    //     $countEntertainment= $request->countEntertainment;
+    //     $Quotation_ID = $request->Quotation_ID;
+    //     $IssueDate = $request->IssueDate;
+    //     $ExpirationDate = $request->ExpirationDate;
+    //     $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
+    //     $Company_ID = $Quotation->Company_ID;
+    //     $freelanceraiffiliate = $Quotation->freelanceraiffiliate;
+    //     $rooms = $request->input('RoomID');
+    //     $roomCounts = $request->input('countroom');
+    //     if ($rooms !== null) {
+    //         foreach ($rooms as $index => $roomId) {
+    //             $saveRoom = new document_quotation();
+    //             $saveRoom->Quotation_ID = $Quotation_ID;
+    //             $saveRoom->Company_ID = $Company_ID;
+    //             $saveRoom->Product_ID = $roomId;
+    //             $saveRoom->Issue_date = $IssueDate;
+    //             $saveRoom->ExpirationDate = $ExpirationDate;
+    //             $saveRoom->freelanceraiffiliate = $freelanceraiffiliate;
+    //             $saveRoom->Quantity = $roomCounts[$index];
+    //             $saveRoom->save();
+    //         }
+    //     }
+
+    //     // จัดการ BanquetID
+    //     $banquets = $request->input('BanquetID');
+    //     $banquetCounts = $request->input('countBanquet');
+    //     if ($banquets !== null) {
+    //         foreach ($banquets as $index => $banquetId) {
+    //             $saveBanquet = new document_quotation();
+    //             $saveBanquet->Quotation_ID = $Quotation_ID;
+    //             $saveBanquet->Company_ID = $Company_ID;
+    //             $saveBanquet->Product_ID = $roomId;
+    //             $saveBanquet->Issue_date = $IssueDate;
+    //             $saveBanquet->ExpirationDate = $ExpirationDate;
+    //             $saveBanquet->freelanceraiffiliate = $freelanceraiffiliate;
+    //             $saveBanquet->Quantity = $banquetCounts[$index];
+    //             $saveBanquet->save();
+    //         }
+    //     }
+
+    //     // จัดการ MealsID
+    //     $meals = $request->input('MealsID');
+    //     $mealCounts = $request->input('countMeals');
+    //     if ($meals !== null) {
+    //         foreach ($meals as $index => $mealId) {
+    //             $saveMeal = new document_quotation();
+    //             $saveMeal->Quotation_ID = $Quotation_ID;
+    //             $saveMeal->Company_ID = $Company_ID;
+    //             $saveMeal->Product_ID = $roomId;
+    //             $saveMeal->Issue_date = $IssueDate;
+    //             $saveMeal->ExpirationDate = $ExpirationDate;
+    //             $saveMeal->freelanceraiffiliate = $freelanceraiffiliate;
+    //             $saveMeal->Quantity = $mealCounts[$index];
+    //             $saveMeal->save();
+    //         }
+    //     }
+
+    //     // จัดการ EntertainmentID
+    //     $entertainments = $request->input('EntertainmentID');
+    //     $entertainmentCounts = $request->input('countEntertainment');
+    //     if ($entertainments !== null) {
+    //         foreach ($entertainments as $index => $entertainmentId) {
+    //             $saveEntertainment = new document_quotation();
+    //             $saveEntertainment->Quotation_ID = $Quotation_ID;
+    //             $saveEntertainment->Company_ID = $Company_ID;
+    //             $saveEntertainment->Product_ID = $roomId;
+    //             $saveEntertainment->Issue_date = $IssueDate;
+    //             $saveEntertainment->ExpirationDate = $ExpirationDate;
+    //             $saveEntertainment->freelanceraiffiliate = $freelanceraiffiliate;
+    //             $saveEntertainment->Quantity = $entertainmentCounts[$index];
+    //             $saveEntertainment->save();
+    //         }
+    //     }
+    //     if ($saveEntertainment->save()) {
+    //         return redirect()->route('Quotation.index')->with('alert_', 'ส่งข้อมูลเรียบร้อย');
+    //     } else {
+    //         return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+    //     }
+    // }
 
     public function edit($id)
     {

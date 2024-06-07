@@ -317,6 +317,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Quotation/Event_Formate/create/quotation/{Quotation_ID}', 'quotation')->name('Quotation.quotation');
         Route::get('/Quotation/edit/quotation/{id}','edit')->name('Quotation.edit');
         Route::post('/Quotation/edit/quotation/update/{id}', 'updateCompanyQuotation')->name('Quotation.updateCompanyQuotation');
+        Route::get('/Quotation/company/product/{Quotation_ID}/addProduct', 'addProduct')->name('Quotation.addProduct');
     });
 
 Route::get('/clear-cache', function () {

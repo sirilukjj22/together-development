@@ -366,7 +366,94 @@
     }
     .EntertainmentRooom:active {
         transform: scale(0.9);
+
     }
+    .Btn {
+  background-color: transparent;
+  position: relative;
+  border: none;
+}
+
+.Btn::after {
+  content: 'delete';
+  position: absolute;
+  top: -130%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: fit-content;
+  height: fit-content;
+  background-color: rgb(168, 7, 7);
+  padding: 4px 8px;
+  border-radius: 5px;
+  transition: .2s linear;
+  transition-delay: .2s;
+  color: white;
+  text-transform: uppercase;
+  font-size: 12px;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.icon {
+  transform: scale(1.2);
+  transition: .2s linear;
+}
+
+.Btn:hover > .icon {
+  transform: scale(1.5);
+}
+
+.Btn:hover > .icon path {
+  fill: rgb(168, 7, 7);
+}
+
+.Btn:hover::after {
+  visibility: visible;
+  opacity: 1;
+  top: -160%;
+}
+.button-11 {
+    align-items: center;
+    appearance: none;
+    background-color: #109699;
+    border-radius: 8px;
+    border-style: none;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 3px 5px -1px,
+      rgba(0, 0, 0, 0.14) 0 6px 10px 0, rgba(0, 0, 0, 0.12) 0 1px 18px 0;
+    box-sizing: border-box;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    fill: currentcolor;
+    font-size: 28px;
+    font-weight: 500;
+    height: 38px;
+    justify-content: center;
+    letter-spacing: 0.25px;
+    line-height: normal;
+    max-width: 100%;
+    overflow: visible;
+    padding: 2px 12px;
+    position: relative;
+    text-align: center;
+    text-transform: none;
+    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 15ms linear 30ms, transform 270ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+    touch-action: manipulation;
+    width: auto;
+    will-change: transform, opacity;
+    margin-left: 5px;
+    margin-top: 10px;
+    padding: 10px;
+    padding-top: 0px;
+
+  }
+
+  .button-11:hover {
+    background-color: #ffffff !important;
+    color: #000000;
+    transform: scale(1.1);
+  }
 
 </style>
 <form action="{{url('/Quotation/Event_Formate/create/quotation/'.$Quotation->Quotation_ID)}}" method="POST"enctype="multipart/form-data">
@@ -472,49 +559,52 @@
             <hr class="mt-3 my-3" style="border: 1px solid #000">
             <div class="row">
                 <div class="col-lg-2 col-md-2 col-sm-12">
-                    <button type="button" class="btn button-17 button-18" data-bs-toggle="modal" data-bs-target="#exampleModalRoom">
-                        + ห้องพัก
+                    <button type="button" id="addproduct" class="btn button-17 button-18" data-bs-toggle="modal" data-bs-target="#exampleModalproduct">
+                        + Add Product
                     </button><br>
-                    <div class="modal fade" id="exampleModalRoom" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="exampleModalproduct" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-xl">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">ห้องพัก</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Product</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <table class="table table-bordered ">
+                                <div class="col-12 mt-3">
+                                    <div class="dropdown-center">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            ประเภท Product
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="">
+                                            <a class="dropdown-item" style="color: #000;" data-value="all">All Product</a>
+                                            <a class="dropdown-item" style="color: #000;" data-value="Room_Type">Room</a>
+                                            <a class="dropdown-item" style="color: #000;" data-value="Banquet">Banquet</a>
+                                            <a class="dropdown-item" style="color: #000;" data-value="Meals">Meal</a>
+                                            <a class="dropdown-item" style="color: #000;" data-value="Entertainment">Entertainment</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="mt-3 my-3" style="border: 1px solid #000">
+                                <table  class="table table-bordered ">
                                     <thead  class="table-dark">
                                         <tr>
                                             <th scope="col" style="width: 10%">#</th>
                                             <th scope="col"style="width: 10%">รหัส</th>
                                             <th scope="col">รายการ</th>
-                                            <th scope="col">รายละเอียด</th>
-                                            <th scope="col"style="width: 10%">ความจุ</th>
                                             <th scope="col"style="width: 10%">หน่วย</th>
-                                            <th scope="col"style="width: 10%">คำสั่ง</th>
+                                            <th scope="col"style="width: 10%">ราคา</th>
+                                            <th scope="col"style="width: 5%">คำสั่ง</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        @if (!empty($room_type))
-                                            @foreach ($unit as $singleUnit)
-                                                @foreach ($room_type as $key => $item)
-                                                    @if($singleUnit->id == $item->unit)
-                                                    <tr>
-                                                        <th scope="row">{{$key + 1}}</th>
-                                                        <td>{{ $item->Product_ID }}</td>
-                                                        <td>{{ $item->name_en }}</td>
-                                                        <td>{{ $item->detail_en }}</td>
-                                                        <td>{{ $item->pax }}</td>
-                                                        <td>{{ $singleUnit->name_th }}</td>
-                                                        <td><button type="button" style="background-color: #109699; display: block; margin: 0 auto;" class="button-10 select-button-room" data-id="{{ $item->Product_ID }}" data-name="{{ $item->name_en }}" data-description="{{ $item->detail_en }}" data-unit="{{ $singleUnit->name_th }}" data-pax="{{ $item->pax }}">Select</button></td>
-                                                    </tr>
-                                                    @endif
-                                                @endforeach
-                                            @endforeach
-                                        @endif
+                                    <tbody id="product-container">
+
                                     </tbody>
+
                                 </table>
+
+                                <div class="col-4 mt-3" >
+                                        <ul class="pagination" id="pagination"></ul>
+                                </div>
                                 <div class="col-12 mt-3">
                                     <h3>รายการที่เลือก</h3>
                                     <table id="selected-items-table-room" class="table table-bordered" style="width:100%">
@@ -523,10 +613,9 @@
                                                 <th style="width: 10%;">#</th>
                                                 <th style="width: 10%;">รหัส</th>
                                                 <th>รายการ</th>
-                                                <th>รายละเอียด</th>
-                                                <th style="width: 10%;">ความจุ</th>
                                                 <th scope="col" style="width: 10%;">หน่วย</th>
-                                                <th style="width: 10%;">คำสั่ง</th>
+                                                <th scope="col"style="width: 10%">ราคา</th>
+                                                <th style="width: 5%;">คำสั่ง</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -537,10 +626,11 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="button-10" style="background-color: #109699;" id="save-button">Select</button>
+                                <button type="button" class="button-10" style="background-color: #109699;" id="save-button"data-bs-dismiss="modal">Save</button>
                             </div>
                         </div>
                         </div>
+                        <div id="modalOverlay" class="modal-overlay"></div>
                     </div>
                 </div>
             </div>
@@ -551,305 +641,91 @@
                             <th style="width: 5%;">#</th>
                             <th style="width: 10%;">รหัส</th>
                             <th style="width: 20%;">รายการ</th>
-                            <th style="width: 25%;">รายละเอียด</th>
-                            <th style="width: 10%;">ผู้อาศัย</th>
                             <th style="width: 10%;">จำนวน</th>
+                            <th scope="col"style="width: 10%">ราคา</th>
+                            <th scope="col"style="width: 10%">ส่วนลด</th>
                             <th style="width: 10%;">หน่วย</th>
-                            <th style="width: 10%;">รวม</th>
-                            <th style="width: 15%;">คำสั่ง</th>
+                            <th style="width: 10%;">ราคาสุทธิต่อหน่วย</th>
+                            <th style="width: 10%;">จำนวนเงิน</th>
+                            <th style="width: 5%;">คำสั่ง</th>
                         </tr>
                     </thead>
                     <tbody>
                         <!-- Rows will be added here by JavaScript -->
                     </tbody>
                     <tfoot>
+
                         <tr>
-                            <td colspan="7" style="text-align:right;">Total</td>
-                            <td colspan="1" id="total-amount"></td> <!-- Adjust column span and add an ID for total amount -->
+                            <td colspan="7" style="text-align:right;">Total Amount</td>
+                            <td colspan="2" id="total-amount"></td>
+                            <td rowspan="9"></td> <!-- Adjust column span and add an ID for total amount -->
+                        </tr>
+                        <tr>
+                            <td colspan="7" style="text-align:right;">Discount (%)</td>
+                            <td colspan="2" id="total-Discount"></td> <!-- Adjust column span and add an ID for total amount -->
+                        </tr>
+                        <tr>
+                            <td colspan="7" style="text-align:right;">Net price </td>
+                            <td colspan="2" id="Net-price"></td> <!-- Adjust column span and add an ID for total amount -->
+                        </tr>
+                        <tr>
+                            <td colspan="7" style="text-align:right;">VAT (%)</td>
+                            <td colspan="2" id="total-Vat"></td> <!-- Adjust column span and add an ID for total amount -->
+                        </tr>
+                        <tr>
+                            <td colspan="7" style="text-align:right;">Net Total</td>
+                            <td colspan="2" id="Net-Total"></td>
+                            <!-- Adjust column span and add an ID for total amount -->
                         </tr>
                     </tfoot>
                 </table>
             </div>
-            <hr class="mt-3 my-3" style="border: 1px solid #000">
-            <div class="row">
-                <div class="col-lg-2 col-md-2 col-sm-12">
-                    <button type="button" class="btn button-17 button-18" data-bs-toggle="modal" data-bs-target="#exampleModalBanquet">
-                        + ห้องประชุม
-                    </button><br>
-                    <div class="modal fade" id="exampleModalBanquet" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">ห้องประชุม</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <table class="table table-bordered ">
-                                    <thead  class="table-dark">
-                                        <tr>
-                                            <th scope="col" style="width: 10%">#</th>
-                                            <th scope="col"style="width: 10%">รหัส</th>
-                                            <th scope="col">รายการ</th>
-                                            <th scope="col">รายละเอียด</th>
-                                            <th scope="col"style="width: 10%">ความจุ</th>
-                                            <th scope="col"style="width: 10%">หน่วย</th>
-                                            <th scope="col"style="width: 10%">คำสั่ง</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (!empty($Banquet))
-                                            @foreach ($unit as $singleUnit)
-                                                @foreach ($Banquet as $key => $item)
-                                                    @if($singleUnit->id == $item->unit)
-                                                    <tr>
-                                                        <th scope="row">{{$key + 1}}</th>
-                                                        <td>{{ $item->Product_ID }}</td>
-                                                        <td>{{ $item->name_en }}</td>
-                                                        <td>{{ $item->detail_en }}</td>
-                                                        <td>{{ $item->pax }}</td>
-                                                        <td>{{ $singleUnit->name_th }}</td>
-                                                        <td><button type="button" style="background-color: #109699;display: block; margin: 0 auto;"class="button-10 select-button-Banquet" data-id="{{ $item->Product_ID }}" data-name="{{ $item->name_en }}" data-description="{{ $item->detail_en }}"data-unit="{{ $singleUnit->name_th }}">Select</button></td>
-                                                    </tr>
-                                                    @endif
-                                                @endforeach
-                                            @endforeach
-                                        @endif
-                                    </tbody>
-                                </table>
-                                <div class="col-12 mt-3">
-                                    <h3>รายการที่เลือก</h3>
-                                    <table id="selected-items-table-Banquet" class="table table-bordered" style="width:100%">
-                                        <thead class="table-dark">
-                                            <tr>
-                                                <th style="width: 10%;">#</th>
-                                                <th style="width: 10%;">รหัส</th>
-                                                <th>รายการ</th>
-                                                <th>รายละเอียด</th>
-                                                <th style="width: 10%;">ความจุ</th>
-                                                <th scope="col" style="width: 10%;">หน่วย</th>
-                                                <th style="width: 10%;">คำสั่ง</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Rows will be added here by JavaScript -->
-                                        </tbody>
-                                    </table>
+            <div class="col-12 mt-3">
+                <div class="col-4">
+                    <strong class="titleh1">Payment</strong>
+                </div>
+                <hr class="mt-2 my-3" style="border: 1px solid #000">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="col-12  mt-2">
+                            <div class="row">
+                                <div class="col-5">
+                                    <img src="{{ asset('/image/bank/BAY.jpg') }}" style="width: 100%;border-radius: 50%;"/>
+                                </div>
+                                <div class="col-7">
+                                    <p style="margin: 15px;">ธนาคาร กรุงศรี <br><strong>ออมทรัพย์<br>8009946600</strong><br>กฤตพล มโนโชคกวินสกุล</p>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button"  id="save-button-Banquet" class="button-10" style="background-color: #109699;" id="save-button">Select</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="col-12  mt-2">
+                            <div class="row">
+                                <div class="col-5" >
+                                    <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 100%;border-radius: 50%;"/>
+                                </div>
+                                <div class="col-7" >
+                                    <p style="margin: 15px;">ธนาคาร ไทยพาณิชย์ <br><strong>ออมทรัพย์<br>1472520569</strong><br>กฤตพล มโนโชคกวินสกุล</p>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="col-12  mt-2">
+                            <div class="row">
+                                <div class="col-5" >
+                                    <img src="{{ asset('/image/bank/KBNK.jpg') }}" style="width: 100%;border-radius: 50%;"/>
+                                </div>
+                                <div class="col-7" >
+                                    <p style="margin: 15px;">ธนาคาร กสิกรไทย <br><strong>ออมทรัพย์<br>1612839286</strong><br>กฤตพล มโนโชคกวินสกุล</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 row mt-3">
-                <table id="display-selected-items-Banquet" class="table table-bordered">
-                    <thead class="table-dark">
-                        <tr>
-                            <th style="width: 10%;">#</th>
-                            <th style="width: 10%;">รหัส</th>
-                            <th style="width: 25%;">รายการ</th>
-                            <th style="width: 35%;">รายละเอียด</th>
-                            <th style="width: 10%;">จำนวน</th>
-                            <th style="width: 10%;">หน่วย</th>
-                            <th style="width: 10%;">คำสั่ง</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be added here by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            <hr class="mt-3 my-3" style="border: 1px solid #000">
-            <div class="row">
-                <div class="col-lg-2 col-md-2 col-sm-12">
-                    <button type="button" class="btn button-17 button-18" data-bs-toggle="modal" data-bs-target="#exampleModalMeals">
-                        + มื้ออาหาร
-                    </button><br>
-                    <div class="modal fade" id="exampleModalMeals" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">มื้ออาหาร</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <table class="table table-bordered ">
-                                    <thead  class="table-dark">
-                                        <tr>
-                                            <th scope="col" style="width: 10%">#</th>
-                                            <th scope="col"style="width: 10%">รหัส</th>
-                                            <th scope="col">รายการ</th>
-                                            <th scope="col">รายละเอียด</th>
-                                            <th scope="col"style="width: 10%">ความจุ</th>
-                                            <th scope="col"style="width: 10%">หน่วย</th>
-                                            <th scope="col"style="width: 10%">คำสั่ง</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (!empty($Meals))
-                                            @foreach ($unit as $singleUnit)
-                                                @foreach ($Meals as $key => $item)
-                                                    @if($singleUnit->id == $item->unit)
-                                                    <tr>
-                                                        <th scope="row">{{$key + 1}}</th>
-                                                        <td>{{ $item->Product_ID }}</td>
-                                                        <td>{{ $item->name_en }}</td>
-                                                        <td>{{ $item->detail_en }}</td>
-                                                        <td>{{ $item->pax }}</td>
-                                                        <td>{{ $singleUnit->name_th }}</td>
-                                                        <td><button type="button" style="background-color: #109699;display: block; margin: 0 auto;"class="button-10 select-button-Meals" data-id="{{ $item->Product_ID }}" data-name="{{ $item->name_en }}" data-description="{{ $item->detail_en }}"data-unit="{{ $singleUnit->name_th }}">Select</button></td>
-                                                    </tr>
-                                                    @endif
-                                                @endforeach
-                                            @endforeach
-                                        @endif
-                                    </tbody>
-                                </table>
-                                <div class="col-12 mt-3">
-                                    <h3>รายการที่เลือก</h3>
-                                    <table id="selected-items-table-Meals" class="table table-bordered" style="width:100%">
-                                        <thead class="table-dark">
-                                            <tr>
-                                                <th style="width: 10%;">#</th>
-                                                <th style="width: 10%;">รหัส</th>
-                                                <th>รายการ</th>
-                                                <th>รายละเอียด</th>
-                                                <th style="width: 10%;">ความจุ</th>
-                                                <th scope="col" style="width: 10%;">หน่วย</th>
-                                                <th style="width: 10%;">คำสั่ง</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Rows will be added here by JavaScript -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button"  id="save-button-Meals" class="button-10" style="background-color: #109699;" id="save-button">Select</button>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 row mt-3">
-                <table id="display-selected-items-Meals" class="table table-bordered">
-                    <thead class="table-dark">
-                        <tr>
-                            <th style="width: 10%;">#</th>
-                            <th style="width: 10%;">รหัส</th>
-                            <th style="width: 25%;">รายการ</th>
-                            <th style="width: 35%;">รายละเอียด</th>
-                            <th style="width: 10%;">จำนวน</th>
-                            <th style="width: 10%;">หน่วย</th>
-                            <th style="width: 10%;">คำสั่ง</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be added here by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            <hr class="mt-3 my-3" style="border: 1px solid #000">
-            <div class="row">
-                <div class="col-lg-2 col-md-2 col-sm-12">
-                    <button type="button" class="btn button-17 button-18" data-bs-toggle="modal" data-bs-target="#exampleModalEntertainment">
-                        + ห้องนันทนาการ
-                    </button><br>
-                    <div class="modal fade" id="exampleModalEntertainment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">ห้องนันทนาการ</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <table class="table table-bordered ">
-                                    <thead  class="table-dark">
-                                        <tr>
-                                            <th scope="col" style="width: 10%">#</th>
-                                            <th scope="col"style="width: 10%">รหัส</th>
-                                            <th scope="col">รายการ</th>
-                                            <th scope="col">รายละเอียด</th>
-                                            <th scope="col"style="width: 10%">ความจุ</th>
-                                            <th scope="col"style="width: 10%">หน่วย</th>
-                                            <th scope="col"style="width: 10%">คำสั่ง</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (!empty($Entertainment))
-                                            @foreach ($unit as $singleUnit)
-                                                @foreach ($Entertainment as $key => $item)
-                                                    @if($singleUnit->id == $item->unit)
-                                                    <tr>
-                                                        <th scope="row">{{$key + 1}}</th>
-                                                        <td>{{ $item->Product_ID }}</td>
-                                                        <td>{{ $item->name_en }}</td>
-                                                        <td>{{ $item->detail_en }}</td>
-                                                        <td>{{ $item->pax }}</td>
-                                                        <td>{{ $singleUnit->name_th }}</td>
-                                                        <td> <button type="button" style="background-color: #109699;display: block; margin: 0 auto; "class="button-10 select-button-Entertainment" data-id="{{ $item->Product_ID }}" data-name="{{ $item->name_en }}" data-description="{{ $item->detail_en }}"data-unit="{{ $singleUnit->name_th }}">Select</button></td>
-                                                    </tr>
-                                                    @endif
-                                                @endforeach
-                                            @endforeach
-                                        @endif
-                                    </tbody>
-                                </table>
-                                <div class="col-12 mt-3">
-                                    <h3>รายการที่เลือก</h3>
-                                    <table  id="selected-items-table-Entertainment" class="table table-bordered" style="width:100%">
-                                        <thead class="table-dark">
-                                            <tr>
-                                                <th style="width: 10%;">#</th>
-                                                <th style="width: 10%;">รหัส</th>
-                                                <th>รายการ</th>
-                                                <th>รายละเอียด</th>
-                                                <th style="width: 10%;">ความจุ</th>
-                                                <th scope="col" style="width: 10%;">หน่วย</th>
-                                                <th style="width: 10%;">คำสั่ง</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Rows will be added here by JavaScript -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="button-10" id="save-button-Entertainment" style="background-color: #109699;">Select</button>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 row mt-3">
-                <table id="display-selected-items-Entertainment" class="table table-bordered">
-                    <thead  class="table-dark">
-                        <tr>
-                            <th style="width: 10%;">#</th>
-                            <th style="width: 10%;">รหัส</th>
-                            <th style="width: 25%;">รายการ</th>
-                            <th style="width: 35%;">รายละเอียด</th>
-                            <th style="width: 10%;">จำนวน</th>
-                            <th style="width: 10%;">หน่วย</th>
-                            <th style="width: 10%;">คำสั่ง</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be added here by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-12 row mt-3">
+            <hr class="mt-5 my-3" style="border: 1px solid #000">
+            <div class="col-12 row mt-5">
                 <div class="col-4"></div>
                 <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
                     <button type="submit" class="button-10" style="background-color: #109699;">บันทึกใบเสนอราคา</button>
@@ -863,62 +739,15 @@
 document.addEventListener('DOMContentLoaded', function () {
     let selectedItemsTableBody = document.querySelector('#selected-items-table-room tbody');
     let displaySelectedItemsTableBody = document.querySelector('#display-selected-items tbody');
-    let selectButtons = document.querySelectorAll('.select-button-room');
     let saveButton = document.querySelector('#save-button');
     let totalAmountCell = document.getElementById('total-amount');
+    let TotleDiscountCell = document.getElementById('total-Discount');
+    let NetTotalCell = document.getElementById('Net-Total');
+    let totalVatCell = document.getElementById('total-Vat');
+    let NetpriceCell = document.getElementById('Net-price');
     let selectedIndex = 1;
 
-    // Example select button data (Replace this with your actual data)
-    let exampleData = [
-        { id: 1, name: 'Product 1', description: 'Description 1', unit: 'Unit 1', pax: 10 },
-        { id: 2, name: 'Product 2', description: 'Description 2', unit: 'Unit 2', pax: 20 }
-    ];
-
-    // Simulate select buttons
-    exampleData.forEach(data => {
-        let button = document.createElement('button');
-        button.innerText = `Select ${data.name}`;
-        button.classList.add('btn', 'btn-primary', 'select-button-room');
-        button.setAttribute('data-id', data.id);
-        button.setAttribute('data-name', data.name);
-        button.setAttribute('data-description', data.description);
-        button.setAttribute('data-unit', data.unit);
-        button.setAttribute('data-pax', data.pax);
-        // document.body.appendChild(button);
-    });
-
-    selectButtons = document.querySelectorAll('.select-button-room');
-    selectButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            let productId = button.getAttribute('data-id');
-            let productName = button.getAttribute('data-name');
-            let productDescription = button.getAttribute('data-description');
-            let productUnit = button.getAttribute('data-unit');
-            let productPax = button.getAttribute('data-pax');
-            let newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>${selectedIndex}</td>
-                <td>${productId}</td>
-                <td style="text-align: left;">${productName}</td>
-                <td style="text-align: left;">${productDescription}</td>
-                <td>${productPax}</td>
-                <td>${productUnit}</td>
-                <td><button type="button" class="btn btn-danger remove-button">Remove</button></td>
-            `;
-
-            selectedItemsTableBody.appendChild(newRow);
-
-            let removeButton = newRow.querySelector('.remove-button');
-            removeButton.addEventListener('click', function () {
-                selectedItemsTableBody.removeChild(newRow);
-                selectedIndex--; // Adjust index if needed
-                updateIndex(); // Function to update index after removal
-            });
-
-            selectedIndex++;
-        });
-    });
-
+    // Function to update index
     function updateIndex() {
         let rows = selectedItemsTableBody.querySelectorAll('tr');
         rows.forEach((row, index) => {
@@ -926,18 +755,45 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Function to update total amount
     function updateTotal() {
-        let totalAmount = 0;
+    let itemTotal = 0;
+    let totalAmount =0;
+    let itemDiscount = 0;
+    let netprice=0;
+    let TotleDiscount = 0;
+    let TotalVat =0;
+    let totalVat =0;
+    let Netprice =0;
+    let nettotal=0;
+    let Nettotal =0;
         document.querySelectorAll('#display-selected-items tbody tr').forEach(row => {
-            const productPax = parseFloat(row.cells[4].innerText);
-            const quantity = parseInt(row.querySelector('.countroom').value) || 0;
-            const itemTotal = productPax * quantity;
-            row.querySelector('.item-total').innerText = Math.round(itemTotal); // Update item total in row without decimals
-            totalAmount += itemTotal;
-        });
-        totalAmountCell.innerText = Math.round(totalAmount); // Update total amount in footer without decimals
-    }
+            const productPaxCell = row.cells[4];
+            productPax = parseFloat(productPaxCell.innerText.trim().replace(/,/g, ''));
 
+            const quantity = parseInt(row.querySelector('.countroom').value) || 0;
+            const discount = parseInt(row.querySelector('.discount').value) || 0;
+            console.log(discount);
+            const itemTotal = productPax * quantity;
+            const itemDiscount = discount* itemTotal /100;
+            const netprice = itemTotal-itemDiscount;
+            const TotalVat = netprice * 7 / 100;
+            const nettotal = netprice +TotalVat;
+            row.querySelector('.net-price').innerText = Math.round(netprice).toLocaleString();
+            row.querySelector('.item-total').innerText = Math.round(itemTotal).toLocaleString();/// Update item total in row without decimals
+            totalAmount += itemTotal;
+            TotleDiscount += itemDiscount;
+            totalVat +=TotalVat;
+            Netprice +=netprice;
+            Nettotal +=nettotal;
+        });
+        totalAmountCell.innerText = totalAmount.toLocaleString();
+        NetpriceCell.innerText = Netprice.toLocaleString();
+        TotleDiscountCell.innerText = Math.round(TotleDiscount);
+        NetTotalCell.innerText = Nettotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });// Update total amount in footer without decimals
+        totalVatCell.innerText = totalVat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });// Update total amount in footer without decimals
+    }
+    // Add event listener to save button
     saveButton.addEventListener('click', function () {
         displaySelectedItemsTableBody.innerHTML = '';
         let rows = selectedItemsTableBody.querySelectorAll('tr');
@@ -947,17 +803,22 @@ document.addEventListener('DOMContentLoaded', function () {
             newRow.innerHTML = `
                 <td>${index + 1}</td>
                 <td><input type="hidden" id="RoomID" name="RoomID[]" value="${cells[1].innerText}">${cells[1].innerText}</td>
-                <td>${cells[2].innerText}</td>
-                <td>${cells[3].innerText}</td>
+                <td style="text-align:left;">${cells[2].innerText}</td>
+                <td><input type="number" class="countroom" name="countroom[]" value="1" min="1"></td>
                 <td>${cells[4].innerText}</td>
-                <td><input type="number" class="countroom" name="countroom[]" value="1" min="1"></td> <!-- Default quantity can be adjusted -->
-                <td>${cells[5].innerText}</td>
-                <td class="item-total">0</td> <!-- Add a cell for item total -->
-                <td><button type="button" class="btn btn-danger remove-button">Remove</button></td>
+                <td><input type="number" class="discount" name="discount[]" value="1" min="1"></td>
+                <td>${cells[3].innerText}</td>
+                <td class="net-price">0</td>
+                <td class="item-total">0</td>
+                <td><button type="button" class="Btn remove-button"><svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon">
+                    <path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path>
+                    </svg></button>
+                </td>
             `;
             displaySelectedItemsTableBody.appendChild(newRow);
 
             newRow.querySelector('.countroom').addEventListener('input', updateTotal);
+            newRow.querySelector('.discount').addEventListener('input', updateTotal);
             newRow.querySelector('.remove-button').addEventListener('click', function () {
                 // Remove corresponding row from selectedItemsTableBody
                 let productId = newRow.cells[1].innerText;
@@ -974,228 +835,153 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        updateTotal(); // Update total after all rows are added
+        updateTotal();
     });
-});
-document.addEventListener('DOMContentLoaded', function () {
-    let selectedItemsTableBodyBanquet = document.querySelector('#selected-items-table-Banquet tbody');
-    let displaySelectedItemsTableBodyBanquet = document.querySelector('#display-selected-items-Banquet tbody');
-    let selectButtons = document.querySelectorAll('.select-button-Banquet');
-    let saveButtonBanquet = document.querySelector('#save-button-Banquet');
-    let selectedIndex = 1;
+    document.addEventListener('click', function (e) {
+    if (e.target && e.target.classList.contains('select-button-room')) {
+        let button = e.target;
+        let productId = button.getAttribute('data-id');
+        let productName = button.getAttribute('data-name');
+        let productDescription = button.getAttribute('data-description');
+        let productUnit = button.getAttribute('data-unit');
+        let productPax = button.getAttribute('data-pax');
+        let productPrice = button.getAttribute('data-price');
+        let isDuplicate = false;
 
-    selectButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            let productId = button.getAttribute('data-id');
-            let productName = button.getAttribute('data-name');
-            let productDescription = button.getAttribute('data-description');
-            let productUnit = button.getAttribute('data-unit');
+        // Check if the product already exists in the table
+        document.querySelectorAll('#selected-items-table-room tbody tr').forEach(row => {
+            let existingProductId = row.cells[1].innerText;
+            if (existingProductId === productId) {
+                isDuplicate = true;
+            }
+        });
+
+        if (!isDuplicate) {
             let newRow = document.createElement('tr');
             newRow.innerHTML = `
-                <td>${selectedIndex++}</td>
+                <td>${selectedIndex}</td>
                 <td>${productId}</td>
-                <td style="text-align: left;">${productName}</td>
-                <td style="text-align: left;">${productDescription}</td>
-                <td></td>
+                <td style="text-align: left;">${productName}<br><p style="font-size:14px;color:#BEBEBE">${productDescription}</p></td>
                 <td>${productUnit}</td>
-                <td><button type="button" class="btn btn-danger remove-button">Remove</button></td>
+                <td>${productPrice}</td>
+                <td><button type="button" class="Btn  remove-button"><svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon">
+                    <path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path>
+                    </svg></button>
+                </td>
             `;
 
-            selectedItemsTableBodyBanquet.appendChild(newRow);
+            selectedItemsTableBody.appendChild(newRow);
 
-            newRow.querySelector('.remove-button').addEventListener('click', function () {
-                selectedItemsTableBodyBanquet.removeChild(newRow);
+            let removeButton = newRow.querySelector('.remove-button');
+            removeButton.addEventListener('click', function () {
+                selectedItemsTableBody.removeChild(newRow);
                 selectedIndex--; // Adjust index if needed
                 updateIndex(); // Function to update index after removal
             });
-        });
-    });
 
-    function updateIndex() {
-        let rows = selectedItemsTableBodyBanquet.querySelectorAll('tr');
-        rows.forEach((row, index) => {
-            row.cells[0].innerText = index + 1;
+            selectedIndex++;
+        } else {
+            alert('This product is already added to the list.');
+        }
+    }
+});
+});
+$(document).ready(function() {
+    let products = []; // Array to hold all product data
+    let units = [];
+    let quantities = [];
+    let currentPage = 1;
+    const itemsPerPage = 10;
+
+    function fetchProducts(selectedValue) {
+        var Quotation_ID = '{{ $Quotation->Quotation_ID }}'; // Replace this with the actual ID you want to send
+
+        $.ajax({
+            url: '{{ route("Quotation.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+            method: 'GET',
+            data: {
+                value: selectedValue
+            },
+            success: function(response) {
+                console.log(response);
+                products = response.products; // Store products data
+                units = response.units;
+                quantities = response.quantitys;
+                displayProducts(currentPage); // Display the first page of products
+                setupPagination(products.length);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
         });
     }
 
-    saveButtonBanquet.addEventListener('click', function () {
-        displaySelectedItemsTableBodyBanquet.innerHTML = '';
-        let rows = selectedItemsTableBodyBanquet.querySelectorAll('tr');
-        rows.forEach((row, index) => {
-            let cells = row.querySelectorAll('td');
-            let newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>${index + 1}</td>
-                <td><input type="hidden" id="BanquetID" name="BanquetID[]" value="${cells[1].innerText}">${cells[1].innerText}</td>
-                <td>${cells[2].innerText}</td>
-                <td>${cells[3].innerText}</td>
-                <td><input type="number" class="countBanquet" name="countBanquet[]" value="1" min="1"></td>
-                <td>${cells[5].innerText}</td>
-                <td><button type="button" class="btn btn-danger remove-button">Remove</button></td>
+    function displayProducts(page) {
+        $('#product-container').empty();
+        currentPage = page;
+
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedItems = products.slice(startIndex, endIndex);
+
+        paginatedItems.forEach(function(product, index) {
+            var unitMatch = units.find(unit => String(unit.id) === String(product.unit));
+            var quantityMatch = quantities.find(quantity => String(quantity.id) === String(product.quantity));
+            var quantityName = quantityMatch?.name_th || '';
+            var unitName = unitMatch?.name_th || '';
+            var paxContent = product.pax !== null ? product.pax : '';
+            var row = `
+                <tr>
+                    <th scope="row">${startIndex + index + 1}</th>
+                    <td>${product.Product_ID}</td>
+                    <td style="text-align:left;">${product.name_en}<br><p style=" font-size:14px;color:#BEBEBE">${product.detail_en}</p></td>
+                    <td>${unitName}</td>
+                    <td>${product.normal_price}</td>
+                    <td>
+                       <button type="button" style="background-color: #109699; display: block; margin: 0 auto;" class="button-11 select-button-room"
+                        data-id="${product.Product_ID}" data-name="${product.name_en}" data-description="${product.detail_en}" data-unit="${unitName}"
+                        data-pax="${product.pax}" data-price="${product.normal_price}" data-discount="${product.maximum_discount}">+</button>
+
+                    </td>
+                </tr>
             `;
-            displaySelectedItemsTableBodyBanquet.appendChild(newRow);
-
-            newRow.querySelector('.remove-button').addEventListener('click', function () {
-                // Remove corresponding row from selectedItemsTableBodyBanquet
-                selectedItemsTableBodyBanquet.removeChild(rows[index]);
-
-                // Remove the row from displaySelectedItemsTableBodyBanquet
-                displaySelectedItemsTableBodyBanquet.removeChild(newRow);
-
-                // Update indexes
-                selectedIndex--;
-                updateIndex();
-            });
-        });
-    });
-});
-document.addEventListener('DOMContentLoaded', function () {
-    let selectedItemsTableBodyMeals = document.querySelector('#selected-items-table-Meals tbody');
-    let displaySelectedItemsTableBodyMeals = document.querySelector('#display-selected-items-Meals tbody');
-    let selectButtons = document.querySelectorAll('.select-button-Meals');
-    let saveButtonMeals = document.querySelector('#save-button-Meals');
-
-    let selectedIndex = 1;
-
-    selectButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            let productId = button.getAttribute('data-id');
-            let productName = button.getAttribute('data-name');
-            let productDescription = button.getAttribute('data-description');
-            let productUnit = button.getAttribute('data-unit');
-            let productPax = button.getAttribute('data-pax');
-            let newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>${selectedIndex++}</td>
-                <td>${productId}</td>
-                <td style="text-align: left;">${productName}</td>
-                <td style="text-align: left;">${productDescription}</td>
-                <td style="text-align: left;"></td>
-                <td>${productUnit}</td>
-                <td><button type="button" class="btn btn-danger remove-button-meals">Remove</button></td>
-            `;
-
-            selectedItemsTableBodyMeals.appendChild(newRow);
-
-            newRow.querySelector('.remove-button-meals').addEventListener('click', function () {
-                selectedItemsTableBodyMeals.removeChild(newRow);
-                selectedIndex--; // Adjust index if needed
-                updateIndex(); // Function to update index after removal
-            });
-        });
-    });
-
-    function updateIndex() {
-        let rows = selectedItemsTableBodyMeals.querySelectorAll('tr');
-        rows.forEach((row, index) => {
-            row.cells[0].innerText = index + 1;
+            $('#product-container').append(row);
         });
     }
 
-    saveButtonMeals.addEventListener('click', function () {
-        displaySelectedItemsTableBodyMeals.innerHTML = '';
-        let rows = selectedItemsTableBodyMeals.querySelectorAll('tr');
-        rows.forEach((row, index) => {
-            let cells = row.querySelectorAll('td');
-            let newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>${index + 1}</td>
-                <td><input type="hidden" id="MealsID" name="MealsID[]" value="${cells[1].innerText}">${cells[1].innerText}</td>
-                <td>${cells[2].innerText}</td>
-                <td>${cells[3].innerText}</td>
-                <td><input type="number" class="countMeals" name="countMeals[]" value="1" min="1"></td>
-                <td>${cells[5].innerText}</td>
-                <td><button type="button" class="btn btn-danger remove-button-meals">Remove</button></td>
-            `;
-            displaySelectedItemsTableBodyMeals.appendChild(newRow);
+    function setupPagination(totalItems) {
+        $('#pagination').empty();
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-            newRow.querySelector('.remove-button-meals').addEventListener('click', function () {
-                // Remove corresponding row from selectedItemsTableBodyMeals
-                selectedItemsTableBodyMeals.removeChild(rows[index]);
+        for (let i = 1; i <= totalPages; i++) {
+            let li = $('<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>');
+            if (i === currentPage) li.addClass('active');
 
-                // Remove the row from displaySelectedItemsTableBodyMeals
-                displaySelectedItemsTableBodyMeals.removeChild(newRow);
-
-                // Update indexes
-                selectedIndex--;
-                updateIndex();
+            li.click(function(e) {
+                e.preventDefault();
+                displayProducts(i);
+                $('#pagination .page-item').removeClass('active');
+                li.addClass('active');
             });
-        });
-    });
-});
-document.addEventListener('DOMContentLoaded', function () {
-    let selectedItemsTableBodyEntertainment = document.querySelector('#selected-items-table-Entertainment tbody');
-    let selectButtons = document.querySelectorAll('.select-button-Entertainment');
-    let displaySelectedItemsTableBodyEntertainment = document.querySelector('#display-selected-items-Entertainment tbody');
-    let saveButtonEntertainment = document.querySelector('#save-button-Entertainment');
-    let selectedIndex = 1;
 
-    selectButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            let productId = button.getAttribute('data-id');
-            let productName = button.getAttribute('data-name');
-            let productDescription = button.getAttribute('data-description');
-            let productUnit = button.getAttribute('data-unit');
-            let newRow = document.createElement('tr');
-            let displayUnit = productUnit === 'Music_band' ? 'Music band' : productUnit;
-            newRow.innerHTML = `
-                <td>${selectedIndex++}</td>
-                <td>${productId}</td>
-                <td style="text-align: left;">${productName}</td>
-                <td style="text-align: left;">${productDescription}</td>
-                 <td style="text-align: left;"></td>
-                <td>${displayUnit}</td>
-                <td><button type="button" class="btn btn-danger remove-button">Remove</button></td>
-            `;
-
-            selectedItemsTableBodyEntertainment.appendChild(newRow);
-
-            newRow.querySelector('.remove-button').addEventListener('click', function () {
-                selectedItemsTableBodyEntertainment.removeChild(newRow);
-                selectedIndex--; // Adjust index if needed
-                updateIndex(); // Function to update index after removal
-            });
-        });
-    });
-
-    function updateIndex() {
-        let rows = selectedItemsTableBodyEntertainment.querySelectorAll('tr');
-        rows.forEach((row, index) => {
-            row.cells[0].innerText = index + 1;
-        });
+            $('#pagination').append(li);
+        }
     }
 
-    saveButtonEntertainment.addEventListener('click', function () {
-        displaySelectedItemsTableBodyEntertainment.innerHTML = '';
-        let rows = selectedItemsTableBodyEntertainment.querySelectorAll('tr');
-        rows.forEach((row, index) => {
-            let cells = row.querySelectorAll('td');
-            let productId = cells[1].innerText;
-            let newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>${index + 1}</td>
-                <td><input type="hidden" id="EntertainmentID" name="EntertainmentID[]" value="${cells[1].innerText}">${cells[1].innerText}</td>
-                <td>${cells[2].innerText}</td>
-                <td>${cells[3].innerText}</td>
-                <td><input type="number" id="countEntertainment" name="countEntertainment[]"value="1" min="1"></td> <!-- Default quantity can be adjusted -->
-                <td>${cells[5].innerText}</td>
-                <td><button type="button" class="btn btn-danger remove-button">Remove</button></td>
-            `;
-            displaySelectedItemsTableBodyEntertainment.appendChild(newRow);
+    $('#addproduct').click(function(e) {
+        e.preventDefault();
+        fetchProducts('all');
+    });
 
-            newRow.querySelector('.remove-button').addEventListener('click', function () {
-                // Remove corresponding row from selectedItemsTableBodyEntertainment
-                selectedItemsTableBodyEntertainment.removeChild(rows[index]);
-
-                // Remove the row from displaySelectedItemsTableBodyEntertainment
-                displaySelectedItemsTableBodyEntertainment.removeChild(newRow);
-
-                // Update indexes
-                selectedIndex--;
-                updateIndex();
-            });
-        });
+    $('.dropdown-item').click(function(e) {
+        e.preventDefault();
+        var selectedValue = $(this).data('value');
+        fetchProducts(selectedValue);
     });
 });
+
+
+
 </script>
+
 @endsection
