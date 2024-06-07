@@ -303,7 +303,7 @@
                 </div>
 
                 <div class="time">
-                    <input type="time" id="time" name="time" value="<?php echo isset($time) && $time != $time ?: date('21:00:00'); ?>" hidden>
+                    <input type="time" id="time" name="time" value="<?php echo isset($time) && $time != $time ?: date('20:59:59'); ?>" hidden>
                 </div>
 
                 <div class="revenue_type">
