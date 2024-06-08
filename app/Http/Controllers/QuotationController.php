@@ -84,7 +84,7 @@ class QuotationController extends Controller
         $save->Expirationdate = $request->Expiration;
         $save->save();
         if ( $save->save()) {
-            return redirect()->to(url('/Quotation/Event_Formate/company/product/'.$save->Quotation_ID))->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->to(url('/Quotation/selectproduct/company/create/'.$save->Quotation_ID))->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
         }else {
             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
@@ -147,95 +147,47 @@ class QuotationController extends Controller
         ]);
     }
 
-    // public function quotation(Request $request ,$Quotation_ID)
-    // {
-
-    //     $RoomID= $request->RoomID;
-    //     $countroom= $request->countroom;
-    //     $BanquetID= $request->BanquetID;
-    //     $countBanquet= $request->countBanquet;
-    //     $MealsID= $request->MealsID;
-    //     $countMeals= $request->countMeals;
-    //     $EntertainmentID= $request->EntertainmentID;
-    //     $countEntertainment= $request->countEntertainment;
-    //     $Quotation_ID = $request->Quotation_ID;
-    //     $IssueDate = $request->IssueDate;
-    //     $ExpirationDate = $request->ExpirationDate;
-    //     $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
-    //     $Company_ID = $Quotation->Company_ID;
-    //     $freelanceraiffiliate = $Quotation->freelanceraiffiliate;
-    //     $rooms = $request->input('RoomID');
-    //     $roomCounts = $request->input('countroom');
-    //     if ($rooms !== null) {
-    //         foreach ($rooms as $index => $roomId) {
-    //             $saveRoom = new document_quotation();
-    //             $saveRoom->Quotation_ID = $Quotation_ID;
-    //             $saveRoom->Company_ID = $Company_ID;
-    //             $saveRoom->Product_ID = $roomId;
-    //             $saveRoom->Issue_date = $IssueDate;
-    //             $saveRoom->ExpirationDate = $ExpirationDate;
-    //             $saveRoom->freelanceraiffiliate = $freelanceraiffiliate;
-    //             $saveRoom->Quantity = $roomCounts[$index];
-    //             $saveRoom->save();
-    //         }
-    //     }
-
-    //     // จัดการ BanquetID
-    //     $banquets = $request->input('BanquetID');
-    //     $banquetCounts = $request->input('countBanquet');
-    //     if ($banquets !== null) {
-    //         foreach ($banquets as $index => $banquetId) {
-    //             $saveBanquet = new document_quotation();
-    //             $saveBanquet->Quotation_ID = $Quotation_ID;
-    //             $saveBanquet->Company_ID = $Company_ID;
-    //             $saveBanquet->Product_ID = $roomId;
-    //             $saveBanquet->Issue_date = $IssueDate;
-    //             $saveBanquet->ExpirationDate = $ExpirationDate;
-    //             $saveBanquet->freelanceraiffiliate = $freelanceraiffiliate;
-    //             $saveBanquet->Quantity = $banquetCounts[$index];
-    //             $saveBanquet->save();
-    //         }
-    //     }
-
-    //     // จัดการ MealsID
-    //     $meals = $request->input('MealsID');
-    //     $mealCounts = $request->input('countMeals');
-    //     if ($meals !== null) {
-    //         foreach ($meals as $index => $mealId) {
-    //             $saveMeal = new document_quotation();
-    //             $saveMeal->Quotation_ID = $Quotation_ID;
-    //             $saveMeal->Company_ID = $Company_ID;
-    //             $saveMeal->Product_ID = $roomId;
-    //             $saveMeal->Issue_date = $IssueDate;
-    //             $saveMeal->ExpirationDate = $ExpirationDate;
-    //             $saveMeal->freelanceraiffiliate = $freelanceraiffiliate;
-    //             $saveMeal->Quantity = $mealCounts[$index];
-    //             $saveMeal->save();
-    //         }
-    //     }
-
-    //     // จัดการ EntertainmentID
-    //     $entertainments = $request->input('EntertainmentID');
-    //     $entertainmentCounts = $request->input('countEntertainment');
-    //     if ($entertainments !== null) {
-    //         foreach ($entertainments as $index => $entertainmentId) {
-    //             $saveEntertainment = new document_quotation();
-    //             $saveEntertainment->Quotation_ID = $Quotation_ID;
-    //             $saveEntertainment->Company_ID = $Company_ID;
-    //             $saveEntertainment->Product_ID = $roomId;
-    //             $saveEntertainment->Issue_date = $IssueDate;
-    //             $saveEntertainment->ExpirationDate = $ExpirationDate;
-    //             $saveEntertainment->freelanceraiffiliate = $freelanceraiffiliate;
-    //             $saveEntertainment->Quantity = $entertainmentCounts[$index];
-    //             $saveEntertainment->save();
-    //         }
-    //     }
-    //     if ($saveEntertainment->save()) {
-    //         return redirect()->route('Quotation.index')->with('alert_', 'ส่งข้อมูลเรียบร้อย');
-    //     } else {
-    //         return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-    //     }
-    // }
+    public function savequotation(Request $request ,$Quotation_ID)
+    {
+        $data = $request->all();
+        $Quotation_ID = $request->Quotation_ID;
+        $IssueDate = $request->IssueDate;
+        $ExpirationDate = $request->ExpirationDate;
+        $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
+        $Company_ID = $Quotation->Company_ID;
+        $freelanceraiffiliate = $Quotation->freelanceraiffiliate;
+        $Products = $request->input('ProductID');
+        $Quantity = $request->input('countroom');
+        $Discount = $request->input('discount');
+        $netpriceproduct =$request->input('net-price-product');
+        $priceproduct =$request->input('price-product');
+        $totalpriceproduct =$request->input('total-price-product');
+        foreach ($priceproduct as $key => $price) {
+            $priceproduct[$key] = str_replace(array(',', '.00'), '', $price);
+        }
+        if ($Products !== null) {
+            foreach ($Products as $index => $ProductID) {
+                $saveProduct = new document_quotation();
+                $saveProduct->Quotation_ID = $Quotation_ID;
+                $saveProduct->Company_ID = $Company_ID;
+                $saveProduct->Product_ID = $ProductID;
+                $saveProduct->Issue_date = $IssueDate;
+                $saveProduct->discount =$Discount[$index];
+                $saveProduct->priceproduct =$priceproduct[$index];
+                $saveProduct->netpriceproduct =$netpriceproduct[$index];
+                $saveProduct->totalpriceproduct =$totalpriceproduct[$index];
+                $saveProduct->ExpirationDate = $ExpirationDate;
+                $saveProduct->freelanceraiffiliate = $freelanceraiffiliate;
+                $saveProduct->Quantity = $Quantity[$index];
+                $saveProduct->save();
+            }
+        }
+        if ( $saveProduct->save()) {
+            return redirect()->route('Quotation.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+        }else {
+            return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        }
+    }
 
     public function edit($id)
     {
@@ -270,6 +222,39 @@ class QuotationController extends Controller
         }else {
             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
-
+    }
+    public function editselect($id)
+    {
+        $Quotation = Quotation::where('id', $id)->first();
+        $Company = $Quotation->Company_ID;
+        $Quotation_ID = $Quotation->Quotation_ID;
+        $Company_ID = companys::where('Profile_ID',$Company)->first();
+        $Company_typeID=$Company_ID->Company_type;
+        $CityID=$Company_ID->City;
+        $amphuresID = $Company_ID->Amphures;
+        $TambonID = $Company_ID->Tambon;
+        $Company_type = master_document::where('id',$Company_typeID)->select('name_th','id')->first();
+        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+        $company_fax = company_fax::where('Profile_ID',$Company)->where('Sequence','main')->first();
+        $company_phone = company_phone::where('Profile_ID',$Company)->where('Sequence','main')->first();
+        // dd($Company_typeID);
+        // ส่งตัวแปรไปยัง view
+        $Contact_name = representative::where('Company_ID',$Company)->where('status',1)->first();
+        $ContactCityID = $Contact_name->City;
+        $ContactamphuresID = $Contact_name->Amphures;
+        $ContactTambonID = $Contact_name->Tambon;
+        $Contact_phone = representative_phone::where('Company_ID',$Company)->where('Sequence','main')->first();
+        $ContactCity = province::where('id',$ContactCityID)->select('name_th','id')->first();
+        $ContactamphuresID = amphures::where('id',$ContactamphuresID)->select('name_th','id')->first();
+        $ContactTambonID = districts::where('id',$ContactTambonID)->select('name_th','id','Zip_Code')->first();
+        $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
+        $product = master_product_item::where('status',1)->get();
+        $unit = master_unit::where('status',1)->get();
+        $quantity = master_quantity::where('status',1)->get();
+        $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+        return view('quotation.editProduct',compact('Quotation','Company_ID','Company_type','amphuresID','TambonID','provinceNames','company_fax','company_phone'
+        ,'Contact_name','Contact_phone','ContactCity','ContactamphuresID','ContactTambonID','product','unit','quantity','selectproduct'));
     }
 }

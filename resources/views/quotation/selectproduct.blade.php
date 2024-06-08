@@ -83,9 +83,9 @@
     }
 
     input[type="number"] {
-        width: 100%;
+        width: 80%;
         padding: 12px 20px;
-        margin: 8px 0;
+        margin: 20px 0;
         border: 1px solid #ccc;
         border-radius: 4px;
         box-sizing: border-box;
@@ -456,7 +456,7 @@
   }
 
 </style>
-<form action="{{url('/Quotation/Event_Formate/create/quotation/'.$Quotation->Quotation_ID)}}" method="POST"enctype="multipart/form-data">
+<form action="{{url('/Quotation/company/create/quotation/'.$Quotation->Quotation_ID)}}" method="POST"enctype="multipart/form-data">
     @csrf
     <div class="container">
         <div class=" col-12">
@@ -639,19 +639,19 @@
                     <thead  class="table-dark">
                         <tr>
                             <th style="width: 5%;">#</th>
-                            <th style="width: 10%;">รหัส</th>
-                            <th style="width: 20%;">รายการ</th>
+                            <th style="width: 5%;">รหัส</th>
+                            <th style="width: 30%;">รายการ</th>
                             <th style="width: 10%;">จำนวน</th>
                             <th scope="col"style="width: 10%">ราคา</th>
                             <th scope="col"style="width: 10%">ส่วนลด</th>
-                            <th style="width: 10%;">หน่วย</th>
-                            <th style="width: 10%;">ราคาสุทธิต่อหน่วย</th>
-                            <th style="width: 10%;">จำนวนเงิน</th>
+                            <th style="width: 5%;">หน่วย</th>
+                            <th style="width: 8%;">ราคาสุทธิต่อหน่วย</th>
+                            <th style="width: 8%;">จำนวนเงิน</th>
                             <th style="width: 5%;">คำสั่ง</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Rows will be added here by JavaScript -->
+
                     </tbody>
                     <tfoot>
 
@@ -689,7 +689,7 @@
                     <div class="col-lg-4 col-md-6 col-sm-12">
                         <div class="col-12  mt-2">
                             <div class="row">
-                                <div class="col-5">
+                                <div class="col-3 mt-3">
                                     <img src="{{ asset('/image/bank/BAY.jpg') }}" style="width: 100%;border-radius: 50%;"/>
                                 </div>
                                 <div class="col-7">
@@ -701,7 +701,7 @@
                     <div class="col-lg-4 col-md-6 col-sm-12">
                         <div class="col-12  mt-2">
                             <div class="row">
-                                <div class="col-5" >
+                                <div class="col-3 mt-3" >
                                     <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 100%;border-radius: 50%;"/>
                                 </div>
                                 <div class="col-7" >
@@ -713,7 +713,7 @@
                     <div class="col-lg-4 col-md-6 col-sm-12">
                         <div class="col-12  mt-2">
                             <div class="row">
-                                <div class="col-5" >
+                                <div class="col-3 mt-3" >
                                     <img src="{{ asset('/image/bank/KBNK.jpg') }}" style="width: 100%;border-radius: 50%;"/>
                                 </div>
                                 <div class="col-7" >
@@ -724,7 +724,7 @@
                     </div>
                 </div>
             </div>
-            <hr class="mt-5 my-3" style="border: 1px solid #000">
+            <hr class="mt-2 my-3" style="border: 1px solid #000">
             <div class="col-12 row mt-5">
                 <div class="col-4"></div>
                 <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
@@ -770,7 +770,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('#display-selected-items tbody tr').forEach(row => {
             const productPaxCell = row.cells[4];
             productPax = parseFloat(productPaxCell.innerText.trim().replace(/,/g, ''));
-
             const quantity = parseInt(row.querySelector('.countroom').value) || 0;
             const discount = parseInt(row.querySelector('.discount').value) || 0;
             console.log(discount);
@@ -780,7 +779,35 @@ document.addEventListener('DOMContentLoaded', function () {
             const TotalVat = netprice * 7 / 100;
             const nettotal = netprice +TotalVat;
             row.querySelector('.net-price').innerText = Math.round(netprice).toLocaleString();
-            row.querySelector('.item-total').innerText = Math.round(itemTotal).toLocaleString();/// Update item total in row without decimals
+            row.querySelector('.item-total').innerText = Math.round(itemTotal).toLocaleString();
+            const netPriceInput = row.querySelector('input.net-price-product');
+            const totalPriceInput = row.querySelector('input.total-price-product');
+
+            if (netPriceInput == null) {
+                const newInput = document.createElement('input');
+                newInput.type = 'hidden';
+                newInput.classList.add('net-price-product');
+                newInput.name = 'net-price-product[]';
+                newInput.value = netprice;
+                row.querySelector('.net-price').appendChild(newInput);
+                console.log(newInput.value);
+            } else {
+                netPriceInput.value = netprice;
+                console.log(netPriceInput.value);
+            }
+            if (totalPriceInput == null) {
+                const totalInput = document.createElement('input');
+                totalInput.type = 'hidden';
+                totalInput.classList.add('total-price-product');
+                totalInput.name = 'total-price-product[]';
+                totalInput.value = itemTotal;
+                row.querySelector('.item-total').appendChild(totalInput);
+                console.log(totalInput.value);
+            } else {
+                totalPriceInput.value = itemTotal;
+                console.log(netPriceInput.value);
+            }
+
             totalAmount += itemTotal;
             TotleDiscount += itemDiscount;
             totalVat +=TotalVat;
@@ -802,14 +829,19 @@ document.addEventListener('DOMContentLoaded', function () {
             let newRow = document.createElement('tr');
             newRow.innerHTML = `
                 <td>${index + 1}</td>
-                <td><input type="hidden" id="RoomID" name="RoomID[]" value="${cells[1].innerText}">${cells[1].innerText}</td>
+                <td><input type="hidden" id="ProductID" name="ProductID[]" value="${cells[1].innerText}">${cells[1].innerText}</td>
                 <td style="text-align:left;">${cells[2].innerText}</td>
                 <td><input type="number" class="countroom" name="countroom[]" value="1" min="1"></td>
-                <td>${cells[4].innerText}</td>
+                <td>${cells[4].innerText}<input type="hidden" class="price-product" name="price-product[]" value="${cells[4].innerText}"</td>
                 <td><input type="number" class="discount" name="discount[]" value="1" min="1"></td>
                 <td>${cells[3].innerText}</td>
-                <td class="net-price">0</td>
-                <td class="item-total">0</td>
+               <td class="net-price">
+                        <input type="hidden" class="net-price-product" name="net-price-product[]" value="">
+                        0
+                    </td>
+                <td class="item-total">
+                    <input type="hidden" class="total-price-product" name="total-price-product[]" value="">
+                    0</td>
                 <td><button type="button" class="Btn remove-button"><svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon">
                     <path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path>
                     </svg></button>
@@ -861,7 +893,7 @@ document.addEventListener('DOMContentLoaded', function () {
             newRow.innerHTML = `
                 <td>${selectedIndex}</td>
                 <td>${productId}</td>
-                <td style="text-align: left;">${productName}<br><p style="font-size:14px;color:#BEBEBE">${productDescription}</p></td>
+                <td style="text-align: left;">${productName}</td>
                 <td>${productUnit}</td>
                 <td>${productPrice}</td>
                 <td><button type="button" class="Btn  remove-button"><svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon">
@@ -979,7 +1011,6 @@ $(document).ready(function() {
         fetchProducts(selectedValue);
     });
 });
-
 
 
 </script>

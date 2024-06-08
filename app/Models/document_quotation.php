@@ -21,8 +21,5 @@ class document_quotation extends Model
     {
         return $this->hasOne(master_product_item::class, 'Product_ID', 'Product_ID');
     }
-    public function  productunit()
-    {
-        return $this->hasOne(master_unit::class, 'id', 'unit');
-    }
+
 }

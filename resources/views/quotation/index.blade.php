@@ -74,7 +74,7 @@
                                             <span class="caret"></span></button>
                                         <ul class="dropdown-menu">
                                             <li class="licolor"><a href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">แก้ไขข้อมูล</a></li>
-                                            <li class="licolor"><a href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">แก้ไขข้อมูล</a></li>
+                                            <li class="licolor"><a href="{{ url('/Quotation/edit/quotation/select/'.$item->id) }}">แก้ไขใบเสนอราคา</a></li>
                                         </ul>
                                 </td>
                             </tr>
