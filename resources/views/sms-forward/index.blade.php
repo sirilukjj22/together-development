@@ -233,8 +233,7 @@
         @php
             $role_revenue = App\Models\Role_permission_revenue::where('user_id', Auth::user()->id)->first();
         @endphp
-        <form action="{{ route('sms-search-calendar') }}" method="POST" enctype="multipart/form-data"
-            id="form-calendar">
+        <form action="{{ route('sms-search-calendar') }}" method="POST" enctype="multipart/form-data" id="form-calendar">
             @csrf
             <div class="date_from">
                 <div class="day">
@@ -372,7 +371,7 @@
             </div>
 
             <div class="button-6">
-                <button type="submit" role="button">ค้นหา</button>
+                <button type="submit" role="" id="btn-search-date">ค้นหา</button>
             </div>
         </form>
 
@@ -1156,7 +1155,10 @@
             });
         });
 
+        $('#btn-search-date').on('click', function () {
+            $('#form-calendar').submit();
 
+        });
 
         function currencyFormat(num) {
             return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
