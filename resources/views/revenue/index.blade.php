@@ -449,11 +449,20 @@
                 </div>
 
                 <div class="col-lg-4 col-md-4 col-sm-12">
-                    <button type="button" class="btn btn-warning float-end ml-1">
-                        <i class="fa-solid fa-lock">&nbsp;</i>LOCK
-                    </button>
-                    <button type="button" class="btn btn-primary border-0 float-end" style="background-color: #109699;"
-                        data-bs-toggle="modal" data-bs-target="#AddDataModalCenter">
+                    <?php $date = date('Y-m-d'); ?>
+                    @if (Auth::user()->permission > 0)
+                        @if ($total_revenue_today->status == 0)
+                        <button type="button" class="btn btn-warning float-end ml-1 btn-close-daily" value="1">
+                            <i class="fa-solid fa-lock">&nbsp;</i>LOCK
+                        </button>
+                    @else
+                        <button type="button" class="btn btn-warning float-end ml-1 btn-open-daily" value="0">
+                            <i class="fa-solid fa-lock">&nbsp;</i>UNLOCK
+                        </button>
+                        @endif
+                     @endif
+                    <button type="button" class="btn btn-primary border-0 float-end" onclick="Add_data('{{$date}}')" style="background-color: #109699;"
+                        data-bs-toggle="modal" data-bs-target="#AddDataModalCenter" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
                         เพิ่มข้อมูลเงินสด / เครดิต
                     </button>
                 </div>
@@ -948,11 +957,9 @@
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                                     <label for="">ประเภทรายได้<label>
-                                                        <div class="acc_number">
-                                                            <select class="" name="" id="front_revenue_type">
-                                                                <option value="6">Front Desk Revenue</option>
-                                                            </select>
-                                                        </div>
+                                                        <select class="form-select" id="front_revenue_type">
+                                                            <option value="6">Front Desk Revenue</option>
+                                                        </select>
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                                     <label for="">Credit Card Room Charge</label>
@@ -961,7 +968,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <button type="button" class="btn btn-primary border-0 btn-front-add"
+                                                    <button type="button" type="button" class="btn btn-primary border-0 btn-front-add"
                                                         style="background-color: #109699;">เพิ่ม</button>
                                                     <button class="btn btn-danger btn-front-hide" onclick="toggleHide3()">ลบทั้งหมด</button>
                                                     <span class="front-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
@@ -969,7 +976,7 @@
                                             </div>
 
                                             <div class="table-responsive" style="width: 100%;">
-                                                <table class="table">
+                                                <table id="myTablefrontCredit" class="table">
                                                     <thead>
                                                         <tr>
                                                             <th scope="col">Batch</th>
@@ -998,7 +1005,7 @@
                                             data-bs-target="#collapseTwo" aria-expanded="true"
                                             aria-controls="collapseTwo">
                                             <!--ใส่ ID ให้ตรง -->
-                                            Guest Deposit
+                                            Guest Deposit Revenue
                                         </button>
                                     </h2>
                                     <div id="collapseTwo" class="accordion-collapse collapse"
@@ -1008,11 +1015,11 @@
                                             <div class="row">
                                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                                     <label for="">Cash</label>
-                                                    <input type="text" style="border: 1px solid #ccc;">
+                                                    <input type="text" id="cash" name="cash" placeholder="0.00" style="border: 1px solid #ccc;">
                                                 </div>
                                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                                     <label for="">Bank Transfer</label>
-                                                    <input type="text" style="border: 1px solid #ccc;" disabled>
+                                                    <input type="text" id="room_transfer" name="room_transfer" placeholder="0.00" style="border: 1px solid #ccc;" disabled>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -1023,55 +1030,45 @@
                                             <div class="row">
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                                     <label for="">Batch</label>
-                                                    <input type="text" style="border: 1px solid #ccc;">
+                                                    <input type="text" id="guest_batch" style="border: 1px solid #ccc;">
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                                     <label for="">ประเภทรายได้<label>
-                                                            <input type="text" style="border: 1px solid #ccc;">
+                                                        <select class="form-select" id="guest_revenue_type">
+                                                            <option value="1">Guest Deposit Revenue</option>
+                                                        </select>
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                                     <label for="">Credit Card Room Charge</label>
-                                                    <input type="text" style="border: 1px solid #ccc;">
+                                                    <input type="text" id="guest_credit_amount" name="" placeholder="0.00" style="border: 1px solid #ccc;">
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <button class="btn btn-primary border-0"
+                                                    <button type="button" class="btn btn-primary btn-guest-add border-0"
                                                         style="background-color: #109699;">เพิ่ม</button>
-                                                    <button class="btn btn-danger">ลบทั้งหมด</button>
+                                                    <button class="btn btn-danger btn-guest-hide">ลบทั้งหมด</button>
+                                                    <span class="guest-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
                                                 </div>
                                             </div>
 
                                             <div class="table-responsive" style="width: 100%;">
-                                                <table class="table">
+                                                <table id="myTableguestCredit" class="table">
                                                     <thead>
                                                         <tr>
                                                             <th scope="col">Batch</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">Credit Card Room Charge</th>
+                                                            <th scope="col">Action</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Batch</td>
-                                                            <td>ประเภทรายได้</td>
-                                                            <td>Credit Card Room Charge</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Batch</td>
-                                                            <td>ประเภทรายได้</td>
-                                                            <td>Credit Card Room Charge</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Batch</td>
-                                                            <td>ประเภทรายได้</td>
-                                                            <td>Credit Card Room Charge</td>
-                                                        </tr>
+                                                    <tbody class="guest-todo-list">
+
                                                     </tbody>
                                                 </table>
+                                                <input type="hidden" id="guest_number" value="0">
+                                                <input type="hidden" id="guest_list_num" name="guest_list_num" value="0">
                                             </div>
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -1085,7 +1082,7 @@
                                             data-bs-target="#collapseThree" aria-expanded="true"
                                             aria-controls="collapseThree">
                                             <!--ใส่ ID ให้ตรง -->
-                                            All Outlet Deposit
+                                            All Outlet Revenue
                                         </button>
                                     </h2>
                                     <div id="collapseThree" class="accordion-collapse collapse"
@@ -1095,11 +1092,11 @@
                                             <div class="row">
                                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                                     <label for="">Cash</label>
-                                                    <input type="text" style="border: 1px solid #ccc;">
+                                                    <input type="text" id="fb_cash" name="fb_cash" placeholder="0.00" style="border: 1px solid #ccc;">
                                                 </div>
                                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                                     <label for="">Bank Transfer</label>
-                                                    <input type="text" style="border: 1px solid #ccc;" disabled>
+                                                    <input type="text" id="fb_transfer" name="fb_transfer" placeholder="0.00" style="border: 1px solid #ccc;" disabled>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -1110,52 +1107,336 @@
                                             <div class="row">
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                                     <label for="">Batch</label>
-                                                    <input type="text" style="border: 1px solid #ccc;">
+                                                    <input type="text" id="fb_batch" style="border: 1px solid #ccc;">
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                                     <label for="">ประเภทรายได้<label>
-                                                            <input type="text" style="border: 1px solid #ccc;">
+                                                    <select class="form-select" id="fb_revenue_type">
+                                                        <option value="2">All Outlet Revenue</option>
+                                                    </select>
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                                     <label for="">Credit Card Room Charge</label>
-                                                    <input type="text" style="border: 1px solid #ccc;">
+                                                    <input type="text" id="fb_credit_amount" placeholder="0.00" style="border: 1px solid #ccc;">
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <button class="btn btn-primary border-0"
+                                                    <button type="button" class="btn btn-primary btn-fb-add border-0"
                                                         style="background-color: #109699;">เพิ่ม</button>
-                                                    <button class="btn btn-danger">ลบทั้งหมด</button>
+                                                    <button class="btn btn-danger btn-fb-hide">ลบทั้งหมด</button>
+                                                    <span class="fb-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
                                                 </div>
                                             </div>
 
                                             <div class="table-responsive" style="width: 100%;">
-                                                <table class="table">
+                                                <table id="myTablefbCredit" class="table">
                                                     <thead>
                                                         <tr>
                                                             <th scope="col">Batch</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">Credit Card Room Charge</th>
+                                                            <th scope="col">Action</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Batch</td>
-                                                            <td>ประเภทรายได้</td>
-                                                            <td>Credit Card Room Charge</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Batch</td>
-                                                            <td>ประเภทรายได้</td>
-                                                            <td>Credit Card Room Charge</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Batch</td>
-                                                            <td>ประเภทรายได้</td>
-                                                            <td>Credit Card Room Charge</td>
-                                                        </tr>
+                                                    <tbody class="fb-todo-list">
+
                                                     </tbody>
                                                 </table>
+                                                <input type="hidden" id="fb_number" value="0">
+                                                <input type="hidden" id="fb_list_num" name="fb_list_num" value="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample"> <!--อันนี้หน้า collapse-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingFour">
+                                        <!--ใส่ ID ให้ตรงกับ aria-labelledby -->
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseFour" aria-expanded="true"
+                                            aria-controls="collapseFour">
+                                            <!--ใส่ ID ให้ตรง -->
+                                            Agoda Revenue
+                                        </button>
+                                    </h2>
+                                    <div id="collapseFour" class="accordion-collapse collapse"
+                                        aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                        <!--ใส่ ID ให้ตรง -->
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <label for="">Booking Number</label>
+                                                    <input type="text" id="agoda_batch" style="border: 1px solid #ccc;">
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <label class="">ประเภทรายได้</label>
+                                                    <select class="form-select" id="agoda_revenue_type">
+                                                        <option value="1">Guest Deposit Revenue</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label class="">Check in date</label>
+                                                    <input type="date" class="" id="check_in" name="check_in">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label class="">Check out date</label>
+                                                    <input type="date" class="" id="check_out" name="check_out">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label class="">Credit Card Agoda Charge</label>
+                                                    <input type="text" class="" id="agoda_credit_amount" name="" placeholder="0.00">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label class="">Revenue Outstanding</label>
+                                                    <input type="text" class="" id="agoda_credit_outstanding" name="" placeholder="0.00">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <button type="button" class="btn btn-primary btn-agoda-add border-0"
+                                                        style="background-color: #109699;">เพิ่ม</button>
+                                                    <button class="btn btn-danger btn-agoda-hide">ลบทั้งหมด</button>
+                                                    <span class="agoda-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table id="myTableAgodaCredit" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Booking Number</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">Check in date</th>
+                                                            <th scope="col">Check out date</th>
+                                                            <th scope="col">Credit card Agoda Charge</th>
+                                                            <th scope="col">Credit Agoda Revenue Outstanding</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="agoda-todo-list">
+
+                                                    </tbody>
+                                                </table>
+                                                <input type="hidden" id="agoda_number" value="0">
+                                                <input type="hidden" id="agoda_list_num" name="agoda_list_num" value="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample"> <!--อันนี้หน้า collapse-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingFive">
+                                        <!--ใส่ ID ให้ตรงกับ aria-labelledby -->
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseFive" aria-expanded="true"
+                                            aria-controls="collapseFive">
+                                            <!--ใส่ ID ให้ตรง -->
+                                            Water Park Revenue
+                                        </button>
+                                    </h2>
+                                    <div id="collapseFive" class="accordion-collapse collapse"
+                                        aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+                                        <!--ใส่ ID ให้ตรง -->
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <label>Cash</label>
+                                                    <input type="text" id="wp_cash" name="wp_cash" placeholder="0.00">
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <label>Bank Transfer</label>
+                                                    <input type="text" id="wp_transfer" name="wp_transfer" placeholder="0.00" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 text-left">
+                                                    <h5 class="m-0">Credit Card</h5>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label>Batch</label>
+                                                    <input type="text" id="wp_batch" name="">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label>ประเภทรายได้</label>
+                                                    <select class="form-control form-select" id="wp_revenue_type">
+                                                        <option value="3">Water Park Revenue</option>
+                                                        <option value="7">Credit Card Water Park Revenue</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label>Credit Card Water Park Charge</label>
+                                                    <input type="text" id="wp_credit_amount" name="" placeholder="0.00">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <button type="button" class="btn btn-primary btn-wp-add border-0"
+                                                        style="background-color: #109699;">เพิ่ม</button>
+                                                    <button class="btn btn-danger btn-wp-hide">ลบทั้งหมด</button>
+                                                    <span class="wp-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table id="myTablewpCredit" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">Credit Card Room Charge</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="wp-todo-list">
+
+                                                    </tbody>
+                                                </table>
+                                                <input type="hidden" id="wp_number" value="0">
+                                                <input type="hidden" id="wp_list_num" name="wp_list_num" value="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample"> <!--อันนี้หน้า collapse-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingSix">
+                                        <!--ใส่ ID ให้ตรงกับ aria-labelledby -->
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseSix" aria-expanded="true"
+                                            aria-controls="collapseSix">
+                                            <!--ใส่ ID ให้ตรง -->
+                                            Elexa EGAT Revenue
+                                        </button>
+                                    </h2>
+                                    <div id="collapseSix" class="accordion-collapse collapse"
+                                        aria-labelledby="headingSix" data-bs-parent="#accordionExample">
+                                        <!--ใส่ ID ให้ตรง -->
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label>Batch</label>
+                                                    <input type="text" id="ev_batch" name="">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label>ประเภทรายได้</label>
+                                                    <select class="form-control form-select" aria-label="example" name="" id="ev_revenue_type">
+                                                        <option value="8">Elexa EGAT Revenue</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label>EV Charging Charge</label>
+                                                    <input type="text" id="ev_credit_amount" name="" placeholder="0.00">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label>Elexa EGAT Revenue Outstanding</label>
+                                                    <input type="text" id="ev_credit_outstanding" name="" placeholder="0.00">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <button type="button" class="btn btn-primary btn-ev-add border-0"
+                                                        style="background-color: #109699;">เพิ่ม</button>
+                                                    <button class="btn btn-danger btn-ev-hide">ลบทั้งหมด</button>
+                                                    <span class="ev-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table id="myTableEvCredit" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">EV Charging Charge</th>
+                                                            <th scope="col">Elexa EGAT Revenue Outstanding</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="ev-todo-list">
+
+                                                    </tbody>
+                                                </table>
+                                                <input type="hidden" id="ev_number" value="0">
+                                                <input type="hidden" id="ev_list_num" name="ev_list_num" value="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample"> <!--อันนี้หน้า collapse-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingSix">
+                                        <!--ใส่ ID ให้ตรงกับ aria-labelledby -->
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseSix" aria-expanded="true"
+                                            aria-controls="collapseSix">
+                                            <!--ใส่ ID ให้ตรง -->
+                                            Credit Revenue <span class="text-danger" id="credit_card"> (ยอดเครดิต 0.00)</span>
+                                        </button>
+                                    </h2>
+                                    <div id="collapseSix" class="accordion-collapse collapse"
+                                        aria-labelledby="headingSix" data-bs-parent="#accordionExample">
+                                        <!--ใส่ ID ให้ตรง -->
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label>Batch</label>
+                                                    <input type="text" class="form-control" id="batch" name="">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label>ประเภทรายได้</label>
+                                                    <select class="form-control form-select" id="revenue_type">
+                                                        <option value="">เลือกประเภทรายได้</option>
+                                                        <option value="6">Front Desk Revenue</option>
+                                                        <option value="1">Guest Deposit Revenue</option>
+                                                        <option value="2">All Outlet Revenue</option>
+                                                        <option value="4">Credit Card Revenue</option>
+                                                        <option value="5">Credit Card Agoda Revenue</option>
+                                                        <option value="3">Water Park Revenue</option>
+                                                        <option value="7">Credit Card Water Park Revenue</option>
+                                                        <option value="8">Elexa EGAT Revenue</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label>ยอดเงิน</label>
+                                                    <input type="text" id="credit_amount" name="" placeholder="0.00">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <button type="button" class="btn btn-primary btn-todo-add border-0"
+                                                        style="background-color: #109699;">เพิ่ม</button>
+                                                    <button class="btn btn-danger btn-todo-hide">ลบทั้งหมด</button>
+                                                    <span class="todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table id="myTableEvCredit" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">ยอดเงิน</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="todo-list">
+
+                                                    </tbody>
+                                                </table>
+                                                <input type="hidden" id="number" value="0">
+                                                <input type="hidden" id="list_num" name="list_num" value="0">
                                             </div>
                                         </div>
                                     </div>
@@ -1167,7 +1448,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-primary" onclick="revenue_store()">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -1228,7 +1509,7 @@
 
 <script>
 
-    $('#date').on('change', function () {
+$('#date').on('change', function () {
         Add_data($(this).val());
     });
 
@@ -1545,8 +1826,8 @@
                 '<tr>' +
                     '<td>' + batch +'</td>' +
                     '<td>' + type_name + '</td>' +
-                    '<td>' + currencyFormat(parseFloat(amount)) + '</td>' +
-                    '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose3(this)"></i>ลบ</td>' +
+                    '<td style="text-align: right;">' + currencyFormat(parseFloat(amount)) + '</td>' +
+                    '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose3(this)"></i></td>' +
                     '<input type="hidden" name="front_batch[]" value="' + batch + '">' +
                     '<input type="hidden" name="front_revenue_type[]" value="' + type + '">' +
                     '<input type="hidden" name="front_credit_amount[]" value="' + amount + '">' +

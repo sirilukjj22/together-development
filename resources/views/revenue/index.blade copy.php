@@ -1394,7 +1394,6 @@
                                                         <button type="button" class="btn btn-sm btn-success btn-todo-add mt-2">เพิ่ม</button>
                                                         <button type="button" class="btn btn-sm btn-secondary btn-todo-hide mt-2" onclick="toggleHide()">ลบทั้งหมด</button>
                                                         <span class="todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
-                                                        <span class="stock-error text-danger small ms-3"style="display: none;">ระบบไม่สามารถทำรายการได้ เนื่องจากมีจำนวนสินค้าไม่เพียงพอ !</span>
                                                     </div>
                                                     <div class="col-sm-12 col-12 mt-3">
                                                         <div class="table-responsive">

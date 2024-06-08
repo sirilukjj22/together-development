@@ -371,7 +371,7 @@
             </div>
 
             <div class="button-6">
-                <button type="submit" role="" id="btn-search-date">ค้นหา</button>
+                <button type="button" role="" id="btn-search-date">ค้นหา</button>
             </div>
         </form>
 
@@ -897,19 +897,19 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">แก้ไขเวลาการโอน</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <label for="">เวลา</label>
-                    <input type="time" name="update_time" id="update_time" value="<?php echo date('H:i:s'); ?>"
+                    <input type="time" class="form-control" name="update_time" id="update_time" value="<?php echo date('H:i:s'); ?>"
                         step="any">
                 </div>
                 <input type="hidden" name="timeID" id="timeID">
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" style="color: black;"
-                        data-dismiss="modal">Close</button>
+                    data-bs-dismiss="modal">Close</button>
                     <button type="button" class="button-10" style="background-color: #109699;"
                         onclick="change_time()">Save changes</button>
                 </div>
@@ -923,7 +923,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">โอนย้าย</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -933,17 +933,17 @@
                     <div class="modal-body">
                         <div class="revenue_type_modal">
                             <label for="">วันที่โอนย้ายไป</label>
-                            <input type="date" name="date_transfer" id="date_transfer">
+                            <input type="date" class="form-control" name="date_transfer" id="date_transfer">
                         </div>
                         <div class="box_modal">
                             <label>หมายเหตุ</label>
-                            <textarea name="transfer_remark" id="transfer_remark" rows="7" cols="50" required>ปิดยอดช้ากว่ากำหนด</textarea>
+                            <textarea class="form-control" name="transfer_remark" id="transfer_remark" rows="7" cols="50" required>ปิดยอดช้ากว่ากำหนด</textarea>
                         </div>
                         <input type="hidden" name="dataID" id="dataID">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" style="color: black;"
-                            data-dismiss="modal">Close</button>
+                        data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="button-10" style="background-color: #109699;">Save
                             changes</button>
                     </div>
@@ -958,7 +958,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">เพิ่มข้อมูล</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -980,12 +980,12 @@
 
                         <div class="transfer_date">
                             <label for="">วันที่โอน <sup class="text-danger">*</sup></label><br>
-                            <input type="date" name="date" id="sms-date" required>
+                            <input class="form-control" type="date" name="date" id="sms-date" required>
                         </div>
 
                         <div class="transfer_time">
                             <label for="">เวลาที่โอน <sup class="text-danger">*</sup></label><br>
-                            <input type="time" name="time" id="sms-time">
+                            <input class="form-control" type="time" name="time" id="sms-time">
                         </div>
 
                         <div class="Amount agoda" hidden>
@@ -1019,13 +1019,12 @@
                         </div>
                         <label for="">จำนวนเงิน (บาท) <sup class="text-danger">*</sup></label><br>
                         <div class="Amount">
-                            <input type="text" id="amount" name="amount" placeholder="0.00" required>
+                            <input class="form-control" type="text" id="amount" name="amount" placeholder="0.00" required>
                         </div>
                     </div>
                     <input type="hidden" name="id" id="id">
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" style="color: black;"
-                            data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" style="color: black;" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="button-10 sa-button-submit" style="background-color: #109699;">Save
                             changes</button>
                     </div>
@@ -1040,7 +1039,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="SplitModalCenter">Split Revenue</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -1049,7 +1048,7 @@
                     <div class="modal-body-split">
                         <div class="split_date">
                             <label for="">วันที่</label>
-                            <input type="date" class="" name="date-split" id="date-split">
+                            <input type="date" class="form-control" name="date-split" id="date-split">
                             <span class="text-danger fw-bold" id="text-split-alert"></span>
                         </div>
 
@@ -1057,7 +1056,7 @@
                             <label for="">จำนวนเงิน <span class="text-danger fw-bold"
                                     id="text-split-amount"></span></label>
                             <input type="hidden" class="" name="balance_amount" id="balance_amount">
-                            <input type="text" class="" name="split-amount" id="split-amount"
+                            <input type="text" class="form-control" name="split-amount" id="split-amount"
                                 placeholder="0.00">
                             <span class="text-danger fw-bold" id="text-split-alert"></span>
                         </div>
@@ -1095,7 +1094,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" style="color: black;"
-                        data-dismiss="modal">Close</button>
+                    data-bs-dismiss="modal">Close</button>
 
                     <button type="button" class="button-10 btn-save-split" onclick="change_split()"
                         style="background-color: #109699;" disabled>Save changes</button>
