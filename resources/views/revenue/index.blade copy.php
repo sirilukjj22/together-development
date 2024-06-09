@@ -1453,9 +1453,6 @@
 @endif
 
 <script>
-    jQuery(document).ready(function($) {
-        $('.counter').counterUp({ delay: 20, time: 1500 });
-    });
 
     $('#date').on('change', function () {
         Add_data($(this).val());
