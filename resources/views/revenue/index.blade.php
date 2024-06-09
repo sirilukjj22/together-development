@@ -861,12 +861,12 @@
                         <td colspan="8"></td> <!-- ช่องเปล่า-->
                     </tr>
                     <tr style="background-color: rgb(186, 229, 255);">
-                        <th colspan="2" style="text-align: right; padding-right: 1%;">
+                        <th colspan="2" style="text-align: right; padding-right: 1%; background-color: rgb(186, 229, 255);">
                             Total Hotel, Water Park And Elexa EGAT Revenue
                         </th>
-                        <td>{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $agoda_charge[0]['total'] + $ev_charge[0]['total'], 2) }}</td>
-                        <td>{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $agoda_charge[0]['total_month'] + $ev_charge[0]['total_month'], 2) }}</td>
-                        <td>{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $agoda_charge[0]['total_year'] + $ev_charge[0]['total_year'], 2) }}</td>
+                        <td style="background-color: rgb(186, 229, 255);">{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $agoda_charge[0]['total'] + $ev_charge[0]['total'], 2) }}</td>
+                        <td style="background-color: rgb(186, 229, 255);">{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $agoda_charge[0]['total_month'] + $ev_charge[0]['total_month'], 2) }}</td>
+                        <td style="background-color: rgb(186, 229, 255);">{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $agoda_charge[0]['total_year'] + $ev_charge[0]['total_year'], 2) }}</td>
                     </tr>
                     <tr style="background-color: rgb(186, 229, 255);">
                         <th colspan="2" style="text-align: right; padding-right: 1%;">
