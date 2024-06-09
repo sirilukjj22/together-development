@@ -509,22 +509,7 @@
                                 <p style="display: inline-block;font-weight: bold;">Taxpayer Identification Number :</p>
                                 <p id="Taxpayer_Identification" name="Taxpayer_Identification" style="display: inline-block;">{{$Company_ID->Taxpayer_Identification}}</p>
                             </div>
-                            <div>
-                                <p style="display: inline-block;font-weight: bold;">Company Email :</p>
-                                <p id="Company_Email" name="Company_Email" style="display: inline-block;">{{$Company_ID->Company_Email}}</p>
-                            </div>
-                            <div>
-                                <p style="display: inline-block;font-weight: bold;">Company Website :</p>
-                                <p id="Company_Website" name="Company_Website" style="display: inline-block;">{{$Company_ID->Company_Website}}</p>
-                            </div>
-                            <div>
-                                <p style="display: inline-block;font-weight: bold;">Company Number :</p>
-                                <p id="Company_Number" name="Company_Number" style="display: inline-block;">{{$company_phone->Phone_number}}</p>
-                            </div>
-                            <div>
-                                <p style="display: inline-block;font-weight: bold;">Company Fax :</p>
-                                <p id="Company_Fax" name="Company_Fax" style="display: inline-block;">{{$company_fax->Fax_number}}</p>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -642,9 +627,9 @@
                             <th style="width: 5%;">รหัส</th>
                             <th style="width: 30%;">รายการ</th>
                             <th style="width: 10%;">จำนวน</th>
+                            <th style="width: 5%;">หน่วย</th>
                             <th scope="col"style="width: 10%">ราคา</th>
                             <th scope="col"style="width: 10%">ส่วนลด</th>
-                            <th style="width: 5%;">หน่วย</th>
                             <th style="width: 8%;">ราคาสุทธิต่อหน่วย</th>
                             <th style="width: 8%;">จำนวนเงิน</th>
                             <th style="width: 5%;">คำสั่ง</th>
@@ -901,9 +886,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </svg></button>
                 </td>
             `;
-
             selectedItemsTableBody.appendChild(newRow);
-
             let removeButton = newRow.querySelector('.remove-button');
             removeButton.addEventListener('click', function () {
                 selectedItemsTableBody.removeChild(newRow);

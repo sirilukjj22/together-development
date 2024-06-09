@@ -509,22 +509,6 @@
                                 <p style="display: inline-block;font-weight: bold;">Taxpayer Identification Number :</p>
                                 <p id="Taxpayer_Identification" name="Taxpayer_Identification" style="display: inline-block;">{{$Company_ID->Taxpayer_Identification}}</p>
                             </div>
-                            <div>
-                                <p style="display: inline-block;font-weight: bold;">Company Email :</p>
-                                <p id="Company_Email" name="Company_Email" style="display: inline-block;">{{$Company_ID->Company_Email}}</p>
-                            </div>
-                            <div>
-                                <p style="display: inline-block;font-weight: bold;">Company Website :</p>
-                                <p id="Company_Website" name="Company_Website" style="display: inline-block;">{{$Company_ID->Company_Website}}</p>
-                            </div>
-                            <div>
-                                <p style="display: inline-block;font-weight: bold;">Company Number :</p>
-                                <p id="Company_Number" name="Company_Number" style="display: inline-block;">{{$company_phone->Phone_number}}</p>
-                            </div>
-                            <div>
-                                <p style="display: inline-block;font-weight: bold;">Company Fax :</p>
-                                <p id="Company_Fax" name="Company_Fax" style="display: inline-block;">{{$company_fax->Fax_number}}</p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -559,7 +543,7 @@
             <hr class="mt-3 my-3" style="border: 1px solid #000">
             <div class="row">
                 <div class="col-lg-2 col-md-2 col-sm-12">
-                    <button type="button" id="addproduct" class="btn button-17 button-18" data-bs-toggle="modal" data-bs-target="#exampleModalproduct">
+                    <button type="button" id="addproduct" class="btn button-17 button-18" data-bs-toggle="modal" data-bs-target="#exampleModalproduct" onclick="fetchProducts('all')">
                         + Add Product
                     </button><br>
                     <div class="modal fade" id="exampleModalproduct" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -576,11 +560,11 @@
                                             ประเภท Product
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="">
-                                            <a class="dropdown-item" style="color: #000;" data-value="all">All Product</a>
-                                            <a class="dropdown-item" style="color: #000;" data-value="Room_Type">Room</a>
-                                            <a class="dropdown-item" style="color: #000;" data-value="Banquet">Banquet</a>
-                                            <a class="dropdown-item" style="color: #000;" data-value="Meals">Meal</a>
-                                            <a class="dropdown-item" style="color: #000;" data-value="Entertainment">Entertainment</a>
+                                            <a class="dropdown-item" style="color: #000;" data-value="all" onclick="fetchProducts('all')">All Product</a>
+                                            <a class="dropdown-item" style="color: #000;" data-value="Room_Type"onclick="fetchProducts('Room_Type')">Room</a>
+                                            <a class="dropdown-item" style="color: #000;" data-value="Banquet"onclick="fetchProducts('Banquet')">Banquet</a>
+                                            <a class="dropdown-item" style="color: #000;" data-value="Meals"onclick="fetchProducts('Meals')">Meal</a>
+                                            <a class="dropdown-item" style="color: #000;" data-value="Entertainment"onclick="fetchProducts('Entertainment')">Entertainment</a>
                                         </div>
                                     </div>
                                 </div>
@@ -596,7 +580,7 @@
                                             <th scope="col"style="width: 5%">คำสั่ง</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="product-container">
+                                    <tbody id="product-list">
 
                                     </tbody>
 
@@ -607,10 +591,9 @@
                                 </div>
                                 <div class="col-12 mt-3">
                                     <h3>รายการที่เลือก</h3>
-                                    <table id="selected-items-table-room" class="table table-bordered" style="width:100%">
+                                    <table  class="table table-bordered" style="width:100%">
                                         <thead class="table-dark">
                                             <tr>
-                                                <th style="width: 10%;">#</th>
                                                 <th style="width: 10%;">รหัส</th>
                                                 <th>รายการ</th>
                                                 <th scope="col" style="width: 10%;">หน่วย</th>
@@ -618,7 +601,7 @@
                                                 <th style="width: 5%;">คำสั่ง</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="product-list-select">
 
                                         </tbody>
                                     </table>
@@ -626,7 +609,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="button-10" style="background-color: #109699;" id="save-button"data-bs-dismiss="modal">Save</button>
+                                <button type="button" class="button-10 confirm-button" style="background-color: #109699;" id="confirm-button"data-bs-dismiss="modal">Save</button>
                             </div>
                         </div>
                         </div>
@@ -635,35 +618,33 @@
                 </div>
             </div>
             <div class="col-12 row mt-3">
-                <table id="display-selected-items" class="table table-bordered">
+                <table  class="table table-bordered">
                     <thead  class="table-dark">
                         <tr>
-                            <th style="width: 5%;">#</th>
                             <th style="width: 5%;">รหัส</th>
                             <th style="width: 30%;">รายการ</th>
                             <th style="width: 10%;">จำนวน</th>
+                            <th style="width: 5%;">หน่วย</th>
                             <th scope="col"style="width: 10%">ราคา</th>
                             <th scope="col"style="width: 10%">ส่วนลด</th>
-                            <th style="width: 5%;">หน่วย</th>
                             <th style="width: 8%;">ราคาสุทธิต่อหน่วย</th>
                             <th style="width: 8%;">จำนวนเงิน</th>
                             <th style="width: 5%;">คำสั่ง</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="display-selected-items">
                         @if (!empty($selectproduct))
                             @foreach ($selectproduct as $key => $item)
 
                                 @foreach ($unit as $singleUnit)
                                     @if($singleUnit->id == @$item->product->unit)
                                         <tr>
-                                            <td class="key">{{$key + 1}}</td>
                                             <td><input type="hidden" id="ProductID" name="ProductID[]" value="Product1">{{$item->Product_ID}}</td>
                                             <td style="text-align:left;">{{@$item->product->name_th}}</td>
                                             <td class="Quantity" >{{$item->Quantity}}</td>
+                                            <td >{{ $singleUnit->name_th }}</td>
                                             <td class="priceproduct">{{$item->priceproduct}}</td>
                                             <td class="discount">{{$item->discount}}%</td>
-                                            <td >{{ $singleUnit->name_th }}</td>
                                             <td class="net-price">{{$item->netpriceproduct}}</td>
                                             <td class="item-total">{{$item->totalpriceproduct}}</td>
                                             <td>
@@ -683,25 +664,25 @@
                     <tfoot>
 
                         <tr>
-                            <td colspan="7" style="text-align:right;">Total Amount</td>
+                            <td colspan="6" style="text-align:right;">Total Amount</td>
                             <td colspan="2" id="total-amount"></td>
                             <input type="hidden" name="total-amountedit" class="total-amountedit">
                             <td rowspan="9"></td> <!-- Adjust column span and add an ID for total amount -->
                         </tr>
                         <tr>
-                            <td colspan="7" style="text-align:right;">Discount (%)</td>
+                            <td colspan="6" style="text-align:right;">Discount (%)</td>
                             <td colspan="2" id="total-Discount"></td> <!-- Adjust column span and add an ID for total amount -->
                         </tr>
                         <tr>
-                            <td colspan="7" style="text-align:right;">Net price </td>
+                            <td colspan="6" style="text-align:right;">Net price </td>
                             <td colspan="2" id="Net-price"></td> <!-- Adjust column span and add an ID for total amount -->
                         </tr>
                         <tr>
-                            <td colspan="7" style="text-align:right;">VAT (%)</td>
+                            <td colspan="6" style="text-align:right;">VAT (%)</td>
                             <td colspan="2" id="total-Vat"></td> <!-- Adjust column span and add an ID for total amount -->
                         </tr>
                         <tr>
-                            <td colspan="7" style="text-align:right;">Net Total</td>
+                            <td colspan="6" style="text-align:right;">Net Total</td>
                             <td colspan="2" id="Net-Total"></td>
                             <!-- Adjust column span and add an ID for total amount -->
                         </tr>
@@ -764,277 +745,140 @@
     </div>
 </form>
 <script>
+    function fetchProducts(status) {
 
-$(document).ready(function() {
-    let products = []; // Array to hold all product data
-    let units = [];
-    let quantities = [];
-    let currentPage = 1;
-    const itemsPerPage = 10;
-
-    function fetchProducts(selectedValue) {
+        console.log(status);
         var Quotation_ID = '{{ $Quotation->Quotation_ID }}'; // Replace this with the actual ID you want to send
-
         $.ajax({
-            url: '{{ route("Quotation.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+            url: '{{ route("Quotation.addProducttable", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
             method: 'GET',
             data: {
-                value: selectedValue
+                value: status
+
             },
             success: function(response) {
-                console.log(response);
-                products = response.products; // Store products data
-                units = response.units;
-                quantities = response.quantitys;
-                displayProducts(currentPage); // Display the first page of products
-                setupPagination(products.length);
+                $('#product-list').children().remove().end();
+                 $.each(response.products, function (key, val) {
+                    var name = '';
+                    var price = 0;
+                    $('#product-list').append(
+                        '<tr id="tr-select'+val.Product_ID+'">' +
+                        '<td>' + parseInt(key+ 1)+'</td>' +
+                        '<td>' + val.Product_ID + '</td>' +
+                        '<td>' + val.name_en + '</td>' +
+                        '<td style="text-align: right;">' + val.unit_name + '</td>' +
+                        '<td>' + val.normal_price + '</td>' +
+                        '<td><button type="button" style="background-color: #109699; display: block; margin: 0 auto;" class="button-11 select-button-product" value="'+ val.id +'">+</button></td>'+
+                        '</tr>'
+                    );
+                });
+
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
             }
         });
     }
+$(document).on('click','.select-button-product',function() {
+    var product = $(this).val();
 
-    function displayProducts(page) {
-        $('#product-container').empty();
-        currentPage = page;
+    $.ajax({
+        url: '{{ route("Quotation.addProducttableselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+        method: 'GET',
+        data: {
+            value:product
 
-        const startIndex = (page - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        const paginatedItems = products.slice(startIndex, endIndex);
-
-        paginatedItems.forEach(function(product, index) {
-            var unitMatch = units.find(unit => String(unit.id) === String(product.unit));
-            var quantityMatch = quantities.find(quantity => String(quantity.id) === String(product.quantity));
-            var quantityName = quantityMatch?.name_th || '';
-            var unitName = unitMatch?.name_th || '';
-            var paxContent = product.pax !== null ? product.pax : '';
-            var row = `
-                <tr>
-                    <th scope="row">${startIndex + index + 1}</th>
-                    <td>${product.Product_ID}</td>
-                    <td style="text-align:left;">${product.name_en}<br><p style=" font-size:14px;color:#BEBEBE">${product.detail_en}</p></td>
-                    <td>${unitName}</td>
-                    <td>${product.normal_price}</td>
-                    <td>
-                       <button type="button" style="background-color: #109699; display: block; margin: 0 auto;" class="button-11 select-button-room"
-                        data-id="${product.Product_ID}" data-name="${product.name_en}" data-description="${product.detail_en}" data-unit="${unitName}"
-                        data-pax="${product.pax}" data-price="${product.normal_price}" data-discount="${product.maximum_discount}">+</button>
-
-                    </td>
-                </tr>
-            `;
-            $('#product-container').append(row);
-        });
-    }
-
-    function setupPagination(totalItems) {
-        $('#pagination').empty();
-        const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-        for (let i = 1; i <= totalPages; i++) {
-            let li = $('<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>');
-            if (i === currentPage) li.addClass('active');
-
-            li.click(function(e) {
-                e.preventDefault();
-                displayProducts(i);
-                $('#pagination .page-item').removeClass('active');
-                li.addClass('active');
+        },
+        success: function(response) {
+                $.each(response.products, function (key, val) {
+                var name = '';
+                var price = 0;
+                $('#product-list-select').append(
+                    '<tr id="tr-select-add'+val.id+'">' +
+                    '<td>' + val.Product_ID + '</td>' +
+                    '<td>' + val.name_en + '</td>' +
+                    '<td style="text-align: right;">' + val.unit_name + '</td>' +
+                    '<td>' + val.normal_price + '</td>' +
+                    '<td><button type="button" class="Btn remove-button" value="'+ val.id +'"><svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon"><path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path></svg></button></td>' +
+                    '<input type="hidden" id="productselect'+val.id+'" value="'+val.id+'">'+
+                    '</tr>'
+                );
             });
 
-            $('#pagination').append(li);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
         }
-    }
-
-    $('#addproduct').click(function(e) {
-        e.preventDefault();
-        fetchProducts('all');
-    });
-
-    $('.dropdown-item').click(function(e) {
-        e.preventDefault();
-        var selectedValue = $(this).data('value');
-        fetchProducts(selectedValue);
     });
 });
-// document.addEventListener('click', function (e) {
-//     if (e.target && e.target.classList.contains('select-button-room')) {
-//         let button = e.target;
-//         let productId = button.getAttribute('data-id');
-//         let productName = button.getAttribute('data-name');
-//         let productDescription = button.getAttribute('data-description');
-//         let productUnit = button.getAttribute('data-unit');
-//         let productPax = button.getAttribute('data-pax');
-//         let productPrice = button.getAttribute('data-price');
-//         let isDuplicate = false;
+$(document).on('click', '.remove-button', function() {
+    var product = $(this).val();
+    $('#tr-select-add' + product).remove(); // ลบแถวที่มี id เป็น 'tr-select-add' + product
+});
+$(document).on('click', '.confirm-button', function() {
 
-//         // Check if the product already exists in the table
-//         let existingProducts = document.querySelectorAll('#selected-items-table-room tbody tr');
-//         existingProducts.forEach(row => {
-//             let existingProductId = row.cells[1].innerText;
-//             if (existingProductId === productId) {
-//                 isDuplicate = true;
-//             }
-//         });
+    $.ajax({
+        url: '{{ route("Quotation.addProducttablemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+        method: 'GET',
+        data: {
+            value: "all"
+        },
+        success: function(response) {
+                $.each(response.products, function (key, val) {
+                    if ($('#productselect'+val.id).val()!==undefined) {
+                        console.log($('#productselect'+val.id).val());
+                        var name = '';
+                        var price = 0;
+                        $('#display-selected-items').append(
+                            '<tr id="tr-select-add'+val.id+'">' +
+                            '<td>' + '#' +'</td>' +
+                            '<td>' + val.Product_ID + '</td>' +
+                            '<td>' + val.name_en + '</td>' +
+                            '<td style="text-align: right;">' + val.unit_name + '</td>' +
+                            '<td>' + val.normal_price + '</td>' +
+                            '<td><button type="button" style="background-color: #109699; display: block; margin: 0 auto;" class="button-11 add-button-product" value="'+ val.id +'">+</button></td>'+
+                            '</tr>'
+                        );
+                    }
 
-//         if (!isDuplicate) {
-//             let newRow = document.createElement('tr');
-//             newRow.innerHTML = `
-//                 <td>${productId}</td>
-//                 <td>${productName}</td>
-//                 <td style="text-align: left;">${productDescription}</td>
-//                 <td>${productUnit}</td>
-//                 <td>${productPrice}</td>
-//                 <td><button type="button" class="Btn remove-button">
-//                     <svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon">
-//                         <path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path>
-//                     </svg>
-//                 </button></td>
-//             `;
-//             // Append new row to table
-//             let selectedItemsTableBody = document.querySelector('#selected-items-table-room tbody');
-//             selectedItemsTableBody.appendChild(newRow);
 
-//             // Add event listener for remove button
-//             let removeButton = newRow.querySelector('.remove-button');
-//             removeButton.addEventListener('click', function () {
-//                 newRow.remove();
-//             });
-//         } else {
-//             alert('This product is already added to the list.');
-//         }
-//     }
-// });
-document.addEventListener('click', function (e) {
-    if (e.target && e.target.classList.contains('select-button-room')) {
-        let button = e.target;
-        let productId = button.getAttribute('data-id');
-        let productName = button.getAttribute('data-name');
-        let productDescription = button.getAttribute('data-description');
-        let productUnit = button.getAttribute('data-unit');
-        let productPrice = button.getAttribute('data-price');
-        let isDuplicate = false;
-
-        // Check if the product already exists in the selected-items-table-room
-        let existingProducts = document.querySelectorAll('#selected-items-table-room tbody tr');
-        existingProducts.forEach(row => {
-            let existingProductId = row.cells[1].innerText;
-            if (existingProductId === productId) {
-                isDuplicate = true;
-            }
-        });
-
-        if (!isDuplicate) {
-            let key = existingProducts.length;
-            let newSelectedRow = document.createElement('tr');
-            newSelectedRow.innerHTML = `
-                <td>${key +1}</td>
-                <td>${productId}</td>
-                <td>${productName}</td>
-                <td>${productUnit}</td>
-                <td>${productPrice}</td>
-                <td><button type="button" class="Btn remove-button">
-                    <svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon">
-                        <path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path>
-                    </svg>
-                </button></td>
-            `;
-            // Append new row to selected-items-table-room
-            let selectedItemsTableBody = document.querySelector('#selected-items-table-room tbody');
-            selectedItemsTableBody.appendChild(newSelectedRow);
-
-            // Check if the product already exists in the display-selected-items
-            let existingDisplayProducts = document.querySelectorAll('#display-selected-items tbody tr');
-            let lastRow = existingDisplayProducts[existingDisplayProducts.length - 1];
-            let newDisplayRow = lastRow.cloneNode(true);
-            let newInput = document.createElement('input');
-            newInput.setAttribute('type', 'text');
-            newInput.setAttribute('value', '1');
-            newInput.setAttribute('min', '1');
-            newInput.setAttribute('name', 'Quantitynew');
-            newDisplayRow.cells[3].innerHTML = ''; // Clear the cell content
-            newDisplayRow.cells[3].appendChild(newInput);
-            newDisplayRow.cells[4].innerText = productPrice;
-            newDisplayRow.cells[0].innerText = '#';
-            newDisplayRow.cells[1].innerText = productId;
-            newDisplayRow.cells[2].innerText = productName;
-            let newdiscount = document.createElement('input');
-            newdiscount.setAttribute('type', 'text');
-            newdiscount.setAttribute('value', '1');
-            newdiscount.setAttribute('min', '1');
-            newdiscount.setAttribute('name', 'discountnew');
-
-            let cell = newDisplayRow.cells[5]; // Get the cell where you want to insert the input
-            cell.innerHTML = ''; // Clear the cell content
-            cell.appendChild(newdiscount);
-            let displaySelectedItemsTableBody = document.querySelector('#display-selected-items tbody');
-            displaySelectedItemsTableBody.appendChild(newDisplayRow);
-            newDisplayRow.cells[6].innerText = productUnit;
-            newDisplayRow.cells[7].innerText = '';
-            newDisplayRow.cells[8].innerText = '';
-            // Add event listener for remove button in selected-items-table-room
-            let removeButton = newSelectedRow.querySelector('.remove-button');
-            removeButton.addEventListener('click', function () {
-                newSelectedRow.remove();
-                newDisplayRow.remove();
             });
-        } else {
-            alert('This product is already added to the list.');
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
         }
-    }
-});
-
-document.getElementById('save-button').addEventListener('click', function() {
-
-    calculateTotals();
-});
-$(document).ready(function(){//net-priceQuantity
-    function calculateTotals() {
-        var totalPrice = 0;
-        var totalDiscount =0;
-        var Netprice = 0;
-        var Vat =0;
-        var NetTotal =0;
-        var totalAmountValue =0;
-        $('table tbody').find('tr').each(function(){
-            var key = parseInt($(this).find('.key').text());
-            var priceproduct = parseInt($(this).find('.priceproduct').text());
-            var Quantity = parseInt($(this).find('.Quantity').text());
-            var netprice = parseInt($(this).find('.net-price').text());
-            var itemtotal = parseInt($(this).find('.item-total').text());
-
-            // คำนวณราคารวมของแถวนี้
-            var itemtotal = Quantity * priceproduct;
-            var Discount = itemtotal - netprice;
-            var vat = netprice * 7 / 100;
-
-            Vat += isNaN(vat) ? 0 : vat;
-        Netprice += isNaN(netprice) ? 0 : netprice;
-        totalDiscount += isNaN(Discount) ? 0 : Discount;
-        totalPrice += isNaN(itemtotal) ? 0 : itemtotal;
-        NetTotal = Netprice + Vat;
-        });
-        $('#total-amount').text(totalPrice);
-        $('#total-Discount').text(isNaN(totalDiscount) ? 0 : totalDiscount);
-        $('#Net-price').text(isNaN(Netprice) ? 0 : Netprice);
-        $('#total-Vat').text(isNaN(Vat) ? 0 : Vat);
-        $('#Net-Total').text(isNaN(NetTotal) ? 0 : NetTotal);
-    }
-    $(document).ready(function() {
-            // เรียกใช้ฟังก์ชันคำนวณเมื่อหน้าโหลดเสร็จ
-        calculateTotals();
-
-        // จัดการกับการคลิกปุ่ม remove-button
-        $('table tbody').on('click', '.remove-button1', function() {
-            // ลบแถวที่ปุ่มนั้นอยู่
-            $(this).closest('tr').remove();
-            // เรียกใช้ฟังก์ชันคำนวณใหม่หลังจากลบแถว
-            calculateTotals();
-        });
     });
 });
+$(document).on('click','.add-button-product',function() {
+    var product = $(this).val();
+    $.ajax({
+        url: '{{ route("Quotation.addProducttablemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+        method: 'GET',
+        data: {
+            value:product
+        },
+        success: function(response) {
 
+                $.each(response.products, function (key, val) {
+                var name = '';
+                var price = 0;
+                $('#display-selected-items').append(
+                    '<tr id="tr-select-add'+val.id+'">' +
+                    '<td>' +'#' +'</td>' +
+                    '<td>' + val.Product_ID + '</td>' +
+                    '<td>' + val.name_en + '</td>' +
+                    '<td style="text-align: right;">' + val.unit_name + '</td>' +
+                    '<td>' + val.normal_price + '</td>' +
+                    '<td><button type="button" style="background-color: #109699; display: block; margin: 0 auto;" class="button-11 add-button-product" value="'+ val.id +'">+</button></td>'+
+                    '</tr>'
+                );
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+        }
+    });
+});
 </script>
 
 @endsection

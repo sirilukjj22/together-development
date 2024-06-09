@@ -320,6 +320,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Quotation/edit/quotation/update/{id}', 'updateCompanyQuotation')->name('Quotation.updateCompanyQuotation');
         Route::get('/Quotation/company/product/{Quotation_ID}/addProduct', 'addProduct')->name('Quotation.addProduct');
         Route::get('/Quotation/edit/quotation/select/{id}','editselect')->name('Quotation.editselect');
+        //----------------------------------Quotaion select product------------------------------------------------------
+        Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttable', 'addProducttable')->name('Quotation.addProducttable');
+        Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttableselect', 'addProducttableselect')->name('Quotation.addProducttableselect');
+        Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttablemain', 'addProducttablemain')->name('Quotation.addProducttablemain');
     });
 
 Route::get('/clear-cache', function () {
