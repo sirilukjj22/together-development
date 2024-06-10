@@ -996,12 +996,12 @@ pointer-events: none; /* Allow pointer events to pass through */
   font-size: 12px !important;
 }
 /* # in table */
-/* .display th[data-dt-column="0"]{
+.display th[data-dt-column="0"]{
   width: 10px;
 }
 .display th[data-dt-column="3"]{
   width: 90px;
-} */
+}
 .display2 th[data-dt-column="1"]{
   width: 30px;
 }
@@ -1014,12 +1014,12 @@ pointer-events: none; /* Allow pointer events to pass through */
 .display2 .dt-column-title{
   margin-left: 10px;
 }
-/* .display [data-dt-column="2"]{
+.display [data-dt-column="2"]{
   width: 30px;
 }
 .display th[data-dt-column="4"]{
   width: 100px;
-} */
+}
 tr.disable-row{
   background-color: #dddddd !important;
   color: #545454;
@@ -1159,18 +1159,18 @@ tr.disable-row:hover{
       margin-right: 0px;
       object-fit: cover;
     }
-    /* .display th[data-dt-column="2"]{
+    .display th[data-dt-column="2"]{
       width: 60px;
     }
     .display th[data-dt-column="3"]{
       width: 120px;
-    } */
+    }
     .dropdown .button-18{
       font-size: 14px !important;
     }
-    /* .display th[data-dt-column="4"]{
+    .display th[data-dt-column="4"]{
       width: 190px;
-    } */
+    }
     .modal-body-split{
       padding: 10px;
       height: 100%;
@@ -1325,7 +1325,7 @@ tr.disable-row:hover{
         margin-top: 20px;
         border-radius: 8px;
       }
-      /* .display th[data-dt-column="0"]{
+      .display th[data-dt-column="0"]{
         width: 10px;
       }
       .display th[data-dt-column="3"]{
@@ -1333,7 +1333,7 @@ tr.disable-row:hover{
       }
       .display th[data-dt-column="4"]{
         width: 200px;
-      } */
+      }
       .display2 th[data-dt-column="4"]{
         width: 20%;
       }
@@ -1864,6 +1864,7 @@ tr.disable-row:hover{
     background-color: rgb(30, 30, 30,0.1);
   }
   .menu2 {
+    background-color: inherit;
     color: white;
     text-align: left;
     padding-left: 30px;
@@ -1883,7 +1884,6 @@ tr.disable-row:hover{
     padding-top: 5px;
     margin-top: 20px;
     height: 40px;
-    
   }
   .menu3:hover {
     background-color: #002b28;
@@ -2747,9 +2747,21 @@ tr.disable-row:hover{
     background-color: #000000;
     color: white;
   }
-  .modal-header{
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
     background-color: #2D7F7B;
-  }
+}
+
+.modal-title {
+    margin-right: 1rem; /* Adjust the value as needed */
+}
+
+.close {
+    margin-left: auto;
+}
   .modal-body input {
     width: 100%;
     height: auto;

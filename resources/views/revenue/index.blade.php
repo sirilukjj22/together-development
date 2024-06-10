@@ -1323,7 +1323,7 @@
                                         <div class="accordion-body">
                                             <div class="row">
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label>Batch</label>
+                                                    <label>Order ID</label>
                                                     <input type="text" id="ev_batch" name="">
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
@@ -1337,8 +1337,16 @@
                                                     <input type="text" id="ev_credit_amount" name="" placeholder="0.00">
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label>Elexa EGAT Revenue Outstanding</label>
-                                                    <input type="text" id="ev_credit_outstanding" name="" placeholder="0.00">
+                                                    <label>Transaction Fee 10%</label>
+                                                    <input type="text" id="ev_transaction_fee" name="" placeholder="0.00">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label>VAT 7%</label>
+                                                    <input type="text" id="ev_vat" name="" placeholder="0.00">
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <label>Total Revenue</label>
+                                                    <input type="text" id="ev_total_revenue" name="" placeholder="0.00">
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -2079,6 +2087,12 @@ $('#date').on('change', function () {
 
     $('.btn-submit-search').on('click', function () {
         $('#form-revenue').submit();
+    });
+
+    $('#ev_credit_amount').on('keyup', function () {
+        var charge = $(this).val();
+
+        console.log(charge);
     });
 
     // Sweetalert2
