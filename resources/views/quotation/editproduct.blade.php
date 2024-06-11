@@ -618,7 +618,7 @@
                 </div>
             </div>
             <div class="col-12 row mt-3">
-                <table  class="table table-bordered">
+                <table  class="table table-bordered" id="display-selected-items">
                     <thead  class="table-dark">
                         <tr>
                             <th style="width: 5%;">รหัส</th>
@@ -640,13 +640,13 @@
                                     @if($singleUnit->id == @$item->product->unit)
                                         <tr>
                                             <td><input type="hidden" id="ProductID" name="ProductID[]" value="Product1">{{$item->Product_ID}}</td>
-                                            <td style="text-align:left;">{{@$item->product->name_th}}</td>
-                                            <td class="Quantity" >{{$item->Quantity}}</td>
-                                            <td >{{ $singleUnit->name_th }}</td>
-                                            <td class="priceproduct">{{$item->priceproduct}}</td>
-                                            <td class="discount">{{$item->discount}}%</td>
-                                            <td class="net-price">{{$item->netpriceproduct}}</td>
-                                            <td class="item-total">{{$item->totalpriceproduct}}</td>
+                                            <td style="text-align:left;"><input type="hidden" id="Productname_th" name="Productname_th" value="{{@$item->product->name_th}}">{{@$item->product->name_th}}</td>
+                                            <td class="Quantity" data-value="{{$item->Quantity}}"><input type="hidden" id="Quantity" name="Quantity" value="{{$item->Quantity}}">{{$item->Quantity}}</td>
+                                            <td ><input type="hidden" id="unitname_th" name="unitname_th" value="{{ $singleUnit->name_th }}">{{ $singleUnit->name_th }}</td>
+                                            <td class="priceproduct" data-value="{{$item->priceproduct}}"><input type="hidden" id="totalprice-unit{{$key+1}}" name="priceproduct" value="{{$item->priceproduct}}">{{$item->priceproduct}}</td>
+                                            <td class="discount"><input type="hidden" id="discount" name="discount" value="{{$item->discount}}">{{$item->discount}}%</td>
+                                            <td class="net-price"><input type="hidden" id="net_discount{{$key+1}}" name="net_discount" value="{{$item->netpriceproduct}}">{{$item->netpriceproduct}}</td>
+                                            <td class="item-total"><input type="hidden" id="allcounttotal{{$key+1}}" name="allcounttotal" value="{{$item->totalpriceproduct}}">{{$item->totalpriceproduct}}</td>
                                             <td>
                                                 <button type="button" class="Btn remove-button1">
                                                     <svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon">
@@ -744,9 +744,9 @@
         </div>
     </div>
 </form>
+<input type="hidden" id="number-product" value="{{count($selectproduct)}}">
 <script>
     function fetchProducts(status) {
-
         console.log(status);
         var Quotation_ID = '{{ $Quotation->Quotation_ID }}'; // Replace this with the actual ID you want to send
         $.ajax({
@@ -781,7 +781,10 @@
     }
 $(document).on('click','.select-button-product',function() {
     var product = $(this).val();
-
+    if ($('#productselect' + product).length > 0) {
+        console.log('Product already selected.');
+        return; // ถ้ามีแล้วไม่ต้องทำอะไร
+    }
     $.ajax({
         url: '{{ route("Quotation.addProducttableselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
         method: 'GET',
@@ -804,7 +807,6 @@ $(document).on('click','.select-button-product',function() {
                     '</tr>'
                 );
             });
-
         },
         error: function(xhr, status, error) {
             console.error('Error:', error);
@@ -816,7 +818,7 @@ $(document).on('click', '.remove-button', function() {
     $('#tr-select-add' + product).remove(); // ลบแถวที่มี id เป็น 'tr-select-add' + product
 });
 $(document).on('click', '.confirm-button', function() {
-
+    var number = Number($('#number-product').val());
     $.ajax({
         url: '{{ route("Quotation.addProducttablemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
         method: 'GET',
@@ -824,61 +826,149 @@ $(document).on('click', '.confirm-button', function() {
             value: "all"
         },
         success: function(response) {
-                $.each(response.products, function (key, val) {
-                    if ($('#productselect'+val.id).val()!==undefined) {
-                        console.log($('#productselect'+val.id).val());
-                        var name = '';
-                        var price = 0;
-                        $('#display-selected-items').append(
-                            '<tr id="tr-select-add'+val.id+'">' +
-                            '<td>' + '#' +'</td>' +
-                            '<td>' + val.Product_ID + '</td>' +
-                            '<td>' + val.name_en + '</td>' +
-                            '<td style="text-align: right;">' + val.unit_name + '</td>' +
-                            '<td>' + val.normal_price + '</td>' +
-                            '<td><button type="button" style="background-color: #109699; display: block; margin: 0 auto;" class="button-11 add-button-product" value="'+ val.id +'">+</button></td>'+
-                            '</tr>'
-                        );
-                    }
+            $.each(response.products, function (key, val) {
+                if ($('#productselect'+val.id).val()!==undefined) {
+                    number +=1;
+                    var name = '';
+                    var price = 0;
+                    var normalPriceString = val.normal_price.replace(/[^0-9.]/g, ''); // ล้างค่าที่ไม่ใช่ตัวเลขและจุดทศนิยม
+                    var normalPrice = parseFloat(normalPriceString);
+                    console.log('normalPrice:', normalPrice);
+                    var netDiscount = (normalPrice - (normalPrice * 0.01)).toString().replace(/,/g, '');
+                    $('#display-selected-items').append(
+                        '<tr id="tr-select-addmain'+val.id+'">' +
+                        '<td>' + val.Product_ID + '</td>' +
+                        '<td>' + val.name_en + '</td>' +
+                        '<td><input class="quantitymain" type="text" id="quantitymain" name="quantitymain" value="1" min="1" rel="'+ number +'"></td>'+
+                        '<td style="text-align: right;">' + val.unit_name + '</td>' +
+                        '<td><input type="hidden" id="totalprice-unit-'+ number+'" name="price-unit" value="'+ val.normal_price +'">' + normalPrice + '</td>' +
+                        '<td><input class="discountmain" type="text" id="discountmain" name="discountmain" value="1" min="1" res="'+ number +'"></td>'+
+                        '<td><input type="hidden" id="net_discount-'+ number+'" name="net_discount" value="'+ val.normal_price +'"><span id="netdiscount'+ number +'">'+ netDiscount +'</span></td>'+
+                        '<td><input type="hidden" id="allcounttotal-'+ number+'" name="allcounttotal" value="'+ val.normal_price +'"><span id="allcount'+ number +'">'+ normalPrice +'</span></td>'+
+                        '<td><button type="button" class="Btn remove-buttonmain" value="'+ val.id +'"><svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon"><path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path></svg></button></td>'+
+                        '</tr>'
+                    );
 
+                }
 
             });
+            $('#number-product').val(number);
         },
         error: function(xhr, status, error) {
             console.error('Error:', error);
         }
     });
 });
-$(document).on('click','.add-button-product',function() {
+$(document).on('click', '.remove-buttonmain', function() {
     var product = $(this).val();
-    $.ajax({
-        url: '{{ route("Quotation.addProducttablemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
-        method: 'GET',
-        data: {
-            value:product
-        },
-        success: function(response) {
 
-                $.each(response.products, function (key, val) {
-                var name = '';
-                var price = 0;
-                $('#display-selected-items').append(
-                    '<tr id="tr-select-add'+val.id+'">' +
-                    '<td>' +'#' +'</td>' +
-                    '<td>' + val.Product_ID + '</td>' +
-                    '<td>' + val.name_en + '</td>' +
-                    '<td style="text-align: right;">' + val.unit_name + '</td>' +
-                    '<td>' + val.normal_price + '</td>' +
-                    '<td><button type="button" style="background-color: #109699; display: block; margin: 0 auto;" class="button-11 add-button-product" value="'+ val.id +'">+</button></td>'+
-                    '</tr>'
-                );
-            });
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-        }
-    });
+    $('#tr-select-add' + product).remove();
+    $('#tr-select-addmain' + product).remove(); // ลบแถวที่มี id เป็น 'tr-select-add' + product
 });
+
+$(document).ready(function() {
+
+    // Function to calculate totals
+    function calculateTotals() {
+        totalAmount = 0;
+        totalDiscount = 0;
+        Netprice = 0;
+        Vat = 0;
+        NetTotal = 0;
+
+        $('table tbody').find('tr').each(function() {
+            var priceproduct = parseInt($(this).find('.priceproduct').text().replace(/,/g, '')) || 0;
+            var Quantity = parseInt($(this).find('.Quantity').data('value')) || 0;
+            var netprice = parseFloat($(this).find('.net-price').text().replace(/,/g, '')) || 0;
+            var itemtotal = Quantity * priceproduct;
+            var Discount = itemtotal - netprice;
+            var vat = netprice * 7 / 100;
+            Vat += isNaN(vat) ? 0 : vat;
+            Netprice += isNaN(netprice) ? 0 : netprice;
+            totalDiscount += isNaN(Discount) ? 0 : Discount;
+            totalAmount += isNaN(itemtotal) ? 0 : itemtotal;// Accumulate totalAmount correctly
+            NetTotal = Netprice + Vat;
+        });
+        $('#total-amount').text(isNaN(totalAmount) ? 0 : totalAmount);
+        $('#total-Discount').text(isNaN(totalDiscount) ? 0 : totalDiscount);
+        $('#Net-price').text(isNaN(Netprice) ? 0 : Netprice);
+        $('#total-Vat').text(isNaN(Vat) ? 0 : Vat);
+        $('#Net-Total').text(isNaN(NetTotal) ? 0 : NetTotal);
+    }
+
+    // Initial calculation
+    calculateTotals();
+    // Listen for input changes
+    $('table tbody').on('input', '.Quantity, .priceproduct, .net-price, .item-total', function() {
+        var total = calculateTotals();
+    });
+
+    // Remove button click handler
+    $(document).on('click', '.remove-button1', function() {
+        $(this).closest('tr').remove(); // Remove the row
+        calculateTotals(); // Recalculate totals after removing row
+    });
+    totalAmost();
+
+});
+
+$(document).on('keyup', '.quantitymain', function() {
+    var quantitymain =  Number($(this).val());
+    var discountmain =  Number($('.discountmain').val());
+    var number_ID = $(this).attr('rel');
+    var number = Number($('#number-product').val());
+    var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
+    var pricenew = price*quantitymain
+    $('#allcount'+number_ID).text(pricenew);
+    var pricediscount = pricenew - (pricenew*discountmain /100);
+    $('#netdiscount'+number_ID).text(pricediscount);
+
+    for (let index = 1; index <= number; index++) {
+        var subtotal = 0;
+        subtotal += parseFloat($('#totalprice-unit-'+index).val());
+        let totalpriceunit = $('#number-product').val();
+        console.log(subtotal);
+    }
+});
+$(document).on('keyup', '.discountmain', function() {
+    var discountmain =  Number($(this).val());
+    var quantitymain =  Number($('.quantitymain').val());
+    var number_ID = $(this).attr('res');
+    var number = Number($('#number-product').val());
+    var price = parseFloat($('#allcounttotal-'+number_ID).val().replace(/,/g, ''));
+    var pricediscount = price - (price*discountmain /100);
+    $('#netdiscount'+number_ID).text(pricediscount);
+    var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
+    var pricenew = price*quantitymain
+    var pricediscount = pricenew - (pricenew*discountmain /100);
+    $('#netdiscount'+number_ID).text(pricediscount);
+    totalAmost();
+});
+
+    function totalAmost() {
+    $(document).ready(function() {
+    let allprice = 0;
+    let allpricedis = 0; // เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
+    $('#display-selected-items tr').each(function() {
+        let priceCell = $(this).find('td').eq(7);
+        let pricetotal = parseInt(priceCell.text().replace(/,/g, '')) || 0; // แปลงข้อความในเซลล์เป็นจำนวนเต็ม และจัดการค่า NaN
+        allprice += pricetotal;
+
+        let pricedisCell = $(this).find('td').eq(6);
+        let pricedistotal = parseInt(pricedisCell.text().replace(/,/g, '')) || 0; // แปลงข้อความในเซลล์เป็นจำนวนเต็ม และจัดการค่า NaN
+        allpricedis += pricedistotal;
+
+        console.log(pricedistotal);
+    });
+    $('#total-amount').text(isNaN(allprice) ? 0 : allprice);
+    console.log(allprice);
+    console.log(allpricedis);
+    });
+
+    }
+    totalAmost();
+
 </script>
 
 @endsection
+
