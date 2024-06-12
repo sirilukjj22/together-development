@@ -12,14 +12,14 @@
             margin: 0 !important;
         }
 
-        .container {
+        /* .container {
             background-color: white;
             padding: 5% 10%;
             width: auto;
             margin-top: 40px;
             border-radius: 8px;
             border: 1px solid #aaa;
-        }
+        } */
 
         input,
         textarea {
@@ -43,7 +43,7 @@
         }
     </style>
 
-    <div class="container">
+    <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         <div class="row">
             User (ผู้ใช้งาน) / &nbsp; <a href="{{ route('users', 'index') }}"> Create User</a>
         </div>

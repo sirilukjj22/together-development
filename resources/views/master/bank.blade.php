@@ -5,14 +5,14 @@
 @section('content')
 
 <style>
-    .container{
+    /* .container{
       position: relative;
       padding: 5% 10%;
       margin-top: 40px;
       border-radius: 8px;
       border: 1px solid #aaa;
       background-color: white;
-    }
+    } */
     .usertopic{
       position: absolute;
       top: 0;
@@ -21,7 +21,7 @@
     }
   </style>
 
-    <div class="container">
+    <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         <div data-toggle="modal" data-target="#exampleModalLongAddBank">
             <button type="button" class="submit-button btn_modal" style="float: right; margin-right: 10px;">เพิ่มธนาคาร</button>
         </div>
