@@ -268,7 +268,7 @@
                     <li class="nav-item">
                         <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            Profile
+                            Debtor
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @if ($role_permisstion->agoda == 1)
