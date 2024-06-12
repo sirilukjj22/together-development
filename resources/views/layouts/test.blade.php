@@ -233,7 +233,7 @@
     
         <nav class="navbar fixed-top navbar-expand-lg navbar-light" style="background-color: #109699;">
           <div class="container-fluid">
-            <a class="navbar-brand h-1 text-white" href="index.html"><img class="mr-2" src="images/Logo.png"
+            <a class="navbar-brand h-1 text-white" href="{{ route('sms-alert') }}"><img class="mr-2" src="{{ asset('assets2/images/Logo.png') }}"
                 style="width: 50px; height: 50px; float: left;" alt="">
               <h6 class="mt-2">Together Resort <br>Development</h6>
             </a>
@@ -243,31 +243,70 @@
             </button>
             <div class="collapse navbar-collapse rounded p-3 bg-white" id="navbarNavDropdown">
               <ul class="navbar-nav font-weight-bold">
-                <li class="nav-item ">
-                  <a class="nav-link px-2" aria-current="page" href="{{ route('sms-alert') }}">SMS Alert</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link px-2" href="{{ route('revenue') }}">Revenue</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link  px-2" href="userhome.html">User</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link  px-2" href="bankhome.html">Bank</a>
-                </li>
+                @if ($role_permisstion->sms_alert == 1)
+                    <li class="nav-item ">
+                        <a class="nav-link px-2" aria-current="page" href="{{ route('sms-alert') }}">SMS Alert</a>
+                    </li>
+                @endif
+                @if ($role_permisstion->revenue == 1)
+                    <li class="nav-item">
+                        <a class="nav-link px-2" href="{{ route('revenue') }}">Revenue</a>
+                    </li>
+                @endif
+                @if ($role_permisstion->user == 1)
+                    <li class="nav-item">
+                        <a class="nav-link  px-2" href="{{ route('users', 'index') }}">User</a>
+                    </li>
+                @endif
+                @if ($role_permisstion->bank == 1)
+                    <li class="nav-item">
+                        <a class="nav-link  px-2" href="bankhome.html">Bank</a>
+                    </li>
+                @endif
     
+                @if ($role_permisstion->debtor == 1)
+                    <li class="nav-item">
+                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Profile
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            @if ($role_permisstion->agoda == 1)
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('debit-agoda-revenue') }}">Agoda</a>
+                                </li>
+                            @endif
+                            @if ($role_permisstion->elexa == 1)
+                                <li>
+                                    <a class="dropdown-item" href="#">Elexa</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
+                @endif
+                @if ($role_permisstion->profile == 1)
+                    <li class="nav-item">
+                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Profile
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            @if ($role_permisstion->company == 1)
+                                <a class="dropdown-item" href="{{ route('Company.index') }}">Company</a>
+                            @endif
+                            @if ($role_permisstion->guest == 1)
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('guest.index') }}">Guest</a>
+                                </li>
+                            @endif
+                            <a class="dropdown-item" href="{{ route('freelancer.index') }}">Freelancer Check</a>
+                            <a class="dropdown-item" href="{{ route('freelancer_member.index') }}">Freelancer Member</a>
+                            <a class="dropdown-item" href="{{ route('Quotation.index') }}">Quotation</a>
+                        </ul>
+                    </li>
+                @endif
                 <li class="nav-item">
-                  <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    Profile
-                  </a>
-                  <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <li><a class="dropdown-item" href="guest/index.blade.php">Guest</a></li>
-                    <li><a class="dropdown-item" href="company/index.blade.php">Company / Agent</a></li>
-                  </ul>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link px-2" href="#">Logout</a>
+                  <a class="nav-link px-2" href="#" data-toggle="modal" data-target="#exampleModalCenter3">Logout</a>
                 </li>
               </ul>
             </div>
