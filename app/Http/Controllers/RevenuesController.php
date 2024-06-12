@@ -1311,17 +1311,16 @@ class RevenuesController extends Controller
         if (!empty($request->ev_batch)) {
             foreach ($request->ev_batch as $key => $value) {
                 $ev_charge += $request->ev_credit_amount[$key];
-                $ev_outstanding += $request->ev_credit_outstanding[$key];
+                // $ev_outstanding += $request->ev_credit_outstanding[$key];
 
                 Revenue_credit::create([
                     'revenue_id' => $check_credit->id,
                     'batch' => $request->ev_batch[$key],
                     'revenue_type' => $request->ev_revenue_type[$key],
-                    // 'ev_check_in' => $request->ev_check_in[$key],
-                    // 'ev_check_out' => $request->ev_check_out[$key],
-                    // 'ev_date_deposit' => date("Y-m-d", strtotime("+37 day",strtotime($request->ev_check_out[$key]))),
                     'ev_charge' => $request->ev_credit_amount[$key],
-                    'ev_outstanding' => $request->ev_credit_outstanding[$key],
+                    'ev_fee' => $request->ev_transaction_fee[$key],
+                    'ev_vat' => $request->ev_vat[$key],
+                    'ev_revenue' => $request->ev_total_revenue[$key],
                     'status' => 8
                 ]);
             }
@@ -1334,7 +1333,7 @@ class RevenuesController extends Controller
             'wp_cash' => $request->wp_cash ?? 0,
             // 'charge' => $charge - $check_credit->room_credit,
             'agoda_charge' => $agoda_charge - $agoda_outstanding,
-            'ev_charge' => $ev_charge - $ev_outstanding,
+            // 'ev_charge' => $ev_charge - $ev_outstanding,
         ]);
         
         // return redirect(route('revenue'))->with('success', 'ระบบได้ทำการบันทึกรายการในระบบเรียบร้อยแล้ว');

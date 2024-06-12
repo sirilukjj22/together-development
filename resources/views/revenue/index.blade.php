@@ -2,25 +2,50 @@
 
 @section('content')
 
-    <div class="container ml-auto mr-auto pt-3 pb-3 mb-3 rounded bg-light">
+    <div class="container-fluid pt-3 pb-3 mb-3 rounded bg-light">
 
         <style>
             .logo img {
-                height: auto;
+              height: auto;
             }
-
+    
             img {
-                display: block;
-                margin: auto;
-                width: 40px;
-                height: 40px;
-                object-fit: cover;
+              display: block;
+              margin: auto;
+              width: 40px;
+              height: 40px;
+              object-fit: cover;
             }
-
+    
             .row {
-                margin-bottom: 10px;
+              margin-bottom: 10px;
             }
-        </style>
+    
+            #myChart {
+              width: 260px !important;
+              height: 260px !important;
+              display: block;
+              margin: auto;
+            }
+    
+            .select2 {
+              width: 100% !important;
+              margin: 0 !important;
+            }
+    
+            .select2-container .select2-selection--single {
+              height: 40px !important;
+              margin-top: 0 !important;
+            }
+    
+            .select2-selection__arrow {
+              height: 0px !important;
+            }
+    
+            .select2-selection__rendered {
+              line-height: 20px !important;
+            }
+          </style>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"
             integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw=="
@@ -390,73 +415,81 @@
         </div>
     @endif
 
-    <div class="container pt-3 pb-3 rounded bg-light">
+    <div class="container-fluid pt-3 pb-3 rounded bg-light">
         <form action="{{ route('revenue-search-calendar') }}" method="POST" enctype="multipart/form-data" class="" id="form-revenue">
             @csrf
             <div class="row">
-                <div class="col-lg-8 col-md-2 col-sm-2 mb-2">
-                    <select class="form-select w-auto float-left mr-2" name="day" id="day">
-                        <?php $day_num = isset($day) ? date('d', strtotime('last day of this month', strtotime(date('2024-' . $month . '-' . $day)))) : date('t'); ?>
-                        @for ($i = 1; $i <= $day_num; $i++)
-                            <?php $d = str_pad($i, 2, '0', STR_PAD_LEFT); ?>
+                {{-- <div class="col-lg-8 col-md-2 col-sm-2 mb-2"> --}}
+                    <div class="col-lg-2 col-md-12 col-sm-12 mb-2 px-1">
+                        <select class="form-select w-100 float-left" name="day" id="day">
+                            <?php $day_num = isset($day) ? date('d', strtotime('last day of this month', strtotime(date('2024-' . $month . '-' . $day)))) : date('t'); ?>
+                            @for ($i = 1; $i <= $day_num; $i++)
+                                <?php $d = str_pad($i, 2, '0', STR_PAD_LEFT); ?>
 
-                            @if (!isset($day) && date('d') == $d)
-                                <option value="{{$d}}" selected>{{$i}}</option>
+                                @if (!isset($day) && date('d') == $d)
+                                    <option value="{{$d}}" selected>{{$i}}</option>
+                                @else
+                                    <option value="{{$d}}" {{ isset($day) && $day == $d ? 'selected' : date('d') }}>{{$i}}</option>
+                                @endif
+                            @endfor
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-12 col-sm-12 mb-2 px-1">
+                        <select style="width: 100%;" class="form-select w-100 float-left" name="month" id="month">
+                            @if (isset($month))
+                                <option value="01" {{ $month == '01' ? 'selected' : ''}}>มกราคม</option>
+                                <option value="02" {{ $month == '02' ? 'selected' : ''}}>กุมภาพันธ์</option>
+                                <option value="03" {{ $month == '03' ? 'selected' : ''}}>มีนาคม</option>
+                                <option value="04" {{ $month == '04' ? 'selected' : ''}}>เมษายน</option>
+                                <option value="05" {{ $month == '05' ? 'selected' : ''}}>พฤษภาคม</option>
+                                <option value="06" {{ $month == '06' ? 'selected' : ''}}>มิถุนายน</option>
+                                <option value="07" {{ $month == '07' ? 'selected' : ''}}>กรกฎาคม</option>
+                                <option value="08" {{ $month == '08' ? 'selected' : ''}}>สิงหาคม</option>
+                                <option value="09" {{ $month == '09' ? 'selected' : ''}}>กันยายน</option>
+                                <option value="10" {{ $month == '10' ? 'selected' : ''}}>ตุลาคม</option>
+                                <option value="11" {{ $month == '11' ? 'selected' : ''}}>พฤศจิกายน</option>
+                                <option value="12" {{ $month == '12' ? 'selected' : ''}}>ธันวาคม</option>
                             @else
-                                <option value="{{$d}}" {{ isset($day) && $day == $d ? 'selected' : date('d') }}>{{$i}}</option>
+
+                                <option value="01" {{ date('m') == '01' ? 'selected' : ''}}>มกราคม</option>
+                                <option value="02" {{ date('m') == '02' ? 'selected' : ''}}>กุมภาพันธ์</option>
+                                <option value="03" {{ date('m') == '03' ? 'selected' : ''}}>มีนาคม</option>
+                                <option value="04" {{ date('m') == '04' ? 'selected' : ''}}>เมษายน</option>
+                                <option value="05" {{ date('m') == '05' ? 'selected' : ''}}>พฤษภาคม</option>
+                                <option value="06" {{ date('m') == '06' ? 'selected' : ''}}>มิถุนายน</option>
+                                <option value="07" {{ date('m') == '07' ? 'selected' : ''}}>กรกฎาคม</option>
+                                <option value="08" {{ date('m') == '08' ? 'selected' : ''}}>สิงหาคม</option>
+                                <option value="09" {{ date('m') == '09' ? 'selected' : ''}}>กันยายน</option>
+                                <option value="10" {{ date('m') == '10' ? 'selected' : ''}}>ตุลาคม</option>
+                                <option value="11" {{ date('m') == '11' ? 'selected' : ''}}>พฤศจิกายน</option>
+                                <option value="12" {{ date('m') == '12' ? 'selected' : ''}}>ธันวาคม</option>
                             @endif
-                        @endfor
-                    </select>
-                    <select class="form-select w-auto float-left mr-2" name="month" id="month">
-                        @if (isset($month))
-                            <option value="01" {{ $month == '01' ? 'selected' : ''}}>มกราคม</option>
-                            <option value="02" {{ $month == '02' ? 'selected' : ''}}>กุมภาพันธ์</option>
-                            <option value="03" {{ $month == '03' ? 'selected' : ''}}>มีนาคม</option>
-                            <option value="04" {{ $month == '04' ? 'selected' : ''}}>เมษายน</option>
-                            <option value="05" {{ $month == '05' ? 'selected' : ''}}>พฤษภาคม</option>
-                            <option value="06" {{ $month == '06' ? 'selected' : ''}}>มิถุนายน</option>
-                            <option value="07" {{ $month == '07' ? 'selected' : ''}}>กรกฎาคม</option>
-                            <option value="08" {{ $month == '08' ? 'selected' : ''}}>สิงหาคม</option>
-                            <option value="09" {{ $month == '09' ? 'selected' : ''}}>กันยายน</option>
-                            <option value="10" {{ $month == '10' ? 'selected' : ''}}>ตุลาคม</option>
-                            <option value="11" {{ $month == '11' ? 'selected' : ''}}>พฤศจิกายน</option>
-                            <option value="12" {{ $month == '12' ? 'selected' : ''}}>ธันวาคม</option>
-                        @else
-
-                            <option value="01" {{ date('m') == '01' ? 'selected' : ''}}>มกราคม</option>
-                            <option value="02" {{ date('m') == '02' ? 'selected' : ''}}>กุมภาพันธ์</option>
-                            <option value="03" {{ date('m') == '03' ? 'selected' : ''}}>มีนาคม</option>
-                            <option value="04" {{ date('m') == '04' ? 'selected' : ''}}>เมษายน</option>
-                            <option value="05" {{ date('m') == '05' ? 'selected' : ''}}>พฤษภาคม</option>
-                            <option value="06" {{ date('m') == '06' ? 'selected' : ''}}>มิถุนายน</option>
-                            <option value="07" {{ date('m') == '07' ? 'selected' : ''}}>กรกฎาคม</option>
-                            <option value="08" {{ date('m') == '08' ? 'selected' : ''}}>สิงหาคม</option>
-                            <option value="09" {{ date('m') == '09' ? 'selected' : ''}}>กันยายน</option>
-                            <option value="10" {{ date('m') == '10' ? 'selected' : ''}}>ตุลาคม</option>
-                            <option value="11" {{ date('m') == '11' ? 'selected' : ''}}>พฤศจิกายน</option>
-                            <option value="12" {{ date('m') == '12' ? 'selected' : ''}}>ธันวาคม</option>
-                        @endif
-                    </select>
-                    <select class="form-select w-auto float-left mr-2" name="year" id="year">
-                        @if (isset($year))
-                            <option value="2024" {{ $year == '2024' ? 'selected' : ''}}>2024</option>
-                        @else
-                            <option value="2024" {{ date('Y') == '2024' ? 'selected' : ''}}>2024</option>
-                        @endif
-                    </select>
-                    <button class="btn btn-success w-auto px-4 btn-submit-search" style="background-color: #109699;" type="button"
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-12 col-sm-12 mb-2 px-1">
+                        <select style="width: 100%;" class="form-select w-100 float-left" name="year" id="year">
+                            @if (isset($year))
+                                <option value="2024" {{ $year == '2024' ? 'selected' : ''}}>2024</option>
+                            @else
+                                <option value="2024" {{ date('Y') == '2024' ? 'selected' : ''}}>2024</option>
+                            @endif
+                        </select>
+                    </div>
+                    <div class="col-lg-1 col-md-12 col-sm-12 mb-2 px-1">
+                    <button class="btn btn-success w-100 btn-submit-search w-100" style="background-color: #109699;" type="button"
                         role="button">ค้นหา</button>
-                </div>
+                    </div>
+                {{-- </div> --}}
 
-                <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="col-lg-5 col-md-12 col-sm-12">
                     <?php $date = date('Y-m-d'); ?>
                     @if (Auth::user()->permission > 0)
                         @if ($total_revenue_today->status == 0)
-                        <button type="button" class="btn btn-warning float-end ml-1 btn-close-daily" value="1">
+                        <button type="button" class="btn btn-warning float-end btn-close-daily ml-1" value="1">
                             <i class="fa-solid fa-lock">&nbsp;</i>LOCK
                         </button>
                     @else
-                        <button type="button" class="btn btn-warning float-end ml-1 btn-open-daily" value="0">
+                        <button type="button" class="btn btn-warning float-end btn-open-daily ml-1" value="0">
                             <i class="fa-solid fa-lock">&nbsp;</i>UNLOCK
                         </button>
                         @endif
@@ -467,12 +500,14 @@
                     </button>
                 </div>
 
-                <div class="row mt-3 mb-0">
-                    <div class="col-12">
+                @if ($total_revenue_today->status == 1)
+                    <div class="row mt-3 mb-0">
+                        <div class="col-12">
                         <h5 class="float-start mr-1">สถานะ : </h5>
                         <h5 class="text-danger"> ตรวจสอบเรียบร้อยแล้ว</h5>
+                        </div>
                     </div>
-                </div>
+                @endif
 
             </div>
         </form>
@@ -480,114 +515,114 @@
         <style>
             /* CSS Reset for tables */
             table {
-                border-collapse: collapse;
-                border-spacing: 0;
-                width: 100%;
-                max-width: 100%;
-                margin: 0;
-                padding: 0;
-                table-layout: auto;
+              border-collapse: collapse;
+              border-spacing: 0;
+              width: 100%;
+              max-width: 100%;
+              margin: 0;
+              padding: 0;
+              table-layout: auto;
             }
-
+    
             th,
             td {
-                padding: 0;
-                margin: 0;
-                border: none;
+              padding: 0;
+              margin: 0;
+              border: none;
             }
-
+    
             /* Custom styles */
             .table-responsive {
-                overflow-x: auto;
+              overflow-x: auto;
             }
-
+    
             table {
-                border: 1px solid #ddd;
+              border: 1px solid #ddd;
             }
-
+    
             table caption {
-                font-size: 16px;
+              font-size: 16px;
             }
-
+    
             table thead {
-                border: initial;
-                clip: initial;
-                height: auto;
-                margin: initial;
-                overflow: visible;
-                padding: initial;
-                position: static;
-                width: auto;
+              border: initial;
+              clip: initial;
+              height: auto;
+              margin: initial;
+              overflow: visible;
+              padding: initial;
+              position: static;
+              width: auto;
             }
-
+    
             table tr {
-                border-bottom: initial;
-                display: table-row;
-                margin-bottom: initial;
+              border-bottom: initial;
+              display: table-row;
+              margin-bottom: initial;
             }
-
+    
             table th {
-                font-weight: 600;
-                text-transform: capitalize;
-                color: white !important;
+              font-weight: 600;
+              text-transform: capitalize;
+              color: white !important;
             }
-
+    
             table th,
             table td {
-                border-bottom: 1px solid #ddd;
-                display: table-cell;
-                font-size: 16px;
-                text-align: left;
-                padding: 8px;
-                color: black !important;
-                letter-spacing: unset;
+              border-bottom: 1px solid #ddd;
+              display: table-cell;
+              font-size: 16px;
+              text-align: left;
+              padding: 8px;
+              color: black !important;
+              letter-spacing: unset;
             }
-
+    
             table td::before {
-                content: none;
+              content: none;
             }
-
+    
             table td:last-child {
-                border-bottom: 1px solid #ddd;
+              border-bottom: 1px solid #ddd;
             }
-
-
+    
+    
             .modal-body label {
-                font-size: 16px;
-                text-align: left;
+              font-size: 16px;
+              text-align: left;
             }
-
+    
             .modal-body input {
-                width: 100%;
-                text-align: left;
-                padding: 8px;
-                border: 1px solid #ccc;
-                margin: 0px;
-                margin-bottom: 5px;
+              width: 100%;
+              text-align: left;
+              padding: 8px;
+              border: 1px solid #ccc;
+              margin: 0px;
+              margin-bottom: 5px;
             }
-
+    
             .accordion {
-                margin-bottom: 1%;
+              margin-bottom: 1%;
             }
-
+    
             @media (max-width: 768px) {
-
-                table th,
-                table td {
-                    font-size: 14px;
-                    padding: 6px;
-                }
+    
+              table th,
+              table td {
+                font-size: 14px;
+                padding: 6px;
+              }
             }
-
+    
             @media (max-width: 480px) {
-
-                table th,
-                table td {
-                    font-size: 12px;
-                    padding: 4px;
-                }
+    
+              table th,
+              table td {
+                font-size: 12px;
+                padding: 4px;
+              }
             }
-        </style>
+          </style>
 
         <div class="table-responsive">
             <table class="table table-hover">
@@ -1338,15 +1373,15 @@
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                                     <label>Transaction Fee 10%</label>
-                                                    <input type="text" id="ev_transaction_fee" name="" placeholder="0.00">
+                                                    <input type="text" id="ev_transaction_fee" name="" placeholder="0.00" readonly>
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                                     <label>VAT 7%</label>
-                                                    <input type="text" id="ev_vat" name="" placeholder="0.00">
+                                                    <input type="text" id="ev_vat" name="" placeholder="0.00" readonly>
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                                     <label>Total Revenue</label>
-                                                    <input type="text" id="ev_total_revenue" name="" placeholder="0.00">
+                                                    <input type="text" id="ev_total_revenue" name="" placeholder="0.00" readonly>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -1365,7 +1400,9 @@
                                                             <th scope="col">Batch</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">EV Charging Charge</th>
-                                                            <th scope="col">Elexa EGAT Revenue Outstanding</th>
+                                                            <th scope="col">Transaction Fee</th>
+                                                            <th scope="col">VAT</th>
+                                                            <th scope="col">Total Revenue</th>
                                                             <th scope="col">Action</th>
                                                         </tr>
                                                     </thead>
@@ -1701,6 +1738,10 @@ $('#date').on('change', function () {
         return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
     }
 
+    function currencyFormat3(num) {
+        return num.toFixed(3).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    }
+
     $('.btn-todo-add').on('click', function() {
         var batch = $('#batch').val();
         var type = $('#revenue_type').val();
@@ -1973,15 +2014,16 @@ $('#date').on('change', function () {
     $('.btn-ev-add').on('click', function() {
         var batch = $('#ev_batch').val();
         var type = $('#ev_revenue_type').val();
-        // var check_in = $('#check_in').val();
-        // var check_out = $('#check_out').val();
+        var fee = $('#ev_transaction_fee').val();
+        var vat = $('#ev_vat').val();
+        var ev_revenue = $('#ev_total_revenue').val();
         var amount = $('#ev_credit_amount').val();
-        var outstanding = $('#ev_credit_outstanding').val();
+        // var outstanding = $('#ev_credit_outstanding').val();
         var list = parseInt($('#ev_list_num').val());
         var number = parseInt($('#ev_number').val()) + 1;
         $('#ev_number').val(number);
 
-        if (batch && type && amount && outstanding) {
+        if (batch && type && amount) {
 
             var type_name = "";
             switch (type) {
@@ -1992,22 +2034,26 @@ $('#date').on('change', function () {
                 '<tr>' +
                     '<td>' + batch +'</td>' +
                     '<td>' + type_name + '</td>' +
-                    // '<td style="text-align: right;">' + date_check_in + '</td>' +
-                    // '<td style="text-align: right;">' + date_check_out + '</td>' +
                     '<td style="text-align: right;">' + currencyFormat(parseFloat(amount)) + '</td>' +
-                    '<td style="text-align: right;">' + currencyFormat(parseFloat(outstanding)) + '</td>' +
-                    '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose8(this)"></i></td>' +
+                    '<td style="text-align: right;">' + currencyFormat(parseFloat(fee)) + '</td>' +
+                    '<td style="text-align: right;">' + currencyFormat(parseFloat(vat)) + '</td>' +
+                    '<td style="text-align: right;">' + currencyFormat(parseFloat(ev_revenue)) + '</td>' +
+                    '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose8(this)">ลบ</i></td>' +
                     '<input type="hidden" name="ev_batch[]" value="' + batch + '">' +
                     '<input type="hidden" name="ev_revenue_type[]" value="' + type + '">' +
                     '<input type="hidden" name="ev_credit_amount[]" value="' + amount + '">' +
-                    '<input type="hidden" name="ev_credit_outstanding[]" value="' + outstanding + '">' +
+                    '<input type="hidden" name="ev_transaction_fee[]" value="' + fee + '">' +
+                    '<input type="hidden" name="ev_vat[]" value="' + vat + '">' +
+                    '<input type="hidden" name="ev_total_revenue[]" value="' + ev_revenue + '">' +
                 '</tr>'
             );
 
             var batch = $('#ev_batch').val('');
             var type = $('#ev_revenue_type').val('');
             var amount = $('#ev_credit_amount').val('');
-            var outstanding = $('#ev_credit_outstanding').val('');
+            var fee = $('#ev_transaction_fee').val('');
+            var vat = $('#ev_vat').val('');
+            var ev_revenue = $('#ev_total_revenue').val('');
             $('.ev-todo-error').hide();
         } else {
             $('.ev-todo-error').show();
@@ -2090,9 +2136,13 @@ $('#date').on('change', function () {
     });
 
     $('#ev_credit_amount').on('keyup', function () {
-        var charge = $(this).val();
+        var charge = Number($(this).val());
+        var fee = (charge * 10) / 100;
+        var vat7 = fee * 0.07;
 
-        console.log(charge);
+        $('#ev_transaction_fee').val(currencyFormat3(fee));
+        $('#ev_vat').val(currencyFormat3(vat7));
+        $('#ev_total_revenue').val(currencyFormat3(charge - (fee + vat7)));
     });
 
     // Sweetalert2

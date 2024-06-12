@@ -53,7 +53,7 @@
     @php
         $role_permisstion = App\Models\Role_permission_menu::where('user_id', Auth::user()->id)->first();
     @endphp
-    <div class="navi">
+    {{-- <div class="navi">
         <nav class="bg-white border-gray-200 dark:bg-gray-900"
             style="background: linear-gradient(180deg,rgba(45, 127, 123, 1) 0%,rgba(9, 49, 69, 1) 100%);">
             <div class="max-w-screen-xl flex flex-wrap iteFms-center justify-between mx-auto p-4">
@@ -215,7 +215,65 @@
                 </div>
             </div>
         </nav>
-    </div>
+    </div> --}}
+
+    <div id="mobileshow">
+        <style>
+          #mobileshow {
+            display: none;
+          }
+    
+          @media screen and (max-width: 500px) {
+            #mobileshow {
+              display: block;
+            }
+          }
+        </style>
+    
+    
+        <nav class="navbar fixed-top navbar-expand-lg navbar-light" style="background-color: #109699;">
+          <div class="container-fluid">
+            <a class="navbar-brand h-1 text-white" href="index.html"><img class="mr-2" src="images/Logo.png"
+                style="width: 50px; height: 50px; float: left;" alt="">
+              <h6 class="mt-2">Together Resort <br>Development</h6>
+            </a>
+            <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+              aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+              <i class="fa-solid fa-bars text-white"></i></span>
+            </button>
+            <div class="collapse navbar-collapse rounded p-3 bg-white" id="navbarNavDropdown">
+              <ul class="navbar-nav font-weight-bold">
+                <li class="nav-item ">
+                  <a class="nav-link px-2" aria-current="page" href="{{ route('sms-alert') }}">SMS Alert</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link px-2" href="{{ route('revenue') }}">Revenue</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link  px-2" href="userhome.html">User</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link  px-2" href="bankhome.html">Bank</a>
+                </li>
+    
+                <li class="nav-item">
+                  <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Profile
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li><a class="dropdown-item" href="guest/index.blade.php">Guest</a></li>
+                    <li><a class="dropdown-item" href="company/index.blade.php">Company / Agent</a></li>
+                  </ul>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link px-2" href="#">Logout</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
 
     {{-- <div class="for100vh"> --}}
     <div class="wrapper">
@@ -289,7 +347,7 @@
             </div> --}}
             <div>
                 <!-- Button trigger modal -->
-                <button type="button" class="menu3 bg-none text-start pl-4" style="width:100%; background-color: initial;"
+                <button type="button" class="menu2 pb-2" style="width:100%;"
                 data-toggle="modal" data-target="#exampleModalCenter3">
                 Logout
               </button>
@@ -334,6 +392,36 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                <div class="modal-body-logout">
+                    <img src="{{ asset('assets2/images/logout.png') }}" alt=""><br>
+                    <h2>Are You Sure to Logout</h2>
+                </div>
+                <div class="modal-footer mb-2" style="all: unset; ">
+                    <div class="row">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-primary border-0" style="background-color: #f44336; width: 100%; color: white;"
+                            data-dismiss="modal">Cancel</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-primary border-0" onclick="location.href='{{ route('logout') }}'" style="background-color: #109699; width: 100%;">Logout</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- <div class="modal fade" id="exampleModalCenter3" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Logout</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body" style="text-align: center; font-size: 28px; font-weight: 600; padding: 84px;">
                     <img src="{{ asset('assets2/images/logout.png') }}" alt=""><br>
                     Are You Sure to Logout
@@ -346,7 +434,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 </body>
 
 <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>

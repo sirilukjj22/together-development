@@ -370,8 +370,13 @@
                 </div>
             </div>
 
-            <div class="button-6">
+            {{-- <div class="button-6">
                 <button type="button" role="" id="btn-search-date">ค้นหา</button>
+            </div> --}}
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                        <button class="button-6 btn btn-custom" type="button" role="" id="btn-search-date">ค้นหา</button>
+                </div>
             </div>
         </form>
 
@@ -897,9 +902,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">แก้ไขเวลาการโอน</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <label for="">เวลา</label>
@@ -923,9 +926,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">โอนย้าย</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('sms-transfer') }}" method="POST" enctype="multipart/form-data"
                     class="basic-form">
@@ -958,9 +959,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">เพิ่มข้อมูล</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('sms-store') }}" method="POST" class="" id="form-id">
                     @csrf
@@ -1039,9 +1038,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="SplitModalCenter">Split Revenue</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="#" method="POST" enctype="multipart/form-data" class="form-split">
                     @csrf
