@@ -30,7 +30,7 @@ class QuotationController extends Controller
     public function create()
     {
         $currentDate = Carbon::now();
-        $ID = 'Q';
+        $ID = 'PD-';
         $formattedDate = Carbon::parse($currentDate);       // วันที่
         $month = $formattedDate->format('m'); // เดือน
         $year = $formattedDate->format('y');
@@ -254,6 +254,7 @@ class QuotationController extends Controller
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
         $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+
         return view('quotation.editProduct',compact('Quotation','Company_ID','Company_type','amphuresID','TambonID','provinceNames','company_fax','company_phone'
         ,'Contact_name','Contact_phone','ContactCity','ContactamphuresID','ContactTambonID','product','unit','quantity','selectproduct'));
     }

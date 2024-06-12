@@ -15,7 +15,8 @@ class document_quotation extends Model
         'Company_ID',
         'Issue_date',
         'ExpirationDate',
-        'freelanceraiffiliate'
+        'freelanceraiffiliate',
+
     ];
     public function  product()
     {

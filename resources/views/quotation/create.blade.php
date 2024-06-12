@@ -351,7 +351,6 @@
                                 <input type="text" id="dateex" name="Expiration" style="text-align: left;"readonly>
                             </div>
                         </div>
-                        <i class="fa fa-calendar"></i>&nbsp;
                     </div>
                 </div>
             </div>

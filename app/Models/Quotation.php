@@ -25,6 +25,7 @@ class Quotation extends Model
         'commission-rate-code',
         'event-format',
         'vat-type',
+        'comment',
     ];
     public function  company()
     {
