@@ -219,6 +219,17 @@
 
     <div id="mobileshow">
         <style>
+          .dropdown-submenu {
+            position: relative;
+          }
+
+          .dropdown-submenu .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: 0;
+            margin-left: 0;
+          }
+
           #mobileshow {
             display: none;
           }
@@ -255,12 +266,12 @@
                 @endif
                 @if ($role_permisstion->user == 1)
                     <li class="nav-item">
-                        <a class="nav-link  px-2" href="{{ route('users', 'index') }}">User</a>
+                        <a class="nav-link px-2" href="{{ route('users', 'index') }}">User</a>
                     </li>
                 @endif
                 @if ($role_permisstion->bank == 1)
                     <li class="nav-item">
-                        <a class="nav-link  px-2" href="bankhome.html">Bank</a>
+                        <a class="nav-link px-2" href="bankhome.html">Bank</a>
                     </li>
                 @endif
     
@@ -273,12 +284,12 @@
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @if ($role_permisstion->agoda == 1)
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('debit-agoda-revenue') }}">Agoda</a>
+                                    <a class="nav-link px-2 dropdown-item" href="{{ route('debit-agoda-revenue') }}">Agoda</a>
                                 </li>
                             @endif
                             @if ($role_permisstion->elexa == 1)
                                 <li>
-                                    <a class="dropdown-item" href="#">Elexa</a>
+                                    <a class="nav-link px-2 dropdown-item" href="#">Elexa</a>
                                 </li>
                             @endif
                         </ul>
@@ -292,21 +303,50 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @if ($role_permisstion->company == 1)
-                                <a class="dropdown-item" href="{{ route('Company.index') }}">Company</a>
+                            <li>
+                                <a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Company.index') }}">Company</a>
+                            </li>
                             @endif
                             @if ($role_permisstion->guest == 1)
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('guest.index') }}">Guest</a>
-                                </li>
+                            <li>
+                                <a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('guest.index') }}">Guest</a>
+                            </li>
                             @endif
-                            <a class="dropdown-item" href="{{ route('freelancer.index') }}">Freelancer Check</a>
-                            <a class="dropdown-item" href="{{ route('freelancer_member.index') }}">Freelancer Member</a>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Freelancer
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item" href="{{ route('freelancer_member.index') }}">Member</a></li>
+                            <li><a class="dropdown-item" href="{{ route('freelancer_member.index') }}">Message Inbox</a></li>
+                            <li class="dropdown-submenu">
+                                <a class="nav-link px-3 font-weight-bold dropdown-item dropdown-toggle" href="#">Alert</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('freelancer.index') }}">Registration Request</a></li>
+                                    <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Message Request</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Document
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="{{ route('Quotation.index') }}">Quotation</a>
                         </ul>
                     </li>
                 @endif
                 <li class="nav-item">
-                  <a class="nav-link px-2" href="#" data-toggle="modal" data-target="#exampleModalCenter3">Logout</a>
+                    <li>
+                        <a class="nav-link px-2" href="#" data-toggle="modal" data-target="#exampleModalCenter3">Logout</a>
+                    </li>
                 </li>
               </ul>
             </div>
@@ -370,9 +410,28 @@
                     @if ($role_permisstion->guest == 1)
                         <a class="menu2" href="{{ route('guest.index') }}">Guest</a>
                     @endif
-                        <a class="menu2" href="{{ route('freelancer.index') }}">Freelancer Check</a>
-                        <a class="menu2" href="{{ route('freelancer_member.index') }}">Freelancer Member</a>
-                        <a class="menu2" href="{{ route('Quotation.index') }}">Quotation</a>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button onclick="myFunctionFreelancer()" class="dropbtn">Freelancer &nbsp; 
+                    <i class="fa-solid fa-caret-down"></i></button>
+                <div id="myDropdownFreelancer" class="dropdown-content">
+                    <a class="menu2" href="{{ route('freelancer_member.index') }}">Member</a>
+                    <a class="menu2" href="#">Message Inbox</a>
+                    <a class="menu2" href="#" onclick="myFunctionFreelancerAlert()">Alert <i class="fa-solid fa-caret-down"></i></a>
+                </div>
+                <div id="myDropdownFreelancerAlert" class="dropdown-content">
+                    <a class="menu2" href="{{ route('freelancer.index') }}">Registration Request</a>
+                    <a class="menu2" href="#">Message Request</a>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button onclick="myFunctionDocument()" class="dropbtn">Document &nbsp; 
+                    <i class="fa-solid fa-caret-down"></i></button>
+                <div id="myDropdownDocument" class="dropdown-content">
+                    <a class="menu2" href="{{ route('Quotation.index') }}">Quotation</a>
                 </div>
             </div>
             @endif
@@ -503,7 +562,43 @@
         } else {
             dropdown.style.maxHeight = "0";
         }
-    }
+    } 
+    
+    function myFunctionFreelancer() {
+        var dropdown = document.getElementById("myDropdownFreelancer");
+
+        dropdown.classList.toggle("show");
+
+        if (dropdown.classList.contains("show")) {
+            dropdown.style.maxHeight = dropdown.scrollHeight + "px";
+        } else {
+            dropdown.style.maxHeight = "0";
+        }
+    } 
+
+    function myFunctionFreelancerAlert() {
+        var dropdown = document.getElementById("myDropdownFreelancerAlert");
+
+        dropdown.classList.toggle("show");
+
+        if (dropdown.classList.contains("show")) {
+            dropdown.style.maxHeight = dropdown.scrollHeight + "px";
+        } else {
+            dropdown.style.maxHeight = "0";
+        }
+    } 
+
+    function myFunctionDocument() {
+        var dropdown = document.getElementById("myDropdownDocument");
+
+        dropdown.classList.toggle("show");
+
+        if (dropdown.classList.contains("show")) {
+            dropdown.style.maxHeight = dropdown.scrollHeight + "px";
+        } else {
+            dropdown.style.maxHeight = "0";
+        }
+    } 
 
     // Close the dropdown if the user clicks outside of it
     window.onclick = function(event) {
@@ -518,6 +613,19 @@
             }
         }
     }
+
+    // Ensure the dropdown menus work correctly
+    document.addEventListener('DOMContentLoaded', function () {
+        var dropdownSubmenu = document.querySelectorAll('.dropdown-submenu');
+
+        dropdownSubmenu.forEach(function (submenu) {
+        submenu.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var dropdownMenu = this.querySelector('.dropdown-menu');
+            dropdownMenu.classList.toggle('show');
+        });
+        });
+    });
 </script>
 
 </html>

@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="container-fluid pt-3 pb-3 mb-3 rounded bg-light">
+    <div class="container-fluid pt-3 pb-3 mb-3 rounded bg-light" style="width: 98%;">
 
         <style>
             .logo img {
@@ -95,6 +95,8 @@
             $total_cash_bank = $total_cash + $total_bank_transfer;
             $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month;
             $total_cash_bank_year = $total_cash_year + $total_bank_transfer_year;
+
+            $total_today_revenue_graph = $total_day + ($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0);
         ?>
 
         <div class="row g-2">
@@ -105,13 +107,13 @@
                         <div class="percent" style="text-align: left; width:auto; display: block; margin-left: 30px;">
                             <h6 style=" float: left; width: 60%;"><i style="color: deepskyblue; margin-right: 10px;"
                                     class="fa-solid fa-square"></i>CASH</h6>
-                            <h6>: 33.33%</h6>
+                            <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_cash + $total_wp_revenue->wp_cash) / $total_today_revenue_graph * 100), 2) }}%</h6>
                             <h6 style="float: left;width: 60%;"><i style="color: hotpink; margin-right: 10px;"
                                     class="fa-solid fa-square"></i>Bank Transfer</h6>
-                            <h6>: 33.33%</h6>
+                            <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_bank_transfer + $total_wp_revenue->wp_transfer) / $total_today_revenue_graph * 100), 2) }}%</h6>
                             <h6 style="float: left;width: 60%;"><i style="color: orange; margin-right: 10px;"
                                     class="fa-solid fa-square"></i>Credit Card</h6>
-                            <h6>: 33.33%</h6>
+                            <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : ((($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0)) / $total_today_revenue_graph * 100), 2) }}%</h6>
                         </div>
                     </div>
                 </div>
@@ -119,7 +121,7 @@
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <!-- CASH -->
 
-                <input type="hidden" id="total_revenue_dashboard" value="{{ number_format($total_day + $credit_revenue->total_credit, 2) }}">
+                <input type="hidden" id="total_revenue_dashboard" value="{{ number_format($total_today_revenue_graph, 2) }}">
 
                 <div class="title-box">
                     <h2>Cash</h2>
@@ -190,7 +192,7 @@
                     <a href="{{ route('revenue-detail', ['elexa', $date_current]) }}" class="list-box3">
                         <img src="../assets2/images/elexa.png" alt="">
                         <h2>Elexa EGAT</h2>
-                        <h3>0.00</h3>
+                        <h3>{{ number_format($total_ev_revenue, 2) }}</h3>
                     </a>
                 </div>
             </div>
@@ -267,7 +269,7 @@
                     <a href="{{ route('revenue-detail', ['elexa', $date_current]) }}" class="list-box4">
                         <img src="../assets2/images/elexa.png" alt="">
                         <h2>Elaxa EGAT</h2>
-                        <h3>{{ number_format($ev_charge[0]['total'], 2) }}</h3>
+                        <h3>{{ number_format($ev_charge[0]['revenue_credit_date'], 2) }}</h3>
                     </a>
 
                 </div>
@@ -332,7 +334,7 @@
         </div>
 
         <div class="row g-2">
-            <div class="col-lg-8 col-md-12 col-sm-12">
+            <div class="col-lg-6 col-md-12 col-sm-12">
                 <div class="title-box2">
                     <h1>Type</h1>
                 </div>
@@ -382,7 +384,7 @@
             </div>
 
             @if (Auth::user()->permission > 0)
-                <div class="col-lg-4 col-md-12 col-sm-12">
+                <div class="col-lg-3 col-md-12 col-sm-12">
                     <div class="title-box2">
                         <h1>Monthly Revenue</h1>
                     </div>
@@ -402,6 +404,27 @@
                         </a>
                     </div>
                 </div>
+
+                <div class="col-lg-3 col-md-12 col-sm-12">
+                    <div class="title-box2">
+                      <h1>Verified</h1>
+                    </div>
+                    <div class="d-flex align-content-stretch flex-wrap monthly"
+                      style="background-color: white; height: auto; border-radius: 8px !important;">
+                      <a href="{{ route('revenue-detail', ['verified', $date_current]) }}" class="list-box8">
+                        <h3>{{ $total_verified ?? 0 }}</h3>
+                      </a>
+                    </div>
+                    <div class="title-box2">
+                      <h1>Unverified</h1>
+                    </div>
+                    <div class="d-flex align-content-stretch flex-wrap daily"
+                      style="background-color: white; height: auto; border-radius: 8px !important;">
+                      <a href="{{ route('revenue-detail', ['unverified', $date_current]) }}" class="list-box8">
+                        <h3>{{ $total_unverified ?? 0 }}</h3>
+                      </a>
+                    </div>
+                </div>
             @endif
         </div>
     </div>
@@ -415,7 +438,7 @@
         </div>
     @endif
 
-    <div class="container-fluid pt-3 pb-3 rounded bg-light">
+    <div class="container-fluid pt-3 pb-3 rounded bg-light" style="width: 98%;">
         <form action="{{ route('revenue-search-calendar') }}" method="POST" enctype="multipart/form-data" class="" id="form-revenue">
             @csrf
             <div class="row">
@@ -926,15 +949,15 @@
                     </tr>
                     <tr style="background-color: rgb(186, 229, 255);">
                         <th colspan="2" style="text-align: right; padding-right: 1%;">Elexa EGAT Revenue</th>
-                        <td>{{ number_format(0, 2) }}</td>
-                        <td>{{ number_format(0, 2) }}</td>
-                        <td>{{ number_format(0, 2) }}</td>
+                        <td>{{ number_format($total_ev_revenue, 2) }}</td>
+                        <td>{{ number_format($total_ev_month, 2) }}</td>
+                        <td>{{ number_format($total_ev_year, 2) }}</td>
                     </tr>
                     <tr style="background-color: rgb(186, 229, 255);">
                         <th colspan="2" style="text-align: right; padding-right: 1%;">Total Revenue</th>
-                        <td>{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $ev_charge[0]['total'] + $total_agoda_revenue, 2) }}</td>
-                        <td>{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month + $total_agoda_month) - $agoda_charge[0]['total_month'], 2) }}</td>
-                        <td>{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year + $total_agoda_year) - $agoda_charge[0]['total_year'], 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $total_ev_revenue + $total_agoda_revenue, 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month + $total_agoda_month + $total_ev_month) - $agoda_charge[0]['total_month'], 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year + $total_agoda_year + $total_ev_year) - $agoda_charge[0]['total_year'], 2) }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -1531,9 +1554,9 @@
             // Register the plugin with Chart.js
             Chart.register(centerTextPlugin);
 
-            var cash = $('#total_cash_dashboard').val();
-            var bank = $('#total_bank_dashboard').val();
-            var credit = $('#total_credit_dashboard').val();
+            var cash = Number($('#total_cash_dashboard').val());
+            var bank = Number($('#total_bank_dashboard').val());
+            var credit = Number($('#total_credit_dashboard').val());
 
             const ctx = document.getElementById('myChart').getContext('2d');
             const myChart = new Chart(ctx, {
@@ -1716,14 +1739,18 @@ $('#date').on('change', function () {
                                 // '<td style="text-align: right;">' + date_check_in + '</td>' +
                                 // '<td style="text-align: right;">' + date_check_out + '</td>' +
                                 '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_charge)) + '</td>' +
-                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_outstanding)) + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_fee)) + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_vat)) + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_revenue)) + '</td>' +
                                 '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose8(this)"></i></td>' +
                                 '<input type="hidden" name="ev_batch[]" value="' + value.batch + '">' +
                                 '<input type="hidden" name="ev_revenue_type[]" value="' + value.revenue_type + '">' +
-                                '<input type="hidden" name="ev_check_in[]" value="' + value.ev_check_in + '">' +
-                                '<input type="hidden" name="ev_check_out[]" value="' + value.ev_check_out + '">' +
+                                // '<input type="hidden" name="ev_check_in[]" value="' + value.ev_check_in + '">' +
+                                // '<input type="hidden" name="ev_check_out[]" value="' + value.ev_check_out + '">' +
                                 '<input type="hidden" name="ev_credit_amount[]" value="' + value.ev_charge + '">' +
-                                '<input type="hidden" name="ev_credit_outstanding[]" value="' + value.ev_outstanding + '">' +
+                                '<input type="hidden" name="ev_transaction_fee[]" value="' + value.ev_fee + '">' +
+                                '<input type="hidden" name="ev_vat[]" value="' + value.ev_vat + '">' +
+                                '<input type="hidden" name="ev_total_revenue[]" value="' + value.ev_revenue + '">' +
                             '</tr>'
                         );
                     }

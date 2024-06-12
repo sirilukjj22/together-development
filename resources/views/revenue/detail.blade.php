@@ -56,7 +56,7 @@
     <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb" style="background-color: none;">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="javascript:history.back(1)">Revenue</a></li>
                 <li class="breadcrumb-item" aria-current="page">{{ $title ?? '' }}</li>
             </ol>
         </nav>

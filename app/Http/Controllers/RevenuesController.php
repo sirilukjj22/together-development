@@ -305,9 +305,9 @@ class RevenuesController extends Controller
         $total_wp_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
         $wp_charge = Revenues::getManualCharge(date('Y-m-d'), date('m'), date('Y'), 3, 3);
 
-        $total_ev_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('total_elexa')->first();
-        $total_ev_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select(DB::raw("SUM(total_elexa) as total_elexa"))->first();
-        $total_ev_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select(DB::raw("SUM(total_elexa) as total_elexa"))->first();
+        $total_ev_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('total_elexa')->sum('total_elexa');
+        $total_ev_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select('total_elexa')->sum('total_elexa');
+        $total_ev_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select('total_elexa')->sum('total_elexa');
         $ev_charge = Revenues::getManualEvCharge(date('Y-m-d'), date('m'), date('Y'), 8, 8);
 
         $total_credit_transaction = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('into_account', "708-226792-1")->where('status', 4)->count();
@@ -953,9 +953,9 @@ class RevenuesController extends Controller
         $month = $request->month;
         $year = $request->year;
 
-        $total_ev_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('total_elexa')->first();
-        $total_ev_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', $symbol, date('m'))->whereYear('date', date('Y'))->select(DB::raw("SUM(total_elexa) as total_elexa"))->first();
-        $total_ev_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select(DB::raw("SUM(total_elexa) as total_elexa"))->first();
+        $total_ev_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('total_elexa')->sum('total_elexa');
+        $total_ev_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', $symbol, date('m'))->whereYear('date', date('Y'))->select('total_elexa')->sum('total_elexa');
+        $total_ev_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select('total_elexa')->sum('total_elexa');
         $ev_charge = Revenues::getManualEvCharge(date('Y-m-d'), date('m'), date('Y'), 8, 8);
 
         // dd($fb_charge);
@@ -1125,9 +1125,9 @@ class RevenuesController extends Controller
         $month = $request->month;
         $year = $request->year;
 
-        $total_ev_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('total_elexa')->first();
-        $total_ev_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', $symbol, date('m'))->whereYear('date', date('Y'))->select(DB::raw("SUM(total_elexa) as total_elexa"))->first();
-        $total_ev_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select(DB::raw("SUM(total_elexa) as total_elexa"))->first();
+        $total_ev_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('total_elexa')->sum('total_elexa');
+        $total_ev_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', $symbol, date('m'))->whereYear('date', date('Y'))->select('total_elexa')->sum('total_elexa');
+        $total_ev_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select('total_elexa')->sum('total_elexa');
         $ev_charge = Revenues::getManualEvCharge(date('Y-m-d'), date('m'), date('Y'), 8, 8);
 
         return view('revenue.index', compact(
@@ -1423,12 +1423,12 @@ class RevenuesController extends Controller
             $charge = Revenues::getManualCharge($adate, 0, 0, 6, 6);
             $title = "Front Desk";
 
-        } if($topic == "fb") {
+        } if($topic == "all_outlet") {
             $total_revenue = Revenues::whereDate('date', $adate)->select('fb_cash as cash', 'fb_transfer as transfer', 'fb_credit as credit')->first();
             $charge = Revenues::getManualCharge($adate, 0, 0, 2, 2);
-            $title = "F & B";
+            $title = "All Outlet";
 
-        } if($topic == "room") {
+        } if($topic == "guest") {
             $total_revenue = Revenues::whereDate('date', $adate)->select('room_cash as cash', 'room_transfer as transfer', 'room_credit as credit')->first();
             $charge = Revenues::getManualCharge($adate, 0, 0, 1, 1);
             $title = "Guest Deposit";
