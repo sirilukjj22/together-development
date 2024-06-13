@@ -953,10 +953,10 @@ class RevenuesController extends Controller
         $month = $request->month;
         $year = $request->year;
 
-        $total_ev_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('total_elexa')->sum('total_elexa');
-        $total_ev_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', $symbol, date('m'))->whereYear('date', date('Y'))->select('total_elexa')->sum('total_elexa');
-        $total_ev_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select('total_elexa')->sum('total_elexa');
-        $ev_charge = Revenues::getManualEvCharge(date('Y-m-d'), date('m'), date('Y'), 8, 8);
+        $total_ev_revenue = Revenues::whereDay('date', $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_elexa')->sum('total_elexa');
+        $total_ev_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select('total_elexa')->sum('total_elexa');
+        $total_ev_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select('total_elexa')->sum('total_elexa');
+        $ev_charge = Revenues::getManualEvCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 8, 8);
 
         // dd($fb_charge);
         // dd($front_charge);
@@ -1125,10 +1125,10 @@ class RevenuesController extends Controller
         $month = $request->month;
         $year = $request->year;
 
-        $total_ev_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('total_elexa')->sum('total_elexa');
-        $total_ev_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', $symbol, date('m'))->whereYear('date', date('Y'))->select('total_elexa')->sum('total_elexa');
-        $total_ev_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select('total_elexa')->sum('total_elexa');
-        $ev_charge = Revenues::getManualEvCharge(date('Y-m-d'), date('m'), date('Y'), 8, 8);
+        $total_ev_revenue = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_elexa')->sum('total_elexa');
+        $total_ev_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_elexa')->sum('total_elexa');
+        $total_ev_year = Revenues::whereYear('date', $request->year)->sum('total_elexa');
+        $ev_charge = Revenues::getManualEvCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 8, 8);
 
         return view('revenue.index', compact(
             // 'data_revenue',

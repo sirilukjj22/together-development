@@ -45,7 +45,23 @@
             .select2-selection__rendered {
               line-height: 20px !important;
             }
-          </style>
+
+            .tr-color-orange td {
+                background-color: rgb(255, 224, 194);
+            }
+
+            .tr-color-orange th {
+                background-color: rgb(255, 224, 194);
+            }
+
+            .tr-color-blue td {
+                background-color: rgb(186, 229, 255);
+            }
+
+            .tr-color-blue th {
+                background-color: rgb(186, 229, 255);
+            }
+</style>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"
             integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw=="
@@ -751,7 +767,7 @@
                         <td>{{ number_format($total_cash_bank_year, 2) }}</td>
                     </tr>
                     <tr>
-                        <td colspan="8"></td> <!-- ช่องเปล่า-->
+                        <td colspan="8" style="background-color: #109699; color: white;"></td> <!-- ช่องเปล่า-->
                     </tr>
                     <tr>
                         <?php
@@ -807,9 +823,9 @@
                         <td>{{ number_format($agoda_charge[0]['total_year'], 2) }}</td>
                     </tr>
                     <tr>
-                        <td colspan="8"></td> <!-- ช่องเปล่า-->
+                        <td colspan="8" style="background-color: #109699; color: white;"></td> <!-- ช่องเปล่า-->
                     </tr>
-                    <tr style="background-color: bisque;">
+                    <tr class="tr-color-orange">
                         <th colspan="2" style="text-align: right; padding-right: 1%;">Total Hotel Revenue</th>
                         <td>{{ number_format($total_cash_bank + $total_charge + $agoda_charge[0]['total'], 2) }}</td>
                         <td>{{ number_format($total_cash_bank_month + $total_charge_month + $agoda_charge[0]['total_month'], 2) }}</td>
@@ -842,7 +858,7 @@
                         <td>{{ number_format($total_wp_cash_bank_year, 2) }}</td>
                     </tr>
                     <tr>
-                        <td colspan="8"></td> <!-- ช่องเปล่า-->
+                        <td colspan="8" style="background-color: #109699; color: white;"></td> <!-- ช่องเปล่า-->
                     </tr>
                     <tr>
                         <?php
@@ -878,9 +894,9 @@
                         <td>{{ number_format($total_wp_charge_year, 2) }}</td>
                     </tr>
                     <tr>
-                        <td colspan="8"></td> <!-- ช่องเปล่า-->
+                        <td colspan="8" style="background-color: #109699; color: white;"></td> <!-- ช่องเปล่า-->
                     </tr>
-                    <tr style="background-color: bisque;">
+                    <tr class="tr-color-orange">
                         <th colspan="2" style="text-align: right; padding-right: 1%;">Total Water Park Revenue</th>
                         <td>{{ number_format($total_wp_cash_bank + $total_wp_charge, 2) }}</td>
                         <td>{{ number_format($total_wp_cash_bank_month + $total_wp_charge_month, 2) }}</td>
@@ -916,17 +932,17 @@
                         <td>{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
                     </tr>
                     <tr>
-                        <td colspan="8"></td> <!-- ช่องเปล่า-->
+                        <td colspan="8" style="background-color: #109699; color: white;"></td> <!-- ช่องเปล่า-->
                     </tr>
-                    <tr style="background-color: rgb(186, 229, 255);">
-                        <th colspan="2" style="text-align: right; padding-right: 1%; background-color: rgb(186, 229, 255);">
+                    <tr class="tr-color-blue">
+                        <th colspan="2" style="text-align: right; padding-right: 1%;">
                             Total Hotel, Water Park And Elexa EGAT Revenue
                         </th>
-                        <td style="background-color: rgb(186, 229, 255);">{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $agoda_charge[0]['total'] + $ev_charge[0]['total'], 2) }}</td>
-                        <td style="background-color: rgb(186, 229, 255);">{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $agoda_charge[0]['total_month'] + $ev_charge[0]['total_month'], 2) }}</td>
-                        <td style="background-color: rgb(186, 229, 255);">{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $agoda_charge[0]['total_year'] + $ev_charge[0]['total_year'], 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $agoda_charge[0]['total'] + $ev_charge[0]['total'], 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $agoda_charge[0]['total_month'] + $ev_charge[0]['total_month'], 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $agoda_charge[0]['total_year'] + $ev_charge[0]['total_year'], 2) }}</td>
                     </tr>
-                    <tr style="background-color: rgb(186, 229, 255);">
+                    <tr class="tr-color-blue">
                         <th colspan="2" style="text-align: right; padding-right: 1%;">
                             Credit Agoda Revenue Outstanding
                         </th>
@@ -934,26 +950,26 @@
                         <td>{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
                         <td>{{ number_format($agoda_charge[0]['total_year'] - $total_agoda_year, 2) }}</td>
                     </tr>
-                    <tr style="background-color: rgb(186, 229, 255);">
+                    <tr class="tr-color-blue">
                         <th colspan="2" style="text-align: right; padding-right: 1%;">Elexa EGAT Revenue Outstanding
                         </th>
                         <td>{{ number_format($ev_charge[0]['total'], 2) }}</td>
                         <td>{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
                         <td>{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
                     </tr>
-                    <tr style="background-color: rgb(186, 229, 255);">
+                    <tr class="tr-color-blue">
                         <th colspan="2" style="text-align: right; padding-right: 1%;">Agoda Revenue</th>
                         <td>{{ number_format($total_agoda_revenue, 2) }}</td>
                         <td>{{ number_format($total_agoda_month, 2) }}</td>
                         <td>{{ number_format($total_agoda_year, 2) }}</td>
                     </tr>
-                    <tr style="background-color: rgb(186, 229, 255);">
+                    <tr class="tr-color-blue">
                         <th colspan="2" style="text-align: right; padding-right: 1%;">Elexa EGAT Revenue</th>
                         <td>{{ number_format($total_ev_revenue, 2) }}</td>
                         <td>{{ number_format($total_ev_month, 2) }}</td>
                         <td>{{ number_format($total_ev_year, 2) }}</td>
                     </tr>
-                    <tr style="background-color: rgb(186, 229, 255);">
+                    <tr class="tr-color-blue">
                         <th colspan="2" style="text-align: right; padding-right: 1%;">Total Revenue</th>
                         <td>{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $total_ev_revenue + $total_agoda_revenue, 2) }}</td>
                         <td>{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month + $total_agoda_month + $total_ev_month) - $agoda_charge[0]['total_month'], 2) }}</td>
