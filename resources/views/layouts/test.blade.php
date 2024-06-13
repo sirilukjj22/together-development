@@ -321,15 +321,10 @@
                             Freelancer
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="{{ route('freelancer_member.index') }}">Member</a></li>
-                            <li><a class="dropdown-item" href="{{ route('freelancer_member.index') }}">Message Inbox</a></li>
-                            <li class="dropdown-submenu">
-                                <a class="nav-link px-3 font-weight-bold dropdown-item dropdown-toggle" href="#">Alert</a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('freelancer.index') }}">Registration Request</a></li>
-                                    <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Message Request</a></li>
-                                </ul>
-                            </li>
+                            <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('freelancer_member.index') }}">Membership</a></li>
+                            <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('freelancer_member.index') }}">Message Inbox</a></li>
+                            <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('freelancer.index') }}">Registration Request</a></li>
+                            <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Message Request</a></li>
                         </ul>
                     </li>
 
@@ -417,14 +412,16 @@
                 <button onclick="myFunctionFreelancer()" class="dropbtn">Freelancer &nbsp; 
                     <i class="fa-solid fa-caret-down"></i></button>
                 <div id="myDropdownFreelancer" class="dropdown-content">
-                    <a class="menu2" href="{{ route('freelancer_member.index') }}">Member</a>
+                    <a class="menu2" href="{{ route('freelancer_member.index') }}">Membership</a>
                     <a class="menu2" href="#">Message Inbox</a>
-                    <a class="menu2" href="#" onclick="myFunctionFreelancerAlert()">Alert <i class="fa-solid fa-caret-down"></i></a>
-                </div>
-                <div id="myDropdownFreelancerAlert" class="dropdown-content">
+                    {{-- <a class="menu2" href="#" onclick="myFunctionFreelancerAlert()">Alert <i class="fa-solid fa-caret-down"></i></a> --}}
                     <a class="menu2" href="{{ route('freelancer.index') }}">Registration Request</a>
                     <a class="menu2" href="#">Message Request</a>
                 </div>
+                {{-- <div id="myDropdownFreelancerAlert" class="dropdown-content">
+                    
+                    
+                </div> --}}
             </div>
 
             <div class="dropdown">
