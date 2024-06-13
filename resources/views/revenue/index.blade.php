@@ -276,7 +276,7 @@
                         <h3>{{ number_format($wp_charge[0]['total'], 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['agoda_revenue', $date_current]) }}" class="list-box4">
+                    <a href="{{ route('revenue-detail', ['agoda_charge', $date_current]) }}" class="list-box4">
                         <img src="../assets2/images/agoda.png" alt="">
                         <h2>Agoda</h2>
                         <h3>{{ number_format($agoda_charge[0]['revenue_credit_date'], 2) }}</h3>
