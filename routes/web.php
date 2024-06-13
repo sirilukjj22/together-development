@@ -324,6 +324,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttable', 'addProducttable')->name('Quotation.addProducttable');
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttableselect', 'addProducttableselect')->name('Quotation.addProducttableselect');
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttablemain', 'addProducttablemain')->name('Quotation.addProducttablemain');
+        Route::get('/Quotation/selectproduct/{Quotation_ID}/addProductselect', 'addProductselect')->name('Quotation.addProductselect');
+        Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('Quotation.addProducttablecreatemain');
     });
 
 Route::get('/clear-cache', function () {

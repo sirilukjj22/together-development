@@ -334,21 +334,25 @@
                     <p class="quotation-number">Quotation </p>
                     <p class="quotation-id ">{{$Quotation_ID}}</p>
                     <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
-                    <div id="reportrange1" style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;">
-                        <div class="row">
-                            <div class="col-5 col-md-5 col-sm-12" style="display:flex; justify-content:right; align-items:center;">
-                                <p>Issue Date:</p>
-                            </div>
-                            <div class="col-7 col-md-7 col-sm-12">
-                                <input type="text" id="datestart" name="IssueDate" style="text-align: left;"readonly>
+                    <div id="reportrange1" style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
+                        <div class="col-12 ">
+                            <div class="row">
+                                <div class="col-6"style="display:flex; justify-content:right; align-items:center;">
+                                    <span>Issue Date:</span>
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" id="datestart" name="IssueDate" style="text-align: left;"readonly>
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-5 col-md-5 col-sm-12" style="display:flex; justify-content:center; align-items:center;">
-                                <p>Expiration Date:</p>
-                            </div>
-                            <div class="col-7 col-md-7 col-sm-12">
-                                <input type="text" id="dateex" name="Expiration" style="text-align: left;"readonly>
+                        <div class="col-12 ">
+                            <div class="row">
+                                <div class="col-6"style="display:flex; justify-content:right; align-items:center;">
+                                    <span>Expiration Date:</span>
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" id="dateex" name="Expiration" style="text-align: left;"readonly>
+                                </div>
                             </div>
                         </div>
                     </div>

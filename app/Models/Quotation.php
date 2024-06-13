@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 class Quotation extends Model
 {
     use HasFactory;
@@ -26,6 +25,7 @@ class Quotation extends Model
         'event-format',
         'vat-type',
         'comment',
+        'Document_issuer',
     ];
     public function  company()
     {
@@ -38,5 +38,9 @@ class Quotation extends Model
     public function  freelancer()
     {
         return $this->hasOne(Freelancer_Member::class, 'Profile_ID', 'freelanceraiffiliate');
+    }
+    public function  user()
+    {
+        return $this->hasOne(User::class, 'id', 'Document_issuer');
     }
 }

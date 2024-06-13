@@ -266,6 +266,13 @@
         vertical-align: middle;
         color: #ffffff;
     }
+    .Average{
+        margin: 0;
+        margin-right: 5px;
+        display: table-cell;
+        vertical-align: middle;
+        color: #ffffff;
+    }
     .quotation-id {
         font-size: 18px;
         margin: 0;
@@ -325,66 +332,7 @@
     .Customer-Information-container  .info p {
         margin: 5px 0;
     }
-    .room_revenue{
-        width: 80%;
-    }
-    .room_revenue {
-        background: #fff no-repeat center center;
-        width: 90%;
-        vertical-align: middle;
-        margin-right: 5px;
-        transition: background-color 0.3s, transform 0.3s;/* ระยะห่างจากข้อความ */
-    }
-    .room_revenue:hover {
-        background: #fff ;
-        transform: scale(1.1);
-    }
-    .room_revenue:active {
-        transform: scale(0.9);
-    }
-    .Foodrevenue {
-        background: #fff no-repeat center center;
-        width: 90%;
-        vertical-align: middle;
-        margin-right: 5px;
-        transition: background-color 0.3s, transform 0.3s;/* ระยะห่างจากข้อความ */
-    }
-    .Foodrevenue:hover {
-        background: #fff ;
-        transform: scale(1.1);
-    }
-    .Foodrevenue:active {
-        transform: scale(0.9);
-    }
-    .MeetingRooom{
-        background: #fff no-repeat center center;
-        width: 80%;
-        vertical-align: middle;
-        margin-right: 5px;
-        transition: background-color 0.3s, transform 0.3s;/* ระยะห่างจากข้อความ */
-    }
-    .MeetingRooom:hover {
-        background: #fff ;
-        transform: scale(1.1);
-    }
-    .MeetingRooom:active {
-        transform: scale(0.9);
-    }
-    .EntertainmentRooom{
-        background: #fff no-repeat center center;
-        width: 60%;
-        vertical-align: middle;
-        margin-right: 5px;
-        transition: background-color 0.3s, transform 0.3s;/* ระยะห่างจากข้อความ */
-    }
-    .EntertainmentRooom:hover {
-        background: #fff ;
-        transform: scale(1.1);
-    }
-    .EntertainmentRooom:active {
-        transform: scale(0.9);
 
-    }
     .Btn {
   background-color: transparent;
   position: relative;
@@ -476,7 +424,11 @@
     position: relative;
     margin-left: 24px !important;
     }
-
+    .comA{
+        display: inline-block;  /* ทำให้ border-bottom มีความยาวเท่ากับข้อความ */
+        border-bottom: 2px solid #000;  /* กำหนดเส้นใต้ */
+        padding-bottom: 5px;
+    }
 
 .frame{
     display: flex;
@@ -487,12 +439,26 @@
         border-radius: 10px;
        /* กำหนดสีพื้นหลังเป็นสีเทาอ่อน */
     }
+    .frametable {
+            padding: 5px;
+            background-color: #109699;
+            border-radius: 10px;
+        }
+        .frametable .col-6:first-child {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .frametable .col-4:last-child {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
     .frameinfo{
-        border: 2px solid #080808; /* ใส่กรอบขอบดำขนาด 2px */
+        border: 2px solid #109699; /* ใส่กรอบขอบดำขนาด 2px */
         padding: 10px; /* เพิ่มช่องว่างด้านในของกรอบ */
         background-color: #ffffff;
         border-radius: 10px;
-       /
     }
     textarea {
             box-sizing: border-box;
@@ -515,16 +481,103 @@
             outline: none; /* Remove default outline */
         }
         .styled-hr {
-            background-color: #0a4c49; /* กำหนดสีพื้นหลัง */
-            height: 3px; /* กำหนดความหนา */
             border: none; /* เอาขอบออก */
-            margin-top: 3rem; /* กำหนดระยะห่างด้านบน */
-            margin-bottom: 3rem; /* กำหนดระยะห่างด้านล่าง */
+            border: 3px solid #109699; /* กำหนดระยะห่างด้านล่าง */
         }
-        .border-end {
-            border-right: 2px solid #2D7F7B; /* กำหนดสี ความหนา และลักษณะของขอบขวา */
-            padding-right: 10px; /* เพิ่ม padding เพื่อให้ขอบชัดเจนขึ้น */
+        .border {
+            border-style: solid; /* กำหนดสี ความหนา และลักษณะของขอบขวา */
+            border-right-width: 15px; /* เพิ่ม padding เพื่อให้ขอบชัดเจนขึ้น */
         }
+        .table-borderless {
+            border-collapse: collapse; /* หรือ separate */
+            border: none;
+        }
+        .table-borderless th,
+        .table-borderless td,
+        .table-borderless thead,
+        .table-borderless tbody,
+        .table-borderless tr {
+            border: none !important;
+        }
+
+        .table-borderless1 th,
+        .table-borderless1 td,
+        .table-borderless1 thead,
+        .table-borderless1 tr {
+            border: none !important;
+        }
+        .table-borderless1 {
+            border: 1px solid #109699;
+            border-radius: 6px;
+            overflow: hidden;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 18px;
+        }
+        .Average1{
+        margin: 0;
+        margin-left: 9px;
+        display: table-cell;
+        vertical-align: middle;
+        color: #ffffff;
+    }
+    .centered-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .centered-content4 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 2px solid #6b6b6b; /* กำหนดกรอบสี่เหลี่ยม */
+            padding: 20px; /* เพิ่ม padding ภายในกรอบ */
+            border-radius: 5px; /* เพิ่มมุมโค้ง (ถ้าต้องการ) */
+            height: 125px;
+            width: 125px; /* กำหนดความสูงของกรอบ */
+        }
+
+        .button-return {
+    align-items: center;
+    appearance: none;
+    background-color: #6b6b6b;
+    border-radius: 8px;
+    border-style: none;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 3px 5px -1px,
+      rgba(0, 0, 0, 0.14) 0 6px 10px 0, rgba(0, 0, 0, 0.12) 0 1px 18px 0;
+    box-sizing: border-box;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    fill: currentcolor;
+    font-size: 14px;
+    font-weight: 500;
+    height: 40px;
+    justify-content: center;
+    letter-spacing: 0.25px;
+    line-height: normal;
+    max-width: 100%;
+    overflow: visible;
+    padding: 2px 24px;
+    position: relative;
+    text-align: center;
+    text-transform: none;
+    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 15ms linear 30ms, transform 270ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+    touch-action: manipulation;
+    width: auto;
+    will-change: transform, opacity;
+    margin-left: 5px;
+  }
+
+  .button-return:hover {
+    background-color: #ffffff !important;
+    color: #000000;
+    transform: scale(1.1);
+  }
 </style>
 <form action="" method="POST"enctype="multipart/form-data">
     @csrf
@@ -563,7 +616,7 @@
             </div>
 
             <div class="row">
-                <div class="col-lg-6 col-md-12 col-sm-12  Contact-Information-container border-end border-dark" >
+                <div class="col-lg-6 col-md-12 col-sm-12  Contact-Information-container " style=" border-right-style: solid  ; border-right-width: 5px;border-right-color:#109699"  >
                     <div class="info">
                         <p class="com">Company Information</p>
                         <div class="row">
@@ -647,13 +700,13 @@
                     </div>
                 </div>
             </div>
-            <hr class="styled-hr mt-3 my-3" style="background-color: #2D7F7B;">
+            <div class="styled-hr my-3"></div>
             <div>
                 <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
             </div>
             <div class="row mt-3">
                 <div class="col-lg-2 col-md-2 col-sm-12">
-                    <button type="button" id="addproduct" class="btn button-17 button-18" data-bs-toggle="modal" data-bs-target="#exampleModalproduct" onclick="fetchProducts('all')">
+                    <button type="button" id="addproduct" class="button-10" style="background-color: #109699;" data-bs-toggle="modal" data-bs-target="#exampleModalproduct" onclick="fetchProducts('all')">
                         + Add Product
                     </button><br>
                     <div class="modal fade" id="exampleModalproduct" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -694,14 +747,13 @@
 
                                     </tbody>
                                 </table>
-                                <div class="col-4 mt-3" >
-                                        <ul class="pagination" id="pagination"></ul>
-                                </div>
+                                <br>
                                 <div class="col-12 mt-3">
                                     <h3>รายการที่เลือก</h3>
                                     <table  class="table table-bordered" style="width:100%">
                                         <thead class="table-dark">
                                             <tr>
+                                                <th style="width: 10%;">No.</th>
                                                 <th style="width: 10%;">รหัส</th>
                                                 <th>รายการ</th>
                                                 <th scope="col" style="width: 10%;">หน่วย</th>
@@ -741,17 +793,16 @@
                         </tr>
                     </thead>
                     <tbody id="display-selected-items">
-
                         @if (!empty($selectproduct))
                             @foreach ($selectproduct as $key => $item)
                                 @foreach ($unit as $singleUnit)
                                     @if($singleUnit->id == @$item->product->unit)
-                                        <tr  id="tr-select-addmain{{$item->product->id}}">
-                                            <input type="hidden" id="tr-select-addmain{{$key+1}}" name="tr-select-addmain" value="{{$item->id}}">
+                                        <tr id="tr-select-main{{$item->Product_ID}}">
+                                            <input type="hidden" id="tr-select-main{{$item->Product_ID}}" name="tr-select-main" value="{{$item->Product_ID}}">
                                             <td><input type="hidden" id="ProductID" name="ProductID[]" value="{{$key+1}}">{{$key+1}}</td>
                                             <td style="text-align:left;"><input type="hidden" id="Productname_th" name="Productname_th" value="{{@$item->product->name_th}}">{{@$item->product->name_th}}</td>
                                             <td class="Quantity" data-value="{{$item->Quantity}}"><input type="hidden" id="Quantity" name="Quantity" value="{{$item->Quantity}}">{{$item->Quantity}}</td>
-                                            <td ><input type="hidden" id="unitname_th" name="unitname_th" value="{{ $singleUnit->name_th }}">{{ $singleUnit->name_th }}</td>
+                                            <td><input type="hidden" id="unitname_th" name="unitname_th" value="{{ $singleUnit->name_th }}">{{ $singleUnit->name_th }}</td>
                                             <td class="priceproduct" data-value="{{$item->priceproduct}}"><input type="hidden" id="totalprice-unit{{$key+1}}" name="priceproduct" value="{{$item->priceproduct}}">{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
                                             <td class="discount"><input type="hidden" id="discount" name="discount" value="{{$item->discount}}">{{$item->discount}}</td>
                                             <td class="net-price"><input type="hidden" id="net_discount{{$key+1}}" name="net_discount" value="{{$item->netpriceproduct}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
@@ -772,36 +823,80 @@
                 </table>
             </div >
                 <div class="col-12 row ">
-                    <div class="col-lg-8 col-md-12 col-sm-12">
+                    <div class="col-lg-7 col-md-8 col-sm-12">
                         <span class="my-2">Notes or Special Comment</span>
                         <textarea class="mt-2" name="comment" id="comment" cols="30" rows="5">{{$Quotation->comment}}</textarea>
                     </div>
-                    <div class="col-lg-2 col-md-12 col-sm-12 total" >
-                        <span>Total Amount</span><br>
-                        <span>Discount (%)</span><br>
-                        <span>Net price</span><br>
-                        <span>Value Added Tax</span><br>
-                        <span>Net Total (฿)</span><br>
-                        <span>Average per person </span><br>
+                    <div class="col-lg-5 col-md-2 col-sm-12 " >
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 35%;"></th>
+                                    <th scope="row"style="text-align:right;">Total Amount</th>
+                                    <td style="text-align:left;"><span id="total-amount"></span></td>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th scope="row"style="text-align:right;">Discount (%)</th>
+                                    <td style="text-align:left;"><span id="total-Discount"></span></td>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th scope="row"style="text-align:right;">Net price</th>
+                                    <td style="text-align:left;"><span id="Net-price"></span></td>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th scope="row" style="text-align:right;">Value Added Tax</th>
+                                    <td style="text-align:left;"><span id="total-Vat"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="col-lg-1 col-md-12 col-sm-12 total" >
-                        <span id="total-amount"></span><br>
-                        <span id="total-Discount"></span><br>
-                        <span id="Net-price"></span><br>
-                        <span id="total-Vat"></span><br>
-                        <span id="Net-Total"></span>
-                        <span id="Average" name="Average"></span>
+                    <div class="col-12 row">
+                        <div class="col-8">
+
+                        </div>
+                        <div class="col-lg-4 col-md-3 col-sm-12">
+                            <table class="table table-borderless1" >
+                                <tbody>
+                                    <tr >
+                                        <th style="text-align:right;background-color: #109699;width: 30%;color:#fff;forn-size:24px">Net Total (฿)</th>
+                                        <td style="text-align:left;background-color: #109699;width: 20%;color:#fff;"><span id="Net-Total"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
                     </div>
-                </div>
-            <div class="col-12 mt-3">
-                <input type="hidden" name="adult" id="adult" value="{{$Quotation->adult}}">
-                <input type="hidden" name="children" id="children" value="{{$Quotation->children}}">
-            </div>
+                    <div class="col-12 row"></div>
+                    <div class="col-8">
+                    </div>
+                    <div class="col-4 styled-hr">
+                    </div>
+                    <div class="col-12 row">
+                        <div class="col-8">
+                        </div>
+                        <div class="col-lg-4 col-md-3 col-sm-12">
+                            <table class="table table-borderless" >
+                                <tbody>
+                                    <tr>
+                                        <th scope="row"style="text-align:right;">Average per person</th>
+                                        <td style="text-align:left;width: 38%;"><span id="Average"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+            <input type="hidden" name="adult" id="adult" value="{{$Quotation->adult}}">
+            <input type="hidden" name="children" id="children" value="{{$Quotation->children}}">
             <div class="col-12 mt-3">
                 <div class="col-4">
                     <strong class="titleh1">Method of Payment</strong>
                 </div>
-                <hr class="styled-hr mt-2 my-3">
+                <div class="styled-hr my-3"></div>
                 <span>
                     Please make a 50% deposit within 7 days after confirmed. <br>
                      Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
@@ -815,7 +910,7 @@
                                 <div class="col-2 mt-3" style="display: flex;justify-content: center;align-items: center;">
                                     <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 80%;border-radius: 50%;"/>
                                 </div>
-                                <div class="col-7 mt-3">
+                                <div class="col-7 mt-4">
                                     <strong>The Siam Commercial Bank Public Company Limited <br>Bank Account No. 708-226791-3<br>Tha Yang - Phetchaburi Branch (Savings Account)</strong>
                                 </div>
                             </div>
@@ -823,10 +918,51 @@
                     </div>
                 </div>
             </div>
-            <hr class="styled-hr mt-2 my-3">
+            <div class="styled-hr mt-3"></div>
+            <div class="col-12 mt-2">
+                <div class="col-4">
+                    <strong class="titleh1">รับรอง</strong>
+                </div>
+                <div class="col-12 my-2">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
+                            <img src="{{ asset('assets2/images/R.png') }}" style="width: 80%;"/>
+                        </div>
+                        <div class="col-lg-2 centered-content">
+                            <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
+                            <br><br><br>
+                            <span>{{@$Quotation->user->name}}</span>
+                            <span>{{ $Quotation->issue_date }}</span>
+                        </div>
+                        <div class="col-lg-2 centered-content">
+                            <span>ผู้อนุมัติเอกสาร (ผู้ขาย)</span><br>
+                            <br><br><br>
+                            <span>{{@$Quotation->user->name}}</span>
+                            <span>{{ $Quotation->issue_date }}</span>
+                        </div>
+                        <div class="col-lg-2">
+                            <span>ตราประทับ (ผู้ขาย)</span>
+                        </div>
+                        <div class="col-lg-2 centered-content">
+                            <span>ผู้รับเอกสาร (ลูกค้า)</span>
+                            <br><br><br>
+                                ---------------------
+                            <span>{{ $Company_ID->Company_Name }}</span>
+                        </div>
+                        <div class="col-lg-2 centered-content">
+                            <span>ตราประทับ (ลูกค้า)</span>
+                            <div class="centered-content4 mt-1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="styled-hr mt-3"></div>
             <div class="col-12 row mt-5">
                 <div class="col-4"></div>
                 <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
+                    <button type="button" class="button-return" onclick="window.location.href='{{ route('Quotation.index') }}'" >{{ __('ย้อนกลับ') }}</button>
                     <button type="submit" class="button-10" style="background-color: #109699;">บันทึกใบเสนอราคา</button>
                 </div>
                 <div class="col-4"></div>
@@ -836,6 +972,7 @@
 </form>
 <input type="hidden" id="number-product" value="{{count($selectproduct)}}">
 <script>
+
     function fetchProducts(status) {
         console.log(status);
         var Quotation_ID = '{{ $Quotation->Quotation_ID }}'; // Replace this with the actual ID you want to send
@@ -844,93 +981,91 @@
             method: 'GET',
             data: {
                 value: status
-
             },
             success: function(response) {
-                $('#product-list').children().remove().end();
-
+            $('#product-list').children().remove().end();
                 $.each(response.products, function (key, val) {
-                    var name = '';
-                    var price = 0;
-                    var keyNo = parseInt(key + 1);
-
-                    $('#product-list').append(
-                        '<tr id="tr-select' + val.Product_ID + '">' +
-                        '<td><input type="hidden" class="keyNo" name="keyNo" value="' + keyNo + '">' + keyNo + '</td>' +
-                        '<td>' + val.Product_ID + '</td>' +
-                        '<td style="text-align:left;">' + val.name_en + '</td>' +
-                        '<td style="text-align: right;">' + val.unit_name + '</td>' +
-                        '<td>' + val.normal_price + '</td>' +
-                        '<td><button type="button" style="background-color: #109699; display: block; margin: 0 auto;" class="button-11 select-button-product" value="' + val.id + '">+</button></td>' +
-                        '</tr>'
-                    );
-
-                    // Update key value after appending the row
-
+                    // ตรวจสอบว่ามีแถวที่มี id เท่ากับ 'tr-select-addmain' + val.id หรือไม่
+                    if ($('#tr-select-main' + val.Product_ID).length == 0) {
+                        // console.log(response.products.length);
+                        var keyNo = parseInt(key + 1);
+                        $('#product-list').append(
+                            '<tr id="tr-select' + val.id + '">' +
+                            '<td><input type="hidden" class="keyNo" name="keyNo" value="' + keyNo + '">' + keyNo + '</td>' +
+                            '<td>' + val.Product_ID + '</td>' +
+                            '<td style="text-align:left;">' + val.name_en + '</td>' +
+                            '<td style="text-align: right;">' + val.unit_name + '</td>' +
+                            '<td>' + val.normal_price + '</td>' +
+                            '<td><button type="button" style="background-color: #109699; display: block; margin: 0 auto;" class="button-11 select-button-product" value="' + val.id + '">+</button></td>' +
+                            '</tr>'
+                        );
+                    }
                 });
-
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
             }
         });
     }
-$(document).on('click','.select-button-product',function() {
+    $(document).on('click','.select-button-product',function() {
     var product = $(this).val();
     if ($('#productselect' + product).length > 0) {
-        return; // ถ้ามีแล้วไม่ต้องทำอะไร
+        return;
     }
-    $.ajax({
-        url: '{{ route("Quotation.addProducttableselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
-        method: 'GET',
-        data: {
-            value:product
+        $.ajax({
+            url: '{{ route("Quotation.addProducttableselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+            method: 'GET',
+            data: {
+                value:product
 
-        },
-        success: function(response) {
-            if (!response.products || response.products.length === 0) {
-                console.log("No products found");
-                return;
-            }  // ตรวจสอบข้อมูลที่ได้รับจาก response
-            $.each(response.products, function (key, val) {
-                console.log('Key:', key);  // ตรวจสอบค่าของ key ในแต่ละรอบ
-                var name = '';
-                var price = 0;
-
-                $('#product-list-select').append(
-                    '<tr id="tr-select-add' + val.id + '">' +
-                    '<td>' + key+ + '</td>' +
-                    '<td style="text-align:left;">' + val.name_en + '</td>' +
-                    '<td style="text-align: right;">' + val.unit_name + '</td>' +
-                    '<td>' + val.normal_price + '</td>' +
-                    '<td><button type="button" class="Btn remove-button" value="' + val.id + '"><svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon"><path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path></svg></button></td>' +
-                    '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
-                    '</tr>'
-                );
-            });
-        },
-
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-        }
+            },
+            success: function(response) {
+                $.each(response.products, function(index, val) {
+                    var name = '';
+                    var price = 0;
+                    var rowNumber = $('#product-list-select tr').length + 1;
+                    $('#product-list-select').append(
+                        '<tr id="tr-select-add' + val.id + '">' +
+                        '<td>' + rowNumber + '</td>' +
+                        '<td>' + val.Product_ID + '</td>' +
+                        '<td style="text-align:left;">' + val.name_en + '</td>' +
+                        '<td style="text-align:right;">' + val.unit_name + '</td>' +
+                        '<td>' + val.normal_price + '</td>' +
+                        '<td><button type="button" class="Btn remove-button" value="' + val.id + '"><svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon"><path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path></svg></button></td>' +
+                        '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
+                        '</tr>'
+                    );
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
     });
-});
-$(document).on('click', '.remove-button', function() {
+    function renumberRows() {
+        $('#product-list-select tr').each(function(index) {
+            $(this).find('td:first-child').text(index + 1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
+        });
+    }
+    $(document).on('click', '.remove-button', function() {
     var product = $(this).val();
-    $('#tr-select-add' + product).remove(); // ลบแถวที่มี id เป็น 'tr-select-add' + product
-});
-$(document).on('click', '.confirm-button', function() {
-    var number = Number($('#number-product').val());
-    $.ajax({
-        url: '{{ route("Quotation.addProducttablemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
-        method: 'GET',
-        data: {
-            value: "all"
-        },
-        success: function(response) {
-            $.each(response.products, function (key, val) {
-                if ($('#productselect'+val.id).val()!==undefined) {
-                    if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
+    $('#tr-select-add' + product).remove();
+    renumberRows(); // ลบแถวที่มี id เป็น 'tr-select-add' + product
+    });
+    $(document).on('click', '.confirm-button', function() {
+        var product = $(this).val();
+        var number = Number($('#number-product').val());
+        console.log(number);
+        $.ajax({
+            url: '{{ route("Quotation.addProducttablemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+            method: 'GET',
+            data: {
+                value: "all"
+            },
+            success: function(response) {
+                $.each(response.products, function (key, val) {
+                    if ($('#productselect'+val.id).val()!==undefined) {
+                        if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
                         number +=1;
                         var name = '';
                         var price = 0;
@@ -938,41 +1073,44 @@ $(document).on('click', '.confirm-button', function() {
                         var normalPrice = parseFloat(normalPriceString);
                         console.log('normalPrice:', normalPrice);
                         var netDiscount = (normalPrice - (normalPrice * 0.01)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        var rowNumbemain = $('#display-selected-items tr').length;
                         $('#display-selected-items').append(
-                            '<tr id="tr-select-addmain'+val.id+'">' +
-                            '<td>' + val.Product_ID + '</td>' +
+                            '<tr id="tr-select-addmain' + val.id + '">' +
+                            '<td>' + rowNumbemain + '</td>' +
                             '<td style="text-align:left;">' + val.name_en + '</td>' +
-                            '<td><input class="quantitymain" type="text" id="quantitymain" name="quantitymain" value="1" min="1" rel="'+ number +'"style="text-align:center;"></td>'+
-                            '<td >' + val.unit_name + '</td>' +
-                            '<td><input type="hidden" id="totalprice-unit-'+ number+'" name="price-unit" value="'+ val.normal_price +'">' + val.normal_price + '</td>' +
-                            '<td><input class="discountmain" type="text" id="discountmain" name="discountmain" value="1" min="1" res="'+ number +'"style="text-align:center;"></td>'+
-                            '<td><input type="hidden" id="net_discount-'+ number+'" name="net_discount" value="'+ val.normal_price +'"><span id="netdiscount'+ number +'">'+ netDiscount +'</span></td>'+
-                            '<td><input type="hidden" id="allcounttotal-'+ number+'" name="allcounttotal" value="'+ val.normal_price +'"><span id="allcount'+ number +'">'+  val.normal_price +'</span></td>'+
-                            '<td><button type="button" class="Btn remove-buttonmain" value="'+ val.id +'"><svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon"><path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path></svg></button></td>'+
+                            '<td><input class="quantitymain" type="text" id="quantitymain" name="quantitymain" value="1" min="1" rel="' + number + '" style="text-align:center;"></td>' +
+                            '<td>' + val.unit_name + '</td>' +
+                            '<td><input type="hidden" id="totalprice-unit-' + number + '" name="price-unit" value="' + val.normal_price + '">' + val.normal_price + '</td>' +
+                            '<td><input class="discountmain" type="text" id="discountmain" name="discountmain" value="1" min="1" res="' + number + '" style="text-align:center;"></td>' +
+                            '<td><input type="hidden" id="net_discount-' + number + '" name="net_discount" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + netDiscount + '</span></td>' +
+                            '<td><input type="hidden" id="allcounttotal-' + number + '" name="allcounttotal" value="' + val.normal_price + '"><span id="allcount' + number + '">' + val.normal_price + '</span></td>' +
+                            '<td><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon"><path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path></svg></button></td>' +
                             '</tr>'
                         );
+                            }
                     }
-
-                }
-
-            });
-            $('#number-product').val(number);
-            totalAmost();
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-        }
+                });
+                $('#number-product').val(number);
+                totalAmost();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
     });
-});
-$(document).on('click', '.remove-buttonmain', function() {
-    var product = $(this).val();
 
+    $(document).on('click', '.remove-buttonmain', function() {
+    var product = $(this).val();
     $('#tr-select-add' + product).remove();
     $('#tr-select-addmain' + product).remove();
+    $('#display-selected-items tbody tr').each(function(index) {
+        // เปลี่ยนเลขลำดับใหม่
+        $(this).find('td:first').text(index + 1);
+    });
     totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
-});
+    });
 
-$(document).ready(function() {
+    $(document).ready(function() {
 
     // Function to calculate totals
     function calculateTotals() {
@@ -999,7 +1137,6 @@ $(document).ready(function() {
             NetTotal = Netprice + Vat;
             var person =adultValue+childrenValue;
             totalperson = NetTotal/person;
-            console.log(totalperson);
         });
         function formatNumber(number) {
             return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2 }).format(number);
@@ -1023,14 +1160,18 @@ $(document).ready(function() {
     // Remove button click handler
     $(document).on('click', '.remove-button1', function() {
         $(this).closest('tr').remove(); // Remove the row
+        $('#display-selected-items tbody tr').each(function(index) {
+                // เปลี่ยนเลขลำดับใหม่
+                $(this).find('td:first').text(index + 1);
+            });
         calculateTotals();
         totalAmost();// Recalculate totals after removing row
     });
     totalAmost();
 
-});
+    });
 
-$(document).on('keyup', '.quantitymain', function() {
+    $(document).on('keyup', '.quantitymain', function() {
     var quantitymain =  Number($(this).val());
     var discountmain =  Number($('.discountmain').val());
     var number_ID = $(this).attr('rel');
@@ -1041,8 +1182,8 @@ $(document).on('keyup', '.quantitymain', function() {
     var pricediscount = pricenew - (pricenew*discountmain /100);
     $('#netdiscount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
     totalAmost();
-});
-$(document).on('keyup', '.discountmain', function() {
+    });
+    $(document).on('keyup', '.discountmain', function() {
     var discountmain =  Number($(this).val());
     var quantitymain =  Number($('.quantitymain').val());
     var number_ID = $(this).attr('res');
@@ -1055,7 +1196,7 @@ $(document).on('keyup', '.discountmain', function() {
     var pricediscount = pricenew - (pricenew*discountmain /100);
     $('#netdiscount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
     totalAmost();
-});
+    });
 
     function totalAmost() {
     $(document).ready(function() {
