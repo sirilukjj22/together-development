@@ -229,10 +229,10 @@
                     </a>
 
 
-                    <a href="{{ route('revenue-detail', ['wp', $date_current]) }}" class="list-box2">
+                    <a href="{{ route('revenue-detail', ['wp_credit', $date_current]) }}" class="list-box2">
                         <img src="../assets2/images/water-park.png" alt="">
                         <h2>Water park</h2>
-                        <h3>{{ number_format($total_revenue_today->wp_amount ?? 0, 2) }}</h3>
+                        <h3>{{ number_format($total_revenue_today->wp_credit ?? 0, 2) }}</h3>
                     </a>
 
                 </div>
