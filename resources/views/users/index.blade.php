@@ -2,6 +2,21 @@
 
 @section('content')
 
+<style>
+    .container{
+      position: relative;
+      padding: 5% 10%;
+      margin-top: 40px;
+      border-radius: 8px;
+      border: 1px solid #aaa;
+    }
+    .usertopic{
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: 40px;
+    }
+  </style>
     <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         <a href="{{ route('user-create') }}">
             <button type="button" class="submit-button" style="float: right;">เพิ่มผู้ใช้งาน</button>

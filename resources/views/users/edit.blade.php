@@ -12,15 +12,6 @@
             margin: 0 !important;
         }
 
-        /* .container {
-            background-color: white;
-            padding: 5% 10%;
-            width: auto;
-            margin-top: 40px;
-            border-radius: 8px;
-            border: 1px solid #aaa;
-        } */
-
         input,
         textarea {
             width: 100%;
@@ -53,12 +44,13 @@
 
         <form action="{{ route('user-update') }}" method="POST" enctype="multipart/form-data">
             @csrf
+            <input type="hidden" name="id" value="{{ $user->id }}">
             <div class="row justify-center">
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <label for="fullName">ชื่อผู้ใช้งาน <sup class="text-danger">*</sup></label>
                 </div>
                 <div class="col-lg-7 col-md-8 col-sm-12">
-                    <input type="text" name="name" value="{{ $user->name }}" maxlength="70" required>
+                    <input type="text" class="form-control" name="name" value="{{ $user->name }}" maxlength="70" required>
                 </div>
             </div>
             <div class="row justify-center">
@@ -66,7 +58,7 @@
                     <label for="email">อีเมล์ <sup class="text-danger">*</sup></label>
                 </div>
                 <div class="col-lg-7 col-md-8 col-sm-12">
-                    <input type="text" name="email" value="{{ $user->email }}" required>
+                    <input type="text" class="form-control" name="email" value="{{ $user->email }}" required>
                 </div>
             </div>
             <div class="row justify-center">
@@ -74,7 +66,7 @@
                     <label for="">รหัสผ่าน</label>
                 </div>
                 <div class="col-lg-7 col-md-8 col-sm-12">
-                    <input type="password" name="password" placeholder="รหัสผ่าน">
+                    <input type="password" class="form-control" name="password" placeholder="รหัสผ่าน">
                 </div>
             </div>
             <div class="row justify-center">
@@ -82,7 +74,7 @@
                     <label for="">สิทธ์ของผู้ใช้งาน <sup class="text-danger">*</sup></label>
                 </div>
                 <div class="col-lg-7 col-md-8 col-sm-12">
-                    <select name="permission" id="testselect2">
+                    <select class="form-control" name="permission" id="testselect2">
                         <option value="0" {{ $user->permission == 0 ? 'selected' : '' }}>ผู้ใช้งานทั่วไป</option>
                         <option value="1" {{ $user->permission == 1 ? 'selected' : '' }}>แอดมิน</option>
                         @if ($user->permission == 2)
@@ -96,7 +88,7 @@
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <label for=""><b>สิทธิ์การใช้งานเมนู</b></label>
                 </div>
-                <div class="d-flex col-lg-7 col-md-8 col-sm-12 justify-evenly">
+                <div class="col-lg-2 col-md-8 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" name="select_menu_all" id="select_menu_all"
                             value="{{ @$user->roleMenu->select_menu_all }}" {{ @$user->roleMenu->select_menu_all == 1 ? 'checked' : '' }}>
@@ -106,11 +98,12 @@
                     </div>
                 </div>
             </div>
-            <div class="row justify-center">
-                <div class="col-lg-2 col-md-4 col-sm-12">
+
+            <div class="row justify-content-start">
+                <div class="col-lg-2 col-md-10 col-sm-12">
                     <label for="">เมนู (หัวข้อหลัก)</label>
                 </div>
-                <div class="d-flex col-lg-7 col-md-8 col-sm-12 justify-evenly">
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_sms_alert"
                             id="menu_sms_alert" value="1" {{ @$user->roleMenu->sms_alert == 1 ? 'checked' : '' }}>
@@ -118,7 +111,9 @@
                             SMS Alert
                         </label>
                     </div>
+                </div>
 
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_revenue" id="menu_revenue"
                             value="1" {{ @$user->roleMenu->revenue == 1 ? 'checked' : '' }}>
@@ -126,7 +121,9 @@
                             Revenue
                         </label>
                     </div>
+                </div>
 
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_debtor" id="menu_debtor"
                             value="1" {{ @$user->roleMenu->debtor == 1 ? 'checked' : '' }}>
@@ -134,7 +131,9 @@
                             Debtor
                         </label>
                     </div>
+                </div>
 
+                <div class="col-lg-4 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_profile" id="menu_profile"
                             value="1" {{ @$user->roleMenu->profile == 1 ? 'checked' : '' }}>
@@ -142,7 +141,9 @@
                             Profile
                         </label>
                     </div>
-
+                </div>
+                <div class="col-lg-2"></div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_user" id="menu_user"
                             value="1" {{ @$user->roleMenu->user == 1 ? 'checked' : '' }}>
@@ -150,7 +151,8 @@
                             Users
                         </label>
                     </div>
-
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_bank" id="menu_bank"
                             value="1" {{ @$user->roleMenu->bank == 1 ? 'checked' : '' }}>
@@ -161,11 +163,11 @@
                 </div>
             </div>
 
-            <div class="row justify-center">
-                <div class="col-lg-2 col-md-4 col-sm-12">
+            <div class="row justify-content-start mt-4">
+                <div class="col-lg-2 col-md-10 col-sm-12">
                     <label for="">เมนู (หัวข้อย่อย)</label>
                 </div>
-                <div class="d-flex col-lg-7 col-md-8 col-sm-12 justify-evenly">
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_agoda" id="menu_agoda"
                             value="1" {{ @$user->roleMenu->agoda == 1 ? 'checked' : '' }}>
@@ -173,7 +175,9 @@
                             Agoda (Debtor)
                         </label>
                     </div>
+                </div>
 
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_elexa" id="menu_elexa"
                             value="1" {{ @$user->roleMenu->elexa == 1 ? 'checked' : '' }}>
@@ -181,7 +185,9 @@
                             Elexa (Debtor)
                         </label>
                     </div>
+                </div>
 
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_company"
                             id="menu_company" value="1" {{ @$user->roleMenu->company == 1 ? 'checked' : '' }}>
@@ -189,7 +195,9 @@
                             Company (Profile)
                         </label>
                     </div>
+                </div>
 
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_guest" id="menu_guest"
                             value="1" {{ @$user->roleMenu->guest == 1 ? 'checked' : '' }}>
@@ -201,10 +209,10 @@
             </div>
 
             <div class="row justify-center mt-4">
-                <div class="col-lg-3 col-md-4 col-sm-12">
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <label for=""><b>สิทธิ์การใช้งานประเภทรายได้</b></label>
                 </div>
-                <div class="d-flex col-lg-6 col-md-8 col-sm-12 justify-evenly">
+                <div class="col-lg-2 col-md-8 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" name="select_revenue_all"
                             id="select_revenue_all" value="{{ @$user->roleRevenues->select_revenue_all }}" {{ @$user->roleRevenues->select_revenue_all == 1 ? 'checked' : '' }}>
@@ -216,10 +224,10 @@
             </div>
 
             <div class="row justify-center">
-                <div class="col-lg-2 col-md-4 col-sm-12">
+                <div class="col-lg-2">
                     <label for="">ประเภทรายได้</label>
                 </div>
-                <div class="d-flex col-lg-7 col-md-8 col-sm-12 justify-evenly">
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_revenue" name="front_desk" id="front_desk"
                             value="1" {{ @$user->roleRevenues->front_desk == 1 ? 'checked' : '' }}>
@@ -227,7 +235,9 @@
                             Front Desk Revenue
                         </label>
                     </div>
+                </div>
 
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_revenue" name="guest_deposit"
                             id="guest_deposit" value="1" {{ @$user->roleRevenues->guest_deposit == 1 ? 'checked' : '' }}>
@@ -235,7 +245,9 @@
                             Guest Deposit Revenue
                         </label>
                     </div>
+                </div>
 
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_revenue" name="all_outlet" id="all_outlet"
                             value="1" {{ @$user->roleRevenues->all_outlet == 1 ? 'checked' : '' }}>
@@ -244,12 +256,8 @@
                         </label>
                     </div>
                 </div>
-            </div>
 
-            <div class="row justify-center">
-                <div class="col-lg-2 col-md-4 col-sm-12">
-                </div>
-                <div class="d-flex col-lg-7 col-md-8 col-sm-12 justify-evenly">
+                <div class="col-lg-4 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_revenue" name="agoda" id="agoda"
                             value="1" {{ @$user->roleRevenues->agoda == 1 ? 'checked' : '' }}>
@@ -257,7 +265,9 @@
                             Agoda Revenue
                         </label>
                     </div>
-
+                </div>
+                <div class="col-lg-2"></div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_revenue" name="credit_card_hotel"
                             id="credit_card_hotel" value="1" {{ @$user->roleRevenues->credit_card_hotel == 1 ? 'checked' : '' }}>
@@ -265,7 +275,9 @@
                             Credit Card Hotel Revenue
                         </label>
                     </div>
+                </div>
 
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_revenue" name="elexa" id="elexa"
                             value="1" {{ @$user->roleRevenues->elexa == 1 ? 'checked' : '' }}>
@@ -274,12 +286,8 @@
                         </label>
                     </div>
                 </div>
-            </div>
 
-            <div class="row justify-center">
                 <div class="col-lg-2 col-md-4 col-sm-12">
-                </div>
-                <div class="d-flex col-lg-7 col-md-8 col-sm-12 justify-evenly">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_revenue" name="water_park" id="water_park"
                             value="1" {{ @$user->roleRevenues->water_park == 1 ? 'checked' : '' }}>
@@ -287,7 +295,9 @@
                             Water Park Revenue
                         </label>
                     </div>
+                </div>
 
+                <div class="col-lg-4 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_revenue" name="credit_water_park"
                             id="credit_water_park" value="1" {{ @$user->roleRevenues->credit_water_park == 1 ? 'checked' : '' }}>
@@ -295,7 +305,9 @@
                             Credit Card Warter Park Revenue
                         </label>
                     </div>
-
+                </div>
+                <div class="col-lg-2"></div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_revenue" name="no_category"
                             id="no_category" value="1" {{ @$user->roleRevenues->no_category == 1 ? 'checked' : '' }}>
@@ -304,12 +316,8 @@
                         </label>
                     </div>
                 </div>
-            </div>
 
-            <div class="row justify-center">
                 <div class="col-lg-2 col-md-4 col-sm-12">
-                </div>
-                <div class="d-flex col-lg-7 col-md-8 col-sm-12 justify-evenly">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_revenue" name="transfer" id="transfer"
                             value="1" {{ @$user->roleRevenues->transfer == 1 ? 'checked' : '' }}>
@@ -317,7 +325,9 @@
                             Transfer
                         </label>
                     </div>
+                </div>
 
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_revenue" name="time" id="time"
                             value="1" {{ @$user->roleRevenues->time == 1 ? 'checked' : '' }}>
@@ -325,7 +335,9 @@
                             Update Time
                         </label>
                     </div>
+                </div>
 
+                <div class="col-lg-4 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_revenue" name="split" id="split"
                             value="1" {{ @$user->roleRevenues->split == 1 ? 'checked' : '' }}>
@@ -333,7 +345,9 @@
                             Split Revenue
                         </label>
                     </div>
-
+                </div>
+                <div class="col-lg-2"></div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_revenue" name="edit" id="edit"
                             value="1" {{ @$user->roleRevenues->edit == 1 ? 'checked' : '' }}>
@@ -343,7 +357,6 @@
                     </div>
                 </div>
             </div>
-
             <div>
                 <a href="{{ route('users', 'index') }}">
                     <button type="button" class="defaultbtn button-5">
@@ -356,9 +369,6 @@
             </div>
         </form>
     </div>
-
-
-
 
     <script>
         $(document).ready(function() {
