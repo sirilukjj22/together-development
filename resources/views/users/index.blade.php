@@ -3,13 +3,6 @@
 @section('content')
 
 <style>
-    .container{
-      position: relative;
-      padding: 5% 10%;
-      margin-top: 40px;
-      border-radius: 8px;
-      border: 1px solid #aaa;
-    }
     .usertopic{
       position: absolute;
       top: 0;
