@@ -1,7 +1,7 @@
 @extends('layouts.test')
 
 @section('content')
-    <div class="Usertable">
+    <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         <div class="col-12">
             <button type="button" class="submit-button" onclick="window.location.href='{{ route('Quotation.create') }}'" style="float: right;" >เพิ่มใบเสนอราคา</button>
         </div>
@@ -75,6 +75,7 @@
                                         <ul class="dropdown-menu">
                                             <li class="licolor"><a href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">แก้ไขข้อมูล</a></li>
                                             <li class="licolor"><a href="{{ url('/Quotation/edit/quotation/select/'.$item->id) }}">แก้ไขใบเสนอราคา</a></li>
+                                            <li class="licolor"><a href="{{ url('/Quotation/Quotation/cover/document/'.$item->id) }}">ใบปะหน้า</a></li>
                                         </ul>
                                 </td>
                             </tr>

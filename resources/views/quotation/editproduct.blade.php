@@ -536,11 +536,11 @@
             border: 2px solid #6b6b6b; /* กำหนดกรอบสี่เหลี่ยม */
             padding: 20px; /* เพิ่ม padding ภายในกรอบ */
             border-radius: 5px; /* เพิ่มมุมโค้ง (ถ้าต้องการ) */
-            height: 125px;
-            width: 125px; /* กำหนดความสูงของกรอบ */
+            height: 150px;
+            width: 150px; /* กำหนดความสูงของกรอบ */
         }
 
-        .button-return {
+    .button-return {
     align-items: center;
     appearance: none;
     background-color: #6b6b6b;
@@ -579,9 +579,9 @@
     transform: scale(1.1);
   }
 </style>
-<form action="" method="POST"enctype="multipart/form-data">
+<form action="{{url('/Quotation/company/update/quotationupdate/'.$Quotation->id)}}" method="POST"enctype="multipart/form-data">
     @csrf
-    <div class="container">
+    <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         <div class=" col-12">
             <div class="row">
             <div class="col-lg-8 col-md-12 col-sm-12 image-container">
@@ -799,14 +799,14 @@
                                     @if($singleUnit->id == @$item->product->unit)
                                         <tr id="tr-select-main{{$item->Product_ID}}">
                                             <input type="hidden" id="tr-select-main{{$item->Product_ID}}" name="tr-select-main" value="{{$item->Product_ID}}">
-                                            <td><input type="hidden" id="ProductID" name="ProductID[]" value="{{$key+1}}">{{$key+1}}</td>
+                                            <td><input type="hidden" id="ProductID" name="ProductIDmain[]" value="{{$item->Product_ID}}">{{$key+1}}</td>
                                             <td style="text-align:left;"><input type="hidden" id="Productname_th" name="Productname_th" value="{{@$item->product->name_th}}">{{@$item->product->name_th}}</td>
-                                            <td class="Quantity" data-value="{{$item->Quantity}}"><input type="hidden" id="Quantity" name="Quantity" value="{{$item->Quantity}}">{{$item->Quantity}}</td>
+                                            <td class="Quantity" data-value="{{$item->Quantity}}"><input type="hidden" id="Quantity" name="Quantitymain[]" value="{{$item->Quantity}}">{{$item->Quantity}}</td>
                                             <td><input type="hidden" id="unitname_th" name="unitname_th" value="{{ $singleUnit->name_th }}">{{ $singleUnit->name_th }}</td>
-                                            <td class="priceproduct" data-value="{{$item->priceproduct}}"><input type="hidden" id="totalprice-unit{{$key+1}}" name="priceproduct" value="{{$item->priceproduct}}">{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
-                                            <td class="discount"><input type="hidden" id="discount" name="discount" value="{{$item->discount}}">{{$item->discount}}</td>
-                                            <td class="net-price"><input type="hidden" id="net_discount{{$key+1}}" name="net_discount" value="{{$item->netpriceproduct}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
-                                            <td class="item-total"><input type="hidden" id="allcounttotal{{$key+1}}" name="allcounttotal" value="{{$item->totalpriceproduct}}">{{ number_format($item->totalpriceproduct, 2, '.', ',') }}</td>
+                                            <td class="priceproduct" data-value="{{$item->priceproduct}}"><input type="hidden" id="totalprice-unit{{$key+1}}" name="priceproductmain[]" value="{{$item->priceproduct}}">{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
+                                            <td class="discount"><input type="hidden" id="discount" name="discountmain[]" value="{{$item->discount}}">{{$item->discount}}</td>
+                                            <td class="net-price"><input type="hidden" id="net_discount{{$key+1}}" name="net_discountmain[]" value="{{$item->netpriceproduct}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
+                                            <td class="item-total"><input type="hidden" id="allcounttotal{{$key+1}}" name="allcounttotalmain[]" value="{{$item->totalpriceproduct}}">{{ number_format($item->totalpriceproduct, 2, '.', ',') }}</td>
                                             <td>
                                                 <button type="button" class="Btn remove-button1">
                                                     <svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon">
@@ -1078,10 +1078,10 @@
                             '<tr id="tr-select-addmain' + val.id + '">' +
                             '<td>' + rowNumbemain + '</td>' +
                             '<td style="text-align:left;">' + val.name_en + '</td>' +
-                            '<td><input class="quantitymain" type="text" id="quantitymain" name="quantitymain" value="1" min="1" rel="' + number + '" style="text-align:center;"></td>' +
-                            '<td>' + val.unit_name + '</td>' +
-                            '<td><input type="hidden" id="totalprice-unit-' + number + '" name="price-unit" value="' + val.normal_price + '">' + val.normal_price + '</td>' +
-                            '<td><input class="discountmain" type="text" id="discountmain" name="discountmain" value="1" min="1" res="' + number + '" style="text-align:center;"></td>' +
+                            '<td><input class="quantitymain" type="text" id="quantitymain" name="quantity[]" value="1" min="1" rel="' + number + '" style="text-align:center;"></td>' +
+                            '<td><input  type="hidden" id="product" name="product[]" value="'+ val.Product_ID +'" style="text-align:center;">' + val.unit_name + '</td>' +
+                            '<td><input type="hidden" id="totalprice-unit-' + number + '" name="price-unit[]" value="' + val.normal_price + '">' + val.normal_price + '</td>' +
+                            '<td><input class="discountmain" type="text" id="discountmain" name="discount[]" value="1" min="1" res="' + number + '" style="text-align:center;"></td>' +
                             '<td><input type="hidden" id="net_discount-' + number + '" name="net_discount" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + netDiscount + '</span></td>' +
                             '<td><input type="hidden" id="allcounttotal-' + number + '" name="allcounttotal" value="' + val.normal_price + '"><span id="allcount' + number + '">' + val.normal_price + '</span></td>' +
                             '<td><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icon"><path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path></svg></button></td>' +

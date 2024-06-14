@@ -3,13 +3,12 @@
 @section('content')
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <div class="Usertable">
+    <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         {{-- <a href="{{ route('freelancer.create') }}">
             <button type="button" class="submit-button" style="float: right;" >เพิ่มผู้ใช้งาน</button></a> --}}
         <div class="usertopic">
-            <h1>Freelancer Menber</h1>
+            <h1>Membership</h1>
         </div>
-
         <div class="selectall" style="float: left; margin-bottom: 10px;">
             <th><label class="custom-checkbox">
                     <input type="checkbox" onClick="toggle(this)" />

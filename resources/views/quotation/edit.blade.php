@@ -315,7 +315,7 @@
 </script>
 <form id="myForm" action="{{url('/Quotation/edit/quotation/update/'.$Quotation->id)}}" method="POST">
     {!! csrf_field() !!}
-<div class="container">
+<div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
     <div class=" col-12">
         <div class="row">
         <div class="col-lg-8 col-md-12 col-sm-12 image-container">

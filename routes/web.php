@@ -316,6 +316,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/selectproduct/company/create/{id}', 'selectProduct')->name('Quotation.SelectProduct');
         Route::post('/Quotation/company/create/quotation/{Quotation_ID}', 'savequotation')->name('Quotation.quotation');
         Route::get('/Quotation/edit/quotation/{id}','edit')->name('Quotation.edit');
+        Route::post('/Quotation/company/update/quotationupdate/{id}', 'updatequotation')->name('Quotation.updatequotation');
 
         Route::post('/Quotation/edit/quotation/update/{id}', 'updateCompanyQuotation')->name('Quotation.updateCompanyQuotation');
         Route::get('/Quotation/company/product/{Quotation_ID}/addProduct', 'addProduct')->name('Quotation.addProduct');
@@ -326,6 +327,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttablemain', 'addProducttablemain')->name('Quotation.addProducttablemain');
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProductselect', 'addProductselect')->name('Quotation.addProductselect');
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('Quotation.addProducttablecreatemain');
+        //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
+        Route::get('/Quotation/Quotation/cover/document/{id}', 'coverdocument')->name('Quotation.coverdocument');
+        Route::post('/Quotation/company/document/sheet/{id}', 'sheet')->name('Quotation.sheet');
     });
 
 Route::get('/clear-cache', function () {

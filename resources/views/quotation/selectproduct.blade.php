@@ -559,13 +559,13 @@ margin: 5px 0;
             border: 2px solid #6b6b6b; /* กำหนดกรอบสี่เหลี่ยม */
             padding: 20px; /* เพิ่ม padding ภายในกรอบ */
             border-radius: 5px; /* เพิ่มมุมโค้ง (ถ้าต้องการ) */
-            height: 125px;
-            width: 125px; /* กำหนดความสูงของกรอบ */
+            height: 150px;
+            width: 150px; /* กำหนดความสูงของกรอบ */
         }
 </style>
-<form action="{{url('/Quotation/company/create/quotation/'.$Quotation->Quotation_ID)}}" method="POST"enctype="multipart/form-data">
+<form id="myForm" action="{{url('/Quotation/company/create/quotation/'.$Quotation->Quotation_ID)}}" method="POST"enctype="multipart/form-data">
     @csrf
-    <div class="container">
+    <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         <div class=" col-12">
             <div class="row">
             <div class="col-lg-8 col-md-12 col-sm-12 image-container">
@@ -1068,33 +1068,33 @@ margin: 5px 0;
     });
     $(document).ready(function() {
 
-    $(document).on('keyup', '.quantitymain', function() {
-    var quantitymain =  Number($(this).val());
-    console.log(quantitymain);
-    var discountmain =  Number($('.discountmain').val());
-    var number_ID = $(this).attr('rel');
-    var number = Number($('#number-product').val());
-    var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
-    var pricenew = price*quantitymain
-    $('#allcount'+number_ID).text(pricenew.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-    var pricediscount = pricenew - (pricenew*discountmain /100);
-    $('#netdiscount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-    totalAmost();
-    });
-    $(document).on('keyup', '.discountmain', function() {
-    var discountmain =  Number($(this).val());
-    var quantitymain =  Number($('.quantitymain').val());
-    var number_ID = $(this).attr('res');
-    var number = Number($('#number-product').val());
-    var price = parseFloat($('#allcounttotal-'+number_ID).val().replace(/,/g, ''));
-    var pricediscount = price - (price*discountmain /100);
-    $('#netdiscount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-    var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
-    var pricenew = price*quantitymain
-    var pricediscount = pricenew - (pricenew*discountmain /100);
-    $('#netdiscount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-    totalAmost();
-    });
+        $(document).on('keyup', '.quantitymain', function() {
+        var quantitymain =  Number($(this).val());
+        console.log(quantitymain);
+        var discountmain =  Number($('.discountmain').val());
+        var number_ID = $(this).attr('rel');
+        var number = Number($('#number-product').val());
+        var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
+        var pricenew = price*quantitymain
+        $('#allcount'+number_ID).text(pricenew.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+        var pricediscount = pricenew - (pricenew*discountmain /100);
+        $('#netdiscount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+        totalAmost();
+        });
+        $(document).on('keyup', '.discountmain', function() {
+        var discountmain =  Number($(this).val());
+        var quantitymain =  Number($('.quantitymain').val());
+        var number_ID = $(this).attr('res');
+        var number = Number($('#number-product').val());
+        var price = parseFloat($('#allcounttotal-'+number_ID).val().replace(/,/g, ''));
+        var pricediscount = price - (price*discountmain /100);
+        $('#netdiscount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+        var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
+        var pricenew = price*quantitymain
+        var pricediscount = pricenew - (pricenew*discountmain /100);
+        $('#netdiscount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+        totalAmost();
+        });
 });
 
     function totalAmost() {
@@ -1104,12 +1104,14 @@ margin: 5px 0;
     let discounttotal =0;
     let vattotal =0;
     let nettotal =0;
-    let totalperson=0;// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
+    let totalperson=0;
+    let priceArray = [];
+    let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
     $('#display-selected-items tr').each(function() {
         var adultValue = parseFloat(document.getElementById('adult').value);
         var childrenValue = parseFloat(document.getElementById('children').value);
         let priceCell = $(this).find('td').eq(7);
-        let pricetotal = parseInt(priceCell.text().replace(/,/g, '')) || 0; // แปลงข้อความในเซลล์เป็นจำนวนเต็ม และจัดการค่า NaN
+        let pricetotal = parseInt(priceCell.text().replace(/,/g, '')) || 0;
         allprice += pricetotal;
 
         let pricedisCell = $(this).find('td').eq(6);

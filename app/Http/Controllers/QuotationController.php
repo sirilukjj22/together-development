@@ -162,22 +162,43 @@ class QuotationController extends Controller
     public function savequotation(Request $request ,$Quotation_ID)
     {
         $data = $request->all();
-        dd($data);
+        $userid = Auth::user()->id;
+        $quantities = $request->input('quantitymain', []); // ตัวอย่างใช้ 'pricetotal' เป็น quantity
+        $priceUnits = $request->input('price-unit', []);
+        $discounts = $request->input('discountmain', []);
+
+        if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+            $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
+            $discountedPrices = [];
+            $discountedPricestotal = [];
+            // คำนวณราคาสำหรับแต่ละรายการ
+            for ($i = 0; $i < count($quantities); $i++) {
+                $quantity = intval($quantities[$i]);
+                $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
+                $discount = floatval($discounts[$i]);
+
+                $totalPrice = ($quantity * $priceUnit);
+                $totalPrices[] = $totalPrice;
+
+                $discountedPrice = (($totalPrice * $discount )/ 100);
+                $discountedPrices[] = $discountedPrice;
+
+                $discountedPriceTotal = $totalPrice - $discountedPrice;
+                $discountedPricestotal[] = $discountedPriceTotal;
+            }
+        }
+
         $Quotation_ID = $request->Quotation_ID;
         $IssueDate = $request->IssueDate;
         $ExpirationDate = $request->ExpirationDate;
         $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
         $Company_ID = $Quotation->Company_ID;
         $freelanceraiffiliate = $Quotation->freelanceraiffiliate;
-        $Products = $request->input('ProductID');
-        $Quantity = $request->input('countroom');
-        $Discount = $request->input('discount');
-        $netpriceproduct =$request->input('net-price-product');
-        $priceproduct =$request->input('price-product');
-        $totalpriceproduct =$request->input('total-price-product');
-        foreach ($priceproduct as $key => $price) {
-            $priceproduct[$key] = str_replace(array(',', '.00'), '', $price);
+        $Products =$request->input('Product_ID');
+        foreach ($priceUnits as $key => $price) {
+            $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
         }
+        // dd($data);
         if ($Products !== null) {
             foreach ($Products as $index => $ProductID) {
                 $saveProduct = new document_quotation();
@@ -185,23 +206,152 @@ class QuotationController extends Controller
                 $saveProduct->Company_ID = $Company_ID;
                 $saveProduct->Product_ID = $ProductID;
                 $saveProduct->Issue_date = $IssueDate;
-                $saveProduct->discount =$Discount[$index];
-                $saveProduct->priceproduct =$priceproduct[$index];
-                $saveProduct->netpriceproduct =$netpriceproduct[$index];
-                $saveProduct->totalpriceproduct =$totalpriceproduct[$index];
+                $saveProduct->discount =$discounts[$index];
+                $saveProduct->priceproduct =$priceUnits[$index];
+                $saveProduct->netpriceproduct =$discountedPricestotal[$index];
+                $saveProduct->totalpriceproduct =$totalPrices[$index];
                 $saveProduct->ExpirationDate = $ExpirationDate;
                 $saveProduct->freelanceraiffiliate = $freelanceraiffiliate;
-                $saveProduct->Quantity = $Quantity[$index];
+                $saveProduct->Quantity = $quantities[$index];
+                $saveProduct->Document_issuer = $userid;
                 $saveProduct->save();
             }
+            if ( $saveProduct->save()) {
+                return redirect()->route('Quotation.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+            }else {
+                return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            }
+        }else{
+            return redirect()->route('Quotation.index')->with('alert_', 'ใบเสนอราคายังไม่ถูกสร้าง');
         }
-        if ( $saveProduct->save()) {
-            return redirect()->route('Quotation.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
-        }else {
-            return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-        }
+
     }
 
+    public function updatequotation(Request $request ,$id)
+    {
+        $data = $request->all();
+        $userid = Auth::user()->id;
+        $Quotation0 = Quotation::where('id', $id)->first();
+        $Quotation_ID = $Quotation0->Quotation_ID;
+        $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
+        $Company_ID = $Quotation->Company_ID;
+        $IssueDate = $request->IssueDate;
+        $ExpirationDate = $request->ExpirationDate;
+        $freelanceraiffiliate = $Quotation->freelanceraiffiliate;
+        //----------------------------document_quotation---------------------------------------
+        $ProductIDmain = $request->input('ProductIDmain');
+        // dd($data); // ตัวอย่างใช้ 'pricetotal' เป็น quantity
+        $Quantitymain = $request->input('Quantitymain');
+        $priceproductmain = $request->input('priceproductmain');
+        $discountmain = $request->input('discountmain');
+        $net_discountmain = $request->input('net_discountmain');
+        $allcounttotalmain = $request->input('allcounttotalmain');
+        //----------------------------new data and calculate-------------------------------------------------
+        $product = $request->input('product', []);
+        $quantities = $request->input('quantity', []);
+        $priceUnits = $request->input('price-unit', []);
+        $discounts = $request->input('discount', []);
+        foreach ($priceUnits as $key => $price) {
+            $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
+        }
+        if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+            $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
+            $discountedPrices = [];
+            $discountedPricestotal = [];
+
+            // คำนวณราคาสำหรับแต่ละรายการ
+            for ($i = 0; $i < count($quantities); $i++) {
+                $quantity = intval($quantities[$i]);
+                $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
+                $discount = floatval($discounts[$i]);
+
+                $totalPrice = ($quantity * $priceUnit);
+                $totalPrices[] = $totalPrice;
+
+                $discountedPrice = (($totalPrice * $discount) / 100);
+                $discountedPrices[] = $discountedPrice;
+
+                $discountedPriceTotal = $totalPrice - $discountedPrice;
+                $discountedPricestotal[] = $discountedPriceTotal;
+            }
+        }
+        if ($ProductIDmain !== null) {
+            if ($Quotation_ID) {
+                $profileid = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+                foreach ($profileid as $document) {
+                    $document->delete();
+                }
+                if ($ProductIDmain !== null) {
+                    foreach ($ProductIDmain as $index => $ProductID) {
+                        $saveProduct = new document_quotation();
+                        $saveProduct->Quotation_ID = $Quotation_ID;
+                        $saveProduct->Company_ID = $Company_ID;
+                        $saveProduct->Product_ID = $ProductID;
+                        $saveProduct->Issue_date = $IssueDate;
+                        $saveProduct->discount =$discountmain[$index];
+                        $saveProduct->priceproduct =$priceproductmain[$index];
+                        $saveProduct->netpriceproduct =$net_discountmain[$index];
+                        $saveProduct->totalpriceproduct =$allcounttotalmain[$index];
+                        $saveProduct->ExpirationDate = $ExpirationDate;
+                        $saveProduct->freelanceraiffiliate = $freelanceraiffiliate;
+                        $saveProduct->Quantity = $Quantitymain[$index];
+                        $saveProduct->Document_issuer = $userid;
+                        $saveProduct->save();
+                    }
+                }
+                if ($product !== null) {
+                    foreach ($product as $index => $ProductID) {
+                        $save = new document_quotation();
+                        $save->Quotation_ID = $Quotation_ID;
+                        $save->Company_ID = $Company_ID;
+                        $save->Product_ID = $ProductID;
+                        $save->Issue_date = $IssueDate;
+                        $save->discount =$discounts[$index];
+                        $save->priceproduct =$priceUnits[$index];
+                        $save->netpriceproduct =$discountedPricestotal[$index];
+                        $save->totalpriceproduct =$totalPrices[$index];
+                        $save->ExpirationDate = $ExpirationDate;
+                        $save->freelanceraiffiliate = $freelanceraiffiliate;
+                        $save->Quantity = $quantities[$index];
+                        $save->Document_issuer = $userid;
+                        $save->save();
+                    }
+                    if ( $save->save()) {
+                        return redirect()->route('Quotation.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+                    }else {
+                        return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+                    }
+                }
+            }
+            // dd($profileid,$ProductIDmain,$Quantitymain,$priceproductmain,$discountmain,$net_discountmain,$allcounttotalmain);
+        }else{
+
+            if ($product !== null) {
+                foreach ($product as $index => $ProductID) {
+                    $save = new document_quotation();
+                    $save->Quotation_ID = $Quotation_ID;
+                    $save->Company_ID = $Company_ID;
+                    $save->Product_ID = $ProductID;
+                    $save->Issue_date = $IssueDate;
+                    $save->discount =$discounts[$index];
+                    $save->priceproduct =$priceUnits[$index];
+                    $save->netpriceproduct =$discountedPricestotal[$index];
+                    $save->totalpriceproduct =$totalPrices[$index];
+                    $save->ExpirationDate = $ExpirationDate;
+                    $save->freelanceraiffiliate = $freelanceraiffiliate;
+                    $save->Quantity = $quantities[$index];
+                    $save->Document_issuer = $userid;
+                    $save->save();
+                }
+                if ( $save->save()) {
+                    return redirect()->route('Quotation.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+                }else {
+                    return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+                }
+            }
+
+        }
+    }
     public function edit($id)
     {
         $Quotation = Quotation::where('id', $id)->first();
@@ -213,6 +363,7 @@ class QuotationController extends Controller
     public function updateCompanyQuotation(Request $request ,$id){
         $data = $request->all();
         $save = Quotation::find($id);
+        $userid = Auth::user()->id;
         $save->place = $request->place;
         $save->Quotation_ID = $request->Quotation_ID;
         $save->checkin = $request->Checkin;
@@ -229,6 +380,7 @@ class QuotationController extends Controller
         $save->vat_type = $request->Vat_Type;
         $save->issue_date = $request->IssueDate;
         $save->Expirationdate = $request->Expiration;
+        $save->Document_issuer = $userid;
         $save->save();
         if ( $save->save()) {
             return redirect()->route('Quotation.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
@@ -352,5 +504,38 @@ class QuotationController extends Controller
             'products' => $products,
 
         ]);
+    }
+    //-------------------------------ใบปะหน้า-----------------------------
+    public function coverdocument($id)
+    {
+        $Quotation = Quotation::where('id', $id)->first();
+        $Company = $Quotation->Company_ID;
+        $Quotation_ID = $Quotation->Quotation_ID;
+        $eventformat = $Quotation->eventformat;
+        $Company_ID = companys::where('Profile_ID',$Company)->first();
+        $Company_typeID=$Company_ID->Company_type;
+        $CityID=$Company_ID->City;
+        $amphuresID = $Company_ID->Amphures;
+        $TambonID = $Company_ID->Tambon;
+        $Company_type = master_document::where('id',$Company_typeID)->select('name_th','id')->first();
+        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+        $company_fax = company_fax::where('Profile_ID',$Company)->where('Sequence','main')->first();
+        $company_phone = company_phone::where('Profile_ID',$Company)->where('Sequence','main')->first();
+        $Contact_name = representative::where('Company_ID',$Company)->where('status',1)->first();
+        $Contact_phone = representative_phone::where('Company_ID',$Company)->where('Sequence','main')->first();
+        $eventformat = MasterEventFormate::where('id',$eventformat)->select('name_th','id')->first();
+
+
+        $date = Carbon::now();
+
+        return view('quotation.document',compact('Quotation','Company_ID','Company_type','provinceNames','amphuresID','TambonID','company_fax','company_phone',
+        'Contact_name','Contact_phone','date','eventformat'));
+    }
+    public function sheet(Request $request,$id)
+    {
+        $data=$request->all();
+        dd( $data);
     }
 }

@@ -315,7 +315,7 @@
 </script>
 <form id="myForm" action="{{route('MEvent.save')}}" method="POST">
     {!! csrf_field() !!}
-<div class="container">
+<div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
     <div class=" col-12">
         <div class="row">
         <div class="col-lg-8 col-md-12 col-sm-12 image-container">
@@ -375,7 +375,7 @@
             <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <label class="labelcontact" for="">Customer Company</label>
-                    <select name="Company" id="Company" class="select2" onchange="companyContact()">
+                    <select name="Company" id="Company" class="select2" onchange="companyContact()" required>
                         <option value=""></option>
                         @foreach($Company as $item)
                             <option value="{{ $item->Profile_ID }}">{{ $item->Company_Name }}</option>
@@ -384,7 +384,7 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <label class="labelcontact" for="">Customer Contact</label>
-                    <select name="Company_Contact" id="Company_Contact" class="select2">
+                    <select name="Company_Contact" id="Company_Contact" class="select2"required>
                         <option value=""></option>
                     </select>
                 </div>
@@ -404,7 +404,7 @@
                             <div class="row">
                                 <div class="col-lg-5 col-md-6 col-sm-12">
                                     <label  for="">Check in date</label>
-                                    <input type="text" id="date2" name="Checkin" readonly>
+                                    <input type="text" id="date2" name="Checkin" readonly >
                                 </div>
                                 <div class="col-lg-5 col-md-6 col-sm-12">
                                     <label  for="">Check out date</label>
@@ -420,30 +420,30 @@
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <label for="">จำนวน</label>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control mt-2" name="Day" placeholder="จำนวนวัน" aria-label="Username" >
+                        <input type="text" class="form-control mt-2" name="Day" placeholder="จำนวนวัน" aria-label="Username"required >
                         <span class="input-group-text custom-span-1" id="basic-addon2"  >Day</span>
-                        <input type="text" class="form-control mt-2" name="Night" placeholder="จำนวนคืน" aria-label="Server" >
+                        <input type="text" class="form-control mt-2" name="Night" placeholder="จำนวนคืน" aria-label="Server" required>
                         <span class="input-group-text custom-span-1" id="basic-addon2">Night</span>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-6 col-sm-12">
                     <label  for="">Adult</label>
                     <div class="input-group mb-3" >
-                        <input type="text" class="form-control mt-2" name="Adult" placeholder="จำนวนผู้ใหญ่" aria-describedby="basic-addon2">
+                        <input type="text" class="form-control mt-2" name="Adult" placeholder="จำนวนผู้ใหญ่" aria-describedby="basic-addon2"required>
                         <span class="input-group-text-Adult mt-2" id="basic-addon2" >Person</span>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-6 col-sm-12">
                     <label  for="">Children</label>
                     <div class="input-group ">
-                        <input type="text" class="form-control mt-2" name="Children" placeholder="จำนวนเด็ก" aria-describedby="basic-addon2">
+                        <input type="text" class="form-control mt-2" name="Children" placeholder="จำนวนเด็ก" aria-describedby="basic-addon2"required>
                         <span class="input-group-text-Adult mt-2" id="basic-addon2" >Person</span>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-12 col-sm-12">
                     <label  for="">Max discount </label> <label style="color: #dc3545">(Your permission has max discount 10.00 %)</label>
                     <div class="input-group ">
-                        <input type="text" class="form-control" name="Max_discount" aria-describedby="basic-addon2">
+                        <input type="text" class="form-control" name="Max_discount" aria-describedby="basic-addon2" required>
                         <span class="input-group-text-Adult" id="basic-addon2" >%</span>
                     </div>
                 </div>
@@ -451,13 +451,13 @@
                     <label  for="">Company Rate Code</label>
                     <div class="input-group mb-3">
                         <span class="input-group-text-Adult " id="basic-addon2" >DC</span>
-                        <input type="text" class="form-control" name="Company_Rate_Code" aria-label="Amount (to the nearest dollar)">
+                        <input type="text" class="form-control" name="Company_Rate_Code" aria-label="Amount (to the nearest dollar)" required>
                         <span class="input-group-text-Adult " id="basic-addon2" >%</span>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <label class="Freelancer_member" for="">Freelance Affiliate</label>
-                    <select name="Freelancer_member" id="Freelancer_member" class="select2">
+                    <select name="Freelancer_member" id="Freelancer_member" class="select2" required>
                         <option value=""></option>
                         @foreach($Freelancer_member as $item)
                             <option value="{{ $item->Profile_ID }}">{{ $item->First_name }}{{ $item->Last_name }}</option>
@@ -467,17 +467,17 @@
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <label  for="">Company Commission Rate Code</label>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control " name="Company_Commission_Rate_Code" aria-describedby="basic-addon2">
+                        <input type="text" class="form-control " name="Company_Commission_Rate_Code" aria-describedby="basic-addon2" required>
                         <span class="input-group-text-Adult " id="basic-addon2" >%</span>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <label  for="">Place</label>
-                    <input type="text" class="form-control " name="place" aria-label="Amount (to the nearest dollar)">
+                    <input type="text" class="form-control " name="place" aria-label="Amount (to the nearest dollar)" required>
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <label  for="">Event Format</label>
-                    <select name="Mevent" id="Mevent" class="select2" >
+                    <select name="Mevent" id="Mevent" class="select2" required>
                         <option value=""></option>
                         @foreach($Mevent as $item)
                             <option value="{{ $item->id }}">{{ $item->name_th }}</option>

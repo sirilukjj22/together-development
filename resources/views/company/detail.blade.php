@@ -297,7 +297,7 @@
         font-size: 32px;
     }
     </style>
-    <div class="container">
+    <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         <div class="row">
             <div class="titleh1 col-9 my-3">
                 <h1>Company (องค์กร)</h1>

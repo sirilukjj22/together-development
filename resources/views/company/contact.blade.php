@@ -262,6 +262,7 @@
         border: 1px solid #ccc;
         border-radius: 6px;
         margin-bottom: 10px;
+        background-color: #fff;
     }
 
     .buttonstyle button:hover {
@@ -273,8 +274,46 @@
     .select2-container{
             width: 100% !important;
         }
+        .button-return {
+    align-items: center;
+    appearance: none;
+    background-color: #6b6b6b;
+    color: #fff;
+    border-radius: 8px;
+    border-style: none;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 3px 5px -1px,
+      rgba(0, 0, 0, 0.14) 0 6px 10px 0, rgba(0, 0, 0, 0.12) 0 1px 18px 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    fill: currentcolor;
+    font-size: 14px;
+    font-weight: 500;
+    height: 40px;
+    justify-content: center;
+    letter-spacing: 0.25px;
+    line-height: normal;
+    max-width: 100%;
+    overflow: visible;
+    padding: 2px 24px;
+    position: relative;
+    text-align: center;
+    text-transform: none;
+    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 15ms linear 30ms, transform 270ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+    touch-action: manipulation;
+    width: auto;
+    will-change: transform, opacity;
+    margin-left: 5px;
+  }
+
+  .button-return:hover {
+    background-color: #ffffff !important;
+    color: #000000;
+    transform: scale(1.1);
+  }
     </style>
-    <div class="container">
+    <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         <div class="row">
             <div class="titleh1 col-9 my-3">
                 <h1>Company (องค์กร)</h1>
@@ -284,7 +323,7 @@
 
         <div class="row buttonstyle">
             <div class="col-lg-12 col-md-6 col-sm-12" id="add-contact-cc">
-                <button class="" onclick="window.location.href = '{{ url('/Company/edit/'.$Company->id) }}'">Company</button>
+                <button style="" onclick="window.location.href = '{{ url('/Company/edit/'.$Company->id) }}'">Company</button>
             </div>
             <div class="col-lg-12 col-md-6 col-sm-12" id="add-contact-c">
                 <button class="" onclick="window.location.href = '{{ url('/Company/edit/contact/'.$Company->id) }}'">Contact</button>
@@ -311,7 +350,7 @@
         </div>
         <div class="modal fade" id="createContart" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalCenter2Title" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">เพิ่มตัวแทนบริษัท</h5>
@@ -409,8 +448,7 @@
                             </div>
                         </div>
                         <div class="modal-footer mt-5">
-                            <button type="button" class="btn btn-secondary" style="color: black;"
-                                data-dismiss="modal">Close</button>
+                            <button type="button" class="button-return"data-dismiss="modal">Close</button>
                             <button type="submit" onclick="confirmSubmit(event)" class="button-10" style="background-color: #109699;">Save changes</button>
                         </div>
                     </form>
