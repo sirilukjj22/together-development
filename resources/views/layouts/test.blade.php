@@ -431,7 +431,7 @@
                 <button onclick="myFunctionDocument()" class="dropbtn">Document &nbsp; 
                     <i class="fa-solid fa-caret-down"></i></button>
                 <div id="myDropdownDocument" class="dropdown-content">
-                    <a class="menu2" href="{{ route('Quotation.index') }}">Quotation</a>
+                    <a class="menu2" href="{{ route('Quotation.index') }}">Proposal</a>
                     <a class="menu2" href="#">Hotel Contract Rate</a>
                     <a class="menu2" href="#">Proforma Invoice</a>
                     <a class="menu2" href="#">Billing Folio</a>
