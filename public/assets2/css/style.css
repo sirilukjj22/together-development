@@ -406,8 +406,12 @@ table.dataTable td.dt-type-date {
   padding-bottom: 10px;
   border-bottom: #000000;
   border-width: 1px;
-  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 10px;
   width: 100%;
+  
+}.dropdown-menu.show .licolor:hover {
+  background-color: #2D7F7B ;
 }
 /* td[data-label="เข้าบัญชี"] img{
   float: right;

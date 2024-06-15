@@ -91,10 +91,9 @@
                 style="width: 50px; height: 50px; float: left;" alt="">
               <h6 class="mt-2">Together Resort <br>Development</h6>
             </a>
-            <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-              aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-              <i class="fa-solid fa-bars text-white"></i></span>
-            </button>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fa-solid fa-bars text-white"></i>
+              </button>
             <div class="collapse navbar-collapse rounded p-3 bg-white" id="navbarNavDropdown">
               <ul class="navbar-nav font-weight-bold">
                 @if ($role_permisstion->profile == 1)
