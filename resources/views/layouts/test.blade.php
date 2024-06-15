@@ -223,45 +223,6 @@
             </div>
             <h1>Menu</h1>
 
-            <div class="dropdown">
-                <button onclick="myFunctionGeneralLedger()" class="dropbtn">General Ledger &nbsp;
-                    <i class="fa-solid fa-caret-down"></i></button>
-                <div id="myDropdownGeneralLedger" class="dropdown-content">
-                        @if ($role_permisstion->sms_alert == 1)
-                            <a class="menu2" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a>
-                        @endif
-                        @if ($role_permisstion->revenue == 1)
-                            <a class="menu2" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a>
-                        @endif
-                </div>
-            </div>
-            
-            @if ($role_permisstion->user == 1)
-                <a href="{{ route('users', 'index') }}">
-                    <div class="<?php echo $_SERVER['REQUEST_URI'] == '/users/index' ? 'menu2' : 'menu2'; ?>">Users</div>
-                </a>
-            @endif
-            @if ($role_permisstion->bank == 1)
-                <a href="{{ route('master', 'bank') }}">
-                    <div class="<?php echo $_SERVER['REQUEST_URI'] == '/master/bank' ? 'menu2' : 'menu2'; ?>">Bank</div>
-                </a>
-            @endif
-
-            @if ($role_permisstion->debtor == 1)
-            <div class="dropdown">
-                <button onclick="myFunctionDebtor()" class="dropbtn">Debtor &nbsp;
-                    <i class="fa-solid fa-caret-down"></i></button>
-                <div id="myDropdownDebtor" class="dropdown-content">
-                    @if ($role_permisstion->agoda == 1)
-                        <a class="menu2" href="{{ route('debit-agoda-revenue') }}">Agoda</a>
-                    @endif
-                    @if ($role_permisstion->elexa == 1)
-                        <a class="menu2" href="#">Elexa</a>
-                    @endif
-                </div>
-            </div>
-            @endif
-
             @if ($role_permisstion->profile == 1)
             <div class="dropdown">
                 <button onclick="myFunction()" class="dropbtn">Profile &nbsp; <i
@@ -303,6 +264,48 @@
                 </div>
             </div>
             @endif
+
+            @if ($role_permisstion->debtor == 1)
+            <div class="dropdown">
+                <button onclick="myFunctionDebtor()" class="dropbtn">Debtor &nbsp;
+                    <i class="fa-solid fa-caret-down"></i></button>
+                <div id="myDropdownDebtor" class="dropdown-content">
+                    @if ($role_permisstion->agoda == 1)
+                        <a class="menu2" href="{{ route('debit-agoda-revenue') }}">Agoda</a>
+                    @endif
+                    @if ($role_permisstion->elexa == 1)
+                        <a class="menu2" href="#">Elexa</a>
+                    @endif
+                </div>
+            </div>
+            @endif
+
+            <div class="dropdown">
+                <button onclick="myFunctionGeneralLedger()" class="dropbtn">General Ledger &nbsp;
+                    <i class="fa-solid fa-caret-down"></i></button>
+                <div id="myDropdownGeneralLedger" class="dropdown-content">
+                        @if ($role_permisstion->sms_alert == 1)
+                            <a class="menu2" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a>
+                        @endif
+                        @if ($role_permisstion->revenue == 1)
+                            <a class="menu2" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a>
+                        @endif
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button onclick="myFunctionSetting()" class="dropbtn">Setting &nbsp;
+                    <i class="fa-solid fa-caret-down"></i></button>
+                <div id="myDropdownSetting" class="dropdown-content">
+                        @if ($role_permisstion->user == 1)
+                            <a class="menu2" href="{{ route('users', 'index') }}">User</a>
+                        @endif
+                        @if ($role_permisstion->bank == 1)
+                            <a class="menu2" href="{{ route('master', 'bank') }}">Bank</a>
+                        @endif
+                </div>
+            </div>
+
             <div>
                 <!-- Button trigger modal -->
                 <button type="button" class="menu2 pb-2" style="width:100%;"
