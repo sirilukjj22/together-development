@@ -1859,8 +1859,8 @@ tr.disable-row:hover{
   .menu2.active {
     background-color: #002b28;
     width: 100%;
-    height: 40px;
-    padding-top: 8px;
+    height: auto;
+    padding: 8px;
     color: white;
     text-align: center;
     text-align: left;
@@ -1872,6 +1872,7 @@ tr.disable-row:hover{
     padding: 10px 0 10px 20px;
     font-weight: 600;
     background-color: rgb(30, 30, 30,0.1);
+    
   }
   .menu2 {
     background-color: inherit;
@@ -1880,12 +1881,14 @@ tr.disable-row:hover{
     padding-left: 30px;
     font-weight: 300;
     padding-top: 8px;
-    height: 40px;
+    padding-bottom: 8px;
+    height: auto;
   }
   .menu2:hover {
     background-color: #002b28;
-    height: 40px;
+    height: auto;
     padding-top: 8px;
+    padding-bottom: 8px;
   }
   .menu3 {
     color: white;
@@ -2107,7 +2110,7 @@ tr.disable-row:hover{
   .front-desk-number {
     color: #ffffff;
     text-align: right;
-    font-size: 36px;
+    font-size: 32px;
     float: right;
     padding: 15px 10px;
   }
@@ -2139,7 +2142,7 @@ tr.disable-row:hover{
   .credit-card-water-park-number {
     color: #ffffff;
     text-align: right;
-    font-size: 36px;
+    font-size: 32px;
     float: right;
     padding: 15px 10px;
   }
@@ -2171,7 +2174,7 @@ tr.disable-row:hover{
   .guest-deposit-number {
     color: #ffffff;
     text-align: right;
-    font-size: 36px;
+    font-size: 32px;
     float: right;
     padding: 15px 10px;
   }
@@ -2235,7 +2238,7 @@ tr.disable-row:hover{
   .f-b-bank-number {
     color: #ffffff;
     text-align: right;
-    font-size: 36px;
+    font-size: 32px;
     float: right;
     padding: 15px 10px;
   }
@@ -2269,7 +2272,7 @@ tr.disable-row:hover{
   .credit-card-number {
     color: #ffffff;
     text-align: right;
-    font-size: 36px;
+    font-size: 32px;
     float: right;
     padding: 15px 10px;
   }
@@ -2301,7 +2304,7 @@ tr.disable-row:hover{
   .credit-card-agoda-number {
     color: #ffffff;
     text-align: right;
-    font-size: 36px;
+    font-size: 32px;
     float: right;
     padding: 15px 10px;
   }
@@ -2333,7 +2336,7 @@ tr.disable-row:hover{
   .water-park-bank-number {
     color: #ffffff;
     text-align: right;
-    font-size: 36px;
+    font-size: 32px;
     float: right;
     padding: 15px 10px;
   }
@@ -3376,7 +3379,7 @@ tr.disable-row:hover{
     }
     .front-desk-number {
       top: 35%;
-      font-size: 24px;
+      font-size: 20px;
     }
     .front-desk-bank-transfer-revenue {
       top: 25%;
@@ -3384,7 +3387,7 @@ tr.disable-row:hover{
     }
     .front-desk-number {
       top: 35%;
-      font-size: 24px;
+      font-size: 20px;
     }
     .guest-deposit-bank-revenue {
       top: 25%;
@@ -3392,7 +3395,7 @@ tr.disable-row:hover{
     }
     .guest-deposit-number {
       top: 35%;
-      font-size: 24px;
+      font-size: 20px;
     }
     .front-desk-bank-transfer-revenue {
       top: 25%;
@@ -3400,7 +3403,7 @@ tr.disable-row:hover{
     }
     .f-b-bank-number {
       top: 35%;
-      font-size: 24px;
+      font-size: 20px;
     }
     .f-b-bank-transfer-revenue {
       top: 25%;
@@ -3412,7 +3415,7 @@ tr.disable-row:hover{
     }
     .credit-card-number {
       top: 35%;
-      font-size: 24px;
+      font-size: 20px;
     }
     .credit-card-water-park-revenue {
       top: 25%;
@@ -3420,7 +3423,7 @@ tr.disable-row:hover{
     }
     .credit-card-water-park-number {
       top: 35%;
-      font-size: 24px;
+      font-size: 20px;
     }
     .transfer-revenue {
       top: 25%;
@@ -3428,7 +3431,7 @@ tr.disable-row:hover{
     }
     .transfer-revenue-number {
       top: 35%;
-      font-size: 24px;
+      font-size: 20px;
     }
     .credit-card-agoda-revenue {
       top: 25%;
@@ -3436,7 +3439,7 @@ tr.disable-row:hover{
     }
     .credit-card-agoda-number {
       top: 35%;
-      font-size: 24px;
+      font-size: 20px;
     }
     .water-park-bank-transfer-revenue {
       top: 25%;
@@ -3444,7 +3447,7 @@ tr.disable-row:hover{
     }
     .water-park-bank-number {
       top: 35%;
-      font-size: 24px;
+      font-size: 20px;
     }
     .date_from {
       width: 60%;
@@ -3825,7 +3828,7 @@ tr.disable-row:hover{
       display: block;
       color: #ffffff;
       text-align: center;
-      font-size: 36px;
+      font-size: 32px;
       width: auto;
       height: auto;
       font-weight: 600;

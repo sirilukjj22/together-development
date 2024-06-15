@@ -27,7 +27,7 @@
     </div>
 
     <div class="topic">
-        <h3>SMS Alert</h3>
+        <h3>Daily Bank Transaction Revenue</h3>
     </div>
 
     <!-- Begin Dashboard -->

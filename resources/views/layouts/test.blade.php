@@ -100,12 +100,12 @@
               <ul class="navbar-nav font-weight-bold">
                 @if ($role_permisstion->sms_alert == 1)
                     <li class="nav-item ">
-                        <a class="nav-link px-2" aria-current="page" href="{{ route('sms-alert') }}">SMS Alert</a>
+                        <a class="nav-link px-2" aria-current="page" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a>
                     </li>
                 @endif
                 @if ($role_permisstion->revenue == 1)
                     <li class="nav-item">
-                        <a class="nav-link px-2" href="{{ route('revenue') }}">Revenue</a>
+                        <a class="nav-link px-2" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a>
                     </li>
                 @endif
                 @if ($role_permisstion->user == 1)
@@ -205,16 +205,19 @@
             </div>
             <h1>Menu</h1>
 
-            @if ($role_permisstion->sms_alert == 1)
-                <a href="{{ route('sms-alert') }}">
-                    <div class="menu2 active">SMS Alert</div>
-                </a>
-            @endif
-            @if ($role_permisstion->revenue == 1)
-                <a href="{{ route('revenue') }}">
-                    <div class="<?php echo $_SERVER['REQUEST_URI'] == '/revenue' ? 'menu2' : 'menu2'; ?>">Revenue</div>
-                </a>
-            @endif
+            <div class="dropdown">
+                <button onclick="myFunctionGeneralLedger()" class="dropbtn">General Ledger &nbsp;
+                    <i class="fa-solid fa-caret-down"></i></button>
+                <div id="myDropdownGeneralLedger" class="dropdown-content">
+                        @if ($role_permisstion->sms_alert == 1)
+                            <a class="menu2" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a>
+                        @endif
+                        @if ($role_permisstion->revenue == 1)
+                            <a class="menu2" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a>
+                        @endif
+                </div>
+            </div>
+            
             @if ($role_permisstion->user == 1)
                 <a href="{{ route('users', 'index') }}">
                     <div class="<?php echo $_SERVER['REQUEST_URI'] == '/users/index' ? 'menu2' : 'menu2'; ?>">Users</div>
@@ -391,6 +394,18 @@
             dropdownDebtor.style.maxHeight = dropdownDebtor.scrollHeight + "px";
         } else {
             dropdownDebtor.style.maxHeight = "0";
+        }
+    }
+
+    function myFunctionGeneralLedger() {
+        var dropdownGeneralLedger = document.getElementById("myDropdownGeneralLedger");
+
+        dropdownGeneralLedger.classList.toggle("show");
+
+        if (dropdownGeneralLedger.classList.contains("show")) {
+            dropdownGeneralLedger.style.maxHeight = dropdownGeneralLedger.scrollHeight + "px";
+        } else {
+            dropdownGeneralLedger.style.maxHeight = "0";
         }
     }
 
