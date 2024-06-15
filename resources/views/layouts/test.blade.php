@@ -98,107 +98,85 @@
             <div class="collapse navbar-collapse rounded p-3 bg-white" id="navbarNavDropdown">
               <ul class="navbar-nav font-weight-bold">
                 @if ($role_permisstion->profile == 1)
-                    <li class="nav-item">
-                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                             Profile
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
                             @if ($role_permisstion->company == 1)
-                            <li>
-                                <a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Company.index') }}">Company</a>
-                            </li>
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Company.index') }}">Company / Agent</a></li>
                             @endif
                             @if ($role_permisstion->guest == 1)
-                            <li>
-                                <a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('guest.index') }}">Guest</a>
-                            </li>
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('guest.index') }}">Guest</a></li>
                             @endif
                         </ul>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                             Freelancer
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('freelancer_member.index') }}">Membership</a></li>
-                            <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('freelancer_member.index') }}">Message Inbox</a></li>
-                            <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('freelancer.index') }}">Registration Request</a></li>
-                            <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Message Request</a></li>
+                        <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('freelancer_member.index') }}">Membership</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Message Inbox</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Registration Request</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Message Request</a></li>
                         </ul>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                             Document
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Quotation.index') }}">Proposal</a></li>
-                            <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Hotel Contract Rate</a></li>
-                            <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Proforma Invoice</a></li>
-                            <li><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Billing Folio (On Request)</a></li>
+                        <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Quotation.index') }}">Proposal</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Hotel Contract Rate</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Proforma Invoice</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Billing Folio</a></li>
                         </ul>
                     </li>
                 @endif
 
                 @if ($role_permisstion->debtor == 1)
-                    <li class="nav-item">
-                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                             Debtor
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
                             @if ($role_permisstion->agoda == 1)
-                                <li>
-                                    <a class="nav-link px-2 dropdown-item" href="{{ route('debit-agoda-revenue') }}">Agoda</a>
-                                </li>
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('debit-agoda-revenue') }}">Agoda</a></li>
                             @endif
                             @if ($role_permisstion->elexa == 1)
-                                <li>
-                                    <a class="nav-link px-2 dropdown-item" href="#">Elexa</a>
-                                </li>
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Elexa</a></li>
                             @endif
                         </ul>
                     </li>
                 @endif
-                
-                <li class="nav-item">
-                    <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                         General Ledger
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
                         @if ($role_permisstion->sms_alert == 1)
-                            <li>
-                                <a class="nav-link px-2 dropdown-item" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a>
-                            </li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a></li>
                         @endif
                         @if ($role_permisstion->revenue == 1)
-                            <li>
-                                <a class="nav-link px-2 dropdown-item" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a>
-                            </li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a></li>
                         @endif
                     </ul>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                         Setting
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
                         @if ($role_permisstion->user == 1)
-                            <li>
-                                <a class="nav-link px-2 dropdown-item" href="{{ route('users', 'index') }}">User</a>
-                            </li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('users', 'index') }}">User</a></li>
                         @endif
                         @if ($role_permisstion->bank == 1)
-                            <li>
-                                <a class="nav-link px-2 dropdown-item" href="{{ route('master', 'bank') }}">Bank</a>
-                            </li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('master', 'bank') }}">Bank</a></li>
                         @endif
                     </ul>
                 </li>
@@ -505,6 +483,18 @@
     }
 
     // Ensure the dropdown menus work correctly
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     var dropdownSubmenu = document.querySelectorAll('.dropdown-submenu');
+
+    //     dropdownSubmenu.forEach(function (submenu) {
+    //     submenu.addEventListener('click', function (e) {
+    //         e.stopPropagation();
+    //         var dropdownMenu = this.querySelector('.dropdown-menu');
+    //         dropdownMenu.classList.toggle('show');
+    //     });
+    //     });
+    // });
+
     document.addEventListener('DOMContentLoaded', function () {
         var dropdownSubmenu = document.querySelectorAll('.dropdown-submenu');
 
@@ -516,6 +506,29 @@
         });
         });
     });
+
+    function toggleDropdown() {
+        var dropdown = document.getElementById("myDropdown");
+        dropdown.classList.toggle("show");
+        if (dropdown.classList.contains("show")) {
+        dropdown.style.maxHeight = dropdown.scrollHeight + "px";
+        } else {
+        dropdown.style.maxHeight = "0";
+        }
+    }
+
+    window.onclick = function (event) {
+        if (!event.target.matches(".dropbtn")) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains("show")) {
+            openDropdown.classList.remove("show");
+            openDropdown.style.maxHeight = "0";
+            }
+        }
+        }
+    }
 </script>
 
 </html>

@@ -563,7 +563,7 @@ pointer-events: none; /* Allow pointer events to pass through */
   right: 0;
   text-align: center;
   bottom: 0;
-  margin-bottom: 85px !important;
+  margin-bottom: 95px !important;
 }
 .blockstyle button{
   width: 100% !important;
@@ -3128,12 +3128,10 @@ tr.disable-row:hover{
   .dropdown li {
     width: 100%;
     height: 40px;
-    cursor: pointer;
-    padding: 10px 0 0 10px;
   }
   .dropdown li:hover {
     transition: 0.3s;
-    background-color: #325b4e;
+    background-color: #109699;
     width: 100%;
     height: 40px;
     margin-top: 5px;
@@ -4211,6 +4209,10 @@ tr.disable-row:hover{
     .dropdown-menu {
       width: 100%;
     }
+    .remove-hover:hover{
+      background-color: white !important;
+    }
+
     .dropdown li {
       margin: 0px;
       padding: 10px 0 0 10px;
@@ -4376,6 +4378,10 @@ tr.disable-row:hover{
       width: 44% !important;
       font-size: 14px;
     }
+    .dt-info{
+      margin-top: 20px;
+    }
+    
 
     
   }
