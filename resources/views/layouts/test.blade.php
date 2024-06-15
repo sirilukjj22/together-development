@@ -207,7 +207,7 @@
 
             @if ($role_permisstion->sms_alert == 1)
                 <a href="{{ route('sms-alert') }}">
-                    <div class="<?php echo $_SERVER['REQUEST_URI'] == '/sms-alert' ? 'menu2' : 'menu2'; ?>">SMS Alert</div>
+                    <div class="menu2 active">SMS Alert</div>
                 </a>
             @endif
             @if ($role_permisstion->revenue == 1)
