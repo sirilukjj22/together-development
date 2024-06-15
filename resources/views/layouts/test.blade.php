@@ -97,66 +97,6 @@
             </button>
             <div class="collapse navbar-collapse rounded p-3 bg-white" id="navbarNavDropdown">
               <ul class="navbar-nav font-weight-bold">
-                
-                {{-- @if ($role_permisstion->sms_alert == 1)
-                    <li class="nav-item ">
-                        <a class="nav-link px-2" aria-current="page" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a>
-                    </li>
-                @endif
-                @if ($role_permisstion->revenue == 1)
-                    <li class="nav-item">
-                        <a class="nav-link px-2" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a>
-                    </li>
-                @endif --}}
-                <li class="nav-item">
-                    <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        General Ledger
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        @if ($role_permisstion->sms_alert == 1)
-                            <li>
-                                <a class="nav-link px-2 dropdown-item" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a>
-                            </li>
-                        @endif
-                        @if ($role_permisstion->revenue == 1)
-                            <li>
-                                <a class="nav-link px-2 dropdown-item" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a>
-                            </li>
-                        @endif
-                    </ul>
-                </li>
-                @if ($role_permisstion->user == 1)
-                    <li class="nav-item">
-                        <a class="nav-link px-2" href="{{ route('users', 'index') }}">User</a>
-                    </li>
-                @endif
-                @if ($role_permisstion->bank == 1)
-                    <li class="nav-item">
-                        <a class="nav-link px-2" href="{{ route('master', 'bank') }}">Bank</a>
-                    </li>
-                @endif
-    
-                @if ($role_permisstion->debtor == 1)
-                    <li class="nav-item">
-                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Debtor
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            @if ($role_permisstion->agoda == 1)
-                                <li>
-                                    <a class="nav-link px-2 dropdown-item" href="{{ route('debit-agoda-revenue') }}">Agoda</a>
-                                </li>
-                            @endif
-                            @if ($role_permisstion->elexa == 1)
-                                <li>
-                                    <a class="nav-link px-2 dropdown-item" href="#">Elexa</a>
-                                </li>
-                            @endif
-                        </ul>
-                    </li>
-                @endif
                 @if ($role_permisstion->profile == 1)
                     <li class="nav-item">
                         <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
@@ -203,6 +143,66 @@
                         </ul>
                     </li>
                 @endif
+
+                @if ($role_permisstion->debtor == 1)
+                    <li class="nav-item">
+                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Debtor
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            @if ($role_permisstion->agoda == 1)
+                                <li>
+                                    <a class="nav-link px-2 dropdown-item" href="{{ route('debit-agoda-revenue') }}">Agoda</a>
+                                </li>
+                            @endif
+                            @if ($role_permisstion->elexa == 1)
+                                <li>
+                                    <a class="nav-link px-2 dropdown-item" href="#">Elexa</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
+                @endif
+                
+                <li class="nav-item">
+                    <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        General Ledger
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        @if ($role_permisstion->sms_alert == 1)
+                            <li>
+                                <a class="nav-link px-2 dropdown-item" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a>
+                            </li>
+                        @endif
+                        @if ($role_permisstion->revenue == 1)
+                            <li>
+                                <a class="nav-link px-2 dropdown-item" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Setting
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        @if ($role_permisstion->user == 1)
+                            <li>
+                                <a class="nav-link px-2 dropdown-item" href="{{ route('users', 'index') }}">User</a>
+                            </li>
+                        @endif
+                        @if ($role_permisstion->bank == 1)
+                            <li>
+                                <a class="nav-link px-2 dropdown-item" href="{{ route('master', 'bank') }}">Bank</a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+                
                 <li class="nav-item">
                     <li>
                         <a class="nav-link px-2" href="#" data-toggle="modal" data-target="#exampleModalCenter3">Logout</a>
@@ -415,6 +415,18 @@
             dropdownDebtor.style.maxHeight = dropdownDebtor.scrollHeight + "px";
         } else {
             dropdownDebtor.style.maxHeight = "0";
+        }
+    }
+
+    function myFunctionSetting() {
+        var dropdownSetting = document.getElementById("myDropdownSetting");
+
+        dropdownSetting.classList.toggle("show");
+
+        if (dropdownSetting.classList.contains("show")) {
+            dropdownSetting.style.maxHeight = dropdownSetting.scrollHeight + "px";
+        } else {
+            dropdownSetting.style.maxHeight = "0";
         }
     }
 
