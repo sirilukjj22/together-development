@@ -229,10 +229,10 @@ ul a{
   width: 16%;
   border-radius: 8px;
 }
-.dt-length label{
+/* .dt-length label{
   position: absolute;
   font-size: 12px;
-}
+} */
 .dt-search label{
   font-size: 12px;
 }
@@ -345,7 +345,7 @@ ul a{
   display: block;
   text-align: right;
 }
-#dt-length-1{
+/* #dt-length-1{
   width: 20%;
   float: right;
   margin-top: 20px;
@@ -358,26 +358,26 @@ ul a{
   margin-top: 20px;
   margin-right: 10px;
   border-radius: 8px;
-}
-.dt-length-0{
+} */
+/* .dt-length-0{
   width: 10%;
-}
+} */
 .dt-layout-cell{
   margin-left: 6px;
 }
 .dt-layout-cell input {
   width: 50%;
 }
-#dt-length-0{
+/* #dt-length-0{
   width: 20%;
   float: right;
   margin-top: 20px;
   margin-right: 10px;
   border-radius: 8px;
-}
-.dt-length label{ 
+} */
+/* .dt-length label{ 
   display: none;
-}
+} */
 .button-3, .button-1{
   width: 30%;
   height: 30px;
@@ -563,7 +563,7 @@ pointer-events: none; /* Allow pointer events to pass through */
   right: 0;
   text-align: center;
   bottom: 0;
-  margin-bottom: 100px;
+  margin-bottom: 85px !important;
 }
 .blockstyle button{
   width: 100% !important;
@@ -889,6 +889,9 @@ pointer-events: none; /* Allow pointer events to pass through */
   border-color: #2D7F7B; /* Match the border color */
   color: white; /* Optional: Change the text color */
 }
+.page-item.active .page-link{
+  background-color: #2D7F7B !important;
+}
 
 @media screen and (min-width:768px){
   .selectall{
@@ -950,14 +953,14 @@ pointer-events: none; /* Allow pointer events to pass through */
   margin-right: 10px;
   margin-top: 20px;
 }
-#dt-length-0{
+/* #dt-length-0{
   width: 50%;
   float: left;
   margin-top: 20px;
   margin-left: 10px;
   border-radius: 8px;
-}
-#dt-length-1{
+} */
+/* #dt-length-1{
   width: 50%;
   float: left;
   margin-top: 20px;
@@ -970,11 +973,11 @@ pointer-events: none; /* Allow pointer events to pass through */
   margin-top: 20px;
   margin-left: 10px;
   border-radius: 8px;
-}
-.dt-length label{ 
+} */
+/* .dt-length label{ 
   display: block;
   margin-left: 10px;
-}
+} */
 .button-3, .button-1{
   width: 100%;
   height: 30px;
@@ -1065,7 +1068,7 @@ tr.disable-row:hover{
 }
 .all_revenue h1{
   margin: 0;
-  margin-bottom: 25px;
+  margin-bottom: 15px !important;
 }
 
   @media screen and (min-width:1024px){
@@ -1318,7 +1321,7 @@ tr.disable-row:hover{
         margin: auto;
       }
                                                     /* 10 25 50 100 */
-      #dt-length-1{
+      /* #dt-length-1{
         width: 50%;
         float: left;
         margin-left: 10px;
@@ -1331,7 +1334,7 @@ tr.disable-row:hover{
         margin-left: 10px;
         margin-top: 20px;
         border-radius: 8px;
-      }
+      } */
       .display th[data-dt-column="0"]{
         width: 10px;
       }
@@ -3290,8 +3293,13 @@ tr.disable-row:hover{
     background-color: #2D7F7B !important;
     color: #fff  !important;
   }
+  .all_revenue h1{
+    font-size: 16px;
+    margin: 0;
+    margin-bottom: 15px;
+  }
 
-   @media screen and (max-width: 600px) {
+   /* @media screen and (max-width: 600px) {
     table {
       border: 0px;
     }
@@ -3333,7 +3341,7 @@ tr.disable-row:hover{
     table td:last-child {
       border-bottom: 0;
     }
-  }
+  } */
 
   @media screen and (max-width: 1440px) {
     .circle {

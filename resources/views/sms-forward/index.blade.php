@@ -1,6 +1,27 @@
 @extends('layouts.test')
 
 @section('content')
+<style>
+    /* อันนี้ style ของ table นะ */
+    .dtr-details {
+        width: 100%;
+    }
+
+    .dtr-title {
+        float: left;
+        text-align: left;
+        margin-right: 10px;
+    }
+
+    .dtr-data {
+        display: block;
+        text-align: right !important;
+    }
+
+    .dt-container .dt-paging .dt-paging-button {
+        padding: 0 !important;
+    }
+</style>
     <div class="add">
         <button type="button" class="button-17 button-18" id="add-data">เพิ่มข้อมูล</button>
     </div>
@@ -306,7 +327,7 @@
                 </div>
 
                 <div class="revenue_type">
-                    <select name="status">
+                    <select class="select2" name="status">
                         <option value="" {{ isset($status) && $status == '' ? 'selected' : '' }}>
                             ประเภทรายได้ทั้งหมด
                         </option>
@@ -338,7 +359,7 @@
                 </div>
 
                 <div class="acc_number">
-                    <select name="into_account" id="into_account" onchange="select_account()">
+                    <select class="select2-1" name="into_account" id="into_account" onchange="select_account()">
                         <option value="" {{ isset($into_account) && $into_account == '' ? 'selected' : '' }}>
                             เลขที่บัญชีทั้งหมด</option>
                         <option value="708-226791-3"
@@ -381,19 +402,19 @@
         </form>
 
         {{-- <div class="dataTables_wrapper"></div> --}}
-        <table id="example" class="display">
+        <table id="example" class="table-hover nowarp" style="width:100%">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>วันที่</th>
-                    <th>เวลา</th>
+                    <th data-priority="1">#</th>
+                    <th data-priority="1">วันที่</th>
+                    <th data-priority="1">เวลา</th>
                     <th>โอนจากบัญชี</th>
                     <th>เข้าบัญชี</th>
-                    <th>จำนวนเงิน</th>
+                    <th data-priority="1">จำนวนเงิน</th>
                     <th>ผู้ทำรายการ</th>
                     <th>ประเภทรายได้</th>
                     <th>วันที่โอนย้าย</th>
-                    <th>คำสั่ง</th>
+                    <th data-priority="1">คำสั่ง</th>
                 </tr>
             </thead>
             <tbody>
@@ -405,35 +426,33 @@
                         <tr class="my-row">
                     @endif
 
-                    <td data-label="#">{{ $key + 1 }}</td>
-                    <td data-label="วันที่">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                    <td data-label="เวลา">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                    <td data-label="โอนจากบัญชี">
-
+                    <td>{{ $key + 1 }}</td>
+                    <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                    <td>{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
+                    <td>
                         <?php
-                        $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
-                        $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
+                            $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
+                            $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
                         ?>
 
                         @if (file_exists($filename))
-                            <img class="" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg"
+                            <img class="rounded object-fit-cover mx-1" style="width: 30px; height: 30px;" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg"
                                 alt="avatar" title="">
                         @elseif (file_exists($filename2))
-                            <img class="" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png"
+                            <img class="rounded object-fit-cover mx-1" style="width: 30px; height: 30px;" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png"
                                 alt="avatar" title="">
                         @endif
                         {{ @$item->transfer_bank->name_en }}
-
                     </td>
-                    <td data-label="เข้าบัญชี">
-                        <img class="" src="../image/bank/SCB.jpg" alt="avatar" title="">
+                    <td>
+                        <img class="rounded object-fit-cover mx-1" style="width: 30px; height: 30px;" src="../image/bank/SCB.jpg" alt="avatar" title="">
                         {{ 'SCB ' . $item->into_account }}
                     </td>
                     <td data-label="จำนวนเงิน">
                         {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
                     </td>
-                    <td data-label="ผู้ทำรายการ">{{ $item->remark ?? 'Auto' }}</td>
-                    <td data-label="ประเภทรายได้">
+                    <td>{{ $item->remark ?? 'Auto' }}</td>
+                    <td>
                         @if ($item->status == 0)
                             -
                         @elseif ($item->status == 1)
@@ -459,12 +478,12 @@
                         @endif
 
                     </td>
-                    <td data-label="วันที่โอนย้าย">
+                    <td>
                         {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
                     </td>
                     <td>
                         <div class="dropdown">
-                            <button class="button-18 button-17" type="button" data-toggle="dropdown">
+                            <button class="btn btn-custom" type="button" data-toggle="dropdown">
                                 ทำรายการ<span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
@@ -559,52 +578,51 @@
         {{-- <div class="dataTables_wrapper2"></div> --}}
 
         <h4>Transfer Revenue</h4>
-        <table id="example2" class="display">
+        <table id="example2" class="table-hover nowarp" style="width:100%">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>วันที่</th>
-                    <th>เวลา</th>
+                    <th data-priority="1">#</th>
+                    <th data-priority="1">วันที่</th>
+                    <th data-priority="1">เวลา</th>
                     <th>โอนจากบัญชี</th>
                     <th>เข้าบัญชี</th>
-                    <th>จำนวนเงิน</th>
+                    <th data-priority="1">จำนวนเงิน</th>
                     <th>ผู้ทำรายการ</th>
                     <th>ประเภทรายได้</th>
                     <th>วันที่โอนย้าย</th>
-                    <th>คำสั่ง</th>
+                    <th data-priority="1">คำสั่ง</th>
                 </tr>
             </thead>
             <tbody>
                 <?php $total_transfer_revenue = 0; ?>
 
                 @foreach ($data_sms_transfer as $key => $item)
-                    <tr class="my-row">
-                        <td data-label="#">{{ $key + 1 }}</td>
-                        <td data-label="วันที่">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                        <td data-label="เวลา">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                        <td data-label="โอนจากบัญชี">
-
+                    <tr>
+                        <td>{{ $key + 1 }}</td>
+                        <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                        <td>{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
+                        <td>
                             <?php
-                            $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
-                            $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
+                                $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
+                                $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
                             ?>
 
                             @if (file_exists($filename))
-                                <img class="" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg"
+                                <img class="rounded object-fit-cover mx-1" style="width: 30px; height: 30px;" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg"
                                     alt="avatar" title="">
                             @elseif (file_exists($filename2))
-                                <img class="" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png"
+                                <img class="rounded object-fit-cover mx-1" style="width: 30px; height: 30px;" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png"
                                     alt="avatar" title="">
                             @endif
                             {{ @$item->transfer_bank->name_en }}
                         </td>
-                        <td data-label="เข้าบัญชี">
-                            <img class="" src="../image/bank/SCB.jpg" alt="avatar" title="">
+                        <td>
+                            <img class="rounded object-fit-cover mx-1" style="width: 30px; height: 30px;" src="../image/bank/SCB.jpg" alt="avatar" title="">
                             <span>{{ 'SCB ' . $item->into_account }}</span>
                         </td>
-                        <td data-label="จำนวนเงิน">{{ number_format($item->amount, 2) }}</td>
-                        <td data-label="ผู้ทำรายการ">{{ $item->remark ?? 'Auto' }}</td>
-                        <td data-label="ประเภทรายได้">
+                        <td>{{ number_format($item->amount, 2) }}</td>
+                        <td>{{ $item->remark ?? 'Auto' }}</td>
+                        <td>
                             @if ($item->status == 1)
                                 Guest Deposit Revenue
                             @elseif($item->status == 2)
@@ -627,16 +645,15 @@
                                     {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
                             @endif
                         </td>
-                        <td data-label="วันที่โอนย้าย">
+                        <td>
                             {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '' }}
                         </td>
                         <td>
                             @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
                                 <div class="dropdown">
-                                    <button class="button-18 button-17" type="button" data-toggle="dropdown">
+                                    <button class="btn btn-custom" type="button" data-toggle="dropdown">
                                         ทำรายการ<span class="caret"></span>
                                     </button>
-
                                     <ul class="dropdown-menu">
                                         @if ($role_revenue->front_desk == 1)
                                             <li class="licolor"
@@ -730,51 +747,51 @@
     <div class="search" style="margin-top: 10px;">
         {{-- <div class="dataTables_wrapper4"></div> --}}
         <h4>Split Credit Card Hotel Revenue</h4>
-        <table id="example3" class="display">
+        <table id="example3" class="table-hover nowarp" style="width:100%">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>วันที่</th>
-                    <th>เวลา</th>
+                    <th data-priority="1">#</th>
+                    <th data-priority="1">วันที่</th>
+                    <th data-priority="1">เวลา</th>
                     <th>โอนจากบัญชี</th>
                     <th>เข้าบัญชี</th>
-                    <th>จำนวนเงิน</th>
+                    <th data-priority="1">จำนวนเงิน</th>
                     <th>ผู้ทำรายการ</th>
                     <th>ประเภทรายได้</th>
                     <th>วันที่โอนย้าย</th>
-                    <th>คำสั่ง</th>
+                    <th data-priority="1">คำสั่ง</th>
                 </tr>
             </thead>
             <tbody>
                 <?php $total_split_revenue = 0; ?>
 
                 @foreach ($data_sms_split as $key => $item)
-                    <tr class="my-row">
-                        <td data-label="#">{{ $key + 1 }}</td>
-                        <td data-label="วันที่">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                        <td data-label="เวลา">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                        <td data-label="โอนจากบัญชี">
+                    <tr>
+                        <td>{{ $key + 1 }}</td>
+                        <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                        <td>{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
+                        <td>
                             <?php
-                            $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
-                            $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
+                                $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
+                                $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
                             ?>
 
                             @if (file_exists($filename))
-                                <img class="" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg"
+                                <img class="rounded object-fit-cover mx-1" style="width: 30px; height: 30px;" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg"
                                     alt="avatar" title="">
                             @elseif (file_exists($filename2))
-                                <img class="" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png"
+                                <img class="rounded object-fit-cover mx-1" style="width: 30px; height: 30px;" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png"
                                     alt="avatar" title="">
                             @endif
                             {{ @$item->transfer_bank->name_en }}
                         </td>
-                        <td data-label="เข้าบัญชี">
-                            <img class="" src="../image/bank/SCB.jpg" alt="avatar" title="">
+                        <td>
+                            <img class="rounded object-fit-cover mx-1" style="width: 30px; height: 30px;" src="../image/bank/SCB.jpg" alt="avatar" title="">
                             <span>{{ 'SCB ' . $item->into_account }}</span>
                         </td>
-                        <td data-label="จำนวนเงิน">{{ number_format($item->amount, 2) }}</td>
-                        <td data-label="ผู้ทำรายการ">{{ $item->remark ?? 'Auto' }}</td>
-                        <td data-label="ประเภทรายได้">
+                        <td>{{ number_format($item->amount, 2) }}</td>
+                        <td>{{ $item->remark ?? 'Auto' }}</td>
+                        <td>
                             @if ($item->status == 1)
                                 Guest Deposit Revenue
                             @elseif($item->status == 2)
@@ -797,14 +814,15 @@
                                     {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
                             @endif
                         </td>
-                        <td data-label="วันที่โอนย้าย">
+                        <td>
                             {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '' }}
                         </td>
                         <td>
                             @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
                                 <div class="dropdown">
-                                    <button class="button-18 button-17" type="button" data-toggle="dropdown">ทำรายการ
-                                        <span class="caret"></span></button>
+                                    <button class="btn btn-custom" type="button" data-toggle="dropdown">
+                                        ทำรายการ<span class="caret"></span>
+                                    </button>
                                     <ul class="dropdown-menu">
                                         @if ($role_revenue->front_desk == 1)
                                             <li class="licolor"
@@ -1108,11 +1126,8 @@
         }
     </style>
 
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
-    <link rel="stylesheet" href="../assets2/css/dataTables.dataTables.css">
-    <script src="../assets/bundles/sweetalert2.bundle.js"></script>
+    <script src="{{ asset('assets/bundles/sweetalert2.bundle.js')}}"></script>
 
     <script>
         window.addEventListener('scroll', function() {
@@ -1131,18 +1146,83 @@
             element.style.opacity = opacity;
         });
 
-        $(document).ready(function() {
+        $(document).ready(function() { 
 
-            var table = new DataTable('#example', {});
+            new DataTable('#example', {
+            columnDefs: [
+                {
+                    className: 'dtr-control',
+                    orderable: true,
+                    target: null
+                },
+                { width: '5%', targets: 0 },
+                { width: '7%', targets: 2 },
+                { width: '10%', targets: 3 },
+                { width: '18%', targets: 4 },
+                { width: '11%', targets: 7 },
+                { width: '10%', targets: 8 },
+                { width: '10%', targets: 9 }
 
-            var table2 = new DataTable('#example2', {});
+            ],
+            order: [0, 'asc'],
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            }
+        });
+            new DataTable('#example2', {
+                columnDefs: [
+                {
+                    className: 'dtr-control',
+                    orderable: true,
+                    target: null
+                },
+                { width: '5%', targets: 0 },
+                { width: '7%', targets: 2 },
+                { width: '10%', targets: 3 },
+                { width: '18%', targets: 4 },
+                { width: '11%', targets: 7 },
+                { width: '10%', targets: 8 },
+                { width: '10%', targets: 9 }
+        
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+                }
+            });
+            new DataTable('#example3', {
+                columnDefs: [
+                {
+                    className: 'dtr-control',
+                    orderable: true,
+                    target: null
+                },
+                { width: '5%', targets: 0 },
+                { width: '7%', targets: 2 },
+                { width: '10%', targets: 3 },
+                { width: '18%', targets: 4 },
+                { width: '11%', targets: 7 },
+                { width: '10%', targets: 8 },
+                { width: '10%', targets: 9 }
+        
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+                }
+            });
 
-            var table3 = new DataTable('#example3', {});
-
-            var table4 = new DataTable('#example4', {});
-
-            $('.select2').select2(); //ประเภทรายได้ทั้งหมด in Search
-            $('.select2-1').select2(); //หมายเลขบัญชีทั้งหมด in Search
+            $('.select2').select2();    //ประเภทรายได้ทั้งหมด in Search
+            $('.select2-1').select2();  //หมายเลขบัญชีทั้งหมด in Search
             $('.select2-2').select2({
                 dropdownParent: $('#exampleModalCenter5') // Ensure the dropdown is appended to the modal
             });
