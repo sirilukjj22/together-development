@@ -329,7 +329,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('Quotation.addProducttablecreatemain');
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
         Route::get('/Quotation/Quotation/cover/document/{id}', 'coverdocument')->name('Quotation.coverdocument');
-        Route::post('/Quotation/company/document/sheet/{id}', 'sheet')->name('Quotation.sheet');
+        Route::get('/Quotation/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('Quotation.sheet');
     });
 
 Route::get('/clear-cache', function () {

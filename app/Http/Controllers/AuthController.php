@@ -20,8 +20,8 @@ class AuthController extends Controller
     public function index()
     {
         return view('auth.login');
-    }  
-      
+    }
+
     /**
      * Write code on Method
      *
@@ -31,7 +31,7 @@ class AuthController extends Controller
     {
         return view('auth.registration');
     }
-      
+
     /**
      * Write code on Method
      *
@@ -39,12 +39,13 @@ class AuthController extends Controller
      */
     public function postLogin(Request $request)
     {
+        //  phpinfo();
         // dd($request);
         $request->validate([
             'name' => 'required',
             'password' => 'required',
         ]);
-   
+
         $credentials = $request->only('name', 'password');
         if (Auth::attempt($credentials)) {
 
@@ -55,19 +56,19 @@ class AuthController extends Controller
                 return redirect()->intended('sms-alert')
                         ->withSuccess('You have Successfully loggedin');
             }
-            
+
         }
-  
+
         return redirect("login")->withSuccess('Email Address หรือ Password ไม่ต้อง !');
     }
-      
+
     /**
      * Write code on Method
      *
      * @return response()
      */
     public function postRegistration(Request $request)
-    {  
+    {
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
@@ -82,9 +83,9 @@ class AuthController extends Controller
         } else {
             return redirect(url('users', 'index'))->with('error', 'ระบบไม่สามารถทำการบันทึกได้');
         }
-         
+
     }
-    
+
     /**
      * Write code on Method
      *
@@ -95,10 +96,10 @@ class AuthController extends Controller
         if(Auth::check()){
             return view('dashboard');
         }
-  
+
         return redirect("login")->withSuccess('Opps! You do not have access');
     }
-    
+
     /**
      * Write code on Method
      *
@@ -116,7 +117,7 @@ class AuthController extends Controller
             'permission' => $data['permission'],
             'status' => 1
           ])->id;
-    
+
           Role_permission_menu::create([
             'user_id' => $user_id,
             'sms_alert' => $data['menu_sms_alert'] ?? 0,
@@ -131,7 +132,7 @@ class AuthController extends Controller
             'bank' => $data['menu_bank'] ?? 0,
             'select_menu_all' => $data['select_menu_all'] ?? 0,
           ]);
-    
+
           Role_permission_revenue::create([
             'user_id' => $user_id,
             'front_desk' => $data['front_desk'] ?? 0,
@@ -155,7 +156,7 @@ class AuthController extends Controller
 
       return "Success";
     }
-    
+
     /**
      * Write code on Method
      *
@@ -164,7 +165,7 @@ class AuthController extends Controller
     public function logout() {
         Session::flush();
         Auth::logout();
-  
+
         return Redirect('login');
     }
 }

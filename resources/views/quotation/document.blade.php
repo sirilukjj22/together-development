@@ -509,35 +509,49 @@
         <div class="col-12">
             <samp>การจองห้องพัก</samp>
             <div class="row">
-                <div class="col-8 ">
-                    <textarea  id="Reservation" name="Reservation">
-                    เพื่อความพร้อมในการจัดเตรียมห้องพักให้กับทางหน่วยงานของท่าน โรงแรมฯ
-                    ขอความกรุณาเซ็นยืนยันการจองกลับมาภายใน 7 วัน หลังจากที่ได้รับเอกสารใบเสนอราคา</textarea>
-                </div>
+                @if(isset($Reservation_show) && $Reservation_show->name_th !== null)
+                    <div class="col-8 ml-5">
+                        <textarea id="Reservation" name="Reservation">{{ $Reservation_show->name_th }}</textarea>
+                    </div>
+                @else
+                    <div class="col-8 ml-5">
+                        <textarea id="Reservation" name="Reservation"></textarea>
+                    </div>
+                @endif
             </div>
         </div>
         <div class="col-12">
             <samp>เงื่อนไขการจ่ายเงิน</samp>
             <div class="row">
-                <div class="col-8 ">
-                    <textarea id="summernote" name="Paymentterms">
-                        ทางผู้จัดจะรับผิดชอบค่าใช้จ่ายที่เกิดขึ้นในระหว่างมีการจัดงานทั้งหมดโดยโรงแรมฯ
-                        จะเรียกเก็บเงิน ค่าใช้จ่ายที่เกิดขึ้นก่อนการจัดงานเป็นค่ามัดจำการจอง 50 % ภายใน 7 วัน
-                        หลังจากได้รับการเซ็นเอกสารใบเสนอราคา และชำระส่วนที่เหลือหลังจากเสร็จสิ้นการจัดงาน</textarea>
+                <div class="col-8 ml-5">
+                    @if(isset($Paymentterms) && $Paymentterms->name_th !== null)
+                    <div class="col-12 ">
+                        <textarea id="summernote" name="Paymentterms">
+                            {!! $Paymentterms->name_th !!}
+                        </textarea>
+                    </div>
+                    @else
+                        <div class="col-12 ">
+                            <textarea id="summernote" name="Paymentterms"></textarea>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
         <div class="col-12">
             <samp>หมายเหตุ</samp>
             <div class="row">
-                <div class="col-8 ">
-                    <textarea id="note" name="note ">
-                        • หากมีการเปลี่ยนแปลงจำนวนผู้เข้าร่วมงาน และห้องพักน้อยกว่าที่ได้ตกลงกับทางโรงแรมฯ
-                        ไว้โรงแรมฯ ขอสงวนสิทธ์ในการปรับราคาค่าอาหารและค่าห้องพักตามจำนวนในเอกสารยืนยันการจอง
-                        • หากจำนวนผู้เข้าร่วมประชุมน้อยกว่าจำนวนที่การันตี ณ วันที่ส่งจดหมายยืนยัน
-                        ทางผู้จัดต้องรับผิดชอบค่าใช้จ่ายตามจำนวนที่ยืนยันในจดหมาย
-                        • หากมีการเพิ่มจำนวนมากกว่าที่ยืนยันโรงแรมฯ ขอสงวนสิทธิ์ในการเรียกเก็บเงินตามจำนวนจริงของผู้ที่มาเกิน</textarea>
-                </div>
+                @if(isset($note) && $note->name_th !== null)
+                    <div class="col-8 ml-5">
+                        <textarea id="note" name="note">
+                            {!! $note->name_th !!}
+                        </textarea>
+                    </div>
+                @else
+                    <div class="col-8 ml-5">
+                        <textarea id="note" name="note"></textarea>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -545,54 +559,51 @@
         <div class="col-12">
             <samp>การยกเลิกและการเปลี่ยนแปลงการจอง</samp>
             <div class="row">
-                <div class="col-8 ">
-                    <textarea id="Cancellations" name="Cancellations">
-                        • ในกรณีที่มีการเปลี่ยนแปลงรูปแบบของการจัดงาน
-                        นอกเหนือจากการยืนยันการใช้บริการที่มีการโยกย้ายรูปแบบหรือเปลี่ยนแปลงใดๆ
-                        ภายในวันและเวลาวันเข้าใช้บริการ อันเกิดจากผู้ยืนยันทั้งสิ้นทางโรงแรม
-                        ขอสงวนสิทธิ์เรียกเก็บค่าบริการโยกย้ายเปลี่ยนแปลงครั้งละ 2000.-บาท (ไม่รวมถึงงานดนตรี)
-                        • หากมีการเปลี่ยนแปลงเวลา หรือ หรือเพิ่ม – ลดจำนวนการันตี กรุณาแจ้งทางโรงแรมฯ ก่อนการจัดงาน 7 วัน
-                        สำหรับอาหารเครื่องดื่ม และสำหรับการเปลี่ยนแปลง ห้องพัก ก่อนการจัดงาน 21 วัน
-                        • ในกรณียกเลิกการจองต้องกระทำภายใน 45 วัน ก่อนการเริ่มงานมิฉะนั้นทางโรงแรมฯ
-                        มีความจำเป็นต้องขอเก็บค่ายกเลิกการจองจำนวน 50 % ของค่าใช้จ่ายที่เกิดขึ้นทั้งหมด
-                        โดยทางฝ่ายบัญชีของโรงแรมฯ จะทำการเรียก เก็บค่าใช้จ่ายไปภายใน 3 วัน ทำการ
-                    </textarea>
-                </div>
+                @if(isset($Cancellations) && $Cancellations->name_th !== null)
+                    <div class="col-8 ml-5">
+                        <textarea id="Cancellations" name="Cancellations">
+                            {!! $Cancellations->name_th !!}
+                        </textarea>
+                    </div>
+                @else
+                    <div class="col-8 ml-5">
+                        <textarea id="Cancellations" name="Cancellations"></textarea>
+                    </div>
+                @endif
             </div>
         </div>
         <div class="col-12">
             <samp>อภินันทนาการทางรีสอร์ท</samp>
             <div class="row">
-                <div class="col-8 ">
-                    <textarea id="Complimentary" name="Complimentary ">
-                        1. เครื่องดื่มต้อนรับ Welcome Drink
-                        2. Free Internet Wi-Fi
-                        3. สระน้ำ สไลเดอร์
-                        4. ฟิตเนส
-                        5. ป้ายต้อนรับ
-                    </textarea>
-                </div>
+                @if(isset($Complimentary) && $Complimentary->name_th !== null)
+                    <div class="col-8 ml-5">
+                        <textarea id="Complimentary" name="Complimentary">
+                            {!! $Complimentary->name_th !!}
+                        </textarea>
+                    </div>
+                @else
+                    <div class="col-8 ml-5">
+                        <textarea id="Complimentary" name="Complimentary"></textarea>
+                    </div>
+                @endif
             </div>
         </div>
         <div class="col-12">
             <samp>ทางรีสอร์ทขอสงวนสิทธิ์แก่ผู้ใช้บริการดังนี</samp>
             <div class="row">
-                <div class="col-8 ">
-                    <textarea id="All_rights_reserved" name="All_rights_reserved">
-                        1.การแสดงหรือกิจกรรมต่างๆที่ไม่เหมาะสมหรือเสียงดังจนเป็นเหตุให้ลูกค้าท่านอื่นร้องเรียน
-                        2. การจัดเลี้ยงสังสรรค์อาหารค่ำไม่เกิน 23:00 น. (แล้วแต่กรณี)
-                        3. การประกอบอาหารภายในรีสอร์ท หรือ ห้องพัก
-                        4. ไม่อนุญาตให้นำสัตว์เลี้ยงเข้ามาในรีสอร์ท
-                        5. Check – In Time: 15:00 น. / Check – Out Time: 12:00 น.
-                        6. ความเสียหายหรือสูญหายในทรัพย์สินของรีสอร์ท จากการใช้บริการ ผู้ใช้บริการกรุณาชำระค่าเสียหายก่อนเดินทางกลับ
-                        7. ทางรีสอร์ทขอสงวนสิทธิ์ในการนำเข้าอาหารและเครื่องดื่มทุกชนิด
-                        8. PACKAGES สำหรับเด็กอายุระหว่าง 1 – 3 ปี ไม่เสียค่าบริการ
-                        9. PACKAGES สำหรับเด็กอายุระหว่าง 4 – 8 ปี ลด 40 % จากราคาเต็ม
-                        10. PACKAGES สำหรับเด็กอายุตั้งแต่ 9 ปี ขึ้นไป คิดอัตราเดียวกับผู้ใหญ่
-                        11. ทางรีสอร์ท ขอทราบกำหนดการเดินทางของลูกค้า เพื่อจัดเตรียมการใช้บริการของกิจกรรม
-                    </textarea>
-                </div>
+                @if(isset($All_rights_reserved) && $All_rights_reserved->name_th !== null)
+                    <div class="col-8 ml-5">
+                        <textarea id="All_rights_reserved" name="All_rights_reserved">
+                            {!! $All_rights_reserved->name_th !!}
+                        </textarea>
+                    </div>
+                @else
+                    <div class="col-8 ml-5">
+                        <textarea id="All_rights_reserved" name="All_rights_reserved"></textarea>
+                    </div>
+                @endif
             </div>
+            <button type="button" class="button-return" target="_bank" onclick="window.location.href='{{ url('/Quotation/Quotation/cover/document/PDF/'.$Quotation->id) }}'" >ดู PDF</button>
         </div>
         <div class="styled-hr mt-3"></div>
         <div class="col-12 row mt-5">
@@ -604,8 +615,8 @@
             <div class="col-4"></div>
         </div>
     </div>
-
 </form>
+
 <script>
 $(document).ready(function() {
     $('#summernote').summernote();
@@ -614,5 +625,6 @@ $(document).ready(function() {
     $('#Cancellations').summernote();
     $('#Complimentary').summernote();
     $('#All_rights_reserved').summernote();
-  });</script>
+});
+</script>
 @endsection

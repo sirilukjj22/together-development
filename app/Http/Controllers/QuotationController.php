@@ -22,6 +22,7 @@ use App\Models\master_unit;
 use App\Models\document_quotation;
 use Auth;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 class QuotationController extends Controller
 {
     public function index()
@@ -536,6 +537,28 @@ class QuotationController extends Controller
     public function sheet(Request $request,$id)
     {
         $data=$request->all();
-        dd( $data);
+        $data = [
+            "Reservation" => $request->input('Reservation'),
+            "Paymentterms" => $request->input('Paymentterms'),
+            "note" => $request->input('note'),
+            "Cancellations" => $request->input('Cancellations'),
+            "Complimentary" => $request->input('Complimentary'),
+            "All_rights_reserved" => $request->input('All_rights_reserved'),
+        ];
+        master_document_sheet::truncate();
+        foreach ($data as $key => $value) {
+            DB::table('master_document_sheet')->insert([
+                'topic' => $key,
+                'name_th' => $value,
+                'name_en' => $value,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+        return redirect()->back()->with('alert_', 'บันทึกใบปะหน้า');
+    }
+    public function sheetpdf($id) {
+        $pdf = FacadePdf::loadView('quotation.testpdf');
+        return $pdf->stream();
     }
 }
