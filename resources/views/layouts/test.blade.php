@@ -85,7 +85,6 @@
           }
         </style>
     
-    
         <nav class="navbar fixed-top navbar-expand-lg navbar-light" style="background-color: #109699;">
           <div class="container-fluid">
             <a class="navbar-brand h-1 text-white" href="{{ route('sms-alert') }}"><img class="mr-2" src="{{ asset('assets2/images/Logo.png') }}"
@@ -98,7 +97,8 @@
             </button>
             <div class="collapse navbar-collapse rounded p-3 bg-white" id="navbarNavDropdown">
               <ul class="navbar-nav font-weight-bold">
-                @if ($role_permisstion->sms_alert == 1)
+                
+                {{-- @if ($role_permisstion->sms_alert == 1)
                     <li class="nav-item ">
                         <a class="nav-link px-2" aria-current="page" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a>
                     </li>
@@ -107,7 +107,25 @@
                     <li class="nav-item">
                         <a class="nav-link px-2" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a>
                     </li>
-                @endif
+                @endif --}}
+                <li class="nav-item">
+                    <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        General Ledger
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        @if ($role_permisstion->sms_alert == 1)
+                            <li>
+                                <a class="nav-link px-2 dropdown-item" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a>
+                            </li>
+                        @endif
+                        @if ($role_permisstion->revenue == 1)
+                            <li>
+                                <a class="nav-link px-2 dropdown-item" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
                 @if ($role_permisstion->user == 1)
                     <li class="nav-item">
                         <a class="nav-link px-2" href="{{ route('users', 'index') }}">User</a>
@@ -115,7 +133,7 @@
                 @endif
                 @if ($role_permisstion->bank == 1)
                     <li class="nav-item">
-                        <a class="nav-link px-2" href="bankhome.html">Bank</a>
+                        <a class="nav-link px-2" href="{{ route('master', 'bank') }}">Bank</a>
                     </li>
                 @endif
     

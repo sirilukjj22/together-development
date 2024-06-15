@@ -1970,14 +1970,14 @@ tr.disable-row:hover{
     padding: 10px 0 10px 0;
     text-decoration: none;
     display: block;
-    height: 40px !important;
     padding-left: 30px;
+    height: auto;
   }
   
   .dropdown a:hover {
     color: white;
-    height: 40px !important;
     padding: 10px 0 10px 30px;
+    height: auto;
   }
   
   .show {display: block;}

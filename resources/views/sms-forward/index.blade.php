@@ -1155,10 +1155,10 @@
                     orderable: true,
                     target: null
                 },
-                { width: '5%', targets: 0 },
-                { width: '7%', targets: 2 },
+                { width: '6%', targets: 0 },
                 { width: '10%', targets: 3 },
-                { width: '18%', targets: 4 },
+                { width: '16%', targets: 4 },
+                { width: '10%', targets: 6 },
                 { width: '11%', targets: 7 },
                 { width: '10%', targets: 8 },
                 { width: '10%', targets: 9 }
@@ -1179,10 +1179,10 @@
                     orderable: true,
                     target: null
                 },
-                { width: '5%', targets: 0 },
-                { width: '7%', targets: 2 },
+                { width: '6%', targets: 0 },
                 { width: '10%', targets: 3 },
-                { width: '18%', targets: 4 },
+                { width: '16%', targets: 4 },
+                { width: '10%', targets: 6 },
                 { width: '11%', targets: 7 },
                 { width: '10%', targets: 8 },
                 { width: '10%', targets: 9 }
@@ -1203,10 +1203,10 @@
                     orderable: true,
                     target: null
                 },
-                { width: '5%', targets: 0 },
-                { width: '7%', targets: 2 },
+                { width: '6%', targets: 0 },
                 { width: '10%', targets: 3 },
-                { width: '18%', targets: 4 },
+                { width: '16%', targets: 4 },
+                { width: '10%', targets: 6 },
                 { width: '11%', targets: 7 },
                 { width: '10%', targets: 8 },
                 { width: '10%', targets: 9 }
