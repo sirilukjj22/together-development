@@ -77,6 +77,9 @@
             $monthly_revenue = ($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) - $agoda_charge[0]['total'];
 
             $sum_charge =  $front_charge[0]['revenue_credit_date'] + $guest_deposit_charge[0]['revenue_credit_date'] + $fb_charge[0]['revenue_credit_date'];
+
+            $sum_charge_year =  $front_charge[0]['revenue_credit_year'] + $guest_deposit_charge[0]['revenue_credit_year'] + $fb_charge[0]['revenue_credit_year'];
+            $sum_fee_year =  $front_charge[0]['fee_year'] + $guest_deposit_charge[0]['fee_year'] + $fb_charge[0]['fee_year'];
         ?>
 
         <?php 
@@ -116,7 +119,7 @@
                     </ul>
                 </div>
 
-                {{-- <div class="">
+                <div class="">
                     <button class="btn btn-custom float-end ml-1 dropdown-toggle" style="margin-left: 4px;" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
                         By Type
                     </button>
@@ -124,7 +127,7 @@
                         <li><a class="dropdown-item" href="{{ route('revenue') }}">by Type</a></li>
                         <li><a class="dropdown-item" href="{{ route('revenue-department', ['byPage' => 'department']) }}">by Department</a></li>
                     </ul>
-                </div> --}}
+                </div>
 
                 @if (Auth::user()->permission > 0)
                     @if ($total_revenue_today->status == 0)
@@ -170,8 +173,8 @@
 
                 <div class="title-box">
                     <h2>Cash</h2>
-                    <h1>{{ number_format($total_cash + $total_wp_revenue->wp_cash, 2) }}</h1>
-                    <input type="hidden" id="total_cash_dashboard" value="{{ $total_cash + $total_wp_revenue->wp_cash }}">
+                    <h1>{{ number_format($total_cash_year + $total_wp_year->wp_cash, 2) }}</h1>
+                    <input type="hidden" id="total_cash_dashboard" value="{{ $total_cash_year + $total_wp_year->wp_cash }}">
                 </div>
 
                 <div class="d-flex align-content-stratch flex-wrap cash"
@@ -179,22 +182,22 @@
                     <a href="#" class="list-box list-box-color">
                         <img src="../assets2/../assets2/images/front.png" alt="">
                         <h2>Front Desk</h2>
-                        <h3>{{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_cash : 0, 2) }}</h3>
+                        <h3>{{ number_format(isset($total_front_year) ? $total_front_year->front_cash : 0, 2) }}</h3>
                     </a>
                     <a href="#" class="list-box list-box-color">
                         <img src="../assets2/../assets2/images/guest.png" alt="">
                         <h2>Guest Deposit</h2>
-                        <h3>{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_cash : 0, 2) }}</h3>
+                        <h3>{{ number_format(isset($total_guest_deposit_year) ? $total_guest_deposit_year->room_cash : 0, 2) }}</h3>
                     </a>
                     <a href="#" class="list-box list-box-color">
                         <img src="../assets2/../assets2/images/F&B.png" alt="">
                         <h2>All Outlet </h2>
-                        <h3>{{ number_format($total_fb_revenue->fb_cash, 2) }}</h3>
+                        <h3>{{ number_format($total_fb_year->fb_cash, 2) }}</h3>
                     </a>
                     <a href="#" class="list-box list-box-color">
                         <img src="../assets2/../assets2/images/water-park.png" alt="">
                         <h2>Water Park</h2>
-                        <h3>{{ number_format($total_wp_revenue->wp_cash, 2) }}</h3>
+                        <h3>{{ number_format($total_wp_year->wp_cash, 2) }}</h3>
                     </a>
                 </div>
             </div>
@@ -204,40 +207,40 @@
                 <!-- BANK TRANSFER -->
                 <div class="title-box">
                     <h2>Bank Transfer</h2>
-                    <h1>{{ number_format($total_bank_transfer + $total_wp_revenue->wp_transfer, 2) }}</h1>
-                    <input type="hidden" id="total_bank_dashboard" value="{{ ($total_bank_transfer + $total_wp_revenue->wp_transfer) }}">
+                    <h1>{{ number_format($total_bank_transfer_year + $total_wp_year->wp_transfer + ($total_agoda_year + $total_ev_year), 2) }}</h1>
+                    <input type="hidden" id="total_bank_dashboard" value="{{ ($total_bank_transfer_year + $total_wp_year->wp_transfer) + ($total_agoda_year + $total_ev_year) }}">
                 </div>
                 <div class="d-flex align-content-stretch flex-wrap bank"
                     style=" height: 330px; border-radius: 8px !important;">
                     <a href="#" class="list-box3 list-box-color">
                         <img src="../assets2/images/front.png" alt="">
                         <h2>Front Desk</h2>
-                        <h3>{{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_transfer : 0, 2) }}</h3>
+                        <h3>{{ number_format(isset($total_front_year) ? $total_front_year->front_transfer : 0, 2) }}</h3>
                     </a>
                     <a href="#" class="list-box3 list-box-color">
                         <img src="../assets2/images/guest.png" alt="">
                         <h2>Guest Deposit</h2>
-                        <h3>{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_transfer : 0, 2) }}</h3>
+                        <h3>{{ number_format(isset($total_guest_deposit_year) ? $total_guest_deposit_year->room_transfer : 0, 2) }}</h3>
                     </a>
                     <a href="#" class="list-box3 list-box-color">
                         <img src="../assets2/images/F&B.png" alt="">
                         <h2>All Outlet</h2>
-                        <h3>{{ number_format($total_fb_revenue->fb_transfer, 2) }}</h3>
+                        <h3>{{ number_format($total_fb_year->fb_transfer, 2) }}</h3>
                     </a>
                     <a href="#" class="list-box3 list-box-color">
                         <img src="../assets2/images/water-park.png" alt="">
                         <h2>Water Park</h2>
-                        <h3>{{ number_format($total_wp_revenue->wp_transfer, 2) }}</h3>
+                        <h3>{{ number_format($total_wp_year->wp_transfer, 2) }}</h3>
                     </a>
-                    <a href="list-box-color" class="list-box3 list-box-color">
+                    <a href="#" class="list-box3 list-box-color">
                         <img src="../assets2/images/agoda.png" alt="">
                         <h2>Agoda</h2>
-                        <h3>{{ number_format($total_agoda_revenue, 2) }}</h3>
+                        <h3>{{ number_format($total_agoda_year, 2) }}</h3>
                     </a>
-                    <a href="list-box-color" class="list-box3 list-box-color">
+                    <a href="#" class="list-box3 list-box-color">
                         <img src="../assets2/images/elexa.png" alt="">
                         <h2>Elexa EGAT</h2>
-                        <h3>{{ number_format($total_ev_revenue, 2) }}</h3>
+                        <h3>{{ number_format($total_ev_year, 2) }}</h3>
                     </a>
                 </div>
             </div>
@@ -246,22 +249,21 @@
                 <!-- Credit -->
                 <div class="title-box">
                     <h2>Credit Card</h2>
-                    <h1>{{ number_format(($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_credit ?? 0), 2) }}</h1>
-                    <input type="hidden" id="total_credit_dashboard" value="{{ ($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_credit ?? 0) }}">
+                    <h1>{{ number_format(($credit_revenue_year->total_credit ?? 0) + ($total_wp_year->wp_credit ?? 0), 2) }}</h1>
+                    <input type="hidden" id="total_credit_dashboard" value="{{ ($credit_revenue_year->total_credit ?? 0) + ($total_wp_year->wp_credit ?? 0) }}">
                 </div>
 
                 <div class="d-flex align-content-stretch flex-wrap creditrevenue">
                     <a href="#" class="list-box2 list-box-color">
                         <img src="../assets2/images/hotel.png" alt="">
                         <h2>Hotel</h2>
-                        <h3>{{ number_format($credit_revenue->total_credit ?? 0, 2) }}</h3>
+                        <h3>{{ number_format($credit_revenue_year->total_credit ?? 0, 2) }}</h3>
                     </a>
-
 
                     <a href="#" class="list-box2 list-box-color">
                         <img src="../assets2/images/water-park.png" alt="">
                         <h2>Water park</h2>
-                        <h3>{{ number_format($total_revenue_today->wp_credit ?? 0, 2) }}</h3>
+                        <h3>{{ number_format($total_wp_year->wp_credit ?? 0, 2) }}</h3>
                     </a>
 
                 </div>
@@ -274,8 +276,9 @@
 
         <div class="row g-2">
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="title-box2">
-                    <h1>Manual Charge</h1>
+                <div class="title-box">
+                    <h2>Manual Charge</h2>
+                    <h1>{{ number_format(($sum_charge_year + $wp_charge[0]['total_year']) + ($agoda_charge[0]['revenue_credit_year'] + $ev_charge[0]['revenue_credit_year']), 2) }}</h1>
                 </div>
                 <div class="d-flex align-content-stretch flex-wrap manual"
                     style=" height: 292px; border-radius: 8px !important;">
@@ -284,37 +287,37 @@
                     <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/front.png" alt="">
                         <h2>Credit Card Front Desk</h2>
-                        <h3>{{ number_format($front_charge[0]['revenue_credit_date'], 2) }}</h3>
+                        <h3>{{ number_format($front_charge[0]['revenue_credit_year'], 2) }}</h3>
                     </a>
 
                     <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/guest.png" alt="">
                         <h2>Credit Card Guest Deposit</h2>
-                        <h3>{{ number_format($guest_deposit_charge[0]['revenue_credit_date'], 2) }}</h3>
+                        <h3>{{ number_format($guest_deposit_charge[0]['revenue_credit_year'], 2) }}</h3>
                     </a>
 
                     <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/F&B.png" alt="">
                         <h2>Credit Card All Outlet</h2>
-                        <h3>{{ number_format($fb_charge[0]['revenue_credit_date'], 2) }}</h3>
+                        <h3>{{ number_format($fb_charge[0]['revenue_credit_year'], 2) }}</h3>
                     </a>
 
                     <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/water-park.png" alt="">
                         <h2>Credit Card Water Park</h2>
-                        <h3>{{ number_format($wp_charge[0]['total'], 2) }}</h3>
+                        <h3>{{ number_format($wp_charge[0]['total_year'], 2) }}</h3>
                     </a>
 
                     <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/agoda.png" alt="">
                         <h2>Agoda</h2>
-                        <h3>{{ number_format($agoda_charge[0]['revenue_credit_date'], 2) }}</h3>
+                        <h3>{{ number_format($agoda_charge[0]['revenue_credit_year'], 2) }}</h3>
                     </a>
 
                     <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/elexa.png" alt="">
                         <h2>Elaxa EGAT</h2>
-                        <h3>{{ number_format($ev_charge[0]['revenue_credit_date'], 2) }}</h3>
+                        <h3>{{ number_format($ev_charge[0]['revenue_credit_year'], 2) }}</h3>
                     </a>
 
                 </div>
@@ -323,43 +326,41 @@
 
             <!-- Fee -->
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="title-box2">
-                    <h1>Fee</h1>
+                <div class="title-box">
+                    <h2>Fee</h2>
+                    <h1>{{ number_format((($sum_charge_year == 0 || $credit_revenue_year->total_credit == 0 ? 0 : $sum_charge_year - $credit_revenue_year->total_credit ?? 0)+ $wp_charge[0]['fee_year']) + ($agoda_charge[0]['fee_year'] + $ev_charge[0]['fee_year']), 2) }}</h1>
                 </div>
                 <div class="d-flex align-content-stretch flex-wrap fee"
                     style=" height: 292px; border-radius: 8px !important;">
                     <a href="#" class="list-box5 list-box-color">
                         <img src="../assets2/images/hotel.png" alt="">
                         <h2>Credit Card Hotel Fee</h2>
-                        <h3>{{ number_format($sum_charge == 0 || $credit_revenue->total_credit == 0 ? 0 : $sum_charge - $credit_revenue->total_credit ?? 0, 2) }}</h3>
+                        <h3>{{ number_format($sum_charge_year == 0 || $credit_revenue_year->total_credit == 0 ? 0 : $sum_charge_year - $credit_revenue_year->total_credit ?? 0, 2) }}</h3>
                     </a>
                     <a href="#" class="list-box5 list-box-color">
                         <img src="../assets2/images/water-park.png" alt="">
                         <h2>Credit Card Water Park Fee</h2>
-                        <h3>{{ number_format($wp_charge[0]['fee_date'], 2) }}</h3>
+                        <h3>{{ number_format($wp_charge[0]['fee_year'], 2) }}</h3>
                     </a>
                     <a href="#" class="list-box5 list-box-color">
                         <img src="../assets2/images/agoda.png" alt="">
                         <h2>Agoda Fee</h2>
-                        <h3>{{ number_format($agoda_charge[0]['fee_date'], 2) }}</h3>
+                        <h3>{{ number_format($agoda_charge[0]['fee_year'], 2) }}</h3>
                     </a>
                     <a href="#" class="list-box5 list-box-color">
                         <img src="../assets2/images/elexa.png" alt="">
                         <h2>Elaxa EGAT Fee</h2>
-                        <h3>{{ number_format($ev_charge[0]['fee_date'], 2) }}</h3>
+                        <h3>{{ number_format($ev_charge[0]['fee_year'], 2) }}</h3>
                     </a>
                 </div>
             </div>
 
 
-
-
-
             <!-- Total Revenue Outstanding -->
-
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="title-box2">
-                    <h1>Total Revenue Outstanding</h1>
+                <div class="title-box">
+                    <h2>Total Revenue Outstanding</h2>
+                    <h1>{{ number_format($total_agoda_outstanding + $total_ev_outstanding, 2) }}</h1>
                 </div>
                 <div class="d-flex align-content-stretch flex-wrap trorevenue">
                     <a href="#" class="list-box6 list-box-color">
@@ -387,43 +388,43 @@
                     style=" height: auto; border-radius: 8px !important;">
                     <a href="#" class="list-box7 list-box-color">
                         <h2>Transfer Revenue</h2>
-                        <h3>{{ number_format($total_transfer, 2) }}</h3>
+                        <h3>{{ number_format($total_transfer_year, 2) }}</h3>
                     </a>
 
                     <a href="#" class="list-box7 list-box-color">
                         <h2>Credit Card Hotel <br>
                             Transfer Transaction</h2>
-                        <h3>{{ $total_credit_transaction ?? 0 }}</h3>
+                        <h3>{{ $total_credit_transaction_year ?? 0 }}</h3>
                     </a>
 
                     <a href="#" class="list-box7 list-box-color">
                         <h2>Split Credit Card Hotel Revenue</h2>
-                        <h3>{{ number_format($total_split, 2) }}</h3>
+                        <h3>{{ number_format($total_split_year, 2) }}</h3>
                     </a>
 
                     <a href="#" class="list-box7 list-box-color">
                         <h2>Split Credit Card Hotel Transaction</h2>
-                        <h3>{{ number_format($total_split) }}</h3>
+                        <h3>{{ number_format($total_split_transaction_year) }}</h3>
                     </a>
 
                     <a href="#" class="list-box7 list-box-color">
                         <h2>No Income Revenue</h2>
-                        <h3>{{ number_format($total_not_type_revenue, 2) }}</h3>
+                        <h3>{{ number_format($total_not_type_revenue_year, 2) }}</h3>
                     </a>
 
                     <a href="#" class="list-box7 list-box-color">
                         <h2>Total Transaction</h2>
-                        <h3>{{ number_format($total_revenue_today->total_transaction ?? 0) }}</h3>
+                        <h3>{{ number_format($total_transaction_year->total_transaction ?? 0) }}</h3>
                     </a>
 
                     <a href="#" class="list-box7 list-box-color">
                         <h2>Tranfer Transaction</h2>
-                        <h3>{{ $total_transfer2 }}</h3>
+                        <h3>{{ $total_transfer2_year }}</h3>
                     </a>
 
                     <a href="#" class="list-box7 list-box-color">
                         <h2>No incoming Type</h2>
-                        <h3>{{ $total_not_type ?? 0 }}</h3>
+                        <h3>{{ $total_no_type_year->total_no_type ?? 0 }}</h3>
                     </a>
                 </div>
             </div>
@@ -457,7 +458,6 @@
                     <div class="d-flex align-content-stretch flex-wrap monthly"
                       style="background-color: white; height: auto; border-radius: 8px !important;">
                       <a href="#" class="list-box8 list-box-color">
-                        {{-- <a href="{{ route('revenue-detail', ['verified', $date_current]) }}" class="list-box8"> --}}
                         <h3>{{ $total_verified ?? 0 }}</h3>
                       </a>
                     </div>

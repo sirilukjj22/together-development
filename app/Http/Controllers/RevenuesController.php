@@ -253,7 +253,7 @@ class RevenuesController extends Controller
             wp_cash + wp_transfer + wp_credit as wp_amount,
             room_credit + fb_credit + wp_credit as credit_amount
             "), 'total_credit_agoda', 'total_transaction', 'total_no_type', 'status')->first();
-        $total_transfer = SMS_alerts::whereBetween('date_into', [$from, $to])->where('transfer_status', 1)->sum('amount');
+        $total_transfer = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->sum('amount');
         $total_transfer2 = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->count();
         $total_split = SMS_alerts::where('date_into', date('Y-m-d'))->where('split_status', 1)->sum('amount');
         $total_split_transaction = SMS_alerts::whereBetween('date', [$from, $to])->where('split_status', 1)->count();
@@ -311,6 +311,20 @@ class RevenuesController extends Controller
         $ev_charge = Revenues::getManualEvCharge(date('Y-m-d'), date('m'), date('Y'), 8, 8);
 
         $total_credit_transaction = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('into_account', "708-226792-1")->where('status', 4)->count();
+        $total_credit_transaction_month = SMS_alerts::whereMonth('date_into', date('m'))->whereYear('date_into', date('Y'))->where('into_account', "708-226792-1")->where('status', 4)->count();
+        $total_credit_transaction_year = SMS_alerts::whereYear('date_into', date('Y'))->where('into_account', "708-226792-1")->where('status', 4)->count();
+
+        $total_transfer_month = SMS_alerts::whereDay('date_into', $symbol, date('d'))->whereMonth('date_into', $symbol, date('m'))->whereYear('date_into', date('Y'))->where('transfer_status', 1)->sum('amount');
+        $total_transfer_year = SMS_alerts::whereDate('date_into', '<=', date('Y-m-d'))->where('transfer_status', 1)->sum('amount');
+
+        $total_transfer2_month = SMS_alerts::whereDay('date_into', $symbol, date('d'))->whereMonth('date_into', $symbol, date('m'))->whereYear('date_into', date('Y'))->where('transfer_status', 1)->count();
+        $total_transfer2_year = SMS_alerts::whereDate('date_into', '<=', date('Y-m-d'))->where('transfer_status', 1)->count();
+
+        $total_split_transaction_month = SMS_alerts::whereDay('date_into', $symbol, date('d'))->whereMonth('date_into', $symbol, date('m'))->whereYear('date_into', date('Y'))->where('split_status', 1)->count();
+        $total_split_transaction_year = SMS_alerts::whereDate('date_into', '<=', date('Y-m-d'))->where('split_status', 1)->count();
+
+        $total_split_month = SMS_alerts::whereDay('date_into', $symbol, date('d'))->whereMonth('date_into', $symbol, date('m'))->whereYear('date_into', date('Y'))->where('split_status', 1)->sum('amount');
+        $total_split_year = SMS_alerts::whereDate('date_into', '<=', date('Y-m-d'))->where('split_status', 1)->sum('amount');
 
         $total_transfer_transaction = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('transfer_status', 1)->select(DB::raw("COUNT(id) as transfer_amount"))->first();
         $total_transfer_transaction_month = SMS_alerts::whereDay('date_into', $symbol, date('d'))->whereMonth('date_into', $symbol, date('m'))->whereYear('date_into', date('Y'))->where('transfer_status', 1)->select(DB::raw("COUNT(id) as transfer_amount"))->first();
@@ -320,13 +334,27 @@ class RevenuesController extends Controller
         $total_transaction_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select(DB::raw("SUM(total_transaction) as total_transaction"))->first();
         $total_transaction_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select(DB::raw("SUM(total_transaction) as total_transaction"))->first();
 
-        $total_no_type = Revenues::whereDate('date', date('Y-m-d'))->select('total_no_type')->first();
+        $total_not_type_revenue_month = SMS_alerts::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->where('status', 0)->whereNull('date_into')->sum('amount');
+        $total_not_type_revenue_year = SMS_alerts::whereDate('date', '<=', date('Y-m-d'))->where('status', 0)->whereNull('date_into')->sum('amount');
+
         $total_no_type_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
         $total_no_type_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
 
         // dd($guest_deposit_charge);
 
-        return view('revenue.index', compact(
+        $by_page = 'index';
+
+        if (isset($_GET['byPage']) && @$_GET['byPage'] == 'department') {
+            $by_page = 'index_department';
+        } else {
+            $by_page = 'index';
+        }
+
+        if (isset($_GET['dailyPage']) && @$_GET['dailyPage'] != 'daily') {
+            $by_page = 'index_'.@$_GET['dailyPage'];
+        }
+        
+        return view('revenue.'.$by_page, compact(
             // 'data_revenue',
             // 'data_bill',
             'total_revenue_today', 
@@ -341,9 +369,18 @@ class RevenuesController extends Controller
             // 'total_wp', 
             // 'total_credit', 
             'total_transfer', 
+
             'total_transfer2',
+            'total_transfer2_month',
+            'total_transfer2_year',
+
             'total_split',
+            'total_split_month',
+            'total_split_year',
+
             'total_split_transaction',
+            'total_split_transaction_month',
+            'total_split_transaction_year',
 
             'credit_revenue',
             'credit_revenue_month',
@@ -370,6 +407,11 @@ class RevenuesController extends Controller
             'agoda_charge',
 
             'total_credit_transaction',
+            'total_credit_transaction_month',
+            'total_credit_transaction_year',
+
+            'total_transfer_month',
+            'total_transfer_year',
 
             'total_transfer_transaction',
             'total_transfer_transaction_month',
@@ -391,11 +433,12 @@ class RevenuesController extends Controller
             'total_transaction_month',
             'total_transaction_year',
 
-            'total_no_type',
             'total_no_type_month',
             'total_no_type_year',
 
             'total_not_type_revenue',
+            'total_not_type_revenue_month',
+            'total_not_type_revenue_year'
         ));
     }
 
@@ -936,6 +979,20 @@ class RevenuesController extends Controller
         $wp_charge = Revenues::getManualCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 3, 3);
 
         $total_credit_transaction = SMS_alerts::whereDate('date_into', date($request->year.'-'.$request->month.'-'.$request->day))->where('into_account', "708-226792-1")->where('status', 4)->count();
+        $total_credit_transaction_month = SMS_alerts::whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('into_account', "708-226792-1")->where('status', 4)->count();
+        $total_credit_transaction_year = SMS_alerts::whereYear('date_into', $request->year)->where('into_account', "708-226792-1")->where('status', 4)->count();
+
+        $total_transfer_month = SMS_alerts::whereDay('date_into', $symbol, $day_now)->whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('transfer_status', 1)->sum('amount');
+        $total_transfer_year = SMS_alerts::whereDate('date_into', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->where('transfer_status', 1)->sum('amount');
+
+        $total_transfer2_month = SMS_alerts::whereDay('date_into', $symbol, $day_now)->whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('transfer_status', 1)->count();
+        $total_transfer2_year = SMS_alerts::whereDate('date_into', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->where('transfer_status', 1)->count();
+
+        $total_split_transaction_month = SMS_alerts::whereDay('date_into', $symbol, $day_now)->whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('split_status', 1)->count();
+        $total_split_transaction_year = SMS_alerts::whereDate('date_into', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->where('split_status', 1)->count();
+
+        $total_split_month = SMS_alerts::whereDay('date_into', $symbol, $day_now)->whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('split_status', 1)->sum('amount');
+        $total_split_year = SMS_alerts::whereDate('date_into', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->where('split_status', 1)->sum('amount');
 
         $total_transfer_transaction = SMS_alerts::whereDate('date_into', date($request->year.'-'.$request->month.'-'.$request->day))->where('transfer_status', 1)->select(DB::raw("COUNT(id) as transfer_amount"))->first();
         $total_transfer_transaction_month = SMS_alerts::whereDay('date_into', $symbol, $day_now)->whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('transfer_status', 1)->select(DB::raw("COUNT(id) as transfer_amount"))->first();
@@ -944,6 +1001,9 @@ class RevenuesController extends Controller
         $total_transaction = Revenues::whereDay('date', $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_transaction')->first();
         $total_transaction_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(total_transaction) as total_transaction"))->first();
         $total_transaction_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select(DB::raw("SUM(total_transaction) as total_transaction"))->first();
+
+        $total_not_type_revenue_month = SMS_alerts::whereDay('date', $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->where('status', 0)->whereNull('date_into')->sum('amount');
+        $total_not_type_revenue_year = SMS_alerts::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->where('status', 0)->whereNull('date_into')->sum('amount');
 
         $total_no_type = Revenues::whereDay('date', $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_no_type')->first();
         $total_no_type_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
@@ -961,7 +1021,19 @@ class RevenuesController extends Controller
         // dd($fb_charge);
         // dd($front_charge);
 
-        return view('revenue.index', compact(
+        $by_page = 'index';
+
+        if (isset($_GET['byPage']) && @$_GET['byPage'] == 'department') {
+            $by_page = 'index_department';
+        } else {
+            $by_page = 'index';
+        }
+
+        if (isset($_GET['dailyPage']) && @$_GET['dailyPage'] != 'daily') {
+            $by_page = 'index_'.@$_GET['dailyPage'];
+        }
+
+        return view('revenue.'.$by_page, compact(
             // 'data_revenue',
             // 'data_bill',
             'total_daily_revenue',
@@ -974,9 +1046,18 @@ class RevenuesController extends Controller
             // 'total_wp', 
             // 'total_credit', 
             'total_transfer', 
+
             'total_transfer2',
+            'total_transfer2_month',
+            'total_transfer2_year',
+
             'total_split',
+            'total_split_month',
+            'total_split_year',
+
             'total_split_transaction',
+            'total_split_transaction_month',
+            'total_split_transaction_year',
 
             'credit_revenue',
             'credit_revenue_month',
@@ -1003,6 +1084,11 @@ class RevenuesController extends Controller
             'agoda_charge',
 
             'total_credit_transaction',
+            'total_credit_transaction_month',
+            'total_credit_transaction_year',
+
+            'total_transfer_month',
+            'total_transfer_year',
 
             'total_transfer_transaction',
             'total_transfer_transaction_month',
@@ -1024,6 +1110,8 @@ class RevenuesController extends Controller
             'total_no_type_year',
 
             'total_not_type_revenue',
+            'total_not_type_revenue_month',
+            'total_not_type_revenue_year',
 
             'total_ev_revenue',
             'total_ev_month',
@@ -1103,12 +1191,26 @@ class RevenuesController extends Controller
         $agoda_charge = Revenues::getManualAgodaCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 1, 5);
 
         $total_credit_transaction = SMS_alerts::whereMonth('date', $request->month)->whereYear('date', $request->year)->where('into_account', "708-226792-1")->where('status', 4)->count();
+        $total_credit_transaction_month = SMS_alerts::whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('into_account', "708-226792-1")->where('status', 4)->count();
+        $total_credit_transaction_year = SMS_alerts::whereYear('date_into', $request->year)->where('into_account', "708-226792-1")->where('status', 4)->count();
 
         $total_wp_revenue = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('wp_cash', 'wp_transfer', 'wp_credit')->first();
         $total_wp_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
         $total_wp_year = Revenues::whereYear('date', $request->year)->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
         $wp_charge = Revenues::getManualCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 3, 3);
 
+        $total_transfer_month = SMS_alerts::whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('transfer_status', 1)->sum('amount');
+        $total_transfer_year = SMS_alerts::whereYear('date', $request->year)->where('transfer_status', 1)->sum('amount');
+
+        $total_transfer2_month = SMS_alerts::whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('transfer_status', 1)->count();
+        $total_transfer2_year = SMS_alerts::whereYear('date', $request->year)->where('transfer_status', 1)->count();
+
+        $total_split_transaction_month = SMS_alerts::whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('split_status', 1)->count();
+        $total_split_transaction_year = SMS_alerts::whereYear('date', $request->year)->where('split_status', 1)->count();
+
+        $total_split_month = SMS_alerts::whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('split_status', 1)->sum('amount');
+        $total_split_year = SMS_alerts::whereYear('date', $request->year)->where('split_status', 1)->sum('amount');
+        
         $total_transfer_transaction = SMS_alerts::whereDate('date_into', date($request->year.'-'.$request->month.'-d'))->where('transfer_status', 1)->select(DB::raw("COUNT(id) as transfer_amount"))->first();
         $total_transfer_transaction_month = SMS_alerts::whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('transfer_status', 1)->select(DB::raw("COUNT(id) as transfer_amount"))->first();
         $total_transfer_transaction_year = SMS_alerts::whereYear('date', $request->year)->where('transfer_status', 1)->select(DB::raw("COUNT(id) as transfer_amount"))->first();
@@ -1116,6 +1218,9 @@ class RevenuesController extends Controller
         $total_transaction = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_transaction')->first();
         $total_transaction_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(total_transaction) as total_transaction"))->first();
         $total_transaction_year = Revenues::whereYear('date', $request->year)->select(DB::raw("SUM(total_transaction) as total_transaction"))->first();
+
+        $total_not_type_revenue_month = SMS_alerts::whereMonth('date', $request->month)->whereYear('date', $request->year)->where('status', 0)->whereNull('date_into')->sum('amount');
+        $total_not_type_revenue_year = SMS_alerts::whereYear('date', $request->year)->where('status', 0)->whereNull('date_into')->sum('amount');
 
         $total_no_type = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_no_type')->first();
         $total_no_type_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
@@ -1130,7 +1235,19 @@ class RevenuesController extends Controller
         $total_ev_year = Revenues::whereYear('date', $request->year)->sum('total_elexa');
         $ev_charge = Revenues::getManualEvCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 8, 8);
 
-        return view('revenue.index', compact(
+        $by_page = 'index';
+
+        if (isset($_GET['byPage']) && @$_GET['byPage'] == 'department') {
+            $by_page = 'index_department';
+        } else {
+            $by_page = 'index';
+        }
+
+        if (isset($_GET['dailyPage']) && @$_GET['dailyPage'] != 'daily') {
+            $by_page = 'index_'.@$_GET['dailyPage'];
+        }
+
+        return view('revenue.'.$by_page, compact(
             // 'data_revenue',
             // 'data_bill',
             'total_daily_revenue',
@@ -1143,9 +1260,18 @@ class RevenuesController extends Controller
             // 'total_wp', 
             // 'total_credit', 
             'total_transfer', 
+
             'total_transfer2',
+            'total_transfer2_month',
+            'total_transfer2_year',
+
             'total_split',
+            'total_split_month',
+            'total_split_year',
+            
             'total_split_transaction',
+            'total_split_transaction_month',
+            'total_split_transaction_year',
 
             'credit_revenue',
             'credit_revenue_month',
@@ -1171,6 +1297,9 @@ class RevenuesController extends Controller
             'total_agoda_year',
             'agoda_charge',
 
+            'total_transfer_month',
+            'total_transfer_year',
+
             'total_transfer_transaction',
             'total_transfer_transaction_month',
             'total_transfer_transaction_year',
@@ -1181,6 +1310,8 @@ class RevenuesController extends Controller
             'wp_charge',
 
             'total_credit_transaction',
+            'total_credit_transaction_month',
+            'total_credit_transaction_year',
 
             'total_not_type',
 
@@ -1193,6 +1324,8 @@ class RevenuesController extends Controller
             'total_no_type_year',
 
             'total_not_type_revenue',
+            'total_not_type_revenue_month',
+            'total_not_type_revenue_year',
 
             'total_ev_revenue',
             'total_ev_month',

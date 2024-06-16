@@ -70,7 +70,8 @@ Route::middleware(['auth'])->group(function () {
 
     # Revenue
     Route::controller(RevenuesController::class)->group(function () {
-        Route::get('revenue', 'index')->name('revenue');
+        Route::get('revenue', 'index')->name('revenue'); // By Type
+        Route::get('revenue-department', 'index')->name('revenue-department'); // By Department
         Route::post('revenue-search-calendar', 'search_calendar')->name('revenue-search-calendar');
         Route::post('revenue-store', 'store')->name('revenue-store');
         Route::get('revenue-edit/{id}', 'edit')->name('revenue-edit');

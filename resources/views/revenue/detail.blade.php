@@ -86,12 +86,12 @@
                     <div class="tile">
                         <i class="fas fa-credit-card"></i>
                         <div class="tile-title">Credit Card Front Desk Charge</div>
-                        <div class="tile-text">ค่าธรรมเนียม</div>
+                        <div class="tile-text"></div>
                         <div class="amount">
                             {{ number_format(isset($charge) ? $charge[0]['revenue_credit_date'] : 0, 2) }}</div>
                     </div>
                 </div>
-                <div class="col-md-4 mb-4">
+                {{-- <div class="col-md-4 mb-4">
                     <div class="tile">
                         <i class="fas fa-file-invoice-dollar"></i>
                         <div class="tile-title">Credit Card Front Desk Fee</div>
@@ -107,7 +107,7 @@
                         <div class="amount">
                             {{ number_format(isset($charge) ? $charge[0]['total'] : 0, 2) }}</div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
 
