@@ -343,7 +343,6 @@
     transform: scale(1.1);
   }
 </style>
-
 <form id="myForm" action="{{url('/Quotation/company/document/sheet/'.$Quotation->id)}}" method="POST"enctype="multipart/form-data">
     {!! csrf_field() !!}
     <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">

@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+
     <title>PDF</title>
+
 </head>
 <style>
      @font-face {
@@ -101,18 +103,21 @@ float: left;
     border-bottom: 2px solid #2D7F7B;  /* กำหนดเส้นใต้ */
     padding-bottom: 5px;
     }
+.wrapper-page {
+    page-break-after: always;
+    }
+    @page {
+            header: page-header;
+        }
 </style>
-<header>
-
+<body>
+    {{-- <span  style="float: right">1/3 page</span> --}}
     <div id="logo">
-
         <img src="logo_crop.png">
-
     </div>
-
     <div class="txt-head">
         <div class="add-text" style="line-height:10px;">
-            <b style="font-size:20px;">Together Resort Limited Partnership</b>
+           <b style="font-size:20px;">Together Resort Limited Partnership</b>
 
             <br> <b> 168 Moo 2 Kaengkrachan Phetchaburi 76170</b>
 
@@ -121,9 +126,6 @@ float: left;
             <b> Email : reservation@together-resort.com Website : www.together-resort.com</b>
         </div>
     </div>
-
-</header>
-<body>
     <main>
         <br><br><br><br>
         <b>Subject : </b>ขอเสนอราคาค่าที่พัก อาหาร สัมมนา และ กิจกรรม
@@ -167,8 +169,6 @@ float: left;
         โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน ขอแสดงความขอบคุณที่ท่านเลือก โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน<br>
     ให้ได้รับใช้ท่านในการสำรองห้องพักและการจัดงาน ทางโรงแรมขอเสนอราคาพิเศษ ให้กับหน่วยงานของท่าน ดังนี้<br>
     </div>
-
-
     รายละเอียดการจัดงาน
     <table>
         <tr>
@@ -205,5 +205,47 @@ float: left;
     <div style="margin-left: 60px;line-height:5px;">
         {!! $note->name_th !!}
     </div>
+    {{-- * --}}
+    {{-- <span style="float: right">2/3 page</span> --}}
+    <div id="logo">
+
+        <img src="logo_crop.png">
+
+    </div>
+
+    <div class="txt-head">
+        <div class="add-text" style="line-height:10px;">
+            <b style="font-size:20px;">Together Resort Limited Partnership</b>
+
+            <br> <b> 168 Moo 2 Kaengkrachan Phetchaburi 76170</b>
+
+            <br> <b>Tel : 032-708-888, 098-393-944-4 Fax :</b></br>
+
+            <b> Email : reservation@together-resort.com Website : www.together-resort.com</b>
+        </div>
+    </div>
+    <main>
+        <br><br><br><br>
+        <b>Subject : </b>ขอเสนอราคาค่าที่พัก อาหาร สัมมนา และ กิจกรรม
+        <span  style="float: right"> {{ $date->format('d/m/Y H:i:s') }}</span><b style="float: right">Date :</b>
+    </main>
+    <br>
+    <div style="border: 2px solid #2D7F7B"></div>
+    <br>
+    <div>
+        การยกเลิกและการเปลี่ยนแปลงการจอง
+        <div style="margin-left: 60px;line-height:5px;">
+            {!! $Cancellations->name_th !!}
+        </div>
+        อภินันทนาการทางรีสอร์ท
+        <div style="margin-left: 60px;line-height:5px;">
+            {!! $Complimentary->name_th !!}
+        </div>
+        ทางรีสอร์ทขอสงวนสิทธิ์แก่ผู้ใช้บริการดังนี้
+        <div style="margin-left: 60px;line-height:5px;">
+            {!! $All_rights_reserved->name_th !!}
+        </div>
+    </div>
+
 </body>
 </html>

@@ -177,7 +177,7 @@
                         @if ($role_permisstion->bank == 1)
                             <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('master', 'bank') }}">Bank</a></li>
                         @endif
-                        <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('master', 'bank') }}">Template</a></li>
+                        <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Template.TemplateA1') }}">Template</a></li>
                     </ul>
                 </li>
 
@@ -281,6 +281,7 @@
                         @if ($role_permisstion->bank == 1)
                             <a class="menu2" href="{{ route('master', 'bank') }}">Bank</a>
                         @endif
+                        <a class="menu2" href="{{ route('Template.TemplateA1') }}">Template</a>
                 </div>
             </div>
 

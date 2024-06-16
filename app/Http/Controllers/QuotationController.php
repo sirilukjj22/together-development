@@ -27,7 +27,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Models\master_document_sheet;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\master_template;
 class QuotationController extends Controller
 {
     public function index()
@@ -511,64 +511,8 @@ class QuotationController extends Controller
 
         ]);
     }
-    //-------------------------------ใบปะหน้า-----------------------------
-    public function coverdocument($id)
-    {
-        $Quotation = Quotation::where('id', $id)->first();
-        $Company = $Quotation->Company_ID;
-        $Quotation_ID = $Quotation->Quotation_ID;
-        $eventformat = $Quotation->eventformat;
-        $Company_ID = companys::where('Profile_ID',$Company)->first();
-        $Company_typeID=$Company_ID->Company_type;
-        $CityID=$Company_ID->City;
-        $amphuresID = $Company_ID->Amphures;
-        $TambonID = $Company_ID->Tambon;
-        $Company_type = master_document::where('id',$Company_typeID)->select('name_th','id')->first();
-        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
-        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
-        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-        $company_fax = company_fax::where('Profile_ID',$Company)->where('Sequence','main')->first();
-        $company_phone = company_phone::where('Profile_ID',$Company)->where('Sequence','main')->first();
-        $Contact_name = representative::where('Company_ID',$Company)->where('status',1)->first();
-        $Contact_phone = representative_phone::where('Company_ID',$Company)->where('Sequence','main')->first();
-        $eventformat = MasterEventFormate::where('id',$eventformat)->select('name_th','id')->first();
 
 
-        $date = Carbon::now();
-        $sheet = master_document_sheet::select('topic','name_th','id')->get();
-        $Reservation_show = $sheet->where('topic', 'Reservation')->first();
-        $Paymentterms = $sheet->where('topic', 'Paymentterms')->first();
-        $note = $sheet->where('topic', 'note')->first();
-        $Cancellations = $sheet->where('topic', 'Cancellations')->first();
-        $Complimentary = $sheet->where('topic', 'Complimentary')->first();
-        $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->first();
-
-        return view('quotation.document',compact('Quotation','Company_ID','Company_type','provinceNames','amphuresID','TambonID','company_fax','company_phone',
-        'Contact_name','Contact_phone','date','eventformat','Reservation_show','Paymentterms','note','Cancellations','Complimentary','All_rights_reserved'));
-    }
-    public function sheet(Request $request,$id)
-    {
-        $data=$request->all();
-        $data = [
-            "Reservation" => $request->input('Reservation'),
-            "Paymentterms" => $request->input('Paymentterms'),
-            "note" => $request->input('note'),
-            "Cancellations" => $request->input('Cancellations'),
-            "Complimentary" => $request->input('Complimentary'),
-            "All_rights_reserved" => $request->input('All_rights_reserved'),
-        ];
-        master_document_sheet::truncate();
-        foreach ($data as $key => $value) {
-            DB::table('master_document_sheet')->insert([
-                'topic' => $key,
-                'name_th' => $value,
-                'name_en' => $value,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
-        return redirect()->back()->with('alert_', 'บันทึกใบปะหน้า');
-    }
     public function sheetpdf($id) {
         $Quotation = Quotation::where('id', $id)->first();
         $Company = $Quotation->Company_ID;
@@ -598,14 +542,17 @@ class QuotationController extends Controller
         $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
         $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
         $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-        $sheet = master_document_sheet::select('topic','name_th','id')->get();
-        $Reservation_show = $sheet->where('topic', 'Reservation')->first();
-        $Paymentterms = $sheet->where('topic', 'Paymentterms')->first();
-        $note = $sheet->where('topic', 'note')->first();
-        $Cancellations = $sheet->where('topic', 'Cancellations')->first();
-        $Complimentary = $sheet->where('topic', 'Complimentary')->first();
-        $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->first();
+        $template = master_template::query()->latest()->first();
+        $CodeTemplate = $template->CodeTemplate;
+        $sheet = master_document_sheet::select('topic','name_th','id','CodeTemplate')->get();
+        $Reservation_show = $sheet->where('topic', 'Reservation')->where('CodeTemplate',$CodeTemplate)->first();
+        $Paymentterms = $sheet->where('topic', 'Paymentterms')->where('CodeTemplate',$CodeTemplate)->first();
+        $note = $sheet->where('topic', 'note')->where('CodeTemplate',$CodeTemplate)->first();
+        $Cancellations = $sheet->where('topic', 'Cancellations')->where('CodeTemplate',$CodeTemplate)->first();
+        $Complimentary = $sheet->where('topic', 'Complimentary')->where('CodeTemplate',$CodeTemplate)->first();
+        $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->where('CodeTemplate',$CodeTemplate)->first();
         $date = Carbon::now();
+
         $data = [
             'date' => $date,
             'comtypefullname'=>$comtypefullname,
@@ -627,8 +574,8 @@ class QuotationController extends Controller
             'Complimentary'=>$Complimentary,
             'All_rights_reserved'=>$All_rights_reserved,
         ];
-
-        $pdf = FacadePdf::loadView('quotation.document_sheet',$data);
+        $view= $template->name;
+        $pdf = FacadePdf::loadView('quotation.'.$view,$data);
         return $pdf->stream();
     }
 }

@@ -20,6 +20,7 @@ use App\Http\Controllers\FreelancerCheckedController;
 use App\Http\Controllers\FreelancerMemberController;
 use App\Http\Controllers\MasterEventFormatController;
 use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\Master_TemplateController;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -328,9 +329,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProductselect', 'addProductselect')->name('Quotation.addProductselect');
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('Quotation.addProducttablecreatemain');
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
-        Route::get('/Quotation/Quotation/cover/document/{id}', 'coverdocument')->name('Quotation.coverdocument');
         Route::get('/Quotation/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('Quotation.sheet');
-        Route::post('/Quotation/company/document/sheet/{id}', 'sheet')->name('Quotation.sheet');
+    });
+
+    ##-------------------------------TemplateController-----------------
+    Route::controller(Master_TemplateController::class)->group(function () {
+        Route::get('/Template/PDF/Template', 'TemplateA1')->name('Template.TemplateA1');
+        Route::post('/Template/PDF/Template/save', 'save')->name('Template.save');
+        Route::post('/Template/PDF/document/sheet/savetemplate','savesheet')->name('Template.savesheet');
     });
 
 Route::get('/clear-cache', function () {
