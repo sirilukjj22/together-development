@@ -217,8 +217,8 @@
                 <!-- Credit -->
                 <div class="title-box">
                     <h2>Credit Card</h2>
-                    <h1>{{ number_format(($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0), 2) }}</h1>
-                    <input type="hidden" id="total_credit_dashboard" value="{{ ($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0) }}">
+                    <h1>{{ number_format(($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_credit ?? 0), 2) }}</h1>
+                    <input type="hidden" id="total_credit_dashboard" value="{{ ($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_credit ?? 0) }}">
                 </div>
 
                 <div class="d-flex align-content-stretch flex-wrap creditrevenue">
