@@ -1,67 +1,57 @@
 @extends('layouts.test')
 
 @section('content')
-<style>
-    .revenue-card {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-        margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-    .card-header {
-        font-weight: bold;
-        border-radius: 10px 10px 0 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        background-color: #109699;
-        color: #fff;
-    }
-    .card-body {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-    .list-group {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        margin: 1%;
-    }
-    .list-group-item {
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        margin-bottom: 10px;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        flex-direction: column;
-        flex-grow: 1;
-    }
-    .list-group-item:hover {
-        background-color: #f1f1f1;
-    }
-    .icon {
-        margin-bottom: 5px;
-    }
-    .flex-stretch {
-        flex: 1;
-    }
 
-    @media screen and (max-width: 800px) {
-        .mbmt{
-            padding-top: 50px;
-        }
-    }
-</style>
     <div class="container-fluid pt-3 pb-3 mb-3 mt-3 rounded bg-light" style="width: 98%;">
+
+        <style>
+            .logo img {
+          height: auto;
+        }
+
+        img {
+          display: block;
+          margin: auto;
+          width: 40px;
+          height: 40px;
+          object-fit: cover;
+        }
+
+        .row {
+          margin-bottom: 10px;
+        }
+
+        #myChart {
+          width: 260px !important;
+          height: 260px !important;
+          display: block;
+          margin: auto;
+        }
+
+        .select2 {
+          width: 100% !important;
+          margin: 0 !important;
+        }
+
+        .select2-container .select2-selection--single {
+          height: 40px !important;
+          margin-top: 0 !important;
+        }
+
+        .select2-selection__arrow {
+          height: 0px !important;
+        }
+
+        .select2-selection__rendered {
+          line-height: 20px !important;
+        }
+</style>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"
+            integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
         <?php
             if (isset($day)) {
                 $date_current = $year."-".$month."-".$day; 
@@ -87,6 +77,9 @@
             $monthly_revenue = ($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) - $agoda_charge[0]['total'];
 
             $sum_charge =  $front_charge[0]['revenue_credit_date'] + $guest_deposit_charge[0]['revenue_credit_date'] + $fb_charge[0]['revenue_credit_date'];
+
+            $sum_charge_year =  $front_charge[0]['revenue_credit_year'] + $guest_deposit_charge[0]['revenue_credit_year'] + $fb_charge[0]['revenue_credit_year'];
+            $sum_fee_year =  $front_charge[0]['fee_year'] + $guest_deposit_charge[0]['fee_year'] + $fb_charge[0]['fee_year'];
         ?>
 
         <?php 
@@ -107,21 +100,12 @@
             $total_cash_bank_year = $total_cash_year + $total_bank_transfer_year;
 
             $total_today_revenue_graph = $total_day + ($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0);
-
-            // By Department
-            $total_front_dep = ($total_front_revenue->front_cash ?? 0) + ($total_front_revenue->front_transfer ?? 0) + $front_charge[0]['revenue_credit_month'] + $front_charge[0]['fee_month'] + $front_charge[0]['total_month'];
-            $total_guest_dep = ($total_guest_deposit->room_cash ?? 0) + ($total_guest_deposit->room_transfer ?? 0) + $guest_deposit_charge[0]['revenue_credit_month'] + $guest_deposit_charge[0]['fee_month'] + $guest_deposit_charge[0]['total_month'];
-            $total_all_outlet_dep = ($total_fb_revenue->fb_cash ?? 0) + ($total_fb_revenue->fb_transfer ?? 0) + $fb_charge[0]['revenue_credit_month'] + $fb_charge[0]['fee_month'] + $fb_charge[0]['total_month'];
-            $total_wp_dep = ($total_wp_revenue->wp_cash ?? 0) + ($total_wp_revenue->wp_transfer ?? 0) + $wp_charge[0]['revenue_credit_month'] + $wp_charge[0]['fee_month'] + $wp_charge[0]['total_month'];
-
-            $sum_charge_month =  $front_charge[0]['revenue_credit_month'] + $guest_deposit_charge[0]['revenue_credit_month'] + $fb_charge[0]['revenue_credit_month'];
-            $sum_fee_month =  $front_charge[0]['fee_month'] + $guest_deposit_charge[0]['fee_month'] + $fb_charge[0]['fee_month'];
         ?>
 
-        <div class="row mt-3 mb-3">
+        <div class="row mt-3 mb-0">
             <?php $date = date('Y-m-d'); ?>
             <div class="col-lg-6 col-md-12 col-sm-12">
-            <h3>Daily Revenue by Department</h3>
+            <h3>Daily Revenue by Type</h3>
             </div>
             <div class="col-lg-6 col-md-12 col-sm-12">
                 <div class="">
@@ -129,9 +113,9 @@
                         Daily
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#">Daily</a></li>
-                        <li><a class="dropdown-item" href="#">M-T-D</a></li>
-                        <li><a class="dropdown-item" href="#">Y-T-D</a></li>
+                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'daily']) }}">Daily</a></li>
+                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'mtd']) }}">M-T-D</a></li>
+                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'ytd']) }}">Y-T-D</a></li>
                     </ul>
                 </div>
 
@@ -161,438 +145,344 @@
                 เพิ่มข้อมูลเงินสด / เครดิต
                 </button>
             </div>
+    </div>
+
+        <div class="row mt-1 g-2">
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div style="background-color: white; height:auto; border-radius: 8px !important;">
+                    <div class="donut-graph">
+                        <canvas id="myChart"></canvas>
+                        <div class="percent" style="text-align: left; width:auto; display: block; margin-left: 30px;">
+                            <h6 style=" float: left; width: 60%;"><i style="color: deepskyblue; margin-right: 10px;"
+                                    class="fa-solid fa-square"></i>CASH</h6>
+                            <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_cash + $total_wp_revenue->wp_cash) / $total_today_revenue_graph * 100), 2) }}%</h6>
+                            <h6 style="float: left;width: 60%;"><i style="color: hotpink; margin-right: 10px;"
+                                    class="fa-solid fa-square"></i>Bank Transfer</h6>
+                            <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_bank_transfer + $total_wp_revenue->wp_transfer) / $total_today_revenue_graph * 100), 2) }}%</h6>
+                            <h6 style="float: left;width: 60%;"><i style="color: orange; margin-right: 10px;"
+                                    class="fa-solid fa-square"></i>Credit Card</h6>
+                            <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : ((($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0)) / $total_today_revenue_graph * 100), 2) }}%</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <!-- CASH -->
+
+                <input type="hidden" id="total_revenue_dashboard" value="{{ number_format($total_today_revenue_graph, 2) }}">
+
+                <div class="title-box">
+                    <h2>Cash</h2>
+                    <h1>{{ number_format($total_cash_year + $total_wp_year->wp_cash, 2) }}</h1>
+                    <input type="hidden" id="total_cash_dashboard" value="{{ $total_cash_year + $total_wp_year->wp_cash }}">
+                </div>
+
+                <div class="d-flex align-content-stratch flex-wrap cash"
+                    style=" height:330px; border-radius: 8px !important;">
+                    <a href="#" class="list-box list-box-color">
+                        <img src="../assets2/../assets2/images/front.png" alt="">
+                        <h2>Front Desk</h2>
+                        <h3>{{ number_format(isset($total_front_year) ? $total_front_year->front_cash : 0, 2) }}</h3>
+                    </a>
+                    <a href="#" class="list-box list-box-color">
+                        <img src="../assets2/../assets2/images/guest.png" alt="">
+                        <h2>Guest Deposit</h2>
+                        <h3>{{ number_format(isset($total_guest_deposit_year) ? $total_guest_deposit_year->room_cash : 0, 2) }}</h3>
+                    </a>
+                    <a href="#" class="list-box list-box-color">
+                        <img src="../assets2/../assets2/images/F&B.png" alt="">
+                        <h2>All Outlet </h2>
+                        <h3>{{ number_format($total_fb_year->fb_cash, 2) }}</h3>
+                    </a>
+                    <a href="#" class="list-box list-box-color">
+                        <img src="../assets2/../assets2/images/water-park.png" alt="">
+                        <h2>Water Park</h2>
+                        <h3>{{ number_format($total_wp_year->wp_cash, 2) }}</h3>
+                    </a>
+                </div>
+            </div>
+
+
+            <div class="col-lg-3 col-md-6 col-sm-12 ">
+                <!-- BANK TRANSFER -->
+                <div class="title-box">
+                    <h2>Bank Transfer</h2>
+                    <h1>{{ number_format($total_bank_transfer_year + $total_wp_year->wp_transfer + ($total_agoda_year + $total_ev_year), 2) }}</h1>
+                    <input type="hidden" id="total_bank_dashboard" value="{{ ($total_bank_transfer_year + $total_wp_year->wp_transfer) + ($total_agoda_year + $total_ev_year) }}">
+                </div>
+                <div class="d-flex align-content-stretch flex-wrap bank"
+                    style=" height: 330px; border-radius: 8px !important;">
+                    <a href="#" class="list-box3 list-box-color">
+                        <img src="../assets2/images/front.png" alt="">
+                        <h2>Front Desk</h2>
+                        <h3>{{ number_format(isset($total_front_year) ? $total_front_year->front_transfer : 0, 2) }}</h3>
+                    </a>
+                    <a href="#" class="list-box3 list-box-color">
+                        <img src="../assets2/images/guest.png" alt="">
+                        <h2>Guest Deposit</h2>
+                        <h3>{{ number_format(isset($total_guest_deposit_year) ? $total_guest_deposit_year->room_transfer : 0, 2) }}</h3>
+                    </a>
+                    <a href="#" class="list-box3 list-box-color">
+                        <img src="../assets2/images/F&B.png" alt="">
+                        <h2>All Outlet</h2>
+                        <h3>{{ number_format($total_fb_year->fb_transfer, 2) }}</h3>
+                    </a>
+                    <a href="#" class="list-box3 list-box-color">
+                        <img src="../assets2/images/water-park.png" alt="">
+                        <h2>Water Park</h2>
+                        <h3>{{ number_format($total_wp_year->wp_transfer, 2) }}</h3>
+                    </a>
+                    <a href="#" class="list-box3 list-box-color">
+                        <img src="../assets2/images/agoda.png" alt="">
+                        <h2>Agoda</h2>
+                        <h3>{{ number_format($total_agoda_year, 2) }}</h3>
+                    </a>
+                    <a href="#" class="list-box3 list-box-color">
+                        <img src="../assets2/images/elexa.png" alt="">
+                        <h2>Elexa EGAT</h2>
+                        <h3>{{ number_format($total_ev_year, 2) }}</h3>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <!-- Credit -->
+                <div class="title-box">
+                    <h2>Credit Card</h2>
+                    <h1>{{ number_format(($credit_revenue_year->total_credit ?? 0) + ($total_wp_year->wp_credit ?? 0), 2) }}</h1>
+                    <input type="hidden" id="total_credit_dashboard" value="{{ ($credit_revenue_year->total_credit ?? 0) + ($total_wp_year->wp_credit ?? 0) }}">
+                </div>
+
+                <div class="d-flex align-content-stretch flex-wrap creditrevenue">
+                    <a href="#" class="list-box2 list-box-color">
+                        <img src="../assets2/images/hotel.png" alt="">
+                        <h2>Hotel</h2>
+                        <h3>{{ number_format($credit_revenue_year->total_credit ?? 0, 2) }}</h3>
+                    </a>
+
+                    <a href="#" class="list-box2 list-box-color">
+                        <img src="../assets2/images/water-park.png" alt="">
+                        <h2>Water park</h2>
+                        <h3>{{ number_format($total_wp_year->wp_credit ?? 0, 2) }}</h3>
+                    </a>
+
+                </div>
+            </div>
         </div>
 
+
+        <!-- Manual Charge -->
+
+
         <div class="row g-2">
-            <!-- Donut Chart Column -->
-            <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="card revenue-card h-100">
-                    <div class="card-header">Revenue Distribution</div>
-                    <div class="card-body d-flex align-items-center">
-                        <canvas id="revenueChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            <!-- Cash Revenue Column -->
-            <div class="row g-2">
-            <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="card revenue-card h-100">
-                    <div class="card-header">
-                        <img src="../assets2/../assets2/images/front.png" alt="" width="30">
-                        <span>Front Desk</span>
-                        <span>
-                            {{ number_format($total_front_dep ?? 0, 2) }}
-                        </span>
-                    </div>
-                    <div class="card-body py-1 d-flex flex-column">
-                        <div class="row flex-grow-1">
-                            <div class="col-12 py-0 px-1 d-flex flex-column">
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Cash</span>
-                                        <span>{{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_cash : 0, 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Bank Transfer</span>
-                                        <span>{{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_transfer : 0, 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Charge</span>
-                                        <span>{{ number_format($front_charge[0]['revenue_credit_month'], 2) }}</span>
-                                    </li>
-                                </ul>
-
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Fee</span>
-                                        <span>{{ number_format($front_charge[0]['fee_month'], 2) }}</span>
-                                    </li>
-                                </ul>
-
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Revenue</span>
-                                        <span>{{ number_format($front_charge[0]['total_month'], 2) }}</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Bank Revenue Column -->
-            <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="card revenue-card h-100">
-                    <div class="card-header">
-                        <img src="../assets2/../assets2/images/guest.png" alt="" width="30">
-                        <span>Guest Deposit</span>
-                        <span>
-                            {{ number_format($total_guest_dep ?? 0, 2) }}
-                        </span>
-                    </div>
-                    <div class="card-body py-1 d-flex flex-column">
-                        <div class="row flex-grow-1">
-                            <div class="col-12 py-0 px-1 d-flex flex-column">
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Cash</span>
-                                        <span>{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_cash : 0, 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Bank Transfer</span>
-                                        <span>{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_transfer : 0, 2) }}</span>
-                                    </li>
-                                </ul>
-                                {{-- <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Charge</span>
-                                        <span>{{ number_format($guest_deposit_charge[0]['revenue_credit_month'], 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Fee</span>
-                                        <span>{{ number_format($guest_deposit_charge[0]['fee_month'], 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Revenue</span>
-                                        <span>{{ number_format($guest_deposit_charge[0]['total_month'], 2) }}</span>
-                                    </li>
-                                </ul> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Credit Card Revenue Column -->
-            <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="card revenue-card h-100">
-                    <div class="card-header">
-                        <span>All Outlet <br> Revenue</span>
-                        <span>
-                            {{ number_format($total_all_outlet_dep ?? 0, 2) }}
-                        </span>
-                    </div>
-                    <div class="card-body py-1 d-flex flex-column">
-                        <div class="row flex-grow-1">
-                            <div class="col-12 py-0 px-1 d-flex flex-column">
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Cash</span>
-                                        <span>{{ number_format(isset($total_fb_revenue) ? $total_fb_revenue->fb_cash : 0, 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Bank Transfer</span>
-                                        <span>{{ number_format(isset($total_fb_revenue) ? $total_fb_revenue->fb_transfer : 0, 2) }}</span>
-                                    </li>
-                                </ul>
-                                {{-- <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Charge</span>
-                                        <span>{{ number_format($fb_charge[0]['revenue_credit_month'], 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Fee</span>
-                                        <span>{{ number_format($fb_charge[0]['fee_month'], 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Revenue</span>
-                                        <span>{{ number_format($fb_charge[0]['total_month'], 2) }}</span>
-                                    </li>
-                                </ul> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="card revenue-card h-100">
-                    <div class="card-header">
-                        <span>Water Park Revenue</span>
-                        <span>
-                            {{ number_format($total_wp_dep ?? 0, 2) }}
-                        </span>
-                    </div>
-                    <div class="card-body py-1 d-flex flex-column">
-                        <div class="row flex-grow-1">
-                            <div class="col-12 py-0 px-1 d-flex flex-column">
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Cash</span>
-                                        <span>{{ number_format(isset($total_wp_revenue) ? $total_wp_revenue->wp_cash : 0, 2) }}</span>
-                                    </li>
-                                </ul>
-
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Bank Transfer</span>
-                                        <span>{{ number_format(isset($total_wp_revenue) ? $total_wp_revenue->wp_transfer : 0, 2) }}</span>
-                                    </li>
-                                </ul>
-                                {{-- <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Charge</span>
-                                        <span>{{ number_format($wp_charge[0]['revenue_credit_month'], 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Fee</span>
-                                        <span>{{ number_format($wp_charge[0]['fee_month'], 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-row justify-content-between align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Revenue</span>
-                                        <span>{{ number_format($wp_charge[0]['total_month'], 2) }}</span>
-                                    </li>
-                                </ul> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="title-box2">
-                    <h1>Manual Charge</h1>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="title-box">
+                    <h2>Manual Charge</h2>
+                    <h1>{{ number_format(($sum_charge_year + $wp_charge[0]['total_year']) + ($agoda_charge[0]['revenue_credit_year'] + $ev_charge[0]['revenue_credit_year']), 2) }}</h1>
                 </div>
                 <div class="d-flex align-content-stretch flex-wrap manual"
                     style=" height: 292px; border-radius: 8px !important;">
 
 
-                    <a href="{{ route('revenue-detail', ['front', $date_current]) }}}" class="list-box4">
+                    <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/front.png" alt="">
                         <h2>Credit Card Front Desk</h2>
-                        <h3>{{ number_format($front_charge[0]['revenue_credit_date'], 2) }}</h3>
+                        <h3>{{ number_format($front_charge[0]['revenue_credit_year'], 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['room', $date_current]) }}" class="list-box4">
+                    <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/guest.png" alt="">
                         <h2>Credit Card Guest Deposit</h2>
-                        <h3>{{ number_format($guest_deposit_charge[0]['revenue_credit_date'], 2) }}</h3>
+                        <h3>{{ number_format($guest_deposit_charge[0]['revenue_credit_year'], 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['fb', $date_current]) }}" class="list-box4">
+                    <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/F&B.png" alt="">
                         <h2>Credit Card All Outlet</h2>
-                        <h3>{{ number_format($fb_charge[0]['revenue_credit_date'], 2) }}</h3>
+                        <h3>{{ number_format($fb_charge[0]['revenue_credit_year'], 2) }}</h3>
                     </a>
 
-                    {{-- <a href="{{ route('revenue-detail', ['wp', $date_current]) }}" class="list-box4">
+                    <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/water-park.png" alt="">
                         <h2>Credit Card Water Park</h2>
-                        <h3>{{ number_format($wp_charge[0]['total'], 2) }}</h3>
+                        <h3>{{ number_format($wp_charge[0]['total_year'], 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['agoda_charge', $date_current]) }}" class="list-box4">
+                    <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/agoda.png" alt="">
                         <h2>Agoda</h2>
-                        <h3>{{ number_format($agoda_charge[0]['revenue_credit_date'], 2) }}</h3>
+                        <h3>{{ number_format($agoda_charge[0]['revenue_credit_year'], 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['elexa', $date_current]) }}" class="list-box4">
+                    <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/elexa.png" alt="">
                         <h2>Elaxa EGAT</h2>
-                        <h3>{{ number_format($ev_charge[0]['revenue_credit_date'], 2) }}</h3>
-                    </a> --}}
+                        <h3>{{ number_format($ev_charge[0]['revenue_credit_year'], 2) }}</h3>
+                    </a>
 
                 </div>
             </div>
 
-            <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="card revenue-card h-100">
-                    <div class="card-header">
-                        <span>Credit Card Revenue</span>
-                        <span>{{ number_format($sum_charge_month + $sum_fee_month, 2) }}</span>
-                    </div>
-                    <div class="card-body py-1 d-flex flex-column">
-                        <div class="row flex-grow-1">
-                            <div class="col-12 py-0 px-1 d-flex flex-column">
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Hotel Manual Charge</span>
-                                        <span>{{ number_format($sum_charge_month, 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Fee</span>
-                                        <span>{{ number_format($sum_fee_month, 2) }}</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="card revenue-card h-100">
-                    <div class="card-header">
-                        <span>Agoda Revenue</span>
-                        <span>{{ number_format($agoda_charge[0]['revenue_credit_month'] + $agoda_charge[0]['fee_month'], 2) }}</span>
-                    </div>
-                    <div class="card-body py-1 d-flex flex-column">
-                        <div class="row flex-grow-1">
-                            <div class="col-12 py-0 px-1 d-flex flex-column">
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Hotel Manual Charge</span>
-                                        <span>{{ number_format($agoda_charge[0]['revenue_credit_month'], 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Fee</span>
-                                        <span>{{ number_format($agoda_charge[0]['fee_month'], 2) }}</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="card revenue-card h-100">
-                    <div class="card-header">
-                        <span>Elexa EGAT Revenue</span>
-                        <span>{{ number_format($ev_charge[0]['revenue_credit_month'] + $ev_charge[0]['fee_month'], 2) }}</span>
-                    </div>
-                    <div class="card-body py-1 d-flex flex-column">
-                        <div class="row flex-grow-1">
-                            <div class="col-12 py-0 px-1 d-flex flex-column">
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Hotel Manual Charge</span>
-                                        <span>{{ number_format($ev_charge[0]['revenue_credit_month'], 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Fee</span>
-                                        <span>{{ number_format($ev_charge[0]['fee_month'], 2) }}</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+            <!-- Fee -->
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card revenue-card h-100">
-                    <div class="card-header">
-                        <span>Total Revenue Outstanding</span>
-                        <span>{{ number_format($total_agoda_outstanding + $total_ev_outstanding, 2) }}</span>
-                    </div>
-                    <div class="card-body py-1 d-flex flex-column">
-                        <div class="row flex-grow-1">
-                            <div class="col-12 py-0 px-1 d-flex flex-column">
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Agoda Revenue Outstanding</span>
-                                        <span>{{ number_format($total_agoda_outstanding, 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Elaxa EGAT Revenue Outstanding</span>
-                                        <span>{{ number_format($total_ev_outstanding, 2) }}</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                <div class="title-box">
+                    <h2>Fee</h2>
+                    <h1>{{ number_format((($sum_charge_year == 0 || $credit_revenue_year->total_credit == 0 ? 0 : $sum_charge_year - $credit_revenue_year->total_credit ?? 0)+ $wp_charge[0]['fee_year']) + ($agoda_charge[0]['fee_year'] + $ev_charge[0]['fee_year']), 2) }}</h1>
+                </div>
+                <div class="d-flex align-content-stretch flex-wrap fee"
+                    style=" height: 292px; border-radius: 8px !important;">
+                    <a href="#" class="list-box5 list-box-color">
+                        <img src="../assets2/images/hotel.png" alt="">
+                        <h2>Credit Card Hotel Fee</h2>
+                        <h3>{{ number_format($sum_charge_year == 0 || $credit_revenue_year->total_credit == 0 ? 0 : $sum_charge_year - $credit_revenue_year->total_credit ?? 0, 2) }}</h3>
+                    </a>
+                    <a href="#" class="list-box5 list-box-color">
+                        <img src="../assets2/images/water-park.png" alt="">
+                        <h2>Credit Card Water Park Fee</h2>
+                        <h3>{{ number_format($wp_charge[0]['fee_year'], 2) }}</h3>
+                    </a>
+                    <a href="#" class="list-box5 list-box-color">
+                        <img src="../assets2/images/agoda.png" alt="">
+                        <h2>Agoda Fee</h2>
+                        <h3>{{ number_format($agoda_charge[0]['fee_year'], 2) }}</h3>
+                    </a>
+                    <a href="#" class="list-box5 list-box-color">
+                        <img src="../assets2/images/elexa.png" alt="">
+                        <h2>Elaxa EGAT Fee</h2>
+                        <h3>{{ number_format($ev_charge[0]['fee_year'], 2) }}</h3>
+                    </a>
                 </div>
             </div>
-            <div class="col-lg-8 col-md-6 col-sm-12">
-                <div class="card revenue-card h-100">
-                    <div class="card-header">
-                        <span>Type</span>
-                        <span></span>
-                    </div>
-                    <div class="card-body py-1 d-flex flex-column">
-                        <div class="row flex-grow-1">
-                            <div class="col-6 py-0 px-1 d-flex flex-column">
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Transfer Revenue</span>
-                                        <span>{{ number_format($total_transfer, 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Split Credit Card Hotel Revenue</span>
-                                        <span>{{ number_format($total_split, 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>No Income Revenue</span>
-                                        <span>{{ number_format($total_not_type_revenue, 2) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Tranfer Transaction</span>
-                                        <span>{{ $total_transfer2 }}</span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-6 py-0 px-1 d-flex flex-column">
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Credit Card Hotel Transfer Transaction</span>
-                                        <span>{{ $total_credit_transaction ?? 0 }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Split Credit Card Hotel Transaction</span>
-                                        <span>{{ number_format($total_split) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>Total Transaction</span>
-                                        <span>{{ number_format($total_revenue_today->total_transaction ?? 0) }}</span>
-                                    </li>
-                                </ul>
-                                <ul class="list-group flex-grow-1">
-                                    <li class="list-group-item d-flex flex-column justify-content-center align-items-center flex-grow-1" onclick="window.location.href='#';">
-                                        <span>No incoming Type</span>
-                                        <span>{{ $total_not_type ?? 0 }}</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+
+
+            <!-- Total Revenue Outstanding -->
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="title-box">
+                    <h2>Total Revenue Outstanding</h2>
+                    <h1>{{ number_format($total_agoda_outstanding + $total_ev_outstanding, 2) }}</h1>
+                </div>
+                <div class="d-flex align-content-stretch flex-wrap trorevenue">
+                    <a href="#" class="list-box6 list-box-color">
+                        <img src="../assets2/images/agoda.png" alt="">
+                        <h2>Credit Card Agoda Revenue Outstanding</h2>
+                        <h3>{{ number_format($total_agoda_outstanding, 2) }}</h3>
+                    </a>
+
+                    <a href="#" class="list-box6 list-box-color">
+                        <img src="../assets2/images/elexa.png" alt="">
+                        <h2>Elaxa EGAT Revenue Outstanding</h2>
+                        <h3>{{ number_format($total_ev_outstanding, 2) }}</h3>
+                    </a>
+
                 </div>
             </div>
         </div>
 
-        @if (session("success"))
-            <div class="container p-0 rounded">
-                <div class="alert alert-success" role="alert">
-                    <h4 class="alert-heading">บันทึกสำเร็จ</h4>
-                    <i class="fa-regular fa-circle-check">&nbsp;</i>{{ session('success') }}
+        <div class="row g-2">
+            <div class="col-lg-6 col-md-12 col-sm-12">
+                <div class="title-box2">
+                    <h1>Type</h1>
+                </div>
+                <div class="d-flex align-content-stretch flex-wrap type"
+                    style=" height: auto; border-radius: 8px !important;">
+                    <a href="#" class="list-box7 list-box-color">
+                        <h2>Transfer Revenue</h2>
+                        <h3>{{ number_format($total_transfer_year, 2) }}</h3>
+                    </a>
+
+                    <a href="#" class="list-box7 list-box-color">
+                        <h2>Credit Card Hotel <br>
+                            Transfer Transaction</h2>
+                        <h3>{{ $total_credit_transaction_year ?? 0 }}</h3>
+                    </a>
+
+                    <a href="#" class="list-box7 list-box-color">
+                        <h2>Split Credit Card Hotel Revenue</h2>
+                        <h3>{{ number_format($total_split_year, 2) }}</h3>
+                    </a>
+
+                    <a href="#" class="list-box7 list-box-color">
+                        <h2>Split Credit Card Hotel Transaction</h2>
+                        <h3>{{ number_format($total_split_transaction_year) }}</h3>
+                    </a>
+
+                    <a href="#" class="list-box7 list-box-color">
+                        <h2>No Income Revenue</h2>
+                        <h3>{{ number_format($total_not_type_revenue_year, 2) }}</h3>
+                    </a>
+
+                    <a href="#" class="list-box7 list-box-color">
+                        <h2>Total Transaction</h2>
+                        <h3>{{ number_format($total_transaction_year->total_transaction ?? 0) }}</h3>
+                    </a>
+
+                    <a href="#" class="list-box7 list-box-color">
+                        <h2>Tranfer Transaction</h2>
+                        <h3>{{ $total_transfer2_year }}</h3>
+                    </a>
+
+                    <a href="#" class="list-box7 list-box-color">
+                        <h2>No incoming Type</h2>
+                        <h3>{{ $total_no_type_year->total_no_type ?? 0 }}</h3>
+                    </a>
                 </div>
             </div>
-        @endif
+
+            @if (Auth::user()->permission > 0)
+                <div class="col-lg-3 col-md-12 col-sm-12">
+                    <div class="title-box2">
+                        <h1>Monthly Revenue</h1>
+                    </div>
+                    <div class="d-flex align-content-stretch flex-wrap monthly"
+                        style="background-color: white; height: auto; border-radius: 8px !important;">
+                        <a href="#" class="list-box8 list-box-color">
+                            <h3>{{ number_format($monthly_revenue, 2) }} / Month</h3>
+                        </a>
+                    </div>
+                    <div class="title-box2">
+                        <h1>Daily Avg. Revenue</h1>
+                    </div>
+                    <div class="d-flex align-content-stretch flex-wrap daily"
+                        style="background-color: white; height: auto; border-radius: 8px !important;">
+                        <a href="#" class="list-box8 list-box-color">
+                            <h3>{{ number_format(($monthly_revenue) / $day_sum, 2) }} / Day</h3>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-12 col-sm-12">
+                    <div class="title-box2">
+                      <h1>Verified</h1>
+                    </div>
+                    <div class="d-flex align-content-stretch flex-wrap monthly"
+                      style="background-color: white; height: auto; border-radius: 8px !important;">
+                      <a href="#" class="list-box8 list-box-color">
+                        <h3>{{ $total_verified ?? 0 }}</h3>
+                      </a>
+                    </div>
+                    <div class="title-box2">
+                      <h1>Unverified</h1>
+                    </div>
+                    <div class="d-flex align-content-stretch flex-wrap daily"
+                      style="background-color: white; height: auto; border-radius: 8px !important;">
+                      <a href="#" class="list-box8 list-box-color">
+                        <h3>{{ $total_unverified ?? 0 }}</h3>
+                      </a>
+                    </div>
+                </div>
+            @endif
+        </div>
     </div>
+
+    @if (session("success"))
+        <div class="container p-0 rounded">
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">บันทึกสำเร็จ</h4>
+                <i class="fa-regular fa-circle-check">&nbsp;</i>{{ session('success') }}
+            </div>
+        </div>
+    @endif
 
     <div class="container-fluid pt-3 pb-3 rounded bg-light" style="width: 98%;">
         <form action="{{ route('revenue-search-calendar') }}" method="POST" enctype="multipart/form-data" class="" id="form-revenue">
@@ -1115,8 +1005,6 @@
                 </tbody>
             </table>
         </div>
-    </div>
-
 
         <div class="modal fade" id="AddDataModalCenter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-label="Close">
             <div class="modal-dialog modal-lg">
@@ -1676,97 +1564,59 @@
                 </div>
             </div>
         </div>
+    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"
-            integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Register the plugin to draw text in the center
+            const centerTextPlugin = {
+                id: 'centerTextPlugin',
+                beforeDraw: function(chart) {
+                    if (chart.config.type === 'doughnut') {
+                        const ctx = chart.ctx;
+                        const {
+                            width,
+                            height
+                        } = chart.chartArea;
 
-<script>
+                        ctx.restore();
+                        const fontSize = (height / 200).toFixed(2);
+                        ctx.font = `500 ${fontSize}em 'Sarabun', sans-serif`;
+                        ctx.textBaseline = "middle";
 
-    var cash = Number($('#total_cash_dashboard').val());
-    var bank = Number($('#total_bank_dashboard').val());
-            var credit = Number($('#total_credit_dashboard').val());
-    // Donut Chart Configuration
-    const ctx = document.getElementById('revenueChart').getContext('2d');
-    let dataValues = [100000, 321312, 321321]; // Example data
+                        const text = $('#total_revenue_dashboard').val(); // ใส่ตัวเลขกลาง chart
+                        const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                        const textY = height / 2 + 60; // ปรับขึ้นลง
 
-    // Check if all data values are zero
-    const total = dataValues.reduce((acc, value) => acc + value, 0);
-
-    const centerTextPlugin = {
-        id: 'centerTextPlugin',
-        beforeDraw: function (chart) {
-            const width = chart.width,
-                height = chart.height,
-                ctx = chart.ctx;
-
-            ctx.restore();
-
-            // Draw circle
-            const circleX = width / 2;
-            const circleY = height / 1.6;
-            const circleRadius = Math.min(width, height) / 3;
-
-            ctx.beginPath();
-            ctx.arc(circleX, circleY, circleRadius, 0, 2 * Math.PI);
-            ctx.strokeStyle = '#000'; // Circle color
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Draw text
-            const fontSize = (height / 150).toFixed(2);
-            ctx.font = fontSize + "em sans-serif";
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
-
-            const text = total === 0 ? "00.00" : total.toLocaleString();
-
-            ctx.fillText(text, circleX, circleY);
-            ctx.save();
-        }
-    };
-
-    Chart.register(centerTextPlugin);
-
-    const revenueChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Cash', 'Bank Transfer', 'Credit Card Revenue'],
-            datasets: [{
-                data: dataValues,
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-                hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
-            }]
-        },
-        options: {
-            responsive: true,
-            cutout: '70%',
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Revenue Distribution'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (tooltipItem) {
-                            let label = tooltipItem.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            label += `$${tooltipItem.raw.toLocaleString()}`;
-                            return label;
-                        }
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
                     }
+                }
+            };
+
+            // Register the plugin with Chart.js
+            Chart.register(centerTextPlugin);
+
+            var cash = Number($('#total_cash_dashboard').val());
+            var bank = Number($('#total_bank_dashboard').val());
+            var credit = Number($('#total_credit_dashboard').val());
+
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cash', 'Bank Transfer', 'Credit Card Revenue'],
+                    datasets: [{
+                        data: [cash, bank, credit],
+                        borderWidth: 0, // Set borderWidth to 0 to remove gaps
+                    }]
                 },
-                centerTextPlugin: {}
-            }
-        }
-    });
-</script>
+                options: {
+                    // other options if any
+                }
+            });
+        });
+    </script>
 
 <script>
 

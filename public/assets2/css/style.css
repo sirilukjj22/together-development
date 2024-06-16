@@ -1494,13 +1494,13 @@ tr.disable-row:hover{
         text-shadow: 1px 1px 8px #383838;
         margin: 0;
       }
-      .list-box:hover ,.list-box3:hover ,.list-box4:hover,.list-box4:hover,.list-box4:hover,.list-box5:hover,.list-box6:hover,.list-box7:hover{
+      /* .list-box:hover ,.list-box3:hover ,.list-box4:hover,.list-box4:hover,.list-box4:hover,.list-box5:hover,.list-box6:hover,.list-box7:hover{
         transform: scale(1.05);
         transition: 0.5s;
         background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
         border: 1px solid #888;
         color: #000;
-      }
+      } */
       .list-box2:hover{
         transform: scale(1.05);
         transition: 0.5s;
@@ -1638,6 +1638,10 @@ tr.disable-row:hover{
         height: 30px;
         object-fit: cover;
         margin: 15px 10px 5px 10px;
+      }
+
+      .list-box-color{
+        background: radial-gradient(circle at 10% 20%, rgb(111, 231, 176) 0%, rgb(154, 198, 242) 100.2%);
       }
       
       /* .list-box img{
@@ -3810,11 +3814,10 @@ tr.disable-row:hover{
       margin-left: 0%;
     }
     .topic {
-      margin-top: 15%;
       top: 0.5%;
       left: 3%;
-      font-size: 22px;
-      width: 70%;
+      font-size: 24px;
+      width: 30%;
     }
     .dashboard {
       top: -0.2%;
@@ -4238,7 +4241,7 @@ tr.disable-row:hover{
     }
     .add {
       float: right;
-      padding: 100px 10px 0px 0;
+      padding: 10px 10px 0px 0;
       margin-bottom: -50px;
       margin-right: 1%;
     }

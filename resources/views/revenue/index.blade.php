@@ -99,50 +99,50 @@
             $total_today_revenue_graph = $total_day + ($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0);
         ?>
 
-    <div class="row mt-3 mb-0">
-        <?php $date = date('Y-m-d'); ?>
-        <div class="col-lg-6 col-md-12 col-sm-12">
-        <h3>Daily Revenue by Type</h3>
-        </div>
-        <div class="col-lg-6 col-md-12 col-sm-12">
-            <div class="">
-                <button class="btn btn-custom float-end ml-1 dropdown-toggle" style="margin-left: 4px;" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
-                    Daily
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="#">Daily</a></li>
-                    <li><a class="dropdown-item" href="#">M-T-D</a></li>
-                    <li><a class="dropdown-item" href="#">Y-T-D</a></li>
-                </ul>
+        <div class="row mt-3 mb-0">
+            <?php $date = date('Y-m-d'); ?>
+            <div class="col-lg-6 col-md-12 col-sm-12">
+            <h3>Daily Revenue by Type</h3>
             </div>
-
-            <div class="">
-                <button class="btn btn-custom float-end ml-1 dropdown-toggle" style="margin-left: 4px;" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
-                    By Type
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="revenue.html">by Type</a></li>
-                    <li><a class="dropdown-item" href="revenue_department.html">by Department</a></li>
-                </ul>
-            </div>
-
-            @if (Auth::user()->permission > 0)
-                @if ($total_revenue_today->status == 0)
-                    <button type="button" class="btn btn-warning float-end ml-1 btn-open-daily" style="margin-left: 4px;" value="1">
-                        <i class="fa-solid fa-lock">&nbsp;</i>LOCK
+            <div class="col-lg-6 col-md-12 col-sm-12">
+                <div class="">
+                    <button class="btn btn-custom float-end ml-1 dropdown-toggle" style="margin-left: 4px;" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
+                        Daily
                     </button>
-                @else
-                    <button type="button" class="btn btn-warning float-end ml-1 btn-open-daily" style="margin-left: 4px;" value="0">
-                        <i class="fa-solid fa-unlock">&nbsp;</i>UNLOCK
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'daily']) }}">Daily</a></li>
+                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'mtd']) }}">M-T-D</a></li>
+                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'ytd']) }}">Y-T-D</a></li>
+                    </ul>
+                </div>
+
+                {{-- <div class="">
+                    <button class="btn btn-custom float-end ml-1 dropdown-toggle" style="margin-left: 4px;" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
+                        By Type
                     </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item" href="{{ route('revenue') }}">by Type</a></li>
+                        <li><a class="dropdown-item" href="{{ route('revenue-department', ['byPage' => 'department']) }}">by Department</a></li>
+                    </ul>
+                </div> --}}
+
+                @if (Auth::user()->permission > 0)
+                    @if ($total_revenue_today->status == 0)
+                        <button type="button" class="btn btn-warning float-end ml-1 btn-open-daily" style="margin-left: 4px;" value="1">
+                            <i class="fa-solid fa-lock">&nbsp;</i>LOCK
+                        </button>
+                    @else
+                        <button type="button" class="btn btn-warning float-end ml-1 btn-open-daily" style="margin-left: 4px;" value="0">
+                            <i class="fa-solid fa-unlock">&nbsp;</i>UNLOCK
+                        </button>
+                    @endif
                 @endif
-            @endif
-            <button type="button" class="btn btn-primary border-0 float-end" onclick="Add_data('{{$date}}')" style="background-color: #109699;"
-            data-bs-toggle="modal" data-bs-target="#AddDataModalCenter" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
-            เพิ่มข้อมูลเงินสด / เครดิต
-            </button>
-        </div>
-   </div>
+                <button type="button" class="btn btn-primary border-0 float-end" onclick="Add_data('{{$date}}')" style="background-color: #109699;"
+                data-bs-toggle="modal" data-bs-target="#AddDataModalCenter" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
+                เพิ่มข้อมูลเงินสด / เครดิต
+                </button>
+            </div>
+    </div>
 
         <div class="row mt-1 g-2">
             <div class="col-lg-3 col-md-6 col-sm-12">
@@ -176,22 +176,22 @@
 
                 <div class="d-flex align-content-stratch flex-wrap cash"
                     style=" height:330px; border-radius: 8px !important;">
-                    <a href="{{ route('revenue-detail', ['front', $date_current]) }}" class="list-box">
+                    <a href="#" class="list-box list-box-color">
                         <img src="../assets2/../assets2/images/front.png" alt="">
                         <h2>Front Desk</h2>
                         <h3>{{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_cash : 0, 2) }}</h3>
                     </a>
-                    <a href="{{ route('revenue-detail', ['guest', $date_current]) }}" class="list-box">
+                    <a href="#" class="list-box list-box-color">
                         <img src="../assets2/../assets2/images/guest.png" alt="">
                         <h2>Guest Deposit</h2>
                         <h3>{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_cash : 0, 2) }}</h3>
                     </a>
-                    <a href="{{ route('revenue-detail', ['all_outlet', $date_current]) }}" class="list-box">
+                    <a href="#" class="list-box list-box-color">
                         <img src="../assets2/../assets2/images/F&B.png" alt="">
                         <h2>All Outlet </h2>
                         <h3>{{ number_format($total_fb_revenue->fb_cash, 2) }}</h3>
                     </a>
-                    <a href="{{ route('revenue-detail', ['wp', $date_current]) }}" class="list-box">
+                    <a href="#" class="list-box list-box-color">
                         <img src="../assets2/../assets2/images/water-park.png" alt="">
                         <h2>Water Park</h2>
                         <h3>{{ number_format($total_wp_revenue->wp_cash, 2) }}</h3>
@@ -209,32 +209,32 @@
                 </div>
                 <div class="d-flex align-content-stretch flex-wrap bank"
                     style=" height: 330px; border-radius: 8px !important;">
-                    <a href="{{ route('revenue-detail', ['front', $date_current]) }}" class="list-box3">
+                    <a href="#" class="list-box3 list-box-color">
                         <img src="../assets2/images/front.png" alt="">
                         <h2>Front Desk</h2>
                         <h3>{{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_transfer : 0, 2) }}</h3>
                     </a>
-                    <a href="{{ route('revenue-detail', ['guest', $date_current]) }}" class="list-box3">
+                    <a href="#" class="list-box3 list-box-color">
                         <img src="../assets2/images/guest.png" alt="">
                         <h2>Guest Deposit</h2>
                         <h3>{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_transfer : 0, 2) }}</h3>
                     </a>
-                    <a href="{{ route('revenue-detail', ['all_outlet', $date_current]) }}" class="list-box3">
+                    <a href="#" class="list-box3 list-box-color">
                         <img src="../assets2/images/F&B.png" alt="">
                         <h2>All Outlet</h2>
                         <h3>{{ number_format($total_fb_revenue->fb_transfer, 2) }}</h3>
                     </a>
-                    <a href="{{ route('revenue-detail', ['wp', $date_current]) }}" class="list-box3">
+                    <a href="#" class="list-box3 list-box-color">
                         <img src="../assets2/images/water-park.png" alt="">
                         <h2>Water Park</h2>
                         <h3>{{ number_format($total_wp_revenue->wp_transfer, 2) }}</h3>
                     </a>
-                    <a href="{{ route('revenue-detail', ['agoda_revenue', $date_current]) }}" class="list-box3">
+                    <a href="list-box-color" class="list-box3 list-box-color">
                         <img src="../assets2/images/agoda.png" alt="">
                         <h2>Agoda</h2>
                         <h3>{{ number_format($total_agoda_revenue, 2) }}</h3>
                     </a>
-                    <a href="{{ route('revenue-detail', ['elexa', $date_current]) }}" class="list-box3">
+                    <a href="list-box-color" class="list-box3 list-box-color">
                         <img src="../assets2/images/elexa.png" alt="">
                         <h2>Elexa EGAT</h2>
                         <h3>{{ number_format($total_ev_revenue, 2) }}</h3>
@@ -251,14 +251,14 @@
                 </div>
 
                 <div class="d-flex align-content-stretch flex-wrap creditrevenue">
-                    <a href="{{ route('revenue-detail', ['credit_revenue', $date_current]) }}" class="list-box2">
+                    <a href="#" class="list-box2 list-box-color">
                         <img src="../assets2/images/hotel.png" alt="">
                         <h2>Hotel</h2>
                         <h3>{{ number_format($credit_revenue->total_credit ?? 0, 2) }}</h3>
                     </a>
 
 
-                    <a href="{{ route('revenue-detail', ['wp_credit', $date_current]) }}" class="list-box2">
+                    <a href="#" class="list-box2 list-box-color">
                         <img src="../assets2/images/water-park.png" alt="">
                         <h2>Water park</h2>
                         <h3>{{ number_format($total_revenue_today->wp_credit ?? 0, 2) }}</h3>
@@ -281,37 +281,37 @@
                     style=" height: 292px; border-radius: 8px !important;">
 
 
-                    <a href="{{ route('revenue-detail', ['front', $date_current]) }}}" class="list-box4">
+                    <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/front.png" alt="">
                         <h2>Credit Card Front Desk</h2>
                         <h3>{{ number_format($front_charge[0]['revenue_credit_date'], 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['room', $date_current]) }}" class="list-box4">
+                    <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/guest.png" alt="">
                         <h2>Credit Card Guest Deposit</h2>
                         <h3>{{ number_format($guest_deposit_charge[0]['revenue_credit_date'], 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['fb', $date_current]) }}" class="list-box4">
+                    <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/F&B.png" alt="">
                         <h2>Credit Card All Outlet</h2>
                         <h3>{{ number_format($fb_charge[0]['revenue_credit_date'], 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['wp', $date_current]) }}" class="list-box4">
+                    <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/water-park.png" alt="">
                         <h2>Credit Card Water Park</h2>
                         <h3>{{ number_format($wp_charge[0]['total'], 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['agoda_charge', $date_current]) }}" class="list-box4">
+                    <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/agoda.png" alt="">
                         <h2>Agoda</h2>
                         <h3>{{ number_format($agoda_charge[0]['revenue_credit_date'], 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['elexa', $date_current]) }}" class="list-box4">
+                    <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/elexa.png" alt="">
                         <h2>Elaxa EGAT</h2>
                         <h3>{{ number_format($ev_charge[0]['revenue_credit_date'], 2) }}</h3>
@@ -328,22 +328,22 @@
                 </div>
                 <div class="d-flex align-content-stretch flex-wrap fee"
                     style=" height: 292px; border-radius: 8px !important;">
-                    <a href="{{ route('revenue-detail', ['credit_fee', $date_current]) }}" class="list-box5">
+                    <a href="#" class="list-box5 list-box-color">
                         <img src="../assets2/images/hotel.png" alt="">
                         <h2>Credit Card Hotel Fee</h2>
                         <h3>{{ number_format($sum_charge == 0 || $credit_revenue->total_credit == 0 ? 0 : $sum_charge - $credit_revenue->total_credit ?? 0, 2) }}</h3>
                     </a>
-                    <a href="{{ route('revenue-detail', ['wp_fee', $date_current]) }}" class="list-box5">
+                    <a href="#" class="list-box5 list-box-color">
                         <img src="../assets2/images/water-park.png" alt="">
                         <h2>Credit Card Water Park Fee</h2>
                         <h3>{{ number_format($wp_charge[0]['fee_date'], 2) }}</h3>
                     </a>
-                    <a href="{{ route('revenue-detail', ['agoda_fee', $date_current]) }}" class="list-box5">
+                    <a href="#" class="list-box5 list-box-color">
                         <img src="../assets2/images/agoda.png" alt="">
                         <h2>Agoda Fee</h2>
                         <h3>{{ number_format($agoda_charge[0]['fee_date'], 2) }}</h3>
                     </a>
-                    <a href="{{ route('revenue-detail', ['ev_fee', $date_current]) }}" class="list-box5">
+                    <a href="#" class="list-box5 list-box-color">
                         <img src="../assets2/images/elexa.png" alt="">
                         <h2>Elaxa EGAT Fee</h2>
                         <h3>{{ number_format($ev_charge[0]['fee_date'], 2) }}</h3>
@@ -362,13 +362,13 @@
                     <h1>Total Revenue Outstanding</h1>
                 </div>
                 <div class="d-flex align-content-stretch flex-wrap trorevenue">
-                    <a href="{{ route('revenue-detail', ['total_agoda_outstanding', $date_current]) }}" class="list-box6">
+                    <a href="#" class="list-box6 list-box-color">
                         <img src="../assets2/images/agoda.png" alt="">
                         <h2>Credit Card Agoda Revenue Outstanding</h2>
                         <h3>{{ number_format($total_agoda_outstanding, 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['total_ev_outstanding', $date_current]) }}" class="list-box6">
+                    <a href="#" class="list-box6 list-box-color">
                         <img src="../assets2/images/elexa.png" alt="">
                         <h2>Elaxa EGAT Revenue Outstanding</h2>
                         <h3>{{ number_format($total_ev_outstanding, 2) }}</h3>
@@ -385,43 +385,43 @@
                 </div>
                 <div class="d-flex align-content-stretch flex-wrap type"
                     style=" height: auto; border-radius: 8px !important;">
-                    <a href="{{ route('revenue-detail', ['transfer', $date_current]) }}" class="list-box7">
+                    <a href="#" class="list-box7 list-box-color">
                         <h2>Transfer Revenue</h2>
                         <h3>{{ number_format($total_transfer, 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['credit_transaction', $date_current]) }}" class="list-box7">
+                    <a href="#" class="list-box7 list-box-color">
                         <h2>Credit Card Hotel <br>
                             Transfer Transaction</h2>
                         <h3>{{ $total_credit_transaction ?? 0 }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['split_revenue', $date_current]) }}" class="list-box7">
+                    <a href="#" class="list-box7 list-box-color">
                         <h2>Split Credit Card Hotel Revenue</h2>
                         <h3>{{ number_format($total_split, 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['split_revenue', $date_current]) }}" class="list-box7">
+                    <a href="#" class="list-box7 list-box-color">
                         <h2>Split Credit Card Hotel Transaction</h2>
                         <h3>{{ number_format($total_split) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['no_income_revenue', $date_current]) }}" class="list-box7">
+                    <a href="#" class="list-box7 list-box-color">
                         <h2>No Income Revenue</h2>
                         <h3>{{ number_format($total_not_type_revenue, 2) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['total_transaction', $date_current]) }}" class="list-box7">
+                    <a href="#" class="list-box7 list-box-color">
                         <h2>Total Transaction</h2>
                         <h3>{{ number_format($total_revenue_today->total_transaction ?? 0) }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['transfer_transaction', $date_current]) }}" class="list-box7">
+                    <a href="#" class="list-box7 list-box-color">
                         <h2>Tranfer Transaction</h2>
                         <h3>{{ $total_transfer2 }}</h3>
                     </a>
 
-                    <a href="{{ route('revenue-detail', ['status', $date_current]) }}" class="list-box7">
+                    <a href="#" class="list-box7 list-box-color">
                         <h2>No incoming Type</h2>
                         <h3>{{ $total_not_type ?? 0 }}</h3>
                     </a>
@@ -435,7 +435,7 @@
                     </div>
                     <div class="d-flex align-content-stretch flex-wrap monthly"
                         style="background-color: white; height: auto; border-radius: 8px !important;">
-                        <a href="#" class="list-box8">
+                        <a href="#" class="list-box8 list-box-color">
                             <h3>{{ number_format($monthly_revenue, 2) }} / Month</h3>
                         </a>
                     </div>
@@ -444,7 +444,7 @@
                     </div>
                     <div class="d-flex align-content-stretch flex-wrap daily"
                         style="background-color: white; height: auto; border-radius: 8px !important;">
-                        <a href="#" class="list-box8">
+                        <a href="#" class="list-box8 list-box-color">
                             <h3>{{ number_format(($monthly_revenue) / $day_sum, 2) }} / Day</h3>
                         </a>
                     </div>
@@ -456,7 +456,8 @@
                     </div>
                     <div class="d-flex align-content-stretch flex-wrap monthly"
                       style="background-color: white; height: auto; border-radius: 8px !important;">
-                      <a href="{{ route('revenue-detail', ['verified', $date_current]) }}" class="list-box8">
+                      <a href="#" class="list-box8 list-box-color">
+                        {{-- <a href="{{ route('revenue-detail', ['verified', $date_current]) }}" class="list-box8"> --}}
                         <h3>{{ $total_verified ?? 0 }}</h3>
                       </a>
                     </div>
@@ -465,7 +466,7 @@
                     </div>
                     <div class="d-flex align-content-stretch flex-wrap daily"
                       style="background-color: white; height: auto; border-radius: 8px !important;">
-                      <a href="{{ route('revenue-detail', ['unverified', $date_current]) }}" class="list-box8">
+                      <a href="#" class="list-box8 list-box-color">
                         <h3>{{ $total_unverified ?? 0 }}</h3>
                       </a>
                     </div>
@@ -670,6 +671,22 @@
               font-size: 12px;
               padding: 4px;
             }
+          }
+
+          .tr-color-blue td{
+                background-color: #d2efff;
+          }
+
+          .tr-color-blue th{
+                background-color: #d2efff;
+          }
+
+          .tr-color-orange td{
+                background-color: #ffe6d2;
+          }
+
+          .tr-color-orange th{
+                background-color: #ffe6d2;
           }
           </style>
 
@@ -1475,7 +1492,7 @@
                                             data-bs-target="#collapseSix" aria-expanded="true"
                                             aria-controls="collapseSix">
                                             <!--ใส่ ID ให้ตรง -->
-                                            Credit Revenue <span class="text-danger" id="credit_card"> (ยอดเครดิต 0.00)</span>
+                                            Credit Revenue <span class="text-danger" id="credit_card">&nbsp; (ยอดเครดิต 0.00)</span>
                                         </button>
                                     </h2>
                                     <div id="collapseSix" class="accordion-collapse collapse"
