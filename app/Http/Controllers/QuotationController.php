@@ -26,6 +26,8 @@ use PDF;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Models\master_document_sheet;
 use Dompdf\Dompdf;
+use Illuminate\Support\Facades\DB;
+
 class QuotationController extends Controller
 {
     public function index()
@@ -569,49 +571,52 @@ class QuotationController extends Controller
     }
     public function sheetpdf($id) {
         // Increase the maximum execution time if needed
-        set_time_limit(120);
+        // set_time_limit(120);
 
-        // Create a new Dompdf instance
-        $dompdf = new Dompdf();
+        // // Create a new Dompdf instance
+        // $dompdf = new Dompdf();
 
-        // Load HTML content
-        $quotation = Quotation::findOrFail($id);
-        $imageUrl = asset('logo_crop.png'); // Get the URL to the image
+        // // Load HTML content
+        // $quotation = Quotation::findOrFail($id);
+        // $imageUrl = asset('logo_crop.png'); // Get the URL to the image
 
-        // Generate the HTML content with the image
-        $html = '<html>
-            <head>
-                <style>
-                    .logo {
-                        width: 100px; /* Adjust the size as needed */
-                        height: auto;
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="col-12">
-                    <div class="row">
-                        <div class="col-lg-8 col-md-12 col-sm-12 image-container">
-                            <img src="' . $imageUrl . '" alt="Together Resort Logo" class="logo"/>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <!-- Add other content here -->
-                </div>
-            </body>
-        </html>';
+        // // Generate the HTML content with the image
+        // $html = '<html>
+        //     <head>
+        //         <style>
+        //             .logo {
+        //                 width: 100px; /* Adjust the size as needed */
+        //                 height: auto;
+        //             }
+        //         </style>
+        //     </head>
+        //     <body>
+        //         <div class="col-12">
+        //             <div class="row">
+        //                 <div class="col-lg-8 col-md-12 col-sm-12 image-container">
+        //                     <img src="' . $imageUrl . '" alt="Together Resort Logo" class="logo"/>
+        //                 </div>
+        //             </div>
+        //         </div>
+        //         <div>
+        //             <!-- Add other content here -->
+        //         </div>
+        //     </body>
+        // </html>';
 
-        // Load the HTML content into Dompdf
-        $dompdf->loadHtml($html);
+        // // Load the HTML content into Dompdf
+        // $dompdf->loadHtml($html);
 
-        // Set paper size and orientation
-        $dompdf->setPaper('A4', 'landscape');
+        // // Set paper size and orientation
+        // $dompdf->setPaper('A4', 'landscape');
 
-        // Render the HTML as PDF
-        $dompdf->render();
+        // // Render the HTML as PDF
+        // $dompdf->render();
 
-        // Output the generated PDF to Browser
-        return $dompdf->stream();
+        // // Output the generated PDF to Browser
+        // return $dompdf->stream();
+
+        $pdf = FacadePdf::loadView('quotation.document_sheet');
+        return $pdf->stream();
     }
 }

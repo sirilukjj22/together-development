@@ -8,7 +8,7 @@
     <div class="container">
         <div class="row">
 
-                <img src="public/logo_crop.png" alt="" style="width: 150px; height: 150px;">
+                <img src="logo_crop.png" alt="" style="width: 150px; height: 150px;">
 
         </div>
     </div>
