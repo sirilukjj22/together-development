@@ -7,7 +7,7 @@
         <a href="{{ route('Company.create') }}">
             <button type="button" class="submit-button" style="float: right;">เพิ่มผู้ใช้งาน</button></a>
         <div class="usertopic">
-            <h1>Company (องค์กร)</h1>
+            <h1>Company / Agent</h1>
         </div>
 
         <div class="selectall" style="float: left; margin-bottom: 10px;">
