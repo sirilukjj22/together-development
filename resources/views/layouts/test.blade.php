@@ -206,7 +206,7 @@
                         class="fa-solid fa-caret-down"></i></button>
                 <div id="myDropdown" class="dropdown-content">
                     @if ($role_permisstion->company == 1)
-                        <a class="menu2" href="{{ route('Company.index') }}">Company</a>
+                        <a class="menu2" href="{{ route('Company.index') }}">Company / Agent</a>
                     @endif
                     @if ($role_permisstion->guest == 1)
                         <a class="menu2" href="{{ route('guest.index') }}">Guest</a>
@@ -494,17 +494,17 @@
     //     });
     // });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        var dropdownSubmenu = document.querySelectorAll('.dropdown-submenu');
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     var dropdownSubmenu = document.querySelectorAll('.dropdown-submenu');
 
-        dropdownSubmenu.forEach(function (submenu) {
-        submenu.addEventListener('click', function (e) {
-            e.stopPropagation();
-            var dropdownMenu = this.querySelector('.dropdown-menu');
-            dropdownMenu.classList.toggle('show');
-        });
-        });
-    });
+    //     dropdownSubmenu.forEach(function (submenu) {
+    //     submenu.addEventListener('click', function (e) {
+    //         e.stopPropagation();
+    //         var dropdownMenu = this.querySelector('.dropdown-menu');
+    //         dropdownMenu.classList.toggle('show');
+    //     });
+    //     });
+    // });
 
     function toggleDropdown() {
         var dropdown = document.getElementById("myDropdown");

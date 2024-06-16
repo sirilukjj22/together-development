@@ -2,65 +2,49 @@
 
 @section('content')
 
-    <div class="container-fluid pt-3 pb-3 mb-3 rounded bg-light" style="width: 98%;">
+    <div class="container-fluid pt-3 pb-3 mb-3 mt-3 rounded bg-light" style="width: 98%;">
 
         <style>
             .logo img {
-              height: auto;
-            }
-    
-            img {
-              display: block;
-              margin: auto;
-              width: 40px;
-              height: 40px;
-              object-fit: cover;
-            }
-    
-            .row {
-              margin-bottom: 10px;
-            }
-    
-            #myChart {
-              width: 260px !important;
-              height: 260px !important;
-              display: block;
-              margin: auto;
-            }
-    
-            .select2 {
-              width: 100% !important;
-              margin: 0 !important;
-            }
-    
-            .select2-container .select2-selection--single {
-              height: 40px !important;
-              margin-top: 0 !important;
-            }
-    
-            .select2-selection__arrow {
-              height: 0px !important;
-            }
-    
-            .select2-selection__rendered {
-              line-height: 20px !important;
-            }
+          height: auto;
+        }
 
-            .tr-color-orange td {
-                background-color: rgb(255, 224, 194);
-            }
+        img {
+          display: block;
+          margin: auto;
+          width: 40px;
+          height: 40px;
+          object-fit: cover;
+        }
 
-            .tr-color-orange th {
-                background-color: rgb(255, 224, 194);
-            }
+        .row {
+          margin-bottom: 10px;
+        }
 
-            .tr-color-blue td {
-                background-color: rgb(186, 229, 255);
-            }
+        #myChart {
+          width: 260px !important;
+          height: 260px !important;
+          display: block;
+          margin: auto;
+        }
 
-            .tr-color-blue th {
-                background-color: rgb(186, 229, 255);
-            }
+        .select2 {
+          width: 100% !important;
+          margin: 0 !important;
+        }
+
+        .select2-container .select2-selection--single {
+          height: 40px !important;
+          margin-top: 0 !important;
+        }
+
+        .select2-selection__arrow {
+          height: 0px !important;
+        }
+
+        .select2-selection__rendered {
+          line-height: 20px !important;
+        }
 </style>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"
@@ -115,7 +99,52 @@
             $total_today_revenue_graph = $total_day + ($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0);
         ?>
 
-        <div class="row g-2">
+    <div class="row mt-3 mb-0">
+        <?php $date = date('Y-m-d'); ?>
+        <div class="col-lg-6 col-md-12 col-sm-12">
+        <h1>Daily Revenue by Type</h1>
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="">
+                <button class="btn btn-custom float-end ml-1 dropdown-toggle" style="margin-left: 4px;" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
+                    Daily
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" href="#">Daily</a></li>
+                    <li><a class="dropdown-item" href="#">M-T-D</a></li>
+                    <li><a class="dropdown-item" href="#">Y-T-D</a></li>
+                </ul>
+            </div>
+
+            <div class="">
+                <button class="btn btn-custom float-end ml-1 dropdown-toggle" style="margin-left: 4px;" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
+                    By Type
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" href="revenue.html">by Type</a></li>
+                    <li><a class="dropdown-item" href="revenue_department.html">by Department</a></li>
+                </ul>
+            </div>
+
+            @if (Auth::user()->permission > 0)
+                @if ($total_revenue_today->status == 0)
+                    <button type="button" class="btn btn-warning float-end ml-1 btn-open-daily" style="margin-left: 4px;" value="1">
+                        <i class="fa-solid fa-lock">&nbsp;</i>LOCK
+                    </button>
+                @else
+                    <button type="button" class="btn btn-warning float-end ml-1 btn-open-daily" style="margin-left: 4px;" value="0">
+                        <i class="fa-solid fa-unlock">&nbsp;</i>UNLOCK
+                    </button>
+                @endif
+            @endif
+            <button type="button" class="btn btn-primary border-0 float-end" onclick="Add_data('{{$date}}')" style="background-color: #109699;"
+            data-bs-toggle="modal" data-bs-target="#AddDataModalCenter" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
+            เพิ่มข้อมูลเงินสด / เครดิต
+            </button>
+        </div>
+   </div>
+
+        <div class="row mt-1 g-2">
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div style="background-color: white; height:auto; border-radius: 8px !important;">
                     <div class="donut-graph">
@@ -520,25 +549,6 @@
                     </div>
                 {{-- </div> --}}
 
-                <div class="col-lg-5 col-md-12 col-sm-12">
-                    <?php $date = date('Y-m-d'); ?>
-                    @if (Auth::user()->permission > 0)
-                        @if ($total_revenue_today->status == 0)
-                        <button type="button" class="btn btn-warning float-end btn-close-daily ml-1" value="1">
-                            <i class="fa-solid fa-lock">&nbsp;</i>LOCK
-                        </button>
-                    @else
-                        <button type="button" class="btn btn-warning float-end btn-open-daily ml-1" value="0">
-                            <i class="fa-solid fa-lock">&nbsp;</i>UNLOCK
-                        </button>
-                        @endif
-                     @endif
-                    <button type="button" class="btn btn-primary border-0 float-end" onclick="Add_data('{{$date}}')" style="background-color: #109699;"
-                        data-bs-toggle="modal" data-bs-target="#AddDataModalCenter" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
-                        เพิ่มข้อมูลเงินสด / เครดิต
-                    </button>
-                </div>
-
                 @if ($total_revenue_today->status == 1)
                     <div class="row mt-3 mb-0">
                         <div class="col-12">
@@ -553,114 +563,114 @@
         <!-- Reset to Default Table -->
         <style>
             /* CSS Reset for tables */
-            table {
-              border-collapse: collapse;
-              border-spacing: 0;
-              width: 100%;
-              max-width: 100%;
-              margin: 0;
-              padding: 0;
-              table-layout: auto;
-            }
-    
-            th,
-            td {
-              padding: 0;
-              margin: 0;
-              border: none;
-            }
-    
-            /* Custom styles */
-            .table-responsive {
-              overflow-x: auto;
-            }
-    
-            table {
-              border: 1px solid #ddd;
-            }
-    
-            table caption {
-              font-size: 16px;
-            }
-    
-            table thead {
-              border: initial;
-              clip: initial;
-              height: auto;
-              margin: initial;
-              overflow: visible;
-              padding: initial;
-              position: static;
-              width: auto;
-            }
-    
-            table tr {
-              border-bottom: initial;
-              display: table-row;
-              margin-bottom: initial;
-            }
-    
-            table th {
-              font-weight: 600;
-              text-transform: capitalize;
-              color: white !important;
-            }
-    
+          table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            table-layout: auto;
+          }
+
+          th,
+          td {
+            padding: 0;
+            margin: 0;
+            border: none;
+          }
+
+          /* Custom styles */
+          .table-responsive {
+            overflow-x: auto;
+          }
+
+          table {
+            border: 1px solid #ddd;
+          }
+
+          table caption {
+            font-size: 16px;
+          }
+
+          table thead {
+            border: initial;
+            clip: initial;
+            height: auto;
+            margin: initial;
+            overflow: visible;
+            padding: initial;
+            position: static;
+            width: auto;
+          }
+
+          table tr {
+            border-bottom: initial;
+            display: table-row;
+            margin-bottom: initial;
+          }
+
+          table th {
+            font-weight: 600;
+            text-transform: capitalize;
+            color: white !important;
+          }
+
+          table th,
+          table td {
+            border-bottom: 1px solid #ddd;
+            display: table-cell;
+            font-size: 16px;
+            text-align: left;
+            padding: 8px;
+            color: black !important;
+            letter-spacing: unset;
+          }
+
+          table td::before {
+            content: none;
+          }
+
+          table td:last-child {
+            border-bottom: 1px solid #ddd;
+          }
+
+
+          .modal-body label {
+            font-size: 16px;
+            text-align: left;
+          }
+
+          .modal-body input {
+            width: 100%;
+            text-align: left;
+            padding: 8px;
+            border: 1px solid #ccc;
+            margin: 0px;
+            margin-bottom: 5px;
+          }
+
+          .accordion {
+            margin-bottom: 1%;
+          }
+
+          @media (max-width: 768px) {
+
             table th,
             table td {
-              border-bottom: 1px solid #ddd;
-              display: table-cell;
-              font-size: 16px;
-              text-align: left;
-              padding: 8px;
-              color: black !important;
-              letter-spacing: unset;
+              font-size: 14px;
+              padding: 6px;
             }
-    
-            table td::before {
-              content: none;
+          }
+
+          @media (max-width: 480px) {
+
+            table th,
+            table td {
+              font-size: 12px;
+              padding: 4px;
             }
-    
-            table td:last-child {
-              border-bottom: 1px solid #ddd;
-            }
-    
-    
-            .modal-body label {
-              font-size: 16px;
-              text-align: left;
-            }
-    
-            .modal-body input {
-              width: 100%;
-              text-align: left;
-              padding: 8px;
-              border: 1px solid #ccc;
-              margin: 0px;
-              margin-bottom: 5px;
-            }
-    
-            .accordion {
-              margin-bottom: 1%;
-            }
-    
-            @media (max-width: 768px) {
-    
-              table th,
-              table td {
-                font-size: 14px;
-                padding: 6px;
-              }
-            }
-    
-            @media (max-width: 480px) {
-    
-              table th,
-              table td {
-                font-size: 12px;
-                padding: 4px;
-              }
-            }
+          }
           </style>
 
         <div class="table-responsive">
