@@ -99,7 +99,7 @@
             $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month;
             $total_cash_bank_year = $total_cash_year + $total_bank_transfer_year;
 
-            $total_today_revenue_graph = $total_day + ($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0);
+            $total_month_revenue_graph = $total_cash_bank_month + $total_wp_cash_bank_month + $total_agoda_month + $total_ev_month + ($credit_revenue_month->total_credit ?? 0) + ($total_wp_month->wp_credit ?? 0);
         ?>
 
         <div class="row mt-3 mb-0">
@@ -119,7 +119,7 @@
                     </ul>
                 </div>
 
-                <div class="">
+                {{-- <div class="">
                     <button class="btn btn-custom float-end ml-1 dropdown-toggle" style="margin-left: 4px;" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
                         By Type
                     </button>
@@ -127,7 +127,7 @@
                         <li><a class="dropdown-item" href="{{ route('revenue') }}">by Type</a></li>
                         <li><a class="dropdown-item" href="{{ route('revenue-department', ['byPage' => 'department']) }}">by Department</a></li>
                     </ul>
-                </div>
+                </div> --}}
 
                 @if (Auth::user()->permission > 0)
                     @if ($total_revenue_today->status == 0)
@@ -155,13 +155,13 @@
                         <div class="percent" style="text-align: left; width:auto; display: block; margin-left: 30px;">
                             <h6 style=" float: left; width: 60%;"><i style="color: deepskyblue; margin-right: 10px;"
                                     class="fa-solid fa-square"></i>CASH</h6>
-                            <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_cash + $total_wp_revenue->wp_cash) / $total_today_revenue_graph * 100), 2) }}%</h6>
+                            <h6>: {{ number_format($total_month_revenue_graph == 0 ? 0 : (($total_cash_month + $total_wp_month->wp_cash) / $total_month_revenue_graph * 100), 2) }}%</h6>
                             <h6 style="float: left;width: 60%;"><i style="color: hotpink; margin-right: 10px;"
                                     class="fa-solid fa-square"></i>Bank Transfer</h6>
-                            <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_bank_transfer + $total_wp_revenue->wp_transfer) / $total_today_revenue_graph * 100), 2) }}%</h6>
+                            <h6>: {{ number_format($total_month_revenue_graph == 0 ? 0 : (($total_bank_transfer_month + $total_wp_month->wp_transfer) + ($total_agoda_month + $total_ev_month)) / $total_month_revenue_graph * 100, 2) }}%</h6>
                             <h6 style="float: left;width: 60%;"><i style="color: orange; margin-right: 10px;"
                                     class="fa-solid fa-square"></i>Credit Card</h6>
-                            <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : ((($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0)) / $total_today_revenue_graph * 100), 2) }}%</h6>
+                            <h6>: {{ number_format($total_month_revenue_graph == 0 ? 0 : (($credit_revenue_month->total_credit  + $total_wp_month->wp_credit ?? 0) / $total_month_revenue_graph * 100), 2) }}%</h6>
                         </div>
                     </div>
                 </div>
@@ -169,7 +169,7 @@
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <!-- CASH -->
 
-                <input type="hidden" id="total_revenue_dashboard" value="{{ number_format($total_today_revenue_graph, 2) }}">
+                <input type="hidden" id="total_revenue_dashboard" value="{{ number_format($total_month_revenue_graph, 2) }}">
 
                 <div class="title-box">
                     <h2>Cash</h2>
