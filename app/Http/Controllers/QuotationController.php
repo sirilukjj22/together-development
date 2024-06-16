@@ -570,53 +570,65 @@ class QuotationController extends Controller
         return redirect()->back()->with('alert_', 'บันทึกใบปะหน้า');
     }
     public function sheetpdf($id) {
-        // Increase the maximum execution time if needed
-        // set_time_limit(120);
+        $Quotation = Quotation::where('id', $id)->first();
+        $Company = $Quotation->Company_ID;
+        $Quotation_ID = $Quotation->Quotation_ID;
+        $eventformat = $Quotation->eventformat;
+        $Company_ID = companys::where('Profile_ID',$Company)->first();
+        $Company_typeID=$Company_ID->Company_type;
+        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+        $company_fax = company_fax::where('Profile_ID',$Company)->where('Sequence','main')->first();
+        $company_phone = company_phone::where('Profile_ID',$Company)->where('Sequence','main')->first();
+        $Contact_name = representative::where('Company_ID',$Company)->where('status',1)->first();
+        $Contact_phone = representative_phone::where('Company_ID',$Company)->where('Sequence','main')->first();
+        $eventformat = MasterEventFormate::where('id',$eventformat)->select('name_th','id')->first();
+        if ($comtype->name_th =="บริษัทจำกัด") {
+            $comtypefullname = "บริษัท ". $Company_ID->Company_Name . " จำกัด";
+        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+            $comtypefullname = "บริษัท ". $Company_ID->Company_Name . " จำกัด (มหาชน)";
+        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+            $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company_ID->Company_Name ;
+        }else {
+            $comtypefullname = $Company_ID->Company_Name;
+        }
 
-        // // Create a new Dompdf instance
-        // $dompdf = new Dompdf();
+        $CityID=$Company_ID->City;
+        $amphuresID = $Company_ID->Amphures;
+        $TambonID = $Company_ID->Tambon;
+        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+        $sheet = master_document_sheet::select('topic','name_th','id')->get();
+        $Reservation_show = $sheet->where('topic', 'Reservation')->first();
+        $Paymentterms = $sheet->where('topic', 'Paymentterms')->first();
+        $note = $sheet->where('topic', 'note')->first();
+        $Cancellations = $sheet->where('topic', 'Cancellations')->first();
+        $Complimentary = $sheet->where('topic', 'Complimentary')->first();
+        $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->first();
+        $date = Carbon::now();
+        $data = [
+            'date' => $date,
+            'comtypefullname'=>$comtypefullname,
+            'Company_ID'=>$Company_ID,
+            'TambonID'=>$TambonID,
+            'CityID'=>$CityID,
+            'amphuresID'=>$amphuresID,
+            'provinceNames'=>$provinceNames,
+            'company_fax'=>$company_fax,
+            'company_phone'=>$company_phone,
+            'Contact_name'=>$Contact_name,
+            'Contact_phone'=>$Contact_phone,
+            'Quotation'=>$Quotation,
+            'eventformat'=>$eventformat,
+            'Reservation_show'=>$Reservation_show,
+            'Paymentterms'=>$Paymentterms,
+            'note'=>$note,
+            'Cancellations'=>$Cancellations,
+            'Complimentary'=>$Complimentary,
+            'All_rights_reserved'=>$All_rights_reserved,
+        ];
 
-        // // Load HTML content
-        // $quotation = Quotation::findOrFail($id);
-        // $imageUrl = asset('logo_crop.png'); // Get the URL to the image
-
-        // // Generate the HTML content with the image
-        // $html = '<html>
-        //     <head>
-        //         <style>
-        //             .logo {
-        //                 width: 100px; /* Adjust the size as needed */
-        //                 height: auto;
-        //             }
-        //         </style>
-        //     </head>
-        //     <body>
-        //         <div class="col-12">
-        //             <div class="row">
-        //                 <div class="col-lg-8 col-md-12 col-sm-12 image-container">
-        //                     <img src="' . $imageUrl . '" alt="Together Resort Logo" class="logo"/>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //         <div>
-        //             <!-- Add other content here -->
-        //         </div>
-        //     </body>
-        // </html>';
-
-        // // Load the HTML content into Dompdf
-        // $dompdf->loadHtml($html);
-
-        // // Set paper size and orientation
-        // $dompdf->setPaper('A4', 'landscape');
-
-        // // Render the HTML as PDF
-        // $dompdf->render();
-
-        // // Output the generated PDF to Browser
-        // return $dompdf->stream();
-
-        $pdf = FacadePdf::loadView('quotation.document_sheet');
+        $pdf = FacadePdf::loadView('quotation.document_sheet',$data);
         return $pdf->stream();
     }
 }

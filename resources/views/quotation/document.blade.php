@@ -442,16 +442,16 @@
                             <tr><td style="text-align:left;width: 35% "><br></td></tr>
                             <tr><td><br></td></tr>
                             <tr>
-                                <td  scope="row"><samp class="com" style="font-weight: bold;font-size: 18px;">Personal Information</samp></td>
+                                <td  scope="row"><samp class="com" style="font-weight: bold;font-size: 18px;">Contact Information</samp></td>
                             </tr>
                             <tr>
-                                <td  scope="row"style="text-align:left;"><samp class="ml-4" style="font-weight: bold;">Name  :</samp></td>
+                                <td  scope="row"style="text-align:left;"><samp class="ml-4" style="font-weight: bold;">Contact Name  :</samp></td>
                                 <td style="text-align:left;">
                                     <p id="Company_contact" name="Company_contact" style="display: inline-block;">คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</p>
                                 </td>
                             </tr>
                             <tr>
-                                <td  scope="row" style="text-align:left;"><samp class="ml-4" style="font-weight: bold;">Email  :</samp></td>
+                                <td  scope="row" style="text-align:left;"><samp class="ml-4" style="font-weight: bold;">Contact Email  :</samp></td>
                                 <td style="text-align:left;">
                                     <p id="Contact_Email" name="Contact_Email" style="display: inline-block;">{{$Contact_name->Email}}</p>
                                 </td>

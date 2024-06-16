@@ -77,14 +77,14 @@
           #mobileshow {
             display: none;
           }
-    
+
           @media screen and (max-width: 500px) {
             #mobileshow {
               display: block;
             }
           }
         </style>
-    
+
         <nav class="navbar fixed-top navbar-expand-lg navbar-light" style="background-color: #109699;">
           <div class="container-fluid">
             <a class="navbar-brand h-1 text-white" href="{{ route('sms-alert') }}"><img class="mr-2" src="{{ asset('assets2/images/Logo.png') }}"
@@ -177,9 +177,10 @@
                         @if ($role_permisstion->bank == 1)
                             <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('master', 'bank') }}">Bank</a></li>
                         @endif
+                        <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('master', 'bank') }}">Template</a></li>
                     </ul>
                 </li>
-                
+
                 <li class="nav-item">
                     <li>
                         <a class="nav-link px-2" href="#" data-toggle="modal" data-target="#exampleModalCenter3">Logout</a>
@@ -215,7 +216,7 @@
             </div>
 
             <div class="dropdown">
-                <button onclick="myFunctionFreelancer()" class="dropbtn">Freelancer &nbsp; 
+                <button onclick="myFunctionFreelancer()" class="dropbtn">Freelancer &nbsp;
                     <i class="fa-solid fa-caret-down"></i></button>
                 <div id="myDropdownFreelancer" class="dropdown-content">
                     <a class="menu2" href="{{ route('freelancer_member.index') }}">Membership</a>
@@ -225,13 +226,13 @@
                     <a class="menu2" href="#">Message Request</a>
                 </div>
                 {{-- <div id="myDropdownFreelancerAlert" class="dropdown-content">
-                    
-                    
+
+
                 </div> --}}
             </div>
 
             <div class="dropdown">
-                <button onclick="myFunctionDocument()" class="dropbtn">Document &nbsp; 
+                <button onclick="myFunctionDocument()" class="dropbtn">Document &nbsp;
                     <i class="fa-solid fa-caret-down"></i></button>
                 <div id="myDropdownDocument" class="dropdown-content">
                     <a class="menu2" href="{{ route('Quotation.index') }}">Proposal</a>
@@ -429,8 +430,8 @@
         } else {
             dropdown.style.maxHeight = "0";
         }
-    } 
-    
+    }
+
     function myFunctionFreelancer() {
         var dropdown = document.getElementById("myDropdownFreelancer");
 
@@ -441,7 +442,7 @@
         } else {
             dropdown.style.maxHeight = "0";
         }
-    } 
+    }
 
     function myFunctionFreelancerAlert() {
         var dropdown = document.getElementById("myDropdownFreelancerAlert");
@@ -453,7 +454,7 @@
         } else {
             dropdown.style.maxHeight = "0";
         }
-    } 
+    }
 
     function myFunctionDocument() {
         var dropdown = document.getElementById("myDropdownDocument");
@@ -465,7 +466,7 @@
         } else {
             dropdown.style.maxHeight = "0";
         }
-    } 
+    }
 
     // Close the dropdown if the user clicks outside of it
     window.onclick = function(event) {

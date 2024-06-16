@@ -330,6 +330,7 @@ Route::middleware(['auth'])->group(function () {
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
         Route::get('/Quotation/Quotation/cover/document/{id}', 'coverdocument')->name('Quotation.coverdocument');
         Route::get('/Quotation/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('Quotation.sheet');
+        Route::post('/Quotation/company/document/sheet/{id}', 'sheet')->name('Quotation.sheet');
     });
 
 Route::get('/clear-cache', function () {
