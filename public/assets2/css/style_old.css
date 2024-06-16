@@ -3810,11 +3810,10 @@ tr.disable-row:hover{
       margin-left: 0%;
     }
     .topic {
-      margin-top: 15%;
       top: 0.5%;
       left: 3%;
-      font-size: 22px;
-      width: 70%;
+      font-size: 24px;
+      width: 30%;
     }
     .dashboard {
       top: -0.2%;
@@ -4238,7 +4237,7 @@ tr.disable-row:hover{
     }
     .add {
       float: right;
-      padding: 100px 10px 0px 0;
+      padding: 10px 10px 0px 0;
       margin-bottom: -50px;
       margin-right: 1%;
     }
