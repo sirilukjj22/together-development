@@ -1018,19 +1018,14 @@ class RevenuesController extends Controller
         $total_ev_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select('total_elexa')->sum('total_elexa');
         $ev_charge = Revenues::getManualEvCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 8, 8);
 
-        // dd($ev_charge);
+        // dd($agoda_charge);
         // dd($front_charge);
 
         $by_page = 'index';
+        $btn_by_page = $request->daily_page;
 
-        if (isset($_GET['byPage']) && @$_GET['byPage'] == 'department') {
-            $by_page = 'index_department';
-        } else {
-            $by_page = 'index';
-        }
-
-        if (isset($_GET['dailyPage']) && @$_GET['dailyPage'] != 'daily') {
-            $by_page = 'index_'.@$_GET['dailyPage'];
+        if (isset($request->daily_page)) {
+            $by_page = 'index_'.$request->daily_page;
         }
 
         return view('revenue.'.$by_page, compact(
@@ -1117,6 +1112,8 @@ class RevenuesController extends Controller
             'total_ev_month',
             'total_ev_year',
             'ev_charge',
+
+            'btn_by_page',
 
             'day', 'month', 'year'));
         }

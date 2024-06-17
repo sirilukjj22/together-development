@@ -110,12 +110,22 @@
             <div class="col-lg-6 col-md-12 col-sm-12">
                 <div class="">
                     <button class="btn btn-custom float-end ml-1 dropdown-toggle" style="margin-left: 4px;" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
-                        Daily
+                        @if (isset($btn_by_page) && $btn_by_page == 'mtd')
+                            M-T-D
+                       @elseif(isset($btn_by_page) && $btn_by_page == 'ytd')
+                            Y-T-D
+                       @else
+                            Daily
+                        @endif
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'daily']) }}">Daily</a></li>
+                        {{-- <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'daily']) }}">Daily</a></li>
                         <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'mtd']) }}">M-T-D</a></li>
-                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'ytd']) }}">Y-T-D</a></li>
+                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'ytd']) }}">Y-T-D</a></li> --}}
+
+                        <li><a class="dropdown-item" href="#" onclick="btn_search_daily()">Daily</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="btn_search_daily('mtd')">M-T-D</a></li>
+                        <li><a class="dropdown-item btn-search-daily-year" href="#" onclick="btn_search_daily('ytd')">Y-T-D</a></li>
                     </ul>
                 </div>
 
@@ -360,19 +370,19 @@
             <div class="col-lg-4 col-md-6 col-sm-12">
                 <div class="title-box">
                     <h2>Total Revenue Outstanding</h2>
-                    <h1>{{ number_format($total_agoda_outstanding + $total_ev_outstanding, 2) }}</h1>
+                    <h1>{{ number_format($agoda_charge[0]['total_month'] + $ev_charge[0]['total_month'], 2) }}</h1>
                 </div>
                 <div class="d-flex align-content-stretch flex-wrap trorevenue">
                     <a href="#" class="list-box6 list-box-color">
                         <img src="../assets2/images/agoda.png" alt="">
                         <h2>Credit Card Agoda Revenue Outstanding</h2>
-                        <h3>{{ number_format($total_agoda_outstanding, 2) }}</h3>
+                        <h3>{{ number_format($agoda_charge[0]['total_month'], 2) }}</h3>
                     </a>
 
                     <a href="#" class="list-box6 list-box-color">
                         <img src="../assets2/images/elexa.png" alt="">
                         <h2>Elaxa EGAT Revenue Outstanding</h2>
-                        <h3>{{ number_format($total_ev_outstanding, 2) }}</h3>
+                        <h3>{{ number_format($ev_charge[0]['total_month'], 2) }}</h3>
                     </a>
 
                 </div>
@@ -487,6 +497,7 @@
     <div class="container-fluid pt-3 pb-3 rounded bg-light" style="width: 98%;">
         <form action="{{ route('revenue-search-calendar') }}" method="POST" enctype="multipart/form-data" class="" id="form-revenue">
             @csrf
+            <input type="hidden" name="daily_page" id="daily_page">
             <div class="row">
                 {{-- <div class="col-lg-8 col-md-2 col-sm-2 mb-2"> --}}
                     <div class="col-lg-2 col-md-12 col-sm-12 mb-2 px-1">
@@ -2204,6 +2215,11 @@ $('#date').on('change', function () {
     $('.btn-submit-search').on('click', function () {
         $('#form-revenue').submit();
     });
+
+    function btn_search_daily(params) {
+        $('#daily_page').val(params);
+        $('#form-revenue').submit();
+    }
 
     $('#ev_credit_amount').on('keyup', function () {
         var charge = Number($(this).val());

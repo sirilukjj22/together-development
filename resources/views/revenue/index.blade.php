@@ -107,12 +107,22 @@
             <div class="col-lg-6 col-md-12 col-sm-12">
                 <div class="">
                     <button class="btn btn-custom float-end ml-1 dropdown-toggle" style="margin-left: 4px;" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
-                        Daily
+                       @if (isset($btn_by_page) && $btn_by_page == 'mtd')
+                            M-T-D
+                       @elseif(isset($btn_by_page) && $btn_by_page == 'ytd')
+                            Y-T-D
+                       @else
+                            Daily
+                        @endif
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'daily']) }}">Daily {{ $total_revenue_today->status}}</a></li>
+                        {{-- <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'daily']) }}">Daily</a></li>
                         <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'mtd']) }}">M-T-D</a></li>
-                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'ytd']) }}">Y-T-D</a></li>
+                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'ytd']) }}">Y-T-D</a></li> --}}
+
+                        <li><a class="dropdown-item" href="#" onclick="btn_search_daily()">Daily</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="btn_search_daily('mtd')">M-T-D</a></li>
+                        <li><a class="dropdown-item btn-search-daily-year" href="#" onclick="btn_search_daily('ytd')">Y-T-D</a></li>
                     </ul>
                 </div>
 
@@ -257,7 +267,6 @@
                     <h1>{{ number_format(($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_credit ?? 0), 2) }}</h1>
                     <input type="hidden" id="total_credit_dashboard" value="{{ ($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_credit ?? 0) }}">
                 </div>
-
                 <div class="d-flex align-content-stretch flex-wrap creditrevenue">
                     <a href="#" class="list-box2 list-box-color">
                         <img src="../assets2/images/hotel.png" alt="">
@@ -282,8 +291,9 @@
 
         <div class="row g-2">
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="title-box2">
-                    <h1>Manual Charge</h1>
+                <div class="title-box">
+                    <h2>Manual Charge</h2>
+                    <h1>{{ number_format($sum_charge + $wp_charge[0]['revenue_credit_date'] + $agoda_charge[0]['revenue_credit_date'] + $ev_charge[0]['revenue_credit_date'], 2) }}</h1>
                 </div>
                 <div class="d-flex align-content-stretch flex-wrap manual"
                     style=" height: 292px; border-radius: 8px !important;">
@@ -310,7 +320,7 @@
                     <a href="#" class="list-box4 list-box-color">
                         <img src="../assets2/images/water-park.png" alt="">
                         <h2>Credit Card Water Park</h2>
-                        <h3>{{ number_format($wp_charge[0]['total'], 2) }}</h3>
+                        <h3>{{ number_format($wp_charge[0]['revenue_credit_date'], 2) }}</h3>
                     </a>
 
                     <a href="#" class="list-box4 list-box-color">
@@ -331,8 +341,9 @@
 
             <!-- Fee -->
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="title-box2">
-                    <h1>Fee</h1>
+                <div class="title-box">
+                    <h2>Fee</h2>
+                    <h1>{{ number_format(($sum_charge == 0 || $credit_revenue->total_credit == 0 ? 0 : $sum_charge - $credit_revenue->total_credit ?? 0) + $wp_charge[0]['fee_date'] + $agoda_charge[0]['fee_date'] + $ev_charge[0]['fee_date'], 2) }}</h1>
                 </div>
                 <div class="d-flex align-content-stretch flex-wrap fee"
                     style=" height: 292px; border-radius: 8px !important;">
@@ -359,29 +370,25 @@
                 </div>
             </div>
 
-
-
-
-
             <!-- Total Revenue Outstanding -->
 
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="title-box2">
-                    <h1>Total Revenue Outstanding</h1>
+                <div class="title-box">
+                    <h2>Total Revenue Outstanding</h2>
+                    <h1>{{ number_format($agoda_charge[0]['total'] + $ev_charge[0]['total'], 2) }}</h1>
                 </div>
                 <div class="d-flex align-content-stretch flex-wrap trorevenue">
                     <a href="#" class="list-box6 list-box-color">
                         <img src="../assets2/images/agoda.png" alt="">
                         <h2>Credit Card Agoda Revenue Outstanding</h2>
-                        <h3>{{ number_format($agoda_charge[0]['total_no_paid'], 2) }}</h3>
+                        <h3>{{ number_format($agoda_charge[0]['total'], 2) }}</h3>
                     </a>
 
                     <a href="#" class="list-box6 list-box-color">
                         <img src="../assets2/images/elexa.png" alt="">
                         <h2>Elaxa EGAT Revenue Outstanding</h2>
-                        <h3>{{ number_format($ev_charge[0]['total_between'], 2) }}</h3>
+                        <h3>{{ number_format($ev_charge[0]['total'], 2) }}</h3>
                     </a>
-
                 </div>
             </div>
         </div>
@@ -495,6 +502,7 @@
     <div class="container-fluid pt-3 pb-3 rounded bg-light" style="width: 98%;">
         <form action="{{ route('revenue-search-calendar') }}" method="POST" enctype="multipart/form-data" class="" id="form-revenue">
             @csrf
+            <input type="hidden" name="daily_page" id="daily_page">
             <div class="row">
                 {{-- <div class="col-lg-8 col-md-2 col-sm-2 mb-2"> --}}
                     <div class="col-lg-2 col-md-12 col-sm-12 mb-2 px-1">
@@ -1628,8 +1636,27 @@
 
 <script>
 
-$('#date').on('change', function () {
+    $('#date').on('change', function () {
         Add_data($(this).val());
+    });
+
+    $('#month').on('change', function() {
+        var month = Number($(this).val());
+        var year = $('#year').val();
+        var d = new Date(year, month, 0);
+
+        jQuery('#day').children().remove().end();
+        $('#day').append(new Option('ทั้งหมด', '0'));
+
+        for (var i = 1; i <= d.getDate().toString(); i++) {
+            var day = i.toString().padStart(2, '0');
+            var newOption = new Option(i, day);
+            $('#day').append(newOption);
+
+            if (i == 1) {
+                $('#day').val('01').trigger('change');
+            }
+        }
     });
 
     function Add_data($date) {
@@ -2212,6 +2239,11 @@ $('#date').on('change', function () {
     $('.btn-submit-search').on('click', function () {
         $('#form-revenue').submit();
     });
+
+    function btn_search_daily(params) {
+        $('#daily_page').val(params);
+        $('#form-revenue').submit();
+    }
 
     $('#ev_credit_amount').on('keyup', function () {
         var charge = Number($(this).val());
