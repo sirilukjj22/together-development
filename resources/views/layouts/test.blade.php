@@ -3,11 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+    <META http-equiv="expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+    {{-- header ("Last-Modified: " . gmdate ("D, d M Y H:i:s") . " GMT"); --}}
 
     <title>TOGETHER DEVELOPMENT</title>
 
@@ -143,8 +146,11 @@
                             @if ($role_permisstion->proposal == 1)
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Quotation.index') }}">Proposal</a></li>
                             @endif
+                            {{-- @if ($role_permisstion->proposal == 1) --}}
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Banquet Event Order</a></li>
+                            {{-- @endif --}}
                             @if ($role_permisstion->hotel_contact_rate == 1)
-                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Hotel Contract Rate</a></li>
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Hotel Contract Rate Agreement</a></li>
                             @endif
                             @if ($role_permisstion->proforma_invoice == 1)
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Proforma Invoice</a></li>
@@ -271,8 +277,11 @@
                         @if ($role_permisstion->proposal == 1)
                             <a class="menu2" href="{{ route('Quotation.index') }}">Proposal</a>
                         @endif
+                        {{-- @if ($role_permisstion->proposal == 1) --}}
+                            <a class="menu2" href="#">Banquet Event Order</a>
+                        {{-- @endif --}}
                         @if ($role_permisstion->hotel_contact_rate == 1)
-                            <a class="menu2" href="#">Hotel Contract Rate</a>
+                            <a class="menu2" href="#">Hotel Contract Rate Agreement</a>
                         @endif
                         @if ($role_permisstion->proforma_invoice == 1)
                             <a class="menu2" href="#">Proforma Invoice</a>
