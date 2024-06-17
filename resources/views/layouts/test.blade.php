@@ -176,7 +176,21 @@
                             @endif
                         </ul>
                     </li>
-                @endif
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                            Maintenance
+                        </a>
+                        <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
+                            {{-- @if ($role_permisstion->agoda == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('debit-agoda-revenue') }}">Agoda</a></li>
+                            @endif
+                            @if ($role_permisstion->elexa == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Elexa</a></li>
+                            @endif --}}
+                        </ul>
+                    </li>
+                @endif 
 
                 @if ($role_permisstion->general_ledger == 1)
                     <li class="nav-item dropdown">
@@ -210,6 +224,12 @@
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Template.TemplateA1') }}">Template</a></li>
                             @endif
                         </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <li>
+                            <a class="nav-link px-2" href="#">Debtor Maintenance</a>
+                        </li>
                     </li>
                 @endif
 
@@ -304,6 +324,19 @@
                     @if ($role_permisstion->elexa == 1)
                         <a class="menu2" href="#">Elexa</a>
                     @endif
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button onclick="myFunctionMaintenance()" class="dropbtn">Maintenance &nbsp;
+                    <i class="fa-solid fa-caret-down"></i></button>
+                <div id="myDropdownDebtor" class="dropdown-content">
+                    {{-- @if ($role_permisstion->agoda == 1)
+                        <a class="menu2" href="{{ route('debit-agoda-revenue') }}">Agoda</a>
+                    @endif
+                    @if ($role_permisstion->elexa == 1)
+                        <a class="menu2" href="#">Elexa</a>
+                    @endif --}}
                 </div>
             </div>
             @endif
