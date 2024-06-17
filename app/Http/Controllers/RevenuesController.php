@@ -340,7 +340,7 @@ class RevenuesController extends Controller
         $total_no_type_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
         $total_no_type_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
 
-        // dd($guest_deposit_charge);
+        // dd($ev_charge);
 
         $by_page = 'index';
 
@@ -1018,7 +1018,7 @@ class RevenuesController extends Controller
         $total_ev_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select('total_elexa')->sum('total_elexa');
         $ev_charge = Revenues::getManualEvCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 8, 8);
 
-        // dd($fb_charge);
+        // dd($ev_charge);
         // dd($front_charge);
 
         $by_page = 'index';

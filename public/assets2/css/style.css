@@ -302,6 +302,7 @@ ul a{
   border-width: 1px;
   width: 40%;
   height: 40px;
+  padding-top: 6px;
 }
 .button-1{
   background-color: #33b249 !important;
@@ -340,7 +341,21 @@ ul a{
   border-color: #9a9a9a;
   border-width: 1px;
   height: 40px;
+  margin-top: 30px;
+
 }
+.submit-button-mobile{
+  margin-left: 10px;
+  width: 40%;
+  border-radius: 8px;
+  border-color: #2D7F7B;
+  background-color: #109699 !important;
+  color: #fff;
+  border-width: 1px;
+  height: 40px;
+  margin-top: 30px;
+}
+
 .dt-column-title{
   display: block;
   text-align: right;
@@ -997,6 +1012,11 @@ pointer-events: none; /* Allow pointer events to pass through */
   margin-top: 10px;
   width: 30%;
   float: right;
+} 
+.submit-button-mobile{
+  margin-top: 10px;
+  width: 30%;
+  float: right;
 }
 
 .dt-search label{
@@ -1150,8 +1170,13 @@ tr.disable-row:hover{
       float: right;
       clear: both;
       margin-right: 10px;
-    }
+    } 
     .statusbtn{
+      margin-top: 10px;
+      width: 19.5%;
+      float: right;
+    }
+    .submit-button-mobile{
       margin-top: 10px;
       width: 19.5%;
       float: right;
@@ -1267,7 +1292,7 @@ tr.disable-row:hover{
         float: right;
         margin: 0;
       }
-      .statusbtn{
+      .statusbtn{ 
         border-style: solid;
         border-radius: 8px;
         border-width: 1px;
@@ -1280,13 +1305,30 @@ tr.disable-row:hover{
         color: #000000;
         margin: 0;
         margin-right: 10px;
-
+        margin-bottom: 10px;
+      }
+      .submit-button-mobile{ 
+        border-style: solid;
+        border-radius: 8px;
+        border-width: 1px;
+        border-color: #109699;
+        background-color: #109699 !important;
+        margin-left: 10px;
+        width: 15%;
+        height: 40px;
+        border-radius: 8px;
+        float: right;
+        color: #fff;
+        margin: 0;
+        margin-right: 10px;
+        margin-bottom: 10px;
       }
       .dropdown-item:focus{
         background-color: #000000 !important;
       }
       .submit-button{
         width: 15%;
+        margin-bottom: 10px;
         margin-right: 0px !important;
       }
       .agodatable{
@@ -1985,6 +2027,12 @@ tr.disable-row:hover{
   .dropdown a:hover {
     color: white;
     padding: 10px 0 10px 30px;
+    height: auto;
+  }
+
+  .dropdown-a a:hover{
+    color: white;
+    padding: 10px 0 10px 0px;
     height: auto;
   }
   

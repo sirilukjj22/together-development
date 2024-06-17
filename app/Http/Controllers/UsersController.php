@@ -106,16 +106,35 @@ class UsersController extends Controller
             }
     
             Role_permission_menu::where('user_id', $request->id)->update([
-                'sms_alert' => $request->menu_sms_alert ?? 0,
-                'revenue' => $request->menu_revenue ?? 0,
-                'debtor' => $request->menu_debtor ?? 0,
-                'agoda' => $request->menu_agoda ?? 0,
-                'elexa' => $request->menu_elexa ?? 0,
                 'profile' => $request->menu_profile ?? 0,
                 'company' => $request->menu_company ?? 0,
                 'guest' => $request->menu_guest ?? 0,
+
+                'freelancer' => $request->menu_freelancer ?? 0,
+                'membership' => $request->menu_membership ?? 0,
+                'message_inbox' => $request->menu_message_inbox ?? 0,
+                'registration_request' => $request->menu_registration_request ?? 0,
+                'message_request' => $request->menu_message_request ?? 0,
+
+                'document' => $request->menu_document ?? 0,
+                'proposal' => $request->menu_proposal ?? 0,
+                'hotel_contact_rate' => $request->menu_hotel_contact_rate ?? 0,
+                'proforma_invoice' => $request->menu_proforma_invoice ?? 0,
+                'billing_folio' => $request->menu_billing_folio ?? 0,
+
+                'debtor' => $request->menu_debtor ?? 0,
+                'agoda' => $request->menu_agoda ?? 0,
+                'elexa' => $request->menu_elexa ?? 0,
+
+                'general_ledger' => $request->menu_general_ledger ?? 0,
+                'sms_alert' => $request->menu_sms_alert ?? 0,
+                'revenue' => $request->menu_revenue ?? 0,
+                
+                'setting' => $request->menu_setting ?? 0,
                 'user' => $request->menu_user ?? 0,
                 'bank' => $request->menu_bank ?? 0,
+                'document_template_pdf' => $request->menu_template ?? 0,
+
                 'select_menu_all' => $request->select_menu_all ?? 0,
               ]);
         

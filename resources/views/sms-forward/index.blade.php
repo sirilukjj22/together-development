@@ -1149,29 +1149,29 @@
         $(document).ready(function() { 
 
             new DataTable('#example', {
-            columnDefs: [
-                {
-                    className: 'dtr-control',
-                    orderable: true,
-                    target: null
-                },
-                { width: '6%', targets: 0 },
-                { width: '10%', targets: 3 },
-                { width: '16%', targets: 4 },
-                { width: '10%', targets: 6 },
-                { width: '11%', targets: 7 },
-                { width: '10%', targets: 8 },
-                { width: '10%', targets: 9 }
+                columnDefs: [
+                    {
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null
+                    },
+                    { width: '6%', targets: 0 },
+                    { width: '10%', targets: 3 },
+                    { width: '16%', targets: 4 },
+                    { width: '10%', targets: 6 },
+                    { width: '11%', targets: 7 },
+                    { width: '10%', targets: 8 },
+                    { width: '10%', targets: 9 }
 
-            ],
-            order: [0, 'asc'],
-            responsive: {
-                details: {
-                    type: 'column',
-                    target: 'tr'
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
                 }
-            }
-        });
+            });
             new DataTable('#example2', {
                 columnDefs: [
                 {

@@ -9,23 +9,45 @@
       left: 0;
       margin: 40px;
     }
-  </style>
+
+    /* อันนี้ style ของ table นะ */
+    .dtr-details {
+        width: 100%;
+    }
+
+    .dtr-title {
+        float: left;
+        text-align: left;
+        margin-right: 10px;
+    }
+
+    .dtr-data {
+        display: block;
+        text-align: right !important;
+    }
+
+    .dt-container .dt-paging .dt-paging-button {
+        padding: 0 !important;
+    }
+</style>
     <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         <a href="{{ route('user-create') }}">
-            <button type="button" class="submit-button" style="float: right;">เพิ่มผู้ใช้งาน</button>
+            <button class="submit-button-mobile" style="float: right;">
+                เพิ่มผู้ใช้งาน
+            </button>
         </a>
 
         <div class="usertopic">
             <h1>User (ผู้ใช้งาน)</h1>
         </div>
 
-        <div class="selectall" style="float: left; margin-bottom: 10px;">
+        {{-- <div class="selectall" style="float: left; margin-bottom: 10px;">
             <th><label class="custom-checkbox">
                     <input type="checkbox" onClick="toggle(this)" />
                     <span class="checkmark"></span>
                 </label>ทั้งหมด
             </th>
-        </div>
+        </div> --}}
 
         {{-- <button type="button" class="button-4 sa-buttons" style="float: right;">ลบหลายรายการ</button> --}}
 
@@ -41,32 +63,20 @@
 
         <form enctype="multipart/form-data" id="form-id2">
             @csrf
-            <table id="example" class="display2">
+            <table id="example" class="table-hover nowarp" style="width:100%">
                 <thead>
                     <tr>
-                        {{-- <th>
-                            <label class="custom-checkbox">
-                                <input type="checkbox" onClick="toggle(this)" />
-                                <span class="checkmark"></span>
-                            </label>ทั้งหมด
-                        </th> --}}
-                        <th style="text-align: center;">ลำดับ</th>
-                        <th>ชื่อผู้ใช้งาน</th>
-                        <th>สิทธ์ของผู้ใช้งาน</th>
+                        <th data-priority="1">#</th>
+                        <th data-priority="1">ชื่อผู้ใช้งาน</th>
+                        <th data-priority="1">สิทธิ์ใช้งาน</th>
                         <th>สถานะการใช้งาน</th>
-                        <th style="text-align: center;">คำสั่ง</th>
+                        <th data-priority="1">คำสั่ง</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (!empty($users))
                         @foreach ($users as $key => $item)
                             <tr>
-                                {{-- <td data-label="เลือก">
-                                    <label class="custom-checkbox">
-                                        <input name="radio_master_sub[]" type="checkbox" value="{{ $item->id }}">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </td> --}}
                                 <td data-label="#">{{ $key + 1 }}</td>
                                 <td data-label="ชื่อผู้ใช้งาน">{{ $item->name }}</td>
                                 <td data-label="สิทธิผู้ใช้งาน">
@@ -96,17 +106,14 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="dropdown">
-                                        <button class="button-18 button-17" type="button" data-toggle="dropdown">
+                                    <div class="dropdown-a">
+                                        <button class="btn btn-custom" type="button" data-toggle="dropdown">
                                             ทำรายการ<span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu">
                                             <li class="licolor">
-                                                <a href="{{ route('user-edit', $item->id) }}">แก้ไขข้อมูล</a>
+                                                <a href="{{ route('user-edit', $item->id) }}" class="">แก้ไขข้อมูล</a>
                                             </li>
-                                            {{-- <li class="licolor"><a href="#"
-                                                    onclick="deleted({{ $item->id }})">ลบข้อมูล</a>
-                                            </li> --}}
                                         </ul>
                                     </div>
                                 </td>
@@ -123,8 +130,6 @@
         <input type="hidden" id="deleteID" name="deleteID" value="">
     </form>
 
-
-
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="../assets/bundles/sweetalert2.bundle.js"></script>
@@ -136,8 +141,26 @@
     <script type="text/javascript">
         $(document).ready(function() {
             new DataTable('#example', {
-                //ajax: 'arrays.txt'
-                // scrollX: true,
+                columnDefs: [
+                    {
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null
+                    },
+                    { width: '10%', targets: 0 },
+                    // { width: '10%', targets: 3 },
+                    // { width: '25%', targets: 2 },
+                    { width: '13%', targets: 3 },
+                    { width: '13%', targets: 4 },
+
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                }
             });
         });
 

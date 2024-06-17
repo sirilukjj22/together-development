@@ -148,10 +148,26 @@
     </div>
 
         <div class="row mt-1 g-2">
-             
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div style="background-color: white; height:auto; border-radius: 8px !important;">
+                    <div class="donut-graph">
+                        <canvas id="myChart"></canvas>
+                        <div class="percent" style="text-align: left; width:auto; display: block; margin-left: 30px;">
+                            <h6 style=" float: left; width: 60%;"><i style="color: deepskyblue; margin-right: 10px;"
+                                    class="fa-solid fa-square"></i>CASH</h6>
+                            <h6>: {{ number_format($total_year_revenue_graph == 0 ? 0 : (($total_cash_year + $total_wp_year->wp_cash) / $total_year_revenue_graph * 100), 2) }}%</h6>
+                            <h6 style="float: left;width: 60%;"><i style="color: hotpink; margin-right: 10px;"
+                                    class="fa-solid fa-square"></i>Bank Transfer</h6>
+                            <h6>: {{ number_format($total_year_revenue_graph == 0 ? 0 : (($total_bank_transfer_year + $total_wp_year->wp_transfer) + ($total_agoda_year + $total_ev_year)) / $total_year_revenue_graph * 100, 2) }}%</h6>
+                            <h6 style="float: left;width: 60%;"><i style="color: orange; margin-right: 10px;"
+                                    class="fa-solid fa-square"></i>Credit Card</h6>
+                            <h6>: {{ number_format($total_year_revenue_graph == 0 ? 0 : (($credit_revenue_year->total_credit  + $total_wp_year->wp_credit ?? 0) / $total_year_revenue_graph * 100), 2) }}%</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <!-- CASH -->
-
                 <input type="hidden" id="total_revenue_dashboard" value="{{ number_format($total_year_revenue_graph, 2) }}">
 
                 <div class="title-box">

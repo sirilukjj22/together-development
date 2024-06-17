@@ -96,7 +96,7 @@
             $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month;
             $total_cash_bank_year = $total_cash_year + $total_bank_transfer_year;
 
-            $total_today_revenue_graph = $total_day + ($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0);
+            $total_today_revenue_graph = $total_day + ($credit_revenue->total_credit ?? 0);
         ?>
 
         <div class="row mt-3 mb-0">
@@ -110,7 +110,7 @@
                         Daily
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'daily']) }}">Daily</a></li>
+                        <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'daily']) }}">Daily {{ $total_revenue_today->status}}</a></li>
                         <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'mtd']) }}">M-T-D</a></li>
                         <li><a class="dropdown-item" href="{{ route('revenue', ['dailyPage' => 'ytd']) }}">Y-T-D</a></li>
                     </ul>
@@ -128,8 +128,8 @@
 
                 @if (Auth::user()->permission > 0)
                     @if ($total_revenue_today->status == 0)
-                        <button type="button" class="btn btn-warning float-end ml-1 btn-open-daily" style="margin-left: 4px;" value="1">
-                            <i class="fa-solid fa-lock">&nbsp;</i>LOCK
+                        <button type="button" class="btn btn-warning float-end ml-1 btn-close-daily" style="margin-left: 4px;" value="1">
+                            <i class="fa-solid fa-lock">&nbsp;</i>LOCK 
                         </button>
                     @else
                         <button type="button" class="btn btn-warning float-end ml-1 btn-open-daily" style="margin-left: 4px;" value="0">
@@ -146,6 +146,9 @@
 
         <div class="row mt-1 g-2">
             <div class="col-lg-3 col-md-6 col-sm-12">
+                @php
+                   $total_credit_hotel_wp = ($credit_revenue->total_credit ?? 0) + ($total_wp_revenue->wp_credit ?? 0);
+                @endphp
                 <div style="background-color: white; height:auto; border-radius: 8px !important;">
                     <div class="donut-graph">
                         <canvas id="myChart"></canvas>
@@ -158,7 +161,12 @@
                             <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_bank_transfer + $total_wp_revenue->wp_transfer) / $total_today_revenue_graph * 100), 2) }}%</h6>
                             <h6 style="float: left;width: 60%;"><i style="color: orange; margin-right: 10px;"
                                     class="fa-solid fa-square"></i>Credit Card</h6>
-                            <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : ((($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_amount ?? 0)) / $total_today_revenue_graph * 100), 2) }}%</h6>
+                                    @if ($total_credit_hotel_wp == 0)
+                                    <h6>: {{ number_format(0, 2) }}%</h6>
+                                    @else
+                                    <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_credit_hotel_wp) / $total_today_revenue_graph * 100), 2) }}%</h6>
+                                    @endif
+                            
                         </div>
                     </div>
                 </div>
@@ -365,13 +373,13 @@
                     <a href="#" class="list-box6 list-box-color">
                         <img src="../assets2/images/agoda.png" alt="">
                         <h2>Credit Card Agoda Revenue Outstanding</h2>
-                        <h3>{{ number_format($total_agoda_outstanding, 2) }}</h3>
+                        <h3>{{ number_format($agoda_charge[0]['total_no_paid'], 2) }}</h3>
                     </a>
 
                     <a href="#" class="list-box6 list-box-color">
                         <img src="../assets2/images/elexa.png" alt="">
                         <h2>Elaxa EGAT Revenue Outstanding</h2>
-                        <h3>{{ number_format($total_ev_outstanding, 2) }}</h3>
+                        <h3>{{ number_format($ev_charge[0]['total_between'], 2) }}</h3>
                     </a>
 
                 </div>
@@ -1696,7 +1704,7 @@ $('#date').on('change', function () {
                                 '<td>' + value.batch +'</td>' +
                                 '<td>' + type_name + '</td>' +
                                 '<td style="text-align: right;">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
-                                '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose4(this)"></i></td>' +
+                                '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose4(this)"></i></td>' +
                                 '<input type="hidden" name="guest_batch[]" value="' + value.batch + '">' +
                                 '<input type="hidden" name="guest_revenue_type[]" value="' + value.revenue_type + '">' +
                                 '<input type="hidden" name="guest_credit_amount[]" value="' + value.credit_amount + '">' +
@@ -1709,7 +1717,7 @@ $('#date').on('change', function () {
                                 '<td>' + value.batch +'</td>' +
                                 '<td>' + type_name + '</td>' +
                                 '<td style="text-align: right;">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
-                                '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose5(this)"></i></td>' +
+                                '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose5(this)"></i></td>' +
                                 '<input type="hidden" name="fb_batch[]" value="' + value.batch + '">' +
                                 '<input type="hidden" name="fb_revenue_type[]" value="' + value.revenue_type + '">' +
                                 '<input type="hidden" name="fb_credit_amount[]" value="' + value.credit_amount + '">' +
@@ -1722,7 +1730,7 @@ $('#date').on('change', function () {
                                 '<td>' + value.batch +'</td>' +
                                 '<td>' + type_name + '</td>' +
                                 '<td style="text-align: right;">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
-                                '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose6(this)"></i></td>' +
+                                '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose6(this)"></i></td>' +
                                 '<input type="hidden" name="wp_batch[]" value="' + value.batch + '">' +
                                 '<input type="hidden" name="wp_revenue_type[]" value="' + value.revenue_type + '">' +
                                 '<input type="hidden" name="wp_credit_amount[]" value="' + value.credit_amount + '">' +
@@ -1735,7 +1743,7 @@ $('#date').on('change', function () {
                                 '<td>' + value.batch +'</td>' +
                                 '<td>' + type_name + '</td>' +
                                 '<td style="text-align: right;">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
-                                '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose(this)"></i></td>' +
+                                '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose(this)"></i></td>' +
                                 '<input type="hidden" name="batch[]" value="' + value.batch + '">' +
                                 '<input type="hidden" name="revenue_type[]" value="' + value.revenue_type + '">' +
                                 '<input type="hidden" name="credit_amount[]" value="' + value.credit_amount + '">' +
@@ -1751,7 +1759,7 @@ $('#date').on('change', function () {
                                 '<td style="text-align: right;">' + date_check_out + '</td>' +
                                 '<td style="text-align: right;">' + currencyFormat(parseFloat(value.agoda_charge)) + '</td>' +
                                 '<td style="text-align: right;">' + currencyFormat(parseFloat(value.agoda_outstanding)) + '</td>' +
-                                '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose2(this)"></i></td>' +
+                                '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose2(this)"></i></td>' +
                                 '<input type="hidden" name="agoda_batch[]" value="' + value.batch + '">' +
                                 '<input type="hidden" name="agoda_revenue_type[]" value="' + value.revenue_type + '">' +
                                 '<input type="hidden" name="agoda_check_in[]" value="' + value.agoda_check_in + '">' +
@@ -1767,7 +1775,7 @@ $('#date').on('change', function () {
                                 '<td>' + value.batch +'</td>' +
                                 '<td>' + type_name + '</td>' +
                                 '<td style="text-align: right;">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
-                                '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose3(this)"></i></td>' +
+                                '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose3(this)"></i></td>' +
                                 '<input type="hidden" name="front_batch[]" value="' + value.batch + '">' +
                                 '<input type="hidden" name="front_revenue_type[]" value="' + value.revenue_type + '">' +
                                 '<input type="hidden" name="front_credit_amount[]" value="' + value.credit_amount + '">' +
@@ -1785,7 +1793,7 @@ $('#date').on('change', function () {
                                 '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_fee)) + '</td>' +
                                 '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_vat)) + '</td>' +
                                 '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_revenue)) + '</td>' +
-                                '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose8(this)"></i></td>' +
+                                '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose8(this)"></i></td>' +
                                 '<input type="hidden" name="ev_batch[]" value="' + value.batch + '">' +
                                 '<input type="hidden" name="ev_revenue_type[]" value="' + value.revenue_type + '">' +
                                 // '<input type="hidden" name="ev_check_in[]" value="' + value.ev_check_in + '">' +
@@ -1838,7 +1846,7 @@ $('#date').on('change', function () {
                     '<td>' + batch +'</td>' +
                     '<td>' + type_name + '</td>' +
                     '<td style="text-align: right;">' + currencyFormat(parseFloat(amount)) + '</td>' +
-                    '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose(this)"></i></td>' +
+                    '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose(this)"></i></td>' +
                     '<input type="hidden" name="batch[]" value="' + batch + '">' +
                     '<input type="hidden" name="revenue_type[]" value="' + type + '">' +
                     '<input type="hidden" name="credit_amount[]" value="' + amount + '">' +
@@ -1900,7 +1908,7 @@ $('#date').on('change', function () {
                     '<td style="text-align: right;">' + date_check_out + '</td>' +
                     '<td style="text-align: right;">' + currencyFormat(parseFloat(amount)) + '</td>' +
                     '<td style="text-align: right;">' + currencyFormat(parseFloat(outstanding)) + '</td>' +
-                    '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose2(this)"></i></td>' +
+                    '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose2(this)"></i></td>' +
                     '<input type="hidden" name="agoda_batch[]" value="' + batch + '">' +
                     '<input type="hidden" name="agoda_revenue_type[]" value="' + type + '">' +
                     '<input type="hidden" name="agoda_check_in[]" value="' + check_in + '">' +
@@ -1946,7 +1954,7 @@ $('#date').on('change', function () {
                     '<td>' + batch +'</td>' +
                     '<td>' + type_name + '</td>' +
                     '<td style="text-align: right;">' + currencyFormat(parseFloat(amount)) + '</td>' +
-                    '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose3(this)"></i></td>' +
+                    '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose3(this)"></i></td>' +
                     '<input type="hidden" name="front_batch[]" value="' + batch + '">' +
                     '<input type="hidden" name="front_revenue_type[]" value="' + type + '">' +
                     '<input type="hidden" name="front_credit_amount[]" value="' + amount + '">' +
@@ -1983,7 +1991,7 @@ $('#date').on('change', function () {
             $('.guest-todo-list').append(
                 '<tr>' +
                     '<td style="text-align: right;">' + currencyFormat(parseFloat(amount)) + '</td>' +
-                    '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose4(this)"></i></td>' +
+                    '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose4(this)"></i></td>' +
                     '<input type="hidden" name="guest_batch[]" value="' + batch + '">' +
                     '<input type="hidden" name="guest_revenue_type[]" value="' + type + '">' +
                     '<input type="hidden" name="guest_credit_amount[]" value="' + amount + '">' +
@@ -2023,7 +2031,7 @@ $('#date').on('change', function () {
                     '<td>' + batch +'</td>' +
                     '<td>' + type_name + '</td>' +
                     '<td style="text-align: right;">' + currencyFormat(parseFloat(amount)) + '</td>' +
-                    '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose5(this)"></i></td>' +
+                    '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose5(this)"></i></td>' +
                     '<input type="hidden" name="fb_batch[]" value="' + batch + '">' +
                     '<input type="hidden" name="fb_revenue_type[]" value="' + type + '">' +
                     '<input type="hidden" name="fb_credit_amount[]" value="' + amount + '">' +
@@ -2063,7 +2071,7 @@ $('#date').on('change', function () {
                     '<td>' + batch +'</td>' +
                     '<td>' + type_name + '</td>' +
                     '<td style="text-align: right;">' + currencyFormat(parseFloat(amount)) + '</td>' +
-                    '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose6(this)"></i></td>' +
+                    '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose6(this)"></i></td>' +
                     '<input type="hidden" name="wp_batch[]" value="' + batch + '">' +
                     '<input type="hidden" name="wp_revenue_type[]" value="' + type + '">' +
                     '<input type="hidden" name="wp_credit_amount[]" value="' + amount + '">' +
@@ -2108,7 +2116,7 @@ $('#date').on('change', function () {
                     '<td style="text-align: right;">' + currencyFormat(parseFloat(fee)) + '</td>' +
                     '<td style="text-align: right;">' + currencyFormat(parseFloat(vat)) + '</td>' +
                     '<td style="text-align: right;">' + currencyFormat(parseFloat(ev_revenue)) + '</td>' +
-                    '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose8(this)">ลบ</i></td>' +
+                    '<td style="text-align: center;"><i class="fa fa-trash text-danger close p-1" onClick="toggleClose8(this)"></i></td>' +
                     '<input type="hidden" name="ev_batch[]" value="' + batch + '">' +
                     '<input type="hidden" name="ev_revenue_type[]" value="' + type + '">' +
                     '<input type="hidden" name="ev_credit_amount[]" value="' + amount + '">' +

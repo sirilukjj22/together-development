@@ -110,28 +110,48 @@
                             @endif
                         </ul>
                     </li>
+                @endif
 
+                @if ($role_permisstion->freelancer == 1)
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                             Freelancer
                         </a>
                         <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('freelancer_member.index') }}">Membership</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Message Inbox</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Registration Request</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Message Request</a></li>
+                            @if ($role_permisstion->membership == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('freelancer_member.index') }}">Membership</a></li>
+                            @endif
+                            @if ($role_permisstion->message_inbox == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Message Inbox</a></li>
+                            @endif
+                            @if ($role_permisstion->registration_request == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Registration Request</a></li>
+                            @endif
+                            @if ($role_permisstion->message_request == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Message Request</a></li>
+                            @endif
                         </ul>
                     </li>
+                @endif
 
+                @if ($role_permisstion->document == 1)
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                             Document
                         </a>
                         <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Quotation.index') }}">Proposal</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Hotel Contract Rate</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Proforma Invoice</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Billing Folio</a></li>
+                            @if ($role_permisstion->proposal == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Quotation.index') }}">Proposal</a></li>
+                            @endif
+                            @if ($role_permisstion->hotel_contact_rate == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Hotel Contract Rate</a></li>
+                            @endif
+                            @if ($role_permisstion->proforma_invoice == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Proforma Invoice</a></li>
+                            @endif
+                            @if ($role_permisstion->billing_folio == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Billing Folio</a></li>
+                            @endif
                         </ul>
                     </li>
                 @endif
@@ -152,34 +172,40 @@
                     </li>
                 @endif
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
-                        General Ledger
-                    </a>
-                    <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
-                        @if ($role_permisstion->sms_alert == 1)
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a></li>
-                        @endif
-                        @if ($role_permisstion->revenue == 1)
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a></li>
-                        @endif
-                    </ul>
-                </li>
+                @if ($role_permisstion->general_ledger == 1)
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                            General Ledger
+                        </a>
+                        <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
+                            @if ($role_permisstion->sms_alert == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a></li>
+                            @endif
+                            @if ($role_permisstion->revenue == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a></li>
+                            @endif
+                        </ul>
+                    </li>
+                @endif
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
-                        Setting
-                    </a>
-                    <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
-                        @if ($role_permisstion->user == 1)
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('users', 'index') }}">User</a></li>
-                        @endif
-                        @if ($role_permisstion->bank == 1)
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('master', 'bank') }}">Bank</a></li>
-                        @endif
-                        <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Template.TemplateA1') }}">Template</a></li>
-                    </ul>
-                </li>
+                @if ($role_permisstion->setting == 1)
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                            Setting
+                        </a>
+                        <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
+                            @if ($role_permisstion->user == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('users', 'index') }}">User</a></li>
+                            @endif
+                            @if ($role_permisstion->bank == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('master', 'bank') }}">Bank</a></li>
+                            @endif
+                            @if ($role_permisstion->document_template_pdf == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Template.TemplateA1') }}">Template</a></li>
+                            @endif
+                        </ul>
+                    </li>
+                @endif
 
                 <li class="nav-item">
                     <li>
@@ -202,45 +228,60 @@
             <h1>Menu</h1>
 
             @if ($role_permisstion->profile == 1)
-            <div class="dropdown">
-                <button onclick="myFunction()" class="dropbtn">Profile &nbsp; <i
-                        class="fa-solid fa-caret-down"></i></button>
-                <div id="myDropdown" class="dropdown-content">
-                    @if ($role_permisstion->company == 1)
-                        <a class="menu2" href="{{ route('Company.index') }}">Company / Agent</a>
-                    @endif
-                    @if ($role_permisstion->guest == 1)
-                        <a class="menu2" href="{{ route('guest.index') }}">Guest</a>
-                    @endif
+                <div class="dropdown">
+                    <button onclick="myFunction()" class="dropbtn">Profile &nbsp; <i
+                            class="fa-solid fa-caret-down"></i></button>
+                    <div id="myDropdown" class="dropdown-content">
+                        @if ($role_permisstion->company == 1)
+                            <a class="menu2" href="{{ route('Company.index') }}">Company / Agent</a>
+                        @endif
+                        @if ($role_permisstion->guest == 1)
+                            <a class="menu2" href="{{ route('guest.index') }}">Guest</a>
+                        @endif
+                    </div>
                 </div>
-            </div>
+            @endif
 
-            <div class="dropdown">
-                <button onclick="myFunctionFreelancer()" class="dropbtn">Freelancer &nbsp;
-                    <i class="fa-solid fa-caret-down"></i></button>
-                <div id="myDropdownFreelancer" class="dropdown-content">
-                    <a class="menu2" href="{{ route('freelancer_member.index') }}">Membership</a>
-                    <a class="menu2" href="#">Message Inbox</a>
-                    {{-- <a class="menu2" href="#" onclick="myFunctionFreelancerAlert()">Alert <i class="fa-solid fa-caret-down"></i></a> --}}
-                    <a class="menu2" href="{{ route('freelancer.index') }}">Registration Request</a>
-                    <a class="menu2" href="#">Message Request</a>
+            @if ($role_permisstion->freelancer == 1)
+                <div class="dropdown">
+                    <button onclick="myFunctionFreelancer()" class="dropbtn">Freelancer &nbsp;
+                        <i class="fa-solid fa-caret-down"></i></button>
+                    <div id="myDropdownFreelancer" class="dropdown-content">
+                        @if ($role_permisstion->membership == 1)
+                            <a class="menu2" href="{{ route('freelancer_member.index') }}">Membership</a>
+                        @endif
+                        @if ($role_permisstion->message_inbox == 1)
+                            <a class="menu2" href="#">Message Inbox</a>
+                        @endif
+                        @if ($role_permisstion->registration_request == 1)
+                            <a class="menu2" href="{{ route('freelancer.index') }}">Registration Request</a>
+                        @endif
+                        @if ($role_permisstion->message_request == 1)
+                            <a class="menu2" href="#">Message Request</a>
+                        @endif
+                    </div>
                 </div>
-                {{-- <div id="myDropdownFreelancerAlert" class="dropdown-content">
+            @endif
 
-
-                </div> --}}
-            </div>
-
-            <div class="dropdown">
-                <button onclick="myFunctionDocument()" class="dropbtn">Document &nbsp;
-                    <i class="fa-solid fa-caret-down"></i></button>
-                <div id="myDropdownDocument" class="dropdown-content">
-                    <a class="menu2" href="{{ route('Quotation.index') }}">Proposal</a>
-                    <a class="menu2" href="#">Hotel Contract Rate</a>
-                    <a class="menu2" href="#">Proforma Invoice</a>
-                    <a class="menu2" href="#">Billing Folio</a>
+            @if ($role_permisstion->document == 1)
+                <div class="dropdown">
+                    <button onclick="myFunctionDocument()" class="dropbtn">Document &nbsp;
+                        <i class="fa-solid fa-caret-down"></i></button>
+                    <div id="myDropdownDocument" class="dropdown-content">
+                        @if ($role_permisstion->proposal == 1)
+                            <a class="menu2" href="{{ route('Quotation.index') }}">Proposal</a>
+                        @endif
+                        @if ($role_permisstion->hotel_contact_rate == 1)
+                            <a class="menu2" href="#">Hotel Contract Rate</a>
+                        @endif
+                        @if ($role_permisstion->proforma_invoice == 1)
+                            <a class="menu2" href="#">Proforma Invoice</a>
+                        @endif
+                        @if ($role_permisstion->billing_folio == 1)
+                            <a class="menu2" href="#">Billing Folio</a>
+                        @endif
+                    </div>
                 </div>
-            </div>
             @endif
 
             @if ($role_permisstion->debtor == 1)
@@ -258,32 +299,38 @@
             </div>
             @endif
 
-            <div class="dropdown">
-                <button onclick="myFunctionGeneralLedger()" class="dropbtn">General Ledger &nbsp;
-                    <i class="fa-solid fa-caret-down"></i></button>
-                <div id="myDropdownGeneralLedger" class="dropdown-content">
-                        @if ($role_permisstion->sms_alert == 1)
-                            <a class="menu2" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a>
-                        @endif
-                        @if ($role_permisstion->revenue == 1)
-                            <a class="menu2" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a>
-                        @endif
+            @if ($role_permisstion->general_ledger == 1)
+                <div class="dropdown">
+                    <button onclick="myFunctionGeneralLedger()" class="dropbtn">General Ledger &nbsp;
+                        <i class="fa-solid fa-caret-down"></i></button>
+                    <div id="myDropdownGeneralLedger" class="dropdown-content">
+                            @if ($role_permisstion->sms_alert == 1)
+                                <a class="menu2" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a>
+                            @endif
+                            @if ($role_permisstion->revenue == 1)
+                                <a class="menu2" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a>
+                            @endif
+                    </div>
                 </div>
-            </div>
+            @endif
 
-            <div class="dropdown">
-                <button onclick="myFunctionSetting()" class="dropbtn">Setting &nbsp;
-                    <i class="fa-solid fa-caret-down"></i></button>
-                <div id="myDropdownSetting" class="dropdown-content">
-                        @if ($role_permisstion->user == 1)
-                            <a class="menu2" href="{{ route('users', 'index') }}">User</a>
-                        @endif
-                        @if ($role_permisstion->bank == 1)
-                            <a class="menu2" href="{{ route('master', 'bank') }}">Bank</a>
-                        @endif
-                        <a class="menu2" href="{{ route('Template.TemplateA1') }}">Template</a>
+            @if ($role_permisstion->setting == 1)
+                <div class="dropdown">
+                    <button onclick="myFunctionSetting()" class="dropbtn">Setting &nbsp;
+                        <i class="fa-solid fa-caret-down"></i></button>
+                    <div id="myDropdownSetting" class="dropdown-content">
+                            @if ($role_permisstion->user == 1)
+                                <a class="menu2" href="{{ route('users', 'index') }}">User</a>
+                            @endif
+                            @if ($role_permisstion->bank == 1)
+                                <a class="menu2" href="{{ route('master', 'bank') }}">Bank</a>
+                            @endif
+                            @if ($role_permisstion->document_template_pdf == 1)
+                                <a class="menu2" href="{{ route('Template.TemplateA1') }}">Template</a>
+                            @endif
+                    </div>
                 </div>
-            </div>
+            @endif
 
             <div>
                 <!-- Button trigger modal -->

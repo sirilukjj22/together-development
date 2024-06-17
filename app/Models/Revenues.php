@@ -74,12 +74,16 @@ class Revenues extends Model
         ->select(DB::raw("(SUM(revenue_credit.agoda_charge) - SUM(revenue_credit.agoda_outstanding)) as total_credit_agoda, SUM(revenue_credit.agoda_charge) as agoda_charge, SUM(revenue_credit.agoda_outstanding) as agoda_outstanding"))->first();
 
         $sum_revenue_month = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
-        ->where('revenue_credit.revenue_type', $type)->whereDay('date', $symbol, $day_now)->whereMonth('revenue.date', $month)
+        ->where('revenue_credit.revenue_type', $type)->whereDay('date', '<=', $day_now)->whereMonth('revenue.date', $month)
         ->whereYear('revenue.date', $year)
         ->select(DB::raw("(SUM(revenue_credit.agoda_charge) - SUM(revenue_credit.agoda_outstanding)) as total_credit_agoda, SUM(revenue_credit.agoda_charge) as agoda_charge, SUM(revenue_credit.agoda_outstanding) as agoda_outstanding"))->first();
 
         $sum_revenue_year = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
         ->where('revenue_credit.revenue_type', $type)->whereDate('revenue.date', '<=', $date)
+        ->select(DB::raw("(SUM(revenue_credit.agoda_charge) - SUM(revenue_credit.agoda_outstanding)) as total_credit_agoda, SUM(revenue_credit.agoda_charge) as agoda_charge, SUM(revenue_credit.agoda_outstanding) as agoda_outstanding"))->first();
+
+        $sum_revenue_no_paid_month = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+        ->where('revenue_credit.revenue_type', $type)->whereDate('revenue.date', '<=', $date)->where('revenue_credit.receive_payment', 0)
         ->select(DB::raw("(SUM(revenue_credit.agoda_charge) - SUM(revenue_credit.agoda_outstanding)) as total_credit_agoda, SUM(revenue_credit.agoda_charge) as agoda_charge, SUM(revenue_credit.agoda_outstanding) as agoda_outstanding"))->first();
 
         $data[] = [
@@ -91,7 +95,8 @@ class Revenues extends Model
             'fee_year' => isset($sum_revenue_year) ? $sum_revenue_year->total_credit_agoda : 0,
             'total' => isset($sum_revenue) ? $sum_revenue->agoda_outstanding : 0,
             'total_month' => isset($sum_revenue_month) ? $sum_revenue_month->agoda_outstanding : 0,
-            'total_year' => isset($sum_revenue_year) ? $sum_revenue_year->agoda_outstanding : 0
+            'total_year' => isset($sum_revenue_year) ? $sum_revenue_year->agoda_outstanding : 0,
+            'total_no_paid' => isset($sum_revenue_no_paid_month) ? $sum_revenue_no_paid_month->agoda_outstanding : 0,
         ];
 
         return $data;
@@ -119,7 +124,7 @@ class Revenues extends Model
         ->select(DB::raw("SUM(revenue_credit.ev_charge) as ev_charge, (SUM(revenue_credit.ev_fee) + SUM(ev_vat)) as ev_fee, SUM(revenue_credit.ev_revenue) as ev_revenue"))->first();
 
         $sum_revenue_month = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
-        ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type)->whereDay('date', $symbol, $day_now)->whereMonth('revenue.date', $month)->whereYear('revenue.date', $year)
+        ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type)->whereDay('date', '<=', $day_now)->whereMonth('revenue.date', $month)->whereYear('revenue.date', $year)
         ->select(DB::raw("SUM(revenue_credit.ev_charge) as ev_charge, (SUM(revenue_credit.ev_fee) + SUM(ev_vat)) as ev_fee, SUM(revenue_credit.ev_revenue) as ev_revenue"))->first();
 
         $sum_revenue_year = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
@@ -130,12 +135,15 @@ class Revenues extends Model
             'revenue_credit_date' => isset($sum_revenue) ? $sum_revenue->ev_charge : 0,
             'revenue_credit_month' => isset($sum_revenue_month) ? $sum_revenue_month->ev_charge : 0,
             'revenue_credit_year' => isset($sum_revenue_year) ? $sum_revenue_year->ev_charge : 0,
+            'revenue_credit_between' => isset($sum_revenue_year) ? $sum_revenue_year->ev_charge : 0,
             'fee_date' => isset($sum_revenue) ? $sum_revenue->ev_fee : 0,
             'fee_month' => isset($sum_revenue_month) ? $sum_revenue_month->ev_fee : 0,
             'fee_year' => isset($sum_revenue_year) ? $sum_revenue_year->ev_fee : 0,
+            'fee_between' => isset($sum_revenue_year) ? $sum_revenue_year->ev_fee : 0,
             'total' => isset($sum_revenue) ? $sum_revenue->ev_revenue : 0,
             'total_month' => isset($sum_revenue_month) ? $sum_revenue_month->ev_revenue : 0,
-            'total_year' => isset($sum_revenue_year) ? $sum_revenue_year->ev_revenue : 0
+            'total_year' => isset($sum_revenue_year) ? $sum_revenue_year->ev_revenue : 0,
+            'total_between' => isset($sum_revenue_year) ? $sum_revenue_year->ev_revenue : 0
         ];
 
         return $data;
