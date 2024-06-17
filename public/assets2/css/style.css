@@ -1994,7 +1994,7 @@ tr.disable-row:hover{
   .add {
     float: right;
     width: 180px;
-    padding: 20px 30px 0 0;
+    padding: 30px 30px 0 0;
     margin-bottom: -20px;
   }
 
@@ -3814,10 +3814,11 @@ tr.disable-row:hover{
       margin-left: 0%;
     }
     .topic {
+      margin-top: 100px;
       top: 0.5%;
       left: 3%;
       font-size: 24px;
-      width: 30%;
+      width: 70%;
     }
     .dashboard {
       top: -0.2%;
@@ -4241,8 +4242,8 @@ tr.disable-row:hover{
     }
     .add {
       float: right;
-      padding: 10px 10px 0px 0;
-      margin-bottom: -50px;
+      padding: 100px 10px 0px 0;
+      margin-bottom: -70px;
       margin-right: 1%;
     }
 
