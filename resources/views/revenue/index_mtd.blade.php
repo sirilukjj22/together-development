@@ -108,9 +108,21 @@
             <h3>Daily Revenue by Type</h3>
             </div>
             <div class="col-lg-6 col-md-12 col-sm-12">
+                @if (Auth::user()->permission > 0)
+                    @if ($total_revenue_today->status == 0)
+                        <button type="button" class="btn btn-warning float-end ml-1 btn-close-daily" style="margin-left: 4px;" value="1">
+                            <i class="fa-solid fa-lock">&nbsp;</i>LOCK 
+                        </button>
+                    @else
+                        <button type="button" class="btn btn-warning float-end ml-1 btn-open-daily" style="margin-left: 4px;" value="0">
+                            <i class="fa-solid fa-unlock">&nbsp;</i>UNLOCK
+                        </button>
+                    @endif
+                @endif
+
                 <div class="">
                     <button class="btn btn-custom float-end ml-1 dropdown-toggle" style="margin-left: 4px;" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
-                        @if (isset($btn_by_page) && $btn_by_page == 'mtd')
+                       @if (isset($btn_by_page) && $btn_by_page == 'mtd')
                             M-T-D
                        @elseif(isset($btn_by_page) && $btn_by_page == 'ytd')
                             Y-T-D
@@ -128,31 +140,13 @@
                         <li><a class="dropdown-item btn-search-daily-year" href="#" onclick="btn_search_daily('ytd')">Y-T-D</a></li>
                     </ul>
                 </div>
-
-                {{-- <div class="">
-                    <button class="btn btn-custom float-end ml-1 dropdown-toggle" style="margin-left: 4px;" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
-                        By Type
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="{{ route('revenue') }}">by Type</a></li>
-                        <li><a class="dropdown-item" href="{{ route('revenue-department', ['byPage' => 'department']) }}">by Department</a></li>
-                    </ul>
-                </div> --}}
-
-                @if (Auth::user()->permission > 0)
-                    @if ($total_revenue_today->status == 0)
-                        <button type="button" class="btn btn-warning float-end ml-1 btn-open-daily" style="margin-left: 4px;" value="1">
-                            <i class="fa-solid fa-lock">&nbsp;</i>LOCK
-                        </button>
-                    @else
-                        <button type="button" class="btn btn-warning float-end ml-1 btn-open-daily" style="margin-left: 4px;" value="0">
-                            <i class="fa-solid fa-unlock">&nbsp;</i>UNLOCK
-                        </button>
-                    @endif
-                @endif
-                <button type="button" class="btn btn-primary border-0 float-end" onclick="Add_data('{{$date}}')" style="background-color: #109699;"
+                <button type="button" class="btn btn-primary border-0 float-end" onclick="view_data('{{$date}}')" style="background-color: #109699; margin-left: 4px;"
+                  onclick="Add_data('{{$date}}')" data-bs-toggle="modal" data-bs-target="#ViewDataModalCenter">
+                    รายละเอียด
+                </button>
+                <button type="button" class="btn btn-primary border-0 float-end mr-1" onclick="Add_data('{{$date}}')" style="background-color: #109699;"
                 data-bs-toggle="modal" data-bs-target="#AddDataModalCenter" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
-                เพิ่มข้อมูลเงินสด / เครดิต
+                    เพิ่มข้อมูลเงินสด / เครดิต
                 </button>
             </div>
     </div>
@@ -1575,6 +1569,282 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="ViewDataModalCenter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-label="Close">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">รายละเอียดข้อมูลเงินสด / เครดิต</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="#" method="POST" enctype="multipart/form-data" class="form-store">
+                            @csrf
+
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label for="">วันที่</label>
+                                    <input type="date" id="" name="" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>" disabled>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="flush-headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseOne2" aria-expanded="true"
+                                            aria-controls="collapseOne2">
+                                            Front Desk Revenue
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne2" class="accordion-collapse collapse"
+                                        aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table id="myTablefrontCredit" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">Credit Card Room Charge</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="front-todo-list">
+                                                        
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample"> <!--อันนี้หน้า collapse-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingTwo"> <!--ใส่ ID ให้ตรงกับ aria-labelledby -->
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseTwo2" aria-expanded="true"
+                                            aria-controls="collapseTwo2">
+                                            <!--ใส่ ID ให้ตรง -->
+                                            Guest Deposit Revenue
+                                        </button>
+                                    </h2>
+                                    <div id="collapseTwo2" class="accordion-collapse collapse"
+                                        aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                        <!--ใส่ ID ให้ตรง -->
+                                        <div class="accordion-body">
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table id="myTableguestCredit" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">Credit Card Room Charge</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="guest-todo-list">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample"> <!--อันนี้หน้า collapse-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingThree2">
+                                        <!--ใส่ ID ให้ตรงกับ aria-labelledby -->
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseThree2" aria-expanded="true"
+                                            aria-controls="collapseThree2">
+                                            <!--ใส่ ID ให้ตรง -->
+                                            All Outlet Revenue
+                                        </button>
+                                    </h2>
+                                    <div id="collapseThree2" class="accordion-collapse collapse"
+                                        aria-labelledby="headingThree2" data-bs-parent="#accordionExample">
+                                        <!--ใส่ ID ให้ตรง -->
+                                        <div class="accordion-body">
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table id="myTablefbCredit" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">Credit Card Room Charge</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="fb-todo-list">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample"> <!--อันนี้หน้า collapse-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingFour2">
+                                        <!--ใส่ ID ให้ตรงกับ aria-labelledby -->
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseFour2" aria-expanded="true"
+                                            aria-controls="collapseFour2">
+                                            <!--ใส่ ID ให้ตรง -->
+                                            Agoda Revenue
+                                        </button>
+                                    </h2>
+                                    <div id="collapseFour2" class="accordion-collapse collapse"
+                                        aria-labelledby="headingFour2" data-bs-parent="#accordionExample">
+                                        <!--ใส่ ID ให้ตรง -->
+                                        <div class="accordion-body">
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table id="myTableAgodaCredit" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Booking Number</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">Check in date</th>
+                                                            <th scope="col">Check out date</th>
+                                                            <th scope="col">Credit card Agoda Charge</th>
+                                                            <th scope="col">Credit Agoda Revenue Outstanding</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="agoda-todo-list">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample"> <!--อันนี้หน้า collapse-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingFive2">
+                                        <!--ใส่ ID ให้ตรงกับ aria-labelledby -->
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseFive2" aria-expanded="true"
+                                            aria-controls="collapseFive2">
+                                            <!--ใส่ ID ให้ตรง -->
+                                            Water Park Revenue
+                                        </button>
+                                    </h2>
+                                    <div id="collapseFive2" class="accordion-collapse collapse"
+                                        aria-labelledby="headingFive2" data-bs-parent="#accordionExample">
+                                        <!--ใส่ ID ให้ตรง -->
+                                        <div class="accordion-body">
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table id="myTablewpCredit" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">Credit Card Room Charge</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="wp-todo-list">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample"> <!--อันนี้หน้า collapse-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingSix2">
+                                        <!--ใส่ ID ให้ตรงกับ aria-labelledby -->
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseSix2" aria-expanded="true"
+                                            aria-controls="collapseSix2">
+                                            <!--ใส่ ID ให้ตรง -->
+                                            Elexa EGAT Revenue
+                                        </button>
+                                    </h2>
+                                    <div id="collapseSix2" class="accordion-collapse collapse"
+                                        aria-labelledby="headingSix2" data-bs-parent="#accordionExample">
+                                        <!--ใส่ ID ให้ตรง -->
+                                        <div class="accordion-body">
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table id="myTableEvCredit" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">EV Charging Charge</th>
+                                                            <th scope="col">Transaction Fee</th>
+                                                            <th scope="col">VAT</th>
+                                                            <th scope="col">Total Revenue</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="ev-todo-list">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample"> <!--อันนี้หน้า collapse-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingSeven2">
+                                        <!--ใส่ ID ให้ตรงกับ aria-labelledby -->
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseSeven2" aria-expanded="true"
+                                            aria-controls="collapseSeven2">
+                                            <!--ใส่ ID ให้ตรง -->
+                                            Credit Revenue <span class="text-danger" id="credit_card">&nbsp; (ยอดเครดิต 0.00)</span>
+                                        </button>
+                                    </h2>
+                                    <div id="collapseSeven2" class="accordion-collapse collapse"
+                                        aria-labelledby="headingSeven2" data-bs-parent="#accordionExample">
+                                        <!--ใส่ ID ให้ตรง -->
+                                        <div class="accordion-body">
+                                            <div class="table-responsive" style="width: 100%;">
+                                                <table id="myTableEvCredit" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">ประเภทรายได้</th>
+                                                            <th scope="col">ยอดเงิน</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="todo-list">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -1797,6 +2067,185 @@ $('#date').on('change', function () {
                                 '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_vat)) + '</td>' +
                                 '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_revenue)) + '</td>' +
                                 '<td style="text-align: center;"><i class="icon-trash text-danger close p-1" onClick="toggleClose8(this)"></i></td>' +
+                                '<input type="hidden" name="ev_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="ev_revenue_type[]" value="' + value.revenue_type + '">' +
+                                // '<input type="hidden" name="ev_check_in[]" value="' + value.ev_check_in + '">' +
+                                // '<input type="hidden" name="ev_check_out[]" value="' + value.ev_check_out + '">' +
+                                '<input type="hidden" name="ev_credit_amount[]" value="' + value.ev_charge + '">' +
+                                '<input type="hidden" name="ev_transaction_fee[]" value="' + value.ev_fee + '">' +
+                                '<input type="hidden" name="ev_vat[]" value="' + value.ev_vat + '">' +
+                                '<input type="hidden" name="ev_total_revenue[]" value="' + value.ev_revenue + '">' +
+                            '</tr>'
+                        );
+                    }
+                });
+            },
+
+        });
+    }
+
+    function view_data($date) {
+        var date = $('#date').val();
+        jQuery.ajax({
+            type:   "GET",
+            url:    "{!! url('revenue-edit/"+date+"') !!}",
+            datatype:   "JSON",
+            async:  false,
+            success: function(response) {
+                $('#front_cash').val(response.data.front_cash);
+                $('#front_transfer').val(currencyFormat(response.data.front_transfer));
+                $('#front_credit').val(response.data.front_credit);
+                $('#cash').val(response.data.room_cash);
+                $('#room_transfer').val(currencyFormat(response.data.room_transfer));
+                $('#credit').val(response.data.room_credit);
+                $('#fb_cash').val(response.data.fb_cash);
+                $('#fb_transfer').val(currencyFormat(response.data.fb_transfer));
+                $('#fb_credit').val(response.data.fb_credit);
+                $('#wp_cash').val(response.data.wp_cash);
+                $('#wp_transfer').val(currencyFormat(response.data.wp_transfer));
+                $('#wp_credit').val(response.data.wp_credit);
+                // $('#ev_cash').val(response.data.ev_cash);
+                // $('#ev_transfer').val(currencyFormat(response.data.ev_transfer));
+                // $('#ev_credit').val(response.data.ev_credit);
+
+                $('#credit_card').text("(ยอดเครดิต "+currencyFormat(response.data.total_credit)+")");
+                $('.todo-list tr').remove();
+                $('.guest-todo-list tr').remove();
+                $('.fb-todo-list tr').remove();
+                $('.wp-todo-list tr').remove();
+                $('.agoda-todo-list tr').remove();
+                $('.front-todo-list tr').remove();
+                $('.ev-todo-list tr').remove();
+
+                jQuery.each(response.data_credit, function(key, value) {
+                    var type_name = "";
+                    switch (value.revenue_type) {
+                        case 1: type_name = "Guest Deposit Revenue"; break;
+                        case 2: type_name = "All Outlet Revenue"; break;
+                        case 3: type_name = "Water Park Revenue"; break;
+                        case 4: type_name = "Credit Card Revenue"; break;
+                        case 5: type_name = "Credit Card Agoda Revenue"; break;
+                        case 6: type_name = "Front Desk Revenue"; break;
+                        case 7: type_name = "Credit Card Water Park Revenue"; break;
+                        case 8: type_name = "Elexa EGAT Revenue"; break;
+                    }
+
+                    var date_check_in = "";
+                    var date_check_out = "";
+
+                    if (value.agoda_check_in) {
+                        var agoda_check_in = new Date(value.agoda_check_in);
+                        var year = agoda_check_in.getFullYear();
+                        var month = (1 + agoda_check_in.getMonth()).toString().padStart(2, '0');
+                        var day = agoda_check_in.getDate().toString().padStart(2, '0');
+
+                        date_check_in = day+'/'+month+'/'+year;
+
+                        var agoda_check_out = new Date(value.agoda_check_out);
+                        var year_out = agoda_check_out.getFullYear();
+                        var month_out = (1 + agoda_check_out.getMonth()).toString().padStart(2, '0');
+                        var day_out = agoda_check_out.getDate().toString().padStart(2, '0');
+
+                        date_check_out = day_out+'/'+month_out+'/'+year_out;
+
+                    }
+
+                    if (value.status == 1) {
+                        $('.guest-todo-list').append(
+                            '<tr>' +
+                                '<td>' + value.batch +'</td>' +
+                                '<td>' + type_name + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
+                                '<input type="hidden" name="guest_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="guest_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="guest_credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 2) {
+                        $('.fb-todo-list').append(
+                            '<tr>' +
+                                '<td>' + value.batch +'</td>' +
+                                '<td>' + type_name + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
+                                '<input type="hidden" name="fb_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="fb_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="fb_credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 3) {
+                        $('.wp-todo-list').append(
+                            '<tr>' +
+                                '<td>' + value.batch +'</td>' +
+                                '<td>' + type_name + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
+                                '<input type="hidden" name="wp_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="wp_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="wp_credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 4) {
+                        $('.todo-list').append(
+                            '<tr>' +
+                                '<td>' + value.batch +'</td>' +
+                                '<td>' + type_name + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
+                                '<input type="hidden" name="batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 5) {
+                        $('.agoda-todo-list').append(
+                            '<tr>' +
+                                '<td>' + value.batch +'</td>' +
+                                '<td>' + type_name + '</td>' +
+                                '<td style="text-align: right;">' + date_check_in + '</td>' +
+                                '<td style="text-align: right;">' + date_check_out + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.agoda_charge)) + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.agoda_outstanding)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
+                                '<input type="hidden" name="agoda_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="agoda_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="agoda_check_in[]" value="' + value.agoda_check_in + '">' +
+                                '<input type="hidden" name="agoda_check_out[]" value="' + value.agoda_check_out + '">' +
+                                '<input type="hidden" name="agoda_credit_amount[]" value="' + value.agoda_charge + '">' +
+                                '<input type="hidden" name="agoda_credit_outstanding[]" value="' + value.agoda_outstanding + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 6) {
+                        $('.front-todo-list').append(
+                            '<tr>' +
+                                '<td>' + value.batch +'</td>' +
+                                '<td>' + type_name + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
+                                '<input type="hidden" name="front_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="front_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="front_credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 8) {
+                        $('.ev-todo-list').append(
+                            '<tr>' +
+                                '<td>' + value.batch +'</td>' +
+                                '<td>' + type_name + '</td>' +
+                                // '<td style="text-align: right;">' + date_check_in + '</td>' +
+                                // '<td style="text-align: right;">' + date_check_out + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_charge)) + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_fee)) + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_vat)) + '</td>' +
+                                '<td style="text-align: right;">' + currencyFormat(parseFloat(value.ev_revenue)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
                                 '<input type="hidden" name="ev_batch[]" value="' + value.batch + '">' +
                                 '<input type="hidden" name="ev_revenue_type[]" value="' + value.revenue_type + '">' +
                                 // '<input type="hidden" name="ev_check_in[]" value="' + value.ev_check_in + '">' +
