@@ -340,7 +340,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Template/PDF/document/sheet/savetemplate','savesheet')->name('Template.savesheet');
     });
 
-Route::get('/clear-cache', function () {
+Route::get('/clear-cache', function () { 
     $exitCode = Artisan::call('config:clear');
     $exitCode = Artisan::call('cache:clear');
     $exitCode = Artisan::call('config:cache');
