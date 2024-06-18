@@ -603,11 +603,11 @@
                         <div class="frameinfo" style="margin-top: 25px !important;">
                             <p class="quotation-id " name="Quotation_ID" value="{{ $Quotation->Quotation_ID }}"><p>Proposal ID: {{ $Quotation->Quotation_ID }}</p></p>
                             <p class="quotation-id " name="IssueDate" value="{{ $Quotation->issue_date }}"><p>Issue Date: {{ $Quotation->issue_date }}</p></p>
-                            <p class="quotation-id "  name="ExpirationDate" value="{{ $Quotation->ExpirationDate }}"><p>Expiration Date: {{ $Quotation->ExpirationDate }}</p></p>
+                            <p class="quotation-id "  name="ExpirationDate" value="{{ $Quotation->Expirationdate }}"><p>Expiration Date: {{ $Quotation->Expirationdate }}</p></p>
                         </div>
                         <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation->Quotation_ID}}">
                         <input type="hidden" id="Quotation_ID" name="IssueDate" value="{{ $Quotation->issue_date }}">
-                        <input type="hidden" id="Quotation_ID" name="ExpirationDate" value="{{ $Quotation->ExpirationDate }}">
+                        <input type="hidden" id="Quotation_ID" name="ExpirationDate" value="{{ $Quotation->Expirationdate }}">
                     </div>
                 </div>
             </div>
@@ -1125,14 +1125,17 @@
             var priceproduct = parseInt($(this).find('.priceproduct').text().replace(/,/g, '')) || 0;
             var Quantity = parseInt($(this).find('.Quantity').data('value')) || 0;
             var netprice = parseFloat($(this).find('.net-price').text().replace(/,/g, '')) || 0;
+
             var adultValue = parseFloat(document.getElementById('adult').value);
             var childrenValue = parseFloat(document.getElementById('children').value);
             var itemtotal = Quantity * priceproduct;
             var Discount = itemtotal - netprice;
             var vat = netprice * 7 / 100;
-            Vat += isNaN(vat) ? 0 : vat;
+
             Netprice += isNaN(netprice) ? 0 : netprice;
+            Vat += isNaN(Netprice) ? 0 : vat;
             totalDiscount += isNaN(Discount) ? 0 : Discount;
+
             totalAmount += isNaN(itemtotal) ? 0 : itemtotal;// Accumulate totalAmount correctly
             NetTotal = Netprice + Vat;
             var person =adultValue+childrenValue;
@@ -1144,9 +1147,9 @@
         $('#total-amount').text(isNaN(totalAmount) ? '0' : formatNumber(totalAmount));
         $('#total-Discount').text(isNaN(totalDiscount) ? '0' : formatNumber(totalDiscount));
         $('#Net-price').text(isNaN(Netprice) ? '0' : formatNumber(Netprice));
-        $('#total-Vat').text(isNaN(Vat) ? '0' : formatNumber(Vat));
-        $('#Net-Total').text(isNaN(NetTotal) ? '0' : formatNumber(NetTotal));
-        $('#Average').text(isNaN(totalperson) ? '0' : formatNumber(totalperson));
+        $('#total-Vat').text(formatNumber(Vat.toFixed(2)));
+        $('#Net-Total').text(formatNumber(NetTotal.toFixed(2)));
+        $('#Average').text(formatNumber(totalperson.toFixed(2)));
 
     }
 
@@ -1218,10 +1221,10 @@
         nettotal = allpricedis+vattotal;
     });
     $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-    $('#total-Discount').text(isNaN(discounttotal) ? '0' : discounttotal.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-    $('#Net-price').text(isNaN(allpricedis) ? '0' : allpricedis.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-    $('#total-Vat').text(isNaN(vattotal) ? '0' : vattotal.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-    $('#Net-Total').text(isNaN(nettotal) ? '0' : nettotal.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+    $('#total-Discount').text(isNaN(discounttotal) ? '0' : formatNumber(discounttotal));
+    $('#Net-price').text(isNaN(allpricedis) ? '0' : formatNumber(allpricedis));
+    $('#total-Vat').text(formatNumber(vattotal.toFixed(2)));
+    $('#Net-Total').text(formatNumber(nettotal.toFixed(2)));
 
 
     });

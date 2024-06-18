@@ -28,6 +28,8 @@ use App\Models\master_document_sheet;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\DB;
 use App\Models\master_template;
+
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 class QuotationController extends Controller
 {
     public function index()
@@ -236,6 +238,7 @@ class QuotationController extends Controller
     public function updatequotation(Request $request ,$id)
     {
         $data = $request->all();
+
         $userid = Auth::user()->id;
         $Quotation0 = Quotation::where('id', $id)->first();
         $Quotation_ID = $Quotation0->Quotation_ID;
@@ -348,12 +351,13 @@ class QuotationController extends Controller
                     $save->Quantity = $quantities[$index];
                     $save->Document_issuer = $userid;
                     $save->save();
+                    if ($save->save()) {
+
+                    }else {
+                        return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+                    }
                 }
-                if ( $save->save()) {
-                    return redirect()->route('Quotation.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
-                }else {
-                    return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-                }
+                return redirect()->route('Quotation.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
             }
 
         }
@@ -514,6 +518,8 @@ class QuotationController extends Controller
 
 
     public function sheetpdf($id) {
+
+
         $Quotation = Quotation::where('id', $id)->first();
         $Company = $Quotation->Company_ID;
         $Quotation_ID = $Quotation->Quotation_ID;
@@ -552,7 +558,29 @@ class QuotationController extends Controller
         $Complimentary = $sheet->where('topic', 'Complimentary')->where('CodeTemplate',$CodeTemplate)->first();
         $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->where('CodeTemplate',$CodeTemplate)->first();
         $date = Carbon::now();
-
+        $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+        $totalAmount = 0;
+        $totaldiscount = 0;
+        $netprice=0;
+        $totalPrice = 0;
+        $vat=0;
+        $total=0;
+        $adult = $Quotation->adult;
+        $children = $Quotation->children;
+        $totalguest = $adult+$children;
+        $totalaverage=0;
+        foreach ($selectproduct as $item) {
+            $totalAmount += $item->totalpriceproduct;
+            $netprice += $item->netpriceproduct;
+            $totaldiscount =  $totalAmount-$netprice;
+            $totalPrice =$netprice;
+            $vat = $netprice * 7 / 100;
+            $total = $totalPrice+$vat;
+            $totalaverage = $total/$totalguest;
+        }
+        $unit = master_unit::where('status',1)->get();
+        $quantity = master_quantity::where('status',1)->get();
+        $qrCodePng = QrCode::format('svg')->size(200)->generate('https://example.com');
         $data = [
             'date' => $date,
             'comtypefullname'=>$comtypefullname,
@@ -573,7 +601,19 @@ class QuotationController extends Controller
             'Cancellations'=>$Cancellations,
             'Complimentary'=>$Complimentary,
             'All_rights_reserved'=>$All_rights_reserved,
+            'selectproduct'=>$selectproduct,
+            'unit'=>$unit,
+            'quantity'=>$quantity,
+            'totalAmount'=>$totalAmount,
+            'totaldiscount'=>$totaldiscount,
+            'totalPrice'=>$totalPrice,
+            'vat'=>$vat,
+            'total'=>$total,
+            'totalguest'=>$totalguest,
+            'totalaverage'=>$totalaverage,
+            'qrCodePng' => $qrCodePng,
         ];
+
         $view= $template->name;
         $pdf = FacadePdf::loadView('quotation.'.$view,$data);
         return $pdf->stream();

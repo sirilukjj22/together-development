@@ -196,6 +196,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
 
+
     ],
 
     /*
@@ -212,6 +213,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
+        'QrCode' => BaconQrCode\Facades\QrCode::class,
     ])->toArray(),
 
 ];

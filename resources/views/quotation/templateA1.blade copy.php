@@ -71,7 +71,7 @@ color: #000;
 
 background: #FFFFFF;
 
-font-size: 12px;
+font-size: 16px;
 
 font-family: "THSarabunNew";
 
@@ -108,9 +108,6 @@ float: left;
     }
     @page {
             header: page-header;
-        }
-        .page-break {
-            page-break-before: always;
         }
 div.PROPOSAL {
     position: absolute;
@@ -261,11 +258,7 @@ div.frame{
     <div style="margin-left: 60px;line-height:5px;">
         {!! $note->name_th !!}
     </div>
-
-
-
-
-    <div class="page-break">
+    <div class="wrapper-page">
     {{-- * --}}
         {{-- <span style="float: right">2/3 page</span> --}}
         <div id="logo">
@@ -307,7 +300,7 @@ div.frame{
             </div>
         </div>
     </div>
-    <div class="page-break">
+
     <div id="logo">
 
         <img src="logo_crop.png">
@@ -329,9 +322,9 @@ div.frame{
         </div>
 
     </div>
+    <br><br><br><br>
 
 
-    <br><br><br> <br><br><br>
     <div class="PROPOSAL">
 
         <div  style="text-align: center">
@@ -347,16 +340,16 @@ div.frame{
 
         <div style="padding: 4%">
 
-            <b >Proposal ID : </b><span style="margin-left: 10px;">{{ $Quotation->Quotation_ID }}</span><br>
+            <b >Proposal ID : </b><span style="margin-left: 20px;">{{ $Quotation->Quotation_ID }}</span><br>
 
-            <b >Issue Date : </b><span >{{ $Quotation->issue_date }}</span><br>
+            <b >Issue Date : </b><span style="margin-left: 25px">{{ $Quotation->issue_date }}</span><br>
 
             <b>Expiration Date : </b><span>{{ $Quotation->Expirationdate }}</span>
 
         </div>
 
     </div>
-<b class="com" style="font-size:18px">Company Information</b>
+    <b class="com" style="font-size:18px">Company Information</b>
 <div style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#2D7F7B; width:55%">
     <table style="line-height:12px;" >
         <tr>
@@ -365,7 +358,11 @@ div.frame{
         </tr>
         <tr>
             <td><b style="margin-left: 10px;">Company Address :</b></td>
-            <td>{{$Company_ID->Address}} {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
+            <td>{{$Company_ID->Address}} {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}} </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>{{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
         </tr>
         <tr>
             <td><b style="margin-left: 10px;">Company Number :</b></td>
@@ -457,29 +454,18 @@ div.frame{
         <b>Notes or Special Comment : </b><br>
         <span>{{$Quotation->comment}}</span>
     </div>
-    <br><br>
+    <br><br><br>
 
 
     <div style="line-height:10px;">
     <b>จำนวนลูกค้า (Number of Guests) : </b><span style="margin-left: 15px">{{$totalguest}} คน</span><br>
     <b>ค่าเฉลี่ยต่อท่าน (Average per person) : </b><span >{{ number_format($totalaverage, 2, '.', ',') }} ฿</span>
     </div>
-    <strong class="com" style="font-size: 16px">Method of Payment</strong><br>
-    <span style="line-height:10px;">
-        Please make a 50% deposit within 7 days after confirmed. <br>
-         Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-        If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
-        pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-    </span>
-    <img src="SCB.jpg" style="width: 5%; border-radius: 50%;"/>
-    <div style="float: right;margin-right:440px;line-height:8px;">
-        <strong>The Siam Commercial Bank Public Company Limited</strong><br>
-        <strong>Bank Account No. 708-226791-3</strong><br>
-        <strong>Tha Yang - Phetchaburi Branch (Savings Account)</strong>
-    </div>
+
     <div style="border: 1px solid #2D7F7B;margin-top:30px;"></div>
     <table style="width: 100%">
         <tr>
+
             <th >สแกนเพื่อเปิดด้วยเว็บไซต์</th>
             <th >ผู้ออกเอกสาร (ผู้ขาย)</th>
             <th >ผู้อนุมัติเอกสาร (ผู้ขาย) </th>
@@ -514,8 +500,30 @@ div.frame{
             </td>
         </tr>
     </table>
-</div>
+    <div class="wrapper-page">
 
+    <div id="logo">
+
+        <img src="logo_crop.png">
+
+    </div>
+
+    <div class="txt-head">
+
+        <div class="add-text" style="line-height:14px;">
+
+            <b style="font-size:20px;">Together Resort Limited Partnership</b>
+
+            <br> <b> 168 Moo 2 Kaengkrachan Phetchaburi 76170</b>
+
+            <br> <b>Tel : 032-708-888, 098-393-944-4 Fax :</b></br>
+
+            <b> Email : reservation@together-resort.com Website : www.together-resort.com</b>
+
+        </div>
+
+    </div>
+    </div>
 </body>
 </html>
 
