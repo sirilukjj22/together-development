@@ -19,6 +19,26 @@
       left: 0;
       margin: 40px;
     }
+
+    /* อันนี้ style ของ table นะ */
+    .dtr-details {
+        width: 100%;
+    }
+
+    .dtr-title {
+        float: left;
+        text-align: left;
+        margin-right: 10px;
+    }
+
+    .dtr-data {
+        display: block;
+        text-align: right !important;
+    }
+
+    .dt-container .dt-paging .dt-paging-button {
+        padding: 0 !important;
+    }
   </style>
 
     <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
