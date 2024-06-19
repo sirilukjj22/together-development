@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\master_product_item;
 use App\Models\master_quantity;
 use App\Models\master_unit;
+use App\Models\master_product_image;
 class master_product_i extends Controller
 {
     public function index()
@@ -140,12 +141,39 @@ class master_product_i extends Controller
        $save->maximum_discount = $Maximum_Discount;
        $save->image_product = $full_path_image;
        $save->save();
-        if ($save->save()) {
-            $image->move($upload_location_image,$img_name1);
-            return redirect()->route('Mproduct.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
-        } else {
-            return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-        }
+
+    $imageother = $request->file('image_other');
+    $upload_location_image2 = 'image/product/image-orther/';
+
+    if (!file_exists($upload_location_image2)) {
+        // สร้างโฟลเดอร์ถ้ายังไม่มี
+        mkdir($upload_location_image2, 0777, true);
+    }
+
+    if (!is_writable($upload_location_image2)) {
+        // ให้สิทธิ์ในการเขียนไฟล์
+        chmod($upload_location_image2, 0777);
+    }
+
+    foreach ($imageother as $file) {
+        $image_name_gen = hexdec(uniqid());
+        $img_ext = strtolower($file->getClientOriginalExtension());
+        $img_name2 = $image_name_gen . '.' . $img_ext;
+        $fullimageother = $upload_location_image2 . $img_name2;
+
+        // ย้ายไฟล์ไปยังตำแหน่งที่กำหนด
+        $file->move($upload_location_image2, $img_name2);
+        $saveimage = new master_product_image();
+        $saveimage->Product_ID = $Product_ID;
+        $saveimage->image_other	=$fullimageother;
+        $saveimage->save();
+    }
+    if ($save->save()) {
+        $image->move($upload_location_image,$img_name1);
+        return redirect()->route('Mproduct.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+    } else {
+        return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+    }
 
     }
     public function ac(Request $request)

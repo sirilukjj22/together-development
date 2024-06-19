@@ -200,7 +200,7 @@ position: absolute;
 }
 
 </style>
-    <div class="Usertable">
+    <div  class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         <div class="usertopic">
             <h1>Master Product Item</h1>
         </div>
@@ -221,6 +221,9 @@ position: absolute;
                                 </div>
                             </div>
                         </form>
+                        <div class="input-group mt-5 " style="float: left;width:80%; ">
+                            <input type="file" class="form-control " name="image_other" id="image_other" aria-describedby="image_other" aria-label="Upload" multiple>
+                        </div>
                     </div>
                     <div class="col-7 ">
                         <div class="row">

@@ -723,7 +723,7 @@
                                             ประเภท Product
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="">
-                                            <a class="dropdown-item" style="color: #000;" data-value="all" onclick="fetchProducts('all')">All Product</a>
+                                            {{-- <a class="dropdown-item" style="color: #000;" data-value="all" onclick="fetchProducts('all')">All Product</a> --}}
                                             <a class="dropdown-item" style="color: #000;" data-value="Room_Type"onclick="fetchProducts('Room_Type')">Room</a>
                                             <a class="dropdown-item" style="color: #000;" data-value="Banquet"onclick="fetchProducts('Banquet')">Banquet</a>
                                             <a class="dropdown-item" style="color: #000;" data-value="Meals"onclick="fetchProducts('Meals')">Meal</a>
@@ -983,6 +983,7 @@
                 value: status
             },
             success: function(response) {
+
             $('#product-list').children().remove().end();
                 $.each(response.products, function (key, val) {
                     // ตรวจสอบว่ามีแถวที่มี id เท่ากับ 'tr-select-addmain' + val.id หรือไม่

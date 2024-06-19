@@ -705,11 +705,11 @@ margin: 5px 0;
                                             ประเภท Product
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="">
-                                            <a class="dropdown-item" style="color: #000;" data-value="all">All Product</a>
-                                            <a class="dropdown-item" style="color: #000;" data-value="Room_Type">Room</a>
-                                            <a class="dropdown-item" style="color: #000;" data-value="Banquet">Banquet</a>
-                                            <a class="dropdown-item" style="color: #000;" data-value="Meals">Meal</a>
-                                            <a class="dropdown-item" style="color: #000;" data-value="Entertainment">Entertainment</a>
+                                            {{-- <a class="dropdown-item" style="color: #000;" data-value="all" onclick="fetchProducts('all')">All Product</a> --}}
+                                            <a class="dropdown-item" style="color: #000;" data-value="Room_Type"onclick="fetchProducts('Room_Type')">Room</a>
+                                            <a class="dropdown-item" style="color: #000;" data-value="Banquet"onclick="fetchProducts('Banquet')">Banquet</a>
+                                            <a class="dropdown-item" style="color: #000;" data-value="Meals"onclick="fetchProducts('Meals')">Meal</a>
+                                            <a class="dropdown-item" style="color: #000;" data-value="Entertainment"onclick="fetchProducts('Entertainment')">Entertainment</a>
                                         </div>
                                     </div>
                                 </div>

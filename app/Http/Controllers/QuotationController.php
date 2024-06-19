@@ -153,12 +153,15 @@ class QuotationController extends Controller
             $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
             ->where('master_product_items.status',1)->where('master_product_items.Category','Entertainment')->select('master_product_items.*','master_units.name_th as unit_name')->get();
 
-        }elseif ($value == 'all'){
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
-            ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
+        // }elseif ($value == 'all'){
+        //     $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
+        //     ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
         }else {
+            // $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
+            // ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
+
             $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
-            ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
+            ->where('master_product_items.status',1)->where('master_product_items.Category','Room_Type')->select('master_product_items.*','master_units.name_th as unit_name')->get();
         }
 
         return response()->json([
@@ -392,6 +395,7 @@ class QuotationController extends Controller
     }
     public function edit($id)
     {
+
         $Quotation = Quotation::where('id', $id)->first();
         $Mevent = MasterEventFormate::select('name_th','id')->where('status', '1')->get();
         $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
@@ -465,7 +469,6 @@ class QuotationController extends Controller
     public function addProducttable($Quotation_ID, Request $request) {
 
         $value = $request->input('value');
-
         if ($value == 'Room_Type') {
 
             $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
@@ -483,19 +486,21 @@ class QuotationController extends Controller
             $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
             ->where('master_product_items.status',1)->where('master_product_items.Category','Entertainment')->select('master_product_items.*','master_units.name_th as unit_name')->get();
 
-        }elseif ($value == 'all'){
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
-            ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
+        // }elseif ($value == 'all'){
+        //     $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
+        //     ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
+        // }
         }else {
+            // $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
+            // ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
             $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
-            ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
+            ->where('master_product_items.status',1)->where('master_product_items.Category','Room_Type')->select('master_product_items.*','master_units.name_th as unit_name')->get();
         }
 
         return response()->json([
             'products' => $products,
 
         ]);
-
     }
 
     public function addProductselect($Quotation_ID, Request $request) {
