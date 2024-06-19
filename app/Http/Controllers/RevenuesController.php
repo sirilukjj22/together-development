@@ -1022,100 +1022,163 @@ class RevenuesController extends Controller
         // dd($front_charge);
 
         $by_page = 'index';
+        $by_page_pdf = '1A';
         $btn_by_page = $request->daily_page;
 
         if (isset($request->daily_page)) {
             $by_page = 'index_'.$request->daily_page;
+            $by_page_pdf = '1A-'.$request->daily_page;
         }
 
-        return view('revenue.'.$by_page, compact(
-            // 'data_revenue',
-            // 'data_bill',
-            'total_daily_revenue',
-            'total_revenue_today', 
-            'total_day', 
-            'total_verified', 
-            'total_unverified', 
-            'total_agoda_outstanding',
-            'total_ev_outstanding',
-            // 'total_wp', 
-            // 'total_credit', 
-            'total_transfer', 
+            if ($request->export_pdf == 1) {
+                $pdf = FacadePdf::loadView('pdf.revenue.'.$by_page_pdf, 
+                    compact(
+                        'total_daily_revenue', 'total_revenue_today', 'total_day', 
+                        'total_verified', 'total_unverified', 'total_agoda_outstanding',
+                        'total_ev_outstanding', 'total_transfer', 
 
-            'total_transfer2',
-            'total_transfer2_month',
-            'total_transfer2_year',
+                        'total_transfer2', 'total_transfer2_month', 'total_transfer2_year',
 
-            'total_split',
-            'total_split_month',
-            'total_split_year',
+                        'total_split', 'total_split_month', 'total_split_year',
 
-            'total_split_transaction',
-            'total_split_transaction_month',
-            'total_split_transaction_year',
+                        'total_split_transaction', 'total_split_transaction_month', 'total_split_transaction_year',
 
-            'credit_revenue',
-            'credit_revenue_month',
-            'credit_revenue_year',
+                        'credit_revenue', 'credit_revenue_month', 'credit_revenue_year',
 
-            'total_front_revenue',
-            'total_front_month',
-            'total_front_year',
-            'front_charge',
+                        'total_front_revenue', 'total_front_month', 'total_front_year', 'front_charge',
 
-            'total_guest_deposit',
-            'total_guest_deposit_month',
-            'total_guest_deposit_year',
-            'guest_deposit_charge',
+                        'total_guest_deposit', 'total_guest_deposit_month', 'total_guest_deposit_year', 'guest_deposit_charge',
 
-            'total_fb_revenue',
-            'total_fb_month',
-            'total_fb_year',
-            'fb_charge',
+                        'total_fb_revenue', 'total_fb_month', 'total_fb_year', 'fb_charge',
 
-            'total_agoda_revenue',
-            'total_agoda_month',
-            'total_agoda_year',
-            'agoda_charge',
+                        'total_agoda_revenue', 'total_agoda_month', 'total_agoda_year', 'agoda_charge',
 
-            'total_credit_transaction',
-            'total_credit_transaction_month',
-            'total_credit_transaction_year',
+                        'total_credit_transaction', 'total_credit_transaction_month', 'total_credit_transaction_year',
 
-            'total_transfer_month',
-            'total_transfer_year',
+                        'total_transfer_month', 'total_transfer_year',
 
-            'total_transfer_transaction',
-            'total_transfer_transaction_month',
-            'total_transfer_transaction_year',
+                        'total_transfer_transaction', 'total_transfer_transaction_month', 'total_transfer_transaction_year',
 
-            'total_wp_revenue',
-            'total_wp_month',
-            'total_wp_year',
-            'wp_charge',
+                        'total_wp_revenue',
+                        'total_wp_month',
+                        'total_wp_year',
+                        'wp_charge',
 
-            'total_not_type',
+                        'total_not_type',
 
-            'total_transaction',
-            'total_transaction_month',
-            'total_transaction_year',
+                        'total_transaction',
+                        'total_transaction_month',
+                        'total_transaction_year',
 
-            'total_no_type',
-            'total_no_type_month',
-            'total_no_type_year',
+                        'total_no_type',
+                        'total_no_type_month',
+                        'total_no_type_year',
 
-            'total_not_type_revenue',
-            'total_not_type_revenue_month',
-            'total_not_type_revenue_year',
+                        'total_not_type_revenue',
+                        'total_not_type_revenue_month',
+                        'total_not_type_revenue_year',
 
-            'total_ev_revenue',
-            'total_ev_month',
-            'total_ev_year',
-            'ev_charge',
+                        'total_ev_revenue',
+                        'total_ev_month',
+                        'total_ev_year',
+                        'ev_charge',
 
-            'btn_by_page',
+                        'btn_by_page',
 
-            'day', 'month', 'year'));
+                        'day', 'month', 'year'
+                    )
+                );
+                return $pdf->stream();
+            } else {
+                return view('revenue.'.$by_page, compact(
+                    // 'data_revenue',
+                    // 'data_bill',
+                    'total_daily_revenue',
+                    'total_revenue_today', 
+                    'total_day', 
+                    'total_verified', 
+                    'total_unverified', 
+                    'total_agoda_outstanding',
+                    'total_ev_outstanding',
+                    // 'total_wp', 
+                    // 'total_credit', 
+                    'total_transfer', 
+        
+                    'total_transfer2',
+                    'total_transfer2_month',
+                    'total_transfer2_year',
+        
+                    'total_split',
+                    'total_split_month',
+                    'total_split_year',
+        
+                    'total_split_transaction',
+                    'total_split_transaction_month',
+                    'total_split_transaction_year',
+        
+                    'credit_revenue',
+                    'credit_revenue_month',
+                    'credit_revenue_year',
+        
+                    'total_front_revenue',
+                    'total_front_month',
+                    'total_front_year',
+                    'front_charge',
+        
+                    'total_guest_deposit',
+                    'total_guest_deposit_month',
+                    'total_guest_deposit_year',
+                    'guest_deposit_charge',
+        
+                    'total_fb_revenue',
+                    'total_fb_month',
+                    'total_fb_year',
+                    'fb_charge',
+        
+                    'total_agoda_revenue',
+                    'total_agoda_month',
+                    'total_agoda_year',
+                    'agoda_charge',
+        
+                    'total_credit_transaction',
+                    'total_credit_transaction_month',
+                    'total_credit_transaction_year',
+        
+                    'total_transfer_month',
+                    'total_transfer_year',
+        
+                    'total_transfer_transaction',
+                    'total_transfer_transaction_month',
+                    'total_transfer_transaction_year',
+        
+                    'total_wp_revenue',
+                    'total_wp_month',
+                    'total_wp_year',
+                    'wp_charge',
+        
+                    'total_not_type',
+        
+                    'total_transaction',
+                    'total_transaction_month',
+                    'total_transaction_year',
+        
+                    'total_no_type',
+                    'total_no_type_month',
+                    'total_no_type_year',
+        
+                    'total_not_type_revenue',
+                    'total_not_type_revenue_month',
+                    'total_not_type_revenue_year',
+        
+                    'total_ev_revenue',
+                    'total_ev_month',
+                    'total_ev_year',
+                    'ev_charge',
+        
+                    'btn_by_page',
+        
+                    'day', 'month', 'year'));
+            }
         }
     }
 

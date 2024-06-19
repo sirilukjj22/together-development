@@ -117,6 +117,10 @@
                     @endif
                 @endif
 
+                <button type="button" class="btn btn-primary border-0 float-end" onclick="export_data(1)" style="background-color: #109699; margin-left: 4px;">
+                    พิมพ์เอกสาร
+                </button>
+
                 <div class="">
                     <button class="btn btn-custom float-end ml-1 dropdown-toggle" style="margin-left: 4px;" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
                        @if (isset($btn_by_page) && $btn_by_page == 'mtd')
@@ -138,7 +142,7 @@
                     </ul>
                 </div>
                 <button type="button" class="btn btn-primary border-0 float-end" onclick="view_data('{{$date}}')" style="background-color: #109699; margin-left: 4px;"
-                  onclick="Add_data('{{$date}}')" data-bs-toggle="modal" data-bs-target="#ViewDataModalCenter">
+                data-bs-toggle="modal" data-bs-target="#ViewDataModalCenter">
                     รายละเอียด
                 </button>
                 <button type="button" class="btn btn-primary border-0 float-end mr-1" onclick="Add_data('{{$date}}')" style="background-color: #109699;"
@@ -497,6 +501,7 @@
         <form action="{{ route('revenue-search-calendar') }}" method="POST" enctype="multipart/form-data" class="" id="form-revenue">
             @csrf
             <input type="hidden" name="daily_page" id="daily_page">
+            <input type="hidden" name="export_pdf" id="export_pdf" value="0">
             <div class="row">
                 {{-- <div class="col-lg-8 col-md-2 col-sm-2 mb-2"> --}}
                     <div class="col-lg-2 col-md-12 col-sm-12 mb-2 px-1">
@@ -1902,7 +1907,10 @@
                     // other options if any
                 }
             });
+
+            $('#export_pdf').val(0);
         });
+
     </script>
 
 <script>
@@ -2687,11 +2695,18 @@
     }
 
     $('.btn-submit-search').on('click', function () {
+        $('#export_pdf').val(0);
         $('#form-revenue').submit();
     });
 
     function btn_search_daily(params) {
+        $('#export_pdf').val(0);
         $('#daily_page').val(params);
+        $('#form-revenue').submit();
+    }
+
+    function export_data(params) {
+        $('#export_pdf').val(params);
         $('#form-revenue').submit();
     }
 
