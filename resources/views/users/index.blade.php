@@ -7,7 +7,8 @@
       position: absolute;
       top: 0;
       left: 0;
-      margin: 40px;
+      margin-left: 30px;
+      margin-top: 100px;
     }
 
     /* อันนี้ style ของ table นะ */
@@ -29,17 +30,18 @@
     .dt-container .dt-paging .dt-paging-button {
         padding: 0 !important;
     }
+
+    @media (max-width: 768px) {
+    h1{
+       margin-top:32px;
+    }
+  }
 </style>
     <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
-        <a href="{{ route('user-create') }}">
-            <button class="submit-button-mobile" style="float: right;">
-                เพิ่มผู้ใช้งาน
-            </button>
-        </a>
 
-        <div class="usertopic">
+        {{-- <div class="usertopic"> --}}
             <h1>User (ผู้ใช้งาน)</h1>
-        </div>
+        {{-- </div> --}}
 
         {{-- <div class="selectall" style="float: left; margin-bottom: 10px;">
             <th><label class="custom-checkbox">
@@ -60,6 +62,12 @@
             <a class="dropdown-item" style="color: green;" href="{{ url('users', 'users_ac') }}">เปิดใช้งาน</a>
             <a class="dropdown-item" style="color: #f44336;" href="{{ url('users', 'users_no') }}">ปิดใช้งาน</a>
         </div>
+
+        <a href="{{ route('user-create') }}">
+            <button class="submit-button-mobile" style="float: right;">
+                เพิ่มผู้ใช้งาน
+            </button>
+        </a>
 
         <form enctype="multipart/form-data" id="form-id2">
             @csrf

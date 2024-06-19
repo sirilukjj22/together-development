@@ -916,12 +916,12 @@ pointer-events: none; /* Allow pointer events to pass through */
   .selectall{
     display: none;
   }
-  .usertopic h1{
+  /* .usertopic h1{
     font-size: 32px;
     margin-top: 10px;
     margin-left: 5px;
 
-  }
+  } */
 
   .dt-input{
     width: 30%;

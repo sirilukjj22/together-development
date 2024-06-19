@@ -13,11 +13,13 @@
       border: 1px solid #aaa;
       background-color: white;
     } */
-    .usertopic{
-      position: absolute;
+    .usertopic h1{
+      /* position: absolute; */
       top: 0;
       left: 0;
-      margin: 40px;
+      margin-left: 10px;
+      margin-top: 100px;
+      font-size: 10px;
     }
 
     /* อันนี้ style ของ table นะ */
@@ -39,22 +41,18 @@
     .dt-container .dt-paging .dt-paging-button {
         padding: 0 !important;
     }
+
+    @media (max-width: 768px) {
+    h1{
+       margin-top:32px;
+    }
+  }
   </style>
 
     <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
-        <div data-toggle="modal" data-target="#exampleModalLongAddBank">
-            <button type="button" class="submit-button btn_modal" style="float: right; margin-right: 10px;">เพิ่มธนาคาร</button>
-        </div>
-        <div class="usertopic">
+        {{-- <div class="usertopic"> --}}
             <h1>Bank (ธนาคาร)</h1>
-        </div>
-
-        <div class="selectall" style="float: left; margin-bottom: 10px;">
-            <th><label class="custom-checkbox">
-                    <input type="checkbox" onClick="toggle(this)" />
-                    <span class="checkmark"></span>
-                </label>ทั้งหมด</th>
-        </div>
+        {{-- </div> --}}
 
         {{-- <button type="button" class="button-4 sa-buttons" style="float: right;">ลบหลายรายการ</button> --}}
         <button class="statusbtn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
@@ -68,28 +66,17 @@
             <a class="dropdown-item" style="color: #f44336;" href="{{ url('master', 'bank_no') }}">ปิดใช้งาน</a>
         </div>
 
+        <button type="button" class="submit-button-mobile btn_modal">เพิ่มธนาคาร</button>
+
         <form enctype="multipart/form-data" id="form-id2">
             @csrf
-            <table id="example" class="display3 display2">
+            <table id="example" class="table-hover nowarp" style="width:100%">
                 <thead>
                     <tr>
-                        {{-- <th>
-                            <label class="custom-checkbox">
-                                <input type="checkbox" id="radio_master" />
-                                <span class="checkmark"></span>
-                            </label>ทั้งหมด
-                        </th> --}}
-                        {{-- <th>
-                            <label class="custom-checkbox">
-                                <input type="checkbox" onClick="toggle(this)" />
-                                <span class="checkmark"></span>
-                            </label>ทั้งหมด
-                        </th> --}}
-                        <th>#</th>
-                        <th>รูปภาพ</th>
-                        <th>ชื่อภาษาไทย</th>
+                        <th data-priority="1">#</th>
+                        <th data-priority="1">รูปภาพ</th>
+                        <th data-priority="1">ชื่อภาษาไทย</th>
                         <th>ชื่อภาษาอังกฤษ</th>
-                        <th>Create By</th>
                         <th>สถานะการใช้งาน</th>
                         <th>คำสั่ง</th>
                     </tr>
@@ -98,29 +85,12 @@
                     @if (!empty($masters))
                         @foreach ($masters as $key => $item)
                             <tr>
-                                {{-- <td data-label="เลือก">
-                                    <label class="custom-checkbox">
-                                        <input type="checkbox" name="radio_master_sub[]" class="radio_master_sub"
-                                            id="radio_master_sub{{ $key + 1 }}" value="{{ $item->id }}">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </td> --}}
-                                {{-- <td data-label="เลือก">
-                                    <label class="custom-checkbox">
-                                        <input name="radio_master_sub[]" type="checkbox" value="{{ $item->id }}">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </td> --}}
-                                <td data-label="#">{{ $key + 1 }}</td>
-                                <td data-label="รูปภาพ">
-                                    <img src="../upload/images/{{ $item->picture }}" alt="">
+                                <td>{{ $key + 1 }}</td>
+                                <td>
+                                    <img src="../upload/images/{{ $item->picture }}" alt="" class="rounded object-fit-cover mx-1" style="width: 30px; height: 30px;" >
                                 </td>
-                                <td data-label="ชื่อภาษาไทย">{{ $item->name_th }}</td>
-                                <td data-label="ชื่อภาษาอังกฤษ">{{ $item->name_en }}</td>
-                                <td data-label="">
-                                    {{ @$item->user_create_id->firstname }}
-                                    {{ @$item->user_create_id->lastname }}
-                                </td>
+                                <td style="text-align: left;">{{ $item->name_th }}</td>
+                                <td style="text-align: left;">{{ $item->name_en }}</td>
                                 <td data-label="สถานะการใช้งาน">
                                     @if ($item->status == 1)
                                         <button type="button" class="button-1 btn-status" value="{{ $item->id }}">ใช้งาน</button>
@@ -130,7 +100,7 @@
                                 </td>
                                 <td>
                                     <div class="dropdown">
-                                        <button class="button-18 button-17" type="button" data-toggle="dropdown">
+                                        <button class="btn btn-custom" type="button" data-toggle="dropdown">
                                             ทำรายการ
                                         </button>
                                         <ul class="dropdown-menu">
@@ -226,9 +196,27 @@
         // $(".account_number").mask("999-9-99999-9");
         $(document).ready(function() {
             new DataTable('#example', {
+                columnDefs: [
+                    {
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null
+                    },
+                    { width: '10%', targets: 0 },
+                    { width: '10%', targets: 1 },
+                    { width: '20%', targets: 2 },
+                    { width: '20%', targets: 3 },
+                    { width: '11%', targets: 4 },
+                    { width: '10%', targets: 5 },
 
-                //ajax: 'arrays.txt'
-                // scrollX: true,
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                }
             });
         });
 
