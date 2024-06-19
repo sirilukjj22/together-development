@@ -193,7 +193,7 @@
                             @endif
                         </ul>
                     </li>
-                @endif 
+                @endif
 
                 @if ($role_permisstion->general_ledger == 1)
                     <li class="nav-item dropdown">
@@ -226,9 +226,17 @@
                             @if ($role_permisstion->document_template_pdf == 1)
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Template.TemplateA1') }}">Template</a></li>
                             @endif
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mproduct.index') }}">Product Item</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mproduct.index.quantity') }}">Quantity</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mproduct.index.unit') }}">Unit</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mprefix.index') }}">Prefix</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mbank.index') }}">Bank Company</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mcomt.index') }}">Company Type</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mmarket.index') }}">Company Market</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('MEvent.index') }}">Company Event</a></li>
+                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mbooking.index') }}">Booking</a></li>
                         </ul>
                     </li>
-
                     <li class="nav-item">
                         <li>
                             <a class="nav-link px-2" href="#">Debtor Maintenance</a>
@@ -376,6 +384,16 @@
                         @if ($role_permisstion->document_template_pdf == 1)
                             <a class="menu2" href="{{ route('Template.TemplateA1') }}">Template</a>
                         @endif
+                        <a class="menu2" href="{{ route('Mproduct.index') }}">Product Item</a>
+                        <a class="menu2" href="{{ route('Mproduct.index.quantity') }}">Quantity</a>
+                        <a class="menu2" href="{{ route('Mproduct.index.unit') }}">Unit</a>
+                        <a class="menu2" href="{{ route('Mprefix.index') }}">Prefix</a>
+                        <a class="menu2" href="{{ route('Mbank.index') }}">Bank Company</a>
+                        <a class="menu2" href="{{ route('Mprefix.index') }}">Prefix</a>
+                        <a class="menu2" href="{{ route('Mcomt.index') }}">Company Type</a>
+                        <a class="menu2" href="{{ route('Mmarket.index') }}">Company Market</a>
+                        <a class="menu2" href="{{ route('MEvent.index') }}">Company Event</a>
+                        <a class="menu2" href="{{ route('Mbooking.index') }}">Booking</a>
                     </div>
                 </div>
             @endif

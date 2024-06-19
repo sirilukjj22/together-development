@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+    <link rel="icon" href="image/Logo1-01.png" type="image/x-icon">
 <head>
     <meta charset="utf-8">
 
@@ -71,7 +72,7 @@ color: #000;
 
 background: #FFFFFF;
 
-font-size: 12px;
+font-size: 16px;
 
 font-family: "THSarabunNew";
 
@@ -88,7 +89,7 @@ float: left;
 
 #logo img {
 
-height: 90px;
+height: 70px;
 
 }
 .txt-head {
@@ -143,6 +144,7 @@ div.frame{
 #customers {
   border-collapse: collapse;
   width: 100%;
+
 }
 
 #customers tr:nth-child(even){background-color: #f2f2f2;}
@@ -172,7 +174,7 @@ div.frame{
 
     <div class="txt-head">
 
-        <div class="add-text" style="line-height:14px;">
+        <div class="add-text" style="line-height:12px;margin-left:10px;">
 
            <b style="font-size:20px;">Together Resort Limited Partnership</b>
 
@@ -275,7 +277,7 @@ div.frame{
         </div>
 
         <div class="txt-head">
-            <div class="add-text" style="line-height:14px;">
+            <div class="add-text" style="line-height:12px;margin-left:10px;">
                 <b style="font-size:20px;">Together Resort Limited Partnership</b>
 
                 <br> <b> 168 Moo 2 Kaengkrachan Phetchaburi 76170</b>
@@ -307,7 +309,7 @@ div.frame{
             </div>
         </div>
     </div>
-    <div class="page-break">
+    <div class="page-break" style="font-size: 12px">
     <div id="logo">
 
         <img src="logo_crop.png">
@@ -316,7 +318,7 @@ div.frame{
 
     <div class="txt-head">
 
-        <div class="add-text" style="line-height:14px;">
+        <div class="add-text" style="line-height:12px;margin-left:10px;">
 
             <b style="font-size:20px;">Together Resort Limited Partnership</b>
 
@@ -336,7 +338,7 @@ div.frame{
 
         <div  style="text-align: center">
 
-            <b style="font-size:18px;color:#000000;font-weight: bold;">PROPOSAL</b>
+            <b style="font-size:18px;color:#ffffff;font-weight: bold;">PROPOSAL</b>
 
         </div>
 
@@ -381,20 +383,20 @@ div.frame{
             <td>{{$Company_ID->Company_Email}}</td>
         </tr>
         <tr>
-            <td><b style="margin-left: 10px;">Taxpayer Identification :</b></td>
+            <td><b style="margin-left: 10px;">Taxpayer Identification : </b></td>
             <td>{{$Company_ID->Taxpayer_Identification}}</td>
         </tr>
 
     </table>
         <b class="com" style=" font-size:18px">Personal Information</b><br>
-        <b style="margin-left: 10px;">Contact Name :</b><span >คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span><b style="margin-left: 10px;">Contact Number :</b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span>
-        <br><b style="margin-left: 10px;">Contact Email :</b><span>{{$Contact_name->Email}}</span>
+        <b style="margin-left: 10px;">Contact Name : </b><span >คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span><b style="margin-left: 10px;">Contact Number : </b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span>
+        <br><b style="margin-left: 10px;">Contact Email : </b><span>{{$Contact_name->Email}}</span>
     <div style="margin-top: 5px"></div>
 </div>
     <span style="position: absolute;top: 190px; right: 30;width: 250px;height: 145px;line-height:18px;">
-        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 55px;">{{$Quotation->checkin}}</span><br>
-        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 45px;">{{$Quotation->checkout}}</span><br>
-        <b style="margin-left: 10px">Length of Stay :</b><span style="margin-left: 28px;">{{$Quotation->day}} วัน {{$Quotation->night}} คืน</span><br>
+        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 42px;">{{$Quotation->checkin}}</span><br>
+        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 35px;">{{$Quotation->checkout}}</span><br>
+        <b style="margin-left: 10px">Length of Stay :</b><span style="margin-left: 23px;">{{$Quotation->day}} วัน {{$Quotation->night}} คืน</span><br>
         <b style="margin-left: 10px">Number of Guests :</b><span style="margin-left: 10px;">{{$Quotation->adult}} Adult , {{$Quotation->adult}} Children</span><br>
     </span>
     <div style="border: 1px solid #2D7F7B"></div>
@@ -402,15 +404,15 @@ div.frame{
         <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
     </div>
     <table id="customers" class="table" style="width: 100%; margin-top:10px;" >
-        <tr>
-            <th >No.</th>
-            <th >Description</th>
-            <th >Quantity </th>
-            <th >Unit </th>
-            <th style="text-align:right;">Price / Unit </th>
-            <th >Discount  (%)</th>
-            <th style="text-align:right;">Net price/Unit</th>
-            <th style="text-align:right;">Amount</th>
+        <tr style="font-weight: bold;">
+            <th style="font-weight: bold;">NO.</th>
+            <th style="font-weight: bold;">DESCRIPTION</th>
+            <th style="font-weight: bold;">QUANTITY </th>
+            <th style="font-weight: bold;">UNIT </th>
+            <th style="text-align:center;font-weight: bold;">PRICE / UNIT </th>
+            <th style="font-weight: bold;">DISCOUNT  (%)</th>
+            <th style="text-align:center;font-weight: bold;">NET PRICE / UNIT</th>
+            <th style="text-align:center;font-weight: bold;">AMOUNT</th>
         </tr>
         @if (!empty($selectproduct))
             @foreach ($selectproduct as $key => $item)
@@ -431,53 +433,65 @@ div.frame{
             @endforeach
         @endif
     </table>
-    <table  id="customers" class="table" style="width: 30%;float:right;" >
+    <table  id="customers" class="table" style="width: 25%;float:right;" >
         <tr>
-            <td style="text-align:right;width: 65%" class="text-right"><strong>Total</strong></td>
-            <td style="text-align:right;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} ฿</strong></td>
+            <td style="text-align:right;font-size: 14px;width: 65%" class="text-right"><strong>Total Amount</strong></td>
+            <td style="text-align:right;font-size: 14px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} ฿</strong></td>
         </tr>
         <tr>
-            <td style="text-align:right;" class="text-right"><strong>Discount</strong></td>
-            <td style="text-align:right;"><strong id="total-discount">{{ number_format($totaldiscount, 2, '.', ',') }} ฿</strong></td>
+            <td style="text-align:right;font-size: 14px;" class="text-right"><strong>Discount</strong></td>
+            <td style="text-align:right;font-size: 14px;"><strong id="total-discount">{{ number_format($totaldiscount, 2, '.', ',') }} ฿</strong></td>
         </tr>
         <tr>
-            <td style="text-align:right;" class="text-right"><strong>Total Amount</strong></td>
-            <td style="text-align:right;" ><strong id="total-Price">{{ number_format($totalPrice, 2, '.', ',') }} ฿</strong></td>
+            <td style="text-align:right;font-size: 14px;" class="text-right"><strong>Net Price</strong></td>
+            <td style="text-align:right;font-size: 14px;" ><strong id="total-Price">{{ number_format($totalPrice, 2, '.', ',') }} ฿</strong></td>
         </tr>
         <tr>
-            <td style="text-align:right;" colspan="1" class="text-right"><strong>Vat 7%</strong></td>
-            <td style="text-align:right;"><strong id="total-Price">{{ number_format($vat, 2, '.', ',') }} ฿</strong></td>
+            <td style="text-align:right;font-size: 14px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+            <td style="text-align:right;font-size: 14px;"><strong id="total-Price">{{ number_format($vat, 2, '.', ',') }} ฿</strong></td>
         </tr>
-        <tr>
-            <td style="text-align:right;" colspan="1" class="text-right"><strong>Grand Total</strong></td>
-            <td style="text-align:right;"><strong id="total-Price">{{ number_format($total, 2, '.', ',') }} ฿</strong></td>
+        <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+
+        <tr style="background-color: #ffffff">
+            <td colspan="2" style="text-align:center;">
+                <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                    <b style="font-size: 14px;">Net Total (฿)</b>
+                    <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($total, 2, '.', ',') }} ฿</strong>
+                </div>
+            </td>
         </tr>
+        {{-- <tr><td><br></td></tr> --}}
+        <br>
+        <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
+            <td></td>
+            <td></td>
+        </tr>
+        <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+            <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+            <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} ฿</strong></td>
+        </tr>
+
     </table>
-    <div style="line-height:15px;">
-        <b>Notes or Special Comment : </b><br>
+    <b>Notes or Special Comment : </b><br>
+    <div style="line-height:15px;width: 65%;border: 1px solid #afafaf; height: 70px;border-radius: 5px;">
         <span>{{$Quotation->comment}}</span>
     </div>
-    <br><br>
-
-
     <div style="line-height:10px;">
-    <b>จำนวนลูกค้า (Number of Guests) : </b><span style="margin-left: 15px">{{$totalguest}} คน</span><br>
-    <b>ค่าเฉลี่ยต่อท่าน (Average per person) : </b><span >{{ number_format($totalaverage, 2, '.', ',') }} ฿</span>
     </div>
-    <strong class="com" style="font-size: 16px">Method of Payment</strong><br>
+    <strong class="com" style="font-size: 14px">Method of Payment</strong><br>
     <span style="line-height:10px;">
         Please make a 50% deposit within 7 days after confirmed. <br>
-         Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-        If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
+        Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
+        If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
         pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
     </span>
-    <img src="SCB.jpg" style="width: 5%; border-radius: 50%;"/>
-    <div style="float: right;margin-right:440px;line-height:8px;">
-        <strong>The Siam Commercial Bank Public Company Limited</strong><br>
-        <strong>Bank Account No. 708-226791-3</strong><br>
-        <strong>Tha Yang - Phetchaburi Branch (Savings Account)</strong>
+    <img src="SCB.jpg" style="width: 4%; border-radius: 50%;padding:15px"/>
+    <div style="float: right;margin-right:435px;line-height:10px;margin-top:8px">
+        <strong  style="display: block; text-align: left;">The Siam Commercial Bank Public Company Limited</strong>
+        <strong  style="display: block; text-align: left;">Bank Account No. 708-226791-3</strong>
+        <strong  style="display: block; text-align: left;">Tha Yang - Phetchaburi Branch (Savings Account)</strong>
     </div>
-    <div style="border: 1px solid #2D7F7B;margin-top:30px;"></div>
+    <div style="border: 1px solid #2D7F7B;"></div>
     <table style="width: 100%">
         <tr>
             <th >สแกนเพื่อเปิดด้วยเว็บไซต์</th>
@@ -488,7 +502,13 @@ div.frame{
             <th >ตราประทับ (ลูกค้า)</th>
         </tr>
         <tr>
-            <td style="text-align: center"> <img src="data:image/png;base64,{{ base64_encode($qrCodePng) }}" width="60" height="60"/></td>
+            <td style="text-align: center">
+                @php
+                    $id = $Quotation->id;
+                    $gethttp =(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http";
+                    $linkQR = $gethttp."://".$_SERVER['HTTP_HOST']."/quotation-preview-export/$id?page_shop=".@$_GET['page_shop'];
+                @endphp
+                <img src="data:image/png;base64,{{DNS2D::getBarcodePNG($linkQR,'QRCODE') }}" width="60" height="60"/></td>
             <td style="text-align: center">
                 <br>
                 <span style="display: block; text-align: center;">{{@$Quotation->user->name}}</span>

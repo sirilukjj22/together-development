@@ -238,7 +238,6 @@ class QuotationController extends Controller
     public function updatequotation(Request $request ,$id)
     {
         $data = $request->all();
-
         $userid = Auth::user()->id;
         $Quotation0 = Quotation::where('id', $id)->first();
         $Quotation_ID = $Quotation0->Quotation_ID;
@@ -256,10 +255,11 @@ class QuotationController extends Controller
         $net_discountmain = $request->input('net_discountmain');
         $allcounttotalmain = $request->input('allcounttotalmain');
         //----------------------------new data and calculate-------------------------------------------------
-        $product = $request->input('product', []);
+        $product = $request->input('product');
         $quantities = $request->input('quantity', []);
         $priceUnits = $request->input('price-unit', []);
         $discounts = $request->input('discount', []);
+        $trselectmain = $request->input('tr-select-main', []);
         foreach ($priceUnits as $key => $price) {
             $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
         }
@@ -333,8 +333,9 @@ class QuotationController extends Controller
                 }
             }
             // dd($profileid,$ProductIDmain,$Quantitymain,$priceproductmain,$discountmain,$net_discountmain,$allcounttotalmain);
-        }else{
-
+        }
+        else
+        {
             if ($product !== null) {
                 foreach ($product as $index => $ProductID) {
                     $save = new document_quotation();
@@ -351,16 +352,43 @@ class QuotationController extends Controller
                     $save->Quantity = $quantities[$index];
                     $save->Document_issuer = $userid;
                     $save->save();
-                    if ($save->save()) {
-
-                    }else {
-                        return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-                    }
                 }
-                return redirect()->route('Quotation.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+                if ( $save->save()) {
+                    return redirect()->route('Quotation.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+                }else {
+                    return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+                }
             }
-
+            else{
+                $profileid = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+                foreach ($profileid as $document) {
+                    $document->delete();
+                }
+                foreach ($trselectmain as $index => $ProductID) {
+                    $save = new document_quotation();
+                    $save->Quotation_ID = $Quotation_ID;
+                    $save->Company_ID = $Company_ID;
+                    $save->Product_ID = $ProductID;
+                    $save->Issue_date = $IssueDate;
+                    $save->discount =$discountmain[$index];
+                    $save->priceproduct =$priceproductmain[$index];
+                    $save->netpriceproduct =$net_discountmain[$index];
+                    $save->totalpriceproduct =$allcounttotalmain[$index];
+                    $save->ExpirationDate = $ExpirationDate;
+                    $save->freelanceraiffiliate = $freelanceraiffiliate;
+                    $save->Quantity = $Quantitymain[$index];
+                    $save->Document_issuer = $userid;
+                    $save->save();
+                    $save->save();
+                }
+                if ( $save->save()) {
+                    return redirect()->route('Quotation.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+                }else {
+                    return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+                }
+            }
         }
+
     }
     public function edit($id)
     {
@@ -372,6 +400,7 @@ class QuotationController extends Controller
     }
     public function updateCompanyQuotation(Request $request ,$id){
         $data = $request->all();
+
         $save = Quotation::find($id);
         $userid = Auth::user()->id;
         $save->place = $request->place;
@@ -580,7 +609,6 @@ class QuotationController extends Controller
         }
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
-        $qrCodePng = QrCode::format('svg')->size(200)->generate('https://example.com');
         $data = [
             'date' => $date,
             'comtypefullname'=>$comtypefullname,
@@ -611,7 +639,6 @@ class QuotationController extends Controller
             'total'=>$total,
             'totalguest'=>$totalguest,
             'totalaverage'=>$totalaverage,
-            'qrCodePng' => $qrCodePng,
         ];
 
         $view= $template->name;

@@ -1,10 +1,38 @@
 @extends('layouts.test')
 
 @section('content')
-    <div class="Usertable">
+<style> .usertopic{
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 40px;
+  }
+
+  /* อันนี้ style ของ table นะ */
+  .dtr-details {
+      width: 100%;
+  }
+
+  .dtr-title {
+      float: left;
+      text-align: left;
+      margin-right: 10px;
+  }
+
+  .dtr-data {
+      display: block;
+      text-align: right !important;
+  }
+
+  .dt-container .dt-paging .dt-paging-button {
+      padding: 0 !important;
+  }</style>
+    <div  class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
+
         <div class="col-12">
             <button type="button" class="submit-button" onclick="window.location.href='{{ route('Mproduct.create') }}'" style="float: right;" >เพิ่มผู้ใช้งาน</button>
         </div>
+        <br><br><br>
         <div class="usertopic">
             <h1>Master Product Item</h1>
         </div>
@@ -43,7 +71,7 @@
         </div>
         <form enctype="multipart/form-data">
             @csrf
-            <table id="example" class="display3 display2">
+            <table id="example" class="table-hover nowarp" style="width:100%">
                 <thead>
                     <tr>
                         <th>
@@ -72,7 +100,7 @@
                                 </td>
                                 <td data-label="#">{{ $key + 1 }}</td>
                                 <td data-label="Product item">{{ $item->Category }}</td>
-                                <td data-label="Name">{{ $item->name_en }}</td>
+                                <td data-label="Name" style="text-align: left">{{ $item->name_en }}</td>
                                 <td data-label="type">{{ $item->type }}</td>
                                 <td data-label="สถานะการใช้งาน">
                                     @if ($item->status == 1)
@@ -106,13 +134,33 @@
 </script>
 
     <script>
-        $(document).ready(function() {
+         $(document).ready(function() {
             new DataTable('#example', {
+                columnDefs: [
+                    {
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null
+                    },
+                    { width: '10%', targets: 0 },
+                    { width: '10%', targets: 1 },
+                    { width: '10%', targets: 2 },
+                    { width: '25%', targets: 3 },
+                    { width: '13%', targets: 4 },
+                    { width: '13%', targets: 5 },
+                    { width: '13%', targets: 6 },
 
-                //ajax: 'arrays.txt'
-                // scrollX: true,
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                }
             });
         });
+
         function toggle(source) {
             checkboxes = document.getElementsByName('dummy');
             for (var i = 0, n = checkboxes.length; i < n; i++) {

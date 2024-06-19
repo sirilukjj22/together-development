@@ -798,7 +798,7 @@
                                 @foreach ($unit as $singleUnit)
                                     @if($singleUnit->id == @$item->product->unit)
                                         <tr id="tr-select-main{{$item->Product_ID}}">
-                                            <input type="hidden" id="tr-select-main{{$item->Product_ID}}" name="tr-select-main" value="{{$item->Product_ID}}">
+                                            <input type="hidden" id="tr-select-main{{$item->Product_ID}}" name="tr-select-main[]" value="{{$item->Product_ID}}">
                                             <td><input type="hidden" id="ProductID" name="ProductIDmain[]" value="{{$item->Product_ID}}">{{$key+1}}</td>
                                             <td style="text-align:left;"><input type="hidden" id="Productname_th" name="Productname_th" value="{{@$item->product->name_th}}">{{@$item->product->name_th}}</td>
                                             <td class="Quantity" data-value="{{$item->Quantity}}"><input type="hidden" id="Quantity" name="Quantitymain[]" value="{{$item->Quantity}}">{{$item->Quantity}}</td>
