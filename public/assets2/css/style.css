@@ -1872,6 +1872,7 @@ tr.disable-row:hover{
   float: left;
   position: fixed;
   margin-left: -15%;
+  overflow-y: auto;
 }
 .wrapper_index {
   position: relative;

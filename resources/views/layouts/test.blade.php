@@ -216,25 +216,43 @@
                         <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                             Setting
                         </a>
-                        <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @if ($role_permisstion->user == 1)
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('users', 'index') }}">User</a></li>
                             @endif
                             @if ($role_permisstion->bank == 1)
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('master', 'bank') }}">Bank</a></li>
                             @endif
+                            @if ($role_permisstion->product_item == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mproduct.index') }}">Product Item</a></li>
+                            @endif
+                            @if ($role_permisstion->quantity == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mproduct.index.quantity') }}">Quantity</a></li>
+                            @endif
+                            @if ($role_permisstion->unit == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mproduct.index.unit') }}">Unit</a></li>
+                            @endif
+                            @if ($role_permisstion->prefix == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mprefix.index') }}">Prefix</a></li>
+                            @endif
+                            @if ($role_permisstion->bank_company == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mbank.index') }}">Bank Company</a></li>
+                            @endif
+                            @if ($role_permisstion->company_type == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mcomt.index') }}">Company Type</a></li>
+                            @endif
+                            @if ($role_permisstion->company_market == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mmarket.index') }}">Company Market</a></li>
+                            @endif
+                            @if ($role_permisstion->company_event == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('MEvent.index') }}">Company Event</a></li>
+                            @endif
+                            @if ($role_permisstion->booking == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mbooking.index') }}">Booking</a></li>
+                            @endif
                             @if ($role_permisstion->document_template_pdf == 1)
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Template.TemplateA1') }}">Template</a></li>
                             @endif
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mproduct.index') }}">Product Item</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mproduct.index.quantity') }}">Quantity</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mproduct.index.unit') }}">Unit</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mprefix.index') }}">Prefix</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mbank.index') }}">Bank Company</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mcomt.index') }}">Company Type</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mmarket.index') }}">Company Market</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('MEvent.index') }}">Company Event</a></li>
-                            <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mbooking.index') }}">Booking</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -381,19 +399,36 @@
                         @if ($role_permisstion->bank == 1)
                             <a class="menu2" href="{{ route('master', 'bank') }}">Bank</a>
                         @endif
+                        @if ($role_permisstion->product_item == 1)
+                            <a class="menu2" href="{{ route('Mproduct.index') }}">Product Item</a>
+                        @endif
+                        @if ($role_permisstion->quantity == 1)
+                            <a class="menu2" href="{{ route('Mproduct.index.quantity') }}">Quantity</a>
+                        @endif
+                        @if ($role_permisstion->unit == 1)
+                            <a class="menu2" href="{{ route('Mproduct.index.unit') }}">Unit</a>
+                        @endif
+                        @if ($role_permisstion->prefix == 1)
+                            <a class="menu2" href="{{ route('Mprefix.index') }}">Prefix</a>
+                        @endif
+                        @if ($role_permisstion->bank_company == 1)
+                            <a class="menu2" href="{{ route('Mbank.index') }}">Bank Company</a>
+                        @endif
+                        @if ($role_permisstion->company_type == 1)
+                            <a class="menu2" href="{{ route('Mcomt.index') }}">Company Type</a>
+                        @endif
+                        @if ($role_permisstion->company_market == 1)
+                            <a class="menu2" href="{{ route('Mmarket.index') }}">Company Market</a>
+                        @endif
+                        @if ($role_permisstion->company_event == 1)
+                            <a class="menu2" href="{{ route('MEvent.index') }}">Company Event</a>
+                        @endif
+                        @if ($role_permisstion->booking == 1)
+                            <a class="menu2" href="{{ route('Mbooking.index') }}">Booking</a>
+                        @endif
                         @if ($role_permisstion->document_template_pdf == 1)
                             <a class="menu2" href="{{ route('Template.TemplateA1') }}">Template</a>
                         @endif
-                        <a class="menu2" href="{{ route('Mproduct.index') }}">Product Item</a>
-                        <a class="menu2" href="{{ route('Mproduct.index.quantity') }}">Quantity</a>
-                        <a class="menu2" href="{{ route('Mproduct.index.unit') }}">Unit</a>
-                        <a class="menu2" href="{{ route('Mprefix.index') }}">Prefix</a>
-                        <a class="menu2" href="{{ route('Mbank.index') }}">Bank Company</a>
-                        <a class="menu2" href="{{ route('Mprefix.index') }}">Prefix</a>
-                        <a class="menu2" href="{{ route('Mcomt.index') }}">Company Type</a>
-                        <a class="menu2" href="{{ route('Mmarket.index') }}">Company Market</a>
-                        <a class="menu2" href="{{ route('MEvent.index') }}">Company Event</a>
-                        <a class="menu2" href="{{ route('Mbooking.index') }}">Booking</a>
                     </div>
                 </div>
             @endif
@@ -462,30 +497,6 @@
             </div>
         </div>
     </div>
-
-    {{-- <div class="modal fade" id="exampleModalCenter3" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Logout</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" style="text-align: center; font-size: 28px; font-weight: 600; padding: 84px;">
-                    <img src="{{ asset('assets2/images/logout.png') }}" alt=""><br>
-                    Are You Sure to Logout
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="button-17 button-18"
-                        style="background-color: #f44336; color: white;" data-dismiss="modal">Close</button>
-                    <button type="button" class="button-17 button-18"
-                        onclick="location.href='{{ route('logout') }}'">Logout</button>
-                </div>
-            </div>
-        </div>
-    </div> --}}
 </body>
 
 <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>

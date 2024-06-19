@@ -333,6 +333,80 @@
                 <div class="col-lg-2 col-md-4 col-sm-12"></div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_product_item" id="menu_product_item" value="1">
+                        <label class="form-check-label" for="menu_product_item">
+                            Product Item (Setting)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_quantity" id="menu_quantity" value="1">
+                        <label class="form-check-label" for="menu_quantity">
+                            Quantity (Setting)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_unit" id="menu_unit" value="1">
+                        <label class="form-check-label" for="menu_unit">
+                            Unit (Setting)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_prefix" id="menu_prefix" value="1">
+                        <label class="form-check-label" for="menu_prefix">
+                            Prefix (Setting)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12"></div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_bank_company" id="menu_bank_company" value="1">
+                        <label class="form-check-label" for="menu_bank_company">
+                            Bank Company (Setting)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_company_type" id="menu_company_type" value="1">
+                        <label class="form-check-label" for="menu_company_type">
+                            Company Type (Setting)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_company_market" id="menu_company_market" value="1">
+                        <label class="form-check-label" for="menu_company_market">
+                            Company Market (Setting)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_company_event" id="menu_company_event" value="1">
+                        <label class="form-check-label" for="menu_company_event">
+                            Company Event (Setting)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12"></div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_booking" id="menu_booking" value="1">
+                        <label class="form-check-label" for="menu_booking">
+                            Booking (Setting)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_template" id="menu_template" value="1">
                         <label class="form-check-label" for="menu_template">
                             Template (Setting)

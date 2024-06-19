@@ -46,6 +46,15 @@ class Role_permission_menu extends Model
         'document_template_pdf',
         'user',
         'bank',
+        'product_item',
+        'quantity',
+        'unit',
+        'prefix',
+        'bank_company',
+        'company_type',
+        'company_market',
+        'company_event',
+        'booking',
         
         'select_menu_all',
     ];
