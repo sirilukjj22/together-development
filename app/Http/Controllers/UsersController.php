@@ -117,6 +117,7 @@ class UsersController extends Controller
                 'message_request' => $request->menu_message_request ?? 0,
 
                 'document' => $request->menu_document ?? 0,
+                'banquet_event_order' => $request->menu_banquet_event_order ?? 0,
                 'proposal' => $request->menu_proposal ?? 0,
                 'hotel_contact_rate' => $request->menu_hotel_contact_rate ?? 0,
                 'proforma_invoice' => $request->menu_proforma_invoice ?? 0,
@@ -125,6 +126,11 @@ class UsersController extends Controller
                 'debtor' => $request->menu_debtor ?? 0,
                 'agoda' => $request->menu_agoda ?? 0,
                 'elexa' => $request->menu_elexa ?? 0,
+
+                'maintenance' => $request->menu_maintenance ?? 0,
+                'request_repair' => $request->menu_request_repair ?? 0,
+                'repair_job' => $request->menu_repair_job ?? 0,
+                'preventive_maintenance' => $request->menu_preventive_maintenance ?? 0,
 
                 'general_ledger' => $request->menu_general_ledger ?? 0,
                 'sms_alert' => $request->menu_sms_alert ?? 0,

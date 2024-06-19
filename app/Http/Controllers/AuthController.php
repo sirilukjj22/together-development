@@ -120,16 +120,42 @@ class AuthController extends Controller
 
           Role_permission_menu::create([
             'user_id' => $user_id,
-            'sms_alert' => $data['menu_sms_alert'] ?? 0,
-            'revenue' => $data['menu_revenue'] ?? 0,
-            'debtor' => $data['menu_debtor'] ?? 0,
-            'agoda' => $data['menu_agoda'] ?? 0,
-            'elexa' => $data['menu_elexa'] ?? 0,
+
             'profile' => $data['menu_profile'] ?? 0,
             'company' => $data['menu_company'] ?? 0,
             'guest' => $data['menu_guest'] ?? 0,
+
+            'freelancer' => $data['menu_freelancer'] ?? 0,
+            'membership' => $data['menu_membership'] ?? 0,
+            'message_inbox' => $data['menu_message_inbox'] ?? 0,
+            'registration_request' => $data['menu_registration_request'] ?? 0,
+            'message_request' => $data['menu_message_request'] ?? 0,
+
+            'document' => $data['menu_document'] ?? 0,
+            'banquet_event_order' => $data['menu_banquet_event_order'] ?? 0,
+            'proposal' => $data['menu_proposal'] ?? 0,
+            'hotel_contact_rate' => $data['menu_hotel_contact_rate'] ?? 0,
+            'proforma_invoice' => $data['menu_proforma_invoice'] ?? 0,
+            'billing_folio' => $data['menu_billing_folio'] ?? 0,
+
+            'debtor' => $data['menu_debtor'] ?? 0,
+            'agoda' => $data['menu_agoda'] ?? 0,
+            'elexa' => $data['menu_elexa'] ?? 0,
+
+            'maintenance' => $data['menu_maintenance'] ?? 0,
+            'request_repair' => $data['menu_request_repair'] ?? 0,
+            'repair_job' => $data['menu_repair_job'] ?? 0,
+            'preventive_maintenance' => $data['menu_preventive_maintenance'] ?? 0,
+
+            'general_ledger' => $data['menu_general_ledger'] ?? 0,
+            'sms_alert' => $data['menu_sms_alert'] ?? 0,
+            'revenue' => $data['menu_revenue'] ?? 0,
+            
+            'setting' => $data['menu_setting'] ?? 0,
             'user' => $data['menu_user'] ?? 0,
             'bank' => $data['menu_bank'] ?? 0,
+            'document_template_pdf' => $data['menu_template'] ?? 0,
+
             'select_menu_all' => $data['select_menu_all'] ?? 0,
           ]);
 

@@ -146,9 +146,9 @@
                             @if ($role_permisstion->proposal == 1)
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Quotation.index') }}">Proposal</a></li>
                             @endif
-                            {{-- @if ($role_permisstion->proposal == 1) --}}
+                            @if ($role_permisstion->banquet_event_order == 1)
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Banquet Event Order</a></li>
-                            {{-- @endif --}}
+                            @endif
                             @if ($role_permisstion->hotel_contact_rate == 1)
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Hotel Contract Rate Agreement</a></li>
                             @endif
@@ -182,12 +182,15 @@
                             Maintenance
                         </a>
                         <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
-                            {{-- @if ($role_permisstion->agoda == 1)
-                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('debit-agoda-revenue') }}">Agoda</a></li>
+                            @if ($role_permisstion->request_repair == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Request Repair</a></li>
                             @endif
-                            @if ($role_permisstion->elexa == 1)
-                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Elexa</a></li>
-                            @endif --}}
+                            @if ($role_permisstion->repair_job == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Repair Job</a></li>
+                            @endif
+                            @if ($role_permisstion->preventive_maintenance == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Preventive Maintenance</a></li>
+                            @endif
                         </ul>
                     </li>
                 @endif 
@@ -297,9 +300,9 @@
                         @if ($role_permisstion->proposal == 1)
                             <a class="menu2" href="{{ route('Quotation.index') }}">Proposal</a>
                         @endif
-                        {{-- @if ($role_permisstion->proposal == 1) --}}
+                        @if ($role_permisstion->banquet_event_order == 1)
                             <a class="menu2" href="#">Banquet Event Order</a>
-                        {{-- @endif --}}
+                        @endif
                         @if ($role_permisstion->hotel_contact_rate == 1)
                             <a class="menu2" href="#">Hotel Contract Rate Agreement</a>
                         @endif
@@ -330,13 +333,16 @@
             <div class="dropdown">
                 <button onclick="myFunctionMaintenance()" class="dropbtn">Maintenance &nbsp;
                     <i class="fa-solid fa-caret-down"></i></button>
-                <div id="myDropdownDebtor" class="dropdown-content">
-                    {{-- @if ($role_permisstion->agoda == 1)
-                        <a class="menu2" href="{{ route('debit-agoda-revenue') }}">Agoda</a>
+                <div id="myDropdownMaintenance" class="dropdown-content">
+                    @if ($role_permisstion->request_repair == 1)
+                        <a class="menu2" href="#">Request Repair</a>
                     @endif
-                    @if ($role_permisstion->elexa == 1)
-                        <a class="menu2" href="#">Elexa</a>
-                    @endif --}}
+                    @if ($role_permisstion->repair_job == 1)
+                        <a class="menu2" href="#">Repair Job</a>
+                    @endif
+                    @if ($role_permisstion->preventive_maintenance == 1)
+                        <a class="menu2" href="#">Preventive Maintenance</a>
+                    @endif
                 </div>
             </div>
             @endif
@@ -361,15 +367,15 @@
                     <button onclick="myFunctionSetting()" class="dropbtn">Setting &nbsp;
                         <i class="fa-solid fa-caret-down"></i></button>
                     <div id="myDropdownSetting" class="dropdown-content">
-                            @if ($role_permisstion->user == 1)
-                                <a class="menu2" href="{{ route('users', 'index') }}">User</a>
-                            @endif
-                            @if ($role_permisstion->bank == 1)
-                                <a class="menu2" href="{{ route('master', 'bank') }}">Bank</a>
-                            @endif
-                            @if ($role_permisstion->document_template_pdf == 1)
-                                <a class="menu2" href="{{ route('Template.TemplateA1') }}">Template</a>
-                            @endif
+                        @if ($role_permisstion->user == 1)
+                            <a class="menu2" href="{{ route('users', 'index') }}">User</a>
+                        @endif
+                        @if ($role_permisstion->bank == 1)
+                            <a class="menu2" href="{{ route('master', 'bank') }}">Bank</a>
+                        @endif
+                        @if ($role_permisstion->document_template_pdf == 1)
+                            <a class="menu2" href="{{ route('Template.TemplateA1') }}">Template</a>
+                        @endif
                     </div>
                 </div>
             @endif
@@ -483,6 +489,18 @@
             dropdownDebtor.style.maxHeight = dropdownDebtor.scrollHeight + "px";
         } else {
             dropdownDebtor.style.maxHeight = "0";
+        }
+    }
+
+    function myFunctionMaintenance() {
+        var dropdownMaintenance = document.getElementById("myDropdownMaintenance");
+
+        dropdownMaintenance.classList.toggle("show");
+
+        if (dropdownMaintenance.classList.contains("show")) {
+            dropdownMaintenance.style.maxHeight = dropdownMaintenance.scrollHeight + "px";
+        } else {
+            dropdownMaintenance.style.maxHeight = "0";
         }
     }
 

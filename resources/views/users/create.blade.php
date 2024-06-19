@@ -133,6 +133,14 @@
                 <div class="col-lg-2 col-md-4 col-sm-12"></div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_maintenance" id="menu_maintenance" value="1">
+                        <label class="form-check-label" for="menu_maintenance">
+                            Maintenance
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_general_ledger" id="menu_general_ledger" value="1">
                         <label class="form-check-label" for="menu_general_ledger">
                             General Ledger
@@ -155,72 +163,6 @@
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input select_menu" name="menu_membership" id="menu_membership" value="1">
-                        <label class="form-check-label" for="menu_membership">
-                            Membership (Freelancer)
-                        </label>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-12">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input select_menu" name="menu_message_inbox" id="menu_message_inbox" value="1">
-                        <label class="form-check-label" for="menu_message_inbox">
-                            Message Inbox (Freelancer)
-                        </label>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-12">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input select_menu" name="menu_registration_request" id="menu_registration_request" value="1">
-                        <label class="form-check-label" for="menu_registration_request">
-                            Registration Request (Freelancer)
-                        </label>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input select_menu" name="menu_message_request" id="menu_message_request" value="1">
-                        <label class="form-check-label" for="menu_message_request">
-                            Message Request (Freelancer)
-                        </label>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-12"></div>
-                <div class="col-lg-2 col-md-4 col-sm-12">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input select_menu" name="menu_proposal" id="menu_proposal" value="1">
-                        <label class="form-check-label" for="menu_proposal">
-                            Proposal (Document)
-                        </label>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-12">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input select_menu" name="menu_hotel_contact_rate" id="menu_hotel_contact_rate" value="1">
-                        <label class="form-check-label" for="menu_hotel_contact_rate">
-                            Hotel Contact rate (Document)
-                        </label>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-12">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input select_menu" name="menu_proforma_invoice" id="menu_proforma_invoice" value="1">
-                        <label class="form-check-label" for="menu_proforma_invoice">
-                            Proforma Invoice (Document)
-                        </label>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input select_menu" name="menu_billing_folio" id="menu_billing_folio" value="1">
-                        <label class="form-check-label" for="menu_billing_folio">
-                            Billing Folio (Document)
-                        </label>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-12"></div>
-                <div class="col-lg-2 col-md-4 col-sm-12">
-                    <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_company"
                             id="menu_company" value="1">
                         <label class="form-check-label" for="menu_company">
@@ -239,6 +181,80 @@
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_membership" id="menu_membership" value="1">
+                        <label class="form-check-label" for="menu_membership">
+                            Membership (Freelancer)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_message_inbox" id="menu_message_inbox" value="1">
+                        <label class="form-check-label" for="menu_message_inbox">
+                            Message Inbox (Freelancer)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12"></div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_registration_request" id="menu_registration_request" value="1">
+                        <label class="form-check-label" for="menu_registration_request">
+                            Registration Request (Freelancer)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_message_request" id="menu_message_request" value="1">
+                        <label class="form-check-label" for="menu_message_request">
+                            Message Request (Freelancer)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_proposal" id="menu_proposal" value="1">
+                        <label class="form-check-label" for="menu_proposal">
+                            Proposal (Document)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_banquet_event_order" id="menu_banquet_event_order" value="1">
+                        <label class="form-check-label" for="menu_banquet_event_order">
+                            Banquet Event Order (Document)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12"></div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_hotel_contact_rate" id="menu_hotel_contact_rate" value="1">
+                        <label class="form-check-label" for="menu_hotel_contact_rate">
+                            Hotel Contact rate (Document)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_proforma_invoice" id="menu_proforma_invoice" value="1">
+                        <label class="form-check-label" for="menu_proforma_invoice">
+                            Proforma Invoice (Document)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_billing_folio" id="menu_billing_folio" value="1">
+                        <label class="form-check-label" for="menu_billing_folio">
+                            Billing Folio (Document)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_agoda" id="menu_agoda"
                             value="1">
                         <label class="form-check-label" for="menu_agoda">
@@ -246,12 +262,38 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="col-lg-2 col-md-4 col-sm-12"></div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_elexa" id="menu_elexa"
                             value="1">
                         <label class="form-check-label" for="menu_elexa">
                             Elexa (Debtor)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_request_repair" id="menu_request_repair"
+                            value="1">
+                        <label class="form-check-label" for="menu_request_repair">
+                            Request Repair (Maintenance)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_repair_job" id="menu_repair_job" value="1">
+                        <label class="form-check-label" for="menu_repair_job">
+                            Repair Job (Maintenance)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_preventive_maintenance" id="menu_preventive_maintenance" value="1">
+                        <label class="form-check-label" for="menu_preventive_maintenance">
+                            Preventive Maintenance (Maintenance)
                         </label>
                     </div>
                 </div>

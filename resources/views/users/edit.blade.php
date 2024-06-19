@@ -128,7 +128,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="col-lg-4 col-md-2 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_debtor" id="menu_debtor"
                             value="1" {{ @$user->roleMenu->debtor == 1 ? 'checked' : '' }}>
@@ -138,6 +138,14 @@
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12"></div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_maintenance" id="menu_maintenance" value="1" {{ @$user->roleMenu->maintenance == 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="menu_maintenance">
+                            Maintenance
+                        </label>
+                    </div>
+                </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_general_ledger" id="menu_general_ledger" value="1" {{ @$user->roleMenu->general_ledger == 1 ? 'checked' : '' }}>
@@ -162,13 +170,31 @@
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_company"
+                            id="menu_company" value="1" {{ @$user->roleMenu->company == 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="menu_company">
+                            Company / Agent (Profile)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_guest" id="menu_guest"
+                            value="1" {{ @$user->roleMenu->guest == 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="menu_guest">
+                            Guest (Profile)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_membership" id="menu_membership" value="1" {{ @$user->roleMenu->membership == 1 ? 'checked' : '' }}>
                         <label class="form-check-label" for="menu_membership">
                             Membership (Freelancer)
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-12">
+                <div class="col-lg-4 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_message_inbox" id="menu_message_inbox" value="1" {{ @$user->roleMenu->message_inbox == 1 ? 'checked' : '' }}>
                         <label class="form-check-label" for="menu_message_inbox">
@@ -176,6 +202,7 @@
                         </label>
                     </div>
                 </div>
+                <div class="col-lg-2 col-md-4 col-sm-12"></div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_registration_request" id="menu_registration_request" value="1" {{ @$user->roleMenu->registration_request == 1 ? 'checked' : '' }}>
@@ -184,7 +211,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_message_request" id="menu_message_request" value="1" {{ @$user->roleMenu->message_request == 1 ? 'checked' : '' }}>
                         <label class="form-check-label" for="menu_message_request">
@@ -192,7 +219,6 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-12"></div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_proposal" id="menu_proposal" value="1" {{ @$user->roleMenu->proposal == 1 ? 'checked' : '' }}>
@@ -201,6 +227,15 @@
                         </label>
                     </div>
                 </div>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_banquet_event_order" id="menu_banquet_event_order" value="1" {{ @$user->roleMenu->banquet_event_order == 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="menu_banquet_event_order">
+                            Banquet Event Order (Document)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12"></div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_hotel_contact_rate" id="menu_hotel_contact_rate" value="1" {{ @$user->roleMenu->hotel_contact_rate == 1 ? 'checked' : '' }}>
@@ -217,7 +252,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_billing_folio" id="menu_billing_folio" value="1" {{ @$user->roleMenu->billing_folio == 1 ? 'checked' : '' }}>
                         <label class="form-check-label" for="menu_billing_folio">
@@ -225,8 +260,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-12"></div>
-                <div class="col-lg-2 col-md-4 col-sm-12">
+                <div class="col-lg-4 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_sms_alert"
                             id="menu_sms_alert" value="1" {{ @$user->roleMenu->sms_alert == 1 ? 'checked' : '' }}>
@@ -235,7 +269,7 @@
                         </label>
                     </div>
                 </div>
-
+                <div class="col-lg-2 col-md-4 col-sm-12"></div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_revenue" id="menu_revenue"
@@ -254,8 +288,7 @@
                         </label>
                     </div>
                 </div>
-
-                <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input select_menu" name="menu_elexa" id="menu_elexa"
                             value="1" {{ @$user->roleMenu->elexa == 1 ? 'checked' : '' }}>
@@ -264,23 +297,31 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-12"></div>
-                <div class="col-lg-2 col-md-4 col-sm-12">
+                <div class="col-lg-4 col-md-4 col-sm-12">
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input select_menu" name="menu_company"
-                            id="menu_company" value="1" {{ @$user->roleMenu->company == 1 ? 'checked' : '' }}>
-                        <label class="form-check-label" for="menu_company">
-                            Company / Agent (Profile)
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_request_repair" id="menu_request_repair"
+                            value="1" {{ @$user->roleMenu->request_repair == 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="menu_request_repair">
+                            Request Repair (Maintenance)
                         </label>
                     </div>
                 </div>
-
+                <div class="col-lg-2 col-md-4 col-sm-12"></div>
                 <div class="col-lg-2 col-md-4 col-sm-12">
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input select_menu" name="menu_guest" id="menu_guest"
-                            value="1" {{ @$user->roleMenu->guest == 1 ? 'checked' : '' }}>
-                        <label class="form-check-label" for="menu_guest">
-                            Guest (Profile)
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_repair_job" id="menu_repair_job" value="1" 
+                        {{ @$user->roleMenu->repair_job == 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="menu_repair_job">
+                            Repair Job (Maintenance)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-12">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input select_menu" name="menu_preventive_maintenance" id="menu_preventive_maintenance" value="1"
+                        {{ @$user->roleMenu->preventive_maintenance == 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="menu_preventive_maintenance">
+                            Preventive Maintenance (Maintenance)
                         </label>
                     </div>
                 </div>

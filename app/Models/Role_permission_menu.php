@@ -23,6 +23,7 @@ class Role_permission_menu extends Model
         'message_request',
 
         'document',
+        'banquet_event_order',
         'proposal',
         'hotel_contact_rate',
         'proforma_invoice',
@@ -35,6 +36,11 @@ class Role_permission_menu extends Model
         'debtor',
         'agoda',
         'elexa',
+
+        'maintenance',
+        'request_repair',
+        'repair_job',
+        'preventive_maintenance',
 
         'setting',
         'document_template_pdf',
