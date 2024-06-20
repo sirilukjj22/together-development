@@ -160,7 +160,8 @@
                                         <ul class="dropdown-menu">
                                             <li class="licolor"><a
                                                     href="{{ url('/Company/edit/' . $item->id) }}">แก้ไขข้อมูล</a></li>
-                                            {{-- <li class="licolor"><a href="#" class="delete" title="Delete" data-toggle="tooltip" onclick="confirmDelete({{ $item->id }})">ลบข้อมูล</li> --}}
+                                                    <li class="licolor"><a
+                                                        href="{{ url('/Company/edit/contact/detail/' . $item->id) }}">รายละเอียด</a></li>
                                         </ul>
                                 </td>
                             </tr>

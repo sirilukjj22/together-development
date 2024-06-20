@@ -404,7 +404,7 @@
     <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         <div class="row">
             <div class="titleh1 col-9">
-                <h1>Company (องค์กร)</h1>
+                <h1>Company / Agent</h1>
             </div>
             <div class="col-3">
                 <input style="width:50%; float: right;" type="text" id="Profile_ID" name="Profile_ID" maxlength="70" required value="{{$N_Profile}}" disabled>

@@ -156,14 +156,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Company/TambonA/{id}', 'TambonAgent')->name('Company.TambonAgent');
         Route::get('/Company/districtsA/{id}', 'districtAgent')->name('Company.districtAgent');
         Route::post('/Company/check/company', 'representative');
-        Route::get('/Company/edit/contact/{id}', 'contact')->name('Company.contact');
-        Route::get('/Company/edit/contact/delete/{companyId}/{itemId}', 'deleteContact');
         Route::post('/Company/edit/contact/create/{id}', 'contactcreate')->name('contact.update');
         Route::get('/Company/edit/contact/editcontact/{companyId}/{itemId}', 'contactedit')->name('Company.contact.edit');
         Route::post('/Company/edit/contact/editcontact/update/{companyId}/{itemId}', 'contactupdate')->name('Company.contact.update');
         Route::get('/Company/edit/contact/detail/{id}', 'detail')->name('Company.detail');
-        Route::get('/Company/contact/acCon/{id}', 'acCon')->name('contact.acCon');
-        Route::get('/Company/contact/noCon/{id}', 'noCon')->name('contact.noCon');
         Route::post('/Company/contact/change-status/{id}', 'changeStatuscontact')->name('Company.contact.changeStatus');
     });
 
@@ -340,7 +336,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Template/PDF/document/sheet/savetemplate','savesheet')->name('Template.savesheet');
     });
 
-Route::get('/clear-cache', function () { 
+Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');
     $exitCode = Artisan::call('cache:clear');
     $exitCode = Artisan::call('config:cache');

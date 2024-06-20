@@ -36,7 +36,7 @@ class CompanyController extends Controller
     {
         $data = $request->all();
         $Company = companys::find($id);
-       $N_Profile = $Company->Profile_ID;
+        $N_Profile = $Company->Profile_ID;
         $Company_NameA = $Company->Company_Name;
         $Company_Name = $Company->Company_Name;
         $BranchA = $Company->Branch;
@@ -73,7 +73,7 @@ class CompanyController extends Controller
         $addressAgent= $request->addressAgent;
         $EmailAgent= $request->EmailAgent;
         $NProfile_ID = $N_Profile;
-        $phones = $request->phone;
+        $phones = $request->phoneCon;
 
         if ($countrydataA == "Other_countries") {
             if ($cityA === null) {
@@ -105,7 +105,7 @@ class CompanyController extends Controller
             }
         }
         if ($savephoneA->save()) {
-            return redirect()->to(url('/Company/edit/contact/'.$Company->id))->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->to(url('/Company/edit/'.$Company->id))->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
         } else {
             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
@@ -183,92 +183,131 @@ class CompanyController extends Controller
         }
         $saveAgent->save();
         if ($savephoneA->save()) {
-            return redirect()->to(url('/Company/edit/contact/'.$Company->id))->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->to(url('/Company/edit/'.$Company->id))->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
         } else {
             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
-    public function acCon(Request $request ,$id)
-    {
-        $Company = companys::find($id);
-        $Company_Name = $Company->Company_Name;
-        $Branch = $Company->Branch;
-        $representative = representative::where('Company_Name', 'like', "%{$Company_Name}%")
-                        ->where('Branch', 'like', "%{$Branch}%")->get();
-        $N_Profile_ID = representative::where('Company_Name', 'like', "%{$Company_Name}%")
-                        ->where('Branch', 'like', "%{$Branch}%")
-                        ->where('status', '1')->count();
-        $N_Profile_ID = $N_Profile_ID + 1 ;
-        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
-        $provinceNames = province::select('name_th','id')->get();
-        $ac = $request->value;
-        if ($ac == 1 ) {
-            $query = representative::query();
-            $representative = $query->where('status', '1')->get();
-        }
-        return view('Company.contact',compact('Company','N_Profile_ID','representative','Mprefix','provinceNames'));
-    }
-    public function noCon(Request $request,$id)
-    {
-        $Company = companys::find($id);
-        $Company_Name = $Company->Company_Name;
-        $Branch = $Company->Branch;
-        $representative = representative::where('Company_Name', 'like', "%{$Company_Name}%")
-                        ->where('Branch', 'like', "%{$Branch}%")->get();
-        $N_Profile_ID = representative::where('Company_Name', 'like', "%{$Company_Name}%")
-                        ->where('Branch', 'like', "%{$Branch}%")
-                        ->where('status', '1')->count();
-        $N_Profile_ID = $N_Profile_ID + 1 ;
-        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
-        $provinceNames = province::select('name_th','id')->get();
-        $no = $request->value;
-        if ($no == 0 ) {
-            $query = representative::query();
-            $representative = $query->where('status', '0')->get();
-        }
-        return view('company.contact',compact('Company','representative','N_Profile_ID','Mprefix','provinceNames'));
-    }
-    public function deleteContact($companyId, $itemId) {
-        // ตรวจสอบค่าที่ส่งมา
-        $checkID = representative::where('id', $itemId)->first();
+    // public function acCon(Request $request ,$id)
+    // {
+    //     $Company = companys::find($id);
+    //     $Company_Name = $Company->Company_Name;
+    //     $Branch = $Company->Branch;
+    //     $representative = representative::where('Company_Name', 'like', "%{$Company_Name}%")
+    //                     ->where('Branch', 'like', "%{$Branch}%")->get();
+    //     $N_Profile_ID = representative::where('Company_Name', 'like', "%{$Company_Name}%")
+    //                     ->where('Branch', 'like', "%{$Branch}%")
+    //                     ->where('status', '1')->count();
+    //     $N_Profile_ID = $N_Profile_ID + 1 ;
+    //     $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
+    //     $provinceNames = province::select('name_th','id')->get();
+    //     $ac = $request->value;
+    //     if ($ac == 1 ) {
+    //         $query = representative::query();
+    //         $representative = $query->where('status', '1')->get();
+    //     }
+    //     return view('Company.contact',compact('Company','N_Profile_ID','representative','Mprefix','provinceNames'));
+    // }
+    // public function noCon(Request $request,$id)
+    // {
+    //     $Company = companys::find($id);
+    //     $Company_Name = $Company->Company_Name;
+    //     $Branch = $Company->Branch;
+    //     $representative = representative::where('Company_Name', 'like', "%{$Company_Name}%")
+    //                     ->where('Branch', 'like', "%{$Branch}%")->get();
+    //     $N_Profile_ID = representative::where('Company_Name', 'like', "%{$Company_Name}%")
+    //                     ->where('Branch', 'like', "%{$Branch}%")
+    //                     ->where('status', '1')->count();
+    //     $N_Profile_ID = $N_Profile_ID + 1 ;
+    //     $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
+    //     $provinceNames = province::select('name_th','id')->get();
+    //     $no = $request->value;
+    //     if ($no == 0 ) {
+    //         $query = representative::query();
+    //         $representative = $query->where('status', '0')->get();
+    //     }
+    //     return view('company.contact',compact('Company','representative','N_Profile_ID','Mprefix','provinceNames'));
+    // }
+    // public function deleteContact($companyId, $itemId) {
+    //     // ตรวจสอบค่าที่ส่งมา
+    //     $checkID = representative::where('id', $itemId)->first();
 
-    if (!$checkID) {
-        return response()->json(['success' => false, 'message' => 'ไม่พบข้อมูลที่ต้องการลบ'], 404);
-    }
+    // if (!$checkID) {
+    //     return response()->json(['success' => false, 'message' => 'ไม่พบข้อมูลที่ต้องการลบ'], 404);
+    // }
 
-    $Profile_ID = $checkID->Profile_ID;
-    $Company_ID = $checkID->Company_ID;
+    // $Profile_ID = $checkID->Profile_ID;
+    // $Company_ID = $checkID->Company_ID;
 
-    try {
-        // เริ่มการทำธุรกรรม
-        DB::beginTransaction();
+    // try {
+    //     // เริ่มการทำธุรกรรม
+    //     DB::beginTransaction();
 
-        // ลบข้อมูลจากตาราง representative_phone
-        representative_phone::where('Profile_ID', $Profile_ID)
-            ->where('Company_ID', 'like', "%{$Company_ID}%")
-            ->delete();
+    //     // ลบข้อมูลจากตาราง representative_phone
+    //     representative_phone::where('Profile_ID', $Profile_ID)
+    //         ->where('Company_ID', 'like', "%{$Company_ID}%")
+    //         ->delete();
 
-        // ลบข้อมูลจากตาราง representative
-        $checkID->delete();
+    //     // ลบข้อมูลจากตาราง representative
+    //     $checkID->delete();
 
-        // ทำการยืนยันการลบข้อมูล
-        DB::commit();
+    //     // ทำการยืนยันการลบข้อมูล
+    //     DB::commit();
 
-        return response()->json(['success' => true, 'message' => 'ลบข้อมูลเรียบร้อยแล้ว']);
-    } catch (\Exception $e) {
-        // ยกเลิกการทำธุรกรรมหากเกิดข้อผิดพลาด
-        DB::rollBack();
+    //     return response()->json(['success' => true, 'message' => 'ลบข้อมูลเรียบร้อยแล้ว']);
+    // } catch (\Exception $e) {
+    //     // ยกเลิกการทำธุรกรรมหากเกิดข้อผิดพลาด
+    //     DB::rollBack();
 
-        return response()->json(['success' => false, 'message' => 'เกิดข้อผิดพลาดในการลบข้อมูล', 'error' => $e->getMessage()], 500);
-    }
+    //     return response()->json(['success' => false, 'message' => 'เกิดข้อผิดพลาดในการลบข้อมูล', 'error' => $e->getMessage()], 500);
+    // }
 
-    }
+    // }
 
     public function detail($id)
     {
         $Company = companys::find($id);
+        $Company_ID = $Company->Company_ID;
+        $number =  preg_replace("/[^0-9]/", "", $Company->City);
+        $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Company->City);
+        $provinceNames = province::select('name_th','id')->get();
+        $Tambon = districts::where('amphure_id', $Company->Amphures)->select('name_th','id')->get();
+        $amphures = amphures::where('province_id', $Company->City)->select('name_th','id')->get();
+        $Zip_code = districts::where('amphure_id', $Company->Amphures)->select('zip_code','id')->get();
 
-        return view('company.detail',compact('Company'));
+        $Company_Contact = representative_phone::find($id);
+        $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
+        $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
+        $Mmarket = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mmarket')->get();
+        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
+        $Profile_ID = $Company->Profile_ID;
+        $phone = company_phone::where('Profile_ID', 'like', "%{$Profile_ID}%")->get();
+        $phonecount = company_phone::where('Profile_ID', 'like', "%{$Profile_ID}%")->count();
+        $phoneDataArray = $phone->toArray();
+
+        $fax = company_fax::where('Profile_ID', 'like', "%{$Profile_ID}%")->get();
+        $faxcount = company_fax::where('Profile_ID', 'like', "%{$Profile_ID}%")->count();
+        $faxArray = $fax->toArray();
+
+        $representative = representative::where('Company_ID', 'like', "%{$Company_ID}%")->first();
+        $representative_ID = $representative->Profile_ID;
+        $repCompany_ID = $representative->Company_ID;
+        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
+        $number =  preg_replace("/[^0-9]/", "", $Company->City);
+        $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Company->City);
+        $provinceNames = province::select('name_th','id')->get();
+        $Tambon = districts::where('amphure_id', $Company->Amphures)->select('name_th','id')->get();
+        $amphures = amphures::where('province_id', $Company->City)->select('name_th','id')->get();
+        $Zip_code = districts::where('amphure_id', $Company->Amphures)->select('zip_code','id')->get();
+
+        $phone = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID', 'like', "%{$repCompany_ID}%")->get();
+        $count = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID', 'like', "%{$repCompany_ID}%")->count();
+        $phoneArray = $phone->toArray();
+        return view('company.detail',compact('Company','booking_channel','provinceNames','Tambon','amphures',
+        'Zip_code','Other_City','faxArray','phoneDataArray','Company_Contact','Mmarket',
+        'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID','representative','Mprefix','provinceNames'
+        ,'phoneArray','count'));
+
     }
     public function changeStatuscontact(Request $request ,$id)
     {
@@ -618,7 +657,9 @@ class CompanyController extends Controller
         'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID','representative','Mprefix','provinceNames'));
     }
     public function Company_update(Request $request, $id) {
+
         $data = $request->all();
+
         $CountryOther = $request->countrydata;
         $Branch = $request->Branch;
         $province = $request->province;
@@ -629,6 +670,7 @@ class CompanyController extends Controller
         $Address= $request->address;
         $phone_company = $request->phone;
         $faxNumber = $request->fax;
+
         $save = companys::find($id);
         $save->Company_Name = $request->Company_Name;
         $save->Company_type = $request->Company_type;
@@ -674,7 +716,7 @@ class CompanyController extends Controller
                     $savephone->save();
                 }
             }
-            dd();
+
             foreach ($faxNumber as $index => $faxNumber) {
                 if ($faxNumber !== null) {
                     $savefax = new company_fax();

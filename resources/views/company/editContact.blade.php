@@ -448,18 +448,6 @@
                 <input style="width:30%; float: right;" type="text" id="Profile_ID" name="Profile_ID" maxlength="70" required value="{{$representative_ID}}" disabled>
             </div>
         </div>
-
-        <div class="row buttonstyle">
-            <div class="col-lg-12 col-md-6 col-sm-12" id="add-contact-cc">
-                <button class="button1" onclick="window.location.href = '{{ url('/Company/edit/'.$Company->id) }}'">Company</button>
-            </div>
-            <div class="col-lg-12 col-md-6 col-sm-12" id="add-contact-c">
-                <button class="button1"onclick="window.location.href = '{{ url('/Company/edit/contact/'.$Company->id) }}'">Contact</button>
-            </div>
-            <div class="col-lg-12 col-md-6 col-sm-12" id="add-contact-d">
-                <button class="button1"onclick="window.location.href = '{{ url('/Company/edit/contact/detail/'.$Company->id) }}'">Detail</button>
-            </div>
-        </div>
     <form id="myForm" action="{{url('/Company/edit/contact/editcontact/update/'.$Company->id.'/'.$representative->id)}}" method="POST">
     {!! csrf_field() !!}
         <div class="row">

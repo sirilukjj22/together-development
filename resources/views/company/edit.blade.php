@@ -1,24 +1,8 @@
 @extends('layouts.test')
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Company</title>
 
-<!-- Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-
-<!-- เพิ่มลิงก์ CSS ของ Select2 -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
-<!-- ลิงก์ JavaScript ของ jQuery -->
-
-<!-- ลิงก์ JavaScript ของ Select2 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <style>
 
 
@@ -174,7 +158,27 @@
         border-color: #6c757d;
         cursor: not-allowed;
     }
+    .addphone {
+        /* เพิ่มสไตล์ที่คุณต้องการในส่วนนี้ */
+        color: #fff;
+        width: auto;
+        background-color: #28a745;
+        border-color: #28a745;
+        border-radius: 16px;
+        cursor: pointer;
+        float: right;
+        padding: 5px 10px;
+    }
+    .addphone:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
 
+    .addphone:disabled {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        cursor: not-allowed;
+    }
     /* สไตล์สำหรับปุ่ม "Add Fax" */
     .add-fax {
         /* เพิ่มสไตล์ที่คุณต้องการในส่วนนี้ */
@@ -203,7 +207,9 @@
     .input-group {
         margin-bottom: 2%;
     }
-
+    .inputgroup {
+        margin-bottom: 2%;
+    }
     .row label {
         margin: 0;
         margin-bottom: 5px;
@@ -230,7 +236,8 @@
 
     .remove-input,
     .remove-fax,
-    .remove-phone {
+    .remove-phone,
+    .remove-phoneCon{
         /* เพิ่มสไตล์ที่คุณต้องการในส่วนนี้ */
         color: #fff;
         background-color: #dc3545;
@@ -310,7 +317,17 @@
         position: relative;
         width: 100%;
     }
-
+    .inputcontainer{
+        position: relative;
+        width: 100%;
+    }
+    .inputcontainer .form-control {
+        width: 100%;
+        padding-right: 50px;
+        margin: 0;
+        /* Adjust based on button width */
+        box-sizing: border-box;
+    }
     .input-container .form-control {
         width: 100%;
         padding-right: 50px;
@@ -318,7 +335,22 @@
         /* Adjust based on button width */
         box-sizing: border-box;
     }
-
+    .remove-phoneCon{
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        margin-top: 45px;
+        margin-right: 1%;
+        height: 30px;
+        font-size: 16px;
+        border: none;
+        background: #dc3545;
+        /* Adjust the button style as needed */
+        padding: 0px 20px;
+        cursor: pointer;
+    }
     .remove-input {
         position: absolute;
         right: 0;
@@ -353,7 +385,9 @@
     .input-group {
         margin-bottom: 2%;
     }
-
+    .inputgroup {
+        margin-bottom: 2%;
+    }
     .row {
         margin-bottom: 5px;
     }
@@ -475,6 +509,9 @@
         padding-top: 6px;
         float: right;
         }
+        .select2-container{
+            width: 100% !important;
+        }
   @media (max-width: 768px) {
        .flex-container{
         margin-top: 30px;
@@ -485,6 +522,9 @@
         }
         .btncontact{
             width: 40%;
+        }
+        .span{
+         float: left;
         }
     }
 </style>
@@ -499,17 +539,7 @@
                 <input style="width:50%; float: right; margin-top:20px;"  type="text" id="Profile_ID" name="Profile_ID" maxlength="70" required value="{{$Profile_ID}}" disabled>
             </div>
         </div>
-
-        {{-- <div class="row buttonstyle">
-            <div class="col-lg-12 col-md-6 col-sm-12" id="add-contact-c">
-                <button class="button1" onclick="confirmRedirectC()">+ Add Contact</button>
-            </div>
-        </div> --}}
-
-
-
-
-        <form id="myForm" action="{{url('/Company/Company_edit/Company_update/'.$Company->id)}}" method="POST">
+        <form id="myForm" action="{{url('/Company/Company_edit/Company_update/'.$Company->id)}}" method="POST" enctype="multipart/form-data">
             {!! csrf_field() !!}
             <div id="formContainer">
                 <div class="row">
@@ -698,7 +728,6 @@
                         <input type="text" id="Taxpayer_Identification" name="Taxpayer_Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required value="{{$Company->Taxpayer_Identification}}">
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-lg-4 col-md-6 col-sm-12">
                         <label for="Discount_Contract_Rate">อัตราคิดลด / Discount Contract Rate</label><br>
@@ -713,8 +742,6 @@
                         <input class="datestyle" type="date" id="contract_rate_end_date" name="contract_rate_end_date" value="{{$Company->Contract_Rate_End_Date}}">
                     </div>
                 </div>
-
-
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12">
                         <label for="Lastest_Introduce_By">แนะนำล่าสุดโดย / Lastest Introduce By</label><br>
@@ -765,7 +792,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="dropdown">
+                                    <div class="dropdown-a">
                                         <button class="button-18 button-17" type="button" data-toggle="dropdown">ทำรายการ
                                             <span class="caret"></span></button>
                                         <ul class="dropdown-menu">
@@ -803,10 +830,140 @@
                         target: 'tr'
                     }
                 }
+
+            });
+            $('.select2').select2({
+            width: '100%'
             });
         });
         </script>
+        <div class="modal fade" id="createContart" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">เพิ่มตัวแทนบริษัท</h5>
+                    </div>
+                    <form  action="{{url('/Company/edit/contact/create/'.$Company->id)}}"  method="POST">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="col-12">
+                                <div class=" row">
+                                    <div class="col-lg-1 col-md-1 col-sm-12"></div>
+                                    <div class="col-lg-2 col-md-6 col-sm-12" ><span for="prefix">Title</span><br>
+                                        <select name="prefix" id="PrefaceSelect" class="form-select" required>
+                                            <option value=""></option>
+                                                @foreach($Mprefix as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                @endforeach
+                                        </select></div>
+                                    <div class="col-lg-4 col-md-6 col-sm-12" ><span for="first_name">First Name</span>
+                                        <input type="text" id="first_nameAgent" name="first_nameAgent"maxlength="70" required>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-12" ><span for="last_name" >Last Name</span>
+                                        <input type="text" id="last_nameAgent" name="last_nameAgent"maxlength="70" required>
+                                    </div>
+                                </div>
+                                <div class=" row">
+                                    <div class="col-lg-1 col-md-1 col-sm-12"></div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <span for="Country">Country</span>
+                                        <select name="countrydataA" id="countrySelectA" class="form-select" onchange="showcityAInput()">
+                                            <option value="Thailand">ประเทศไทย</option>
+                                            <option value="Other_countries">ประเทศอื่นๆ</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12" id="cityInputA" style="display:none;">
+                                        <span for="City">City</span>
+                                        <input type="text" id="cityA" name="cityA">
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12" id="citythaiA" style="display:block;">
+                                        <span for="City">City</span>
+                                        <select name="provinceAgent" id="provinceAgent" class="form-select" onchange="provinceA()" style="width: 100%;">
+                                            <option value=""></option>
+                                            @foreach($provinceNames as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-12">
+                                        <span for="Amphures">Amphures</span>
+                                        <select name="amphuresA" id="amphuresA" class="form-select" onchange="amphuresAgent()" >
+                                            <option value=""></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-1 col-md-6 col-sm-12"></div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12 ">
+                                        <span for="Tambon">Tambon</span>
+                                        <select name="TambonA" id ="TambonA" class="form-select" onchange="TambonAgent()" style="width: 100%;">
+                                            <option value=""></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12 ">
+                                        <span for="zip_code">zip_code</span>
+                                        <select name="zip_codeA" id ="zip_codeA" class="form-select"  style="width: 100%;">
+                                            <option value=""></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-12">
+                                        <span for="Email">Email</span>
+                                        <input type="text" id="EmailAgent" name="EmailAgent"maxlength="70" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-1 col-md-6 col-sm-12"></div>
+                                    <div class="col-lg-10 col-md-10 col-sm-12" >
+                                        <span for="Address">Address</span>
+                                        <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="textarea" aria-label="With textarea" required></textarea>
+                                    </div>
+                                </div>
 
+                                    <div class="row">
+                                        <div class="col-lg-1 col-md-6 col-sm-12"></div>
+                                        <div class="col-8">
+                                            <label for="Phone_number">หมายเลขโทรศัพท์ / Phone number</label>
+                                            <button type="button" class="add-phone" id="add-phone" data-target="phone-container">เพิ่มเบอร์โทรศัพท์</button>
+                                        </div>
+                                        <div id="phone-container" class="flex-container mt-2" style="margin-left: 65px">
+                                            <div class="phone-group">
+                                                <input type="text" name="phoneCon[]" class="form-control" style="width: 40%" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                <button type="button" class="remove-phone">ลบ</button>
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        document.getElementById('add-phone').addEventListener('click', function() {
+                                            var phoneContainer = document.getElementById('phone-container');
+                                            var newPhoneGroup = phoneContainer.firstElementChild.cloneNode(true);
+                                            newPhoneGroup.querySelector('input').value = '';
+                                            phoneContainer.appendChild(newPhoneGroup);
+                                            attachRemoveEvent(newPhoneGroup.querySelector('.remove-phone'));
+                                        });
+
+                                        function attachRemoveEvent(button) {
+                                            button.addEventListener('click', function() {
+                                                var phoneContainer = document.getElementById('phone-container');
+                                                if (phoneContainer.childElementCount > 1) {
+                                                    phoneContainer.removeChild(button.parentElement);
+                                                }
+                                            });
+                                        }
+
+                                        // Attach the remove event to the initial remove button
+                                        attachRemoveEvent(document.querySelector('.remove-phone'));
+                                    </script>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="button-return"data-dismiss="modal">Close</button>
+                            <button type="submit" class="button-10" style="background-color: #109699;">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 
@@ -823,8 +980,142 @@
 
 
 
-
 <script>
+
+    function showcityAInput() {
+            var countrySelectA = document.getElementById("countrySelectA");
+            var cityInputA = document.getElementById("cityInputA");
+            var citythaiA = document.getElementById("citythaiA");
+            var amphuresSelect = document.getElementById("amphuresA");
+            var tambonSelect = document.getElementById("TambonA");
+            var zipCodeSelect = document.getElementById("zip_codeA");
+            // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
+            if (countrySelectA.value === "Other_countries") {
+                // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+                cityInputA.style.display = "block";
+                citythaiA.style.display = "none";
+                // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                amphuresSelect.disabled = true;
+                tambonSelect.disabled = true;
+                zipCodeSelect.disabled = true;
+            } else if (countrySelectA.value === "Thailand"){
+                // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
+                // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+                cityInputA.style.display = "none";
+                citythaiA.style.display = "block";
+                // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                amphuresSelect.disabled = false;
+                tambonSelect.disabled = false;
+                zipCodeSelect.disabled = false;
+
+                // เรียกใช้ฟังก์ชัน select_amphures() เพื่อเปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                amphuresAgent();
+            }
+
+        }
+
+$(document).ready(function() {
+    $('.status-toggle').click(function() {
+        var button = $(this);
+        var id = button.data('id');
+        var status = button.data('status');
+        var companyId = button.data('company');
+        var newStatus = status === 1 ? 0 : 1; // Toggle status
+        var token = "{{ csrf_token() }}"; // รับ CSRF token จาก Laravel
+
+        // ทำ AJAX request
+        $.ajax({
+            type: 'POST',
+            url: "{{ url('/Company/contact/change-status/') }}" + '/' + companyId,
+            data: {
+                _token: token, // เพิ่ม CSRF token ในข้อมูลของ request
+                ids: id,
+                status: newStatus
+            },
+            success: function(response) {
+                // ปรับเปลี่ยนสถานะบนหน้าเว็บ
+                console.log(response.Company);
+                button.data('status', newStatus);
+                if (newStatus == 1) {
+                    // เปลี่ยนสถานะจากปิดเป็นเปิด
+                    button.removeClass('button-3').addClass('button-1').html('ใช้งาน');
+                } else {
+                    // เปลี่ยนสถานะจากเปิดเป็นปิด
+                    button.removeClass('button-1').addClass('button-3').html('ปิดใช้งาน');
+                }
+                Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                location.reload();
+            }
+        });
+    });
+});
+
+
+//---------------------------------------------------2------------------------------
+            function provinceA(){
+            var provinceAgent = $('#provinceAgent').val();
+            jQuery.ajax({
+                type:   "GET",
+                url:    "{!! url('/Company/amphuresA/"+provinceAgent+"') !!}",
+                datatype:   "JSON",
+                async:  false,
+                success: function(result) {
+                    jQuery('#amphuresA').children().remove().end();
+                    console.log(result);
+                    $('#amphuresA').append(new Option('', ''));
+                    jQuery.each(result.data, function(key, value) {
+                        var amphuresA = new Option(value.name_th,value.id);
+                        //console.log(amphuresA);
+                        $('#amphuresA').append(amphuresA);
+                    });
+                },
+            })
+
+        }
+        function amphuresAgent(){
+            var amphuresAgent  = $('#amphuresA').val();
+            console.log(amphuresAgent);
+            $.ajax({
+                type:   "GET",
+                url:    "{!! url('/Company/TambonA/"+amphuresAgent+"') !!}",
+                datatype:   "JSON",
+                async:  false,
+                success: function(result) {
+                   // console.log(result);
+                    jQuery('#TambonA').children().remove().end();
+                    $('#TambonA').append(new Option('', ''));
+                    jQuery.each(result.data, function(key, value) {
+                        var TambonA  = new Option(value.name_th,value.id);
+                        $('#TambonA').append(TambonA );
+                       // console.log(TambonA);
+                    });
+                },
+            })
+        }
+        function TambonAgent(){
+            var TambonAgent  = $('#TambonA').val();
+            console.log(TambonAgent);
+            $.ajax({
+                type:   "GET",
+                url:    "{!! url('/Company/districtsA/"+TambonAgent+"') !!}",
+                datatype:   "JSON",
+                async:  false,
+                success: function(result) {
+                    console.log(result);
+                    jQuery('#zip_codeA').children().remove().end();
+                    //console.log(result);
+                    $('#zip_codeA').append(new Option('', ''));
+                    jQuery.each(result.data, function(key, value) {
+                        var zip_codeA  = new Option(value.zip_code,value.zip_code);
+                        $('#zip_codeA').append(zip_codeA);
+                        //console.log(zip_codeA);
+                    });
+                },
+            })
+        }
+</script>
+<script>
+
     function showcityInput() {
         var countrySelect = document.getElementById("countrySelect");
         var cityInput = document.getElementById("cityInput");
@@ -992,314 +1283,6 @@ function updateWindowPhoneChanged() {
     console.log('phoneChanged1:', window.phoneChanged1);
 }
 
-
-
-    $(document).ready(function() {
-        const inputIds = [
-            'Company_type', 'Company_Name', 'Branch', 'Mmarket', 'booking_channel',
-            'countrydata', 'address', 'city', 'province', 'amphures', 'Tambon',
-            'zip_code', 'Company_Email', 'Company_Website', 'Taxpayer_Identification',
-            'Discount_Contract_Rate', 'contract_rate_start_date', 'contract_rate_end_date',
-            'Lastest_Introduce_By'
-        ];
-
-        function handleInputChange(event) {
-            const target = event.target;
-            console.log(`${target.id} มีการเปลี่ยนแปลงเป็น:`, target.value);
-            window.checkcompany = 1;
-            if (['Discount_Contract_Rate', 'contract_rate_end_date', 'Lastest_Introduce_By'].includes(target.id)) {
-                window.checkcompanyDetail = 1;
-            }
-            console.log(window.checkcompany);
-        }
-
-        inputIds.forEach(function(id) {
-            $(`#${id}`).on('change', handleInputChange);
-        });
-    });
-
-    function confirmRedirectC() {
-        if (window.checkcompany === 1 || window.checkcompanyDetail === 1) {
-            console.log(window.phoneChanged1);
-            Swal.fire({
-                title: 'คุณบันทึกข้อมูลที่แก้ไขหรือไม่?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'ใช่',
-                cancelButtonText: 'ไม่'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    console.log("Form is about to be submitted.");
-                    submitFormWithAjax(myForm).then(() => {
-                        console.log("Form submitted."); // เพิ่ม log หลังการส่งฟอร์ม
-                        window.location.href = '{{ url('/Company/edit/contact/'.$Company->id) }}'; // เปลี่ยนหน้า
-                    });
-
-                } else {
-                    console.log("User cancelled the form submission.");
-                    window.location.href = '{{ url('/Company/edit/contact/'.$Company->id) }}';
-                }
-            });
-        } else {
-            confirmphoneContact();
-        }
-
-    }
-
-    function confirmDatail() {
-        console.log('Detaile = 1');
-        if (window.checkcompany === 1 || window.checkcompanyDetail === 1) {
-            console.log(window.phoneChanged1);
-            Swal.fire({
-                title: 'คุณบันทึกข้อมูลที่แก้ไขหรือไม่?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'ใช่',
-                cancelButtonText: 'ไม่'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    console.log("Form is about to be submitted.");
-                    submitFormWithAjax(myForm).then(() => {
-                        console.log("Form submitted."); // เพิ่ม log หลังการส่งฟอร์ม
-                        window.location.href = '{{ url('/Company/edit/contact/detail/'.$Company->id) }}'; // เปลี่ยนหน้า
-                    });
-
-                } else {
-                    console.log("User cancelled the form submission.");
-                    window.location.href = '{{ url('/Company/edit/contact/detail/'.$Company->id) }}';
-                }
-            });
-        } else {
-            confirmphoneDetail();
-        }
-
-    }
-
-    function confirmphoneDetail() {
-        // แสดงข้อความแจ้งเตือน
-        if (window.phoneChanged1 === 1) {
-            console.log(window.phoneChanged1);
-            Swal.fire({
-                title: 'คุณบันทึกข้อมูลที่แก้ไขหรือไม่?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'ใช่',
-                cancelButtonText: 'ไม่'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    console.log("Form is about to be submitted.");
-                    submitFormWithAjax(myForm).then(() => {
-                        console.log("Form submitted."); // เพิ่ม log หลังการส่งฟอร์ม
-                        window.location.href = '{{ url(' /Company/edit/contact/detail/'.$Company->id) }}'; // เปลี่ยนหน้า
-                    });
-                }
-            });
-        } else {
-            confirmfaxDetail();
-        }
-    }
-
-    function confirmphoneContact() {
-        // แสดงข้อความแจ้งเตือน
-
-        if (window.phoneChanged1 === 1) {
-            console.log(window.phoneChanged1);
-            Swal.fire({
-                title: 'คุณบันทึกข้อมูลที่แก้ไขหรือไม่?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'ใช่',
-                cancelButtonText: 'ไม่'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    console.log("Form is about to be submitted.");
-                    submitFormWithAjax(myForm).then(() => {
-                        console.log("Form submitted."); // เพิ่ม log หลังการส่งฟอร์ม
-                        window.location.href = '{{ url('/Company/edit/contact/'.$Company->id) }}'; // เปลี่ยนหน้า
-                    });
-                }
-            });
-        } else {
-            confirmfaxContact();
-        }
-
-    }
-
-    function submitFormWithAjax(form) {
-        return new Promise((resolve, reject) => {
-            const formData = new FormData(form);
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", form.action, true);
-            xhr.onload = function() {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    resolve(xhr.response);
-                } else {
-                    reject({
-                        status: xhr.status,
-                        statusText: xhr.statusText
-                    });
-                }
-            };
-            xhr.onerror = function() {
-                reject({
-                    status: xhr.status,
-                    statusText: xhr.statusText
-                });
-            };
-            xhr.send(formData);
-        });
-    }
-    //-----------------------
-
-    //     document.addEventListener("DOMContentLoaded", function() {
-    //         const addButton = document.getElementById('add-fax');
-    //         const removeButton = document.querySelector('.remove-fax');
-    //         const faxContainer = document.getElementById('fax-container');
-
-    //         // Initialize faxCount with a starting value, assuming you start with one fax input
-    //         let faxCount = 1;
-    //         let faxChanges = {};
-
-    //         function handleFaxInputChange(event) {
-    //             const inputValue = event.target.value;
-    //             const index = event.target.getAttribute('data-index');
-    //             const oldValue = event.target.getAttribute('data-old-value');
-    //             const changed = inputValue !== oldValue ? 1 : 0;
-
-    //             faxChanges[index] = changed;
-    //             console.log(`Fax number in input ${index} changed:`, changed);
-
-    //             // Update global change flags
-    //             window.phoneChanged1 = 1;
-    //             window.phoneChanged0 = 0;
-    //             console.log('phoneChanged1:', window.phoneChanged1);
-    //             console.log('phoneChanged0:', window.phoneChanged0);
-    //         }
-
-    //         function addFaxInput() {
-    //             const faxGroup = document.createElement('div');
-    //             faxGroup.classList.add('fax-group');
-    //             const newIndex = faxCount; // Use faxCount as index
-    //             faxGroup.innerHTML = `
-    //             <input type="text" name="fax[]" class="form-control fax-input" maxlength="11" value="{{ $phone['Fax_number'] }}" data-index="${newIndex}" data-old-value="">
-    // `;
-    //             faxContainer.appendChild(faxGroup);
-    //             faxCount++;
-    //             updateButtonStates();
-    //             console.log('Added new fax input');
-    //             document.querySelector(`input[data-index="${newIndex}"]`).addEventListener('input', handleFaxInputChange);
-
-    //             // Update global change flags
-    //             window.phoneChanged1 = 1;
-    //             window.phoneChanged0 = 0;
-    //             console.log('phoneChanged1:', window.phoneChanged1);
-    //             console.log('phoneChanged0:', window.phoneChanged0);
-    //         }
-
-    //         function removeFaxInput() {
-    //             if (faxCount > 1) {
-    //                 const faxGroups = faxContainer.querySelectorAll('.fax-group');
-    //                 const lastFaxGroup = faxGroups[faxGroups.length - 1];
-    //                 faxContainer.removeChild(lastFaxGroup);
-    //                 faxCount--;
-    //                 updateButtonStates();
-    //                 console.log('Removed last fax input');
-
-    //                 // Update global change flags
-    //                 window.phoneChanged1 = 1;
-    //                 window.phoneChanged0 = 0;
-    //                 console.log('phoneChanged1:', window.phoneChanged1);
-    //                 console.log('phoneChanged0:', window.phoneChanged0);
-    //             }
-    //         }
-
-    //         function updateButtonStates() {
-    //             removeButton.disabled = (faxCount <= 1);
-    //         }
-
-    //         addButton.addEventListener('click', addFaxInput);
-    //         removeButton.addEventListener('click', removeFaxInput);
-
-    //         // Attach event listeners to the initial inputs
-    //         document.querySelectorAll('.fax-input').forEach(input => {
-    //             input.addEventListener('input', handleFaxInputChange);
-    //         });
-    //     });
-
-
-
-    function confirmfaxContact() {
-        // แสดงข้อความแจ้งเตือน
-        if (window.faxChanged1 === 1) {
-            console.log(window.faxChanged1);
-            Swal.fire({
-                title: 'คุณบันทึกข้อมูลที่แก้ไขหรือไม่?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'ใช่',
-                cancelButtonText: 'ไม่'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    console.log("Form is about to be submitted.");
-                    submitFormWithAjax(myForm).then(() => {
-                        console.log("Form submitted."); // เพิ่ม log หลังการส่งฟอร์ม
-                        window.location.href = '{{ url('/Company/edit/contact/'.$Company->id) }}'; // เปลี่ยนหน้า
-                    });
-                }
-            });
-        } else {
-            window.location.href = '{{ url('/Company/edit/contact/'.$Company->id) }}';
-        }
-    }
-
-    function confirmfaxDetail() {
-        // แสดงข้อความแจ้งเตือน
-        if (window.faxChanged1 === 1) {
-            console.log(window.faxChanged1);
-            Swal.fire({
-                title: 'คุณบันทึกข้อมูลที่แก้ไขหรือไม่?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'ใช่',
-                cancelButtonText: 'ไม่'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    console.log("Form is about to be submitted.");
-                    submitFormWithAjax(myForm).then(() => {
-                        console.log("Form submitted."); // เพิ่ม log หลังการส่งฟอร์ม
-                        window.location.href = '{{ url('/Company/edit/contact/detail/'.$Company->id) }}'; // เปลี่ยนหน้า
-                    });
-                }
-            });
-        } else {
-            window.location.href = '{{ url('/Company/edit/contact/detail/'.$Company->id) }}';
-        }
-    }
-
-    function submitFormWithAjax(form) {
-        return new Promise((resolve, reject) => {
-            const formData = new FormData(form);
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", form.action, true);
-            xhr.onload = function() {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    resolve(xhr.response);
-                } else {
-                    reject({
-                        status: xhr.status,
-                        statusText: xhr.statusText
-                    });
-                }
-            };
-            xhr.onerror = function() {
-                reject({
-                    status: xhr.status,
-                    statusText: xhr.statusText
-                });
-            };
-            xhr.send(formData);
-        });
-    }
 </script>
 <script>
     function confirmSubmit(event) {
