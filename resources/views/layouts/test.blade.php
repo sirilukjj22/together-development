@@ -182,6 +182,14 @@
                     </li>
                 @endif
 
+                @if ($role_permisstion->product_item == 1)
+                    <li class="nav-item">
+                        <li>
+                            <a class="nav-link px-2" href="{{ route('Mproduct.index') }}">Product Item</a>
+                        </li>
+                    </li>
+                @endif
+
                 @if ($role_permisstion->debtor == 1)
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle px-2" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
@@ -242,9 +250,6 @@
                             @endif
                             @if ($role_permisstion->bank == 1)
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('master', 'bank') }}">Bank</a></li>
-                            @endif
-                            @if ($role_permisstion->product_item == 1)
-                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mproduct.index') }}">Product Item</a></li>
                             @endif
                             @if ($role_permisstion->quantity == 1)
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Mproduct.index.quantity') }}">Quantity</a></li>
@@ -357,6 +362,12 @@
                 </div>
             @endif
 
+            @if ($role_permisstion->product_item == 1)
+                <a href="{{ route('Mproduct.index') }}">
+                    <div class="menu2">Product Item</div>
+                </a>
+            @endif
+
             @if ($role_permisstion->debtor == 1)
             <div class="dropdown">
                 <button onclick="myFunctionDebtor()" class="dropbtn">Debtor &nbsp;
@@ -413,9 +424,6 @@
                         @endif
                         @if ($role_permisstion->bank == 1)
                             <a class="menu2" href="{{ route('master', 'bank') }}">Bank</a>
-                        @endif
-                        @if ($role_permisstion->product_item == 1)
-                            <a class="menu2" href="{{ route('Mproduct.index') }}">Product Item</a>
                         @endif
                         @if ($role_permisstion->quantity == 1)
                             <a class="menu2" href="{{ route('Mproduct.index.quantity') }}">Quantity</a>
