@@ -86,6 +86,26 @@
               display: block;
             }
           }
+
+          /* อันนี้ style ของ table นะ */
+        .dtr-details {
+            width: 100%;
+        }
+
+        .dtr-title {
+            float: left;
+            text-align: left;
+            margin-right: 10px;
+        }
+
+        .dtr-data {
+            display: block;
+            text-align: right !important;
+        }
+
+        .dt-container .dt-paging .dt-paging-button {
+            padding: 0 !important;
+        }
         </style>
 
         <nav class="navbar fixed-top navbar-expand-lg navbar-light" style="background-color: #109699;">
