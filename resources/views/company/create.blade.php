@@ -347,43 +347,43 @@
         font-size: 32px;
     }
     .button-return {
-    align-items: center;
-    appearance: none;
-    background-color: #6b6b6b;
-    border-radius: 8px;
-    border-style: none;
-    box-shadow: rgba(0, 0, 0, 0.2) 0 3px 5px -1px,
-      rgba(0, 0, 0, 0.14) 0 6px 10px 0, rgba(0, 0, 0, 0.12) 0 1px 18px 0;
-    box-sizing: border-box;
-    color: #ffffff;
-    cursor: pointer;
-    display: inline-flex;
-    fill: currentcolor;
-    font-size: 14px;
-    font-weight: 500;
-    height: 40px;
-    justify-content: center;
-    letter-spacing: 0.25px;
-    line-height: normal;
-    max-width: 100%;
-    overflow: visible;
-    padding: 2px 24px;
-    position: relative;
-    text-align: center;
-    text-transform: none;
-    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
-      opacity 15ms linear 30ms, transform 270ms cubic-bezier(0, 0, 0.2, 1) 0ms;
-    touch-action: manipulation;
-    width: auto;
-    will-change: transform, opacity;
-    margin-left: 5px;
-  }
+        align-items: center;
+        appearance: none;
+        background-color: #6b6b6b;
+        border-radius: 8px;
+        border-style: none;
+        box-shadow: rgba(0, 0, 0, 0.2) 0 3px 5px -1px,
+        rgba(0, 0, 0, 0.14) 0 6px 10px 0, rgba(0, 0, 0, 0.12) 0 1px 18px 0;
+        box-sizing: border-box;
+        color: #ffffff;
+        cursor: pointer;
+        display: inline-flex;
+        fill: currentcolor;
+        font-size: 14px;
+        font-weight: 500;
+        height: 40px;
+        justify-content: center;
+        letter-spacing: 0.25px;
+        line-height: normal;
+        max-width: 100%;
+        overflow: visible;
+        padding: 2px 24px;
+        position: relative;
+        text-align: center;
+        text-transform: none;
+        transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 15ms linear 30ms, transform 270ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+        touch-action: manipulation;
+        width: auto;
+        will-change: transform, opacity;
+        margin-left: 5px;
+    }
 
-  .button-return:hover {
-    background-color: #ffffff !important;
-    color: #000000;
-    transform: scale(1.1);
-  }
+    .button-return:hover {
+        background-color: #ffffff !important;
+        color: #000000;
+        transform: scale(1.1);
+    }
 </style>
 
 <script>
@@ -434,9 +434,9 @@
                     <input type="text" id="Branch" name="Branch" maxlength="70" placeholder="Company Branch" required>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
-                    <label for="Market" selected disabled>กลุ่มตลาด / Market</label>
-                    <select name="Mmarket" id="Mmarket" class="form-select" required>
-                        <option value="">Market</option>
+                    <label for="Market" >กลุ่มตลาด / Market</label>
+                    <select name="Mmarket" id="Mmarket"  class="select2"required>
+                        <option value=""></option>
                         @foreach($Mmarket as $item)
                         <option value="{{ $item->id }}">{{ $item->name_th }}</option>
                         @endforeach
@@ -448,6 +448,7 @@
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <label for="booking_channel">ช่องทางการจอง / Booking Channel</label><br>
                     <select name="booking_channel" id="booking_channel" class="select2" required>
+                        <option value=""></option>
                         @foreach($booking_channel as $item)
                         <option value="{{ $item->id }}">{{ $item->name_en }}</option>
                         @endforeach
@@ -704,7 +705,7 @@
                 </div>
                 <div class="col-4"></div>
             </div>
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-12"><br>
                     <ul class="nav nav-tabs">
                         <li li class="nav-item">
@@ -795,7 +796,7 @@
                             <td data-label="ข้อมูล 5">ข้อมูล 5</td>
                     </tbody>
                 </table>
-            </div>
+            </div> --}}
 
 
     </div>

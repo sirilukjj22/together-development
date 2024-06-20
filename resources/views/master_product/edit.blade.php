@@ -198,12 +198,93 @@ position: absolute;
     text-decoration: none;
     cursor: pointer;
 }
+.button-return {
+    align-items: center;
+    appearance: none;
+    background-color: #6b6b6b;
+    border-radius: 8px;
+    border-style: none;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 3px 5px -1px,
+    rgba(0, 0, 0, 0.14) 0 6px 10px 0, rgba(0, 0, 0, 0.12) 0 1px 18px 0;
+    box-sizing: border-box;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    fill: currentcolor;
+    font-size: 14px;
+    font-weight: 500;
+    height: 40px;
+    justify-content: center;
+    letter-spacing: 0.25px;
+    line-height: normal;
+    max-width: 100%;
+    overflow: visible;
+    padding: 2px 24px;
+    position: relative;
+    text-align: center;
+    text-transform: none;
+    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 15ms linear 30ms, transform 270ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+    touch-action: manipulation;
+    width: auto;
+    will-change: transform, opacity;
+    margin-left: 5px;
+}
 
+.button-return:hover {
+    background-color: #ffffff !important;
+    color: #000000;
+    transform: scale(1.1);
+}
+.input-group{
+    float: left;
+    width:70%;
+}
+@media (max-width: 768px) {
+    .image-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f0f0f0;
+        background: url('{{ asset($product->image_product)}}') no-repeat center center;
+        background-size: cover;
+        position: relative;
+    }
+    .card {
+        width: 260px; /* กำหนดความกว้างตามต้องการ */
+        height: 200px; /* กำหนดความสูงตามต้องการ */
+        background-color: #fff;
+        border: 1px solid #ccc; /* เพิ่มเส้นขอบ */
+        border-radius: 10px; /* เพิ่มมุมโค้งมน */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* เพิ่มเงา */
+        overflow: hidden; /* ซ่อนส่วนเกิน */
+        position: relative; /* สำหรับการวางปุ่ม */
+    }
+    .input-group{
+        float: left;
+        width:100%;
+    }
+    .col-4{
+        width: 100%;
+    }
+    .col-7{
+        width: 100%;
+    }
+    .col-6{
+        width: 100%;
+    }
+    .col-3{
+        width: 100%;
+    }
+    h1{
+       margin-top:32px;
+    }
+}
 </style>
-    <div  class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
-        <div class="usertopic">
-            <h1>Master Product Item</h1>
-        </div>
+    <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
+        <h1>Master Product Item</h1>
         <br>
         <form action="{{url('/Mproduct/master_Mproduct/Mproduct_update/'.$product->id)}}" method="POST"enctype="multipart/form-data">
         {!! csrf_field() !!}
@@ -221,7 +302,7 @@ position: absolute;
                                 </div>
                             </div>
                         </form>
-                        <div class="input-group mt-5 " style="float: left;width:80%; ">
+                        <div class="input-group mt-5 ">
                             <input type="file" class="form-control " name="image_other" id="image_other" aria-describedby="image_other" aria-label="Upload" multiple>
                         </div>
                     </div>
@@ -313,18 +394,13 @@ position: absolute;
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 row mt-2">
-                        <div class="col-2"></div>
-                        <div class="col-4">
-                            <div class="button-guest">
-                                <button type="submit" class="btn">ตกลง</button>
-                            </div>
+                    <div class="col-12 row">
+                        <div class="col-6 "></div>
+                        <div class="col-6 " style="display:flex; justify-content:center; align-items:center;">
+                            <button type="button" class="button-return" onclick="window.location.href='{{ route('Mproduct.index') }}'" >{{ __('ย้อนกลับ') }}</button>
+                            <button type="submit" class="button-10" style="background-color: #109699;">บันทึกข้อมูล</button>
                         </div>
-                        <div class="col-4">
-                            <div class="button-guest-end">
-                                <button type="button" class="btn" onclick="window.location.href='{{ route('Mproduct.index') }}'" >{{ __('ย้อนกลับ') }}</button>
-                            </div>
-                        </div>
+
                     </div>
                     </div>
                 </div>

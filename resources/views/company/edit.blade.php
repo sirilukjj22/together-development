@@ -1,50 +1,26 @@
 @extends('layouts.test')
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company</title>
 
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+<!-- เพิ่มลิงก์ CSS ของ Select2 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+<!-- ลิงก์ JavaScript ของ jQuery -->
+
+<!-- ลิงก์ JavaScript ของ Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 @section('content')
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped:wght@100;200;300;400;500;600;700;800;900&family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <!-- Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-
-    <!-- เพิ่มลิงก์ CSS ของ Select2 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
-    <!-- ลิงก์ JavaScript ของ jQuery -->
-
-    <!-- ลิงก์ JavaScript ของ Select2 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-</head>
 <style>
-    .container {
-        margin-top: 40px;
-        background-color: white;
-        padding: 5% 5%;
-        overflow-x: hidden;
-    }
+
 
     input[type=text],
     select {
@@ -468,33 +444,67 @@
     color: #000000;
     transform: scale(1.1);
   }
+  .dtr-details {
+        width: 100%;
+    }
+
+    .dtr-title {
+        float: left;
+        text-align: left;
+        margin-right: 10px;
+    }
+
+    .dtr-data {
+        display: block;
+        text-align: right !important;
+    }
+
+    .dt-container .dt-paging .dt-paging-button {
+        padding: 0 !important;
+    }
+    .btncontact{
+        background-color: #109699 !important;
+        color: white !important;
+        text-align: center;
+        border-radius: 8px;
+        border-color: #9a9a9a;
+        border-style: solid;
+        border-width: 1px;
+        width: 15%;
+        height: 40px;
+        padding-top: 6px;
+        float: right;
+        }
+  @media (max-width: 768px) {
+       .flex-container{
+        margin-top: 30px;
+        width: 100%;
+       }
+       h1{
+        margin-top:32px;
+        }
+        .btncontact{
+            width: 40%;
+        }
+    }
 </style>
 
 <body>
-
-
-
     <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
         <div class="row">
-            <div class="titleh1 col-9">
-                <h1>Company (องค์กร)</h1>
+            <div class="col-9">
+            <h1>Company / Agent</h1>
             </div>
             <div class="col-3">
-                <input style="width:50%; float: right;" type="text" id="Profile_ID" name="Profile_ID" maxlength="70" required value="{{$Profile_ID}}" disabled>
+                <input style="width:50%; float: right; margin-top:20px;"  type="text" id="Profile_ID" name="Profile_ID" maxlength="70" required value="{{$Profile_ID}}" disabled>
             </div>
         </div>
 
-        <div class="row buttonstyle">
-            <div class="col-lg-12 col-md-6 col-sm-12" id="add-contact-cc">
-                <button class="button1" onclick="window.location.href = '{{ url('/Company/edit/'.$Company->id) }}'">Company</button>
-            </div>
+        {{-- <div class="row buttonstyle">
             <div class="col-lg-12 col-md-6 col-sm-12" id="add-contact-c">
-                <button class="button1" onclick="confirmRedirectC()">Contact</button>
+                <button class="button1" onclick="confirmRedirectC()">+ Add Contact</button>
             </div>
-            <div class="col-lg-12 col-md-6 col-sm-12" id="add-contact-d">
-                <button class="button1" onclick="confirmDatail()">Detail</button>
-            </div>
-        </div>
+        </div> --}}
 
 
 
@@ -507,9 +517,9 @@
                         <label for="Company_type">ประเภทบริษัท / Company Type</label>
                         <select name="Company_type" id="Company_type" class="form-select">
                             <option value=""></option>
-                             @foreach($MCompany_type as $item)
-                            <option value="{{ $item->id }}" {{$Company->Company_type == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
-                             @endforeach
+                            @foreach($MCompany_type as $item)
+                                <option value="{{ $item->id }}" {{$Company->Company_type == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="col-lg-8 col-md-6 col-sm-12">
@@ -527,9 +537,9 @@
                     <label for="Market">กลุ่มตลาด / Market</label>
                     <select name="Mmarket" id="Mmarket" class="form-select">
                         <option value=""></option>
-                         @foreach($Mmarket as $item)
-                        <option value="{{ $item->id }}" {{$Company->Market == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
-                         @endforeach
+                        @foreach($Mmarket as $item)
+                            <option value="{{ $item->id }}" {{$Company->Market == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -537,9 +547,9 @@
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <label for="booking_channel">ช่องทางการจอง / Booking Channel</label>
                     <select name="booking_channel" id="booking_channel" class="select2">
-                         @foreach($booking_channel as $item)
-                        <option value="{{ $item->id }}" {{$Company->Booking_Channel == $item->id ? 'selected' : ''}}>{{ $item->name_en }}</option>
-                         @endforeach
+                        @foreach($booking_channel as $item)
+                            <option value="{{ $item->id }}" {{$Company->Booking_Channel == $item->id ? 'selected' : ''}}>{{ $item->name_en }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12">
@@ -557,12 +567,12 @@
                 </div>
             </div>
             <div class="row">
-                 @if ($Company->Country === 'Other_countries')
+                @if ($Company->Country === 'Other_countries')
                 <div class="col-lg-3 col-md-6 col-sm-12" id="cityInput">
                     <label for="city">จังหวัด / Province</label>
                     <input type="text" id="city" name="city" value="{{$Other_City}}">
                 </div>
-                 @else
+                @else
                 <div class="col-lg-3 col-md-6 col-sm-12" id="cityInput" style="display:none;">
                     <label for="city">จังหวัด / Province</label>
                     <input type="text" id="city" name="city">
@@ -588,16 +598,16 @@
                     </select>
                 </div>
                 @endif
-                 @if ($Company->Country === 'Thailand')
+                @if ($Company->Country === 'Thailand')
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <label for="Amphures">อำเภอ / District</label>
                     <select name="amphures" id="amphures" class="select2" onchange="select_amphures()">
-                         @foreach($amphures as $item)
+                        @foreach($amphures as $item)
                         <option value="{{ $item->id }}" {{ $Company->Amphures == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
-                         @endforeach
+                        @endforeach
                     </select>
                 </div>
-                 @else
+                @else
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <label for="Amphures">อำเภอ / District</label>
                     <select name="amphures" id="amphures" class="select2" onchange="select_amphures()" disabled>
@@ -605,16 +615,16 @@
                     </select>
                 </div>
                 @endif
-                 @if ($Company->Country === 'Thailand')
+                @if ($Company->Country === 'Thailand')
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <label for="Tambon">ตำบล / Subdistrict </label>
                     <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()">
-                         @foreach($Tambon as $item)
+                        @foreach($Tambon as $item)
                         <option value="{{ $item->id }}" {{ $Company->Tambon == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
-                         @endforeach
+                        @endforeach
                     </select>
                 </div>
-                 @else
+                @else
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <label for="Tambon">ตำบล / Subdistrict </label>
                     <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()" disabled>
@@ -623,15 +633,15 @@
                 </div>
                 @endif
                 <div class="col-lg-3 col-md-6 col-sm-12">
-                     @if ($Company->Country === 'Thailand')
+                    @if ($Company->Country === 'Thailand')
                     <label for="zip_code">รหัสไปรษณีย์ / Postal Code</label><br>
                     <select name="zip_code" id="zip_code" class="select2">
-                         @foreach($Zip_code as $item)
+                        @foreach($Zip_code as $item)
                         <option value="{{ $item->id }}" {{ $Company->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
-                         @endforeach
+                        @endforeach
                     </select>
                 </div>
-                 @else
+                @else
                 <div class="col-3">
                     <label for="zip_code">รหัสไปรษณีย์ / Postal Code</label><br>
                     <select name="zip_code" id="zip_code" class="select2" disabled>
@@ -719,9 +729,101 @@
                     </div>
                     <div class="col-4"></div>
                 </div>
-            </div>
+            </form>
+        <div style="border: 1px solid #2D7F7B;" class="mt-5"></div>
+        <button type="button" class="btncontact  mt-5 my-3 "  data-toggle="modal"data-target="#createContart">เพิ่มตัวแทนบริษัท</button>
+        <form enctype="multipart/form-data">
+            @csrf
+            <table id="example" class="table-hover nowarp" style="width:98%">
+                <thead>
+                    <tr>
+                        <th style="text-align: center;">ลำดับ</th>
+                        <th style="text-align: center;">รหัสโปรไฟล์</th>
+                        <th>ชื่อองค์กร</th>
+                        <th>สาขา</th>
+                        <th>ชื่อผู้ใช้งาน</th>
+                        <th>นามสกุลผู้ใช้งาน</th>
+                        <th>สถานะการใช้งาน</th>
+                        <th style="text-align: center;">คำสั่ง</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!empty($representative))
+                        @foreach ($representative as $key => $item)
+                            <tr>
+                                <td data-label="#">{{ $key + 1 }}</td>
+                                <td data-label="รหัสลูกค้า">{{ $item->Profile_ID}}</td>
+                                <td data-label="ตัวย่อ">{{ $item->Company_Name }}</td>
+                                <td data-label="ตัวย่อ">{{ $item->Branch }}</td>
+                                <td data-label="ชื่อผู้ใช้งาน">{{ $item->First_name }}</td>
+                                <td data-label="นามสกุลผู้ใช้งาน">{{ $item->Last_name }}</td>
+                                <td data-label="สถานะการใช้งาน">
+                                    @if ($item->status === 1)
+                                        <button type="button" class="button-1 status-toggle" data-id="{{ $item->id }}"data-status="{{ $item->status }} "data-company="{{ $Company->id }}">ใช้งาน</button>
+                                    @else
+                                        <button type="button" class="button-3 status-toggle " data-id="{{ $item->id }}" data-status="{{ $item->status }} "data-company="{{ $Company->id }}">ปิดใช้งาน</button>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="button-18 button-17" type="button" data-toggle="dropdown">ทำรายการ
+                                            <span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li class="licolor"><a href="{{ url('/Company/edit/contact/editcontact/'.$Company->id.'/'.$item->id) }}">แก้ไขข้อมูล</a></li>
+                                        </ul>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                </tbody>
+            </table>
         </form>
+        <script>
+            $(document).ready(function() {
+            new DataTable('#example', {
+                columnDefs: [
+                    {
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null
+                    },
+                    { width: '5%', targets: 0 },
+                    { width: '10%', targets: 1 },
+                    { width: '15%', targets: 2 },
+                    { width: '15%', targets: 3 },
+                    { width: '15%', targets: 4 },
+                    { width: '15%', targets: 5 },
+                    { width: '10%', targets: 6 },
+                    { width: '10%', targets: 7 },
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                }
+            });
+        });
+        </script>
+
+    </div>
 </body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <script>
     function showcityInput() {
         var countrySelect = document.getElementById("countrySelect");
@@ -812,63 +914,6 @@
         })
     }
 
-
-// document.getElementById('add-input').addEventListener('click', function() {
-//     var container = document.getElementById('phone-inputs-container');
-//     var index = container.querySelectorAll('.phone-group').length;
-//     var newInputGroup = document.createElement('div');
-//     newInputGroup.classList.add('phone-group');
-//     newInputGroup.style.position = 'relative';
-//     newInputGroup.innerHTML = `
-//         <input type="text" name="phone[]" class="form-control phone-input" maxlength="10" value="" data-index="${index}" data-old-value="">
-//         <button type="button" class="remove-input">ลบ</button>
-//     `;
-//     container.appendChild(newInputGroup);
-//     addRemoveButtonListener(newInputGroup.querySelector('.remove-input'));
-// });
-
-
-// document.getElementById('add-fax').addEventListener('click', function() {
-//     var container = document.getElementById('fax-inputs-container');
-//     var index = container.querySelectorAll('.fax-group').length;
-//     var newInputGroup = document.createElement('div');
-//     newInputGroup.classList.add('fax-group');
-//     newInputGroup.style.position = 'relative';
-//     newInputGroup.innerHTML = `
-//         <div class="input-container">
-//             <input type="text" name="fax[]" class="form-control fax-input" maxlength="11" value="" data-index="${index}" data-old-value="">
-//             <button type="button" class="remove-input">ลบ</button>
-//         </div>
-//     `;
-//     container.appendChild(newInputGroup);
-//     addRemoveButtonListener(newInputGroup.querySelector('.remove-input'));
-// });
-
-// document.querySelectorAll('.remove-input').forEach(function(button) {
-//     addRemoveButtonListener(button);
-// });
-
-// function addRemoveButtonListener(button) {
-//     button.addEventListener('click', function() {
-//         var container = button.closest('.phone-group, .fax-group');
-//         container.parentElement.removeChild(container);
-//         updateIndices();
-//     });
-// }
-
-// function updateIndices() {
-//     var phoneInputs = document.querySelectorAll('.phone-input');
-//     phoneInputs.forEach(function(input, index) {
-//         input.setAttribute('data-index', index);
-//         input.setAttribute('name', `phone[${index}]`);
-//     });
-
-//     var faxInputs = document.querySelectorAll('.fax-input');
-//     faxInputs.forEach(function(input, index) {
-//         input.setAttribute('data-index', index);
-//         input.setAttribute('name', `fax[${index}]`);
-//     });
-// }
 document.getElementById('add-input').addEventListener('click', function() {
     var container = document.getElementById('phone-inputs-container');
     var index = container.querySelectorAll('.phone-group').length;

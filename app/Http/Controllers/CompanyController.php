@@ -588,7 +588,7 @@ class CompanyController extends Controller
     {
 
         $Company = companys::find($id);
-
+        $Company_ID = $Company->Company_ID;
         $number =  preg_replace("/[^0-9]/", "", $Company->City);
         $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Company->City);
         $provinceNames = province::select('name_th','id')->get();
@@ -609,9 +609,13 @@ class CompanyController extends Controller
         $fax = company_fax::where('Profile_ID', 'like', "%{$Profile_ID}%")->get();
         $faxcount = company_fax::where('Profile_ID', 'like', "%{$Profile_ID}%")->count();
         $faxArray = $fax->toArray();
+
+        $representative = representative::where('Company_ID', 'like', "%{$Company_ID}%")->get();
+        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
+        $provinceNames = province::select('name_th','id')->get();
         return view('company.edit',compact('Company','booking_channel','provinceNames','Tambon','amphures',
         'Zip_code','Other_City','faxArray','phoneDataArray','Company_Contact','Mmarket',
-        'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID'));
+        'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID','representative','Mprefix','provinceNames'));
     }
     public function Company_update(Request $request, $id) {
         $data = $request->all();

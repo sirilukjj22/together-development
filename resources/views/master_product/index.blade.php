@@ -1,12 +1,7 @@
 @extends('layouts.test')
 
 @section('content')
-<style> .usertopic{
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: 40px;
-  }
+<style>
 
   /* อันนี้ style ของ table นะ */
   .dtr-details {
@@ -28,14 +23,7 @@
       padding: 0 !important;
   }
 
-  @media (max-width: 768px) {
-    h1{
-       margin-top:32px;
-    }
-    .create{
-        width: 100%!important;
-    }
-  }
+
 
   .statusbtn1,.statusbtn2{
         border-style: solid;
@@ -70,6 +58,32 @@
         padding-top: 6px;
         float: right;
     }
+    @media (max-width: 768px) {
+    h1{
+       margin-top:32px;
+    }
+    .create{
+        width: 100%!important;
+        font-size: 14px;
+        padding: 5px;
+    }
+    .statusbtn1,.statusbtn2{
+        border-style: solid;
+        border-radius: 8px;
+        border-width: 1px;
+        border-color: #9a9a9a;
+        margin-left: 10px;
+        width: 95%;
+        height: 40px;
+        border-radius: 8px;
+        float: right;
+        color: #000000;
+        margin: 0;
+        margin-left: 10px;
+        margin-bottom: 10px;
+
+      }
+  }
   </style>
     <div  class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
 
@@ -133,7 +147,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="dropdown">
+                                    <div class="dropdown-a">
                                         <button class="button-18 button-17" type="button" data-toggle="dropdown">ทำรายการ
                                             <span class="caret"></span></button>
                                         <ul class="dropdown-menu">
@@ -241,126 +255,5 @@
         });
     });
 });
-
-
-
-// function confirmDelete(id) {
-//     Swal.fire({
-//         title: "คุณต้องการลบใช่หรือไม่?",
-//         text: "หากลบข้อมูลแล้ว ไม่สามารถกู้ข้อมูลคืนได้ !",
-//         icon: "question",
-//         showCancelButton: true,
-//         confirmButtonText: "ลบข้อมูล",
-//         cancelButtonText: "ยกเลิก",
-//         confirmButtonColor: "#B22222",
-//         dangerMode: true,
-//     }).then((willDelete) => {
-//         if (willDelete.isConfirmed) {
-//             // ถ้าผู้ใช้คลิก "ตกลง"
-//             var token = "{{ csrf_token() }}";
-//             $.ajaxSetup({
-//                 headers: {
-//                     'X-CSRF-TOKEN': token
-//                 }
-//             });
-//             $.ajax({
-//                 type: "POST",
-//                 url: "{{ url('/Mbooking/delete/') }}" + '/' + id,
-//                 dataType: "JSON",
-//                 success: function(result) {
-//                     Swal('ลบข้อมูลเรียบร้อย!', '', 'success');
-//                 },
-//                 error: function() {
-//                     Swal.fire('Changes are not saved', '', 'error');
-//                 }
-//             });
-//         } else {
-//             // ถ้าผู้ใช้คลิก "ยกเลิก"
-//             Swal.fire('Changes are not saved');
-//         }
-//     });
-//     return false; // เพื่อป้องกันการนำลิงก์ไปยัง URL หลังจากแสดง SweetAlert2
-// }
-
-
-        // function confirmDelete(id) {
-        //     Swal.fire({
-        //         title: "คุณต้องการลบใช่หรือไม่?",
-        //         text: "หากลบข้อมูลแล้ว ไม่สามารถกู้ข้อมูลคืนได้ !",
-        //         icon: "question",
-        //         showCancelButton: true,
-        //         confirmButtonText: "ลบข้อมูล",
-        //         cancelButtonText: "ยกเลิก",
-        //         confirmButtonColor: "#B22222",
-        //         dangerMode: true,
-        //     }).then((willDelete) => {
-        //         if (willDelete.isConfirmed) {
-        //             // ถ้าผู้ใช้คลิก "ตกลง"
-        //             var token = "{{ csrf_token() }}";
-        //             $.ajax({
-        //                 type: "POST",
-        //                 url: "{{ url('/Mbooking/delete/') }}" + '/' + id,
-        //                 dataType: "JSON",
-        //                 _token: token,
-        //                 success: function(result) {
-        //                     Swal.fire('ลบข้อมูลเรียบร้อย!', '', 'success');
-
-        //                 },
-        //                 error: function() {
-        //                     Swal.fire('Changes are not saved', '', 'info');
-
-        //                 }
-        //             });
-        //         } else {
-        //             // ถ้าผู้ใช้คลิก "ยกเลิก"
-        //             Swal.fire('Changes are not saved');
-        //         }
-        //     });
-        //     return false; // เพื่อป้องกันการนำลิงก์ไปยัง URL หลังจากแสดง SweetAlert2
-        // }
-
-
-        // function confirmDelete($id) {
-        // Swal.fire({
-        // icon: "question",
-        // title: 'คุณต้องการลบใช่หรือไม่?',
-        // text: 'หากลบข้อมูลแล้ว ไม่สามารถกู้ข้อมูลคืนได้ !',
-        // showCancelButton: true,
-        // confirmButtonText: 'ลบข้อมูล',
-        // cancelButtonText: 'ยกเลิก',
-        // confirmButtonColor: "#B22222",
-        // // cancelButtonColor: "#d33",
-        // }).then((result) => {
-        //     /* Read more about isConfirmed, isDenied below */
-        //     if (result.isConfirmed) {
-        //         $('#deleteID').val($id);
-        //         var myform = $('#form-id3').serialize();
-
-        //         jQuery.ajax({
-        //         type:   "POST",
-        //         url:    "{!! url('/Mbooking/delete/') !!}",
-        //         datatype:   "JSON",
-        //         data: myform,
-        //         async:  false,
-                // success: function(result) {
-                //     Swal.fire('ลบข้อมูลเรียบร้อย!', '', 'success');
-                //     location.reload();
-
-                //     },
-                // });
-
-                // } else if (result.isDenied) {
-                //     Swal.fire('Changes are not saved', '', 'info');
-                //     location.reload();
-                // }
-        //     })
-        // }
-
-        // Sweetalert2
-
-
-
-
-
-    </script>
+</script>
 @endsection

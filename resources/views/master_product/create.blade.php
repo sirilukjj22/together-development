@@ -1,33 +1,25 @@
 @extends('layouts.test')
 
 @section('content')
-    <style>
-        input[type=text], select {
+<style>
+    input[type=text], select {
         width: 100%;
         padding: 12px 20px;
         margin: 8px 0;
         border: 1px solid #ccc;
         border-radius: 4px;
         box-sizing: border-box;
-        }
-        input[type=tel], select {
+    }
+    input[type=tel], select {
         width: 100%;
         padding: 12px 20px;
         margin: 8px 0;
         border: 1px solid #ccc;
         border-radius: 4px;
         box-sizing: border-box;
-        }
-        input[type=tel1], select {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-        }
+    }
 
-        input[type="date"] {
+    input[type="date"] {
         width: 100%;
         padding: 8px;
         border: 1px solid #ccc;
@@ -44,74 +36,15 @@
         border-radius: 4px;
         box-sizing: border-box;
     }
-    .button-guest{
-        background-color: #2D7F7B;
-        color: whitesmoke;
-        border-color: #9a9a9a;
-        border-style: solid;
-        width: 30%;
-        border-width: 1px;
-        border-radius: 8px;
-        float: right;
-        margin-Top: 10px;
-        margin-Left: 100px;
-        text-align: center;
 
-    }
-    .button-guest-end{
-        background-color:#ff0000;
-        color: whitesmoke;
-        border-color: #9a9a9a;
-        border-style: solid;
-        width: 30%;
-        float: left;
-        border-width: 1px;
-        border-radius: 8px;
-        margin-Top: 10px;
-        text-align: center;
 
-    }
-    .textarea{
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-    .add-phone {
-        /* เพิ่มสไตล์ที่คุณต้องการในส่วนนี้ */
-        color: #fff;
-        background-color: #28a745;
-        border-color: #28a745;
-        border-radius: 0.25rem;
-        padding: 0.375rem 0.75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        cursor: pointer;
-    }
 
     .add-phone:hover {
         background-color: #218838;
         border-color: #1e7e34;
     }
 
-    .add-phone:disabled {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        cursor: not-allowed;
-    }
-    .remove-phone {
-        /* เพิ่มสไตล์ที่คุณต้องการในส่วนนี้ */
-        color: #fff;
-        background-color: #dc3545; /* สีแดง */
-        border-color: #dc3545; /* สีเหลือง */
-        border-radius: 0.25rem;
-        padding: 0.375rem 0.75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        cursor: not-allowed;
-    }
+
     .card {
         width: 460px; /* กำหนดความกว้างตามต้องการ */
         height: 300px; /* กำหนดความสูงตามต้องการ */
@@ -174,7 +107,10 @@
         background-color: rgb(0,0,0);
         background-color: rgba(0,0,0,0.4);
     }
-
+    .input-group{
+        float: left;
+        width:70%;
+    }
     .modal-content {
         display: flex;
         flex-direction: column;
@@ -202,17 +138,95 @@
     #cropImage {
         max-width: 100%;
     }
-    </style>
+    .button-return {
+        align-items: center;
+        appearance: none;
+        background-color: #6b6b6b;
+        border-radius: 8px;
+        border-style: none;
+        box-shadow: rgba(0, 0, 0, 0.2) 0 3px 5px -1px,
+        rgba(0, 0, 0, 0.14) 0 6px 10px 0, rgba(0, 0, 0, 0.12) 0 1px 18px 0;
+        box-sizing: border-box;
+        color: #ffffff;
+        cursor: pointer;
+        display: inline-flex;
+        fill: currentcolor;
+        font-size: 14px;
+        font-weight: 500;
+        height: 40px;
+        justify-content: center;
+        letter-spacing: 0.25px;
+        line-height: normal;
+        max-width: 100%;
+        overflow: visible;
+        padding: 2px 24px;
+        position: relative;
+        text-align: center;
+        text-transform: none;
+        transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 15ms linear 30ms, transform 270ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+        touch-action: manipulation;
+        width: auto;
+        will-change: transform, opacity;
+        margin-left: 5px;
+    }
+
+    .button-return:hover {
+        background-color: #ffffff !important;
+        color: #000000;
+        transform: scale(1.1);
+    }
+    @media (max-width: 768px) {
+        .image-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            background: url('{{ asset('assets2/images/no-image.jpg') }}') no-repeat center center;
+            background-size: cover;
+            position: relative;
+        }
+        .card {
+            width: 260px; /* กำหนดความกว้างตามต้องการ */
+            height: 200px; /* กำหนดความสูงตามต้องการ */
+            background-color: #fff;
+            border: 1px solid #ccc; /* เพิ่มเส้นขอบ */
+            border-radius: 10px; /* เพิ่มมุมโค้งมน */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* เพิ่มเงา */
+            overflow: hidden; /* ซ่อนส่วนเกิน */
+            position: relative; /* สำหรับการวางปุ่ม */
+        }
+        .input-group{
+            float: left;
+            width:100%;
+        }
+        .col-4{
+            width: 100%;
+        }
+        .col-7{
+            width: 100%;
+        }
+        .col-6{
+            width: 100%;
+        }
+        .col-3{
+            width: 100%;
+        }
+        h1{
+            margin-top:32px;
+        }
+    }
+</style>
     <div  class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
-        <div class="usertopic">
-            <h1>Master Product Item</h1>
-        </div>
+        <h1>Master Product Item</h1>
         <br>
         <form action="{{route('Mproduct.save')}}" method="POST"enctype="multipart/form-data">
         {!! csrf_field() !!}
             <div>
                 <div class="col-12 row">
-                    <div class="col-5">
+                    <div class="col-lg-5 col-md-5 col-sm-5 mt-4">
                         <form id="image_upload_form" enctype="multipart/form-data">
                             <div class="card">
                                 <div class="image-container">
@@ -224,17 +238,17 @@
                                 </div>
                             </div>
                         </form>
-                        <div class="input-group mt-5 " style="float: left;width:80%; ">
+                        <div class="input-group mt-5 " >
                             <input type="file" class="form-control " name="image_other[]" id="image_other" aria-describedby="image_other" aria-label="Upload" multiple>
                         </div>
                     </div>
                     <div class="col-7 ">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-4  col-md-4 col-sm-12 mt-2">
                                 <label for="Profile_ID">Profile ID</label><br>
                                 <input type="text" id="Profile_ID" name="Profile_ID"maxlength="70" disabled>
                             </div>
-                            <div class="col-4">
+                            <div class="col-4 col-md-4 col-sm-12 mt-2">
                                 <label for="category">Category</label>
                                 <select name="category" id="category" class="select2" >
                                     <option value="" ></option>
@@ -318,18 +332,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 row mt-2">
-                        <div class="col-2"></div>
-                        <div class="col-4">
-                            <div class="button-guest">
-                                <button type="submit" class="btn">ตกลง</button>
-                            </div>
+                    <div class="col-12 row">
+                        <div class="col-6 "></div>
+                        <div class="col-6 " style="display:flex; justify-content:center; align-items:center;">
+                            <button type="button" class="button-return" onclick="window.location.href='{{ route('Mproduct.index') }}'" >{{ __('ย้อนกลับ') }}</button>
+                            <button type="submit" class="button-10" style="background-color: #109699;">บันทึกข้อมูล</button>
                         </div>
-                        <div class="col-4">
-                            <div class="button-guest-end">
-                                <button type="button" class="btn" onclick="window.location.href='{{ route('Mproduct.index') }}'" >{{ __('ย้อนกลับ') }}</button>
-                            </div>
-                        </div>
+
                     </div>
                     </div>
                 </div>
