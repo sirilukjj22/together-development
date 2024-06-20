@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    {{-- header ("Last-Modified: " . gmdate ("D, d M Y H:i:s") . " GMT"); --}}
+    <?php header ("Last-Modified: " . gmdate ("D, d M Y H:i:s") . " GMT"); ?>
 
     <title>TOGETHER DEVELOPMENT</title>
 
@@ -254,11 +254,6 @@
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Template.TemplateA1') }}">Template</a></li>
                             @endif
                         </ul>
-                    </li>
-                    <li class="nav-item">
-                        <li>
-                            <a class="nav-link px-2" href="#">Debtor Maintenance</a>
-                        </li>
                     </li>
                 @endif
 
