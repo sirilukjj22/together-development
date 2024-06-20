@@ -1,45 +1,147 @@
 @extends('layouts.test')
 
 @section('content')
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <div class="Usertable">
-        <a href="{{ route('Mprefix.create') }}">
-            <button type="button" class="submit-button" style="float: right;" >เพิ่มผู้ใช้งาน</button></a>
-        <div class="usertopic">
-            <h1>Master Prefix </h1>
+<style>
+    input[type=text], select {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    .statusbtn1{
+        border-style: solid;
+        border-radius: 8px;
+        border-width: 1px;
+        border-color: #9a9a9a;
+        margin-left: 10px;
+        width: 45%;
+        height: 40px;
+        border-radius: 8px;
+        float: right;
+        color: #000000;
+        margin: 0;
+        margin-left: 10px;
+        margin-bottom: 10px;
+
+      }
+      .create{
+        background-color: #109699 !important;
+        color: white !important;
+        text-align: center;
+        border-radius: 8px;
+        border-color: #9a9a9a;
+        border-style: solid;
+        border-width: 1px;
+        width: 35%;
+        height: 40px;
+        padding-top: 6px;
+        float: right;
+    }
+    .statusbtndiv{
+        float: right;
+    }
+    .dtr-details {
+        width: 100%;
+    }
+
+    .dtr-title {
+        float: left;
+        text-align: left;
+        margin-right: 10px;
+    }
+
+    .dtr-data {
+        display: block;
+        text-align: right !important;
+    }
+
+    .dt-container .dt-paging .dt-paging-button {
+        padding: 0 !important;
+    }
+    @media (max-width: 768px) {
+        h1{
+        margin-top:32px;
+        }
+        .create{
+            width: 100%!important;
+            font-size: 14px;
+            padding: 5px;
+        }
+        .statusbtndiv{
+            width: 100%;
+        }
+        .statusbtn1{
+            border-style: solid;
+            border-radius: 8px;
+            border-width: 1px;
+            border-color: #9a9a9a;
+            margin-left: 10px;
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            float: right;
+            color: #000000;
+            margin: 0;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+
+        .dropdown-menu {
+            width: 10%;
+        }
+    }
+    @media (max-width: 1368px) {
+        .create{
+            width: 100%!important;
+            font-size: 14px;
+            padding: 5px;
+        }
+        .statusbtndiv{
+            width: 100%;
+        }
+        .statusbtn1{
+            border-style: solid;
+            border-radius: 8px;
+            border-width: 1px;
+            border-color: #9a9a9a;
+            margin-left: 10px;
+            width: 50%;
+            height: 40px;
+            border-radius: 8px;
+            float: right;
+            color: #000000;
+            margin: 0;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+    <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
+        <h1>Master Prefix</h1>
+        <div class="col-lg-12" style="float: right">
+            <div  class="col-lg-4" style="float: right">
+                <button type="button" class="create"  data-bs-toggle="modal" data-bs-target="#PrefixCreate">
+                    + Add Prefix
+                </button>
+            </div>
         </div>
-
-        <div class="selectall" style="float: left; margin-bottom: 10px;">
-            <th><label class="custom-checkbox">
-                    <input type="checkbox" onClick="toggle(this)" />
-                    <span class="checkmark"></span>
-                </label>ทั้งหมด</th>
+        <div  class="col-4 mt-3 statusbtndiv">
+            <button class="statusbtn1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                สถานะการใช้งาน &#11206;
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="{{ route('Mprefix.index') }}">ทั้งหมด</a>
+                <a class="dropdown-item" style="color: green;" href="{{ route('Mprefix.ac', ['value' => 1]) }}">เปิดใช้งาน</a>
+                <a class="dropdown-item" style="color: #f44336;" href="{{ route('Mprefix.no', ['value' => 0]) }}">ปิดใช้งาน</a>
+            </div>
         </div>
-
-        {{-- <button type="button" class="button-4 sa-buttons" style="float: right;" onclick="showSelectedRecords()">ลบหลายรายการ</button> --}}
-
-
-        <button class="statusbtn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            สถานะการใช้งาน &#11206;
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="{{ route('Mprefix.index') }}">ทั้งหมด</a>
-            <a class="dropdown-item" style="color: green;" href="{{ route('Mprefix.ac', ['value' => 1]) }}">เปิดใช้งาน</a>
-            <a class="dropdown-item" style="color: #f44336;" href="{{ route('Mprefix.no', ['value' => 0]) }}">ปิดใช้งาน</a>
-          </div>
-
         <form enctype="multipart/form-data" id="form-id2">
             @csrf
-            <table id="example" class="display3 display2">
+            <table id="example" class="table-hover nowarp" style="width:98%">
                 <thead>
                     <tr>
-                        <th>
-                            <label class="custom-checkbox">
-                                <input type="checkbox" onClick="toggle(this)"/>
-                                <span class="checkmark"></span>
-                            </label>ทั้งหมด
-                        </th>
                         <th style="text-align: center;">ลำดับ</th>
                         <th>คำนำหน้าไทย</th>
                         <th>คำนำหน้าอังกฤษ</th>
@@ -51,12 +153,6 @@
                     @if (!empty($M_prefix))
                         @foreach ($M_prefix as $key => $item)
                             <tr>
-                                <td data-label="เลือก">
-                                    <label class="custom-checkbox">
-                                    <input name="dummy" type="checkbox" data-record-id="{{ $item->id }}">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </td>
                                 <td data-label="#">{{ $key + 1 }}</td>
                                 <td data-label="คำนำหน้าไทย">{{ $item->name_th }}</td>
                                 <td data-label="คำนำหน้าอังกฤษ">{{ $item->name_en }}</td>
@@ -73,8 +169,7 @@
                                         <button class="button-18 button-17" type="button" data-toggle="dropdown">ทำรายการ
                                             <span class="caret"></span></button>
                                         <ul class="dropdown-menu">
-                                            <li class="licolor"><a href="{{ url('/Mprefix/edit/'.$item->id) }}">แก้ไขข้อมูล</a></li>
-                                            {{-- <li class="licolor"><a href="#" class="delete" title="Delete" data-toggle="tooltip" onclick="confirmDelete({{ $item->id }})">ลบข้อมูล</li> --}}
+                                            <li class="licolor"><a  data-bs-toggle="modal" data-bs-target="#editprefix{{$item->id}}">แก้ไขข้อมูล</a></li>
                                         </ul>
                                 </td>
                             </tr>
@@ -84,6 +179,67 @@
             </table>
         </form>
     </div>
+    @foreach ($M_prefix as $item)
+    <div class="modal fade" id="editprefix{{$item->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header"style=" background-color: #2D7F7B;">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel" style=" color: #FFFFFF;">Edit Prefix</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" style=" background-color: #FFFFFF;" aria-label="Close"></button>
+              </div>
+            <div class="modal-body">
+                <form action="{{ url('/Mprefix/master_prefix/Mprefix_update/') }}" method="POST"enctype="multipart/form-data">
+                    @csrf
+                    <div class="col-12 row">
+                        <input type="hidden" id="id" name="id" value="{{ $item->id}}">
+                        <div class="col-6">
+                            <label for="Name_th">Name th</label><br>
+                            <input type="text" id="name_th" name="name_th"maxlength="70" value="{{$item->name_th}}" >
+                        </div>
+                        <div class="col-6">
+                            <label for="Name_en">Name en </label><br>
+                            <input type="text" id="name_en" name="name_en"maxlength="70" value="{{$item->name_en}}">
+                        </div>
+                    </div>
+                    <div class="modal-footer mt-2">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn " style="background-color: #2D7F7B; color: #FFFFFF;">Save</button>
+                      </div>
+                </form>
+            </div>
+          </div>
+        </div>
+    </div>
+    @endforeach
+    <div class="modal fade" id="PrefixCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header"style=" background-color: #2D7F7B;">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel" style=" color: #FFFFFF;">+ Add Prefix</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" style=" background-color: #FFFFFF;" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{route('Mprefix.save')}}" method="POST"enctype="multipart/form-data">
+                    @csrf
+                    <div class="col-12 row">
+                        <div class="col-6">
+                            <label for="Name_th">Name th</label><br>
+                            <input type="text" id="name_th" name="name_th"maxlength="70" >
+                        </div>
+                        <div class="col-6">
+                            <label for="Name_en">Name en </label><br>
+                            <input type="text" id="name_en" name="name_en"maxlength="70" >
+                        </div>
+                    </div>
+                    <div class="modal-footer mt-2">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn " style="background-color: #2D7F7B; color: #FFFFFF;">Save</button>
+                      </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     <form id="form-id3">
         @csrf
@@ -103,19 +259,29 @@
 </script>
 
     <script>
-        $(document).ready(function() {
-            new DataTable('#example', {
-
-                //ajax: 'arrays.txt'
-                // scrollX: true,
-            });
-        });
-        function toggle(source) {
-            checkboxes = document.getElementsByName('dummy');
-            for (var i = 0, n = checkboxes.length; i < n; i++) {
-                checkboxes[i].checked = source.checked;
+         $(document).ready(function() {
+        new DataTable('#example', {
+            columnDefs: [
+                {
+                    className: 'dtr-control',
+                    orderable: true,
+                    target: null
+                },
+                { width: '5%', targets: 0 },
+                { width: '25%', targets: 1 },
+                { width: '25%', targets: 2 },
+                { width: '10%', targets: 3 },
+                { width: '10%', targets: 4 },
+            ],
+            order: [0, 'asc'],
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
             }
-        }
+        });
+    });
 
     var alertMessage = "{{ session('alert_') }}";
     var alerterror = "{{ session('error_') }}";

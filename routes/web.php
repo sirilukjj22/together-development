@@ -223,13 +223,11 @@ Route::middleware(['auth'])->group(function () {
 #master prefix
     Route::controller(Master_prefix::class)->group(function() {
         Route::get('/Mprefix/index','index')->name('Mprefix.index');
-        Route::get('/Mprefix/create','create')->name('Mprefix.create');
         Route::get('/Mprefix/ac','ac')->name('Mprefix.ac');
         Route::get('/Mprefix/no','no')->name('Mprefix.no');
-        Route::get('/Mprefix/edit/{id}','edit')->name('Mprefix.edit');
         Route::post('/Mprefix/Save','save')->name('Mprefix.save');
         Route::get('/Mprefix/change-Status/{id}/{status}','changeStatus')->name('Mcomt.changeStatus');
-        Route::post('/Mprefix/master_prefix/Mprefix_update/{id}','update')->name('Mprefix.update');
+        Route::post('/Mprefix/master_prefix/Mprefix_update/','update')->name('Mprefix.update');
     });
 #master company type
     Route::controller(Master_Company_type::class)->group(function() {

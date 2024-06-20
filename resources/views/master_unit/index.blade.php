@@ -140,7 +140,7 @@
         </div>
         <form enctype="multipart/form-data" >
             @csrf
-            <table id="example" class="table-hover nowarp" style="width:100%">
+            <table id="example" class="table-hover nowarp" style="width:98%">
                 <thead>
                     <tr>
                         <th style="text-align: center;">ลำดับ</th>

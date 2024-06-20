@@ -12,10 +12,6 @@ class Master_prefix extends Controller
         $M_prefix = master_document::query()->Where('Category','Mprefix')->get();
         return view('master_prefix.index',compact('M_prefix'));
     }
-    public function create()
-    {
-        return view('master_prefix.create');
-    }
     public function ac(Request $request)
     {
         $ac = $request->value;
@@ -46,11 +42,7 @@ class Master_prefix extends Controller
         }
         $M_prefix->save();
     }
-    public function edit($id)
-    {
-        $M_prefix = master_document::find($id);
-        return view('master_prefix.edit',compact('M_prefix'));
-    }
+
     public function save(Request $request)
     {
         $data = $request->all();
@@ -70,9 +62,10 @@ class Master_prefix extends Controller
             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
-    public function update(Request $request,$id)
+    public function update(Request $request)
     {
         $data = $request->all();
+        $id = $request->id;
         $name_th = $request->name_th;
         $name_en = $request->name_en;
 
