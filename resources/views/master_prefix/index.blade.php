@@ -165,7 +165,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="dropdown">
+                                    <div class="dropdown-a">
                                         <button class="button-18 button-17" type="button" data-toggle="dropdown">ทำรายการ
                                             <span class="caret"></span></button>
                                         <ul class="dropdown-menu">
