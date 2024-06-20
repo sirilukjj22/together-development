@@ -115,7 +115,7 @@
             border-width: 1px;
             border-color: #9a9a9a;
             margin-left: 10px;
-            width: 30%;
+            width: 50%;
             height: 40px;
             border-radius: 8px;
             float: right;
@@ -136,7 +136,7 @@
                 </button>
             </div>
         </div>
-        <div class="col-lg-12" >
+
             <div  class="col-4 mt-3 statusbtndiv">
                 <button class="statusbtn1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     สถานะการใช้งาน &#11206;
@@ -147,7 +147,7 @@
                     <a class="dropdown-item" style="color: #f44336;" href="{{ route('Mproduct.quantity.no', ['value' => 0]) }}">ปิดใช้งาน</a>
                 </div>
             </div>
-        </div>
+
         <form enctype="multipart/form-data">
             @csrf
             <table id="example" class="table-hover nowarp" style="width:100%">

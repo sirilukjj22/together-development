@@ -298,15 +298,15 @@
                                 <input type="text"  class="price-input"id="normal_price" name="normal_price"maxlength="70" >
                             </div>
                             <div class="col-3 ">
-                                <label for="weekend_price">Weekday Price (Include VAT)</label><br>
+                                <label for="weekend_price">Weekday Price <br>(Include VAT)</label><br>
                                 <input type="text"  class="price-input"id="weekend_price" name="weekend_price"maxlength="70">
                             </div>
                             <div class="col-3" >
-                                <label for="long_weekend_price">Long Weekend Price (Include VAT)</label><br>
+                                <label for="long_weekend_price">Long Weekend Price<br> (Include VAT)</label><br>
                                 <input type="text"  class="price-input"id="long_weekend_price" name="long_weekend_price"maxlength="70">
                             </div>
                             <div class="col-3" >
-                                <label for="long_weekend_price">End Weekend Price (Include VAT)</label><br>
+                                <label for="long_weekend_price">End Weekend Price<br> (Include VAT)</label><br>
                                 <input type="text"  class="price-input"id="end_weekend_price" name="end_weekend_price"maxlength="70">
                             </div>
                         </div>
