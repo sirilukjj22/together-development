@@ -44,10 +44,6 @@ class Master_bank extends Controller
         }
         $Mbank->save();
     }
-    public function create()
-    {
-        return view('master_bank.create');
-    }
     public function save(Request $request)
     {
         $data = $request->all();
@@ -71,14 +67,10 @@ class Master_bank extends Controller
             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
-    public function edit($id)
-    {
-        $Mbank = master_document::find($id);
-        return view('master_bank.edit',compact('Mbank'));
-    }
 
-    public function update(Request $request,$id)
+    public function update(Request $request)
     {
+        $id = $request->id;
         $data = $request->all();
         $code = $request->code;
         $swiftcode = $request->swiftcode;

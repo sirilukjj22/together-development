@@ -8,10 +8,6 @@ use App\Models\master_document;
 
 class master_booking extends Controller
 {
-    public function create()
-    {
-        return view('master_booking_channal.create');
-    }
     public function Mbookingsave(Request $request)
     {
         $data = $request->all();
@@ -59,13 +55,8 @@ class master_booking extends Controller
         }
         return view('master_booking_channal.index',compact('Mbooking'));
     }
-    public function Mbooking_edit($id)
-    {
-        $Mbooking_channal = master_document::find($id);
-        return view('master_booking_channal.editMbooking',compact('Mbooking_channal'));
-    }
-    public function Mbooking_update(Request $request, $id) {
-
+    public function Mbooking_update(Request $request) {
+        $id = $request->id;
         $Mbooking_channal = master_document::find($id);
         $Mbooking_channal->sort = $request->sort;
         $Mbooking_channal->code = $request->code;

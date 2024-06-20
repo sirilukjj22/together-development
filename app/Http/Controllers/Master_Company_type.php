@@ -12,10 +12,6 @@ class Master_Company_type extends Controller
         $M_Company_type = master_document::query()->Where('Category','Mcompany_type')->get();
         return view('master_companyt.index',compact('M_Company_type'));
     }
-    public function create()
-    {
-        return view('master_companyt.create');
-    }
     public function ac(Request $request)
     {
         $ac = $request->value;
@@ -46,11 +42,6 @@ class Master_Company_type extends Controller
         }
         $Mcompany_type->save();
     }
-    public function edit($id)
-    {
-        $M_Company_type = master_document::find($id);
-        return view('master_companyt.edit',compact('M_Company_type'));
-    }
     public function save(Request $request)
     {
         $data = $request->all();
@@ -70,8 +61,9 @@ class Master_Company_type extends Controller
             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
-    public function update(Request $request,$id)
+    public function update(Request $request)
     {
+        $id = $request->id;
         $data = $request->all();
         $name_th = $request->name_th;
         $name_en = $request->name_en;

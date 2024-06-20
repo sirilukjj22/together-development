@@ -1,12 +1,6 @@
 @extends('layouts.test')
 
 @section('content')
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-<!-- Bootstrap Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
 <style>
     input[type=text], select {
         width: 100%;
@@ -16,28 +10,125 @@
         border-radius: 4px;
         box-sizing: border-box;
     }
+    .statusbtn1{
+        border-style: solid;
+        border-radius: 8px;
+        border-width: 1px;
+        border-color: #9a9a9a;
+        margin-left: 10px;
+        width: 45%;
+        height: 40px;
+        border-radius: 8px;
+        float: right;
+        color: #000000;
+        margin: 0;
+        margin-left: 10px;
+        margin-bottom: 10px;
+
+      }
+      .create{
+        background-color: #109699 !important;
+        color: white !important;
+        text-align: center;
+        border-radius: 8px;
+        border-color: #9a9a9a;
+        border-style: solid;
+        border-width: 1px;
+        width: 35%;
+        height: 40px;
+        padding-top: 6px;
+        float: right;
+    }
+    .statusbtndiv{
+        float: right;
+    }
+    .dtr-details {
+        width: 100%;
+    }
+
+    .dtr-title {
+        float: left;
+        text-align: left;
+        margin-right: 10px;
+    }
+
+    .dtr-data {
+        display: block;
+        text-align: right !important;
+    }
+
+    .dt-container .dt-paging .dt-paging-button {
+        padding: 0 !important;
+    }
+    @media (max-width: 768px) {
+        h1{
+        margin-top:32px;
+        }
+        .create{
+            width: 100%!important;
+            font-size: 14px;
+            padding: 5px;
+        }
+        .statusbtndiv{
+            width: 100%;
+        }
+        .statusbtn1{
+            border-style: solid;
+            border-radius: 8px;
+            border-width: 1px;
+            border-color: #9a9a9a;
+            margin-left: 10px;
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            float: right;
+            color: #000000;
+            margin: 0;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+
+        .dropdown-menu {
+            width: 10%;
+        }
+    }
+    @media (max-width: 1368px) {
+        .create{
+            width: 100%!important;
+            font-size: 14px;
+            padding: 5px;
+        }
+        .statusbtndiv{
+            width: 100%;
+        }
+        .statusbtn1{
+            border-style: solid;
+            border-radius: 8px;
+            border-width: 1px;
+            border-color: #9a9a9a;
+            margin-left: 10px;
+            width: 50%;
+            height: 40px;
+            border-radius: 8px;
+            float: right;
+            color: #000000;
+            margin: 0;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+    }
 </style>
-    <div class="Usertable">
-
-        <button type="button" class="btn" style="float: right; background-color: #2D7F7B; color: #FFFFFF;" data-bs-toggle="modal" data-bs-target="#EventCreate">
-            + Add Event Format
-        </button>
-
-        <div class="usertopic">
-            <h1>Master Event Format</h1>
+    <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
+        <h1>Master Event Format</h1>
+        <div class="col-lg-12" style="float: right">
+            <div  class="col-lg-4" style="float: right">
+                <button type="button" class="create"  data-bs-toggle="modal" data-bs-target="#EventCreate">
+                    + Add Event Format
+                </button>
+            </div>
         </div>
-
-        <div class="selectall" style="float: left; margin-bottom: 10px;">
-            <th><label class="custom-checkbox">
-                    <input type="checkbox" onClick="toggle(this)" />
-                    <span class="checkmark"></span>
-                </label>ทั้งหมด</th>
-        </div>
-
-        {{-- <button type="button" class="button-4 sa-buttons" style="float: right;" onclick="showSelectedRecords()">ลบหลายรายการ</button> --}}
-
-        <div>
-            <button class="statusbtn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <div  class="col-4 mt-3 statusbtndiv">
+            <button class="statusbtn1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 สถานะการใช้งาน &#11206;
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -46,21 +137,16 @@
                 <a class="dropdown-item" style="color: #f44336;" href="{{ route('MEvent.no', ['value' => 0]) }}">ปิดใช้งาน</a>
             </div>
         </div>
+
         <form enctype="multipart/form-data" id="form-id2">
             @csrf
-            <table id="example" class="display3 display2">
+            <table id="example" class="table-hover nowarp" style="width:98%">
                 <thead>
                     <tr>
-                        <th>
-                            <label class="custom-checkbox">
-                                <input type="checkbox" onClick="toggle(this)"/>
-                                <span class="checkmark"></span>
-                            </label>ทั้งหมด
-                        </th>
-                        <th style="text-align: center;">ลำดับ</th>
-                        <th>Name th</th>
-                        <th>Name En</th>
-                        <th>สถานะการใช้งาน</th>
+                        <th data-priority="1"style="text-align: center;">ลำดับ</th>
+                        <th data-priority="1">Name th</th>
+                        <th >Name En</th>
+                        <th >สถานะการใช้งาน</th>
                         <th style="text-align: center;">คำสั่ง</th>
                     </tr>
                 </thead>
@@ -68,12 +154,6 @@
                     @if (!empty($event))
                         @foreach ($event as $key => $item)
                             <tr>
-                                <td data-label="เลือก">
-                                    <label class="custom-checkbox">
-                                    <input name="dummy" type="checkbox" data-record-id="{{ $item->id }}">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </td>
                                 <td data-label="#">{{ $key + 1 }}</td>
                                 <td data-label="Name">{{ $item->name_th }}</td>
                                 <td data-label="Name">{{ $item->name_en }}</td>
@@ -85,7 +165,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="dropdown">
+                                    <div class="dropdown-a">
                                         <button class="button-18 button-17" type="button" data-toggle="dropdown">ทำรายการ
                                             <span class="caret"></span></button>
                                         <ul class="dropdown-menu">
@@ -160,21 +240,21 @@
                         @csrf
                         <div class="col-12 row">
                             <div class="col-6">
-                                <label for="Name_th">Name th</label><br>
+                                <label for="Name_th">Name th</label>
                                 <input type="text" id="name_th" name="name_th"maxlength="70" >
                             </div>
                             <div class="col-6">
-                                <label for="Name_en">Name en </label><br>
+                                <label for="Name_en">Name en </label>
                                 <input type="text" id="name_en" name="name_en"maxlength="70" >
                             </div>
                         </div>
                         <div class="col-12 row">
                             <div class="col-6">
-                                <label for="Detail_th">Detail th</label><br>
+                                <label for="Detail_th">Detail th</label>
                                 <input type="text" id="detail_th" name="detail_th"maxlength="70" >
                             </div>
                             <div class="col-6">
-                                <label for="Detail_en">Detail en </label><br>
+                                <label for="Detail_en">Detail en </label>
                                 <input type="text" id="detail_en" name="detail_en"maxlength="70" >
                             </div>
                         </div>
@@ -189,19 +269,29 @@
     </div>
 </div>
 <script>
-    $(document).ready(function() {
+   $(document).ready(function() {
         new DataTable('#example', {
-
-            //ajax: 'arrays.txt'
-            // scrollX: true,
+            columnDefs: [
+                {
+                    className: 'dtr-control',
+                    orderable: true,
+                    target: null
+                },
+                { width: '5%', targets: 0 },
+                { width: '25%', targets: 1 },
+                { width: '25%', targets: 2 },
+                { width: '10%', targets: 3 },
+                { width: '10%', targets: 4 },
+            ],
+            order: [0, 'asc'],
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            }
         });
     });
-    function toggle(source) {
-        checkboxes = document.getElementsByName('dummy');
-        for (var i = 0, n = checkboxes.length; i < n; i++) {
-            checkboxes[i].checked = source.checked;
-        }
-    }
 
 
     // หากมีการส่งค่า alert มาจากหน้าอื่น

@@ -132,10 +132,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mbooking/index', 'index')->name('Mbooking.index');
         Route::get('/Mbooking/ac', 'ac')->name('Mbooking.ac');
         Route::get('/Mbooking/no', 'users_no')->name('Mbooking.no');
-        Route::get('/Mbooking/master_booking', 'create')->name('Mbooking.create');
-        Route::get('/Mbooking/edit/{id}', 'Mbooking_edit')->name('Master.Mbooking_edit');
         Route::post('/Mbooking/master_booking/save', 'Mbookingsave')->name('Mbookingsave');
-        Route::post('/Mbooking/master_booking/Mbooking_update/{id}', 'Mbooking_update')->name('Master.Mbooking_update');
+        Route::post('/Mbooking/master_booking/Mbooking_update/', 'Mbooking_update')->name('Master.Mbooking_update');
         Route::get('/Mbooking/change-Status/{id}/{status}', 'changeStatus')->name('Master.changeStatus');
     });
 
@@ -210,14 +208,10 @@ Route::middleware(['auth'])->group(function () {
 #master bank
     Route::controller(Master_bank::class)->group(function() {
         Route::get('/Mbank/index','index')->name('Mbank.index');
-        Route::get('/Mbank/create','create')->name('Mbank.create');
         Route::get('/Mbank/ac','ac')->name('Mbank.ac');
         Route::get('/Mbank/no','no')->name('Mbank.no');
-        Route::get('/Mbank/edit/{id}','edit')->name('Mbank.edit');
         Route::post('/Mbank/Save','save')->name('Mbank.save');
-        // Route::post('/Mbank/delete/{id}','delete');
-        // Route::post('/Mbank/Mdelete/','Mdelete');
-        Route::post('/Mbank/master_bank/Mbank_update/{id}','update')->name('Mbank.update');
+        Route::post('/Mbank/master_bank/Mbank_update/','update')->name('Mbank.update');
         Route::get('/Mbank/change-Status/{id}/{status}','changeStatus')->name('Mbank.changeStatus');
     });
 #master prefix
@@ -232,13 +226,11 @@ Route::middleware(['auth'])->group(function () {
 #master company type
     Route::controller(Master_Company_type::class)->group(function() {
         Route::get('/Mcomt/index','index')->name('Mcomt.index');
-        Route::get('/Mcomt/create','create')->name('Mcomt.create');
         Route::get('/Mcomt/ac','ac')->name('Mcomt.ac');
         Route::get('/Mcomt/no','no')->name('Mcomt.no');
-        Route::get('/Mcomt/edit/{id}','edit')->name('Mcomt.edit');
         Route::post('/Mcomt/Save','save')->name('Mcomt.save');
         Route::get('/Mcomt/change-Status/{id}/{status}','changeStatus')->name('Mcomt.changeStatus');
-        Route::post('/Mcomt/master_comt/Mcomt_update/{id}','update')->name('Mcomt.update');
+        Route::post('/Mcomt/master_comt/Mcomt_update/','update')->name('Mcomt.update');
     });
 #master market
     Route::controller(Master_market::class)->group(function() {
