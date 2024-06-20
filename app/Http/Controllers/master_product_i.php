@@ -141,7 +141,7 @@ class master_product_i extends Controller
        $save->maximum_discount = $Maximum_Discount;
        $save->image_product = $full_path_image;
        $save->save();
-
+       if ($request->hasFile('image_other')) {
     $imageother = $request->file('image_other');
     $upload_location_image2 = 'image/product/image-orther/';
 
@@ -168,6 +168,7 @@ class master_product_i extends Controller
         $saveimage->image_other	=$fullimageother;
         $saveimage->save();
     }
+}
     if ($save->save()) {
         $image->move($upload_location_image,$img_name1);
         return redirect()->route('Mproduct.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
@@ -320,7 +321,7 @@ class master_product_i extends Controller
                 // ให้สิทธิ์ในการเขียนไฟล์
                 chmod($upload_location_image2, 0777);
             }
-        }
+
         foreach ($imageother as $file) {
             $image_name_gen = hexdec(uniqid());
             $img_ext = strtolower($file->getClientOriginalExtension());
@@ -333,6 +334,7 @@ class master_product_i extends Controller
             $saveimage->Product_ID = $Product_ID;
             $saveimage->image_other	=$fullimageother;
             $saveimage->save();
+        }
         }
         if ($save->save()) {
         if ($imageFile ?? false) {
