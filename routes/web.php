@@ -243,13 +243,11 @@ Route::middleware(['auth'])->group(function () {
 #master market
     Route::controller(Master_market::class)->group(function() {
         Route::get('/Mmarket/index','index')->name('Mmarket.index');
-        Route::get('/Mmarket/create','create')->name('Mmarket.create');
         Route::get('/Mmarket/ac','ac')->name('Mmarket.ac');
         Route::get('/Mmarket/no','no')->name('Mmarket.no');
-        Route::get('/Mmarket/edit/{id}','edit')->name('Mmarket.edit');
         Route::post('/Mmarket/Save','save')->name('Mmarket.save');
         Route::get('/Mmarket/change-Status/{id}/{status}','changeStatus')->name('Mmarket.changeStatus');
-        Route::post('/Mmarket/master_Mmarket/Mmarket_update/{id}','update')->name('Mmarket.update');
+        Route::post('/Mmarket/master_Mmarket/Mmarket_update/','update')->name('Mmarket.update');
     });
 
 #Freelancer Check

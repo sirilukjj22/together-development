@@ -12,10 +12,6 @@ class Master_market extends Controller
         $Mmarket = master_document::query()->Where('Category','Mmarket')->get();
         return view('master_market.index',compact('Mmarket'));
     }
-    public function create()
-    {
-        return view('master_market.create');
-    }
     public function ac(Request $request)
     {
         $ac = $request->value;
@@ -35,11 +31,6 @@ class Master_market extends Controller
         return view('master_market.index',compact('Mmarket'));
     }
 
-    public function edit($id)
-    {
-        $Mmarket = master_document::find($id);
-        return view('master_market.edit',compact('Mmarket'));
-    }
     public function save(Request $request)
     {
         $data = $request->all();
@@ -61,8 +52,9 @@ class Master_market extends Controller
         }
 
     }
-    public function update(Request $request, $id) {
+    public function update(Request $request) {
 
+        $id = $request->id;
         $Mmarket = master_document::find($id);
         $Mmarket->code = $request->code;
         $Mmarket->name_th = $request->name_th;
