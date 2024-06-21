@@ -8,12 +8,25 @@ use App\Models\master_product_item;
 use App\Models\master_quantity;
 use App\Models\master_unit;
 use App\Models\master_product_image;
+use Auth;
+use App\Models\User;
 class master_product_i extends Controller
 {
     public function index()
     {
         $product = master_product_item::query()->get();
-        return view('master_product.index',compact('product'));
+        $Room_Revenue = master_product_item::where('Category','Room_Type')->count();
+        $Banquet = master_product_item::where('Category','Banquet')->count();
+        $Meals = master_product_item::where('Category','Meals')->count();
+        $Entertainment = master_product_item::where('Category','Entertainment')->count();
+        $productcount = master_product_item::query()->count();
+
+        $CountRoom = ($Room_Revenue*100)/$productcount;
+        $CountBanquet = ($Banquet*100)/$productcount;
+        $CountMeals = ($Meals*100)/$productcount;
+        $CountEntertainment = ($Entertainment*100)/$productcount;
+        return view('master_product.index',compact('product','Room_Revenue','Banquet','Meals','Entertainment','productcount'
+        ,'CountRoom','CountBanquet','CountMeals','CountEntertainment'));
     }
     public function create()
     {
@@ -356,43 +369,35 @@ class master_product_i extends Controller
     public function save_quantity(Request $request)
     {
         $data = $request->all();
+        $userid = Auth::user()->id;
         $lastProfile = master_quantity::count() + 1;
         $save = new master_quantity();
         $save->Product_ID = $lastProfile;
         $save->name_th = $request->name_th;
         $save->name_en = $request->name_en;
+        $save->create_by = $userid;
         $save->save();
         if ($save->save()) {
-            return redirect()->back()->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->back()->with('success', 'บันทึกข้อมูลเรียบร้อย');
         }
         else {
             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
 
-    public function edit_quantity(Request $request)
+    public function edit_quantity($id)
     {
-        $data = $request->all();
-        $id = $request->id;
-        $save = master_quantity::find($id);
-        $save->name_th = $request->name_th;
-        $save->name_en = $request->name_en;
-        $save->save();
-        if ($save->save()) {
-            return redirect()->back()->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
-        }
-        else {
-            return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-        }
+        $data = master_quantity::find($id);
+        return response()->json(['data' => $data]);
     }
-    public function changeStatus_quantity($id,$status)
+    public function changeStatus_quantity($id)
     {
 
         $quantity = master_quantity::find($id);
-        if ($status == 1 ) {
+        if ($quantity->status == 1 ) {
             $status = 0;
             $quantity->status = $status;
-        }elseif (($status == 0 )) {
+        }elseif (($quantity->status == 0 )) {
             $status = 1;
             $quantity->status = $status;
         }
@@ -412,57 +417,106 @@ class master_product_i extends Controller
     {
         $no = $request->value;
         if ($no == 0 ) {
-            $query = master_unit::query();
+            $query = master_quantity::query();
             $quantity = $query->where('status', '0')->get();
         }
         return view('master_quantity.index',compact('quantity'));
     }
+
+    public function  searchquantity($datakey)
+    {
+        $data = master_quantity::where('name_th',$datakey)->first();
+        return response()->json($data);
+    }
+    public function  dupicatequantity($id,$datakey)
+    {
+        $data = master_quantity::where('id',$id)->where('name_th',$datakey)->first();
+        return response()->json(['data' => $data]);
+    }
+
+    public function  update_quantity($id,$datakey,$dataEN)
+    {
+        $userid = Auth::user()->id;
+        $save = master_quantity::find($id);
+        $save->name_th = $datakey;
+        $save->name_en = $dataEN;
+        $save->create_by = $userid;
+        $save->save();
+        if ($save->save()) {
+            return redirect()->back()->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        }
+        else {
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        }
+    }
+
+
+
     //------------------------Unit--------------------------------
     public function index_unit()
     {
         $unit = master_unit::query()->get();
         return view('master_unit.index',compact('unit'));
     }
+
+    public function  search($datakey)
+    {
+        $data = master_unit::where('name_th',$datakey)->first();
+        return response()->json($data);
+    }
+    public function  dupicate($id,$datakey)
+    {
+        $data = master_unit::where('id',$id)->where('name_th',$datakey)->first();
+        return response()->json(['data' => $data]);
+    }
+    public function  update_unit($id,$datakey,$dataEN)
+    {
+        $userid = Auth::user()->id;
+        $save = master_unit::find($id);
+        $save->name_th = $datakey;
+        $save->name_en = $dataEN;
+        $save->create_by = $userid;
+        $save->save();
+        if ($save->save()) {
+            return redirect()->back()->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        }
+        else {
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        }
+    }
     public function save_unit(Request $request)
     {
         $data = $request->all();
+        $userid = Auth::user()->id;
         $lastProfile = master_unit::count() + 1;
         $save = new master_unit();
         $save->Product_ID = $lastProfile;
         $save->name_th = $request->name_th;
         $save->name_en = $request->name_en;
+        $save->create_by = $userid;
         $save->save();
         if ($save->save()) {
-            return redirect()->back()->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->back()->with('success', 'บันทึกข้อมูลเรียบร้อย');
         }
         else {
-            return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
 
-    public function edit_unit(Request $request)
+    public function edit_unit($id)
     {
-        $data = $request->all();
-        $id = $request->id;
-        $save = master_unit::find($id);
-        $save->name_th = $request->name_th;
-        $save->name_en = $request->name_en;
-        $save->save();
-        if ($save->save()) {
-            return redirect()->back()->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
-        }
-        else {
-            return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-        }
+
+        $data = master_unit::find($id);
+        return response()->json(['data' => $data]);
     }
-    public function changeStatus_unit($id,$status)
+    public function changeStatus_unit($id)
     {
 
         $unit = master_unit::find($id);
-        if ($status == 1 ) {
+        if ($unit->status == 1 ) {
             $status = 0;
             $unit->status = $status;
-        }elseif (($status == 0 )) {
+        }elseif (($unit->status == 0 )) {
             $status = 1;
             $unit->status = $status;
         }

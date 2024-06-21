@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\master_document;
-
+use Auth;
+use App\Models\User;
 class Master_bank extends Controller
 {
     public function index()
@@ -46,7 +47,7 @@ class Master_bank extends Controller
     }
     public function save(Request $request)
     {
-        $data = $request->all();
+        $userid = Auth::user()->id;
         $Mbank =  "Mbank" ;
         $code = $request->code;
         $swiftcode = $request->swiftcode;
@@ -59,7 +60,7 @@ class Master_bank extends Controller
         $save->name_th = $name_th;
         $save->name_en = $name_en;
         $save->Category= $Mbank;
-        $save->created_by = 2;
+        $save->created_by = $userid;
         $save->save();
         if ($save->save()) {
             return redirect()->route('Mbank.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
@@ -68,25 +69,40 @@ class Master_bank extends Controller
         }
     }
 
-    public function update(Request $request)
+    public function update($id,$datakey,$dataEN,$code,$swiftcode)
     {
-        $id = $request->id;
-        $data = $request->all();
-        $code = $request->code;
-        $swiftcode = $request->swiftcode;
-        $name_th = $request->name_th;
-        $name_en = $request->name_en;
-
+        $code = $code;
+        $swiftcode = $swiftcode;
+        $name_th = $datakey;
+        $name_en = $dataEN;
+        $userid = Auth::user()->id;
         $save = master_document::find($id);
         $save->code = $code;
         $save->swiftcode = $swiftcode;
         $save->name_th = $name_th;
         $save->name_en = $name_en;
+        $save->created_by = $userid;
         $save->save();
         if ($save->save()) {
             return redirect()->route('Mbank.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
         } else {
             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
+    }
+
+    public function edit($id)
+    {
+        $data = master_document::find($id);
+        return response()->json(['data' => $data]);
+    }
+    public function  searchMbank($id,$datakey)
+    {
+        $data = master_document::where('id',$id)->where('name_th',$datakey)->Where('Category','Mbank')->first();
+        return response()->json($data);
+    }
+    public function  dupicateMbank($id,$datakey)
+    {
+        $data = master_document::where('id',$id)->where('name_th',$datakey)->Where('Category','Mbank')->first();
+        return response()->json(['data' => $data]);
     }
 }

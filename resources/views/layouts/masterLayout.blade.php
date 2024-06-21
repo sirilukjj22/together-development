@@ -146,12 +146,12 @@
 
                     @if ($role_permisstion->debtor == 1)
                         <li class="collapsed">
-                            <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Components" href="#"><i class="fa fa-clipboard"></i> 
+                            <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Components" href="#"><i class="fa fa-clipboard"></i>
                                 <span>Debtor</span> <span class="arrow fa fa-plus ms-auto text-end"></span>
                             </a>
                             <!-- Menu: Sub menu ul -->
                             <ul class="sub-menu collapse" id="menu-Components">
-                                <?php 
+                                <?php
                                     $agoda_count = App\Models\SMS_alerts::where('status', 5)->where('status_receive_agoda', 0)->count();
                                 ?>
                                 @if ($role_permisstion->agoda == 1)
@@ -172,7 +172,7 @@
                             <a class="m-link" href="{{ url('users', 'index') }}"><i class="fa fa-user-circle"></i><span>Users</span></a>
                         </li>
                     @endif
-                    
+
                         <li class="divider mt-4 py-2 border-top"><small>MASTER DATA</small></li>
                         @if ($role_permisstion->bank == 1)
                             <li>
@@ -190,7 +190,7 @@
                         </li>
                         <li>
                             <a class="m-link" href="{{ route('Mprefix.index') }}"><i
-                                    class="fa fa-folder-open"></i><span>Prefix</span></a>
+                                    class="fa fa-folder-open"></i><span>Prename</span></a>
                         </li>
                         <li>
                             <a class="m-link" href="{{ route('Mbank.index') }}"><i
@@ -216,7 +216,7 @@
                             <a class="m-link" href="{{ route('Template.TemplateA1') }}"><i
                                     class="fa fa-folder-open"></i><span>Template</span></a>
                         </li>
-                    @endif
+
                 </ul>
             </div>
         </div>

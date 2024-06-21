@@ -24,4 +24,8 @@ class master_document extends Model
         'created_at',
         'created_at',
     ];
+    public function  user_create_id()
+    {
+        return $this->hasOne(User::class, 'id', 'created_by');
+    }
 }

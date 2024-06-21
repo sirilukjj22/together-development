@@ -193,17 +193,23 @@ Route::middleware(['auth'])->group(function () {
         // ----------------------------------Quantity-----------------------------------------------
         Route::get('/Mproduct/Quantity/index','index_quantity')->name('Mproduct.index.quantity');
         Route::post('/Mproduct/Quantity/Save','save_quantity')->name('Mproduct.save.quantity');
-        Route::post('/Mproduct/Quantity/edit/','edit_quantity')->name('Mproduct.edit.quantity');
-        Route::get('/Mproduct/changeStatus_quantity/{id}/{status}','changeStatus_quantity')->name('Mproduct.changeStatus_quantity');
+        Route::get('/Mproduct/Quantity/edit/{id}','edit_quantity')->name('Mproduct.edit.quantity');
+        Route::get('/Mproduct/changeStatus_quantity/{id}','changeStatus_quantity')->name('Mproduct.changeStatus_quantity');
         Route::get('/Mproduct/quantity/ac','ac_quantity')->name('Mproduct.quantity.ac');
         Route::get('/Mproduct/quantity/no','no_quantity')->name('Mproduct.quantity.no');
+        Route::get('/Mproduct/quantity/search-list2/{datakey}','searchquantity')->name('Mproduct.quantity.search');
+        Route::get('/Mproduct/quantity/check-edit-name/{id}/{datakey}','dupicatequantity')->name('Mproduct.quantity.dupicate');
+        Route::get('/Mproduct/quantity/update/{id}/{datakey}/{dataEN}','update_quantity')->name('Mproduct.update.quantity');
         //----------------------------------Unit-----------------------------------------------------
         Route::get('/Mproduct/Unit/index','index_unit')->name('Mproduct.index.unit');
         Route::post('/Mproduct/Unit/Save','save_unit')->name('Mproduct.save.unit');
-        Route::post('/Mproduct/Unit/edit/','edit_unit')->name('Mproduct.edit.unit');
-        Route::get('/Mproduct/changeStatus_unit/{id}/{status}','changeStatus_unit')->name('Mproduct.changeStatus_unit');
+        Route::get('/Mproduct/Unit/edit/{id}','edit_unit')->name('Mproduct.edit.unit');
+        Route::get('/Mproduct/changeStatus_unit/{id}','changeStatus_unit')->name('Mproduct.changeStatus_unit');
         Route::get('/Mproduct/Unit/ac','ac_unit')->name('Mproduct.unit.ac');
         Route::get('/Mproduct/Unit/no','no_unit')->name('Mproduct.unit.no');
+        Route::get('/Mproduct/Unit/search-list2/{datakey}','search')->name('Mproduct.unit.search');
+        Route::get('/Mproduct/Unit/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.unit.dupicate');
+        Route::get('/Mproduct/Unit/update/{id}/{datakey}/{dataEN}','update_unit')->name('Mproduct.update.unit');
     });
 #master bank
     Route::controller(Master_bank::class)->group(function() {
@@ -211,8 +217,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mbank/ac','ac')->name('Mbank.ac');
         Route::get('/Mbank/no','no')->name('Mbank.no');
         Route::post('/Mbank/Save','save')->name('Mbank.save');
-        Route::post('/Mbank/master_bank/Mbank_update/','update')->name('Mbank.update');
-        Route::get('/Mbank/change-Status/{id}/{status}','changeStatus')->name('Mbank.changeStatus');
+        Route::get('/Mbank/update/{id}/{datakey}/{dataEN}/{code}/{swiftcode}','update')->name('Mbank.update');
+        Route::get('/Mbank/change-Status/{id}','changeStatus')->name('Mbank.changeStatus');
+        Route::get('/Mbank/edit/{id}','edit')->name('Mproduct.edit.unit');
+        Route::get('/Mbank/search-list2/{id}/{datakey}','searchMbank')->name('Mproduct.Mbank.search');
+        Route::get('/Mbank/check-edit-name/{id}/{datakey}','dupicateMbank')->name('Mproduct.Mbank.dupicate');
     });
 #master prefix
     Route::controller(Master_prefix::class)->group(function() {
@@ -220,8 +229,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mprefix/ac','ac')->name('Mprefix.ac');
         Route::get('/Mprefix/no','no')->name('Mprefix.no');
         Route::post('/Mprefix/Save','save')->name('Mprefix.save');
-        Route::get('/Mprefix/change-Status/{id}/{status}','changeStatus')->name('Mcomt.changeStatus');
-        Route::post('/Mprefix/master_prefix/Mprefix_update/','update')->name('Mprefix.update');
+        Route::get('/Mprefix/change-Status/{id}','changeStatus')->name('Mcomt.changeStatus');
+        Route::get('/Mprefix/Mprename/Mprefix_update/{id}/{datakey}/{dataEN}','update')->name('Mprefix.update');
+        Route::get('/Mprefix/Mprename/edit/{id}','edit')->name('Mproduct.edit.Mprefix');
+        Route::get('/Mprefix/Mprename/search-list2/{datakey}','searchMprename')->name('Mproduct.Mprefix.search');
+        Route::get('/Mprefix/Mprename/check-edit-name/{id}/{datakey}','dupicateMprename')->name('Mproduct.Mprefix.dupicate');
     });
 #master company type
     Route::controller(Master_Company_type::class)->group(function() {
@@ -231,6 +243,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Mcomt/Save','save')->name('Mcomt.save');
         Route::get('/Mcomt/change-Status/{id}/{status}','changeStatus')->name('Mcomt.changeStatus');
         Route::post('/Mcomt/master_comt/Mcomt_update/','update')->name('Mcomt.update');
+
     });
 #master market
     Route::controller(Master_market::class)->group(function() {

@@ -1,5 +1,10 @@
 @extends('layouts.test')
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"
+integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw=="
+crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="
+https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js
+"></script>
 @section('content')
 <style>
 
@@ -58,6 +63,57 @@
         padding-top: 6px;
         float: right;
     }
+    .logo img {
+        height: auto;
+    }
+
+    img {
+        display: flex;
+        margin: auto;
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+    }
+
+    .row {
+        margin-bottom: 10px;
+    }
+
+    #myChart {
+        margin-top: 50px;
+        width: 260px !important;
+        height: 260px !important;
+        display: block;
+        margin: auto;
+    }
+
+    .select2 {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    .select2-container .select2-selection--single {
+        height: 40px !important;
+        margin-top: 0 !important;
+    }
+
+    .select2-selection__arrow {
+        height: 0px !important;
+    }
+
+    .select2-selection__rendered {
+        line-height: 20px !important;
+    }
+    .percent{
+        text-align: left;
+        width:auto;
+        display: block;
+        margin-left: 90px;
+    }
+    h6{
+        width: 50%;
+        float: left;
+    }
     @media (max-width: 768px) {
     h1{
        margin-top:32px;
@@ -81,96 +137,152 @@
         margin: 0;
         margin-left: 10px;
         margin-bottom: 10px;
+    }
+    .percent{
+        text-align: left;
+        width:auto;
+        display: block;
+        margin-left: 10px;
+    }
 
-      }
-  }
-  </style>
+    .title{
+        width: 60%;
+    }
+    .totle{
+        width: 40%;
+    }
+    .le{
+
+        width: 100%;
+    }
+}
+
+</style>
     <div  class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
 
-        <h1>Master Product Item</h1>
-        <div class="col-lg-12" style="float: right">
-            <div  class="col-lg-4" style="float: right">
-                <button type="button" class="create" onclick="window.location.href='{{ route('Mproduct.create') }}'" >เพิ่มผู้ใช้งาน</button>
-            </div>
-
-        </div>
-        <div class="col-lg-4 mt-3" style="float: right">
-            <div class="row" >
-                <button class="statusbtn2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    สถานะการใช้งาน &#11206;
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="{{ route('Mproduct.index') }}">ทั้งหมด</a>
-                    <a class="dropdown-item" style="color: green;" href="{{ route('Mproduct.ac', ['value' => 1]) }}">เปิดใช้งาน</a>
-                    <a class="dropdown-item" style="color: #f44336;" href="{{ route('Mproduct.no', ['value' => 0]) }}">ปิดใช้งาน</a>
-                </div>
-                <button class="statusbtn1" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Product type &#11206;
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                    <a class="dropdown-item" href="{{ route('Mproduct.index') }}">ทั้งหมด</a>
-                    <a class="dropdown-item" href="{{ route('Mproduct.Room_Type', ['value' => 'Room_Type']) }}">Room Type</a>
-                    <a class="dropdown-item" href="{{ route('Mproduct.Banquet', ['value' => 'Banquet']) }}">Banquet</a>
-                    <a class="dropdown-item" href="{{ route('Mproduct.Meals', ['value' => 'Meals']) }}">Meals</a>
-                    <a class="dropdown-item" href="{{ route('Mproduct.Entertainment', ['value' => 'Entertainment']) }}">Entertainment</a>
-                </div>
+        <h1>Product Item</h1>
+        <div class="col-lg-12 col-md-12 col-sm-12 " style="float: right">
+            <div  class="col-lg-4 col-md-6 col-sm-12" style="float: right">
+                @if (Auth::check() && in_array(Auth::user()->permission, ['3', '2', '1']))
+                    <button type="button" class="create" onclick="window.location.href='{{ route('Mproduct.create') }}'">เพิ่มผู้ใช้งาน</button>
+                @endif
             </div>
         </div>
 
-        <form enctype="multipart/form-data">
-            @csrf
-            <table id="example" class="table-hover nowarp" style="width:100%">
-                <thead>
-                    <tr>
-                        <th  data-priority="1" style="text-align: center;">ลำดับ</th>
-                        <th >Product item</th>
-                        <th  data-priority="1">Name</th>
-                        <th data-priority="1">type</th>
-                        <th >สถานะการใช้งาน</th>
-                        <th style="text-align: center;">คำสั่ง</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (!empty($product))
-                        @foreach ($product as $key => $item)
-                            <tr>
+        <div class="row mt-5 g-2 le">
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <div style="background-color: rgb(255, 255, 255);">
+                <div class="donut-graph">
+                  <canvas id="myChart"></canvas>
+                  <div class="percent" >
+                    <h6 class="title"><i style="color: deepskyblue; margin-right: 10px;"
+                        class="fa-solid fa-square"></i>Room</h6>
+                    <h6 class="totle">: {{ number_format($CountRoom, 2) }} %</h6>
+                    <h6 class="title"><i style="color: hotpink; margin-right: 10px;"
+                        class="fa-solid fa-square"></i>Banquet</h6>
+                    <h6 class="totle">: {{ number_format($CountBanquet, 2) }} %</h6>
+                    <h6 class="title"><i style="color: orange; margin-right: 10px;"
+                        class="fa-solid fa-square"></i>Meals</h6>
+                    <h6 class="totle">: {{ number_format($CountMeals, 2) }} %</h6>
+                    <h6 class="title"><i style="color: #ffda23; margin-right: 10px;"
+                        class="fa-solid fa-square"></i>Entertainment</h6>
+                    <h6 class="totle">: {{ number_format($CountEntertainment, 2) }} %</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12 mt-5">
+            <!-- CASH -->
+                <div class="title-box">
+                    <h2>Product</h2>
+                </div>
 
-                                <td data-label="#">{{ $key + 1 }}</td>
-                                <td data-label="Product item">{{ $item->Category }}</td>
-                                <td data-label="Name" style="text-align: left">{{ $item->name_en }}</td>
-                                <td data-label="type">{{ $item->type }}</td>
-                                <td data-label="สถานะการใช้งาน">
-                                    @if ($item->status == 1)
-                                        <button type="button" class="button-1 status-toggle" data-id="{{ $item->id }}"data-status="{{ $item->status }}">ใช้งาน</button>
-                                    @else
-                                        <button type="button" class="button-3 status-toggle " data-id="{{ $item->id }}" data-status="{{ $item->status }}">ปิดใช้งาน</button>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="dropdown-a">
-                                        <button class="button-18 button-17" type="button" data-toggle="dropdown">ทำรายการ
-                                            <span class="caret"></span></button>
-                                        <ul class="dropdown-menu">
-                                            <li class="licolor"><a href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขข้อมูล</a></li>
-                                        </ul>
-                                </td>
-                            </tr>
-                        @endforeach
-                    @endif
-                </tbody>
-            </table>
-        </form>
+                <div class="d-flex align-content-stratch flex-wrap cash"
+                    style=" height:375px; border-radius: 8px !important;">
+                    <a href="" class="list-box">
+                    <img src="{{ asset('assets2/images/bedroom_452811.png') }}" alt="">
+                    <h2>Room</h2>
+                    <h3>{{$Room_Revenue}}</h3>
+                    </a>
+
+
+                    <a href="" class="list-box">
+                    <img src="images/guest.png" alt="">
+                    <h2>Banquet</h2>
+                    <h3>{{$Banquet}}</h3>
+                    </a>
+
+
+                    <a href="" class="list-box">
+                    <img src="images/F&B.png" alt="">
+                    <h2>Meals</h2>
+                    <h3>{{$Meals}}</h3>
+                    </a>
+
+
+                    <a href="" class="list-box">
+                    <img src="images/water-park.png" alt="">
+                    <h2>Entertainment</h2>
+                    <h3>{{$Entertainment}}</h3>
+                    </a>
+
+                </div>
+            </div>
+
+
     </div>
+<script>
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const centerTextPlugin = {
+        id: 'centerText',
+        beforeDraw: function (chart) {
+            if (chart.config.type === 'doughnut') {
+                const width = chart.width,
+                    height = chart.height,
+                    ctx = chart.ctx;
 
-    <form id="form-id3">
-        @csrf
-        <input type="hidden" id="deleteID" name="deleteID" value="">
-    </form>
-    <script>
+                ctx.restore();
+                const fontSize = (height / 175).toFixed(2); // Font size
+                ctx.font = fontSize + "em 'Sarabun', sans-serif";
+                ctx.textBaseline = "middle";
 
+                // Check if data is empty
+                const dataValues = chart.data.datasets[0].data;
+                const isEmptyData = dataValues.every(value => value === 0);
+                const text = isEmptyData ? "0" : {{$productcount}};
+                const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                const textY = height / 2 + 30;
+
+                // Draw circle
+                const circleRadius = fontSize * 60; // Adjust the multiplier as needed
+                ctx.beginPath();
+                ctx.arc(width / 2, textY - 5, circleRadius, 0, 2 * Math.PI); // Adjust the vertical offset as needed
+                ctx.strokeStyle = 'black'; // Circle color
+                ctx.lineWidth = 2; // Circle line width
+                ctx.stroke();
+
+                ctx.fillText(text, textX, textY);
+                ctx.save();
+            }
+        }
+    };
+    Chart.register(centerTextPlugin);
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+        labels: ['Room', 'Banquet', 'Meals','Entertainment'],
+        datasets: [{
+        data: [{{$Room_Revenue}}, {{$Banquet}},{{$Meals}},{{$Entertainment}}], // Example of empty data
+        }]
+        },
+        options: {
+        cutout: '70%',
+        // other options if any
+        },
+        plugins: [centerTextPlugin]
+    });
 </script>
-
-    <script>
+<script>
          $(document).ready(function() {
             new DataTable('#example', {
                 columnDefs: [
@@ -197,12 +309,6 @@
             });
         });
 
-        function toggle(source) {
-            checkboxes = document.getElementsByName('dummy');
-            for (var i = 0, n = checkboxes.length; i < n; i++) {
-                checkboxes[i].checked = source.checked;
-            }
-        }
 
 
     // หากมีการส่งค่า alert มาจากหน้าอื่น
@@ -225,8 +331,8 @@
         });
     }
 </script>
-    <script type="text/javascript">
-        $(document).ready(function() {
+<script type="text/javascript">
+$(document).ready(function() {
     $('.status-toggle').click(function() {
         var id = $(this).data('id');
         var status = $(this).data('status');

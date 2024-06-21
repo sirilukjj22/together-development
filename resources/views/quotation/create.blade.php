@@ -500,7 +500,7 @@
         </div>
     </form>
 </div>
-<script type="text/javascript">calendarIcon
+<script type="text/javascript">
     $(function() {
         var start = moment();
         var end = moment().add(7, 'days');
