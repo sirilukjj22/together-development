@@ -550,12 +550,11 @@
             });
 
             $('.myDataTable').addClass( 'nowrap' ).dataTable( {
-                responsive: false,
+                responsive: true,
                 searching: true,
                 paging: true,
                 ordering: true,
                 info: true,
-                scrollX: true,
                 columnDefs: [
                     // { targets: [-1, -2], className: 'dt-body-center' }
                 ]
