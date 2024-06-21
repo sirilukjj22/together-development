@@ -344,6 +344,8 @@
                         <i class="fa-solid fa-caret-down"></i></button>
                     <div id="myDropdownDocument" class="dropdown-content">
                         @if ($role_permisstion->proposal == 1)
+                            <a class="menu2" href="#">Dummy Proposal</a>
+                            <a class="menu2" href="#">Proposal Request</a>
                             <a class="menu2" href="{{ route('Quotation.index') }}">Proposal</a>
                         @endif
                         @if ($role_permisstion->banquet_event_order == 1)

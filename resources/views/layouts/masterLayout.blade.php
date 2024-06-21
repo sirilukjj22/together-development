@@ -549,6 +549,18 @@
 
             });
 
+            $('.myDataTable').addClass( 'nowrap' ).dataTable( {
+                responsive: false,
+                searching: true,
+                paging: true,
+                ordering: true,
+                info: true,
+                scrollX: true,
+                columnDefs: [
+                    // { targets: [-1, -2], className: 'dt-body-center' }
+                ]
+            });
+
             $('#myDataTableAll').addClass('nowrap').dataTable({
 
                 responsive: false,
