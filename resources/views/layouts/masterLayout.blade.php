@@ -172,11 +172,49 @@
                             <a class="m-link" href="{{ url('users', 'index') }}"><i class="fa fa-user-circle"></i><span>Users</span></a>
                         </li>
                     @endif
-                    @if ($role_permisstion->bank == 1)
+                    
                         <li class="divider mt-4 py-2 border-top"><small>MASTER DATA</small></li>
+                        @if ($role_permisstion->bank == 1)
+                            <li>
+                                <a class="m-link" href="{{ route('master', 'bank') }}"><i
+                                        class="fa fa-folder-open"></i><span>Bank</span></a>
+                            </li>
+                        @endif
                         <li>
-                            <a class="m-link" href="{{ route('master', 'bank') }}"><i
-                                    class="fa fa-folder-open"></i><span>Bank</span></a>
+                            <a class="m-link" href="{{ route('Mproduct.index.quantity') }}"><i
+                                    class="fa fa-folder-open"></i><span>Quantity</span></a>
+                        </li>
+                        <li>
+                            <a class="m-link" href="{{ route('Mproduct.index.unit') }}"><i
+                                    class="fa fa-folder-open"></i><span>Unit</span></a>
+                        </li>
+                        <li>
+                            <a class="m-link" href="{{ route('Mprefix.index') }}"><i
+                                    class="fa fa-folder-open"></i><span>Prefix</span></a>
+                        </li>
+                        <li>
+                            <a class="m-link" href="{{ route('Mbank.index') }}"><i
+                                    class="fa fa-folder-open"></i><span>Bank Company</span></a>
+                        </li>
+                        <li>
+                            <a class="m-link" href="{{ route('Mcomt.index') }}"><i
+                                    class="fa fa-folder-open"></i><span>Company Type</span></a>
+                        </li>
+                        <li>
+                            <a class="m-link" href="{{ route('Mmarket.index') }}"><i
+                                    class="fa fa-folder-open"></i><span>Company Market</span></a>
+                        </li>
+                        <li>
+                            <a class="m-link" href="{{ route('MEvent.index') }}"><i
+                                    class="fa fa-folder-open"></i><span>Company Event</span></a>
+                        </li>
+                        <li>
+                            <a class="m-link" href="{{ route('Mbooking.index') }}"><i
+                                    class="fa fa-folder-open"></i><span>Booking</span></a>
+                        </li>
+                        <li>
+                            <a class="m-link" href="{{ route('Template.TemplateA1') }}"><i
+                                    class="fa fa-folder-open"></i><span>Template</span></a>
                         </li>
                     @endif
                 </ul>
