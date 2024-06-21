@@ -164,6 +164,8 @@
                         </a>
                         <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
                             @if ($role_permisstion->proposal == 1)
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Dummy Proposal</a></li>
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Proposal Request</a></li>
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('Quotation.index') }}">Proposal</a></li>
                             @endif
                             @if ($role_permisstion->banquet_event_order == 1)
