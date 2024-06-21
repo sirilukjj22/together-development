@@ -429,7 +429,7 @@
                     <td>{{ $key + 1 }}</td>
                     <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                     <td>{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                    <td>
+                    <td style="text-align: left;">
                         <?php
                             $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                             $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
@@ -601,7 +601,7 @@
                         <td>{{ $key + 1 }}</td>
                         <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                         <td>{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                        <td>
+                        <td style="text-align: left;">
                             <?php
                                 $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                                 $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
@@ -770,7 +770,7 @@
                         <td>{{ $key + 1 }}</td>
                         <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                         <td>{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                        <td>
+                        <td style="text-align: left;">
                             <?php
                                 $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                                 $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
