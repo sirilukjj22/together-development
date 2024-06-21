@@ -1941,6 +1941,22 @@ tr.disable-row:hover{
     padding-top: 8px;
     padding-bottom: 8px;
   }
+  .menu2-desktop {
+    background-color: inherit;
+    color: white;
+    text-align: left;
+    padding-left: 20px;
+    font-weight: 400;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    height: auto;
+  }
+  .menu2-desktop:hover {
+    background-color: #002b28;
+    height: auto;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
   .menu3 {
     color: white;
     text-align: center;

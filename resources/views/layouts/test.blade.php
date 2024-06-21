@@ -364,7 +364,7 @@
 
             @if ($role_permisstion->product_item == 1)
                 <a href="{{ route('Mproduct.index') }}">
-                    <div class="menu2">Product Item</div>
+                    <div class="menu2-desktop"><b>Product Item</b></div>
                 </a>
             @endif
 
@@ -458,7 +458,7 @@
 
             <div>
                 <!-- Button trigger modal -->
-                <button type="button" class="menu2 pb-2" style="width:100%;"
+                <button type="button" class="menu2-desktop pb-2" style="width:100%; font-weight: 700;"
                 data-toggle="modal" data-target="#exampleModalCenter3">
                 Logout
               </button>
