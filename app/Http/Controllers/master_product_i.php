@@ -25,8 +25,10 @@ class master_product_i extends Controller
         $CountBanquet = ($Banquet*100)/$productcount;
         $CountMeals = ($Meals*100)/$productcount;
         $CountEntertainment = ($Entertainment*100)/$productcount;
+        $productroom = master_product_item::where('Category','Room_Type')->get();
+        $productBanquet = master_product_item::where('Category','Banquet')->get();
         return view('master_product.index',compact('product','Room_Revenue','Banquet','Meals','Entertainment','productcount'
-        ,'CountRoom','CountBanquet','CountMeals','CountEntertainment'));
+        ,'CountRoom','CountBanquet','CountMeals','CountEntertainment','productroom','productBanquet'));
     }
     public function create()
     {
@@ -135,8 +137,10 @@ class master_product_i extends Controller
        }else{
             return redirect()->back()->with('error_', 'Please enter the product type.');
        }
+       $userid = Auth::user()->id;
        $save = new master_product_item();
        $save->Product_ID = $Product_ID;
+       $save->created_by = $userid;
        $save->type = $type;
        $save->name_th = $name_th;
        $save->name_en = $name_en;
@@ -298,7 +302,7 @@ class master_product_i extends Controller
             }
             $full_path_image = $upload_location_image . $img_name1;
         }
-
+        $userid = Auth::user()->id;
         $save = master_product_item::find($id);
         $save->name_th = $name_th;
         $save->name_en = $name_en;
@@ -312,6 +316,7 @@ class master_product_i extends Controller
         $save->end_weekend_price = $end_weekend_price;
         $save->quantity = $Quantity;
         $save->unit = $Unit;
+        $save->created_by = $userid;
         $save->maximum_discount = $Maximum_Discount;
         $save->image_product = $full_path_image ?? $save->image_product;
         $save->save();

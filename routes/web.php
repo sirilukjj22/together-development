@@ -132,10 +132,13 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(master_booking::class)->group(function () {
         Route::get('/Mbooking/index', 'index')->name('Mbooking.index');
         Route::get('/Mbooking/ac', 'ac')->name('Mbooking.ac');
-        Route::get('/Mbooking/no', 'users_no')->name('Mbooking.no');
-        Route::post('/Mbooking/master_booking/save', 'Mbookingsave')->name('Mbookingsave');
-        Route::post('/Mbooking/master_booking/Mbooking_update/', 'Mbooking_update')->name('Master.Mbooking_update');
-        Route::get('/Mbooking/change-Status/{id}/{status}', 'changeStatus')->name('Master.changeStatus');
+        Route::get('/Mbooking/no', 'no')->name('Mbooking.no');
+        Route::post('/Mbooking/master_booking/save', 'Mbookingsave')->name('Mbooking.save');
+        Route::get('/Mbooking/update/{id}/{datakey}/{dataEN}/{code}', 'update')->name('Master.Mbooking_update');
+        Route::get('/Mbooking/change-Status/{id}', 'changeStatus')->name('Master.changeStatus');
+        Route::get('/Mbooking/edit/{id}','edit')->name('Mproduct.Mbooking.unit');
+        Route::get('/Mbooking/search-list2/{datakey}','search')->name('Mproduct.Mbooking.search');
+        Route::get('/Mbooking/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.Mbooking.dupicate');
     });
 
     ## Company
@@ -242,8 +245,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mcomt/ac','ac')->name('Mcomt.ac');
         Route::get('/Mcomt/no','no')->name('Mcomt.no');
         Route::post('/Mcomt/Save','save')->name('Mcomt.save');
-        Route::get('/Mcomt/change-Status/{id}/{status}','changeStatus')->name('Mcomt.changeStatus');
-        Route::post('/Mcomt/master_comt/Mcomt_update/','update')->name('Mcomt.update');
+        Route::get('/Mcomt/change-Status/{id}','changeStatus')->name('Mcomt.changeStatus');
+        Route::get('/Mcomt/update/{id}/{datakey}/{dataEN}','update')->name('Mcomt.update');
+        Route::get('/Mcomt/edit/{id}','edit')->name('Mproduct.edit.Mcomt');
+        Route::get('/Mcomt/search-list2/{datakey}','search')->name('Mproduct.Mcomt.search');
+        Route::get('/Mcomt/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.Mcomt.dupicate');
 
     });
 #master market
@@ -252,8 +258,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mmarket/ac','ac')->name('Mmarket.ac');
         Route::get('/Mmarket/no','no')->name('Mmarket.no');
         Route::post('/Mmarket/Save','save')->name('Mmarket.save');
-        Route::get('/Mmarket/change-Status/{id}/{status}','changeStatus')->name('Mmarket.changeStatus');
-        Route::post('/Mmarket/master_Mmarket/Mmarket_update/','update')->name('Mmarket.update');
+        Route::get('/Mmarket/change-Status/{id}','changeStatus')->name('Mmarket.changeStatus');
+        Route::get('/Mmarket/update/{id}/{datakey}/{dataEN}/{code}/','update')->name('Mmarket.update');
+        Route::get('/Mmarket/edit/{id}','edit')->name('Mproduct.edit.Mmarket');
+        Route::get('/Mmarket/search-list2/{datakey}','search')->name('Mproduct.Mmarket.search');
+        Route::get('/Mmarket/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.Mmarket.dupicate');
     });
 
 #Freelancer Check
@@ -302,8 +311,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/MEvent/ac', 'ac')->name('MEvent.ac');
         Route::get('/MEvent/no', 'no')->name('MEvent.no');
         Route::post('/MEvent/Event_Formate/save', 'save')->name('MEvent.save');
-        Route::post('/MEvent/Event_Formate/update', 'update')->name('MEvent.update');
-        Route::get('/MEvent/changeStatus_Event/{id}/{status}','changeStatus')->name('MEvent.changeStatus');
+        Route::get('/MEvent/update/{id}/{datakey}/{dataEN}', 'update')->name('MEvent.update');
+        Route::get('/MEvent/change-Status/{id}','changeStatus')->name('MEvent.changeStatus');
+        Route::get('/MEvent/edit/{id}','edit')->name('Mproduct.edit.MEvent');
+        Route::get('/MEvent/search-list2/{datakey}','search')->name('Mproduct.MEvent.search');
+        Route::get('/MEvent/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.MEvent.dupicate');
     });
     #Quotation
     Route::controller(QuotationController::class)->group(function () {
@@ -312,7 +324,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/ac', 'ac')->name('Quotation.ac');
         Route::get('/Quotation/no', 'no')->name('Quotation.no');
         Route::get('/Quotation/create/company/Contact/{companyID}','Contact')->name('Quotation.company');
-        Route::post('/Quotation/Event_Formate/save', 'save')->name('MEvent.save');
+        Route::post('/Quotation/EventFormate/save', 'save')->name('Quotation.save');
         Route::get('/Quotation/selectproduct/company/create/{id}', 'selectProduct')->name('Quotation.SelectProduct');
         Route::post('/Quotation/company/create/quotation/{Quotation_ID}', 'savequotation')->name('Quotation.quotation');
         Route::get('/Quotation/edit/quotation/{id}','edit')->name('Quotation.edit');

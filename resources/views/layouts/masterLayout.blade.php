@@ -216,6 +216,10 @@
                             <a class="m-link" href="{{ route('Template.TemplateA1') }}"><i
                                     class="fa fa-folder-open"></i><span>Template</span></a>
                         </li>
+                        <li>
+                            <a class="m-link" href="{{ route('Mproduct.index') }}"><i
+                                    class="fa fa-folder-open"></i><span>Product Item</span></a>
+                        </li>
 
                 </ul>
             </div>

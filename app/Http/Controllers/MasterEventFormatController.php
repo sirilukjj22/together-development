@@ -3,41 +3,42 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\MasterEventFormate;
+use App\Models\master_document;
+use Auth;
+use App\Models\User;
 class MasterEventFormatController extends Controller
 {
     public function index()
     {
-        $event = MasterEventFormate::query()->get();
+        $event = master_document::where('Category','Mevent')->get();
         return view('master_event_format.index',compact('event'));
     }
     public function save(Request $request)
     {
-        $data = $request->all();
-        $count = MasterEventFormate::count()+1;
-        $save = new MasterEventFormate();
-        $save->code = $count;
-        $save->name_th = $request->name_th;
-        $save->name_en = $request->name_en;
-        $save->detail_th = $request->detail_th;
-        $save->detail_en = $request->detail_en;
+        $Mevent =  "Mevent" ;
+        $name_th = $request->name_th;
+        $name_en = $request->name_en;
+        $userid = Auth::user()->id;
+        $save = new master_document();
+        $save->name_th = $name_th;
+        $save->name_en = $name_en;
+        $save->created_by = $userid;
+        $save->Category= $Mevent;
         $save->save();
         if ($save->save()) {
-            return redirect()->back()->with('success', 'บันทึกข้อมูลเรียบร้อย');
-        }else{
-            return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+            return redirect()->route('MEvent.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        } else {
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
 
-    public function update(Request $request)
+    public function update($id,$datakey,$dataEN)
     {
-        $data = $request->all();
-        $id = $request->id;
-        $save = MasterEventFormate::find($id);
-        $save->name_th = $request->name_th;
-        $save->name_en = $request->name_en;
-        $save->detail_th = $request->detail_th;
-        $save->detail_en = $request->detail_en;
+        $userid = Auth::user()->id;
+        $save = master_document::find($id);
+        $save->name_th = $datakey;
+        $save->name_en = $dataEN;
+        $save->created_by = $userid;
         $save->save();
         if ($save->save()) {
             return redirect()->back()->with('success', 'บันทึกข้อมูลเรียบร้อย');
@@ -49,8 +50,8 @@ class MasterEventFormatController extends Controller
     {
         $ac = $request->value;
         if ($ac == 1 ) {
-            $query = MasterEventFormate::query();
-            $event = $query->where('status', '1')->get();
+            $query = master_document::query();
+            $event = $query->where('status', '1')->Where('Category','Mevent')->get();
         }
         return view('master_event_format.index',compact('event'));
     }
@@ -58,21 +59,36 @@ class MasterEventFormatController extends Controller
     {
         $no = $request->value;
         if ($no == 0 ) {
-            $query = MasterEventFormate::query();
-            $event = $query->where('status', '0')->get();
+            $query = master_document::query();
+            $event = $query->where('status', '0')->Where('Category','Mevent')->get();
         }
         return view('master_event_format.index',compact('event'));
     }
-    public function changeStatus($id,$status)
+    public function changeStatus($id)
     {
-        $event = MasterEventFormate::find($id);
-        if ($status == 1 ) {
+        $event = master_document::find($id);
+        if ($event->status == 1 ) {
             $status = 0;
             $event->status = $status;
-        }elseif (($status == 0 )) {
+        }elseif (($event->status == 0 )) {
             $status = 1;
             $event->status = $status;
         }
         $event->save();
+    }
+    public function edit($id)
+    {
+        $data = master_document::find($id);
+        return response()->json(['data' => $data]);
+    }
+    public function  search($datakey)
+    {
+        $data = master_document::where('name_th',$datakey)->Where('Category','Mevent')->first();
+        return response()->json($data);
+    }
+    public function  dupicate($id,$datakey)
+    {
+        $data = master_document::where('id',$id)->where('name_th',$datakey)->Where('Category','Mevent')->first();
+        return response()->json(['data' => $data]);
     }
 }
