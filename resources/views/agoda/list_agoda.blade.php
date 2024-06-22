@@ -7,13 +7,13 @@
         <div class="row align-items-center">
             <div class="col">
                 <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
-                    <li class="breadcrumb-item"><a href="{{ route('debit-agoda-revenue') }}">Agoda</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('debit-agoda-revenue', [$month, $year]) }}">Agoda</a></li>
                     <li class="breadcrumb-item active">Agoda Revenue</li>
                 </ol>
-                <h1 class="h4 mt-1">Agoda Revenue</h1>
+                <h1 class="h4 mt-1">Agoda Revsenue</h1>
             </div>
             <div class="col-auto">
-                <a href="{{ route('debit-agoda-revenue') }}" title="ย้อนกลับ" class="btn btn-outline-dark lift">
+                <a href="{{ route('debit-agoda-revenue', [$month, $year]) }}" title="ย้อนกลับ" class="btn btn-outline-dark lift">
                     ย้อนกลับ
                 </a>
                 <a href="#" title="พิมพ์เอกสาร" class="btn btn-outline-dark lift">
@@ -67,18 +67,18 @@
                                             <ul class="dropdown-menu border-0 shadow p-3">
                                                 @if ($item->status_receive_agoda == 0)
                                                     <li>
-                                                        <a href="{{ route('debit-agoda-update-receive', $item->id) }}" type="button" class="dropdown-item py-2 rounded">
+                                                        <a href="{{ route('debit-agoda-update-receive', [$item->id, $month, $year]) }}" type="button" class="dropdown-item py-2 rounded">
                                                             เลือกรายการ
                                                         </a>
                                                     </li>
                                                 @else
                                                     <li>
-                                                        <a href="{{ route('debit-agoda-update-receive', $item->id) }}" type="button" class="dropdown-item py-2 rounded">
+                                                        <a href="{{ route('debit-agoda-update-receive', [$item->id, $month, $year]) }}" type="button" class="dropdown-item py-2 rounded">
                                                             แก้ไข
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="{{ route('debit-agoda-detail', $item->id) }}" type="button" class="dropdown-item py-2 rounded">
+                                                        <a href="{{ route('debit-agoda-detail', [$item->id, $month, $year]) }}" type="button" class="dropdown-item py-2 rounded">
                                                             รายละเอียด
                                                         </a>
                                                     </li>

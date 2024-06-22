@@ -7,13 +7,13 @@
         <div class="row align-items-center">
             <div class="col">
                 <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
-                    <li class="breadcrumb-item"><a href="{{ route('debit-agoda-update') }}">Agoda Revenue</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('debit-agoda-update', [$month, $year]) }}">Agoda Revenue</a></li>
                     <li class="breadcrumb-item active">Debit Agoda Revenue</li>
                 </ol>
                 <h1 class="h4 mt-1">{{ $title ?? '' }}</h1>
             </div>
             <div class="col-auto">
-                <a href="{{ route('debit-agoda-update') }}" title="ย้อนกลับ" class="btn btn-outline-dark lift">
+                <a href="{{ route('debit-agoda-update', [$month, $year]) }}" title="ย้อนกลับ" class="btn btn-outline-dark lift">
                     ย้อนกลับ
                 </a>
                 <a href="#" title="พิมพ์เอกสาร" class="btn btn-outline-dark lift">

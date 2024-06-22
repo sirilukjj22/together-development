@@ -11,7 +11,7 @@
         </div>
 
         <div class="col-auto">
-            <a href="{{ route('debit-agoda-update') }}" title="ทำรายการ" class="btn btn-info text-white lift">
+            <a href="{{ route('debit-agoda-update', [$month, $year]) }}" title="ทำรายการ" class="btn btn-info text-white lift">
                 <i class="fa fa-plus"></i>
                 ทำรายการ
             </a>
@@ -148,6 +148,7 @@
                     <table id="myDataTableOutstanding" class="exampleTable table display dataTable table-hover fw-bold">
                         <thead>
                             <tr>
+                                <th>วันที่ทำรายการ</th>
                                 <th>Booking Number</th>
                                 <th>วันที่ Check in</th>
                                 <th>วันที่ Check out</th>
@@ -159,6 +160,7 @@
                             <?php $total = 0; ?>
                             @foreach ($agoda_outstanding as $key => $item)
                                 <tr id="tr_row_{{ $item->id }}">
+                                    <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                     <td>{{ $item->batch }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->agoda_check_in)->format('d/m/Y') }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->agoda_check_out)->format('d/m/Y') }}</td>
@@ -176,7 +178,7 @@
                         </tbody>
                         <tfoot>
                             <tr style="font-weight: bold;">
-                                <td colspan="3" style="text-align: right;">ยอดรวมทั้งหมด</td>
+                                <td colspan="4" style="text-align: right;">ยอดรวมทั้งหมด</td>
                                 <td>
                                     <span id="txt_total_outstanding">{{ number_format($total, 2) }}</span>
                                     <input type="hidden" id="total_outstanding" value="{{ $total }}">
@@ -195,6 +197,7 @@
                     <table id="myDataTableAll" class="exampleTable table display dataTable table-hover fw-bold">
                         <thead>
                             <tr>
+                                <th>วันที่ทำรายการ</th>
                                 <th>Booking Number</th>
                                 <th>วันที่ Check in</th>
                                 <th>วันที่ Check out</th>
@@ -207,6 +210,7 @@
                             @foreach ($agoda_outstanding as $key => $item)
                                 @if ($item->receive_payment == 1)
                                 <tr id="tr_row_{{ $item->id }}">
+                                    <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                     <td>{{ $item->batch }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->agoda_check_in)->format('d/m/Y') }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->agoda_check_out)->format('d/m/Y') }}</td>
@@ -225,7 +229,7 @@
                         </tbody>
                         <tfoot>
                             <tr style="font-weight: bold;">
-                                <td colspan="3" style="text-align: right;">ยอดรวมทั้งหมด</td>
+                                <td colspan="4" style="text-align: right;">ยอดรวมทั้งหมด</td>
                                 <td>
                                     <span id="txt_total_outstanding">{{ number_format($total_debit, 2) }}</span>
                                     <input type="hidden" id="total_outstanding" value="{{ $total_debit }}">

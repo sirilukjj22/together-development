@@ -84,10 +84,11 @@ Route::middleware(['auth'])->group(function () {
 
     # Debit Agoda Revenue
     Route::controller(AgodaRevenuesController::class)->group(function () {
-        Route::get('debit-agoda-revenue', 'index')->name('debit-agoda-revenue');
-        Route::get('debit-agoda-update', 'index_update_agoda')->name('debit-agoda-update');
-        Route::get('debit-agoda-update-receive/{id}', 'index_receive')->name('debit-agoda-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
-        Route::get('debit-agoda-detail/{id}', 'index_detail_receive')->name('debit-agoda-detail'); // แสดงรายละเอียด
+        Route::get('debit-agoda', 'index')->name('debit-agoda');
+        Route::get('debit-agoda-revenue/{month}/{year}', 'index_list_days')->name('debit-agoda-revenue');
+        Route::get('debit-agoda-update/{month}/{year}', 'index_update_agoda')->name('debit-agoda-update');
+        Route::get('debit-agoda-update-receive/{id}/{month}/{year}', 'index_receive')->name('debit-agoda-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
+        Route::get('debit-agoda-detail/{id}/{month}/{year}', 'index_detail_receive')->name('debit-agoda-detail'); // แสดงรายละเอียด
         Route::post('debit-agoda-store', 'receive_payment')->name('debit-agoda-store');
         Route::get('debit-select-agoda-outstanding/{id}', 'select_agoda_outstanding')->name('debit-select-agoda-outstanding');
         Route::get('debit-select-agoda-received/{id}', 'select_agoda_received')->name('debit-select-agoda-received');

@@ -199,7 +199,7 @@
                         </a>
                         <ul class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
                             @if ($role_permisstion->agoda == 1)
-                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('debit-agoda-revenue') }}">Agoda</a></li>
+                                <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="{{ route('debit-agoda') }}">Agoda</a></li>
                             @endif
                             @if ($role_permisstion->elexa == 1)
                                 <li class="p-0 remove-hover"><a class="nav-link px-3 font-weight-bold dropdown-item" href="#">Elexa</a></li>
@@ -378,7 +378,7 @@
                     <i class="fa-solid fa-caret-down"></i></button>
                 <div id="myDropdownDebtor" class="dropdown-content">
                     @if ($role_permisstion->agoda == 1)
-                        <a class="menu2" href="{{ route('debit-agoda-revenue') }}">Agoda</a>
+                        <a class="menu2" href="{{ route('debit-agoda') }}">Agoda</a>
                     @endif
                     @if ($role_permisstion->elexa == 1)
                         <a class="menu2" href="#">Elexa</a>

@@ -156,7 +156,7 @@
                                 ?>
                                 @if ($role_permisstion->agoda == 1)
                                 <li>
-                                    <a class="ms-link" href="{{ route('debit-agoda-revenue') }}">
+                                    <a class="ms-link" href="{{ route('debit-agoda') }}">
                                         Agoda <span class="badge bg-danger ms-auto text-end">{{ $agoda_count }}</span>
                                     </a>
                                 </li>
