@@ -1068,7 +1068,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label for="">Batch</label>
+                                                    <label for="">Stan</label>
                                                     <input type="text" style="border: 1px solid #ccc;" id="front_batch" name="">
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
@@ -1095,7 +1095,7 @@
                                                 <table id="myTablefrontCredit" class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">Stan</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">Credit Card Room Charge</th>
                                                             <th scope="col">Action</th>
@@ -1145,7 +1145,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label for="">Batch</label>
+                                                    <label for="">Stan</label>
                                                     <input type="text" id="guest_batch" style="border: 1px solid #ccc;">
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
@@ -1172,7 +1172,7 @@
                                                 <table id="myTableguestCredit" class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">Stan</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">Credit Card Room Charge</th>
                                                             <th scope="col">Action</th>
@@ -1222,7 +1222,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label for="">Batch</label>
+                                                    <label for="">Stan</label>
                                                     <input type="text" id="fb_batch" style="border: 1px solid #ccc;">
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
@@ -1249,7 +1249,7 @@
                                                 <table id="myTablefbCredit" class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">Stan</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">Credit Card Room Charge</th>
                                                             <th scope="col">Action</th>
@@ -1376,7 +1376,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label>Batch</label>
+                                                    <label>Stan</label>
                                                     <input type="text" id="wp_batch" name="">
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
@@ -1404,7 +1404,7 @@
                                                 <table id="myTablewpCredit" class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">Stan</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">Credit Card Room Charge</th>
                                                             <th scope="col">Action</th>
@@ -1478,7 +1478,7 @@
                                                 <table id="myTableEvCredit" class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">Stan</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">EV Charging Charge</th>
                                                             <th scope="col">Transaction Fee</th>
@@ -1507,7 +1507,7 @@
                                             data-bs-target="#collapseSix" aria-expanded="true"
                                             aria-controls="collapseSix">
                                             <!--ใส่ ID ให้ตรง -->
-                                            Credit Revenue <span class="text-danger" id="credit_card">&nbsp; (ยอดเครดิต 0.00)</span>
+                                            Credit Revenue <span class="text-danger" id="credit_card">&nbsp;&nbsp; (ยอดเครดิต 0.00)</span>
                                         </button>
                                     </h2>
                                     <div id="collapseSix" class="accordion-collapse collapse"
@@ -1516,7 +1516,7 @@
                                         <div class="accordion-body">
                                             <div class="row">
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label>Batch</label>
+                                                    <label>Stan</label>
                                                     <input type="text" class="form-control" id="batch" name="">
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
@@ -1551,7 +1551,7 @@
                                                 <table id="myTableEvCredit" class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">Stan</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">ยอดเงิน</th>
                                                             <th scope="col">Action</th>
@@ -1589,9 +1589,6 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="#" method="POST" enctype="multipart/form-data" class="form-store">
-                            @csrf
-
                             <div class="row">
                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                     <label for="">วันที่</label>
@@ -1615,7 +1612,7 @@
                                                 <table id="myTablefrontCredit" class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">Stan</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">Credit Card Room Charge</th>
                                                             <th scope="col">Action</th>
@@ -1650,7 +1647,7 @@
                                                 <table id="myTableguestCredit" class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">Stan</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">Credit Card Room Charge</th>
                                                             <th scope="col">Action</th>
@@ -1685,7 +1682,7 @@
                                                 <table id="myTablefbCredit" class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">Stan</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">Credit Card Room Charge</th>
                                                             <th scope="col">Action</th>
@@ -1758,7 +1755,7 @@
                                                 <table id="myTablewpCredit" class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">Stan</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">Credit Card Room Charge</th>
                                                             <th scope="col">Action</th>
@@ -1793,7 +1790,7 @@
                                                 <table id="myTableEvCredit" class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">Stan</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">EV Charging Charge</th>
                                                             <th scope="col">Transaction Fee</th>
@@ -1820,7 +1817,7 @@
                                             data-bs-target="#collapseSeven2" aria-expanded="true"
                                             aria-controls="collapseSeven2">
                                             <!--ใส่ ID ให้ตรง -->
-                                            Credit Revenue <span class="text-danger" id="credit_card">&nbsp; (ยอดเครดิต 0.00)</span>
+                                            Credit Revenue <span class="text-danger" id="credit_card2">&nbsp; (ยอดเครดิต 0.00)</span>
                                         </button>
                                     </h2>
                                     <div id="collapseSeven2" class="accordion-collapse collapse"
@@ -1831,7 +1828,7 @@
                                                 <table id="myTableEvCredit" class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th scope="col">Batch</th>
+                                                            <th scope="col">Stan</th>
                                                             <th scope="col">ประเภทรายได้</th>
                                                             <th scope="col">ยอดเงิน</th>
                                                             <th scope="col">Action</th>
@@ -1846,9 +1843,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                        </form>
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -1962,7 +1956,7 @@
                 // $('#ev_transfer').val(currencyFormat(response.data.ev_transfer));
                 // $('#ev_credit').val(response.data.ev_credit);
 
-                $('#credit_card').text("(ยอดเครดิต "+currencyFormat(response.data.total_credit)+")");
+                $('#credit_card').text(" (ยอดเครดิต "+currencyFormat(response.data.total_credit)+")");
                 $('.todo-list tr').remove();
                 $('.guest-todo-list tr').remove();
                 $('.fb-todo-list tr').remove();
@@ -2141,7 +2135,7 @@
                 // $('#ev_transfer').val(currencyFormat(response.data.ev_transfer));
                 // $('#ev_credit').val(response.data.ev_credit);
 
-                $('#credit_card').text("(ยอดเครดิต "+currencyFormat(response.data.total_credit)+")");
+                $('#credit_card2').text(" (ยอดเครดิต "+currencyFormat(response.data.total_credit)+")");
                 $('.todo-list tr').remove();
                 $('.guest-todo-list tr').remove();
                 $('.fb-todo-list tr').remove();
