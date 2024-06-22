@@ -1582,9 +1582,6 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="#" method="POST" enctype="multipart/form-data" class="form-store">
-                            @csrf
-
                             <div class="row">
                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                     <label for="">วันที่</label>
@@ -1813,7 +1810,7 @@
                                             data-bs-target="#collapseSeven2" aria-expanded="true"
                                             aria-controls="collapseSeven2">
                                             <!--ใส่ ID ให้ตรง -->
-                                            Credit Revenue <span class="text-danger" id="credit_card">&nbsp; (ยอดเครดิต 0.00)</span>
+                                            Credit Revenue <span class="text-danger" id="credit_card2">&nbsp;&nbsp; (ยอดเครดิต 0.00)</span>
                                         </button>
                                     </h2>
                                     <div id="collapseSeven2" class="accordion-collapse collapse"
@@ -1839,9 +1836,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                        </form>
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -2113,7 +2107,7 @@ $('#date').on('change', function () {
                 // $('#ev_transfer').val(currencyFormat(response.data.ev_transfer));
                 // $('#ev_credit').val(response.data.ev_credit);
 
-                $('#credit_card').text("(ยอดเครดิต "+currencyFormat(response.data.total_credit)+")");
+                $('#credit_card2').text("(ยอดเครดิต "+currencyFormat(response.data.total_credit)+")");
                 $('.todo-list tr').remove();
                 $('.guest-todo-list tr').remove();
                 $('.fb-todo-list tr').remove();

@@ -969,9 +969,11 @@ class RevenuesController extends Controller
         $fb_charge = Revenues::getManualCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 2, 2);
 
         $total_agoda_revenue = Revenues::whereDay('date', $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->sum('total_credit_agoda');
-        $total_agoda_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', date('m'))->whereYear('date', date('Y'))->sum('total_credit_agoda');
+        $total_agoda_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', date('Y'))->sum('total_credit_agoda');
         $total_agoda_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->sum('total_credit_agoda');
         $agoda_charge = Revenues::getManualAgodaCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 1, 5);
+
+        // dd($total_agoda_month);
 
         $total_wp_revenue = Revenues::whereDay('date', $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('wp_cash', 'wp_transfer', 'wp_credit')->first();
         $total_wp_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();

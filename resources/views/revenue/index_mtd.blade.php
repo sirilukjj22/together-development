@@ -1583,9 +1583,6 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="#" method="POST" enctype="multipart/form-data" class="form-store">
-                            @csrf
-
                             <div class="row">
                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                     <label for="">วันที่</label>
@@ -1840,9 +1837,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                        </form>
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
