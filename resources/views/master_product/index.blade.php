@@ -1,13 +1,12 @@
 @extends('layouts.masterLayout')
-<link rel="icon" href="favicon.ico" type="image/x-icon"> <!-- Favicon-->
-
-    <!-- project css file  -->
-    <link rel="stylesheet" href="../assets/css/al.style.min.css">
-    <!-- project layout css file -->
-    <link rel="stylesheet" href="../assets/css/layout.a.min.css">
+{{-- <link rel="icon" href="favicon.ico" type="image/x-icon"> <!-- Favicon-->
+<!-- project css file  -->
+<link rel="stylesheet" href="../assets/css/al.style.min.css">
+<!-- project layout css file -->
+<link rel="stylesheet" href="../assets/css/layout.a.min.css">
 <style>
 
-</style>
+</style> --}}
 @section('pretitle')
     <div class="container">
         <div class="row align-items-center">
@@ -180,9 +179,9 @@
                                 <td style="text-align: center;">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-info text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
-                                        <ul class="dropdown-menu border-0 shadow p-3">
-                                            <li><a class="dropdown-item py-2 rounded" href="#">ดูรายละเอียด</a></li>
-                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                        <ul class="dropdown-menu border-0 shadow p-3" >
+                                            <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" >แก้ไขรายการ</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -236,8 +235,118 @@
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-info text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                         <ul class="dropdown-menu border-0 shadow p-3">
-                                            <li><a class="dropdown-item py-2 rounded" href="#">ดูรายละเอียด</a></li>
-                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" >แก้ไขรายการ</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                            @endif
+                    </tbody>
+                </table>
+                </form>
+            </div> <!-- .card end -->
+        </div>
+        <div class="col-sm-12 col-12">
+            <div class="card p-4 mb-4">
+                <h4><b>Meals</b></h4>
+                <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
+                    @csrf
+                    <input type="hidden" name="category" value="prename">
+                <table class="myDataTableProductItem table table-hover align-middle mb-0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>เรียงลำดับ</th>
+                            <th>รหัสสินค้า</th>
+                            <th>ชื่อภาษาไทย</th>
+                            <th>รายละเอียด</th>
+                            <th>ราคาปกติ</th>
+                            <th>หน่วย</th>
+                            <th>Create by</th>
+                            <th class="text-center">สถานะการใช้งาน</th>
+                            <th class="text-center">คำสั่ง</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(!empty($productMeals))
+                            @foreach ($productMeals as $key => $item)
+                            <tr>
+                                <td>{{ $key + 1 }}</td>
+                                <td>{{ $item->Product_ID }}</td>
+                                <td>{{ $item->name_th }}</td>
+                                <td>{{ $item->detail_th }}</td>
+                                <td>{{ $item->normal_price }}</td>
+                                <td>{{ @$item->productunit->name_th}}</td>
+                                <td>{{ @$item->user_create_id->name}}</td>
+                                <td style="text-align: center;">
+                                    @if ($item->status == 1)
+                                        <button type="button" class="btn btn-light-success btn-sm btn-status" value="{{ $item->id }}">ใช้งาน</button>
+                                    @else
+                                        <button type="button" class="btn btn-light-danger btn-sm btn-status" value="{{ $item->id }}">ปิดใช้งาน</button>
+                                    @endif
+                                </td>
+                                <td style="text-align: center;">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
+                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                            <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" >แก้ไขรายการ</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                            @endif
+                    </tbody>
+                </table>
+                </form>
+            </div> <!-- .card end -->
+        </div>
+        <div class="col-sm-12 col-12">
+            <div class="card p-4 mb-4">
+                <h4><b>Entertainment</b></h4>
+                <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
+                    @csrf
+                    <input type="hidden" name="category" value="prename">
+                <table class="myDataTableProductItem table table-hover align-middle mb-0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>เรียงลำดับ</th>
+                            <th>รหัสสินค้า</th>
+                            <th>ชื่อภาษาไทย</th>
+                            <th>รายละเอียด</th>
+                            <th>ราคาปกติ</th>
+                            <th>หน่วย</th>
+                            <th>Create by</th>
+                            <th class="text-center">สถานะการใช้งาน</th>
+                            <th class="text-center">คำสั่ง</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(!empty($productEntertainment))
+                            @foreach ($productEntertainment as $key => $item)
+                            <tr>
+                                <td>{{ $key + 1 }}</td>
+                                <td>{{ $item->Product_ID }}</td>
+                                <td>{{ $item->name_th }}</td>
+                                <td>{{ $item->detail_th }}</td>
+                                <td>{{ $item->normal_price }}</td>
+                                <td>{{ @$item->productunit->name_th}}</td>
+                                <td>{{ @$item->user_create_id->name}}</td>
+                                <td style="text-align: center;">
+                                    @if ($item->status == 1)
+                                        <button type="button" class="btn btn-light-success btn-sm btn-status" value="{{ $item->id }}">ใช้งาน</button>
+                                    @else
+                                        <button type="button" class="btn btn-light-danger btn-sm btn-status" value="{{ $item->id }}">ปิดใช้งาน</button>
+                                    @endif
+                                </td>
+                                <td style="text-align: center;">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
+                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                            <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" >แก้ไขรายการ</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -251,8 +360,7 @@
         </div>
     </div>
 </div>
-<!-- Jquery Core Js -->
-<script src="../assets/bundles/libscripts.bundle.js"></script>
+
 
 <script src="../assets/bundles/apexcharts.bundle.js"></script>
 

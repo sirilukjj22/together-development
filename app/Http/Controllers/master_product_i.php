@@ -27,8 +27,10 @@ class master_product_i extends Controller
         $CountEntertainment = ($Entertainment*100)/$productcount;
         $productroom = master_product_item::where('Category','Room_Type')->get();
         $productBanquet = master_product_item::where('Category','Banquet')->get();
+        $productMeals = master_product_item::where('Category','Meals')->get();
+        $productEntertainment = master_product_item::where('Category','Entertainment')->get();
         return view('master_product.index',compact('product','Room_Revenue','Banquet','Meals','Entertainment','productcount'
-        ,'CountRoom','CountBanquet','CountMeals','CountEntertainment','productroom','productBanquet'));
+        ,'CountRoom','CountBanquet','CountMeals','CountEntertainment','productroom','productBanquet','productMeals','productEntertainment'));
     }
     public function create()
     {
