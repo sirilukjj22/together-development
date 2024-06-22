@@ -595,6 +595,18 @@
 
             });
 
+            $('.myDataTableProductItem').addClass( 'nowrap' ).dataTable( {
+                responsive: false,
+                searching: true,
+                paging: false,
+                ordering: true,
+                info: false,
+                scrollX: true,
+                columnDefs: [
+                    { targets: [0, -2, -1], className: 'dt-body-center' }
+                ]
+            });
+
         });
 
 
