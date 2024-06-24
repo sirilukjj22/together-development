@@ -11,9 +11,12 @@
         </div>
 
         <div class="col-auto">
-            <a href="{{ route('debit-agoda-update', [$month, $year]) }}" title="ทำรายการ" class="btn btn-info text-white lift">
+            {{-- <a href="{{ route('debit-agoda-update', [$month, $year]) }}" title="ทำรายการ" class="btn btn-info text-white lift">
                 <i class="fa fa-plus"></i>
                 ทำรายการ
+            </a> --}}
+            <a href="{{ route('debit-agoda') }}" title="ย้อนกลับ" class="btn btn-outline-dark lift">
+                ย้อนกลับ
             </a>
             <a href="#" title="พิมพ์เอกสาร" class="btn btn-outline-dark lift">
                 <i class="fa fa-print"></i>
@@ -37,6 +40,7 @@
                                 <th>วันที่</th>
                                 <th>จำนวนเงิน</th>
                                 <th>สถานะ</th>
+                                <th>คำสั่ง</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,6 +58,35 @@
                                             <span class="badge bg-success">Paid</span>
                                         @endif
                                     </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-info rounded-pill text-white dropdown-toggle"
+                                                type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                ทำรายการ
+                                            </button>
+                                            <ul class="dropdown-menu border-0 shadow p-3">
+                                                @if ($item->status_receive_agoda == 0)
+                                                    <li>
+                                                        <a href="{{ route('debit-agoda-update-receive', [$item->id, $month, $year]) }}" type="button" class="dropdown-item py-2 rounded">
+                                                            เลือกรายการ
+                                                        </a>
+                                                    </li>
+                                                @else
+                                                    <li>
+                                                        <a href="{{ route('debit-agoda-update-receive', [$item->id, $month, $year]) }}" type="button" class="dropdown-item py-2 rounded">
+                                                            แก้ไข
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ route('debit-agoda-detail', [$item->id, $month, $year]) }}" type="button" class="dropdown-item py-2 rounded">
+                                                            รายละเอียด
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                            </ul>
+                                        </div>
+                                    </td>
                                 </tr>
                                 <?php $total += $item->amount; ?>
                             @endforeach
@@ -68,7 +101,7 @@
                     </table>
                 </div> <!-- .card end -->
             </div>
-            <div class="row g-2 mb-5">
+            {{-- <div class="row g-2 mb-5">
                 <div class="col-md-4 col-12">
                     <div class="card">
                         <div class="card-body">
@@ -79,7 +112,6 @@
                                                 class="fa fa-circle me-2 text-info"></i>Agoda Revenue</div>
                                         <div class="mt-1">
                                             <span class="fw-bold h4 mb-0" id="">{{ number_format($total, 2) }}</span>
-                                            {{-- <span class="ms-1">5% <i class="fa fa-caret-up"></i></span> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -239,7 +271,7 @@
                         </tfoot>
                     </table>
                 </div> <!-- .card end -->
-            </div>
+            </div> --}}
         </div> <!-- .row end -->
     </div>
 

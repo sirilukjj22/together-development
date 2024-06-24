@@ -20,9 +20,26 @@ class AgodaRevenuesController extends Controller
     {
         $agoda_revenue = SMS_alerts::where('status', 5)->select('sms_alert.*', DB::raw("Month(date) as month, SUM(amount) as total_sum"))->groupBy('month')->get();
 
+        $agoda_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+            // ->whereMonth('revenue.date', $exp[1])->whereYear('revenue.date', $exp[0])
+            ->where('revenue_credit.status', 5)
+            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
+            'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
+            'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue', 'revenue.date')
+            ->get();
+
+            $total_outstanding_all = 0;
+            $agoda_debit_outstanding = 0;
+            foreach ($agoda_outstanding as $key => $value) {
+                if ($value->receive_payment == 1) {
+                    $agoda_debit_outstanding += $value->agoda_outstanding;
+                }
+                $total_outstanding_all += $value->agoda_outstanding;
+            }
+
         $title = "Agoda";
 
-        return view('agoda.index', compact('agoda_revenue', 'title'));
+        return view('agoda.index', compact('agoda_outstanding', 'agoda_revenue', 'total_outstanding_all', 'agoda_debit_outstanding', 'title'));
     }
 
     public function index_list_days($month, $year)
@@ -51,12 +68,12 @@ class AgodaRevenuesController extends Controller
             return view('agoda.agoda_outstanding', compact('agoda_outstanding', 'agoda_revenue', 'total_outstanding_all', 'agoda_debit_outstanding', 'title', 'month', 'year'));
     }
 
-    public function index_update_agoda($month, $year)
-    {
-        $agoda_revenue = SMS_alerts::where('status', 5)->whereMonth('date', $month)->whereYear('date', $year)->get();
+    // public function index_update_agoda($month, $year)
+    // {
+    //     $agoda_revenue = SMS_alerts::where('status', 5)->whereMonth('date', $month)->whereYear('date', $year)->get();
 
-        return view('agoda.list_agoda', compact('agoda_revenue', 'month', 'year'));
-    }
+    //     return view('agoda.list_agoda', compact('agoda_revenue', 'month', 'year'));
+    // }
 
     public function index_receive($id, $month, $year)
     {
