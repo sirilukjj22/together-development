@@ -32,7 +32,7 @@ class Master_Company_type extends Controller
         }
         return view('master_companyt.index',compact('M_Company_type'));
     }
-    public function changeStatus($id,$status)
+    public function changeStatus($id)
     {
         $Mcompany_type = master_document::find($id);
         if ($Mcompany_type->status == 1 ) {

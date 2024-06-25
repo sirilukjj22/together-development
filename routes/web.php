@@ -175,7 +175,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/guest/users_no', 'no')->name('guest.no');
         Route::get('/guest/edit/{id}', 'guest_edit')->name('guest_edit');
         Route::post('/guest/save', 'guestsave')->name('saveguest');
-        Route::post('/guest/change-status/', 'guestStatus')->name('guestStatus');
+        Route::get('/guest/change-status/{id}', 'guestStatus')->name('guestStatus');
         Route::post('/guest/edit/update/{id}', 'guest_update')->name('guest_edit_update');
     });
 });
@@ -190,8 +190,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mproduct/Meals','Meals')->name('Mproduct.Meals');
         Route::get('/Mproduct/Entertainment','Entertainment')->name('Mproduct.Entertainment');
         Route::get('/Mproduct/edit/{id}','edit')->name('Mproduct.edit');
+        Route::get('/Mproduct/view/{id}','view')->name('Mproduct.view');
         Route::post('/Mproduct/Save','save')->name('Mproduct.save');
-        Route::get('/Mproduct/change-Status/{id}/{status}','changeStatus')->name('Mproduct.changeStatus');
+        Route::get('/Mproduct/change-Status/{id}','changeStatus')->name('Mproduct.changeStatus');
         Route::post('/Mproduct/master_Mproduct/Mproduct_update/{id}','update')->name('Mproduct.update');
         Route::post('/Mproduct/check/Category','Category')->name('Mproduct.Category');
         // ----------------------------------Quantity-----------------------------------------------

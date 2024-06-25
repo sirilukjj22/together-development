@@ -31,7 +31,7 @@ class GuestController extends Controller
         $N_Profile = $Id_profile.$Profile_ID;
         $provinceNames = province::select('name_th','id')->get();
         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
-        $prefix = master_document::select('name_th','id')->Where('Category','Mprefix')->get();
+        $prefix = master_document::select('name_th','id')->Where('Category','Mprename')->where('status',1)->get();
         return view('guest.create',compact('provinceNames','booking_channel','prefix','N_Profile'));
     }
     public function amphures($id)
@@ -158,16 +158,14 @@ class GuestController extends Controller
         return view('guest.index',compact('Guest'));
     }
 
-    public function guestStatus(Request $request)
+    public function guestStatus($id)
     {
-        $id = $request->id;
-        $status = $request->status; // รับค่า status ที่ส่งมาจาก Request
 
         $gueststatus = Guest::find($id);
-        if ($status == 1 ) {
+        if ($gueststatus->status == 1 ) {
             $status = 0;
             $gueststatus->status = $status;
-        }elseif (($status == 0 )) {
+        }elseif (($gueststatus->status == 0 )) {
             $status = 1;
             $gueststatus->status = $status;
         }

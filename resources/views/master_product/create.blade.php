@@ -1,6 +1,4 @@
-@extends('layouts.test')
-
-@section('content')
+@extends('layouts.masterLayout')
 <style>
     input[type=text], select {
         width: 100%;
@@ -37,15 +35,7 @@
         box-sizing: border-box;
     }
 
-
-
-    .add-phone:hover {
-        background-color: #218838;
-        border-color: #1e7e34;
-    }
-
-
-    .card {
+    .card1 {
         width: 460px; /* กำหนดความกว้างตามต้องการ */
         height: 300px; /* กำหนดความสูงตามต้องการ */
         background-color: #fff;
@@ -64,7 +54,6 @@
         justify-content: center;
         background-color: #f0f0f0;
         background: url('{{ asset('assets2/images/no-image.jpg') }}') no-repeat center center;
-        background-size: cover;
         position: relative;
     }
 
@@ -94,88 +83,79 @@
         cursor: pointer;* เปลี่ยนรูปแบบของ cursor เมื่อวางเหนือปุ่ม */
         box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.8);
     }
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        padding-top: 60px;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgb(0,0,0);
-        background-color: rgba(0,0,0,0.4);
-    }
+
     .input-group{
         float: left;
         width:70%;
     }
-    .modal-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center; /* จัดตำแหน่งลูกในแนวนอน */
-        justify-content: center; /* จัดตำแหน่งลูกในแนวตั้ง */
-        background-color: #fefefe;
-        margin: 5% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
+    .image_preview {
+        display: none; /* Hide the image by default */
+        max-width: 100%; /* Ensure the image width does not exceed the container */
+        max-height: 100%; /* Ensure the image height does not exceed the container */
+        object-fit: contain;
+        background-color: #ccc; /* Scale the image to maintain aspect ratio */
     }
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    #cropImage {
-        max-width: 100%;
-    }
-    .button-return {
-        align-items: center;
-        appearance: none;
-        background-color: #6b6b6b;
-        border-radius: 8px;
-        border-style: none;
-        box-shadow: rgba(0, 0, 0, 0.2) 0 3px 5px -1px,
-        rgba(0, 0, 0, 0.14) 0 6px 10px 0, rgba(0, 0, 0, 0.12) 0 1px 18px 0;
+    .select2{
+        width: 100%;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
         box-sizing: border-box;
-        color: #ffffff;
-        cursor: pointer;
-        display: inline-flex;
-        fill: currentcolor;
-        font-size: 14px;
-        font-weight: 500;
-        height: 40px;
-        justify-content: center;
-        letter-spacing: 0.25px;
-        line-height: normal;
-        max-width: 100%;
-        overflow: visible;
-        padding: 2px 24px;
-        position: relative;
-        text-align: center;
-        text-transform: none;
-        transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
-        opacity 15ms linear 30ms, transform 270ms cubic-bezier(0, 0, 0.2, 1) 0ms;
-        touch-action: manipulation;
-        width: auto;
-        will-change: transform, opacity;
-        margin-left: 5px;
     }
-
-    .button-return:hover {
-        background-color: #ffffff !important;
-        color: #000000;
-        transform: scale(1.1);
-    }
+    .input-group {
+            margin-top: 20px;
+            width: 90%;
+        }
+        .image-preview-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap; /* Prevent wrapping */
+            gap: 10px;
+            margin-top: 20px;
+            overflow-x: auto;
+            margin-top: 10px;/* Enable horizontal scrolling if needed */
+        }
+        .image-preview {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .lightbox {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.9); /* Black with opacity */
+        }
+        .lightbox-content {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80%;
+        }
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
     @media (max-width: 768px) {
         .image-container {
             width: 100%;
@@ -188,7 +168,7 @@
             background-size: cover;
             position: relative;
         }
-        .card {
+        .card1 {
             width: 260px; /* กำหนดความกว้างตามต้องการ */
             height: 200px; /* กำหนดความสูงตามต้องการ */
             background-color: #fff;
@@ -219,178 +199,165 @@
         }
     }
 </style>
-    <div  class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
-        <h1>Master Product Item</h1>
-        <br>
-        <form action="{{route('Mproduct.save')}}" method="POST"enctype="multipart/form-data">
-        {!! csrf_field() !!}
-            <div>
-                <div class="col-12 row">
-                    <div class="col-lg-5 col-md-5 col-sm-5 mt-4">
-                        <form id="image_upload_form" enctype="multipart/form-data">
-                            <div class="card">
-                                <div class="image-container">
-                                    <button type="button" class="image-upload-button" ></button>
-                                    <input type="file" name="imageFile" id="imageFile" accept="image/jpeg, image/png, image/svg" required style="display: none;">
-                                    <img src="" width="460" height="300" class="image_preview" style="display: none;">
-                                    <button class="buttonIcon" type="button" id="imageSubmit" style="display: none;"></button>
-                                    <button class="deleteImage" id="deleteImage" type="button" style="display: none;"></button>
+@section('pretitle')
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <small class="text-muted">Welcome to Create Product Item.</small>
+                <h1 class="h4 mt-1">Create Product Item (เพิ่มโปรดักส์)</h1>
+            </div>
+        </div>
+    </div>
+@endsection
+@section('content')
+<div class="container">
+    <div class="container mt-3">
+        <div class="row clearfix">
+            <div class="col-sm-12 col-12">
+                <div class="card p-4 mb-4">
+                    <div class="col-12 col-sm-12">
+                        <form action="{{route('Mproduct.save')}}" method="POST"enctype="multipart/form-data">
+                            {!! csrf_field() !!}
+                            <div class="col-12 col-sm-12 row">
+                                <form id="image_upload_form" enctype="multipart/form-data">
+                                    <div class="col-12 "  style="display: flex; justify-content: center;">
+                                        <div class="card1">
+                                            <div class="image-container">
+                                                <button type="button" class="image-upload-button"></button>
+                                                <input type="file" name="imageFile" id="imageFile" accept="image/jpeg, image/png, image/svg" required style="display: none;">
+                                                <img src=""  class="image_preview" style="display: none;">
+                                                <button class="buttonIcon" type="button" id="imageSubmit" style="display: none;"></button>
+                                                <button class="deleteImage" id="deleteImage" type="button" style="display: none;"></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="col-12" style="display: flex; justify-content: center;">
+                                    <div class="input-group mt-5" style="width:40%; position: relative;">
+                                        <label for="image_other" class="form-control" style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; pointer-events: none; display: flex; align-items: center; padding-left: 1rem; color: #000000;   border-radius: 5px;">รูปเพิ่มเติม</label>
+                                        <input type="file" class="form-control" name="image_other[]" id="image_other" aria-describedby="image_other" aria-label="Upload" multiple style="opacity: 0;">
+                                    </div>
+                                </div>
+                                <div class="col-12 "  style="display: flex; justify-content: center;">
+                                    <div class="image-preview-container mt-3 " id="imagePreviewContainer" ></div>
+                                    <div id="lightbox" class="lightbox">
+                                        <span class="close" onclick="closeLightbox()">&times;</span>
+                                        <img class="lightbox-content" id="lightboxImage">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 col-sm-12 mt-2">
+                                            <label for="category"  style="padding: 5px">Category</label>
+                                            <select name="category" id="category" class="select2" style="width:100%" >
+                                                <option value="" ></option>
+                                                <option value="Room_Type">Room Type</option>
+                                                <option value="Banquet">Banquet</option>
+                                                <option value="Meals">Meals</option>
+                                                <option value="Entertainment">Entertainment</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6"></div>
+                                        <div class="col-lg-2 col-md-2 col-sm-12" >
+                                            <label for="Profile_ID">Profile ID</label><br>
+                                            <input type="text" id="Profile_ID" name="Profile_ID"maxlength="70" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-12">
+                                            <label for="Name_th">Name_th</label><br>
+                                            <input type="text" id="name_th" name="name_th"maxlength="70" >
+                                        </div>
+                                        <div class="col-lg-6 col-sm-12">
+                                            <label for="name_en" >Name_en</label><br>
+                                            <input type="text" id="name_en" name="name_en"maxlength="70" >
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-12">
+                                            <label for="detail_th">Detail_th</label><br>
+                                            <input type="text" id="detail_th" name="detail_th"maxlength="70" >
+                                        </div>
+                                        <div class="col-lg-6 col-sm-12">
+                                            <label for="detail_en">Detail_en</label><br>
+                                            <input type="text" id="detail_en" name="detail_en"maxlength="70" >
+                                        </div>
+                                    </div>
+                                    <div class=" row">
+                                        <div class="col-lg-6 col-sm-12" ><label for="pax">Pax</label><br>
+                                            <input type="text" id="pax" name="pax"maxlength="70" >
+                                        </div>
+                                        <div class="col-lg-6 col-sm-12" ><label for="room_size">Room size (Sqm.)</label><br>
+                                            <input type="text" id="room_size" class="price-input" name="room_size"maxlength="70">
+                                        </div>
+                                    </div>
+                                    <div class=" row">
+                                        <div class="col-lg-3 col-sm-12" >
+                                            <label for="normal_price">Normal Price <br>(Include VAT)</label><br>
+                                            <input type="text"  class="price-input"id="normal_price" name="normal_price"maxlength="70" >
+                                        </div>
+                                        <div class="col-lg-3 col-sm-12">
+                                            <label for="weekend_price">Weekday Price <br>(Include VAT)</label><br>
+                                            <input type="text"  class="price-input"id="weekend_price" name="weekend_price"maxlength="70">
+                                        </div>
+                                        <div class="col-lg-3 col-sm-12" >
+                                            <label for="long_weekend_price">Long Weekend Price<br> (Include VAT)</label><br>
+                                            <input type="text"  class="price-input"id="long_weekend_price" name="long_weekend_price"maxlength="70">
+                                        </div>
+                                        <div class="col-lg-3 col-sm-12" >
+                                            <label for="long_weekend_price">End Weekend Price<br> (Include VAT)</label><br>
+                                            <input type="text"  class="price-input"id="end_weekend_price" name="end_weekend_price"maxlength="70">
+                                        </div>
+                                    </div>
+                                    <div class=" row">
+                                        <div class="col-lg-4 col-sm-12" >
+                                            <label for="Quantity"  style="padding: 5px">Quantity</label>
+                                            <select name="quantity"  id = "quantity" class="select2">
+                                                <option value=""></option>
+                                                @foreach($quantity as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->name_th }} ({{ $item->name_en }})</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-4 col-sm-12" >
+                                            <label for="Unit" style="padding: 5px">Unit</label>
+                                            <select name="unit" id = "unit" class="select2">
+                                                <option value=""></option>
+                                                @foreach($unit as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->name_th }} ({{ $item->name_en }})</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-4 col-sm-12" ><label for="Maximum_Discount">Maximum Discount</label><br>
+                                            <input type="text" id="Maximum_Discount" name="Maximum_Discount"maxlength="70" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-12"></div>
+                                        <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
+                                            <button type="button" class="btn btn-secondary mt-3 lift btn_modal"  onclick="window.location.href='{{ route('Mproduct.index') }}'">{{ __('ย้อนกลับ') }}</button>
+                                            <button type="submit" class="btn btn-primary mt-3 lift btn_modal">บันทึกข้อมูล</button>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-12"></div>
+                                    </div>
                                 </div>
                             </div>
                         </form>
-                        <div class="input-group mt-5 " >
-                            <input type="file" class="form-control " name="image_other[]" id="image_other" aria-describedby="image_other" aria-label="Upload" multiple>
-                        </div>
-                    </div>
-                    <div class="col-7 ">
-                        <div class="row">
-                            <div class="col-4  col-md-4 col-sm-12 mt-2">
-                                <label for="Profile_ID">Profile ID</label><br>
-                                <input type="text" id="Profile_ID" name="Profile_ID"maxlength="70" disabled>
-                            </div>
-                            <div class="col-4 col-md-4 col-sm-12 mt-2">
-                                <label for="category">Category</label>
-                                <select name="category" id="category" class="select2" >
-                                    <option value="" ></option>
-                                    <option value="Room_Type">Room Type</option>
-                                    <option value="Banquet">Banquet</option>
-                                    <option value="Meals">Meals</option>
-                                    <option value="Entertainment">Entertainment</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class=" row">
-                            <div class="col-12">
-                                <label for="Name_th">Name_th</label><br>
-                                <input type="text" id="name_th" name="name_th"maxlength="70" >
-
-                            </div>
-                        </div>
-                        <div class=" row">
-                            <div class="col-12">
-                                <label for="name_en" >Name_en</label><br>
-                                <input type="text" id="name_en" name="name_en"maxlength="70" >
-                            </div>
-                        </div>
-                        <div class=" row">
-                            <div class="col-12">
-                                <label for="detail_th">Detail_th</label><br>
-                                <input type="text" id="detail_th" name="detail_th"maxlength="70" >
-                            </div>
-                        </div>
-                        <div class=" row">
-                            <div class="col-12">
-                                <label for="detail_en">Detail_en</label><br>
-                                <input type="text" id="detail_en" name="detail_en"maxlength="70" >
-                            </div>
-                        </div>
-                        <div class=" row">
-                            <div class="col-6" ><label for="pax">Pax</label><br>
-                                <input type="text" id="pax" name="pax"maxlength="70" >
-                            </div>
-                            <div class="col-6" ><label for="room_size">Room size (Sqm.)</label><br>
-                                <input type="text" id="room_size" class="price-input" name="room_size"maxlength="70">
-                            </div>
-                        </div>
-                        <div class=" row">
-                            <div class="col-3" >
-                                <label for="normal_price">Normal Price <br>(Include VAT)</label><br>
-                                <input type="text"  class="price-input"id="normal_price" name="normal_price"maxlength="70" >
-                            </div>
-                            <div class="col-3 ">
-                                <label for="weekend_price">Weekday Price <br>(Include VAT)</label><br>
-                                <input type="text"  class="price-input"id="weekend_price" name="weekend_price"maxlength="70">
-                            </div>
-                            <div class="col-3" >
-                                <label for="long_weekend_price">Long Weekend Price<br> (Include VAT)</label><br>
-                                <input type="text"  class="price-input"id="long_weekend_price" name="long_weekend_price"maxlength="70">
-                            </div>
-                            <div class="col-3" >
-                                <label for="long_weekend_price">End Weekend Price<br> (Include VAT)</label><br>
-                                <input type="text"  class="price-input"id="end_weekend_price" name="end_weekend_price"maxlength="70">
-                            </div>
-                        </div>
-                        <div class=" row">
-                            <div class="col-4" ><label for="Quantity">Quantity</label><br>
-                                <select name="quantity" id = "quantity" class="select2">
-                                    <option value=""></option>
-                                    @foreach($quantity as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name_th }} ({{ $item->name_en }})</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-4" ><label for="Unit">Unit</label><br>
-                                <select name="unit" id = "unit" class="select2">
-                                    <option value=""></option>
-                                    @foreach($unit as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name_th }} ({{ $item->name_en }})</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-4" ><label for="Maximum_Discount">Maximum Discount</label><br>
-                                <input type="text" id="Maximum_Discount" name="Maximum_Discount"maxlength="70" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 row">
-                        <div class="col-6 "></div>
-                        <div class="col-6 " style="display:flex; justify-content:center; align-items:center;">
-                            <button type="button" class="button-return" onclick="window.location.href='{{ route('Mproduct.index') }}'" >{{ __('ย้อนกลับ') }}</button>
-                            <button type="submit" class="button-10" style="background-color: #109699;">บันทึกข้อมูล</button>
-                        </div>
-
-                    </div>
                     </div>
                 </div>
-
-    </form>
-
+            </div>
+        </div>
+    </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script>
-
-    $(document).ready(function(){
-        $('#identification_number').mask('0-0000-00000-00-0');
-    });
-    $(document).ready(function() {
-        $('#category').change(function() {
-            var selectedCategory = $(this).val();
-            $.ajax({
-                url: '/Mproduct/check/Category', // Your Laravel route
-                type: 'POST',
-                data: {
-                    category: selectedCategory,
-                    _token: '{{ csrf_token() }}' // Ensure CSRF token is included
-                },
-                success: function(response) {
-                    $('#Profile_ID').val(response.data);
-                    console.log(response.data);
-                },
-                error: function(xhr) {
-                    // Handle error response
-                    console.error(xhr.responseText);
-                }
-            });
+ $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Please select an option"
         });
     });
-    var priceInputs = document.querySelectorAll('.price-input');
-
-    // ฟังก์ชันในการจัดรูปแบบตัวเลข
-    function formatNumberWithCommas(value) {
-        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
-    // ติดตั้ง event listener สำหรับแต่ละฟิลด์ input
-    priceInputs.forEach(function(input) {
-        input.addEventListener('blur', function() {
-            var value = parseFloat(this.value).toFixed(2);
-            if (!isNaN(value)) {
-                this.value = formatNumberWithCommas(value);
-            }
-        });
-    });
-    $(document).ready(function() {
+$(document).ready(function() {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -399,6 +366,7 @@
 
         // เปิด file input เมื่อคลิกที่ปุ่มอัปโหลด
         $(document).on('click', '.image-upload-button', function() {
+            console.log(1);
             $('#imageFile').click();
         });
 
@@ -467,68 +435,61 @@
             });
         });
     });
+    document.getElementById('image_other').addEventListener('change', function(event) {
+        const files = event.target.files;
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        previewContainer.innerHTML = ''; // Clear existing images
 
-    </script>
+        if (files.length > 5) {
+            alert('You can upload a maximum of 5 images.');
+            event.target.value = ''; // Clear the input field
+            return;
+        }
 
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'image-preview';
+                img.addEventListener('click', () => openLightbox(e.target.result));
+                previewContainer.appendChild(img);
+            }
+            reader.readAsDataURL(file);
+        });
+    });
 
+    function openLightbox(src) {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        lightbox.style.display = 'block';
+        lightboxImage.src = src;
+    }
+
+    function closeLightbox() {
+        const lightbox = document.getElementById('lightbox');
+        lightbox.style.display = 'none';
+    }
+    $(document).ready(function() {
+        $('#category').change(function() {
+            var selectedCategory = $(this).val();
+            $.ajax({
+                url: '/Mproduct/check/Category', // Your Laravel route
+                type: 'POST',
+                data: {
+                    category: selectedCategory,
+                    _token: '{{ csrf_token() }}' // Ensure CSRF token is included
+                },
+                success: function(response) {
+                    $('#Profile_ID').val(response.data);
+                    console.log(response.data);
+                },
+                error: function(xhr) {
+                    // Handle error response
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @if(Session::has('error'))
-    <script>
-        swal({
-            title: "{{ Session::get('error') }}",
-            icon: "error",
-            customClass: {
-                title: "my-swal-title" // กำหนดคลาสใหม่สำหรับข้อความหัวเรื่อง
-            }
-        });
-
-            // แสดงการแจ้งเตือน (error) ด้วย JavaScript โดยใช้ค่าจาก Controller
-        var msg = "{{ $msg ?? '' }}"; // กำหนดค่า msg จาก Controller
-        if (msg) {
-            alert(msg);
-        }
-    </script>
-    @endif
-    @if(Session::has('alert'))
-    <script>
-        swal({
-            title: "{{ Session::get('alert') }}",
-            icon: "success",
-            customClass: {
-                title: "my-swal-title" // กำหนดคลาสใหม่สำหรับข้อความหัวเรื่อง
-            }
-        });
-
-            // แสดงการแจ้งเตือน (alert) ด้วย JavaScript โดยใช้ค่าจาก Controller
-            var msg = "{{ $msg ?? '' }}"; // กำหนดค่า msg จาก Controller
-        if (msg) {
-            alert(msg);
-        }
-    </script>
-    @endif
-
 @endsection

@@ -11,26 +11,26 @@ class Master_prefix extends Controller
 {
     public function index()
     {
-        $M_prefix = master_document::query()->Where('Category','Mprename')->get();
-        return view('master_prefix.index',compact('M_prefix'));
+        $prefix = master_document::query()->Where('Category','Mprename')->get();
+        return view('master_prefix.index',compact('prefix'));
     }
     public function ac(Request $request)
     {
         $ac = $request->value;
         if ($ac == 1 ) {
             $query = master_document::query();
-            $M_prefix = $query->where('status', '1')->Where('Category','Mprename')->get();
+            $prefix = $query->where('status', '1')->Where('Category','Mprename')->get();
         }
-        return view('master_prefix.index',compact('M_prefix'));
+        return view('master_prefix.index',compact('prefix'));
     }
     public function no(Request $request)
     {
         $no = $request->value;
         if ($no == 0 ) {
             $query = master_document::query();
-            $M_prefix = $query->where('status', '0')->Where('Category','Mprename')->get();
+            $prefix = $query->where('status', '0')->Where('Category','Mprename')->get();
         }
-        return view('master_prefix.index',compact('M_prefix'));
+        return view('master_prefix.index',compact('prefix'));
     }
     public function changeStatus($id)
     {

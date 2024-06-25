@@ -1,12 +1,5 @@
 @extends('layouts.masterLayout')
-{{-- <link rel="icon" href="favicon.ico" type="image/x-icon"> <!-- Favicon-->
-<!-- project css file  -->
-<link rel="stylesheet" href="../assets/css/al.style.min.css">
-<!-- project layout css file -->
-<link rel="stylesheet" href="../assets/css/layout.a.min.css">
-<style>
 
-</style> --}}
 @section('pretitle')
     <div class="container">
         <div class="row align-items-center">
@@ -171,17 +164,17 @@
                                 <td>{{ @$item->user_create_id->name}}</td>
                                 <td style="text-align: center;">
                                     @if ($item->status == 1)
-                                        <button type="button" class="btn btn-light-success btn-sm btn-status" value="{{ $item->id }}">ใช้งาน</button>
+                                        <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
                                     @else
-                                        <button type="button" class="btn btn-light-danger btn-sm btn-status" value="{{ $item->id }}">ปิดใช้งาน</button>
+                                        <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ปิดใช้งาน</button>
                                     @endif
                                 </td>
                                 <td style="text-align: center;">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-info text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                         <ul class="dropdown-menu border-0 shadow p-3" >
-                                            <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>
-                                            <li><a class="dropdown-item py-2 rounded" >แก้ไขรายการ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/view/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -226,17 +219,17 @@
                                 <td>{{ @$item->user_create_id->name}}</td>
                                 <td style="text-align: center;">
                                     @if ($item->status == 1)
-                                        <button type="button" class="btn btn-light-success btn-sm btn-status" value="{{ $item->id }}">ใช้งาน</button>
+                                        <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
                                     @else
-                                        <button type="button" class="btn btn-light-danger btn-sm btn-status" value="{{ $item->id }}">ปิดใช้งาน</button>
+                                        <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ปิดใช้งาน</button>
                                     @endif
                                 </td>
                                 <td style="text-align: center;">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-info text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                         <ul class="dropdown-menu border-0 shadow p-3">
-                                            <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>
-                                            <li><a class="dropdown-item py-2 rounded" >แก้ไขรายการ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/view/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -281,17 +274,17 @@
                                 <td>{{ @$item->user_create_id->name}}</td>
                                 <td style="text-align: center;">
                                     @if ($item->status == 1)
-                                        <button type="button" class="btn btn-light-success btn-sm btn-status" value="{{ $item->id }}">ใช้งาน</button>
+                                        <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
                                     @else
-                                        <button type="button" class="btn btn-light-danger btn-sm btn-status" value="{{ $item->id }}">ปิดใช้งาน</button>
+                                        <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ปิดใช้งาน</button>
                                     @endif
                                 </td>
                                 <td style="text-align: center;">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-info text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                         <ul class="dropdown-menu border-0 shadow p-3">
-                                            <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>
-                                            <li><a class="dropdown-item py-2 rounded" >แก้ไขรายการ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/view/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -336,17 +329,17 @@
                                 <td>{{ @$item->user_create_id->name}}</td>
                                 <td style="text-align: center;">
                                     @if ($item->status == 1)
-                                        <button type="button" class="btn btn-light-success btn-sm btn-status" value="{{ $item->id }}">ใช้งาน</button>
+                                        <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
                                     @else
-                                        <button type="button" class="btn btn-light-danger btn-sm btn-status" value="{{ $item->id }}">ปิดใช้งาน</button>
+                                        <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ปิดใช้งาน</button>
                                     @endif
                                 </td>
                                 <td style="text-align: center;">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-info text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                         <ul class="dropdown-menu border-0 shadow p-3">
-                                            <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>
-                                            <li><a class="dropdown-item py-2 rounded" >แก้ไขรายการ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/view/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -365,7 +358,9 @@
 <script src="../assets/bundles/apexcharts.bundle.js"></script>
 
 <!-- Jquery Page Js -->
-<script src="../assets/js/template.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     var apexwc12 = {
         chart: {
@@ -395,5 +390,17 @@
         }]
     }
     new ApexCharts(document.querySelector("#apex-wc-12"), apexwc12).render();
+    function btnstatus(id) {
+        jQuery.ajax({
+            type: "GET",
+            url: "{!! url('/Mproduct/change-Status/" + id + "') !!}",
+            datatype: "JSON",
+            async: false,
+            success: function(result) {
+                Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                location.reload();
+            },
+        });
+    }
 </script>
 @endsection

@@ -72,10 +72,22 @@ class master_product_i extends Controller
     public function edit($id)
     {
         $product = master_product_item::find($id);
-        $image=$product->image_product;
+        $productID = $product->Product_ID;
+        $image =master_product_image::where('Product_ID',$productID)->get();
+        $imagePaths = $image->pluck('image_other')->toArray();
         $quantity = master_quantity::query()->get();
         $unit = master_unit::query()->get();
-        return view('master_product.edit',compact('product','quantity','unit'));
+        return view('master_product.edit',compact('product','quantity','unit','imagePaths'));
+    }
+    public function view($id)
+    {
+        $product = master_product_item::find($id);
+        $productID = $product->Product_ID;
+        $image =master_product_image::where('Product_ID',$productID)->get();
+        $imagePaths = $image->pluck('image_other')->toArray();
+        $quantity = master_quantity::query()->get();
+        $unit = master_unit::query()->get();
+        return view('master_product.view',compact('product','quantity','unit','imagePaths'));
     }
     public function save(Request $request)
     {
@@ -215,14 +227,14 @@ class master_product_i extends Controller
         }
         return view('master_product.index',compact('product'));
     }
-    public function changeStatus($id,$status)
+    public function changeStatus($id)
     {
 
         $product = master_product_item::find($id);
-        if ($status == 1 ) {
+        if ($product->status == 1 ) {
             $status = 0;
             $product->status = $status;
-        }elseif (($status == 0 )) {
+        }elseif (($product->status == 0 )) {
             $status = 1;
             $product->status = $status;
         }

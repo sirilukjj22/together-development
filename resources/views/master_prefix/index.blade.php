@@ -112,8 +112,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if(!empty($M_prefix))
-                            @foreach ($M_prefix as $key => $item)
+                        @if(!empty($prefix))
+                            @foreach ($prefix as $key => $item)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $item->name_th }}</td>

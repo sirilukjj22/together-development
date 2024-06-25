@@ -1,4 +1,5 @@
 @extends('layouts.masterLayout')
+
 <style>
     input[type=text], select {
         width: 100%;
@@ -223,7 +224,6 @@
                                     <div class="col-12 "  style="display: flex; justify-content: center;">
                                         <div class="card1">
                                             <div class="image-container">
-                                                <button type="button" class="image-upload-button"></button>
                                                 <input type="file" name="imageFile" id="imageFile" accept="image/jpeg, image/png, image/svg" style="display: none;">
                                                 <img src="{{ asset($product->image_product)}}" class="image_preview" style="display: block;">
                                                 <button class="buttonIcon" type="button" id="imageSubmit" style="display: none;"></button>
@@ -232,22 +232,24 @@
                                         </div>
                                     </div>
                                 </form>
-                                <div class="col-12" style="display: flex; justify-content: center;">
-                                    <div class="input-group mt-5" style="width:40%; position: relative;">
-                                        <label for="image_other" class="form-control" style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; pointer-events: none; display: flex; align-items: center; padding-left: 1rem; color: #000000;   border-radius: 5px;">รูปเพิ่มเติม</label>
-                                        <input type="file" class="form-control" name="image_other[]" id="image_other" aria-describedby="image_other" aria-label="Upload" multiple style="opacity: 0;">
-                                    </div>
-                                </div>
                                 <div class="col-12 my-3" style="display: flex; justify-content: center;">
                                     <div class="image-preview-container mt-3" id="imagePreviewContainer">
                                         @foreach ($imagePaths as $path)
-                                            <img src="{{ asset($path) }}" class="image_preview" alt="Image Preview" style="margin: 0 10px; max-width: 17%;height: auto;display: block; border-radius: 10px;">
+                                            <img src="{{ asset($path) }}" class="image_preview" alt="Image Preview" style="margin: 0 10px; max-width: 17%;height: auto;display: block; border-radius: 10px;"disabled>
                                         @endforeach
                                     </div>
                                 </div>
-                                <div id="lightbox" class="lightbox" style="display: none;">
-                                    <span class="close" onclick="closeLightbox()">&times;</span>
-                                    <img class="lightbox-content" id="lightboxImage" alt="Lightbox Image">
+                                <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                        <div class="modal-body">
+                                            <img id="modalImage" src="" class="img-fluid" alt="Large Image">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                                        </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-12 col-sm-12">
                                     <div class="row">
@@ -264,59 +266,59 @@
                                         <div class="col-6"></div>
                                         <div class="col-lg-2 col-md-2 col-sm-12" >
                                             <label for="Profile_ID">Profile ID</label><br>
-                                            <input type="text" id="Profile_ID" name="Profile_ID"maxlength="70" disabled value="{{$product->Product_ID}}">
+                                            <input type="text" id="Profile_ID" name="Profile_ID"maxlength="70" disabled value="{{$product->Product_ID}}" disabled>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6 col-sm-12">
                                             <label for="Name_th">Name_th</label><br>
-                                            <input type="text" id="name_th" name="name_th"maxlength="70" value="{{$product->name_th}}">
+                                            <input type="text" id="name_th" name="name_th"maxlength="70" value="{{$product->name_th}}" disabled>
                                         </div>
                                         <div class="col-lg-6 col-sm-12">
                                             <label for="name_en" >Name_en</label><br>
-                                            <input type="text" id="name_en" name="name_en"maxlength="70" value="{{$product->name_en}}">
+                                            <input type="text" id="name_en" name="name_en"maxlength="70" value="{{$product->name_en}}" disabled>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6 col-sm-12">
                                             <label for="detail_th">Detail_th</label><br>
-                                            <input type="text" id="detail_th" name="detail_th"maxlength="70" value="{{$product->detail_th}}">
+                                            <input type="text" id="detail_th" name="detail_th"maxlength="70" value="{{$product->detail_th}}" disabled>
                                         </div>
                                         <div class="col-lg-6 col-sm-12">
                                             <label for="detail_en">Detail_en</label><br>
-                                            <input type="text" id="detail_en" name="detail_en"maxlength="70" value="{{$product->detail_en}}">
+                                            <input type="text" id="detail_en" name="detail_en"maxlength="70" value="{{$product->detail_en}}"disabled>
                                         </div>
                                     </div>
                                     <div class=" row">
                                         <div class="col-lg-6 col-sm-12" ><label for="pax">Pax</label><br>
-                                            <input type="text" id="pax" name="pax"maxlength="70"  value="{{$product->pax}}">
+                                            <input type="text" id="pax" name="pax"maxlength="70"  value="{{$product->pax}}" disabled>
                                         </div>
                                         <div class="col-lg-6 col-sm-12" ><label for="room_size">Room size (Sqm.)</label><br>
-                                            <input type="text" id="room_size" class="price-input" name="room_size"maxlength="70"value="{{$product->room_size}}">
+                                            <input type="text" id="room_size" class="price-input" name="room_size"maxlength="70"value="{{$product->room_size}}"disabled>
                                         </div>
                                     </div>
                                     <div class=" row">
                                         <div class="col-lg-3 col-sm-12" >
                                             <label for="normal_price">Normal Price <br>(Include VAT)</label><br>
-                                            <input type="text"  class="price-input"id="normal_price" name="normal_price"maxlength="70" value="{{$product->normal_price}}">
+                                            <input type="text"  class="price-input"id="normal_price" name="normal_price"maxlength="70" value="{{$product->normal_price}}" disabled>
                                         </div>
                                         <div class="col-lg-3 col-sm-12">
                                             <label for="weekend_price">Weekday Price <br>(Include VAT)</label><br>
-                                            <input type="text"  class="price-input"id="weekend_price" name="weekend_price"maxlength="70"value="{{$product->weekend_price}}">
+                                            <input type="text"  class="price-input"id="weekend_price" name="weekend_price"maxlength="70"value="{{$product->weekend_price}}" disabled>
                                         </div>
                                         <div class="col-lg-3 col-sm-12" >
                                             <label for="long_weekend_price">Long Weekend Price<br> (Include VAT)</label><br>
-                                            <input type="text"  class="price-input"id="long_weekend_price" name="long_weekend_price"maxlength="70"value="{{$product->long_weekend_price}}">
+                                            <input type="text"  class="price-input"id="long_weekend_price" name="long_weekend_price"maxlength="70"value="{{$product->long_weekend_price}}" disabled>
                                         </div>
                                         <div class="col-lg-3 col-sm-12" >
                                             <label for="long_weekend_price">End Weekend Price<br> (Include VAT)</label><br>
-                                            <input type="text"  class="price-input"id="end_weekend_price" name="end_weekend_price"maxlength="70"value="{{$product->end_weekend_price}}">
+                                            <input type="text"  class="price-input"id="end_weekend_price" name="end_weekend_price"maxlength="70"value="{{$product->end_weekend_price}}" disabled>
                                         </div>
                                     </div>
                                     <div class=" row">
                                         <div class="col-lg-4 col-sm-12" >
                                             <label for="Quantity"  style="padding: 5px">Quantity</label>
-                                            <select name="quantity"  id = "quantity" class="select2">
+                                            <select name="quantity"  id = "quantity" class="select2" disabled>
                                                 <option value=""></option>
                                                 @foreach($quantity as $item)
                                                     <option value="{{ $item->id }}"{{$product->quantity== $item->id ? 'selected' : ''}}>{{ $item->name_th }} ({{ $item->name_en }})</option>
@@ -325,7 +327,7 @@
                                         </div>
                                         <div class="col-lg-4 col-sm-12" >
                                             <label for="Unit" style="padding: 5px">Unit</label>
-                                            <select name="unit" id = "unit" class="select2">
+                                            <select name="unit" id = "unit" class="select2" disabled>
                                                 <option value=""></option>
                                                 @foreach($unit as $item)
                                                     <option value="{{ $item->id }}"{{$product->unit== $item->id ? 'selected' : ''}}>{{ $item->name_th }} ({{ $item->name_en }})</option>
@@ -333,16 +335,8 @@
                                             </select>
                                         </div>
                                         <div class="col-lg-4 col-sm-12" ><label for="Maximum_Discount">Maximum Discount</label><br>
-                                            <input type="text" id="Maximum_Discount" name="Maximum_Discount"maxlength="70" required value="{{$product->maximum_discount}}">
+                                            <input type="text" id="Maximum_Discount" name="Maximum_Discount"maxlength="70" required value="{{$product->maximum_discount}}" disabled>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-3 col-sm-12"></div>
-                                        <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
-                                            <button type="button" class="btn btn-secondary mt-3 lift btn_modal"  onclick="window.location.href='{{ route('Mproduct.index') }}'">{{ __('ย้อนกลับ') }}</button>
-                                            <button type="submit" class="btn btn-primary mt-3 lift btn_modal">บันทึกข้อมูล</button>
-                                        </div>
-                                        <div class="col-lg-3 col-sm-12"></div>
                                     </div>
                                 </div>
                             </div>
@@ -355,121 +349,17 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const imagePreviews = document.querySelectorAll('.image_preview');
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
 
- $(document).ready(function() {
-        $('.select2').select2({
-            placeholder: "Please select an option"
+    imagePreviews.forEach(image => {
+        image.addEventListener('click', function() {
+            modalImage.src = this.src;
+            $('#imageModal').modal('show');
         });
     });
-    $(document).ready(function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        // เปิด file input เมื่อคลิกที่ปุ่มอัปโหลด
-        $(document).on('click', '.image-upload-button', function() {
-            $('#imageFile').click();
-        });
-
-        // แสดงตัวอย่างรูปภาพเมื่อมีการเลือกไฟล์
-        $(document).on('change', '#imageFile', function() {
-            if (this.files && this.files[0]) {
-                let img = document.querySelector('.image_preview');
-                let buttonIcon = document.querySelector('.buttonIcon');
-                let imageUploadButton = document.querySelector('.image-upload-button');
-                let deleteImage = document.querySelector('.deleteImage');
-
-                // รีเซ็ตรูปภาพเก่า
-
-                // ตั้งค่าใหม่สำหรับรูปภาพที่ถูกเลือก
-                img.onload = () => {
-                    URL.revokeObjectURL(img.src);
-                };
-                img.src = URL.createObjectURL(this.files[0]);
-                img.style.display = 'block'; // แสดงรูปภาพที่อัปโหลด
-               // buttonIcon.style.display = 'block'; // แสดงปุ่มไอคอน
-                imageUploadButton.style.display = 'none'; // ซ่อนปุ่มอัปโหลด
-                deleteImage.style.display = 'block';
-                imageContainer.classList.add('background-white');
-                // แสดงปุ่มลบ
-            }
-        });
-        $(document).on('click', '#deleteImage', function(event) {
-            event.preventDefault(); // ป้องกันการโหลดหน้าใหม่
-
-            let img = document.querySelector('.image_preview');
-            img.src = ""; // ตั้งค่า src ของรูปเป็นค่าว่าง
-
-            img.style.display = 'none'; // ซ่อนรูปภาพ
-            let imageUploadButton = document.querySelector('.image-upload-button');
-            imageUploadButton.style.display = 'block'; // แสดงปุ่มอัปโหลด
-            let deleteImage = document.querySelector('.deleteImage');
-            deleteImage.style.display = 'none'; // ซ่อนปุ่มลบ
-
-            let inputImageFile = document.getElementById('imageFile');
-            inputImageFile.value = ""; // ตั้งค่าค่า value เป็นค่าว่าง
-            location.reload();
-        });
-        // ส่งรูปภาพไปยังเซิร์ฟเวอร์เมื่อฟอร์มถูกส่ง
-    });
-    document.getElementById('image_other').addEventListener('change', function(event) {
-        const files = event.target.files;
-        const previewContainer = document.getElementById('imagePreviewContainer');
-        previewContainer.innerHTML = ''; // Clear existing images
-
-        if (files.length > 5) {
-            alert('You can upload a maximum of 5 images.');
-            event.target.value = ''; // Clear the input field
-            return;
-        }
-
-        Array.from(files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.className = 'image-preview';
-                img.addEventListener('click', () => openLightbox(e.target.result));
-                previewContainer.appendChild(img);
-            }
-            reader.readAsDataURL(file);
-        });
-    });
-
-    function openLightbox(src) {
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImage = document.getElementById('lightboxImage');
-        lightbox.style.display = 'block';
-        lightboxImage.src = src;
-    }
-
-
-    function closeLightbox() {
-        const lightbox = document.getElementById('lightbox');
-        lightbox.style.display = 'none';
-    }
-    $(document).ready(function() {
-        $('#category').change(function() {
-            var selectedCategory = $(this).val();
-            $.ajax({
-                url: '/Mproduct/check/Category', // Your Laravel route
-                type: 'POST',
-                data: {
-                    category: selectedCategory,
-                    _token: '{{ csrf_token() }}' // Ensure CSRF token is included
-                },
-                success: function(response) {
-                    $('#Profile_ID').val(response.data);
-                    console.log(response.data);
-                },
-                error: function(xhr) {
-                    // Handle error response
-                    console.error(xhr.responseText);
-                }
-            });
-        });
-    });
+});
 </script>
 @endsection
