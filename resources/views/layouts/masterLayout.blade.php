@@ -1311,7 +1311,7 @@
             $('.myDataTableProductItem').addClass( 'nowrap' ).dataTable( {
                 responsive: false,
                 searching: true,
-                paging: false,
+                paging: true,
                 ordering: true,
                 info: false,
                 scrollX: true,

@@ -104,7 +104,7 @@
                 <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
                     @csrf
                     <input type="hidden" name="category" value="prename">
-                <table class="myDataTable table table-hover align-middle mb-0" style="width:100%">
+                <table class="myDataTableProductItem table table-hover align-middle mb-0" style="width:100%">
                     <thead>
                         <tr>
                             <th>เรียงลำดับ</th>
