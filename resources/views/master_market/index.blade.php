@@ -8,7 +8,7 @@
                 <h1 class="h4 mt-1">Market (ตลาด)</h1>
             </div>
             <div class="col-auto">
-                <button type="button" class="btn btn-primary lift btn_modal" data-bs-toggle="modal" data-bs-target="#MarketCreate">
+                <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#MarketCreate">
                     <i class="fa fa-plus"></i> เพิ่มตลาด </button>
             </div>
 
@@ -50,8 +50,8 @@
                                             <input type="hidden" id="module_name" name="module_name" value="create">
 
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                                                <button type="button" class="btn btn-primary" id="btn-save">สร้าง</button>
+                                                <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
+                                                <button type="button" class="btn btn-color-green lift" id="btn-save">สร้าง</button>
                                             </div>
                                         </form>
                                     </div>

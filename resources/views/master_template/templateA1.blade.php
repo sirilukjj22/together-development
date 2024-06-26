@@ -121,7 +121,7 @@
         width: 120px;
         border-radius: 50px;
         transition-duration: 0.3s;
-        background-color: rgb(199, 187, 17);
+        background-color: rgb(45, 127, 123, 1);
         align-items: center;
     }
 
@@ -183,7 +183,7 @@
                             <option value="3">Template A3</option> --}}
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-3 lift btn_modal" >confirm</button>
+                    <button type="submit" class="btn btn-color-green lift text-white mt-3" >confirm</button>
                 </form>
             </div>
         </div>

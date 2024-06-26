@@ -337,6 +337,13 @@
                                         <div class="col-lg-4 col-sm-12" ><label for="Maximum_Discount">Maximum Discount</label><br>
                                             <input type="text" id="Maximum_Discount" name="Maximum_Discount"maxlength="70" required value="{{$product->maximum_discount}}" disabled>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12"></div>
+                                            <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
+                                                <button type="button" class="btn btn-secondary lift "  onclick="window.location.href='{{ route('Mproduct.index') }}'">{{ __('ย้อนกลับ') }}</button>
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

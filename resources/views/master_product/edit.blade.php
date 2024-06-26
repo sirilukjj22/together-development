@@ -157,6 +157,9 @@
             text-decoration: none;
             cursor: pointer;
         }
+        .btn-space {
+            margin-right: 10px; /* ปรับขนาดช่องว่างตามต้องการ */
+        }
     @media (max-width: 768px) {
         .image-container {
             width: 100%;
@@ -339,8 +342,8 @@
                                     <div class="row">
                                         <div class="col-lg-3 col-sm-12"></div>
                                         <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
-                                            <button type="button" class="btn btn-secondary mt-3 lift btn_modal"  onclick="window.location.href='{{ route('Mproduct.index') }}'">{{ __('ย้อนกลับ') }}</button>
-                                            <button type="submit" class="btn btn-primary mt-3 lift btn_modal">บันทึกข้อมูล</button>
+                                            <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{ route('Mproduct.index') }}'">{{ __('ย้อนกลับ') }}</button>
+                                            <button type="submit" class="btn btn-color-green lift ">บันทึกข้อมูล</button>
                                         </div>
                                         <div class="col-lg-3 col-sm-12"></div>
                                     </div>
