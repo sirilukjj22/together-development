@@ -582,3 +582,13 @@
         right: -400px
     }
 }
+
+ /* background */
+.bg-color-green {
+    background: rgba(45, 127, 123, 1);
+}
+
+.btn-color-green {
+    color: #fff;
+    background: rgba(45, 127, 123, 1);
+}

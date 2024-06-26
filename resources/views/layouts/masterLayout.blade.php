@@ -91,7 +91,7 @@
 
                             @if ($role_permisstion->profile == 1)
                                 <li class="collapsed">
-                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Profile"  href="#"><i class="fa fa-user"></i> <span>Profile</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
+                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Profile"  href="#"><i class="fa fa-lg fa-user"></i> <span>Profile</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Profile">
@@ -102,7 +102,7 @@
                             @endif
                             @if ($role_permisstion->freelancer == 1)
                                 <li class="collapsed">
-                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Freelancer"  href="#"><i class="fa fa-user-plus"></i> <span>Freelancer</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
+                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Freelancer"  href="#"><i class="fa fa-lg fa-user-plus"></i> <span>Freelancer</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Freelancer">
@@ -124,7 +124,7 @@
                             @if ($role_permisstion->document == 1)
                                 <li class="collapsed">
                                     <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Document"  href="#">
-                                        <i class="fa fa-folder-open"></i> <span>Document</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span>
+                                        <i class="fa fa-lg fa-folder-open"></i> <span>Document</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span>
                                     </a>
 
                                     <!-- Menu: Sub menu ul -->
@@ -147,11 +147,11 @@
                                 </li>
                             @endif
                             @if ($role_permisstion->product_item == 1)
-                                <li><a class="m-link" href="{{ route('Mproduct.index') }}"><i class="fa fa-cubes" style="font-weight: bold; color: white;"></i> <span>Product Item</span></a></li>
+                                <li><a class="m-link" href="{{ route('Mproduct.index') }}"><i class="fa fa-lg fa-cubes" style="font-weight: bold; color: white;"></i> <span>Product Item</span></a></li>
                             @endif
                             @if ($role_permisstion->debtor == 1)
                                 <li class="collapsed">
-                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Debtor"  href="#"><i class="fa fa-file-text"></i> <span>Debtor</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
+                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Debtor"  href="#"><i class="fa fa-lg fa-file-text"></i> <span>Debtor</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Debtor">
@@ -166,7 +166,7 @@
                             @endif
                             @if ($role_permisstion->maintenance == 1)
                                 <li class="collapsed">
-                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Maintenance"  href="#"><i class="fa fa-gear"></i> <span>Maintenance</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
+                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Maintenance"  href="#"><i class="fa fa-lg fa-gear"></i> <span>Maintenance</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Maintenance">
@@ -184,7 +184,7 @@
                             @endif
                             @if ($role_permisstion->general_ledger == 1)
                                 <li class="collapsed">
-                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-General-ledger"  href="#"><i class="fa fa-bar-chart-o"></i> <span>General Ledger</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
+                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-General-ledger"  href="#"><i class="fa fa-lg fa-bar-chart-o"></i> <span>General Ledger</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-General-ledger">
@@ -199,7 +199,7 @@
                             @endif
                             @if ($role_permisstion->setting == 1)
                                 <li class="collapsed">
-                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Setting"  href="#"><i class="fa fa-cogs"></i> <span>Setting</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
+                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Setting"  href="#"><i class="fa fa-lg fa-cogs"></i> <span>Setting</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Setting">
@@ -234,7 +234,7 @@
                                     </ul>
                                 </li>
                             @endif
-                            <li><a class="m-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalLogout"><i class="fa fa-power-off" style="font-weight: bold; color: white;"></i> <span>Logout</span></a></li>
+                            <li><a class="m-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalLogout"><i class="fa fa-lg fa-power-off" style="font-weight: bold; color: white;"></i> <span>Logout</span></a></li>
                         </ul>
 
                     </div>
@@ -287,16 +287,16 @@
         <div class="modal fade" id="exampleModalLogout" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLogoutLabel">Modal title</h5>
+                    <div class="modal-header bg-color-green">
+                        <h5 class="modal-title text-white" id="exampleModalLogoutLabel">Logout</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Woohoo, you're reading this text in a modal!</p>
+                        <p>Are You Sure to Logout!</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-danger">Save changes</button>
+                        <button type="button" class="btn btn-color-green" onclick="location.href='{{ route('logout') }}'">Confirm</button>
                     </div>
                 </div>
             </div>
