@@ -29,14 +29,12 @@
                 display: none;
             }
 
+            .mobileLabelShow {
+                display: inline;
+            }
+
             #mobileshow {
                 margin-top: 80px;
-            }
-        }
-
-        @media screen and (min-width: 600px) {
-            .ipadHidden {
-                display: none;
             }
         }
     </style>
@@ -48,12 +46,12 @@
     <div id="layout-c" class="theme-blue">
 
          <!-- Navigation -->
-        <div class="navigation navbar navbar-light justify-content-center px-2 py-2 py-md-3 d-xl-none mobileShowimg">
+        <div class="navigation navbar navbar-light justify-content-center px-2 py-2 py-md-3 d-xl-none">
             <!-- Brand -->
             <div class="d-flex align-items-center">
-                <a href="index.html" class="">
+                <a href="{{ route('sms-alert') }}" class="">
                     <img class="" src="{{ asset('assets2/images/Logo.png') }}" alt="logo of Together Resort" width="50" />
-                    <label class="text-white me-3 ipadHidden">Together Resort Development</label>
+                    <label class="text-white me-3 mobileLabelShow">Together Resort Development</label>
                 </a>
             </div>
 

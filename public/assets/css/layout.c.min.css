@@ -463,6 +463,10 @@
         left: -400px
     }
 
+    .mobileLabelShow{
+        display: none;
+    }
+
     #layout-c .sidebar.sidebar-img-bg::after {
         left: -400px
     }
