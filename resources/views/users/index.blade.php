@@ -75,7 +75,7 @@
                                                     @break
                                                 @endswitch
                                             </td>
-                                            <td data-label="สถานะการใช้งาน">
+                                            <td>
                                                 @if ($item->status == 1)
                                                     <button type="button" class="btn btn-light-success btn-sm btn-status" value="{{ $item->id }}">ใช้งาน</button>
                                                 @else
