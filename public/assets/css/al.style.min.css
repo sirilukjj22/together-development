@@ -24002,6 +24002,8 @@ wi-wind-default._345-deg {
 
   --primary-color: #0d6efd;
 
+  --green-color: rgba(45, 127, 123, 1);
+
   --secondary-color: #ffd55d;
 
   --chart-color1: #2794eb;
@@ -24254,11 +24256,11 @@ wi-wind-default._345-deg {
 
 [class="theme-blue"] {
 
-  --primary-color: #0d6efd;
+  --primary-color: rgba(45, 127, 123, 1);
 
   --secondary-color: #ffd55d;
 
-  --primary-rgb: 13, 110, 253;
+  --primary-rgb: rgba(45, 127, 123, 1);
 
   --chart-color1: #2794eb;
 
@@ -31482,6 +31484,38 @@ fieldset:disabled .btn {
 
 }
 
+.btn-color-green {
+
+  --bs-btn-color: #000;
+
+  --bs-btn-bg: rgba(45, 127, 123, 1);
+
+  --bs-btn-border-color: rgba(45, 127, 123, 1);
+
+  --bs-btn-hover-color: #000;
+
+  --bs-btn-hover-bg: rgb(40, 110, 107);
+
+  --bs-btn-hover-border-color: rgba(45, 127, 123, 1);
+
+  --bs-btn-focus-shadow-rgb: 67, 156, 171;
+
+  --bs-btn-active-color: #000;
+
+  --bs-btn-active-bg: rgba(45, 127, 123, 1);
+
+  --bs-btn-active-border-color: rgba(45, 127, 123, 1);
+
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+
+  --bs-btn-disabled-color: #000;
+
+  --bs-btn-disabled-bg: rgba(45, 127, 123, 1);
+
+  --bs-btn-disabled-border-color: rgba(45, 127, 123, 1)
+
+}
+
 
 
 .btn-outline-primary {
@@ -32008,11 +32042,11 @@ fieldset:disabled .btn {
 
   --bs-dropdown-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 
-  --bs-dropdown-link-color: var(--bs-body-color);
+  --bs-dropdown-link-color: #6c757d;
 
-  --bs-dropdown-link-hover-color: var(--bs-body-color);
+  --bs-dropdown-link-hover-color: rgba(45, 127, 123, 1);
 
-  --bs-dropdown-link-hover-bg: var(--bs-tertiary-bg);
+  --bs-dropdown-link-hover-bg: rgba(45, 127, 123, 1);
 
   --bs-dropdown-link-active-color: #fff;
 
@@ -54088,9 +54122,10 @@ button:focus:not(:focus-visible) {
 
 .dropdown-menu .dropdown-item.active {
 
-  background-color: rgba(var(--primary-rgb), 0.15);
+  /* background-color: rgba(var(--primary-rgb), 0.15); */
+  background-color: rgba(45, 127, 123, 0.15);
 
-  color: var(--primary-color)
+  color: rgba(45, 127, 123);
 
 }
 
@@ -54830,7 +54865,7 @@ button:focus:not(:focus-visible) {
 
 .page-item:hover .page-link {
 
-  background-color: var(--primary-color);
+  background-color: var(--green-color);
 
   border-color: var(--border-color)
 

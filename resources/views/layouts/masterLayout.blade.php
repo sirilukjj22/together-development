@@ -213,7 +213,7 @@
                                             <li><a class="ms-link" href="{{ route('Mproduct.index.quantity') }}">Quantity</a></li>
                                         @endif
                                         @if ($role_permisstion->prefix == 1)
-                                            <li><a class="ms-link" href="{{ route('Mprefix.index') }}">Prefix</a></li>
+                                            <li><a class="ms-link" href="{{ route('Mprefix.index') }}">Prename</a></li>
                                         @endif
                                         
                                         @if ($role_permisstion->company_type == 1)

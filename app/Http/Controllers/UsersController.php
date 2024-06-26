@@ -35,7 +35,9 @@ class UsersController extends Controller
             }
         }
 
-        return view('users.index', compact('users'));
+        $title = "User";
+
+        return view('users.index', compact('users', 'title'));
     }
 
     /**
