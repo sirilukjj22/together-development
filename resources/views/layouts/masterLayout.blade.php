@@ -140,6 +140,9 @@
                                         @if ($role_permisstion->hotel_contact_rate == 1)
                                             <li><a class="ms-link" href="#">Hotel Contract Rate Agreement</a></li>
                                         @endif
+                                        @if ($role_permisstion->proforma_invoice == 1)
+                                            <li><a class="ms-link" href="#">Proforma Invoice</a></li>
+                                        @endif
                                         @if ($role_permisstion->billing_folio == 1)
                                             <li><a class="ms-link" href="#">Billing Folio</a></li>
                                         @endif
