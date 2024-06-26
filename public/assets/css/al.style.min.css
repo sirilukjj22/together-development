@@ -24000,7 +24000,7 @@ wi-wind-default._345-deg {
 
   --hc-bg-color: #f0f0f0;
 
-  --primary-color: #0d6efd;
+  --primary-color: rgba(45, 127, 123, 1);
 
   --green-color: rgba(45, 127, 123, 1);
 
@@ -24092,7 +24092,7 @@ wi-wind-default._345-deg {
 
 [data-theme="dark"] [class="theme-blue"] {
 
-  --primary-color: #2e7bec;
+  --primary-color: rgba(45, 127, 123, 1);
 
   --border-color: #1a1f2d;
 
@@ -24644,7 +24644,7 @@ wi-wind-default._345-deg {
 
   --bs-focus-ring-color: rgba(13, 110, 253, 0.25);
 
-  --bs-form-valid-color: #198754;
+  --bs-form-valid-color: rgba(45, 127, 123, 1);
 
   --bs-form-valid-border-color: #198754;
 
@@ -24752,7 +24752,7 @@ wi-wind-default._345-deg {
 
   --bs-border-color-translucent: rgba(255, 255, 255, 0.15);
 
-  --bs-form-valid-color: #75b798;
+  --bs-form-valid-color: rgba(45, 127, 123, 1);
 
   --bs-form-valid-border-color: #75b798;
 
@@ -29810,9 +29810,9 @@ textarea.form-control-lg {
 
 .form-check-input:checked {
 
-  background-color: #0d6efd;
+  background-color: rgba(45, 127, 123, 1);
 
-  border-color: #0d6efd
+  border-color: rgba(45, 127, 123, 1);
 
 }
 
@@ -29836,9 +29836,9 @@ textarea.form-control-lg {
 
 .form-check-input[type="checkbox"]:indeterminate {
 
-  background-color: #0d6efd;
+  background-color: rgba(45, 127, 123, 1);
 
-  border-color: #0d6efd;
+  border-color: rgba(45, 127, 123, 1);
 
   --bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10h8'/%3e%3c/svg%3e")
 
@@ -53730,9 +53730,9 @@ body.rtl_mode .post-card .author {
 
 .form-check-input:checked {
 
-  background-color: var(--primary-color);
+  background-color: rgba(45, 127, 123, 1);
 
-  border-color: var(--primary-color)
+  border-color: rgba(45, 127, 123, 1);
 
 }
 
