@@ -18,7 +18,7 @@
     --sidebar-color: #fcfcfc;
     --hc-font-color: #555555;
     --hc-bg-color: #f0f0f0;
-    --primary-color: #0d6efd;
+    --primary-color: rgba(45, 127, 123, 1);
     --secondary-color: #ffd55d;
     --chart-color1: #2794eb;
     --chart-color2: #17b3c1;
@@ -63,7 +63,7 @@
 }
 
 [data-theme="dark"] [class="theme-blue"] {
-    --primary-color: #2e7bec;
+    --primary-color: rgba(45, 127, 123, 1);
     --border-color: #1a1f2d;
     --card-color: #10141f;
     --body-color: #080b13
@@ -145,7 +145,7 @@
 }
 
 [class="theme-blue"] {
-    --primary-color: #0d6efd;
+    --primary-color: rgba(45, 127, 123, 1);
     --secondary-color: #ffd55d;
     --primary-rgb: 13, 110, 253;
     --chart-color1: #2794eb;
