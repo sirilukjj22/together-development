@@ -289,14 +289,14 @@
                 <div class="modal-content">
                     <div class="modal-header bg-color-green">
                         <h5 class="modal-title text-white" id="exampleModalLogoutLabel">Logout</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close lift" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <p>Are You Sure to Logout!</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-color-green" onclick="location.href='{{ route('logout') }}'">Confirm</button>
+                        <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-color-green lift" onclick="location.href='{{ route('logout') }}'">Confirm</button>
                     </div>
                 </div>
             </div>

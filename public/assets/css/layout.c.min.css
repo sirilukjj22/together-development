@@ -592,3 +592,9 @@
     color: #fff;
     background: rgba(45, 127, 123, 1);
 }
+
+.btn-color-green :hover{
+    color: #fff;
+    background-color: rgba(45, 127, 123, 1) !important;
+
+}
