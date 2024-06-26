@@ -28,7 +28,7 @@ class CompanyController extends Controller
         $Company = companys::find($id);
         $Company_ID = $Company->Profile_ID;
         $representative = representative::where('Company_ID', 'like', "%{$Company_ID}%")->get();
-        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
+        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         $provinceNames = province::select('name_th','id')->get();
         return view('company.contact',compact('provinceNames','Mprefix','Company','representative'));
     }
@@ -117,7 +117,7 @@ class CompanyController extends Controller
         $representative = representative::find($itemId);
         $representative_ID = $representative->Profile_ID;
         $repCompany_ID = $representative->Company_ID;
-        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
+        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         $number =  preg_replace("/[^0-9]/", "", $Company->City);
         $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Company->City);
         $provinceNames = province::select('name_th','id')->get();
@@ -292,7 +292,7 @@ class CompanyController extends Controller
         $representative = representative::where('Company_ID', 'like', "%{$Company_ID}%")->first();
         $representative_ID = $representative->Profile_ID;
         $repCompany_ID = $representative->Company_ID;
-        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
+        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         $number =  preg_replace("/[^0-9]/", "", $Company->City);
         $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Company->City);
         $provinceNames = province::select('name_th','id')->get();
@@ -351,7 +351,7 @@ class CompanyController extends Controller
         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
         $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
         $Mmarket = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mmarket')->get();
-        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
+        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         return view('company.create',compact('booking_channel','provinceNames','MCompany_type','Mmarket','Mprefix','N_Profile','A_Profile'));
     }
 
@@ -410,15 +410,13 @@ class CompanyController extends Controller
 
 
 
-    public function changeStatus(Request $request)
-    {
-        $id = $request->id;
-        $status = $request->status; // รับค่า status ที่ส่งมาจาก Request
+    public function changeStatus($id)
+    { // รับค่า status ที่ส่งมาจาก Request
         $Company = companys::find($id);
-        if ($status == 1 ) {
+        if ($Company->status == 1 ) {
             $status = 0;
             $Company->status = $status;
-        }elseif (($status == 0 )) {
+        }elseif (($Company->status == 0 )) {
             $status = 1;
             $Company->status = $status;
         }
@@ -537,7 +535,7 @@ class CompanyController extends Controller
             $A_Profile = $latestAgent;
             $saveAgent = new representative();
             $saveAgent->Profile_ID = $A_Profile;
-            $saveAgent->prefix = $request->Mprefix;
+            $saveAgent->prefix = $request->Preface;
             $saveAgent->First_name = $request->first_nameAgent;
             $saveAgent->Last_name = $request->last_nameAgent;
             $countrydataA= $request->countrydataA;
@@ -595,14 +593,16 @@ class CompanyController extends Controller
         $representative = representative::where('Company_Name', 'like', "%{$Company_Name}%")
         ->where('Branch', 'like', "%{$Branch}%")
         ->where('status', 1 )->first();
+
         if ($representative == null) {
             return response()->json([
                 'representative' => $representative,
             ]);
 
         }else {
+            $Profile_IDr = $representative->Profile_ID;
             $ID_ContactA = $representative->Company_ID;
-            $phone = representative_phone::where('Company_ID', $ID_ContactA)->get();
+            $phone = representative_phone::where('Company_ID', $ID_ContactA)->where('Profile_ID',$Profile_IDr)->get();
         }
 
             $CompanyCount = representative::where('Company_Name', 'like', "%{$Company_Name}%")
@@ -613,7 +613,6 @@ class CompanyController extends Controller
             }else{
                 $CompanyCountA = 1;
             }
-
         return response()->json([
             'representative' => $representative,
             'CompanyCountA' => $CompanyCountA,
@@ -650,7 +649,7 @@ class CompanyController extends Controller
         $faxArray = $fax->toArray();
 
         $representative = representative::where('Company_ID', 'like', "%{$Company_ID}%")->get();
-        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
+        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         $provinceNames = province::select('name_th','id')->get();
         return view('company.edit',compact('Company','booking_channel','provinceNames','Tambon','amphures',
         'Zip_code','Other_City','faxArray','phoneDataArray','Company_Contact','Mmarket',
