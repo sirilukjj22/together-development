@@ -23,34 +23,22 @@
 
 <body>
     <style>
-        /* #mobileshow {
-            display: none;
-          }
+
         @media screen and (max-width: 500px) {
+            .mobileHidden {
+                display: none;
+            }
+
             #mobileshow {
-              display: block;
+                margin-top: 80px;
             }
-          }
+        }
 
-          .mobile-container {
-                max-width: 480px;
-                margin: auto;
-                background-color: #555;
-                height: 500px;
-                color: white;
-                border-radius: 10px;
-            } */
-
-            @media screen and (max-width: 500px) {
-                .mobileHidden {
-                    display: none;
-                }
-
-                #mobileshow {
-                    /* display: none; */
-                    margin-top: 80px;
-                }
+        @media screen and (min-width: 600px) {
+            .ipadHidden {
+                display: none;
             }
+        }
     </style>
 
     @php
@@ -65,14 +53,14 @@
             <div class="d-flex align-items-center">
                 <a href="index.html" class="">
                     <img class="" src="{{ asset('assets2/images/Logo.png') }}" alt="logo of Together Resort" width="50" />
-                    <label class="text-white me-3">Together Resort Development</label>
+                    <label class="text-white me-3 ipadHidden">Together Resort Development</label>
                 </a>
             </div>
 
             <!-- Menu: icon -->
             <ul class="nav navbar-nav flex-row flex-sm-column flex-grow-1 justify-content-start py-2 py-lg-0">
                 <!-- Create group -->
-                <li class="nav-item"><a class="nav-link p-2 p-lg-3 d-block d-xl-none menu-toggle me-2 me-lg-0" href="#"><i class="fa fa-bars text-white"></i></a></li>
+                <li class="nav-item"><a class="nav-link p-2 p-lg-3 d-block d-xl-none menu-toggle me-2 me-lg-0" href="#"><i class="fa fa-lg fa-bars text-white"></i></a></li>
             </ul>
         </div>
 
