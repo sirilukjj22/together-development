@@ -234,7 +234,7 @@
 }
 
 #layout-c .navigation {
-    background-color: var(--body-color);
+    background: linear-gradient(180deg, rgba(45, 127, 123, 1) 0%, rgba(9, 49, 69, 1) 100%);
     width: 60px;
     height: 100vh;
     font-size: 1rem;
@@ -258,7 +258,7 @@
 
 @media only screen and (max-width: 1279px) {
     #layout-c .navigation {
-        background-color: var(--card-color);
+        background: linear-gradient(180deg, rgba(45, 127, 123, 1) 0%, rgba(9, 49, 69, 1) 100%);
         z-index: 10
     }
 }
@@ -266,7 +266,7 @@
 @media only screen and (max-width: 567px) {
     #layout-c .navigation {
         top: 0;
-        height: 56px;
+        height: 75px;
         width: 100%;
         border-bottom: 1px solid;
         position: fixed;
@@ -297,7 +297,7 @@
         rgba(9, 49, 69, 1) 100%
       );
     position: relative;
-    height:;
+    /* height:; */
     width: 260px;
     overflow-y: auto;
     -webkit-box-flex: 0;
@@ -345,14 +345,14 @@
 #layout-c .sidebar .menu-list .m-link.active,
 #layout-c .sidebar .menu-list .ms-link:hover,
 #layout-c .sidebar .menu-list .ms-link.active {
-    color:
+    /* color: */
 }
 
 #layout-c .sidebar .menu-list .m-link:hover::before,
 #layout-c .sidebar .menu-list .m-link.active::before,
 #layout-c .sidebar .menu-list .ms-link:hover::before,
 #layout-c .sidebar .menu-list .ms-link.active::before {
-    display: 
+    /* display:  */
 }
 
 #layout-c .sidebar .menu-list .m-link {

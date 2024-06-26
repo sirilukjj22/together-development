@@ -2,228 +2,250 @@
 
 <html class="no-js " lang="en">
 
-
-
 <head>
-
     <meta charset="utf-8">
-
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <meta name="description" content="Responsive Bootstrap 5 admin template and web Application ui kit.">
-
-    <meta name="keyword"
-        content="ALUI, Bootstrap 5, ReactJs, Angular, Laravel, VueJs, ASP .Net, Admin Dashboard, Admin Theme">
-
+    <meta name="keyword" content="ALUI, Bootstrap 5, ReactJs, Angular, Laravel, VueJs, ASP .Net, Admin Dashboard, Admin Theme">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-
-
-
     <title>TOGETHER DEVELOPMENT</title>
-
     <link rel="icon" href="../../../image/Logo1-01.png" type="image/x-icon"> <!-- Favicon -->
 
-
-
     <link rel="stylesheet" href="{{ asset('assets/css/dataTables.min.css') }}">
-
-
-
     <!-- Plugin Css -->
-
     <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css') }}">
-
-
-
     <!-- project css file  -->
-
     <link rel="stylesheet" href="{{ asset('assets/css/al.style.min.css') }}">
-
-
-
     <!-- project layout css file -->
-
-    <link rel="stylesheet" href="{{ asset('assets/css/layout.a.min.css') }}">
-
-
-
+    <link rel="stylesheet" href="{{ asset('assets/css/layout.c.min.css') }}">
 </head>
 
-
-
 <body>
+    <style>
+        /* #mobileshow {
+            display: none;
+          }
+        @media screen and (max-width: 500px) {
+            #mobileshow {
+              display: block;
+            }
+          }
 
+          .mobile-container {
+                max-width: 480px;
+                margin: auto;
+                background-color: #555;
+                height: 500px;
+                color: white;
+                border-radius: 10px;
+            } */
 
+            @media screen and (max-width: 500px) {
+                .mobileHidden {
+                    display: none;
+                }
 
-    <div id="layout-a" class="theme-blue">
+                #mobileshow {
+                    /* display: none; */
+                    margin-top: 80px;
+                }
+            }
+    </style>
 
+    @php
+        $role_permisstion = App\Models\Role_permission_menu::where('user_id', Auth::user()->id)->first();
+    @endphp
 
+    <div id="layout-c" class="theme-blue">
 
-        <!-- Navigation -->
-
-        <div class="navigation navbar navbar-light justify-content-center px-3 px-lg-2 py-2 py-md-3 border-right">
-
-
-
+         <!-- Navigation -->
+        <div class="navigation navbar navbar-light justify-content-center px-2 py-2 py-md-3 d-xl-none mobileShowimg">
             <!-- Brand -->
-
-            <a href="{{ route('sms-alert') }}" class="mb-0 mb-lg-3 brand-icon">
-
-                <img src="../../../image/Logo1-01.png" alt="" width="40">
-
-            </a>
-
-
+            <div class="d-flex align-items-center">
+                <a href="index.html" class="">
+                    <img class="" src="{{ asset('assets2/images/Logo.png') }}" alt="logo of Together Resort" width="50" />
+                    <label class="text-white me-3">Together Resort Development</label>
+                </a>
+            </div>
 
             <!-- Menu: icon -->
-
             <ul class="nav navbar-nav flex-row flex-sm-column flex-grow-1 justify-content-start py-2 py-lg-0">
-
-
-
                 <!-- Create group -->
-
-                <li class="nav-item"><a class="nav-link p-2 p-lg-3 d-block d-xl-none menu-toggle me-2 me-lg-0"
-                        href="#"><i class="fa fa-bars"></i></a></li>
-
-                {{-- <li class="nav-item"><a class="nav-link p-2 p-lg-3" href="#" title="Search" data-bs-toggle="modal" data-bs-target="#SearchModal"><i class="fa fa-search"></i></a></li> --}}
-
-
-
-                <!-- Menu collapse -->
-
-                <li class="nav-item"><a class="nav-link p-2 p-lg-3" href="#" title="Settings"
-                        data-bs-toggle="modal" data-bs-target="#SettingsModal"><i class="fa fa-gear"></i></a></li>
-
-
-
+                <li class="nav-item"><a class="nav-link p-2 p-lg-3 d-block d-xl-none menu-toggle me-2 me-lg-0" href="#"><i class="fa fa-bars text-white"></i></a></li>
             </ul>
-
-
-
         </div>
 
-
-
         <!-- sidebar -->
-
-        <div class="sidebar px-3 py-2 py-md-3">
-
+        <div class="sidebar px-4 py-2">
             <div class="d-flex flex-column h-100">
+                <div class="text-center mb-2" id="mobileshow">
+                    <img src="{{ asset('assets2/images/Logo.png') }}" alt="logo of Together Resort" width="120" class="text-center mobileHidden"/>
+                </div>
 
-                <center>
+                <!-- Menu: tab content -->
+                <div class="tab-content flex-grow-1 mt-1">
+                    <div class="tab-pane fade show active" id="nav-menu">
+                        <!-- Menu: main ul -->
+                        <ul class="menu-list">
 
-                    <img src="../../../image/Logo-02-01.png" alt="" width="120">
+                            @if ($role_permisstion->profile == 1)
+                                <li class="collapsed">
+                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Profile"  href="#"><i class="fa fa-user"></i> <span>Profile</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
-                </center>
-
-
-
-                <!-- Menu: main ul -->
-
-                <ul class="menu-list flex-grow-1 pb-4">
-                    @php
-                        $role_permisstion = App\Models\Role_permission_menu::where('user_id', Auth::user()->id)->first();
-                    @endphp
-
-                    <li class="divider mt-2 py-2 border-top text-uppercase"></li>
-                    @if ($role_permisstion->sms_alert == 1)
-                        <li>
-                            <a class="m-link" href="{{ route('sms-alert') }}"><i class="fa fa-comment"></i>
-                                <span>SMS Alert</span>
-                            </a>
-                        </li>
-                    @endif
-                    @if ($role_permisstion->revenue == 1)
-                    <li>
-                        <a class="m-link" href="{{ route('revenue') }}"><i class="fa fa-bar-chart-o"></i>
-                            <span>Revenue</span>
-                        </a>
-                    </li>
-                    @endif
-
-                    @if ($role_permisstion->debtor == 1)
-                        <li class="collapsed">
-                            <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Components" href="#"><i class="fa fa-clipboard"></i>
-                                <span>Debtor</span> <span class="arrow fa fa-plus ms-auto text-end"></span>
-                            </a>
-                            <!-- Menu: Sub menu ul -->
-                            <ul class="sub-menu collapse" id="menu-Components">
-                                <?php
-                                    $agoda_count = App\Models\SMS_alerts::where('status', 5)->where('status_receive_agoda', 0)->count();
-                                ?>
-                                @if ($role_permisstion->agoda == 1)
-                                <li>
-                                    <a class="ms-link" href="{{ route('debit-agoda') }}">
-                                        Agoda <span class="badge bg-danger ms-auto text-end">{{ $agoda_count }}</span>
-                                    </a>
+                                    <!-- Menu: Sub menu ul -->
+                                    <ul class="sub-menu collapse" id="menu-Profile">
+                                        <li><a class="ms-link" href="{{ route('Company.index') }}">Company / Agent</a></li>
+                                        <li><a class="ms-link" href="{{ route('guest.index') }}">Guest</a></li>
+                                    </ul>
                                 </li>
-                                @endif
-                                @if ($role_permisstion->elexa == 1)
-                                    <li><a class="ms-link" href="#">Elexa</a></li>
-                                @endif
-                            </ul>
-                        </li>
-                    @endif
-                    @if ($role_permisstion->user == 1)
-                        <li>
-                            <a class="m-link" href="{{ url('users', 'index') }}"><i class="fa fa-user-circle"></i><span>Users</span></a>
-                        </li>
-                    @endif
+                            @endif
+                            @if ($role_permisstion->freelancer == 1)
+                                <li class="collapsed">
+                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Freelancer"  href="#"><i class="fa fa-user-plus"></i> <span>Freelancer</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
-                        <li class="divider mt-4 py-2 border-top"><small>MASTER DATA</small></li>
-                        @if ($role_permisstion->bank == 1)
-                            <li>
-                                <a class="m-link" href="{{ route('master', 'bank') }}"><i
-                                        class="fa fa-folder-open"></i><span>Bank</span></a>
-                            </li>
-                        @endif
-                        <li>
-                            <a class="m-link" href="{{ route('Mproduct.index.quantity') }}"><i
-                                    class="fa fa-folder-open"></i><span>Quantity</span></a>
-                        </li>
-                        <li>
-                            <a class="m-link" href="{{ route('Mproduct.index.unit') }}"><i
-                                    class="fa fa-folder-open"></i><span>Unit</span></a>
-                        </li>
-                        <li>
-                            <a class="m-link" href="{{ route('Mprefix.index') }}"><i
-                                    class="fa fa-folder-open"></i><span>Prename</span></a>
-                        </li>
-                        <li>
-                            <a class="m-link" href="{{ route('Mbank.index') }}"><i
-                                    class="fa fa-folder-open"></i><span>Bank Company</span></a>
-                        </li>
-                        <li>
-                            <a class="m-link" href="{{ route('Mcomt.index') }}"><i
-                                    class="fa fa-folder-open"></i><span>Company Type</span></a>
-                        </li>
-                        <li>
-                            <a class="m-link" href="{{ route('Mmarket.index') }}"><i
-                                    class="fa fa-folder-open"></i><span>Company Market</span></a>
-                        </li>
-                        <li>
-                            <a class="m-link" href="{{ route('MEvent.index') }}"><i
-                                    class="fa fa-folder-open"></i><span>Company Event</span></a>
-                        </li>
-                        <li>
-                            <a class="m-link" href="{{ route('Mbooking.index') }}"><i
-                                    class="fa fa-folder-open"></i><span>Booking</span></a>
-                        </li>
-                        <li>
-                            <a class="m-link" href="{{ route('Template.TemplateA1') }}"><i
-                                    class="fa fa-folder-open"></i><span>Template</span></a>
-                        </li>
+                                    <!-- Menu: Sub menu ul -->
+                                    <ul class="sub-menu collapse" id="menu-Freelancer">
+                                        @if ($role_permisstion->membership == 1)
+                                            <li><a class="ms-link" href="{{ route('freelancer_member.index') }}">Membership</a></li>
+                                        @endif
+                                        @if ($role_permisstion->message_inbox == 1)
+                                            <li><a class="ms-link" href="#">Message Inbox</a></li>
+                                        @endif
+                                        @if ($role_permisstion->registration_request == 1)
+                                            <li><a class="ms-link" href="{{ route('freelancer.index') }}">Registration Request</a></li>
+                                        @endif
+                                        @if ($role_permisstion->message_request == 1)
+                                            <li><a class="ms-link" href="{{ route('freelancer.index') }}">Message Request</a></li>
+                                        @endif
+                                    </ul>
+                                </li>
+                            @endif
+                            @if ($role_permisstion->document == 1)
+                                <li class="collapsed">
+                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Document"  href="#">
+                                        <i class="fa fa-folder-open"></i> <span>Document</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span>
+                                    </a>
 
-                </ul>
+                                    <!-- Menu: Sub menu ul -->
+                                    <ul class="sub-menu collapse" id="menu-Document">
+                                        @if ($role_permisstion->proposal == 1)
+                                            <li><a class="ms-link" href="#">Dummy Proposal</a></li>
+                                            <li><a class="ms-link" href="#">Proposal Request</a></li>
+                                            <li><a class="ms-link" href="{{ route('Quotation.index') }}">Proposal</a></li>
+                                        @endif
+                                        @if ($role_permisstion->banquet_event_order == 1)
+                                            <li><a class="ms-link" href="#">Banquet Event Order</a></li>
+                                        @endif
+                                        @if ($role_permisstion->hotel_contact_rate == 1)
+                                            <li><a class="ms-link" href="#">Hotel Contract Rate Agreement</a></li>
+                                        @endif
+                                        @if ($role_permisstion->billing_folio == 1)
+                                            <li><a class="ms-link" href="#">Billing Folio</a></li>
+                                        @endif
+                                    </ul>
+                                </li>
+                            @endif
+                            @if ($role_permisstion->product_item == 1)
+                                <li><a class="m-link" href="{{ route('Mproduct.index') }}"><i class="fa fa-cubes" style="font-weight: bold; color: white;"></i> <span>Product Item</span></a></li>
+                            @endif
+                            @if ($role_permisstion->debtor == 1)
+                                <li class="collapsed">
+                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Debtor"  href="#"><i class="fa fa-file-text"></i> <span>Debtor</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
+
+                                    <!-- Menu: Sub menu ul -->
+                                    <ul class="sub-menu collapse" id="menu-Debtor">
+                                        @if ($role_permisstion->agoda == 1)
+                                            <li><a class="ms-link" href="{{ route('debit-agoda') }}">Agoda</a></li>
+                                        @endif
+                                        @if ($role_permisstion->elexa == 1)
+                                            <li><a class="ms-link" href="#">Elexa</a></li>
+                                        @endif
+                                    </ul>
+                                </li>
+                            @endif
+                            @if ($role_permisstion->maintenance == 1)
+                                <li class="collapsed">
+                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Maintenance"  href="#"><i class="fa fa-gear"></i> <span>Maintenance</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
+
+                                    <!-- Menu: Sub menu ul -->
+                                    <ul class="sub-menu collapse" id="menu-Maintenance">
+                                        @if ($role_permisstion->request_repair == 1)
+                                            <li><a class="ms-link" href="#">Request Repair</a></li>
+                                        @endif
+                                        @if ($role_permisstion->repair_job == 1)
+                                            <li><a class="ms-link" href="#">Repair Job</a></li>
+                                        @endif
+                                        @if ($role_permisstion->preventive_maintenance == 1)
+                                            <li><a class="ms-link" href="#">Preventive Maintenance</a></li>
+                                        @endif
+                                    </ul>
+                                </li>
+                            @endif
+                            @if ($role_permisstion->general_ledger == 1)
+                                <li class="collapsed">
+                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-General-ledger"  href="#"><i class="fa fa-bar-chart-o"></i> <span>General Ledger</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
+
+                                    <!-- Menu: Sub menu ul -->
+                                    <ul class="sub-menu collapse" id="menu-General-ledger">
+                                        @if ($role_permisstion->sms_alert == 1)
+                                            <li><a class="ms-link" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a></li>
+                                        @endif
+                                        @if ($role_permisstion->revenue == 1)
+                                            <li><a class="ms-link" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a></li>
+                                        @endif
+                                    </ul>
+                                </li>
+                            @endif
+                            @if ($role_permisstion->setting == 1)
+                                <li class="collapsed">
+                                    <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Setting"  href="#"><i class="fa fa-cogs"></i> <span>Setting</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
+
+                                    <!-- Menu: Sub menu ul -->
+                                    <ul class="sub-menu collapse" id="menu-Setting">
+                                        @if ($role_permisstion->user == 1)
+                                            <li><a class="ms-link" href="{{ route('users', 'index') }}">User</a></li>
+                                        @endif
+                                        @if ($role_permisstion->bank == 1)
+                                            <li><a class="ms-link" href="{{ route('master', 'bank') }}">Bank</a></li>
+                                        @endif
+                                        @if ($role_permisstion->quantity == 1)
+                                            <li><a class="ms-link" href="{{ route('Mproduct.index.quantity') }}">Quantity</a></li>
+                                        @endif
+                                        @if ($role_permisstion->prefix == 1)
+                                            <li><a class="ms-link" href="{{ route('Mprefix.index') }}">Prefix</a></li>
+                                        @endif
+                                        
+                                        @if ($role_permisstion->company_type == 1)
+                                            <li><a class="ms-link" href="{{ route('Mcomt.index') }}">Company Type</a></li>
+                                        @endif
+                                        @if ($role_permisstion->company_market == 1)
+                                            <li><a class="ms-link" href="{{ route('Mmarket.index') }}">Company Market</a></li>
+                                        @endif
+                                        @if ($role_permisstion->company_event == 1)
+                                            <li><a class="ms-link" href="{{ route('MEvent.index') }}">Company Event</a></li>
+                                        @endif
+                                        @if ($role_permisstion->booking == 1)
+                                            <li><a class="ms-link" href="{{ route('Mbooking.index') }}">Booking</a></li>
+                                        @endif
+                                        @if ($role_permisstion->document_template_pdf == 1)
+                                            <li><a class="ms-link" href="{{ route('Template.TemplateA1') }}">Template</a></li>
+                                        @endif
+                                    </ul>
+                                </li>
+                            @endif
+                            <li><a class="m-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalLogout"><i class="fa fa-power-off" style="font-weight: bold; color: white;"></i> <span>Logout</span></a></li>
+                        </ul>
+
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <!-- main body area -->
-        <div class="main px-md-3">
-            <!-- Body: Header -->
+        <div class="main px-xl-5 px-lg-4 px-md-3">
+
             <div class="body-header border-bottom d-flex py-3">
 
                 @yield('pretitle')
@@ -237,289 +259,61 @@
 
             </div>
 
-
-
             <!-- Body: Footer -->
 
             <div class="body-footer">
-
                 <div class="container">
-
                     <div class="row">
-
                         <div class="col-12">
-
                             <div class="card p-3 mb-3">
-
                                 <div class="row justify-content-between align-items-center">
-
                                     <div class="col">
-
                                         <p class="mb-0">Copyright <span class="d-none d-sm-inline-block">
                                                 <script>
                                                     document.write(/\d{4}/.exec(Date())[0])
                                                 </script> © Together Development.
-                                            </span></p>
-
+                                            </span>
+                                        </p>
                                     </div>
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
-
-
         </div>
 
-
-
-        <!-- Modal: Search -->
-
-        <div class="modal fade" id="SearchModal" tabindex="-1">
-
-            <div class="modal-dialog modal-dialog-vertical modal-dialog-scrollable">
-
+        <!-- Modal: Logout -->
+        <div class="modal fade" id="exampleModalLogout" tabindex="-1">
+            <div class="modal-dialog">
                 <div class="modal-content">
-
-                    <div class="modal-header bg-secondary border-bottom-0 px-3 px-md-5">
-
-                        <h5 class="modal-title">Search</h5>
-
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
-                    </div>
-
-                    <div class="modal-body custom_scroll">
-
-                        <div class="card-body-height py-4 px-2 px-md-4">
-
-                            <form class="mb-3">
-
-                                <div class="input-group mb-3">
-
-                                    <input type="text" class="form-control" placeholder="Search...">
-
-                                    <button class="btn btn-outline-secondary" type="button"><span
-                                            class="fa fa-search"></span> Search</button>
-
-                                </div>
-
-                            </form>
-
-
-
-                            <small class="dropdown-header">Recent searches</small>
-
-                            <div class="dropdown-item bg-transparent text-wrap my-2">
-
-                                <span class="h4 me-1">
-
-                                    <a class="btn btn-sm btn-dark" href="#">Github <i
-                                            class="fa fa-search ms-1"></i></a>
-
-                                </span>
-
-                                <span class="h4">
-
-                                    <a class="btn btn-sm btn-dark" href="#">Notification panel <i
-                                            class="fa fa-search ms-1"></i></a>
-
-                                </span>
-
-                                <span class="h4">
-
-                                    <a class="btn btn-sm btn-dark" href="#">New project <i
-                                            class="fa fa-search ms-1"></i></a>
-
-                                </span>
-
-                            </div>
-
-
-
-                            <div class="dropdown-divider my-3"></div>
-
-
-
-                            <small class="dropdown-header">Tutorials</small>
-
-                            <a class="dropdown-item py-2" href="#">
-
-                                <div class="d-flex align-items-center">
-
-                                    <span class="avatar sm no-thumbnail me-2"><i class="fa fa-github"></i></span>
-
-                                    <div class="text-truncate">
-
-                                        <span>How to set up Github?</span>
-
-                                    </div>
-
-                                </div>
-
-                            </a>
-
-                            <a class="dropdown-item py-2" href="#">
-
-                                <div class="d-flex align-items-center">
-
-                                    <span class="avatar sm no-thumbnail me-2"><i class="fa fa-paint-brush"></i></span>
-
-                                    <div class="text-truncate">
-
-                                        <span>How to change theme color?</span>
-
-                                    </div>
-
-                                </div>
-
-                            </a>
-
-
-
-                            <div class="dropdown-divider my-3"></div>
-
-
-
-                            <small class="dropdown-header">Members</small>
-
-                            <a class="dropdown-item py-2" href="#">
-
-                                <div class="d-flex align-items-center">
-
-                                    <img class="avatar sm rounded-circle" src="../assets/images/xs/avatar1.jpg"
-                                        alt="">
-
-                                    <div class="text-truncate ms-2">
-
-                                        <span>Robert Hammer <i class="fa fa-check-circle text-primary"
-                                                data-bs-toggle="tooltip" data-placement="top" title=""
-                                                data-original-title="Top endorsed"></i></span>
-
-                                    </div>
-
-                                </div>
-
-                            </a>
-
-                            <a class="dropdown-item py-2" href="#">
-
-                                <div class="d-flex align-items-center">
-
-                                    <img class="avatar sm rounded-circle" src="../assets/images/xs/avatar2.jpg"
-                                        alt="">
-
-                                    <div class="text-truncate ms-2">
-
-                                        <span>Orlando Lentz</span>
-
-                                    </div>
-
-                                </div>
-
-                            </a>
-
-                            <a class="dropdown-item py-2" href="#">
-
-                                <div class="d-flex align-items-center">
-
-                                    <div class="avatar sm rounded-circle no-thumbnail">RH</div>
-
-                                    <div class="text-truncate ms-2">
-
-                                        <span>Brian Swader</span>
-
-                                    </div>
-
-                                </div>
-
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- Modal: Setting -->
-
-        <div class="modal fade" id="SettingsModal" tabindex="-1">
-
-            <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
-
-                <div class="modal-content">
-
                     <div class="modal-header">
-
-                        <h5 class="modal-title">ออกจากระบบ</h5>
-
+                        <h5 class="modal-title" id="exampleModalLogoutLabel">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-
-                    <div class="modal-body custom_scroll">
-
-                        <label class="form-check-label" for="CheckImage">ต้องการออกจากระบบใช่หรือไม่ ?</label>
-
+                    <div class="modal-body">
+                        <p>Woohoo, you're reading this text in a modal!</p>
                     </div>
-
-                    <div class="modal-footer d-flex justify-content-start text-center">
-
-                        <button type="button" class="btn flex-fill btn-white border lift"
-                            data-bs-dismiss="modal">ยกเลิก</button>
-
-                        <a href="{{ route('logout') }}" class="btn flex-fill btn-primary lift">ออกจากระบบ</a>
-
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger">Save changes</button>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
-
-
     </div>
 
-
-
     <!-- Jquery Core Js -->
-
     <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
 
-
-
     <!-- Plugin Js -->
-
     <script src="{{ asset('assets/bundles/dataTables.bundle.js') }}"></script>
-
     <script src="{{ asset('assets/bundles/select2.bundle.js') }}"></script>
-
     <script src="{{ asset('assets/plugin/select2-searchInputPlaceholder.js') }}"></script>
-
     <script src="{{ asset('assets/bundles/bootstraptagsinput.bundle.js') }}"></script>
 
-
-
-
-
     <!-- Jquery Page Js -->
-
     <script src="{{ asset('assets/js/template.js') }}"></script>
-
     <script>
         $(document).ready(function() {
 
