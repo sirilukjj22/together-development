@@ -66,7 +66,9 @@
         <div class="sidebar px-4 py-2">
             <div class="d-flex flex-column h-100">
                 <div class="text-center mb-2" id="mobileshow">
-                    <img src="{{ asset('assets2/images/Logo.png') }}" alt="logo of Together Resort" width="120" class="text-center mobileHidden"/>
+                    <a href="{{ route('sms-alert') }}" class="">
+                        <img src="{{ asset('assets2/images/Logo.png') }}" alt="logo of Together Resort" width="120" class="text-center mobileHidden"/>
+                    </a>
                 </div>
 
                 <!-- Menu: tab content -->
