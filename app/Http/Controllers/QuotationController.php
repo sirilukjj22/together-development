@@ -10,7 +10,7 @@ use App\Models\representative;
 use App\Models\representative_phone;
 use App\Models\company_fax;
 use App\Models\company_phone;
-use App\Models\MasterEventFormate;
+
 use App\Models\Freelancer_Member;
 use App\Models\province;
 use App\Models\amphures;
@@ -37,6 +37,36 @@ class QuotationController extends Controller
         $Quotation = Quotation::query()->get();
         return view('quotation.index',compact('Quotation'));
     }
+    public function changestatus($id)
+    {
+        $status = Quotation::find($id);
+        if ($status->status == 1 ) {
+            $statuss = 0;
+            $status->status = $statuss;
+        }elseif (($status->status == 0 )) {
+            $statuss = 1;
+            $status->status = $statuss;
+        }
+        $status->save();
+    }
+    public function ac(Request $request)
+    {
+        $ac = $request->value;
+        if ($ac == 1 ) {
+            $query = Quotation::query();
+            $Quotation = $query->where('status', '1')->get();
+        }
+        return view('quotation.index',compact('Quotation'));
+    }
+    public function no(Request $request)
+    {
+        $no = $request->value;
+        if ($no == 0 ) {
+            $query = Quotation::query();
+            $Quotation = $query->where('status', '0')->get();
+        }
+        return view('quotation.index',compact('Quotation'));
+    }
     public function create()
     {
         $currentDate = Carbon::now();
@@ -57,7 +87,7 @@ class QuotationController extends Controller
         $Valid_Until = Carbon::parse($currentDate)->addDays(7)->translatedFormat('d/m/Y');
         $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
         $Quotation_ID = $ID.$year.$month.$newRunNumber;
-        $Mevent = MasterEventFormate::select('name_th','id')->where('status', '1')->get();
+        $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
         $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
         return view('quotation.create',compact('Quotation_ID','Company','Mevent','Freelancer_member','Issue_date','Valid_Until'));
@@ -397,7 +427,7 @@ class QuotationController extends Controller
     {
 
         $Quotation = Quotation::where('id', $id)->first();
-        $Mevent = MasterEventFormate::select('name_th','id')->where('status', '1')->get();
+        $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
         $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
         return view('quotation.edit',compact('Quotation','Freelancer_member','Company','Mevent'));
@@ -565,7 +595,7 @@ class QuotationController extends Controller
         $company_phone = company_phone::where('Profile_ID',$Company)->where('Sequence','main')->first();
         $Contact_name = representative::where('Company_ID',$Company)->where('status',1)->first();
         $Contact_phone = representative_phone::where('Company_ID',$Company)->where('Sequence','main')->first();
-        $eventformat = MasterEventFormate::where('id',$eventformat)->select('name_th','id')->first();
+        $eventformat = master_document::where('id',$eventformat)->select('name_th','id')->first();
         if ($comtype->name_th =="บริษัทจำกัด") {
             $comtypefullname = "บริษัท ". $Company_ID->Company_Name . " จำกัด";
         }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {

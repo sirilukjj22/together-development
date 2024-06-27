@@ -94,7 +94,7 @@
                                 </td>
                                 <td style="text-align: center;">
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-info text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
+                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                         <ul class="dropdown-menu border-0 shadow p-3">
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/edit/contact/detail/'.$item->id) }}">ดูรายละเอียด</a></li>
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/edit/'.$item->id) }}">แก้ไขรายการ</a></li>

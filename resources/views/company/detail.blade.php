@@ -58,8 +58,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col">
-                <small class="text-muted">Welcome to Create Company / Agent.</small>
-                <h1 class="h4 mt-1">Create Company / Agent (เพิ่มบริษัทและตัวแทน)</h1>
+                <small class="text-muted">Welcome to View Company / Agent.</small>
+                <h1 class="h4 mt-1">View Company / Agent (เพิ่มบริษัทและตัวแทน)</h1>
             </div>
         </div>
     </div>

@@ -331,7 +331,7 @@
             <div class="col-lg-1 col-md-12 col-sm-12"></div>
             <div class="col-lg-3 col-md-12 col-sm-12 quotation-container">
                 <div class="row">
-                    <p class="quotation-number">Quotation </p>
+                    <p class="quotation-number">Quotation</p>
                     <p class="quotation-id ">{{$Quotation_ID}}</p>
                     <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
                     <div id="reportrange1" style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >

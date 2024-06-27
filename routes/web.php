@@ -162,7 +162,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Company/edit/contact/editcontact/{companyId}/{itemId}', 'contactedit')->name('Company.contact.edit');
         Route::post('/Company/edit/contact/editcontact/update/{companyId}/{itemId}', 'contactupdate')->name('Company.contact.update');
         Route::get('/Company/edit/contact/detail/{id}', 'detail')->name('Company.detail');
-        Route::post('/Company/contact/change-status/{id}', 'changeStatuscontact')->name('Company.contact.changeStatus');
+        Route::get('/Company/contact/change-status/{id}', 'changeStatuscontact')->name('Company.contact.changeStatus');
     });
 
     Route::controller(GuestController::class)->group(function () {
@@ -329,6 +329,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/selectproduct/company/create/{id}', 'selectProduct')->name('Quotation.SelectProduct');
         Route::post('/Quotation/company/create/quotation/{Quotation_ID}', 'savequotation')->name('Quotation.quotation');
         Route::get('/Quotation/edit/quotation/{id}','edit')->name('Quotation.edit');
+        Route::get('/Quotation/change-Status/{id}','changestatus')->name('Quotation.changestatus');
         Route::post('/Quotation/company/update/quotationupdate/{id}', 'updatequotation')->name('Quotation.updatequotation');
 
         Route::post('/Quotation/edit/quotation/update/{id}', 'updateCompanyQuotation')->name('Quotation.updateCompanyQuotation');

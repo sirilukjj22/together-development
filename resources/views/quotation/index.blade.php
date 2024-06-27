@@ -1,164 +1,124 @@
-@extends('layouts.test')
+@extends('layouts.masterLayout')
 
-@section('content')
-    <div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
-        <div class="col-12">
-            <button type="button" class="submit-button" onclick="window.location.href='{{ route('Quotation.create') }}'" style="float: right;" >เพิ่มใบเสนอราคา</button>
-        </div>
-        <div class="usertopic">
-            <h1>Quotation</h1>
-        </div>
-
-        <div class="selectall" style="float: left; margin-bottom: 10px;">
-            <th><label class="custom-checkbox">
-                    <input type="checkbox" onClick="toggle(this)" />
-                    <span class="checkmark"></span>
-                </label>ทั้งหมด</th>
-        </div>
-
-        {{-- <button type="button" class="button-4 sa-buttons" style="float: right;" onclick="showSelectedRecords()">ลบหลายรายการ</button> --}}
-
-        <div>
-            <button class="statusbtn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                สถานะการใช้งาน &#11206;
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="{{ route('Quotation.index') }}">ทั้งหมด</a>
-                <a class="dropdown-item" style="color: green;" href="{{ route('Quotation.ac', ['value' => 1]) }}">เปิดใช้งาน</a>
-                <a class="dropdown-item" style="color: #f44336;" href="{{ route('Quotation.no', ['value' => 0]) }}">ปิดใช้งาน</a>
+@section('pretitle')
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <small class="text-muted">Welcome to Proposal.</small>
+                <h1 class="h4 mt-1">Proposal (ข้อเสนอ)</h1>
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Quotation.create') }}'">
+                    <i class="fa fa-plus"></i> เพิ่มใบเสนอราคา</button>
             </div>
         </div>
-        <form enctype="multipart/form-data">
-            @csrf
-            <table id="example" class="display3 display2">
-                <thead>
-                    <tr>
-                        <th>
-                            <label class="custom-checkbox">
-                                <input type="checkbox" onClick="toggle(this)"/>
-                                <span class="checkmark"></span>
-                            </label>ทั้งหมด
-                        </th>
-                        <th style="text-align: center;">ลำดับ</th>
-                        <th>Code</th>
-                        <th>Company Name</th>
-                        <th>Contact</th>
-                        <th>สถานะการใช้งาน</th>
-                        <th style="text-align: center;">คำสั่ง</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (!empty($Quotation))
-                        @foreach ($Quotation as $key => $item)
+    </div>
+@endsection
+
+@section('content')
+<div class="container">
+    <div class="row align-items-center mb-2">
+        @if (session("success"))
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
+            <hr>
+            <p class="mb-0">{{ session('success') }}</p>
+        </div>
+        @endif
+        <div class="col">
+            <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
+                <li></li>
+                <li></li>
+                <li></li>
+            </ol>
+        </div>
+        <div class="col-auto">
+            <div class="dropdown">
+                <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    สถานะการใช้งาน
+                </button>
+                <ul class="dropdown-menu border-0 shadow p-3">
+                    <li><a class="dropdown-item py-2 rounded" href="{{ route('Quotation.index') }}">ทั้งหมด</a></li>
+                    <li><a class="dropdown-item py-2 rounded" href="{{ route('Quotation.ac', ['value' => 1]) }}">ใช้งาน</a></li>
+                    <li><a class="dropdown-item py-2 rounded" href="{{ route('Quotation.no', ['value' => 0]) }}">ปิดใช้งาน</a></li>
+                </ul>
+            </div>
+        </div>
+    </div> <!-- Row end  -->
+
+    <div class="row clearfix">
+        <div class="col-sm-12 col-12">
+            <div class="card p-4 mb-4">
+                <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
+                    @csrf
+                    <input type="hidden" name="category" value="prename">
+                <table class="myDataTableProductItem table table-hover align-middle mb-0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>เรียงลำดับ</th>
+                            <th>รหัสโปรไฟล์</th>
+                            <th>ชื่อองค์กร</th>
+                            <th>ตัวแทน</th>
+                            <th class="text-center">สถานะการใช้งาน</th>
+                            <th class="text-center">คำสั่ง</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(!empty($Quotation))
+                            @foreach ($Quotation as $key => $item)
                             <tr>
-                                <td data-label="เลือก">
-                                    <label class="custom-checkbox">
-                                    <input name="dummy" type="checkbox" data-record-id="{{ $item->id }}">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </td>
-                                <td data-label="#">{{ $key + 1 }}</td>
-                                <td data-label="Product item">{{ $item->Quotation_ID }}</td>
-                                <td data-label="Name">{{ @$item->company->Company_Name}}</td>
-                                <td data-label="type">{{@$item->contact->First_name}} {{@$item->contact->Last_name}}</td>
-                                <td data-label="สถานะการใช้งาน">
+                                <td>{{ $key + 1 }}</td>
+                                <td>{{ $item->Quotation_ID }}</td>
+                                <td>{{ @$item->company->Company_Name}}</td>
+                                <td>{{@$item->contact->First_name}} {{@$item->contact->Last_name}}</td>
+                                <td style="text-align: center;">
                                     @if ($item->status == 1)
-                                        <button type="button" class="button-1 status-toggle" data-id="{{ $item->id }}"data-status="{{ $item->status }}">ใช้งาน</button>
+                                    <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
                                     @else
-                                        <button type="button" class="button-3 status-toggle " data-id="{{ $item->id }}" data-status="{{ $item->status }}">ปิดใช้งาน</button>
+                                        <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ปิดใช้งาน</button>
                                     @endif
                                 </td>
-                                <td>
-                                    <div class="dropdown">
-                                        <button class="button-18 button-17" type="button" data-toggle="dropdown">ทำรายการ
-                                            <span class="caret"></span></button>
-                                        <ul class="dropdown-menu">
-                                            <li class="licolor"><a href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">แก้ไขข้อมูล</a></li>
-                                            <li class="licolor"><a href="{{ url('/Quotation/edit/quotation/select/'.$item->id) }}">แก้ไขใบเสนอราคา</a></li>
-                                            <li class="licolor"><a href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">ใบปะหน้า</a></li>
+                                <td style="text-align: center;">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
+                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">ดูรายละเอียดใบเสนอ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">แก้ไขบริษัท</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/select/'.$item->id) }}">แก้ไขใบเสนอ</a></li>
                                         </ul>
+                                    </div>
                                 </td>
                             </tr>
-                        @endforeach
-                    @endif
-                </tbody>
-            </table>
-        </form>
-    </div>
+                            @endforeach
+                            @endif
+                    </tbody>
+                </table>
+                </form>
+            </div> <!-- .card end -->
+        </div>
+    </div> <!-- .row end -->
+</div>
 
-    <form id="form-id3">
-        @csrf
-        <input type="hidden" id="deleteID" name="deleteID" value="">
-    </form>
-    <script>
+<form id="form-id3">
+    @csrf
+    <input type="hidden" id="deleteID" name="deleteID" value="">
+</form>
 
-</script>
+@include('script.script')
 
-    <script>
-        $(document).ready(function() {
-            new DataTable('#example', {
-
-                //ajax: 'arrays.txt'
-                // scrollX: true,
-            });
-        });
-        function toggle(source) {
-            checkboxes = document.getElementsByName('dummy');
-            for (var i = 0, n = checkboxes.length; i < n; i++) {
-                checkboxes[i].checked = source.checked;
-            }
-        }
-
-
-    // หากมีการส่งค่า alert มาจากหน้าอื่น
-    var alertMessage = "{{ session('success') }}";
-    var alerterror = "{{ session('error') }}";
-    if(alertMessage) {
-        // แสดง SweetAlert ทันทีเมื่อโหลดหน้าเว็บ
-        Swal.fire({
-            icon: 'success',
-            title: alertMessage,
-            showConfirmButton: false,
-            timer: 1500
-        });
-    }if(alerterror) {
-        Swal.fire({
-            icon: 'error',
-            title: alerterror,
-            showConfirmButton: false,
-            timer: 1500
-        });
-    }
-</script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('.status-toggle').click(function() {
-            var id = $(this).data('id');
-            var status = $(this).data('status');
-            var token = "{{ csrf_token() }}"; // รับ CSRF token จาก Laravel
-            // ทำ AJAX request
-            $.ajax({
-                type: 'GET',
-                url: "{{ url('/Mproduct/change-Status/') }}" + '/' + id + '/' + status,
-                success: function(response) {
-                    // ปรับเปลี่ยนสถานะบนหน้าเว็บ
-                    console.log(response.success);
-                    if (status == 1) {
-                        // เปลี่ยนสถานะจากเปิดเป็นปิด
-                        $(this).data('status', 0);
-                        $(this).removeClass('btn-success').addClass('btn-danger').html('Deactivate');
-                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
-                        location.reload();
-                    } else  {
-                        // เปลี่ยนสถานะจากปิดเป็นเปิด
-                        $(this).data('status', 1);
-                        $(this).removeClass('btn-danger').addClass('btn-success').html('Activate');
-                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
-                        location.reload();
-                    }
-                }
-            });
-        });
+<script>
+function btnstatus(id) {
+    jQuery.ajax({
+        type: "GET",
+        url: "{!! url('/Quotation/change-Status/" + id + "') !!}",
+        datatype: "JSON",
+        async: false,
+        success: function(result) {
+            Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+            location.reload();
+        },
     });
+}
+
 </script>
 @endsection

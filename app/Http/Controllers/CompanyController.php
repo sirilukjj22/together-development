@@ -309,25 +309,17 @@ class CompanyController extends Controller
         ,'phoneArray','count'));
 
     }
-    public function changeStatuscontact(Request $request ,$id)
+    public function changeStatuscontact($id)
     {
-        $ids = $request->ids;
-        $status = $request->status; // รับค่า status ที่ส่งมาจาก Request
-        $statusSS = representative::find($ids);
-        $statusCheck = $statusSS->status;
-        if ($statusCheck == 0 ) {
-            $statusUP = 1;
-            $saveAgent = representative::find($ids);
-            $saveAgent->status = $statusUP;
-            $saveAgent->save();
-        }elseif (($statusCheck == 1 )) {
-            $statusUP = 0;
-            $saveAgent = representative::find($ids);
-            $saveAgent->status = $statusUP;
-            $saveAgent->save();
-
+        $status = representative::find($id);
+        if ($status->status == 1 ) {
+            $statuss = 0;
+            $status->status = $statuss;
+        }elseif (($status->status == 0 )) {
+            $statuss = 1;
+            $status->status = $statuss;
         }
-
+        $status->save();
     }
 
     public function create()
@@ -626,7 +618,7 @@ class CompanyController extends Controller
     {
 
         $Company = companys::find($id);
-        $Company_ID = $Company->Company_ID;
+        $Company_ID = $Company->Profile_ID;
         $number =  preg_replace("/[^0-9]/", "", $Company->City);
         $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Company->City);
         $provinceNames = province::select('name_th','id')->get();
@@ -658,7 +650,7 @@ class CompanyController extends Controller
     public function Company_update(Request $request, $id) {
 
         $data = $request->all();
-
+        dd( $data);
         $CountryOther = $request->countrydata;
         $Branch = $request->Branch;
         $province = $request->province;
