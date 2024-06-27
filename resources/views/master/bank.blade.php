@@ -148,8 +148,6 @@
         </div>
     </div>
 
-
-
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         {{-- <script src="../assets/bundles/jquerycounterup.bundle.js"></script> --}}

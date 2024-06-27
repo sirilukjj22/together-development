@@ -1472,7 +1472,7 @@ class RevenuesController extends Controller
         }
 
         if (!empty($request->agoda_batch)) {
-            Revenue_credit::whereNotIn('batch', $request->agoda_batch)->where('status', 5)->delete();
+            Revenue_credit::whereNotIn('batch', $request->agoda_batch)->where('revenue_id', $check_credit->id)->where('status', 5)->delete();
             foreach ($request->agoda_batch as $key => $value) {
                 $agoda_charge += $request->agoda_credit_amount[$key];
                 $agoda_outstanding += $request->agoda_credit_outstanding[$key];
