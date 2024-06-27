@@ -52,7 +52,7 @@
                                     <td>{{$thaiMonths[$date->format('n')]}} {{$date->format('Y') + 543}}
                                     <td>{{ number_format($item->total_sum, 2) }}</td>
                                     <td>
-                                        <a href="{{ route('debit-agoda-revenue', [$date->format("m"), $date->format("Y")]) }}" title="ทำรายการ" class="btn btn-info rounded-pill text-white lift">
+                                        <a href="{{ route('debit-agoda-revenue', [$date->format("m"), $date->format("Y")]) }}" title="ทำรายการ" class="btn btn-primary rounded-pill text-white lift">
                                             <i class="fa fa-plus"></i>
                                             ทำรายการ
                                         </a>

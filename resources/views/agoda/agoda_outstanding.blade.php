@@ -60,7 +60,7 @@
                                     </td>
                                     <td>
                                         <div class="dropdown">
-                                            <button class="btn btn-info rounded-pill text-white dropdown-toggle"
+                                            <button class="btn btn-primary rounded-pill text-white dropdown-toggle"
                                                 type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
                                                 aria-expanded="false">
                                                 ทำรายการ
