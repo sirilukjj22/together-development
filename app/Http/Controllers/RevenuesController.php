@@ -1413,7 +1413,7 @@ class RevenuesController extends Controller
         $ev_outstanding = 0;
 
         $check_credit = Revenues::where('date', $request->date)->first();
-        Revenue_credit::where('revenue_id', $check_credit->id)->delete();
+        Revenue_credit::where('revenue_id', $check_credit->id)->where('status', '!=', 5)->delete();
 
         if (!empty($request->guest_batch)) {
             foreach ($request->guest_batch as $key => $value) {
@@ -1472,21 +1472,38 @@ class RevenuesController extends Controller
         }
 
         if (!empty($request->agoda_batch)) {
+            Revenue_credit::whereNotIn('batch', $request->agoda_batch)->where('status', 5)->delete();
             foreach ($request->agoda_batch as $key => $value) {
                 $agoda_charge += $request->agoda_credit_amount[$key];
                 $agoda_outstanding += $request->agoda_credit_outstanding[$key];
 
-                Revenue_credit::create([
-                    'revenue_id' => $check_credit->id,
-                    'batch' => $request->agoda_batch[$key],
-                    'revenue_type' => $request->agoda_revenue_type[$key],
-                    'agoda_check_in' => $request->agoda_check_in[$key],
-                    'agoda_check_out' => $request->agoda_check_out[$key],
-                    'agoda_date_deposit' => date("Y-m-d", strtotime("+37 day",strtotime($request->agoda_check_out[$key]))),
-                    'agoda_charge' => $request->agoda_credit_amount[$key],
-                    'agoda_outstanding' => $request->agoda_credit_outstanding[$key],
-                    'status' => 5
-                ]);
+                $check_agoda = Revenue_credit::where('batch', $request->agoda_batch[$key])->where('revenue_id', $check_credit->id)->where('status', 5)->first();
+
+                if (!empty($check_agoda)) {
+                    Revenue_credit::where('batch', $request->agoda_batch[$key])->where('revenue_id', $check_credit->id)->update([
+                        'revenue_id' => $check_credit->id,
+                        'batch' => $request->agoda_batch[$key],
+                        'revenue_type' => $request->agoda_revenue_type[$key],
+                        'agoda_check_in' => $request->agoda_check_in[$key],
+                        'agoda_check_out' => $request->agoda_check_out[$key],
+                        'agoda_date_deposit' => date("Y-m-d", strtotime("+37 day",strtotime($request->agoda_check_out[$key]))),
+                        'agoda_charge' => $request->agoda_credit_amount[$key],
+                        'agoda_outstanding' => $request->agoda_credit_outstanding[$key],
+                        'status' => 5
+                    ]);
+                } else {
+                    Revenue_credit::create([
+                        'revenue_id' => $check_credit->id,
+                        'batch' => $request->agoda_batch[$key],
+                        'revenue_type' => $request->agoda_revenue_type[$key],
+                        'agoda_check_in' => $request->agoda_check_in[$key],
+                        'agoda_check_out' => $request->agoda_check_out[$key],
+                        'agoda_date_deposit' => date("Y-m-d", strtotime("+37 day",strtotime($request->agoda_check_out[$key]))),
+                        'agoda_charge' => $request->agoda_credit_amount[$key],
+                        'agoda_outstanding' => $request->agoda_credit_outstanding[$key],
+                        'status' => 5
+                    ]);
+                }
             }
         }
 
