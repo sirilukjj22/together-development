@@ -429,7 +429,7 @@ class QuotationController extends Controller
     }
     public function updateCompanyQuotation(Request $request ,$id){
         $data = $request->all();
-
+        $Freelancer_member = $request->Freelancer_member;
         $save = Quotation::find($id);
         $userid = Auth::user()->id;
         $save->place = $request->place;
@@ -442,7 +442,7 @@ class QuotationController extends Controller
         $save->children = $request->Children;
         $save->maxdiscount = $request->Max_discount;
         $save->ComRateCode = $request->Company_Rate_Code;
-        $save->freelanceraiffiliate = $request->Freelancer_member;
+        $save->freelanceraiffiliate = $Freelancer_member;
         $save->commissionratecode = $request->Company_Commission_Rate_Code;
         $save->eventformat = $request->Mevent;
         $save->vat_type = $request->Vat_Type;

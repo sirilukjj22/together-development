@@ -306,7 +306,7 @@
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <table class="myDataTableQuotationmodal table table-hover align-middle mb-0" style="width:100%">
+                            <table class=" table table-hover align-middle mb-0" style="width:100%">
                                 <thead >
                                     <tr>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">No.</th>
@@ -328,7 +328,7 @@
                         <input type="hidden" name="adult" id="adult" value="{{$Quotation->adult}}">
                         <input type="hidden" name="children" id="children" value="{{$Quotation->children}}">
                         <div class="col-12 row ">
-                            <div class="col-lg-8 col-md-8 col-sm-12" >
+                            <div class="col-lg-8 col-md-8 col-sm-12 mt-2" >
                                 <span >Notes or Special Comment</span>
                                 <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
                             </div>
