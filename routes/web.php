@@ -325,7 +325,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/ac', 'ac')->name('Quotation.ac');
         Route::get('/Quotation/no', 'no')->name('Quotation.no');
         Route::get('/Quotation/create/company/Contact/{companyID}','Contact')->name('Quotation.company');
-        Route::post('/Quotation/EventFormate/save', 'save')->name('Quotation.save');
+        Route::post('/Quotation/create/save', 'save')->name('Quotation.save');
         Route::get('/Quotation/selectproduct/company/create/{id}', 'selectProduct')->name('Quotation.SelectProduct');
         Route::post('/Quotation/company/create/quotation/{Quotation_ID}', 'savequotation')->name('Quotation.quotation');
         Route::get('/Quotation/edit/quotation/{id}','edit')->name('Quotation.edit');

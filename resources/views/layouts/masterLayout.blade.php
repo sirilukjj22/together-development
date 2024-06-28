@@ -206,7 +206,7 @@
                                         @if ($role_permisstion->prefix == 1)
                                             <li><a class="ms-link" href="{{ route('Mprefix.index') }}">Prename</a></li>
                                         @endif
-                                        
+
                                         @if ($role_permisstion->company_type == 1)
                                             <li><a class="ms-link" href="{{ route('Mcomt.index') }}">Company Type</a></li>
                                         @endif
@@ -392,6 +392,39 @@
                 ]
             });
 
+            $('.myDataTableQuotation').addClass( 'nowrap' ).dataTable( {
+                responsive: true,
+                searching: true,
+                paging: true,
+                ordering: true,
+                info: true,
+                scrollX: false,
+                columnDefs: [
+                    { targets: [0, -2, -1], className: 'dt-body-center' }
+                ]
+            });
+            $('.myDataTableQuotationmodal').addClass( 'nowrap' ).dataTable( {
+                responsive: true,
+                searching: true,
+                paging: true,
+                ordering: true,
+                info: true,
+                scrollX: false,
+                columnDefs: [
+                    { targets: [0, -2, -1], className: 'dt-body-center' }
+                ]
+            });
+            $('.product-list-select').addClass( 'nowrap' ).dataTable( {
+                responsive: true,
+                searching: true,
+                paging: true,
+                ordering: true,
+                info: true,
+                scrollX: false,
+                columnDefs: [
+                    { targets: [0, -2, -1], className: 'dt-body-center' }
+                ]
+            });
         });
 
 
