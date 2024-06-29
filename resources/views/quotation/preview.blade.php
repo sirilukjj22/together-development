@@ -8,6 +8,9 @@
 
 </head>
 <style>
+     @page {
+            margin: 0.2cm 0.5cm 0.5cm 0.5cm;
+        }
      @font-face {
 
 font-family: 'THSarabunNew';
@@ -102,7 +105,7 @@ float: left;
 .com {
     display: inline-block;  /* ทำให้ border-bottom มีความยาวเท่ากับข้อความ */
     border-bottom: 2px solid #2D7F7B;  /* กำหนดเส้นใต้ */
-    padding-bottom: 5px;
+    padding-bottom: 2px;
     }
 .wrapper-page {
     page-break-after: always;
@@ -309,7 +312,7 @@ div.frame{
             </div>
         </div>
     </div>
-    <div class="page-break" style="font-size: 12px">
+    <div class="page-break" style="font-size: 16px">
     <div id="logo">
 
         <img src="logo_crop.png">
@@ -322,9 +325,9 @@ div.frame{
 
             <b style="font-size:20px;">Together Resort Limited Partnership</b>
 
-            <br> <span> 168 Moo 2 Kaengkrachan Phetchaburi 76170</span>
+            <br> <b> 168 Moo 2 Kaengkrachan Phetchaburi 76170</b>
 
-            <br> <span>Tel : 032-708-888, 098-393-944-4 Fax :</span></br>
+            <br> <b>Tel : 032-708-888, 098-393-944-4 Fax :</b></br>
 
             <b> Email : reservation@together-resort.com Website : www.together-resort.com</b>
 
@@ -333,7 +336,7 @@ div.frame{
     </div>
 
 
-    <br><br><br> <br><br><br>
+    <br><br><br>
     <div class="PROPOSAL">
 
         <div  style="text-align: center">
@@ -358,16 +361,22 @@ div.frame{
         </div>
 
     </div>
+
 <b class="com" style="font-size:18px">Company Information</b>
 <div style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#2D7F7B; width:55%">
     <table style="line-height:12px;" >
         <tr>
             <td ><b style="margin-left: 10px; width:30%">Company Name :</b></td>
             <td>{{$comtypefullname}}</td>
+            <td></td>
         </tr>
         <tr>
             <td><b style="margin-left: 10px;">Company Address :</b></td>
-            <td>{{$Company_ID->Address}} {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
+            <td>{{$Company_ID->Address}} {{'ตำบล' . $TambonID->name_th}}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td> {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
         </tr>
         <tr>
             <td><b style="margin-left: 10px;">Company Number :</b></td>
@@ -388,14 +397,20 @@ div.frame{
         </tr>
 
     </table>
-        <b class="com" style=" font-size:18px">Personal Information</b><br>
-        <b style="margin-left: 10px;">Contact Name : </b><span >คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span><b style="margin-left: 10px;">Contact Number : </b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span>
-        <br><b style="margin-left: 10px;">Contact Email : </b><span>{{$Contact_name->Email}}</span>
-    <div style="margin-top: 5px"></div>
+
+    <div style="line-height:14px;">
+
+
+    </div>
+
+    <div style="margin-top: 20px"></div>
 </div>
-    <span style="position: absolute;top: 190px; right: 30;width: 250px;height: 145px;line-height:18px;">
-        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 42px;">{{$Quotation->checkin}}</span><br>
-        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 35px;">{{$Quotation->checkout}}</span><br>
+    <span style="position: absolute;top: 120px; right: 30;width: 280px;height: 145px;line-height:14px;">
+        <b class="com" style=" font-size:18px">Personal Information</b><br>
+        <b style="margin-left: 10px;">Contact Name : </b><span >คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span><br>
+        <b style="margin-left: 10px;">Contact Number : </b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span><br>
+        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$Quotation->checkin}}</span>
+        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$Quotation->checkout}}</span>
         <b style="margin-left: 10px">Length of Stay :</b><span style="margin-left: 23px;">{{$Quotation->day}} วัน {{$Quotation->night}} คืน</span><br>
         <b style="margin-left: 10px">Number of Guests :</b><span style="margin-left: 10px;">{{$Quotation->adult}} Adult , {{$Quotation->adult}} Children</span><br>
     </span>
@@ -403,7 +418,8 @@ div.frame{
     <div  style="line-height:15px;">
         <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
     </div>
-    <table id="customers" class="table" style="width: 100%; margin-top:10px;" >
+
+    <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
         <tr style="font-weight: bold;">
             <th style="font-weight: bold;">NO.</th>
             <th style="font-weight: bold;">DESCRIPTION</th>
@@ -414,53 +430,55 @@ div.frame{
             <th style="text-align:center;font-weight: bold;">NET PRICE / UNIT</th>
             <th style="text-align:center;font-weight: bold;">AMOUNT</th>
         </tr>
-        @if (!empty($selectproduct))
-            @foreach ($selectproduct as $key => $item)
-                @foreach ($unit as $singleUnit)
-                    @if($singleUnit->id == @$item->product->unit)
-                        <tr >
-                            <td style="text-align:center;">{{$key+1}}</td>
-                            <td >{{@$item->product->name_th}}</td>
-                            <td  style="text-align:center;">{{$item->Quantity}}</td>
-                            <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
-                            <td  style="text-align:right;" >{{ number_format($item->priceproduct, 2, '.', ',') }} ฿</td>
-                            <td  style="text-align:center;">{{$item->discount}}</td>
-                            <td style="text-align:right;">{{ number_format($item->netpriceproduct, 2, '.', ',') }} ฿</td>
-                            <td style="text-align:right;" class="amount">{{ number_format($item->totalpriceproduct, 2, '.', ',') }} ฿</td>
-                        </tr>
-                    @endif
-                @endforeach
+        @foreach($productItems as $key => $item)
+            @foreach ($unit as $singleUnit)
+                @if($singleUnit->id == $item['product']->unit)
+                    <tr>
+                        <td style="text-align:center;">{{$key+1}}</td>
+                        <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
+                        <td style="text-align:center;">{{ $item['quantity'] }}</td>
+                        <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
+                        @php
+                            $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
+                        @endphp
+                        <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
+                        <td style="text-align:center;">{{ $item['discount'] }}</td>
+                        <td style="text-align:center;">{{  number_format($item['discountedPricestotal']) }}฿</td>
+                        <td style="text-align:center;">{{ number_format($item['totalPrices']) }}฿</td>
+                    </tr>
+                @endif
             @endforeach
-        @endif
+        @endforeach
     </table>
+
     <table  id="customers" class="table" style="width: 25%;float:right;" >
         <tr>
-            <td style="text-align:right;font-size: 14px;width: 65%" class="text-right"><strong>Total Amount</strong></td>
-            <td style="text-align:right;font-size: 14px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} ฿</strong></td>
+            <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Total Amount</strong></td>
+            <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} ฿</strong></td>
         </tr>
         <tr>
-            <td style="text-align:right;font-size: 14px;" class="text-right"><strong>Discount</strong></td>
-            <td style="text-align:right;font-size: 14px;"><strong id="total-discount">{{ number_format($totaldiscount, 2, '.', ',') }} ฿</strong></td>
+            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Discount</strong></td>
+            <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($totaldiscount, 2, '.', ',') }} ฿</strong></td>
         </tr>
         <tr>
-            <td style="text-align:right;font-size: 14px;" class="text-right"><strong>Net Price</strong></td>
-            <td style="text-align:right;font-size: 14px;" ><strong id="total-Price">{{ number_format($totalPrice, 2, '.', ',') }} ฿</strong></td>
+            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Net Price</strong></td>
+            <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($totalPrice, 2, '.', ',') }} ฿</strong></td>
         </tr>
         <tr>
-            <td style="text-align:right;font-size: 14px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-            <td style="text-align:right;font-size: 14px;"><strong id="total-Price">{{ number_format($vat, 2, '.', ',') }} ฿</strong></td>
+            <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+            <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($vat, 2, '.', ',') }} ฿</strong></td>
         </tr>
         <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
 
         <tr style="background-color: #ffffff">
             <td colspan="2" style="text-align:center;">
                 <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                    <b style="font-size: 14px;">Net Total (฿)</b>
+                    <b style="font-size: 16px;">Net Total (฿)</b>
                     <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($total, 2, '.', ',') }} ฿</strong>
                 </div>
             </td>
         </tr>
-        {{-- <tr><td><br></td></tr> --}}
+
         <br>
         <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
             <td></td>
@@ -478,44 +496,46 @@ div.frame{
     </div>
     <div style="line-height:10px;">
     </div>
-    <strong class="com" style="font-size: 14px">Method of Payment</strong><br>
-    <span style="line-height:10px;">
+    <strong class="com" style="font-size: 14px;">Method of Payment</strong><br>
+    <span style="line-height:10px;font-size: 13px;">
         Please make a 50% deposit within 7 days after confirmed. <br>
         Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
         If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
         pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
     </span>
-    <img src="SCB.jpg" style="width: 4%; border-radius: 50%;padding:15px"/>
-    <div style="float: right;margin-right:435px;line-height:10px;margin-top:8px">
-        <strong  style="display: block; text-align: left;">The Siam Commercial Bank Public Company Limited</strong>
-        <strong  style="display: block; text-align: left;">Bank Account No. 708-226791-3</strong>
-        <strong  style="display: block; text-align: left;">Tha Yang - Phetchaburi Branch (Savings Account)</strong>
+    <div style="margin-top: 15px">
+        <img src="SCB.jpg" style="width: 4%; border-radius: 50%;padding:4px"/>
+        <div style="float: right;margin-right:490px;line-height:10px;font-size: 13px;">
+            <strong  style="display: block; text-align: left;">The Siam Commercial Bank Public Company Limited</strong>
+            <strong  style="display: block; text-align: left;">Bank Account No. 708-226791-3</strong>
+            <strong  style="display: block; text-align: left;">Tha Yang - Phetchaburi Branch (Savings Account)</strong>
+        </div>
     </div>
-    <div style="border: 1px solid #2D7F7B;"></div>
-    <table style="width: 100%">
+    <br><div style="border: 1px solid #2D7F7B;margin-top: 10px;"></div>
+    <table style="width: 100%;line-height:10px;margin-top: 10px;">
         <tr>
             <th >สแกนเพื่อเปิดด้วยเว็บไซต์</th>
-            <th >ผู้ออกเอกสาร (ผู้ขาย)</th>
-            <th >ผู้อนุมัติเอกสาร (ผู้ขาย) </th>
-            <th >ตราประทับ (ผู้ขาย) </th>
+            <th >ผู้ออกเอกสาร </th>
+            <th >ผู้อนุมัติเอกสาร  </th>
+            <th >ตราประทับ  </th>
             <th >ผู้รับเอกสาร (ลูกค้า)</th>
             <th >ตราประทับ (ลูกค้า)</th>
         </tr>
         <tr>
-            <td style="text-align: center">
+            <td style="text-align: center;width:10%">
                 @php
                     $id = $Quotation->id;
                     $gethttp =(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http";
                     $linkQR = $gethttp."://".$_SERVER['HTTP_HOST']."/quotation-preview-export/$id?page_shop=".@$_GET['page_shop'];
                 @endphp
                 <img src="data:image/png;base64,{{DNS2D::getBarcodePNG($linkQR,'QRCODE') }}" width="60" height="60"/></td>
-            <td style="text-align: center">
-                <br>
+            <td style="text-align: center;" >
+                <img src="test.png" style="width: 40%;"/>
                 <span style="display: block; text-align: center;">{{@$Quotation->user->name}}</span>
                 <span style="display: block; text-align: center;">{{ $Quotation->issue_date }}</span>
             </td>
-            <td style="text-align: center">
-                <br>
+            <td style="text-align: center;">
+                <img src="test.png" style="width: 40%;"/>
                 <span style="display: block; text-align: center;">{{@$Quotation->user->name}}</span>
                 <span style="display: block; text-align: center;">{{ $Quotation->issue_date }}</span>
             </td>
@@ -524,11 +544,11 @@ div.frame{
             </td>
             <td>
                 <br>
-                <span style="display: block; text-align: center;">---------------------</span>
-                <span style="display: block; text-align: center;">{{ $Company_ID->Company_Name }}</span>
+                <span style="display: block; text-align: center;">______________________</span>
+                <span style="display: block; text-align: center;">_____/__________/_____</span>
             </td>
             <td>
-                <div class="centered-content4 ">
+                <div class="">
                 </div>
 
             </td>

@@ -1,6 +1,9 @@
 @extends('layouts.masterLayout')
+<link href="https://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet">
+
 
 <style>
+
 .image-container {
     display: flex;
     flex-direction: row;
@@ -64,8 +67,32 @@
         border: 2px solid #6b6b6b; /* กำหนดกรอบสี่เหลี่ยม */
         padding: 20px; /* เพิ่ม padding ภายในกรอบ */
         border-radius: 5px; /* เพิ่มมุมโค้ง (ถ้าต้องการ) */
-        height: 150px;
-        width: 150px; /* กำหนดความสูงของกรอบ */
+        height: 120px;
+        width: 120px; /* กำหนดความสูงของกรอบ */
+    }
+    .proposal{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        top: 0px;
+        right: 6;
+        width: 70%;
+        height: 60px;
+        border: 3px solid #2D7F7B;
+        border-radius: 10px;
+        background-color: #109699;
+    }
+    .proposalcode{
+        top: 0px;
+        right: 6;
+        width: 70%;
+        height: 90px;
+        border: 3px solid #2D7F7B;
+        border-radius: 10px;
+    }
+    .btn-space {
+        margin-right: 10px; /* ปรับขนาดช่องว่างตามต้องการ */
     }
 @media (max-width: 768px) {
     .image-container {
@@ -94,51 +121,44 @@
     </div>
 @endsection
 @section('content')
-<div class="container">
+<div class="container" style="font-size: 16px; font-family: Arial, sans-serif;position: relative;">
     <div class="container mt-3">
         <div class="row clearfix">
             <div class="col-sm-12 col-12">
                 <div class="card p-4 mb-4">
                     <form id="myForm" action="{{url('/Quotation/company/create/quotation/'.$Quotation->Quotation_ID)}}" method="POST"enctype="multipart/form-data">
                         @csrf
-                        
+
                         <div class="row">
                             <div class="col-lg-8 col-md-12 col-sm-12 image-container">
                                 <img src="{{ asset('assets2/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
                                 <div class="info">
-                                    <p class="titleh1">Together Resort Limited Partnership</p>
-                                    <p>168 Moo 2 Kaengkrachan Phetchaburi 76170</p>
-                                    <p>Tel : 032-708-888, 098-393-944-4 Fax :</p>
-                                    <p>Email : reservation@together-resort.com Website : www.together-resort.com</p>
-                                    <p></p>
+                                    <b style="font-size:20px;">Together Resort Limited Partnership</b>
+
+                                    <br> <span> 168 Moo 2 Kaengkrachan Phetchaburi 76170</span>
+
+                                    <br> <span>Tel : 032-708-888, 098-393-944-4 Fax :</span></br>
+
+                                    <span> Email : reservation@together-resort.com Website : www.together-resort.com</span>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-12 col-sm-12">
                                 <div class="row">
                                     <div class="col-lg-12  d-flex justify-content-center" >
-                                        <div style="background-color: rgba(45, 127, 123, 1);border:1px solid rgba(45, 127, 123, 1);  width: 70%; border-radius: 4px;" >
-                                            <b class="titleQuotation" style="font-size: 28px;color:#fff;">Proposal</b>
+                                        <div class="proposal">
+                                            <span  class="titleQuotation" style="font-size:28px;color:#ffffff;">PROPOSAL</span>
                                         </div>
                                     </div>
                                     <div class="col-lg-12  d-flex justify-content-center mt-2" >
-                                        <div style="border:1px solid rgba(45, 127, 123, 1);  width: 70%;border-radius: 4px; ">
-                                            <span class="titleQuotation">{{$Quotation_ID}}</span>
-                                            <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
-                                            <div id="reportrange1" style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
-                                                <div class="col-12 col-md-12 col-sm-12">
-                                                    <div class="row">
-                                                        <div class="col-9"style="display:flex; justify-content:right; align-items:center;">
-                                                            <span>Issue Date: {{ $Quotation->issue_date }}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-12 col-sm-12 mt-2">
-                                                    <div class="row">
-                                                        <div class="col-9"style="display:flex; justify-content:right; align-items:center;">
-                                                            <span>Expiration Date: {{ $Quotation->Expirationdate }}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                        <div class="proposalcode">
+                                            <div style="padding: 4%">
+
+                                                <b >Proposal ID : </b><span style="margin-left: 10px;">{{ $Quotation->Quotation_ID }}</span><br>
+
+                                                <b >Issue Date : </b><span >{{ $Quotation->issue_date }}</span><br>
+
+                                                <b>Expiration Date : </b><span>{{ $Quotation->Expirationdate }}</span>
+
                                             </div>
                                         </div>
                                     </div>
@@ -146,91 +166,81 @@
 
                             </div>
                         </div>
-                        <div class="row mt-4">
-                            <div class="col-lg-12 col-md-12 col-sm-12 ">
-                                <div class="Profile" style="background-color: rgba(45, 127, 123, 1);border:1px solid rgba(45, 127, 123, 1);  border-radius: 4px;">
-                                    <b class="titleQuotation" style="font-size: 20px;color:#fff;">Profile ID : {{ $Quotation->Company_ID }} </b>
-                                </div>
-                            </div>
-                        </div>
                         <div class="row mt-2">
-                            <div class="col-lg-6 col-md-12 col-sm-12" style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#109699">
-                                <p class="com mt-2">Company Information</p>
+                            <div class="col-lg-7 col-md-12 col-sm-12" style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#109699">
+                                <b class="com mt-2 my-2"style="font-size:18px">Company Information</b>
+                                <table>
+                                    <tr>
+                                        <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Company Name :</b></td>
+                                        <td>@if ($Company_type->name_th === 'บริษัทจำกัด')
+                                            <span id="Company_name" name="Company_name" >บริษัท {{ $Company_ID->Company_Name }} จำกัด</span>
+                                        @elseif ($Company_type->name_th === 'บริษัทมหาชนจำกัด')
+                                            <span id="Company_name" name="Company_name">บริษัท {{ $Company_ID->Company_Name }} จำกัด (มหาชน)</span>
+                                        @elseif ($Company_type->name_th === 'ห้างหุ้นส่วนจำกัด')
+                                            <span id="Company_name" name="Company_name">ห้างหุ้นส่วนจำกัด {{ $Company_ID->Company_Name }}</span>
+                                        @endif</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Address :</b></td>
+                                        <td>{{$Company_ID->Address}} {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
+                                        <td>{{ substr($company_phone->Phone_number, 0, 3) }}-{{ substr($company_phone->Phone_number, 3, 3) }}-{{ substr($company_phone->Phone_number, 6) }}
+                                            <b style="margin-left: 10px;color:#000;">Company Fax : </b><span>{{$company_fax->Fax_number}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Email :</b></td>
+                                        <td>{{$Company_ID->Company_Email}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Taxpayer Identification : </b></td>
+                                        <td>{{$Company_ID->Taxpayer_Identification}}</td>
+                                    </tr>
+
+                                </table>
                                 <div>
-                                    @if ($Company_type->name_th === 'บริษัทจำกัด')
-                                        <p id="Company_name" name="Company_name" style="display: inline-block;font-weight: bold;">บริษัท {{ $Company_ID->Company_Name }} จำกัด</p>
-                                    @elseif ($Company_type->name_th === 'บริษัทมหาชนจำกัด')
-                                        <p id="Company_name" name="Company_name" style="display: inline-block;font-weight: bold;">บริษัท {{ $Company_ID->Company_Name }} จำกัด (มหาชน)</p>
-                                    @elseif ($Company_type->name_th === 'ห้างหุ้นส่วนจำกัด')
-                                        <p id="Company_name" name="Company_name" style="display: inline-block;font-weight: bold;">ห้างหุ้นส่วนจำกัด {{ $Company_ID->Company_Name }}</p>
-                                    @endif
+                                    <br>
                                 </div>
                                 <div>
-                                    <p id="Company_Address" name="Company_Address" style="display: inline-block;font-weight: bold;">{{$Company_ID->Address}}</p>
-                                    <p id="Tambon" name="Tambon" style="display: inline-block;font-weight: bold;" >{{'ตำบล' . $TambonID->name_th}}</p>
-                                    <p id="Amphures" name="Amphures" style="display: inline-block;font-weight: bold;">{{'อำเภอ' .$amphuresID->name_th}}</p>
-                                    <p id="City" name="City" style="display: inline-block;font-weight: bold;">{{'จังหวัด' .$provinceNames->name_th}}</p>
-                                    <p id="Zip_Code" name="Zip_Code" style="display: inline-block;font-weight: bold;">{{$TambonID->Zip_Code}}</p>
+                                    <b class="com my-2" style="font-size:18px">Personal Information</b>
                                 </div>
                                 <div class="col-12 row">
-                                    <div class="col-4">
-                                        <p style="display: inline-block;font-weight: bold;">Tel :</p>
-                                        <p id="Company_Number" name="Company_Number" style="display: inline-block;font-weight: bold;">{{$company_phone->Phone_number}}</p>
-                                    </div>
-                                    <div class="col-4">
-                                        <p style="display: inline-block;font-weight: bold;">Fax :</p>
-                                        <p id="Company_Fax" name="Company_Fax" style="display: inline-block;font-weight: bold;">{{$company_fax->Fax_number}}</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p style="display: inline-block;font-weight: bold;">Email :</p>
-                                    <p id="Company_Email" name="Company_Email" style="display: inline-block;font-weight: bold;">{{$Company_ID->Company_Email}}</p>
-                                </div>
-                                <div>
-                                    <p style="display: inline-block;font-weight: bold;">Taxpayer Identification Number :</p>
-                                    <p id="Taxpayer_Identification" name="Taxpayer_Identification" style="display: inline-block;font-weight: bold;">{{$Company_ID->Taxpayer_Identification}}</p>
-                                </div>
-                                <div>
-                                    <br><br>
-                                </div>
-                                <div>
-                                    <p class="com">Personal Information</p>
-                                </div>
-                                <div class="col-12 row">
-                                    <div class="col-5">
-                                        <p style="display: inline-block;font-weight: bold;">Name :</p>
-                                        <p id="Company_contact" name="Company_contact" style="display: inline-block;font-weight: bold;">คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</p>
+                                    <div class="col-6">
+                                        <p style="display: inline-block;font-weight: bold;margin-left: 10px;">Contact Name :</p>
+                                        <p id="Company_contact" name="Company_contact" style="display: inline-block;">คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</p>
                                     </div>
                                     <div class="col-6">
-                                        <p style="display: inline-block;font-weight: bold;">Tel :</p>
-                                        <p id="Contact_Phone" name="Contact_Phone" style="display: inline-block;font-weight: bold;">{{$Contact_phone->Phone_number}}</p>
+                                        <p style="display: inline-block;font-weight: bold;">Contact Number :</p>
+                                        <p id="Contact_Phone" name="Contact_Phone" style="display: inline-block;">{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</p>
                                     </div>
                                     <div>
-                                        <p style="display: inline-block;font-weight: bold;">Email :</p>
-                                        <p id="Contact_Email" name="Contact_Email" style="display: inline-block;font-weight: bold;">{{$Contact_name->Email}}</p>
+                                        <p style="display: inline-block;font-weight: bold;margin-left: 10px;">Contact Email :</p>
+                                        <p id="Contact_Email" name="Contact_Email" style="display: inline-block;">{{$Contact_name->Email}}</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="col-lg-4 col-md-12 col-sm-12">
                                 <div><br><br><br><br></div>
                                 <div class="col-12 row" >
-                                    <div class="col-lg-4 " style="text-align: right;">
+                                    <div class="col-lg-6">
                                         <p style="display: inline-block;font-weight: bold;">Check In :</p><br>
                                         <p style="display: inline-block;font-weight: bold;">Check Out :</p><br>
                                         <p style="display: inline-block;font-weight: bold;">Length of Stay :</p><br>
                                         <p style="display: inline-block;font-weight: bold;">Number of Guests :</p>
                                     </div>
-                                    <div class="col-lg-5">
-                                        <p style="display: inline-block;font-weight: bold;">{{$Quotation->checkin}}</p><br>
-                                        <p style="display: inline-block;font-weight: bold;">{{$Quotation->checkout}}</p><br>
-                                        <p style="display: inline-block;font-weight: bold;">{{$Quotation->day}} วัน {{$Quotation->night}} คืน</p><br>
-                                        <p style="display: inline-block;font-weight: bold;">{{$Quotation->adult}} Adult , {{$Quotation->adult}} Children</p>
+                                    <div class="col-lg-6">
+                                        <p style="display: inline-block;">{{$Quotation->checkin}}</p><br>
+                                        <p style="display: inline-block;">{{$Quotation->checkout}}</p><br>
+                                        <p style="display: inline-block;">{{$Quotation->day}} วัน {{$Quotation->night}} คืน</p><br>
+                                        <p style="display: inline-block;">{{$Quotation->adult}} Adult , {{$Quotation->adult}} Children</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="styled-hr"></div>
                         </div>
-                        
+
                         <div class="mt-2">
                             <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
                         </div>
@@ -336,39 +346,41 @@
                                 <table class="table table-borderless">
                                     <tbody>
                                         <tr >
-                                            
-                                            <td scope="row"style="text-align:right;width: 55%;"><b>Total Amount</b></td>
-                                            <td style="text-align:left;width: 45%;"><span id="total-amount">0</span></td>
+
+                                            <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Total Amount</b></td>
+                                            <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amount">0</span></td>
                                         </tr>
                                         <tr>
-                                            
-                                            <td scope="row"style="text-align:right;width: 55%;"><b>Discount (%)</b></td>
-                                            <td style="text-align:left;width: 45%;"><span id="total-Discount">0</span></td>
+
+                                            <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Discount</b></td>
+                                            <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-Discount">0</span></td>
                                         </tr>
                                         <tr>
-                                            
-                                            <td scope="row"style="text-align:right;width: 55%;"><b>Net price</b></td>
-                                            <td style="text-align:left;width: 45%;"><span id="Net-price">0</span></td>
+
+                                            <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Net price</b></td>
+                                            <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Net-price">0</span></td>
                                         </tr>
                                         <tr>
-                                            
-                                            <td scope="row" style="text-align:right;width: 55%;"><b>Value Added Tax</b></td>
-                                            <td style="text-align:left;width: 45%;"><span id="total-Vat">0</span></td>
+
+                                            <td scope="row" style="text-align:right;width: 55%;font-size: 14px;"><b>Value Added Tax</b></td>
+                                            <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-Vat">0</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                         <div class="col-12 row">
-                            <div class="col-8">
-            
-                            </div>
+                            <div class="col-8"></div>
                             <div class="col-lg-4 col-md-3 col-sm-12">
                                 <table class="table table-borderless1" >
                                     <tbody>
                                         <tr>
-                                            <td style=" text-align:right;background-color: #109699;color:#fff;width: 55%;"><b>Net Total (฿)</b></td>
-                                            <td style=" text-align:left;background-color: #109699;color:#fff;width: 45%;"><span id="Net-Total">0</span></td>
+                                            <td colspan="2" style="text-align:center;">
+                                                <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;padding:5px;  padding-bottom: 8px;">
+                                                    <b style="font-size: 14px;">Net Total</b>
+                                                    <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"><span id="Net-Total">0</span></strong>
+                                                </div>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -385,8 +397,8 @@
                                 <table class="table table-borderless" >
                                     <tbody>
                                         <tr>
-                                            <td style="text-align:right;width: 55%;"><b>Average per person</b></td>
-                                            <td style="text-align:left;width: 45%;"><span id="Average">0</span></td>
+                                            <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person</b></td>
+                                            <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -394,12 +406,11 @@
                         </div>
                         <div class="col-12 mt-3">
                             <div class="col-lg-4 col-md-6 col-sm-12">
-                                <strong class="titleh1">Method of Payment</strong>
+                                <strong class="com" style="font-size: 18px">Method of Payment</strong>
                             </div>
-                            <div class="styled-hr my-3"></div>
                             <span class="col-md-6 col-sm-12">
                                 Please make a 50% deposit within 7 days after confirmed. <br>
-                                 Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
+                                Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
                                 If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
                                 pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
                             </span>
@@ -408,9 +419,9 @@
                                     <div class="col-12  mt-2">
                                         <div class="row">
                                             <div class="col-2 mt-3" style="display: flex;justify-content: center;align-items: center;">
-                                                <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 80%;border-radius: 50%;"/>
+                                                <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 60%;border-radius: 50%;"/>
                                             </div>
-                                            <div class="col-7 mt-4">
+                                            <div class="col-7 mt-2">
                                                 <strong>The Siam Commercial Bank Public Company Limited <br>Bank Account No. 708-226791-3<br>Tha Yang - Phetchaburi Branch (Savings Account)</strong>
                                             </div>
                                         </div>
@@ -432,17 +443,19 @@
                                             $gethttp =(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http";
                                             $linkQR = $gethttp."://".$_SERVER['HTTP_HOST']."/quotation-preview-export/$id?page_shop=".@$_GET['page_shop'];
                                         @endphp
-                                        <img src="data:image/png;base64,{{DNS2D::getBarcodePNG($linkQR,'QRCODE') }}" width="120" height="120"/></td>
+                                        <div class="mt-3">
+                                            <img src="data:image/png;base64,{{DNS2D::getBarcodePNG($linkQR,'QRCODE') }}" width="90" height="90"/>
+                                        </div>
                                     </div>
                                     <div class="col-lg-2 centered-content">
                                         <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
-                                        <br><br><br>
+                                        <br><br>
                                         <span>{{@$Quotation->user->name}}</span>
                                         <span>{{ $Quotation->issue_date }}</span>
                                     </div>
                                     <div class="col-lg-2 centered-content">
                                         <span>ผู้อนุมัติเอกสาร (ผู้ขาย)</span><br>
-                                        <br><br><br>
+                                        <br><br>
                                         <span>{{@$Quotation->user->name}}</span>
                                         <span>{{ $Quotation->issue_date }}</span>
                                     </div>
@@ -467,17 +480,36 @@
                         <div class="col-12 row mt-5">
                             <div class="col-4"></div>
                             <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
+                                <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
+                                    แสดงตัวอย่างใบเสนอ
+                                </button>
                                 <button type="submit" class="btn btn-color-green lift btn_modal">บันทึกใบเสนอราคา</button>
                             </div>
                             <div class="col-4"></div>
                         </div>
                     </form>
+                    <input type="hidden" name="preview" value="preview" id="preview">
                 </div>
             </div>
         </div>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+    function submitPreview() {
+        var previewValue = document.getElementById("preview").value;
+
+        // สร้าง input แบบ hidden ใหม่
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "preview";
+        input.value = previewValue;
+
+        // เพิ่ม input ลงในฟอร์ม
+        document.getElementById("myForm").appendChild(input);
+        document.getElementById("myForm").submit();
+    }
+</script>
 <script>
     function fetchProducts(status) {
         var table = $('.myDataTableQuotationmodal').DataTable();
@@ -652,7 +684,7 @@
 
     function totalAmost() {
         $(document).ready(function() {
-            
+
             let allprice = 0;
             let allpricedis = 0;
             let discounttotal =0;
@@ -662,7 +694,7 @@
             let priceArray = [];
             let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
             $('#display-selected-items tr').each(function() {
-                
+
                 var adultValue = parseFloat(document.getElementById('adult').value);
                 var childrenValue = parseFloat(document.getElementById('children').value);
                 let priceCell = $(this).find('td').eq(7);
@@ -678,7 +710,7 @@
                 nettotal = allpricedis+vattotal;
                 var person =adultValue+childrenValue;
                 totalperson = nettotal/person;
-               
+
             });
             $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             $('#total-Discount').text(isNaN(discounttotal) ? '0' : discounttotal.toLocaleString('th-TH', {minimumFractionDigits: 2}));

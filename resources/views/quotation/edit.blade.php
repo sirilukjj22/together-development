@@ -49,6 +49,9 @@
 .calendar-icon:active {
     transform: scale(0.9);
 }
+.btn-space {
+        margin-right: 10px; /* ปรับขนาดช่องว่างตามต้องการ */
+    }
 @media (max-width: 768px) {
     .image-container {
         flex-direction: column;
@@ -66,8 +69,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col">
-                <small class="text-muted">Welcome to Create Company / Agent.</small>
-                <h1 class="h4 mt-1">Create Company / Agent (เพิ่มบริษัทและตัวแทน)</h1>
+                <small class="text-muted">Welcome to Edit Company / Agent.</small>
+                <h1 class="h4 mt-1">Edit Company / Agent (แก้ไขบริษัทและตัวแทน)</h1>
             </div>
         </div>
     </div>
