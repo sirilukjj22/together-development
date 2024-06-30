@@ -359,7 +359,13 @@ class QuotationController extends Controller
             } elseif ($page > 1.1) {
             $page_item = 1 + $page > 1.1 ? ceil($page) : 1;
             }
+            $id = $request->Quotation_ID;
+            $protocol = $request->secure() ? 'https' : 'http';
+            $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
 
+            // Generate the QR code as PNG
+            $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
+            $qrCodeBase64 = base64_encode($qrCodeImage);
 
             $data = [
                 'date' => $date,
@@ -393,6 +399,7 @@ class QuotationController extends Controller
                 'quantity'=>$quantity,
                 'page_item'=>$page_item,
                 'page'=>$pagecount,
+                'qrCodeBase64'=>$qrCodeBase64,
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('quotation.preview',$data);
@@ -569,7 +576,12 @@ class QuotationController extends Controller
             $page_item = 1 + $page > 1.1 ? ceil($page) : 1;
             }
 
+            $protocol = $request->secure() ? 'https' : 'http';
+            $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
 
+            // Generate the QR code as PNG
+            $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
+            $qrCodeBase64 = base64_encode($qrCodeImage);
             $data = [
                 'date' => $date,
                 'comtypefullname'=>$comtypefullname,
@@ -602,6 +614,7 @@ class QuotationController extends Controller
                 'quantity'=>$quantity,
                 'page_item'=>$page_item,
                 'page'=>$pagecount,
+                'qrCodeBase64'=>$qrCodeBase64,
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('quotation.preview',$data);
