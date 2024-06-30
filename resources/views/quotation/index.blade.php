@@ -82,7 +82,7 @@
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                         <ul class="dropdown-menu border-0 shadow p-3">
-                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">ดูรายละเอียดใบเสนอ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">ดูรายละเอียดใบเสนอ</a></li>
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">แก้ไขบริษัท</a></li>
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/select/'.$item->id) }}">แก้ไขใบเสนอ</a></li>
                                         </ul>

@@ -102,17 +102,17 @@
                                     <div id="reportrange1" style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
                                         <div class="col-12 col-md-12 col-sm-12">
                                             <div class="row">
-                                                <div class="col-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
                                                     <span>Issue Date:</span>
                                                 </div>
-                                                <div class="col-6 col-md-12 col-sm-12">
+                                                <div class="col-lg-6 col-md-12 col-sm-12">
                                                     <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;"readonly>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-12 col-sm-12 mt-2">
                                             <div class="row">
-                                                <div class="col-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
                                                     <span>Expiration Date:</span>
                                                 </div>
                                                 <div class="col-lg-6 col-md-12 col-sm-12">

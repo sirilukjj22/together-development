@@ -465,8 +465,8 @@
                                     <div class="col-lg-2 centered-content">
                                         <span>ผู้รับเอกสาร (ลูกค้า)</span>
                                         <br><br><br>
-                                            ---------------------
-                                        <span>{{ $Company_ID->Company_Name }}</span>
+                                        ______________________
+                                        <span>_____/__________/_____</span>
                                     </div>
                                     <div class="col-lg-2 centered-content">
                                         <span>ตราประทับ (ลูกค้า)</span>

@@ -92,7 +92,9 @@
         border: 3px solid #2D7F7B;
         border-radius: 10px;
     }
-
+    .btn-space {
+        margin-right: 10px; /* ปรับขนาดช่องว่างตามต้องการ */
+    }
 @media (max-width: 768px) {
     .image-container {
         flex-direction: column;
@@ -504,12 +506,16 @@
                         <div class="col-12 row mt-5">
                             <div class="col-4"></div>
                             <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
+                                <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
+                                    แสดงตัวอย่างใบเสนอ
+                                </button>
                                 <button type="submit" class="btn btn-color-green lift btn_modal">บันทึกใบเสนอราคา</button>
                             </div>
                             <div class="col-4"></div>
                         </div>
                     </form>
                 </div>
+                <input type="hidden" name="preview" value="preview" id="preview">
             </div>
         </div>
     </div>
@@ -787,5 +793,19 @@
     }
     totalAmost();
 </script>
+<script>
+    function submitPreview() {
+        var previewValue = document.getElementById("preview").value;
 
+        // สร้าง input แบบ hidden ใหม่
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "preview";
+        input.value = previewValue;
+
+        // เพิ่ม input ลงในฟอร์ม
+        document.getElementById("myForm").appendChild(input);
+        document.getElementById("myForm").submit();
+    }
+</script>
 @endsection
