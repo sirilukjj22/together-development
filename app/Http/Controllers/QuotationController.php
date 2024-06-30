@@ -736,7 +736,7 @@ class QuotationController extends Controller
         $quantity = master_quantity::where('status',1)->get();
         $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
 
-        return view('quotation.editProduct',compact('Quotation','Company_ID','Company_type','amphuresID','TambonID','provinceNames','company_fax','company_phone'
+        return view('quotation.editproduct',compact('Quotation','Company_ID','Company_type','amphuresID','TambonID','provinceNames','company_fax','company_phone'
         ,'Contact_name','Contact_phone','ContactCity','ContactamphuresID','ContactTambonID','product','unit','quantity','selectproduct'));
     }
     public function addProducttable($Quotation_ID, Request $request) {
