@@ -378,12 +378,12 @@
                         </tr>
                         <tr>
                             <td style="text-align: center;width:10%">
-                                @php
+                                {{-- @php
                                     $id = $Quotation->id;
                                     $gethttp =(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http";
                                     $linkQR = $gethttp."://".$_SERVER['HTTP_HOST']."/Quotation/Quotation/cover/document/PDF/$id?page_shop=".@$_GET['page_shop'];
-                                @endphp
-                               <img src="data:image/png;base64, {!! base64_encode(QrCode::size(60)->generate($linkQR)) !!} ">
+                                @endphp --}}
+                               <img src="data:image/png;base64, {!! $qrCodeBase64 !!} " alt="QR Code" width="60" height="60"/>
                             <td style="text-align: center;" >
                                 <img src="test.png" style="width: 40%;"/>
                                 <span style="display: block; text-align: center;">{{@$Quotation->user->name}}</span>

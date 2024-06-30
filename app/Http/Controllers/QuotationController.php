@@ -820,7 +820,7 @@ class QuotationController extends Controller
     }
 
 
-    public function sheetpdf($id) {
+    public function sheetpdf(Request $request ,$id) {
 
 
         $Quotation = Quotation::where('id', $id)->first();
@@ -881,6 +881,12 @@ class QuotationController extends Controller
             $total = $totalPrice+$vat;
             $totalaverage = $total/$totalguest;
         }
+        $protocol = $request->secure() ? 'https' : 'http';
+        $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+
+        // Generate the QR code as PNG
+        $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
+        $qrCodeBase64 = base64_encode($qrCodeImage);
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
         $pagecount = count($selectproduct);
@@ -928,6 +934,7 @@ class QuotationController extends Controller
             'pagecount'=>$pagecount,
             'page'=>$page,
             'page_item'=>$page_item,
+            'qrCodeBase64'=>$qrCodeBase64,
         ];
 
         $view= $template->name;
