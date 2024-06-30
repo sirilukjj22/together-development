@@ -381,9 +381,9 @@
                                 @php
                                     $id = $Quotation->id;
                                     $gethttp =(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http";
-                                    $linkQR = $gethttp."://".$_SERVER['HTTP_HOST']."/quotation-preview-export/$id?page_shop=".@$_GET['page_shop'];
+                                    $linkQR = $gethttp."://".$_SERVER['HTTP_HOST']."/Quotation/Quotation/cover/document/PDF/$id?page_shop=".@$_GET['page_shop'];
                                 @endphp
-                                <img src="data:image/png;base64,{{DNS2D::getBarcodePNG($linkQR,'QRCODE') }}" width="60" height="60"/></td>
+                              <img src="data:image/png;base64, {!! base64_encode(QrCode::size(60)->generate($linkQR)) !!} ">
                             <td style="text-align: center;" >
                                 <img src="test.png" style="width: 40%;"/>
                                 <span style="display: block; text-align: center;">{{@$Quotation->user->name}}</span>
