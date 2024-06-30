@@ -439,12 +439,10 @@
                                     <div class="col-lg-2 centered-content">
                                         <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
                                         @php
-                                            $id = $Quotation->id;
-                                            $gethttp =(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http";
-                                            $linkQR = $gethttp."://".$_SERVER['HTTP_HOST']."/quotation-preview-export/$id?page_shop=".@$_GET['page_shop'];
+                                            use SimpleSoftwareIO\QrCode\Facades\QrCode;
                                         @endphp
                                         <div class="mt-3">
-                                            <img src="data:image/png;base64,{{DNS2D::getBarcodePNG($linkQR,'QRCODE') }}" width="90" height="90"/>
+                                            {!! QrCode::size(60)->generate($linkQR) !!}
                                         </div>
                                     </div>
                                     <div class="col-lg-2 centered-content">

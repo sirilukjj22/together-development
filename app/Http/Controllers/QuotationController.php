@@ -132,7 +132,7 @@ class QuotationController extends Controller
         }
 
     }
-    public function selectProduct($id)
+    public function selectProduct(Request $request,$id)
     {
         $Quotation = Quotation::where('Quotation_ID', $id)->first();
         $Quotation_ID = $Quotation->Quotation_ID;
@@ -162,8 +162,10 @@ class QuotationController extends Controller
         $product = master_product_item::where('status',1)->get();
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
+        $protocol = $request->secure() ? 'https' : 'http';
+        $linkQR = $protocol . '://' . $request->getHost() . "/quotation-preview-export/$id?page_shop=" . $request->input('page_shop');
         return view('quotation.selectproduct',compact('Quotation','Company_ID','Company_type','amphuresID','TambonID','provinceNames','company_fax','company_phone'
-        ,'Contact_name','Contact_phone','ContactCity','ContactamphuresID','ContactTambonID','product','unit','quantity','Quotation_ID'));
+        ,'Contact_name','Contact_phone','ContactCity','ContactamphuresID','ContactTambonID','product','unit','quantity','Quotation_ID','linkQR'));
     }
     public function addProduct($Quotation_ID, Request $request) {
         $value = $request->input('value');
