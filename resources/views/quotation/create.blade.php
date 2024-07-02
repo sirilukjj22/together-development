@@ -96,7 +96,7 @@
                             </div>
                             <div class="col-lg-4 col-md-12 col-sm-12">
                                 <div class="row">
-                                    <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Quotation </b>
+                                    <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Proposal</b>
                                     <span class="titleQuotation">{{$Quotation_ID}}</span>
                                     <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
                                     <div id="reportrange1" style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
@@ -197,7 +197,7 @@
                                 <select name="Freelancer_member" id="Freelancer_member" class="select2" required>
                                     <option value=""></option>
                                     @foreach($Freelancer_member as $item)
-                                        <option value="{{ $item->Profile_ID }}">{{ $item->First_name }}{{ $item->Last_name }}</option>
+                                        <option value="{{ $item->Profile_ID }}">{{ $item->First_name }} {{ $item->Last_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -225,9 +225,11 @@
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-12">
                                 <label  for="">Vat Type</label>
-                                <select name="Vat_Type" id="Vat_Type" class="select2" >
-                                    <option value="VAT_IN">VAT IN</option>
-                                    <option value="VAT_OUT">VAT OUT</option>
+                                <select name="Mvat" id="Mvat" class="select2" required>
+                                    <option value=""></option>
+                                    @foreach($Mvat as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-lg-12 col-md-6 col-sm-12 d-flex justify-content-center mt-3">

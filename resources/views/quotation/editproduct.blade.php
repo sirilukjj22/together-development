@@ -342,12 +342,12 @@
                                                         <input type="hidden" id="tr-select-main{{$item->Product_ID}}" name="tr-select-main[]" value="{{$item->Product_ID}}">
                                                         <td><input type="hidden" id="ProductID" name="ProductIDmain[]" value="{{$item->Product_ID}}">{{$key+1}}</td>
                                                         <td style="text-align:left;"><input type="hidden" id="Productname_th" name="Productname_th" value="{{@$item->product->name_th}}">{{@$item->product->name_th}}</td>
-                                                        <td class="Quantity" data-value="{{$item->Quantity}}"><input type="hidden" id="Quantity" name="Quantitymain[]" value="{{$item->Quantity}}">{{$item->Quantity}}</td>
+                                                        <td class="Quantity" data-value="{{$item->Quantity}}"style="text-align:center;"><input type="hidden" id="Quantity" name="Quantitymain[]" value="{{$item->Quantity}}">{{$item->Quantity}}</td>
                                                         <td><input type="hidden" id="unitname_th" name="unitname_th" value="{{ $singleUnit->name_th }}">{{ $singleUnit->name_th }}</td>
                                                         <td class="priceproduct" data-value="{{$item->priceproduct}}"><input type="hidden" id="totalprice-unit{{$key+1}}" name="priceproductmain[]" value="{{$item->priceproduct}}">{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
-                                                        <td class="discount"><input type="hidden" id="discount" name="discountmain[]" value="{{$item->discount}}">{{$item->discount}}</td>
-                                                        <td class="net-price"><input type="hidden" id="net_discount{{$key+1}}" name="net_discountmain[]" value="{{$item->netpriceproduct}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
-                                                        <td class="item-total"><input type="hidden" id="allcounttotal{{$key+1}}" name="allcounttotalmain[]" value="{{$item->totalpriceproduct}}">{{ number_format($item->totalpriceproduct, 2, '.', ',') }}</td>
+                                                        <td class="discount"style="text-align:center;"><input type="hidden" id="discount" name="discountmain[]" value="{{$item->discount}}">{{$item->discount}}</td>
+                                                        <td class="net-price"><input type="hidden" id="net_discount{{$key+1}}" name="net_discountmain[]" value="{{$item->totaldiscount}}">{{ number_format($item->totaldiscount, 2, '.', ',') }}</td>
+                                                        <td class="item-total"><input type="hidden" id="allcounttotal{{$key+1}}" name="allcounttotalmain[]" value="{{$item->netpriceproduct}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
                                                         <td>
                                                             <button type="button" class="Btn remove-button1">
                                                                 <i class="fa fa-minus-circle text-danger fa-lg"></i>
@@ -363,36 +363,80 @@
                         </div>
                         <input type="hidden" name="adult" id="adult" value="{{$Quotation->adult}}">
                         <input type="hidden" name="children" id="children" value="{{$Quotation->children}}">
+                        <input type="hidden" name="vat_type_name" id="vat_type_name" value="{{ $Mvat->firstWhere('id', $Quotation->vat_type)->name_th ?? '' }}">
                         <div class="col-12 row ">
                             <div class="col-lg-8 col-md-8 col-sm-12 mt-2" >
                                 <span >Notes or Special Comment</span>
                                 <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-12 " >
-                                <table class="table table-borderless">
-                                    <tbody>
-                                        <tr >
-
-                                            <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Total Amount</b></td>
-                                            <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amount">0</span></td>
-                                        </tr>
-                                        <tr>
-
-                                            <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Discount</b></td>
-                                            <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-Discount">0</span></td>
-                                        </tr>
-                                        <tr>
-
-                                            <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Net price</b></td>
-                                            <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Net-price">0</span></td>
-                                        </tr>
-                                        <tr>
-
-                                            <td scope="row" style="text-align:right;width: 55%;font-size: 14px;"><b>Value Added Tax</b></td>
-                                            <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-Vat">0</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                @php
+                                    $vatTypeName = $Mvat->firstWhere('id', $Quotation->vat_type)->name_th ?? '';
+                                @endphp
+                                @if ($vatTypeName == 'PRICE INCLUDE VAT')
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr >
+                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amount">0</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="{{$SpecialDiscount}}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscount"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Price Before Tax</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Net-price">0</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row" style="text-align:right;width: 55%;font-size: 14px;"><b>Value Added Tax</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-Vat">0</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                @elseif($vatTypeName == 'PRICE EXCLUDE VAT')
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr >
+                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amount">0</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="{{$SpecialDiscount}}" ></td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscount">0</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                @else
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr >
+                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amount">0</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="{{$SpecialDiscount}}" ></td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscount">0</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row" style="text-align:right;width: 55%;font-size: 14px;"><b>Value Added Tax</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-Vat">0</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                @endif
                             </div>
                         </div>
                         <div class="col-12 row">
@@ -561,39 +605,49 @@
                 console.error('Error:', error);
             }
         });
-        $(document).on('click', '.select-button-product', function() {
-            var table = $('.product-list-select').DataTable();
-            var product = $(this).val();
-            if ($('#productselect' + product).length > 0) {
-                return;
+        $(document).ready(function() {
+            if (!$.fn.DataTable.isDataTable('.product-list-select')) {
+                var table = $('.product-list-select').DataTable();
+            } else {
+                var table = $('.product-list-select').DataTable();
             }
-            $.ajax({
-                url: '{{ route("Quotation.addProducttableselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
-                method: 'GET',
-                data: {
-                    value:product
-                },
-                success: function(response) {
-                    $.each(response.products, function(index, val) {
-                        var name = '';
-                        var price = 0;
-                        var rowNumber = $('#product-list-select tr').length+1;
-                        $('#product-list-select').append(
-                            '<tr id="tr-select-add' + val.id + '">' +
-                            '<td>' + rowNumber + '</td>' +
-                            '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + val.Product_ID + '">' + val.Product_ID + '</td>' +
-                            '<td style="text-align:left;">' + val.name_en + '</td>' +
-                            '<td style="text-align:right;">' + val.unit_name + '</td>' +
-                            '<td>' + val.normal_price + '</td>' +
-                            '<td><button type="button" class="Btn remove-button" value="' + val.id + '"> <i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
-                            '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
-                            '</tr>'
-                        );
-                    });
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
+            $(document).on('click', '.select-button-product', function() {
+                var product = $(this).val();
+                if ($('#productselect' + product).length > 0) {
+                    return;
                 }
+                $.ajax({
+                    url: '{{ route("Quotation.addProducttableselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+                    method: 'GET',
+                    data: {
+                        value:product
+                    },
+                    success: function(response) {
+                        $.each(response.products, function(index, val) {
+                            var name = '';
+                            var price = 0;
+                            var rowNumber = $('#product-list-select tr').length+1;
+                            if ($('#productselect' + val.id).length > 0) {
+                                console.log("Product already exists after AJAX call: ", val.id);
+                            return;
+                            }
+                            $('#product-list-select').append(
+                                '<tr id="tr-select-add' + val.id + '">' +
+                                '<td>' + rowNumber + '</td>' +
+                                '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + val.Product_ID + '">' + val.Product_ID + '</td>' +
+                                '<td style="text-align:left;">' + val.name_en + '</td>' +
+                                '<td style="text-align:right;">' + val.unit_name + '</td>' +
+                                '<td>' + val.normal_price + '</td>' +
+                                '<td><button type="button" class="Btn remove-button" value="' + val.id + '"> <i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
+                                '</tr>'
+                            );
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
             });
         });
         function renumberRows() {
@@ -629,8 +683,8 @@
                                 var price = 0;
                                 var normalPriceString = val.normal_price.replace(/[^0-9.]/g, ''); // ล้างค่าที่ไม่ใช่ตัวเลขและจุดทศนิยม
                                 var normalPrice = parseFloat(normalPriceString);
-                                console.log('normalPrice:', normalPrice);
-                                var netDiscount = (normalPrice - (normalPrice * 0.01)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                var netDiscount = ((normalPrice * 0.01)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                var normalPriceview = ((normalPrice-netDiscount)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 var rowNumbemain = $('#display-selected-items tr').length+1;
                                 $('#display-selected-items').append(
                                     '<tr id="tr-select-addmain' + val.id + '">' +
@@ -638,10 +692,10 @@
                                     '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en + '</td>' +
                                     '<td><input class="quantitymain form-control" type="text" id="quantitymain" name="Quantitymain[]" value="1" min="1" rel="' + number + '" style="text-align:center;"></td>' +
                                     '<td>' + val.unit_name + '</td>' +
-                                    '<td><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + normalPrice + '">' + val.normal_price + '</td>' +
+                                    '<td><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + val.normal_price + '</td>' +
                                     '<td><input class="discountmain form-control" type="text" id="discountmain" name="discountmain[]" value="1" min="1" res="' + number + '" style="text-align:center;"></td>' +
                                     '<td><input type="hidden" id="net_discount-' + number + '"  value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + netDiscount + '</span></td>' +
-                                    '<td><input type="hidden" id="allcounttotal-' + number + '"  value=" '+ val.normal_price +'"><span id="allcount' + number + '">' + val.normal_price + '</span></td>' +
+                                    '<td><input type="hidden" id="allcounttotal-' + number + '"  value=" '+ val.normal_price +'"><span id="allcount' + number + '">' + normalPriceview  + '</span></td>' +
                                     '<td><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
                                     '</tr>'
                                 );
@@ -727,15 +781,14 @@
     $(document).ready(function() {
         $(document).on('keyup', '.quantitymain', function() {
             var quantitymain =  Number($(this).val());
-            console.log(quantitymain);
             var discountmain =  Number($('.discountmain').val());
             var number_ID = $(this).attr('rel');
             var number = Number($('#number-product').val());
             var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
-            var pricenew = price*quantitymain
-            $('#allcount'+number_ID).text(pricenew.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            var pricediscount = pricenew - (pricenew*discountmain /100);
+            var pricediscount = (price*discountmain /100);
             $('#netdiscount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+            var pricenew = (price*quantitymain)-(pricediscount*quantitymain);
+            $('#allcount'+number_ID).text(pricenew.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             totalAmost();
         });
         $(document).on('keyup', '.discountmain', function() {
@@ -744,52 +797,117 @@
             var number_ID = $(this).attr('res');
             var number = Number($('#number-product').val());
             var price = parseFloat($('#allcounttotal-'+number_ID).val().replace(/,/g, ''));
-            var pricediscount = price - (price*discountmain /100);
+            var pricediscount =  (price*discountmain /100);
             $('#netdiscount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
             var pricenew = price*quantitymain
             var pricediscount = pricenew - (pricenew*discountmain /100);
-            $('#netdiscount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+            $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             totalAmost();
         });
     });
+    $('#SpecialDis').on('input', function() {
+        var specialDisValue = $(this).val();
+        var typevat = document.getElementById('vat_type_name').value;
+        let allprice = 0;
+        let lessDiscount = 0;
+        let beforetax =0;
+        let addedtax =0;
+        let Nettotal =0;
+        let totalperson=0;
+        $('#display-selected-items tr').each(function() {
 
+            var adultValue = parseFloat(document.getElementById('adult').value);
+            var childrenValue = parseFloat(document.getElementById('children').value);
+            let priceCell = $(this).find('td').eq(7);
+            let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
+            var person =adultValue+childrenValue;
+
+            if (typevat == 'PRICE INCLUDE VAT') {
+                allprice += pricetotal;
+                lessDiscount = allprice-specialDisValue;
+                beforetax= lessDiscount/1.07;
+                addedtax = lessDiscount-beforetax;
+                Nettotal= beforetax+addedtax;
+                totalperson = Nettotal/person;
+            }
+            else if(typevat == 'PRICE EXCLUDE VAT')
+            {
+                allprice += pricetotal;
+                lessDiscount = allprice-specialDisValue;
+                beforetax= lessDiscount/1.07;
+                addedtax =0;
+                Nettotal= beforetax;
+                totalperson = Nettotal/person;
+            } else{
+                allprice += pricetotal;
+                lessDiscount = allprice-specialDisValue;
+                addedtax = lessDiscount*7/100;;
+                beforetax= lessDiscount+addedtax;
+                Nettotal= beforetax;
+                totalperson = Nettotal/person;
+
+            }
+
+        });
+
+        $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+    });
     function totalAmost() {
         $(document).ready(function() {
-
+            var typevat = document.getElementById('vat_type_name').value;
             let allprice = 0;
-            let allpricedis = 0;
-            let discounttotal =0;
-            let vattotal =0;
-            let nettotal =0;
+            let lessDiscount = 0;
+            let beforetax =0;
+            let addedtax =0;
+            let Nettotal =0;
             let totalperson=0;
             let priceArray = [];
             let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
+            var specialDisValue = parseFloat(document.getElementById('SpecialDis').value);
             $('#display-selected-items tr').each(function() {
-
                 var adultValue = parseFloat(document.getElementById('adult').value);
                 var childrenValue = parseFloat(document.getElementById('children').value);
                 let priceCell = $(this).find('td').eq(7);
-                let pricetotal = parseInt(priceCell.text().replace(/,/g, '')) || 0;
-                allprice += pricetotal;
-                console.log(adultValue);
-                console.log(childrenValue);
-                let pricedisCell = $(this).find('td').eq(6);
-                let pricedistotal = parseInt(pricedisCell.text().replace(/,/g, '')) || 0; // แปลงข้อความในเซลล์เป็นจำนวนเต็ม และจัดการค่า NaN
-                allpricedis += pricedistotal;
-                discounttotal = allprice-allpricedis;
-                vattotal = allpricedis*7/100;
-                nettotal = allpricedis+vattotal;
+                let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
                 var person =adultValue+childrenValue;
-                totalperson = nettotal/person;
 
+                if (typevat == 'PRICE INCLUDE VAT') {
+                    allprice += pricetotal;
+                    lessDiscount = allprice-specialDisValue;
+                    beforetax= lessDiscount/1.07;
+                    addedtax = lessDiscount-beforetax;
+                    Nettotal= beforetax+addedtax;
+                    totalperson = Nettotal/person;
+                }
+                else if(typevat == 'PRICE EXCLUDE VAT')
+                {
+                    allprice += pricetotal;
+                    lessDiscount = allprice-specialDisValue;
+                    beforetax= lessDiscount/1.07;
+                    addedtax =0;
+                    Nettotal= beforetax;
+                    totalperson = Nettotal/person;
+                } else{
+                    allprice += pricetotal;
+                    lessDiscount = allprice-specialDisValue;
+                    addedtax = lessDiscount*7/100;;
+                    beforetax= lessDiscount+addedtax;
+                    Nettotal= beforetax;
+                    totalperson = Nettotal/person;
+                }
             });
-            $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            $('#total-Discount').text(isNaN(discounttotal) ? '0' : discounttotal.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            $('#Net-price').text(isNaN(allpricedis) ? '0' : allpricedis.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            $('#total-Vat').text(isNaN(vattotal) ? '0' : vattotal.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            $('#Net-Total').text(isNaN(nettotal) ? '0' : nettotal.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+            $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
         });
     }
     totalAmost();

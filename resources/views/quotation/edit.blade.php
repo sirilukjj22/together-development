@@ -189,7 +189,7 @@
                                 <label class="Freelancer_member" for="">Freelance Affiliate</label>
                                 <select name="Freelancer_member" id="Freelancer_member" class="select2" required>
                                     @foreach($Freelancer_member as $item)
-                                        <option value="{{ $item->Profile_ID }}{{$Quotation->freelanceraiffiliate == $item->Profile_ID}}">{{ $item->First_name }}{{ $item->Last_name }}</option>
+                                        <option value="{{ $item->Profile_ID }}{{$Quotation->freelanceraiffiliate == $item->Profile_ID}}">{{ $item->First_name }} {{ $item->Last_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -216,9 +216,10 @@
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-12">
                                 <label  for="">Vat Type</label>
-                                <select name="Vat_Type" id="Vat_Type" class="select2" >
-                                    <option value="VAT_IN" {{$Quotation->vat_type == "VAT_IN" ? 'selected' : ''}}>VAT IN</option>
-                                    <option value="VAT_OUT" {{$Quotation->vat_type == "VAT_OUT" ? 'selected' : ''}}>VAT OUT</option>
+                                <select name="Mvat" id="Mvat" class="select2" required>
+                                    @foreach($Mvat as $item)
+                                        <option value="{{ $item->id }}{{$Quotation->Mvat == $item->id}}">{{ $item->name_th }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-lg-12 col-md-6 col-sm-12 d-flex justify-content-center mt-3">

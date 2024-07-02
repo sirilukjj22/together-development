@@ -21,6 +21,7 @@ use App\Http\Controllers\FreelancerMemberController;
 use App\Http\Controllers\MasterEventFormatController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\Master_TemplateController;
+use App\Http\Controllers\Master_Vat;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -317,6 +318,17 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/MEvent/edit/{id}','edit')->name('Mproduct.edit.MEvent');
         Route::get('/MEvent/search-list2/{datakey}','search')->name('Mproduct.MEvent.search');
         Route::get('/MEvent/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.MEvent.dupicate');
+    });
+    Route::controller(Master_Vat::class)->group(function () {
+        Route::get('/Mvat/index', 'index')->name('Mvat.index');
+        Route::get('/Mvat/ac', 'ac')->name('Mvat.ac');
+        Route::get('/Mvat/no', 'no')->name('Mvat.no');
+        Route::post('/Mvat/Event_Formate/save', 'save')->name('Mvat.save');
+        Route::get('/Mvat/update/{id}/{datakey}/{dataEN}', 'update')->name('Mvat.update');
+        Route::get('/Mvat/change-Status/{id}','changeStatus')->name('Mvat.changeStatus');
+        Route::get('/Mvat/edit/{id}','edit')->name('Mproduct.edit.Mvat');
+        Route::get('/Mvat/search-list2/{datakey}','search')->name('Mproduct.Mvat.search');
+        Route::get('/Mvat/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.Mvat.dupicate');
     });
     #Quotation
     Route::controller(QuotationController::class)->group(function () {

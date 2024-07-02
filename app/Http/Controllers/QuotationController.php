@@ -88,9 +88,10 @@ class QuotationController extends Controller
         $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
         $Quotation_ID = $ID.$year.$month.$newRunNumber;
         $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
+        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
         $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
-        return view('quotation.create',compact('Quotation_ID','Company','Mevent','Freelancer_member','Issue_date','Valid_Until'));
+        return view('quotation.create',compact('Quotation_ID','Company','Mevent','Freelancer_member','Issue_date','Valid_Until','Mvat'));
     }
     public function Contact($companyID)
     {
@@ -120,7 +121,7 @@ class QuotationController extends Controller
         $save->freelanceraiffiliate = $request->Freelancer_member;
         $save->commissionratecode = $request->Company_Commission_Rate_Code;
         $save->eventformat = $request->Mevent;
-        $save->vat_type = $request->Vat_Type;
+        $save->vat_type = $request->Mvat;
         $save->issue_date = $request->IssueDate;
         $save->Expirationdate = $request->Expiration;
         $save->Document_issuer = $userid;
@@ -162,9 +163,9 @@ class QuotationController extends Controller
         $product = master_product_item::where('status',1)->get();
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
-
+        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
         return view('quotation.selectproduct',compact('Quotation','Company_ID','Company_type','amphuresID','TambonID','provinceNames','company_fax','company_phone'
-        ,'Contact_name','Contact_phone','ContactCity','ContactamphuresID','ContactTambonID','product','unit','quantity','Quotation_ID'));
+        ,'Contact_name','Contact_phone','ContactCity','ContactamphuresID','ContactTambonID','product','unit','quantity','Quotation_ID','Mvat'));
     }
     public function addProduct($Quotation_ID, Request $request) {
         $value = $request->input('value');
@@ -201,6 +202,7 @@ class QuotationController extends Controller
         $data = $request->all();
 
         $preview = $request->preview;
+        $SpecialDis = $request->SpecialDis;
 
         $userid = Auth::user()->id;
         $quantities = $request->input('quantitymain', []); // ตัวอย่างใช้ 'pricetotal' เป็น quantity
@@ -226,7 +228,6 @@ class QuotationController extends Controller
                 $discountedPricestotal[] = $discountedPriceTotal;
             }
         }
-
         $Quotation_ID = $request->Quotation_ID;
         $IssueDate = $request->IssueDate;
         $ExpirationDate = $request->ExpirationDate;
@@ -416,11 +417,12 @@ class QuotationController extends Controller
                 $saveProduct->discount =$discounts[$index];
                 $saveProduct->priceproduct =$priceUnits[$index];
                 $saveProduct->netpriceproduct =$discountedPricestotal[$index];
-                $saveProduct->totalpriceproduct =$totalPrices[$index];
+                $saveProduct->totaldiscount =$discountedPrices[$index];
                 $saveProduct->ExpirationDate = $ExpirationDate;
                 $saveProduct->freelanceraiffiliate = $freelanceraiffiliate;
                 $saveProduct->Quantity = $quantities[$index];
                 $saveProduct->Document_issuer = $userid;
+                $saveProduct->SpecialDiscount = $SpecialDis;
                 $saveProduct->save();
             }
             if ( $saveProduct->save()) {
@@ -438,7 +440,7 @@ class QuotationController extends Controller
     {
         $data = $request->all();
         $preview = $request->preview;
-
+        $SpecialDis = $request->SpecialDis;
         $userid = Auth::user()->id;
         $Quotation0 = Quotation::where('id', $id)->first();
         $Quotation_ID = $Quotation0->Quotation_ID;
@@ -453,6 +455,27 @@ class QuotationController extends Controller
         $priceUnits = $request->input('priceproductmain', []);
         $discounts = $request->input('discountmain', []);
         // $trselectmain = $request->input('tr-select-main', []);
+
+        if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+            $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
+            $discountedPrices = [];
+            $discountedPricestotal = [];
+            // คำนวณราคาสำหรับแต่ละรายการ
+            for ($i = 0; $i < count($quantities); $i++) {
+                $quantity = intval($quantities[$i]);
+                $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
+                $discount = floatval($discounts[$i]);
+
+                $totalPrice = ($quantity * $priceUnit);
+                $totalPrices[] = $totalPrice;
+
+                $discountedPrice = (($totalPrice * $discount )/ 100);
+                $discountedPrices[] = $discountedPrice;
+
+                $discountedPriceTotal = $totalPrice - $discountedPrice;
+                $discountedPricestotal[] = $discountedPriceTotal;
+            }
+        }
         if ($preview) {
             $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
 
@@ -623,28 +646,6 @@ class QuotationController extends Controller
         foreach ($priceUnits as $key => $price) {
             $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
         }
-        if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
-            $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
-            $discountedPrices = [];
-            $discountedPricestotal = [];
-
-            // คำนวณราคาสำหรับแต่ละรายการ
-            for ($i = 0; $i < count($quantities); $i++) {
-                $quantity = intval($quantities[$i]);
-                $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
-                $discount = floatval($discounts[$i]);
-
-                $totalPrice = ($quantity * $priceUnit);
-                $totalPrices[] = $totalPrice;
-
-                $discountedPrice = (($totalPrice * $discount) / 100);
-                $discountedPrices[] = $discountedPrice;
-
-                $discountedPriceTotal = $totalPrice - $discountedPrice;
-                $discountedPricestotal[] = $discountedPriceTotal;
-            }
-        }
-
         if ($product !== null) {
             if ($Quotation_ID) {
                 $profileid = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
@@ -653,23 +654,23 @@ class QuotationController extends Controller
                 }
                 if ($product !== null) {
                     foreach ($product as $index => $ProductID) {
-                        $save = new document_quotation();
-                        $save->Quotation_ID = $Quotation_ID;
-                        $save->Company_ID = $Company_ID;
-                        $save->Product_ID = $ProductID;
-                        $save->Issue_date = $IssueDate;
-                        $save->discount =$discounts[$index];
-                        $save->priceproduct =$priceUnits[$index];
-                        $save->netpriceproduct =$discountedPricestotal[$index];
-                        $save->totalpriceproduct =$totalPrices[$index];
-                        $save->ExpirationDate = $ExpirationDate;
-                        $save->freelanceraiffiliate = $freelanceraiffiliate;
-                        $save->Quantity = $quantities[$index];
-                        $save->Document_issuer = $userid;
-                        $save->save();
-
+                        $saveProduct = new document_quotation();
+                        $saveProduct->Quotation_ID = $Quotation_ID;
+                        $saveProduct->Company_ID = $Company_ID;
+                        $saveProduct->Product_ID = $ProductID;
+                        $saveProduct->Issue_date = $IssueDate;
+                        $saveProduct->discount =$discounts[$index];
+                        $saveProduct->priceproduct =$priceUnits[$index];
+                        $saveProduct->netpriceproduct =$discountedPricestotal[$index];
+                        $saveProduct->totaldiscount =$discountedPrices[$index];
+                        $saveProduct->ExpirationDate = $ExpirationDate;
+                        $saveProduct->freelanceraiffiliate = $freelanceraiffiliate;
+                        $saveProduct->Quantity = $quantities[$index];
+                        $saveProduct->Document_issuer = $userid;
+                        $saveProduct->SpecialDiscount = $SpecialDis;
+                        $saveProduct->save();
                     }
-                    if ( $save->save()) {
+                    if ( $saveProduct->save()) {
                         return redirect()->route('Quotation.index')->with('susses', 'บันทึกข้อมูลเรียบร้อย');
                     }else {
                         return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
@@ -685,9 +686,11 @@ class QuotationController extends Controller
 
         $Quotation = Quotation::where('id', $id)->first();
         $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
+        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
         $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
-        return view('quotation.edit',compact('Quotation','Freelancer_member','Company','Mevent'));
+
+        return view('quotation.edit',compact('Quotation','Freelancer_member','Company','Mevent','Mvat'));
     }
     public function updateCompanyQuotation(Request $request ,$id){
         $data = $request->all();
@@ -707,7 +710,7 @@ class QuotationController extends Controller
         $save->freelanceraiffiliate = $Freelancer_member;
         $save->commissionratecode = $request->Company_Commission_Rate_Code;
         $save->eventformat = $request->Mevent;
-        $save->vat_type = $request->Vat_Type;
+        $save->vat_type = $request->Mvat;
         $save->issue_date = $request->IssueDate;
         $save->Expirationdate = $request->Expiration;
         $save->Document_issuer = $userid;
@@ -749,9 +752,11 @@ class QuotationController extends Controller
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
         $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
-
+        $SpecialDiscount = document_quotation::where('Quotation_ID', $Quotation_ID)->first();
+        $SpecialDiscount=$SpecialDiscount->SpecialDiscount;
+        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
         return view('quotation.editproduct',compact('Quotation','Company_ID','Company_type','amphuresID','TambonID','provinceNames','company_fax','company_phone'
-        ,'Contact_name','Contact_phone','ContactCity','ContactamphuresID','ContactTambonID','product','unit','quantity','selectproduct'));
+        ,'Contact_name','Contact_phone','ContactCity','ContactamphuresID','ContactTambonID','product','unit','quantity','selectproduct','Mvat','SpecialDiscount'));
     }
     public function addProducttable($Quotation_ID, Request $request) {
 
