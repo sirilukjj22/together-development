@@ -308,11 +308,13 @@
         </div>
         @php
             $num=0;
+            $num1=0;
             $num2 = 0;
         @endphp
         @for ($i=1;$i<=$page_item;$i++)
             @php
                 $num += 10;
+                $num1 += 11;
             @endphp
             <div class="wrapper-page">
                 <header>
@@ -439,13 +441,9 @@
                                 <td><b style="margin-left: 10px;">Taxpayer Identification : </b></td>
                                 <td>{{$Company_ID->Taxpayer_Identification}}</td>
                             </tr>
-
                         </table>
-
-                        <div style="line-height:14px;"></div>
+                        <div style="margin-top: 2px"></div>
                     </div>
-                    <div style="margin-top: 20px"></div>
-
                     <span style="position: absolute;top: 120px; right: 30;width: 280px;height: 145px;line-height:14px;">
                         <b class="com" style=" font-size:18px">Personal Information</b><br>
                         <b style="margin-left: 10px;">Contact Name : </b><span >คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span><br>
@@ -473,115 +471,438 @@
                             <th style="text-align:center;font-weight: bold;">NET PRICE / UNIT</th>
                             <th style="text-align:center;font-weight: bold;">AMOUNT</th>
                         </tr>
+                        @if ($Mvat->id == 50)
+                            @foreach($productItems as $key => $item)
+                                @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
+                                    @foreach ($unit as $singleUnit)
+                                        @if($singleUnit->id == $item['product']->unit)
 
-                        @foreach($productItems as $key => $item)
-                            @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
-                                @foreach ($unit as $singleUnit)
-                                    @if($singleUnit->id == $item['product']->unit)
+                                            <tr>
+                                                <td style="text-align:center;">{{$key+1}}</td>
+                                                <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
+                                                <td style="text-align:center;">{{ $item['quantity'] }}</td>
+                                                <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
+                                                @php
+                                                    $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
+                                                @endphp
+                                                <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
+                                                <td style="text-align:center;">{{ $item['totaldiscount'] }}</td>
+                                                <td style="text-align:center;">{{  number_format($item['discountedPrices']) }}</td>
+                                                <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                    @php
+                                        $num2 +=1;
+                                    @endphp
+                                @endif
+                            @endforeach
+                        @elseif ($Mvat->id == 51)
+                            @foreach($productItems as $key => $item)
+                                @if (($key <= $num1 && $key > $num1 -11) || $key <= $num1 && $i == 1)
+                                    @foreach ($unit as $singleUnit)
+                                        @if($singleUnit->id == $item['product']->unit)
 
-                                        <tr>
-                                            <td style="text-align:center;">{{$key+1}}</td>
-                                            <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
-                                            <td style="text-align:center;">{{ $item['quantity'] }}</td>
-                                            <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
-                                            @php
-                                                $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
-                                            @endphp
-                                            <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
-                                            <td style="text-align:center;">{{ $item['discount'] }}</td>
-                                            <td style="text-align:center;">{{  number_format($item['discountedPricestotal']) }}</td>
-                                            <td style="text-align:center;">{{ number_format($item['totalPrices']) }}</td>
-                                        </tr>
+                                            <tr>
+                                                <td style="text-align:center;">{{$key+1}}</td>
+                                                <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
+                                                <td style="text-align:center;">{{ $item['quantity'] }}</td>
+                                                <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
+                                                @php
+                                                    $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
+                                                @endphp
+                                                <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
+                                                <td style="text-align:center;">{{  number_format($item['totaldiscount']) }}</td>
+                                                <td style="text-align:center;">{{  number_format($item['discountedPrices']) }}</td>
+                                                <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                    @php
+                                        $num2 +=1;
+                                    @endphp
+                                @endif
+                            @endforeach
+                        @elseif ($Mvat->id == 52)
+                            @foreach($productItems as $key => $item)
+                                @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
+                                    @foreach ($unit as $singleUnit)
+                                        @if($singleUnit->id == $item['product']->unit)
 
-                                    @endif
-                                @endforeach
-                                @php
-                                    $num2 +=1;
-                                @endphp
-                            @endif
-                        @endforeach
+                                            <tr>
+                                                <td style="text-align:center;">{{$key+1}}</td>
+                                                <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
+                                                <td style="text-align:center;">{{ $item['quantity'] }}</td>
+                                                <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
+                                                @php
+                                                    $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
+                                                @endphp
+                                                <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
+                                                <td style="text-align:center;">{{ $item['discount'] }}</td>
+                                                <td style="text-align:center;">{{  number_format($item['discountedPrices']) }}</td>
+                                                <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                    @php
+                                        $num2 +=1;
+                                    @endphp
+                                @endif
+                            @endforeach
+                        @else
+                            @foreach($productItems as $key => $item)
+                                @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
+                                    @foreach ($unit as $singleUnit)
+                                        @if($singleUnit->id == $item['product']->unit)
+
+                                            <tr>
+                                                <td style="text-align:center;">{{$key+1}}</td>
+                                                <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
+                                                <td style="text-align:center;">{{ $item['quantity'] }}</td>
+                                                <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
+                                                @php
+                                                    $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
+                                                @endphp
+                                                <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
+                                                <td style="text-align:center;">{{ $item['discount'] }}</td>
+                                                <td style="text-align:center;">{{  number_format($item['discountedPrices']) }}</td>
+                                                <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                    @php
+                                        $num2 +=1;
+                                    @endphp
+                                @endif
+                            @endforeach
+                        @endif
                     </table>
+
                     @if ($page_item == $i )
-                    <table  id="customers" class="table" style="width: 25%;float:right;" >
-                        <tr>
-                            <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Total Amount</strong></td>
-                            <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Discount</strong></td>
-                            <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($totaldiscount, 2, '.', ',') }} </strong></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Net Price</strong></td>
-                            <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($totalPrice, 2, '.', ',') }} </strong></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                            <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($vat, 2, '.', ',') }} </strong></td>
-                        </tr>
-                        <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+                        @if ($Mvat->id == 50)
+                            <table  id="customers" class="table" style="width: 25%;float:right;" >
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
 
-                        <tr style="background-color: #ffffff">
-                            <td colspan="2" style="text-align:center;">
-                                <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                    <b style="font-size: 16px;">Net Total </b>
-                                    <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($total, 2, '.', ',') }} </strong>
-                                </div>
-                            </td>
-                        </tr>
+                                <tr style="background-color: #ffffff">
+                                    <td colspan="2" style="text-align:center;">
+                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                            <b style="font-size: 16px;">Net Total </b>
+                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                        </div>
+                                    </td>
+                                </tr>
 
-                        <br>
-                        <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                            <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
-                            <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong></td>
-                        </tr>
+                                <br>
+                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong></td>
+                                </tr>
 
-                    </table>
+                            </table>
+                        @elseif ($Mvat->id == 51)
+                            <table  id="customers" class="table" style="width: 25%;float:right;" >
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+
+                                <tr style="background-color: #ffffff">
+                                    <td colspan="2" style="text-align:center;">
+                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                            <b style="font-size: 16px;">Net Total </b>
+                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <br>
+                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong></td>
+                                </tr>
+
+                            </table>
+                        @elseif ($Mvat->id == 52)
+                            <table  id="customers" class="table" style="width: 25%;float:right;" >
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+                                <tr style="background-color: #ffffff">
+                                    <td colspan="2" style="text-align:center;">
+                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                            <b style="font-size: 16px;">Net Total </b>
+                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <br>
+                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong></td>
+                                </tr>
+                            </table>
+                        @else
+                            <table  id="customers" class="table" style="width: 25%;float:right;" >
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+
+                                <tr style="background-color: #ffffff">
+                                    <td colspan="2" style="text-align:center;">
+                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                            <b style="font-size: 16px;">Net Total </b>
+                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <br>
+                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong></td>
+                                </tr>
+
+                            </table>
+                        @endif
                     @else
-                    <table  id="customers" class="table" style="width: 25%;float:right;" >
-                        <tr>
-                            <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Total Amount</strong></td>
-                            <td style="text-align:right;font-size: 16px;"><strong id="total-amount"></strong></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Discount</strong></td>
-                            <td style="text-align:right;font-size: 16px;"><strong id="total-discount"></strong></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Net Price</strong></td>
-                            <td style="text-align:right;font-size: 16px;" ><strong id="total-Price"></strong></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                            <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
-                        </tr>
-                        <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+                        @if ($Mvat->id == 50)
+                            <table  id="customers" class="table" style="width: 25%;float:right;" >
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-amount"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-discount"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;" ><strong id="total-Price"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
+                                </tr>
+                                <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
 
-                        <tr style="background-color: #ffffff">
-                            <td colspan="2" style="text-align:center;">
-                                <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                    <b style="font-size: 16px;">Net Total </b>
-                                    <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"></strong>
-                                </div>
-                            </td>
-                        </tr>
+                                <tr style="background-color: #ffffff">
+                                    <td colspan="2" style="text-align:center;">
+                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                            <b style="font-size: 16px;">Net Total </b>
+                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"></strong>
+                                        </div>
+                                    </td>
+                                </tr>
 
-                        <br>
-                        <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                            <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
-                            <td style="text-align:left;"><strong id="total-Price"></strong></td>
-                        </tr>
+                                <br>
+                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"></strong></td>
+                                </tr>
 
-                    </table>
+                            </table>
+                        @elseif ($Mvat->id == 51)
+                            <table  id="customers" class="table" style="width: 25%;float:right;" >
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-amount"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-discount"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;" ><strong id="total-Price"></strong></td>
+                                </tr>
+                                <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+                                <tr style="background-color: #ffffff">
+                                    <td colspan="2" style="text-align:center;">
+                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                            <b style="font-size: 16px;">Net Total </b>
+                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"></strong>
+                                        </div>
+                                    </td>
+                                </tr>
 
+                                <br>
+                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"></strong></td>
+                                </tr>
+
+                            </table>
+                        @elseif ($Mvat->id == 52)
+                            <table  id="customers" class="table" style="width: 25%;float:right;" >
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-amount"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-discount"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;" ><strong id="total-Price"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
+                                </tr>
+                                <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+                                <tr style="background-color: #ffffff">
+                                    <td colspan="2" style="text-align:center;">
+                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                            <b style="font-size: 16px;">Net Total </b>
+                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"></strong>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <br>
+                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"></strong></td>
+                                </tr>
+                            </table>
+                        @else
+                            <table  id="customers" class="table" style="width: 25%;float:right;" >
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-amount"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-discount"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
+                                    <td style="text-align:right;font-size: 16px;" ><strong id="total-Price"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
+                                </tr>
+                                <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+
+                                <tr style="background-color: #ffffff">
+                                    <td colspan="2" style="text-align:center;">
+                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                            <b style="font-size: 16px;">Net Total </b>
+                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"></strong>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <br>
+                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"></strong></td>
+                                </tr>
+                            </table>
+                        @endif
                     @endif
                     <b>Notes or Special Comment : </b><br>
                     <div style="line-height:15px;width: 65%;border: 1px solid #afafaf; height: 70px;border-radius: 5px;">

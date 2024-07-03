@@ -200,14 +200,12 @@ class QuotationController extends Controller
     public function savequotation(Request $request ,$Quotation_ID)
     {
         $data = $request->all();
-
         $preview = $request->preview;
         $SpecialDis = $request->SpecialDis;
-
         $userid = Auth::user()->id;
-        $quantities = $request->input('quantitymain', []); // ตัวอย่างใช้ 'pricetotal' เป็น quantity
+        $quantities = $request->input('Quantitymain', []); // ตัวอย่างใช้ 'pricetotal' เป็น quantity
         $discounts = $request->input('discountmain', []);
-        $priceUnits = $request->input('price-unit', []);
+        $priceUnits = $request->input('priceproductmain', []);
         if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
             $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
             $discountedPrices = [];
@@ -229,9 +227,11 @@ class QuotationController extends Controller
             }
         }
         $Quotation_ID = $request->Quotation_ID;
-        $IssueDate = $request->IssueDate;
-        $ExpirationDate = $request->ExpirationDate;
+
+
         $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
+        $IssueDate = $Quotation->issue_date;
+        $ExpirationDate = $Quotation->Expirationdate;
         $Company_ID = $Quotation->Company_ID;
         $freelanceraiffiliate = $Quotation->freelanceraiffiliate;
 
@@ -279,38 +279,45 @@ class QuotationController extends Controller
             $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->where('CodeTemplate',$CodeTemplate)->first();
             $date = Carbon::now();
 
-            $Products = Arr::wrap($request->input('Product_ID'));
-            $quantities = $request->input('quantitymain', []);
+            $Products = Arr::wrap($request->input('ProductIDmain'));
+            $quantities = $request->input('Quantitymain', []);
             $discounts = $request->input('discountmain', []);
-            $quantities = $request->input('quantitymain', []); // ตัวอย่างใช้ 'pricetotal' เป็น quantity
+            $quantities = $request->input('Quantitymain', []); // ตัวอย่างใช้ 'pricetotal' เป็น quantity
             $discounts = $request->input('discountmain', []);
-            $priceUnits = $request->input('price-unit', []);
+            $priceUnits = $request->input('priceproductmain', []);
             $productItems = [];
+            $totaldiscount = [];
             foreach ($Products as $index => $productID) {
 
                 if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
                     $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
                     $discountedPrices = [];
                     $discountedPricestotal = [];
+                    $totaldiscount = [];
                     // คำนวณราคาสำหรับแต่ละรายการ
                     for ($i = 0; $i < count($quantities); $i++) {
                         $quantity = intval($quantities[$i]);
                         $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
                         $discount = floatval($discounts[$i]);
 
+                        $totaldiscount0 = (($priceUnit * $discount)/100);
+                        $totaldiscount[] = $totaldiscount0;
+
                         $totalPrice = ($quantity * $priceUnit);
                         $totalPrices[] = $totalPrice;
 
                         $discountedPrice = (($totalPrice * $discount )/ 100);
-                        $discountedPrices[] = $discountedPrice;
+                        $discountedPrices[] = $priceUnit-$totaldiscount0;
 
                         $discountedPriceTotal = $totalPrice - $discountedPrice;
                         $discountedPricestotal[] = $discountedPriceTotal;
                     }
                 }
-                // ดึงข้อมูลของผลิตภัณฑ์
-                $items = master_product_item::where('Product_ID', $productID)->get();
+                // dd( $priceUnit,$discountedPrices);
 
+                $items = master_product_item::where('Product_ID', $productID)->get();
+                $QuotationVat= $Quotation->vat_type;
+                $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
                 foreach ($items as $item) {
                     // ตรวจสอบและกำหนดค่า quantity และ discount
                     $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
@@ -318,6 +325,7 @@ class QuotationController extends Controller
                     $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
                     $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
                     $discountedPricestotal = isset($discountedPricestotal[$index]) ? $discountedPricestotal[$index] : 0;
+                    $totaldiscount = isset($totaldiscount[$index]) ? $totaldiscount[$index] : 0;
                     // รวมข้อมูลของผลิตภัณฑ์เข้ากับ quantity และ discount
                     $productItems[] = [
                         'product' => $item,
@@ -326,27 +334,65 @@ class QuotationController extends Controller
                         'totalPrices'=>$totalPrices,
                         'discountedPrices'=>$discountedPrices,
                         'discountedPricestotal'=>$discountedPricestotal,
+                        'totaldiscount'=>$totaldiscount,
                     ];
+
                 }
             }
+            // dd($productItems);
             $totalAmount = 0;
-            $totaldiscount = 0;
-            $netprice=0;
-            $totalPriceM = 0;
-            $vat=0;
-            $total=0;
+            $totalPrice = 0;
+            $subtotal = 0;
+            $beforeTax = 0;
+            $AddTax = 0;
+            $Nettotal =0;
+            $totalaverage=0;
             $adult = $Quotation->adult;
             $children = $Quotation->children;
             $totalguest = $adult+$children;
-            $totalaverage=0;
-            foreach ($productItems as $item) {
-                $totalAmount += $item['totalPrices'];
-                $netprice += $item['discountedPricestotal'];
-                $totaldiscount =  $totalAmount-$netprice;
-                $totalPriceM =$netprice;
-                $vat = $netprice * 7 / 100;
-                $total = $totalPriceM+$vat;
-                $totalaverage = $total/$totalguest;
+
+            $SpecialDistext = $request->SpecialDis;
+            $SpecialDis = floatval($SpecialDistext);
+            if ($Mvat->id == 50) {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $beforeTax = $subtotal/1.07;
+                    $AddTax = $subtotal-$beforeTax;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$totalguest;
+                }
+            }
+            elseif ($Mvat->id == 51) {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$totalguest;
+                }
+            }
+            elseif ($Mvat->id == 52) {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $AddTax = $subtotal*7/100;
+                    $Nettotal = $subtotal+$AddTax;
+                    $totalaverage =$Nettotal/$totalguest;
+                }
+            }else
+            {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $beforeTax = $subtotal/1.07;
+                    $AddTax = $subtotal-$beforeTax;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$totalguest;
+                }
             }
             $unit = master_unit::where('status',1)->get();
             $quantity = master_quantity::where('status',1)->get();
@@ -367,7 +413,6 @@ class QuotationController extends Controller
             // Generate the QR code as PNG
             $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
             $qrCodeBase64 = base64_encode($qrCodeImage);
-
             $data = [
                 'date' => $date,
                 'comtypefullname'=>$comtypefullname,
@@ -389,24 +434,26 @@ class QuotationController extends Controller
                 'Complimentary'=>$Complimentary,
                 'All_rights_reserved'=>$All_rights_reserved,
                 'totalAmount'=>$totalAmount,
-                'totaldiscount'=>$totaldiscount,
-                'totalPrice'=>$totalPriceM,
-                'vat'=>$vat,
-                'total'=>$total,
+                'SpecialDis'=>$SpecialDis,
+                'subtotal'=>$subtotal,
+                'beforeTax'=>$beforeTax,
+                'Nettotal'=>$Nettotal,
                 'totalguest'=>$totalguest,
                 'totalaverage'=>$totalaverage,
+                'AddTax'=>$AddTax,
                 'productItems'=>$productItems,
                 'unit'=>$unit,
                 'quantity'=>$quantity,
                 'page_item'=>$page_item,
                 'page'=>$pagecount,
                 'qrCodeBase64'=>$qrCodeBase64,
+                'Mvat'=>$Mvat,
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('quotation.preview',$data);
             return $pdf->stream();
         }
-        $Products=$request->input('Product_ID');
+        $Products=$request->input('ProductIDmain');
         if ($Products !== null) {
             foreach ($Products as $index => $ProductID) {
                 $saveProduct = new document_quotation();
@@ -524,31 +571,38 @@ class QuotationController extends Controller
             $discounts = $request->input('discountmain', []);
             $priceUnits = $request->input('priceproductmain', []);
             $productItems = [];
+            $totaldiscount = [];
             foreach ($Products as $index => $productID) {
 
                 if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
                     $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
                     $discountedPrices = [];
                     $discountedPricestotal = [];
+                    $totaldiscount = [];
                     // คำนวณราคาสำหรับแต่ละรายการ
                     for ($i = 0; $i < count($quantities); $i++) {
                         $quantity = intval($quantities[$i]);
                         $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
                         $discount = floatval($discounts[$i]);
 
+                        $totaldiscount0 = (($priceUnit * $discount)/100);
+                        $totaldiscount[] = $totaldiscount0;
+
                         $totalPrice = ($quantity * $priceUnit);
                         $totalPrices[] = $totalPrice;
 
                         $discountedPrice = (($totalPrice * $discount )/ 100);
-                        $discountedPrices[] = $discountedPrice;
+                        $discountedPrices[] = $priceUnit-$totaldiscount0;
 
                         $discountedPriceTotal = $totalPrice - $discountedPrice;
                         $discountedPricestotal[] = $discountedPriceTotal;
                     }
                 }
-                // ดึงข้อมูลของผลิตภัณฑ์
-                $items = master_product_item::where('Product_ID', $productID)->get();
+                // dd( $priceUnit,$discountedPrices);
 
+                $items = master_product_item::where('Product_ID', $productID)->get();
+                $QuotationVat= $Quotation->vat_type;
+                $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
                 foreach ($items as $item) {
                     // ตรวจสอบและกำหนดค่า quantity และ discount
                     $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
@@ -556,6 +610,7 @@ class QuotationController extends Controller
                     $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
                     $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
                     $discountedPricestotal = isset($discountedPricestotal[$index]) ? $discountedPricestotal[$index] : 0;
+                    $totaldiscount = isset($totaldiscount[$index]) ? $totaldiscount[$index] : 0;
                     // รวมข้อมูลของผลิตภัณฑ์เข้ากับ quantity และ discount
                     $productItems[] = [
                         'product' => $item,
@@ -564,27 +619,65 @@ class QuotationController extends Controller
                         'totalPrices'=>$totalPrices,
                         'discountedPrices'=>$discountedPrices,
                         'discountedPricestotal'=>$discountedPricestotal,
+                        'totaldiscount'=>$totaldiscount,
                     ];
+
                 }
             }
+            // dd($productItems);
             $totalAmount = 0;
-            $totaldiscount = 0;
-            $netprice=0;
-            $totalPriceM = 0;
-            $vat=0;
-            $total=0;
+            $totalPrice = 0;
+            $subtotal = 0;
+            $beforeTax = 0;
+            $AddTax = 0;
+            $Nettotal =0;
+            $totalaverage=0;
             $adult = $Quotation->adult;
             $children = $Quotation->children;
             $totalguest = $adult+$children;
-            $totalaverage=0;
-            foreach ($productItems as $item) {
-                $totalAmount += $item['totalPrices'];
-                $netprice += $item['discountedPricestotal'];
-                $totaldiscount =  $totalAmount-$netprice;
-                $totalPriceM =$netprice;
-                $vat = $netprice * 7 / 100;
-                $total = $totalPriceM+$vat;
-                $totalaverage = $total/$totalguest;
+
+            $SpecialDistext = $request->SpecialDis;
+            $SpecialDis = floatval($SpecialDistext);
+            if ($Mvat->id == 50) {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $beforeTax = $subtotal/1.07;
+                    $AddTax = $subtotal-$beforeTax;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$totalguest;
+                }
+            }
+            elseif ($Mvat->id == 51) {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$totalguest;
+                }
+            }
+            elseif ($Mvat->id == 52) {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $AddTax = $subtotal*7/100;
+                    $Nettotal = $subtotal+$AddTax;
+                    $totalaverage =$Nettotal/$totalguest;
+                }
+            }else
+            {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $beforeTax = $subtotal/1.07;
+                    $AddTax = $subtotal-$beforeTax;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$totalguest;
+                }
             }
             $unit = master_unit::where('status',1)->get();
             $quantity = master_quantity::where('status',1)->get();
@@ -626,18 +719,20 @@ class QuotationController extends Controller
                 'Complimentary'=>$Complimentary,
                 'All_rights_reserved'=>$All_rights_reserved,
                 'totalAmount'=>$totalAmount,
-                'totaldiscount'=>$totaldiscount,
-                'totalPrice'=>$totalPriceM,
-                'vat'=>$vat,
-                'total'=>$total,
+                'SpecialDis'=>$SpecialDis,
+                'subtotal'=>$subtotal,
+                'beforeTax'=>$beforeTax,
+                'Nettotal'=>$Nettotal,
                 'totalguest'=>$totalguest,
                 'totalaverage'=>$totalaverage,
+                'AddTax'=>$AddTax,
                 'productItems'=>$productItems,
                 'unit'=>$unit,
                 'quantity'=>$quantity,
                 'page_item'=>$page_item,
                 'page'=>$pagecount,
                 'qrCodeBase64'=>$qrCodeBase64,
+                'Mvat'=>$Mvat,
             ];
             $view= $template->name;
             $pdf = FacadePdf::loadView('quotation.preview',$data);
@@ -673,7 +768,7 @@ class QuotationController extends Controller
                     if ( $saveProduct->save()) {
                         return redirect()->route('Quotation.index')->with('susses', 'บันทึกข้อมูลเรียบร้อย');
                     }else {
-                        return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+                        return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
                     }
                 }
             }
@@ -716,9 +811,9 @@ class QuotationController extends Controller
         $save->Document_issuer = $userid;
         $save->save();
         if ( $save->save()) {
-            return redirect()->route('Quotation.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->route('Quotation.index')->with('susses', 'บันทึกข้อมูลเรียบร้อย');
         }else {
-            return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
     public function editselect($id)
@@ -880,6 +975,70 @@ class QuotationController extends Controller
         $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->where('CodeTemplate',$CodeTemplate)->first();
         $date = Carbon::now();
         $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+        $QuotationVat= $Quotation->vat_type;
+        $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
+        $SpecialDiscount = document_quotation::where('Quotation_ID', $Quotation_ID)->first();
+        $SpecialDis=$SpecialDiscount->SpecialDiscount;
+
+        $Products = Arr::wrap($selectproduct->pluck('Product_ID')->toArray());
+        $quantities = $selectproduct->pluck('Quantity')->toArray();
+        $discounts = $selectproduct->pluck('discount')->toArray();
+        $priceUnits = $selectproduct->pluck('priceproduct')->toArray();
+        $productItems = [];
+        $totaldiscount = [];
+        foreach ($Products as $index => $productID) {
+
+            if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+                $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
+                $discountedPrices = [];
+                $discountedPricestotal = [];
+                $totaldiscount = [];
+                // คำนวณราคาสำหรับแต่ละรายการ
+                for ($i = 0; $i < count($quantities); $i++) {
+                    $quantity = intval($quantities[$i]);
+                    $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
+                    $discount = floatval($discounts[$i]);
+
+                    $totaldiscount0 = (($priceUnit * $discount)/100);
+                    $totaldiscount[] = $totaldiscount0;
+
+                    $totalPrice = ($quantity * $priceUnit);
+                    $totalPrices[] = $totalPrice;
+
+                    $discountedPrice = (($totalPrice * $discount )/ 100);
+                    $discountedPrices[] = $priceUnit-$totaldiscount0;
+
+                    $discountedPriceTotal = $totalPrice - $discountedPrice;
+                    $discountedPricestotal[] = $discountedPriceTotal;
+                }
+            }
+            // dd( $priceUnit,$discountedPrices);
+
+            $items = master_product_item::where('Product_ID', $productID)->get();
+            $QuotationVat= $Quotation->vat_type;
+            $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
+            foreach ($items as $item) {
+                // ตรวจสอบและกำหนดค่า quantity และ discount
+                $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+                $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
+                $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
+                $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
+                $discountedPricestotal = isset($discountedPricestotal[$index]) ? $discountedPricestotal[$index] : 0;
+                $totaldiscount = isset($totaldiscount[$index]) ? $totaldiscount[$index] : 0;
+                // รวมข้อมูลของผลิตภัณฑ์เข้ากับ quantity และ discount
+                $productItems[] = [
+                    'product' => $item,
+                    'quantity' => $quantity,
+                    'discount' => $discount,
+                    'totalPrices'=>$totalPrices,
+                    'discountedPrices'=>$discountedPrices,
+                    'discountedPricestotal'=>$discountedPricestotal,
+                    'totaldiscount'=>$totaldiscount,
+                ];
+
+            }
+        }
+
         $totalAmount = 0;
         $totaldiscount = 0;
         $netprice=0;
@@ -890,14 +1049,49 @@ class QuotationController extends Controller
         $children = $Quotation->children;
         $totalguest = $adult+$children;
         $totalaverage=0;
-        foreach ($selectproduct as $item) {
-            $totalAmount += $item->totalpriceproduct;
-            $netprice += $item->netpriceproduct;
-            $totaldiscount =  $totalAmount-$netprice;
-            $totalPrice =$netprice;
-            $vat = $netprice * 7 / 100;
-            $total = $totalPrice+$vat;
-            $totalaverage = $total/$totalguest;
+        if ($Mvat->id == 50) {
+            foreach ($selectproduct as $item) {
+                $totalPrice +=  $item->priceproduct;
+                $totalAmount += $item->netpriceproduct;
+                $subtotal = $totalAmount-$SpecialDis;
+                $beforeTax = $subtotal/1.07;
+                $AddTax = $subtotal-$beforeTax;
+                $Nettotal = $subtotal;
+                $totalaverage =$Nettotal/$totalguest;
+            }
+        }
+        elseif ($Mvat->id == 51) {
+            foreach ($selectproduct as $item) {
+                $totalPrice +=  $item->priceproduct;
+                $totalAmount += $item->netpriceproduct;
+                $subtotal = $totalAmount-$SpecialDis;
+                $beforeTax = 0;
+                $AddTax = 0;
+                $Nettotal = $subtotal;
+                $totalaverage =$Nettotal/$totalguest;
+            }
+        }
+        elseif ($Mvat->id == 52) {
+            foreach ($selectproduct as $item) {
+                $totalPrice +=  $item->priceproduct;
+                $totalAmount += $item->netpriceproduct;
+                $subtotal = $totalAmount-$SpecialDis;
+                $beforeTax = $subtotal/1.07;
+                $AddTax = $subtotal*7/100;
+                $Nettotal = $subtotal+$AddTax;
+                $totalaverage =$Nettotal/$totalguest;
+            }
+        }else
+        {
+            foreach ($selectproduct as $item) {
+                $totalPrice +=  $item->priceproduct;
+                $totalAmount += $item->netpriceproduct;
+                $subtotal = $totalAmount-$SpecialDis;
+                $beforeTax = $subtotal/1.07;
+                $AddTax = $subtotal-$beforeTax;
+                $Nettotal = $subtotal;
+                $totalaverage =$Nettotal/$totalguest;
+            }
         }
         $protocol = $request->secure() ? 'https' : 'http';
         $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
@@ -907,6 +1101,9 @@ class QuotationController extends Controller
         $qrCodeBase64 = base64_encode($qrCodeImage);
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
+
+
+
         $pagecount = count($selectproduct);
             $page = $pagecount/10;
 
@@ -939,20 +1136,22 @@ class QuotationController extends Controller
             'Cancellations'=>$Cancellations,
             'Complimentary'=>$Complimentary,
             'All_rights_reserved'=>$All_rights_reserved,
-            'selectproduct'=>$selectproduct,
+            'productItems'=>$productItems,
             'unit'=>$unit,
             'quantity'=>$quantity,
             'totalAmount'=>$totalAmount,
-            'totaldiscount'=>$totaldiscount,
-            'totalPrice'=>$totalPrice,
-            'vat'=>$vat,
-            'total'=>$total,
+            'SpecialDis'=>$SpecialDis,
+            'subtotal'=>$subtotal,
+            'beforeTax'=>$beforeTax,
+            'AddTax'=>$AddTax,
+            'Nettotal'=>$Nettotal,
             'totalguest'=>$totalguest,
             'totalaverage'=>$totalaverage,
             'pagecount'=>$pagecount,
             'page'=>$page,
             'page_item'=>$page_item,
             'qrCodeBase64'=>$qrCodeBase64,
+            'Mvat'=>$Mvat,
         ];
 
         $view= $template->name;
