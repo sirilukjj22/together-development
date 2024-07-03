@@ -150,7 +150,7 @@
                         <div class="row mt-2">
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="chekin">Check In / Out Date </label>
-                                <div class="form-control" id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #eeeeee; width: 100%">
+                                <div class="form-control form-daterangepicker" id="reportrange">
                                     <i class="fa fa-calendar" id="reportrange2"></i>&nbsp;
                                     <span style="width: 100%"></span>
                                     <input type="hidden" name="Checkin" id="Checkin">
@@ -244,10 +244,11 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
+    <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
+    <script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
+
 <script>
     $(document).ready(function() {
         $('.select2').select2({
