@@ -413,7 +413,7 @@
                                     <div class="col-sm-3">
                                         <div class="form-check mt-2">
                                             <input class="form-check-input select_menu" type="checkbox" name="menu_template" id="menu_template" value="1">
-                                            <label class="form-check-label" for="menu_booking">Template (Setting)</label>
+                                            <label class="form-check-label" for="menu_template">Template (Setting)</label>
                                         </div>
                                     </div>
                                     <div class="col-sm-6"></div>
