@@ -189,6 +189,9 @@
                                 </li>
                             @endif
                             @if (Auth::user()->roleMenu->setting == 1)
+                                <li><a class="m-link" href="#"><i class="fa fa-lg fa-list" style="font-weight: bold; color: white;"></i> <span>Report</span></a></li>
+                            @endif
+                            @if (Auth::user()->roleMenu->setting == 1)
                                 <li class="collapsed">
                                     <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Setting"  href="#"><i class="fa fa-lg fa-cogs"></i> <span>Setting</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
