@@ -59,13 +59,120 @@
                                 </div>
                                 <div class="row mb-3">
                                     <label for="main-menu" class="col-sm-3 col-form-label fw-bold">สิทธิ์การใช้งานเมนู / Menu Permissions</label>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-9">
                                         <div class="form-check mt-2">
                                             <input class="form-check-input" type="checkbox" name="select_menu_all" id="select_menu_all" value="0">
                                             <label class="form-check-label" for="select_menu_all">เลือกทั้งหมด</label>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row justify-content-between">
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="accordion card p-0 p-lg-4" id="accordionExample">
+                                            <div class="card border-0">
+                                                <div class="card-body" id="heading1">
+                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1"><span class="fw-bold"></span><b>เมนู (หัวข้อหลัก) / Menu Main</b></h6>
+                                                </div>
+                                                <div id="faq1" class="collapse show" aria-labelledby="heading1" data-parent="#accordionExample">
+                                                    <div class="card-body border-top">
+                                                        <div class="col-12 table_wrapper print_invoice">
+                                                            <table class="items">
+                                                                <thead>
+                                                                    <tr class="text-center">
+                                                                        <th>ชื่อเมนู</th>
+                                                                        <th>เพิ่มข้อมูล</th>
+                                                                        <th>แก้ไขข้อมูล</th>
+                                                                        <th>ลบข้อมูล</th>
+                                                                        <th>ดูข้อมูล</th>
+                                                                        <th>Discount</th>
+                                                                        <th>Special Discount</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <div>
+                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile" id="menu_profile" value="1">
+                                                                                <label class="form-check-label" for="menu_profile">Profile</label>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="text-center">
+                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile_add" id="menu_profile_add" value="1">
+                                                                                <label class="form-check-label" for="menu_profile_add"></label>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="text-center">
+                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile_edit" id="menu_profile_edit" value="1">
+                                                                                <label class="form-check-label" for="menu_profile_edit"></label>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="text-center">
+                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile_delete" id="menu_profile_delete" value="1">
+                                                                                <label class="form-check-label" for="menu_profile_delete"></label>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="text-center">
+                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile_view" id="menu_profile_view" value="1">
+                                                                                <label class="form-check-label" for="menu_profile_view"></label>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="text-center">
+                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile_discount" id="menu_profile_discount" value="1">
+                                                                                <label class="form-check-label" for="menu_profile_discount"></label>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="text-center">
+                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile_special_discount" id="menu_profile_special_discount" value="1">
+                                                                                <label class="form-check-label" for="menu_profile_special_discount"></label>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- .card - FAQ 1  -->
+                                            <div class="card border-0">
+                                                <div class="card-body" id="heading2">
+                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="true" aria-controls="faq2"><span <span class="fw-bold"></span> How does the Genesis Simple FAQ plugin?</h6>
+                                                </div>
+                                                <div id="faq2" class="collapse" aria-labelledby="heading2" data-parent="#accordionExample">
+                                                    <div class="card-body border-top">
+                                                       <p>Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.</p>
+                                                       <div class="alert alert-primary" role="alert">
+                                                            A simple primary alert—check it out!
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- .card - FAQ 2  -->
+                                            <div class="card border-0">
+                                                <div class="card-body" id="heading3">
+                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="true" aria-controls="faq3"><span <span class="fw-bold"></span> Can i customize the design of my FAQ section?</h6>
+                                                </div>
+                                                <div id="faq3" class="collapse" aria-labelledby="heading3" data-parent="#accordionExample">
+                                                    <div class="card-body border-top">
+                                                       <p>Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.</p>
+                                                       <figure>
+                                                            <blockquote class="blockquote">
+                                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+                                                            </blockquote>
+                                                            <figcaption class="blockquote-footer">
+                                                            Someone famous in <cite title="Source Title">Source Title</cite>
+                                                            </figcaption>
+                                                      </figure>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- .card - FAQ 3  -->
+                                        </div>
+                                    </div>
+                                </div> <!-- Row end  -->
                                 <div class="row mb-3">
                                     <label for="main-menu" class="col-sm-3 col-form-label fw-bold">เมนู (หัวข้อหลัก) / Menu Main</label>
                                     <div class="col-sm-3">
