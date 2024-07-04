@@ -275,7 +275,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Freelancer/checked/create/districts/{id}','district')->name('freelancer.districts');
         Route::get('/Freelancer/checked/create/Tambon/{id}','Tambon')->name('freelancer.Tambon');
         Route::post('/Freelancer/checked/create/Save_Agent','Save_Agent')->name('Save_Agent');
-        Route::post('/Freelancer/checked/change-status/','changeStatus')->name('freelancer.changeStatus');
+        Route::get('/Freelancer/checked/change-status/{id}','changeStatus')->name('freelancer.changeStatus');
         Route::post('/Freelancer/checked/delete/{id}','delete');
         Route::post('/Freelancer/checked/AgentM/delete/','AgentM_delete');
         Route::get('/Freelancer/check/edit/{id}','edit')->name('freelancer.edit');
@@ -283,7 +283,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Freelancer/check/save','savefreelancercheck')->name('savefreelancercheck');
         Route::post('/Freelancer/check/save/update/{id}','updatefreelancercheck')->name('updatefreelancercheck');
         Route::get('/Freelancer/check/view/{id}','view')->name('freelancer.view');
-
     });
 #Freelancer Member
     Route::controller(FreelancerMemberController::class)->group(function() {
@@ -355,6 +354,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('Quotation.addProducttablecreatemain');
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
         Route::get('/Quotation/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('Quotation.sheet');
+        //---------------------------------------Quotation.index.check------------------------------------------------------
+        Route::get('/Quotation/index/check', 'index_check')->name('Quotation.index.check');
+        Route::get('/Quotation/change-confirm/{id}','changeconfirm')->name('Quotation.changeconfirm');
     });
 
     ##-------------------------------TemplateController-----------------

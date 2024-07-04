@@ -26,6 +26,9 @@ class Quotation extends Model
         'vat-type',
         'comment',
         'Document_issuer',
+        'Operated_by',
+        'Confirm',
+        'Confirm_by',
     ];
     public function  company()
     {
@@ -42,5 +45,13 @@ class Quotation extends Model
     public function  user()
     {
         return $this->hasOne(User::class, 'id', 'Document_issuer');
+    }
+    public function  userOperated()
+    {
+        return $this->hasOne(User::class, 'id','Operated_by');
+    }
+    public function  userConfirm()
+    {
+        return $this->hasOne(User::class, 'id','Confirm_by');
     }
 }

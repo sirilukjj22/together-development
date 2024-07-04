@@ -20,6 +20,7 @@ use App\Models\master_product_item;
 use App\Models\master_quantity;
 use App\Models\master_unit;
 use App\Models\document_quotation;
+use App\Models\Quotation_main_confirm;
 use Auth;
 use App\Models\User;
 use PDF;
@@ -230,6 +231,7 @@ class QuotationController extends Controller
 
 
         $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
+        $id = $Quotation->id;
         $IssueDate = $Quotation->issue_date;
         $ExpirationDate = $Quotation->Expirationdate;
         $Company_ID = $Quotation->Company_ID;
@@ -450,11 +452,17 @@ class QuotationController extends Controller
                 'Mvat'=>$Mvat,
             ];
             $view= $template->name;
-            $pdf = FacadePdf::loadView('quotation.preview',$data);
+            $pdf = FacadePdf::loadView('quotationpdf.preview',$data);
             return $pdf->stream();
         }
+
         $Products=$request->input('ProductIDmain');
         if ($Products !== null) {
+            $save = Quotation::find($id);
+            $save->SpecialDiscount = $SpecialDis;
+            $save->Confirm = 0;
+            $save->Operated_by = $userid;
+            $save->save();
             foreach ($Products as $index => $ProductID) {
                 $saveProduct = new document_quotation();
                 $saveProduct->Quotation_ID = $Quotation_ID;
@@ -735,7 +743,7 @@ class QuotationController extends Controller
                 'Mvat'=>$Mvat,
             ];
             $view= $template->name;
-            $pdf = FacadePdf::loadView('quotation.preview',$data);
+            $pdf = FacadePdf::loadView('quotationpdf.preview',$data);
             return $pdf->stream();
         }
         foreach ($priceUnits as $key => $price) {
@@ -743,6 +751,11 @@ class QuotationController extends Controller
         }
         if ($product !== null) {
             if ($Quotation_ID) {
+                $save = Quotation::find($id);
+                $save->SpecialDiscount = $SpecialDis;
+                $save->Confirm = 0;
+                $save->Operated_by = $userid;
+                $save->save();
                 $profileid = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
                 foreach ($profileid as $document) {
                     $document->delete();
@@ -848,7 +861,12 @@ class QuotationController extends Controller
         $quantity = master_quantity::where('status',1)->get();
         $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
         $SpecialDiscount = document_quotation::where('Quotation_ID', $Quotation_ID)->first();
-        $SpecialDiscount=$SpecialDiscount->SpecialDiscount;
+        if ($SpecialDiscount==null) {
+            $SpecialDiscount=0;
+        }else{
+            $SpecialDiscount=$SpecialDiscount->SpecialDiscount;
+        }
+
         $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
         return view('quotation.editproduct',compact('Quotation','Company_ID','Company_type','amphuresID','TambonID','provinceNames','company_fax','company_phone'
         ,'Contact_name','Contact_phone','ContactCity','ContactamphuresID','ContactTambonID','product','unit','quantity','selectproduct','Mvat','SpecialDiscount'));
@@ -1155,7 +1173,29 @@ class QuotationController extends Controller
         ];
 
         $view= $template->name;
-        $pdf = FacadePdf::loadView('quotation.'.$view,$data);
+        $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
         return $pdf->stream();
+    }
+
+    public function index_check()
+    {
+        $Quotation = Quotation::query()->where('Confirm',0)->get();
+        return view('quotation_check.index',compact('Quotation'));
+    }
+
+    public function  changeconfirm($id)
+    {
+        $confirm = Quotation::find($id);
+        $userid = Auth::user()->id;
+        if ($confirm->Confirm == 1 ) {
+            $statuss = 0;
+            $confirm->Confirm = $statuss;
+            $confirm->Confirm_by = $userid;
+        }elseif (($confirm->Confirm == 0 )) {
+            $statuss = 1;
+            $confirm->Confirm = $statuss;
+            $confirm->Confirm_by = $userid;
+        }
+        $confirm->save();
     }
 }

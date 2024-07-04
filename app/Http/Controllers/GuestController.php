@@ -185,7 +185,7 @@ class GuestController extends Controller
         $Zip_code = districts::where('amphure_id', $Guest->Amphures)->select('zip_code','id')->get();
 
         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
-        $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
+        $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         $Profile_ID = $Guest->Profile_ID;
         $phone = phone_guest::where('Profile_ID', 'like', "%{$Profile_ID}%")->get();
         $phonecount = phone_guest::where('Profile_ID', 'like', "%{$Profile_ID}%")->count();

@@ -378,16 +378,12 @@ class FreelancerCheckedController extends Controller
         }
     }
 
-    public function changeStatus(Request $request)
+    public function changeStatus($id)
     {
-        $id = $request->id;
-        $status = $request->status; // รับค่า status ที่ส่งมาจาก Request
-
         $Freelancer_checked = Freelancer_checked::find($id);
-
-        if ($Freelancer_checked) {
-            // อัปเดตสถานะ
-            $Freelancer_checked->status = $status == 1 ? 0 : 1;
+        if ($Freelancer_checked->status == 0 ) {
+            $status =1;
+            $Freelancer_checked->status = $status;
             $Freelancer_checked->save();
 
             // ตรวจสอบสถานะใหม่

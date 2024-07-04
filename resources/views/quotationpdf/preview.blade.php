@@ -471,113 +471,32 @@
                             <th style="text-align:center;font-weight: bold;">NET PRICE / UNIT</th>
                             <th style="text-align:center;font-weight: bold;">AMOUNT</th>
                         </tr>
-                        @if ($Mvat->id == 50)
-                            @foreach($productItems as $key => $item)
-                                @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
-                                    @foreach ($unit as $singleUnit)
-                                        @if($singleUnit->id == $item['product']->unit)
+                        @foreach($productItems as $key => $item)
+                            @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
+                                @foreach ($unit as $singleUnit)
+                                    @if($singleUnit->id == $item['product']->unit)
 
-                                            <tr>
-                                                <td style="text-align:center;">{{$key+1}}</td>
-                                                <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
-                                                <td style="text-align:center;">{{ $item['quantity'] }}</td>
-                                                <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
-                                                @php
-                                                    $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
-                                                @endphp
-                                                <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
-                                                <td style="text-align:center;">{{ $item['totaldiscount'] }}</td>
-                                                <td style="text-align:center;">{{  number_format($item['discountedPrices']) }}</td>
-                                                <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
-                                            </tr>
-                                        @endif
-                                    @endforeach
-                                    @php
-                                        $num2 +=1;
-                                    @endphp
-                                @endif
-                            @endforeach
-                        @elseif ($Mvat->id == 51)
-                            @foreach($productItems as $key => $item)
-                                @if (($key <= $num1 && $key > $num1 -11) || $key <= $num1 && $i == 1)
-                                    @foreach ($unit as $singleUnit)
-                                        @if($singleUnit->id == $item['product']->unit)
-
-                                            <tr>
-                                                <td style="text-align:center;">{{$key+1}}</td>
-                                                <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
-                                                <td style="text-align:center;">{{ $item['quantity'] }}</td>
-                                                <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
-                                                @php
-                                                    $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
-                                                @endphp
-                                                <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
-                                                <td style="text-align:center;">{{  number_format($item['totaldiscount']) }}</td>
-                                                <td style="text-align:center;">{{  number_format($item['discountedPrices']) }}</td>
-                                                <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
-                                            </tr>
-                                        @endif
-                                    @endforeach
-                                    @php
-                                        $num2 +=1;
-                                    @endphp
-                                @endif
-                            @endforeach
-                        @elseif ($Mvat->id == 52)
-                            @foreach($productItems as $key => $item)
-                                @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
-                                    @foreach ($unit as $singleUnit)
-                                        @if($singleUnit->id == $item['product']->unit)
-
-                                            <tr>
-                                                <td style="text-align:center;">{{$key+1}}</td>
-                                                <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
-                                                <td style="text-align:center;">{{ $item['quantity'] }}</td>
-                                                <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
-                                                @php
-                                                    $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
-                                                @endphp
-                                                <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
-                                                <td style="text-align:center;">{{ $item['discount'] }}</td>
-                                                <td style="text-align:center;">{{  number_format($item['discountedPrices']) }}</td>
-                                                <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
-                                            </tr>
-                                        @endif
-                                    @endforeach
-                                    @php
-                                        $num2 +=1;
-                                    @endphp
-                                @endif
-                            @endforeach
-                        @else
-                            @foreach($productItems as $key => $item)
-                                @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
-                                    @foreach ($unit as $singleUnit)
-                                        @if($singleUnit->id == $item['product']->unit)
-
-                                            <tr>
-                                                <td style="text-align:center;">{{$key+1}}</td>
-                                                <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
-                                                <td style="text-align:center;">{{ $item['quantity'] }}</td>
-                                                <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
-                                                @php
-                                                    $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
-                                                @endphp
-                                                <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
-                                                <td style="text-align:center;">{{ $item['discount'] }}</td>
-                                                <td style="text-align:center;">{{  number_format($item['discountedPrices']) }}</td>
-                                                <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
-                                            </tr>
-                                        @endif
-                                    @endforeach
-                                    @php
-                                        $num2 +=1;
-                                    @endphp
-                                @endif
-                            @endforeach
-                        @endif
+                                        <tr>
+                                            <td style="text-align:center;">{{$key+1}}</td>
+                                            <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
+                                            <td style="text-align:center;">{{ $item['quantity'] }}</td>
+                                            <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
+                                            @php
+                                                $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
+                                            @endphp
+                                            <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
+                                            <td style="text-align:center;">{{ $item['totaldiscount'] }}</td>
+                                            <td style="text-align:center;">{{  number_format($item['discountedPrices']) }}</td>
+                                            <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                                @php
+                                    $num2 +=1;
+                                @endphp
+                            @endif
+                        @endforeach
                     </table>
-
                     @if ($page_item == $i )
                         @if ($Mvat->id == 50)
                             <table  id="customers" class="table" style="width: 25%;float:right;" >

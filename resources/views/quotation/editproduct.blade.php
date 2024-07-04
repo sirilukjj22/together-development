@@ -364,6 +364,12 @@
                         <input type="hidden" name="adult" id="adult" value="{{$Quotation->adult}}">
                         <input type="hidden" name="children" id="children" value="{{$Quotation->children}}">
                         <input type="hidden" name="vat_type_name" id="vat_type_name" value="{{ $Mvat->firstWhere('id', $Quotation->vat_type)->name_th ?? '' }}">
+                        @if (@Auth::user()->roleMenuDiscount('Proposal') == 1)
+                            <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="1">
+                        @else
+                            <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="0">
+                        @endif
+                        <input type="hidden" name="discountuser" id="discountuser" value="{{@Auth::user()->discount}}">
                         <div class="col-12 row ">
                             <div class="col-lg-8 col-md-8 col-sm-12 mt-2" >
                                 <span >Notes or Special Comment</span>
@@ -382,7 +388,13 @@
                                             </tr>
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="{{$SpecialDiscount}}"></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;">
+                                                    @if (@Auth::user()->roleMenuSpecialDiscount('Proposal') == 1)
+                                                        <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" >
+                                                    @else
+                                                        <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
+                                                    @endif
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
@@ -407,7 +419,13 @@
                                             </tr>
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="{{$SpecialDiscount}}" ></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;">
+                                                    @if (@Auth::user()->roleMenuSpecialDiscount('Proposal') == 1)
+                                                        <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" >
+                                                    @else
+                                                        <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
+                                                    @endif
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
@@ -424,7 +442,13 @@
                                             </tr>
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="{{$SpecialDiscount}}" ></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;">
+                                                    @if (@Auth::user()->roleMenuSpecialDiscount('Proposal') == 1)
+                                                        <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" >
+                                                    @else
+                                                        <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
+                                                    @endif
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
@@ -676,16 +700,32 @@
                 },
                 success: function(response) {
                     $.each(response.products, function (key, val) {
-                        if ($('#productselect'+val.id).val()!==undefined) {
+                        if ($('#productselect' + val.id).val() !== undefined) {
                             if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
-                                number +=1;
+                                number += 1;
                                 var name = '';
                                 var price = 0;
                                 var normalPriceString = val.normal_price.replace(/[^0-9.]/g, ''); // ล้างค่าที่ไม่ใช่ตัวเลขและจุดทศนิยม
                                 var normalPrice = parseFloat(normalPriceString);
-                                var netDiscount = ((normalPrice * 0.01)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                var normalPriceview = ((normalPrice-netDiscount)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                var rowNumbemain = $('#display-selected-items tr').length+1;
+                                var netDiscount = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                var normalPriceview = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                var rowNumbemain = $('#display-selected-items tr').length + 1;
+                                let discountInput;
+                                var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
+                                var maximum_discount = val.maximum_discount;
+                                if (roleMenuDiscount == 1) {
+                                    discountInput = '<div class="input-group">' +
+                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                        'oninput="if (parseFloat(this.value) > ' + discountuser + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';">' +
+                                        '<span class="input-group-text">%</span>' +
+                                        '</div>';
+                                } else {
+                                    discountInput = '<div class="input-group">' +
+                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
+                                        'oninput="if (parseFloat(this.value) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                        '<span class="input-group-text">%</span>' +
+                                        '</div>';
+                                }
                                 $('#display-selected-items').append(
                                     '<tr id="tr-select-addmain' + val.id + '">' +
                                     '<td>' + rowNumbemain + '</td>' +
@@ -693,9 +733,9 @@
                                     '<td ><input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="1" min="1" rel="' + number + '" style="text-align:center;"></td>' +
                                     '<td>' + val.unit_name + '</td>' +
                                     '<td><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + val.normal_price + '</td>' +
-                                    '<td> <div class="input-group"><input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="1" min="1"rel="' + number + '" style="text-align:center;"><span class="input-group-text">%</span></div></td>'+
-                                    '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '"  value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
-                                    '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '"  value=" '+ val.normal_price +'"><span id="allcount' + number + '">' + normalPriceview  + '</span></td>' +
+                                    '<td>' + discountInput + '</td>' +
+                                    '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
+                                    '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value=" ' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
                                     '<td><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
                                     '</tr>'
                                 );

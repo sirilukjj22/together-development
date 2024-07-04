@@ -8,8 +8,10 @@
                 <h1 class="h4 mt-1">Proposal (ข้อเสนอ)</h1>
             </div>
             <div class="col-auto">
+                @if (@Auth::user()->roleMenuAdd('Proposal') == 1)
                 <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Quotation.create') }}'">
                     <i class="fa fa-plus"></i> เพิ่มใบเสนอราคา</button>
+                @endif
             </div>
         </div>
     </div>
@@ -52,14 +54,17 @@
                 <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
                     @csrf
                     <input type="hidden" name="category" value="prename">
-                <table class="myDataTableProductItem table table-hover align-middle mb-0" style="width:100%">
+                <table class="myDataTableQuotation table table-hover align-middle mb-0" style="width:100%">
                     <thead>
                         <tr>
                             <th>เรียงลำดับ</th>
                             <th>รหัสโปรไฟล์</th>
                             <th>ชื่อองค์กร</th>
                             <th>ตัวแทน</th>
+                            <th class="text-center">สถานะยืนยันใบเสนอ</th>
                             <th class="text-center">สถานะการใช้งาน</th>
+                            <th class="text-center">Operated By</th>
+                            <th class="text-center">Approve By</th>
                             <th class="text-center">คำสั่ง</th>
                         </tr>
                     </thead>
@@ -72,19 +77,32 @@
                                 <td>{{ @$item->company->Company_Name}}</td>
                                 <td>{{@$item->contact->First_name}} {{@$item->contact->Last_name}}</td>
                                 <td style="text-align: center;">
+                                    @if ($item->Confirm == 1)
+                                    <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ยืนยันแล้ว</button>
+                                    @else
+                                        <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">รอการยืนยัน</button>
+                                    @endif
+                                </td>
+                                <td style="text-align: center;">
                                     @if ($item->status == 1)
                                     <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
                                     @else
                                         <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ปิดใช้งาน</button>
                                     @endif
                                 </td>
+                                <td >{{ @$item->userOperated->name }}</td>
+                                <td >{{ @$item->userConfirm->name }}</td>
                                 <td style="text-align: center;">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                         <ul class="dropdown-menu border-0 shadow p-3">
+                                            @if (@Auth::user()->roleMenuView('Proposal') == 1)
                                             <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">ดูรายละเอียดใบเสนอ</a></li>
-                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">แก้ไขบริษัท</a></li>
-                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/select/'.$item->id) }}">แก้ไขใบเสนอ</a></li>
+                                            @endif
+                                            @if (@Auth::user()->roleMenuEdit('Proposal') == 1)
+                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">แก้ไขบริษัท</a></li>
+                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/select/'.$item->id) }}">แก้ไขใบเสนอ</a></li>
+                                            @endif
                                         </ul>
                                     </div>
                                 </td>
