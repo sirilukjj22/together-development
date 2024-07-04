@@ -40,7 +40,7 @@
     </style>
 
     @php
-        $role_permisstion = App\Models\Role_permission_menu::where('user_id', Auth::user()->id)->first();
+        // $role_permisstion = App\Models\Role_permission_menu::where('user_id', Auth::user()->id)->first();
     @endphp
 
     <div id="layout-c" class="theme-blue">
@@ -77,7 +77,7 @@
                         <!-- Menu: main ul -->
                         <ul class="menu-list">
 
-                            @if ($role_permisstion->profile == 1)
+                            @if (Auth::user()->roleMenu->profile == 1)
                                 <li class="collapsed">
                                     <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Profile"  href="#"><i class="fa fa-lg fa-user"></i> <span>Profile</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
@@ -88,28 +88,28 @@
                                     </ul>
                                 </li>
                             @endif
-                            @if ($role_permisstion->freelancer == 1)
+                            @if (Auth::user()->roleMenu->freelancer == 1)
                                 <li class="collapsed">
                                     <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Freelancer"  href="#"><i class="fa fa-lg fa-user-plus"></i> <span>Freelancer</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Freelancer">
-                                        @if ($role_permisstion->membership == 1)
+                                        @if (Auth::user()->roleMenu->membership == 1)
                                             <li><a class="ms-link" href="{{ route('freelancer_member.index') }}">Membership</a></li>
                                         @endif
-                                        @if ($role_permisstion->message_inbox == 1)
+                                        @if (Auth::user()->roleMenu->message_inbox == 1)
                                             <li><a class="ms-link" href="#">Message Inbox</a></li>
                                         @endif
-                                        @if ($role_permisstion->registration_request == 1)
+                                        @if (Auth::user()->roleMenu->registration_request == 1)
                                             <li><a class="ms-link" href="{{ route('freelancer.index') }}">Registration Request</a></li>
                                         @endif
-                                        @if ($role_permisstion->message_request == 1)
+                                        @if (Auth::user()->roleMenu->message_request == 1)
                                             <li><a class="ms-link" href="{{ route('freelancer.index') }}">Message Request</a></li>
                                         @endif
                                     </ul>
                                 </li>
                             @endif
-                            @if ($role_permisstion->document == 1)
+                            @if (Auth::user()->roleMenu->document == 1)
                                 <li class="collapsed">
                                     <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Document"  href="#">
                                         <i class="fa fa-lg fa-folder-open"></i> <span>Document</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span>
@@ -117,109 +117,109 @@
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Document">
-                                        @if ($role_permisstion->proposal == 1)
+                                        @if (Auth::user()->roleMenu->proposal == 1)
                                             <li><a class="ms-link" href="#">Dummy Proposal</a></li>
                                             <li><a class="ms-link" href="#">Proposal Request</a></li>
                                             <li><a class="ms-link" href="{{ route('Quotation.index') }}">Proposal</a></li>
                                         @endif
-                                        @if ($role_permisstion->banquet_event_order == 1)
+                                        @if (Auth::user()->roleMenu->banquet_event_order == 1)
                                             <li><a class="ms-link" href="#">Banquet Event Order</a></li>
                                         @endif
-                                        @if ($role_permisstion->hotel_contact_rate == 1)
+                                        @if (Auth::user()->roleMenu->hotel_contact_rate == 1)
                                             <li><a class="ms-link" href="#">Hotel Contract Rate Agreement</a></li>
                                         @endif
-                                        @if ($role_permisstion->proforma_invoice == 1)
+                                        @if (Auth::user()->roleMenu->proforma_invoice == 1)
                                             <li><a class="ms-link" href="#">Proforma Invoice</a></li>
                                         @endif
-                                        @if ($role_permisstion->billing_folio == 1)
+                                        @if (Auth::user()->roleMenu->billing_folio == 1)
                                             <li><a class="ms-link" href="#">Billing Folio</a></li>
                                         @endif
                                     </ul>
                                 </li>
                             @endif
-                            @if ($role_permisstion->product_item == 1)
+                            @if (Auth::user()->roleMenu->product_item == 1)
                                 <li><a class="m-link" href="{{ route('Mproduct.index') }}"><i class="fa fa-lg fa-cubes" style="font-weight: bold; color: white;"></i> <span>Product Item</span></a></li>
                             @endif
-                            @if ($role_permisstion->debtor == 1)
+                            @if (Auth::user()->roleMenu->debtor == 1)
                                 <li class="collapsed">
                                     <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Debtor"  href="#"><i class="fa fa-lg fa-file-text"></i> <span>Debtor</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Debtor">
-                                        @if ($role_permisstion->agoda == 1)
+                                        @if (Auth::user()->roleMenu->agoda == 1)
                                             <li><a class="ms-link" href="{{ route('debit-agoda') }}">Agoda</a></li>
                                         @endif
-                                        @if ($role_permisstion->elexa == 1)
+                                        @if (Auth::user()->roleMenu->elexa == 1)
                                             <li><a class="ms-link" href="#">Elexa</a></li>
                                         @endif
                                     </ul>
                                 </li>
                             @endif
-                            @if ($role_permisstion->maintenance == 1)
+                            @if (Auth::user()->roleMenu->maintenance == 1)
                                 <li class="collapsed">
                                     <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Maintenance"  href="#"><i class="fa fa-lg fa-gear"></i> <span>Maintenance</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Maintenance">
-                                        @if ($role_permisstion->request_repair == 1)
+                                        @if (Auth::user()->roleMenu->request_repair == 1)
                                             <li><a class="ms-link" href="#">Request Repair</a></li>
                                         @endif
-                                        @if ($role_permisstion->repair_job == 1)
+                                        @if (Auth::user()->roleMenu->repair_job == 1)
                                             <li><a class="ms-link" href="#">Repair Job</a></li>
                                         @endif
-                                        @if ($role_permisstion->preventive_maintenance == 1)
+                                        @if (Auth::user()->roleMenu->preventive_maintenance == 1)
                                             <li><a class="ms-link" href="#">Preventive Maintenance</a></li>
                                         @endif
                                     </ul>
                                 </li>
                             @endif
-                            @if ($role_permisstion->general_ledger == 1)
+                            @if (Auth::user()->roleMenu->general_ledger == 1)
                                 <li class="collapsed">
                                     <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-General-ledger"  href="#"><i class="fa fa-lg fa-bar-chart-o"></i> <span>General Ledger</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-General-ledger">
-                                        @if ($role_permisstion->sms_alert == 1)
+                                        @if (Auth::user()->roleMenu->sms_alert == 1)
                                             <li><a class="ms-link" href="{{ route('sms-alert') }}">Daily Bank Transaction Revenue</a></li>
                                         @endif
-                                        @if ($role_permisstion->revenue == 1)
+                                        @if (Auth::user()->roleMenu->revenue == 1)
                                             <li><a class="ms-link" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a></li>
                                         @endif
                                     </ul>
                                 </li>
                             @endif
-                            @if ($role_permisstion->setting == 1)
+                            @if (Auth::user()->roleMenu->setting == 1)
                                 <li class="collapsed">
                                     <a class="m-link"  data-bs-toggle="collapse" data-bs-target="#menu-Setting"  href="#"><i class="fa fa-lg fa-cogs"></i> <span>Setting</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span></a>
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Setting">
-                                        @if ($role_permisstion->user == 1)
+                                        @if (Auth::user()->roleMenu->user == 1)
                                             <li><a class="ms-link" href="{{ route('users', 'index') }}">User</a></li>
                                         @endif
-                                        @if ($role_permisstion->bank == 1)
+                                        @if (Auth::user()->roleMenu->bank == 1)
                                             <li><a class="ms-link" href="{{ route('master', 'bank') }}">Bank</a></li>
                                         @endif
-                                        @if ($role_permisstion->quantity == 1)
+                                        @if (Auth::user()->roleMenu->quantity == 1)
                                             <li><a class="ms-link" href="{{ route('Mproduct.index.quantity') }}">Quantity</a></li>
                                         @endif
-                                        @if ($role_permisstion->prefix == 1)
+                                        @if (Auth::user()->roleMenu->prefix == 1)
                                             <li><a class="ms-link" href="{{ route('Mprefix.index') }}">Prename</a></li>
                                         @endif
 
-                                        @if ($role_permisstion->company_type == 1)
+                                        @if (Auth::user()->roleMenu->company_type == 1)
                                             <li><a class="ms-link" href="{{ route('Mcomt.index') }}">Company Type</a></li>
                                         @endif
-                                        @if ($role_permisstion->company_market == 1)
+                                        @if (Auth::user()->roleMenu->company_market == 1)
                                             <li><a class="ms-link" href="{{ route('Mmarket.index') }}">Company Market</a></li>
                                         @endif
-                                        @if ($role_permisstion->company_event == 1)
+                                        @if (Auth::user()->roleMenu->company_event == 1)
                                             <li><a class="ms-link" href="{{ route('MEvent.index') }}">Company Event</a></li>
                                         @endif
-                                        @if ($role_permisstion->booking == 1)
+                                        @if (Auth::user()->roleMenu->booking == 1)
                                             <li><a class="ms-link" href="{{ route('Mbooking.index') }}">Booking</a></li>
                                         @endif
-                                        @if ($role_permisstion->document_template_pdf == 1)
+                                        @if (Auth::user()->roleMenu->document_template_pdf == 1)
                                             <li><a class="ms-link" href="{{ route('Template.TemplateA1') }}">Template</a></li>
                                         @endif
                                     </ul>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role_permission_menu;
+use App\Models\Role_permission_menu_sub;
 use App\Models\Role_permission_revenue;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -100,11 +101,25 @@ class AuthController extends Controller
         return redirect("login")->withSuccess('Opps! You do not have access');
     }
 
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
+    public function menu_name()
+    {
+        $menu = [
+            'Company / Agent', 'Guest', 'Membership',
+            'Message Inbox', 'Registration Request', 'Message Request',
+            'Dummy Proposal', 'Proposal Request', 'Proposal', 
+            'Banquet Event Order', 'Hotel Contract Rate Agreement', 'Proforma Invoice',
+            'Billing Folio', 'Product Item', 'Debtor Agoda',
+            'Debtor Elexa', 'Request Repair', 'Repair Job',
+            'Preventive Maintenance', 'Daily Bank Transaction Revenue', 'Hotel & Water Park Revenue',
+            'User (Setting)', 'Bank (Setting)', 'Quantity (Setting)',
+            'Unit (Setting)', 'Prename (Setting)', 'Company Type (Setting)',
+            'Company Market (Setting)', 'Company Event (Setting)', 'Booking (Setting)',
+            'Template (Setting)'
+        ];
+
+        return $menu;
+    }
+
     public function create(array $data)
     {
         // dd($data['front_desk']);
@@ -185,6 +200,16 @@ class AuthController extends Controller
             'edit' => $data['edit'] ?? 0,
             'select_revenue_all' => $data['select_revenue_all'] ?? 0,
           ]);
+
+          $menu_name = $this->menu_name();
+
+          foreach ($menu_name as $key => $value) {
+            Role_permission_menu_sub::create([
+                'user_id' => $user_id,
+                'menu_name' => $value,
+            ]);
+          }
+
       } catch (\Throwable $th) {
         return $th->getMessage();
       }

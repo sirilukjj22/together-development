@@ -53,4 +53,76 @@ class User extends Authenticatable
     {
         return $this->hasOne(Role_permission_revenue::class, 'user_id', 'id');
     }
+
+    public static function roleMenuAdd($menu)
+    {
+        $check = Role_permission_menu_sub::where('menu_name', $menu)->first();
+
+        $permission = 0;
+
+        if (!empty($check)) {
+            $permission = $check->add_data;
+        }
+        return $permission;
+    }
+
+    public static function roleMenuEdit($menu)
+    {
+        $check = Role_permission_menu_sub::where('menu_name', $menu)->first();
+
+        $permission = 0;
+
+        if (!empty($check)) {
+            $permission = $check->edit_data;
+        }
+        return $permission;
+    }
+
+    public static function roleMenuDelete($menu)
+    {
+        $check = Role_permission_menu_sub::where('menu_name', $menu)->first();
+
+        $permission = 0;
+
+        if (!empty($check)) {
+            $permission = $check->delete_data;
+        }
+        return $permission;
+    }
+
+    public static function roleMenuView($menu)
+    {
+        $check = Role_permission_menu_sub::where('menu_name', $menu)->first();
+
+        $permission = 0;
+
+        if (!empty($check)) {
+            $permission = $check->view_data;
+        }
+        return $permission;
+    }
+
+    public static function roleMenuDiscount($menu)
+    {
+        $check = Role_permission_menu_sub::where('menu_name', $menu)->first();
+
+        $permission = 0;
+
+        if (!empty($check)) {
+            $permission = $check->discount;
+        }
+        return $permission;
+    }
+
+    public static function roleMenuSpecialDiscount($menu)
+    {
+        $check = Role_permission_menu_sub::where('menu_name', $menu)->first();
+
+        $permission = 0;
+
+        if (!empty($check)) {
+            $permission = $check->special_discount;
+        }
+        return $permission;
+    }
 }
