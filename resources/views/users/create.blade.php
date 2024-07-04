@@ -58,6 +58,16 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
+                                    <label for="password" class="col-sm-3 col-form-label fw-bold">ส่วนลด / Discount</label>
+                                    <div class="col-sm-2">
+                                        <div class="input-group">
+                                            <input type="text" min="0" max="100" class="form-control" name="discount" value="0">
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-7"></div>
+                                </div>
+                                <div class="row mb-3">
                                     <label for="main-menu" class="col-sm-3 col-form-label fw-bold">สิทธิ์การใช้งานเมนู / Menu Permissions</label>
                                     <div class="col-sm-9">
                                         <div class="form-check mt-2">

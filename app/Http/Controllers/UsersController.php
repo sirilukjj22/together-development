@@ -98,6 +98,7 @@ class UsersController extends Controller
             User::where('id', $request->id)->update([
                 'name' => $request->name,
                 'email' => $request->email,
+                'discount' => $request->discount ?? 0,
                 'permission' => $request->permission,
             ]);
     
