@@ -99,50 +99,104 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    <tr>
-                                                                        <td>
-                                                                            <div>
-                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile" id="menu_profile" value="1">
-                                                                                <label class="form-check-label" for="menu_profile">Profile</label>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="text-center">
-                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile_add" id="menu_profile_add" value="1">
-                                                                                <label class="form-check-label" for="menu_profile_add"></label>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="text-center">
-                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile_edit" id="menu_profile_edit" value="1">
-                                                                                <label class="form-check-label" for="menu_profile_edit"></label>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="text-center">
-                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile_delete" id="menu_profile_delete" value="1">
-                                                                                <label class="form-check-label" for="menu_profile_delete"></label>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="text-center">
-                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile_view" id="menu_profile_view" value="1">
-                                                                                <label class="form-check-label" for="menu_profile_view"></label>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="text-center">
-                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile_discount" id="menu_profile_discount" value="1">
-                                                                                <label class="form-check-label" for="menu_profile_discount"></label>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="text-center">
-                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_profile_special_discount" id="menu_profile_special_discount" value="1">
-                                                                                <label class="form-check-label" for="menu_profile_special_discount"></label>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
+                                                                    @if (isset($tb_menu))
+                                                                        @foreach ($tb_menu as $item)
+                                                                            @if ($item->category_name == 1)
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <div>
+                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}" id="menu_{{ $item->name2 }}" value="1">
+                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}"><b>{{ $item->name_en }}</b></label>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="text-center">
+                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}_add" id="menu_{{ $item->name2 }}_add" value="1">
+                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}_add"></label>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="text-center">
+                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}_edit" id="menu_{{ $item->name2 }}_edit" value="1">
+                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}_edit"></label>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="text-center">
+                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}_delete" id="menu_{{ $item->name2 }}_delete" value="1">
+                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}_delete"></label>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="text-center">
+                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}_view" id="menu_{{ $item->name2 }}_view" value="1">
+                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}_view"></label>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="text-center">
+                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}_discount" id="menu_{{ $item->name2 }}_discount" value="1">
+                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}_discount"></label>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="text-center">
+                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}_special_discount" id="menu_{{ $item->name2 }}_special_discount" value="1">
+                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}_special_discount"></label>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            @endif
+                                                                            @foreach ($tb_menu as $item2)
+                                                                                @if ($item2->category_name == 2 && $item2->menu_main == $item->id)
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                           <div>
+                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}" id="menu_{{ $item2->name2 }}" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}">{{ $item2->name_en }}</label>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="text-center">
+                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}_add" id="menu_{{ $item2->name2 }}_add" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}_add"></label>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="text-center">
+                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}_edit" id="menu_{{ $item2->name2 }}_edit" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}_edit"></label>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="text-center">
+                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}_delete" id="menu_{{ $item2->name2 }}_delete" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}_delete"></label>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="text-center">
+                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}_view" id="menu_{{ $item2->name2 }}_view" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}_view"></label>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="text-center">
+                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}_discount" id="menu_{{ $item2->name2 }}_discount" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}_discount"></label>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="text-center">
+                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}_special_discount" id="menu_{{ $item2->name2 }}_special_discount" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}_special_discount"></label>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                @endif
+                                                                            @endforeach
+                                                                        @endforeach
+                                                                    @endif
                                                                 </tbody>
                                                             </table>
                                                         </div>

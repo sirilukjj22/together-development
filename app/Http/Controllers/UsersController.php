@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
@@ -47,7 +48,9 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        $tb_menu = DB::table('tb_menu')->get();
+        
+        return view('users.create', compact('tb_menu'));
     }
 
     /**
