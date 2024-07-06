@@ -163,6 +163,8 @@ class UsersController extends Controller
                 'general_ledger' => $request->menu_general_ledger ?? 0,
                 'sms_alert' => $request->menu_sms_alert ?? 0,
                 'revenue' => $request->menu_revenue ?? 0,
+
+                'report' => $request->report ?? 0,
                 
                 'setting' => $request->menu_setting ?? 0,
                 'user' => $request->menu_user ?? 0,

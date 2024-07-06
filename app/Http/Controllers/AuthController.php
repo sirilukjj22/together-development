@@ -167,6 +167,8 @@ class AuthController extends Controller
             'sms_alert' => $data['menu_sms_alert'] ?? 0,
             'revenue' => $data['menu_revenue'] ?? 0,
             
+            'report' => $data['menu_report'] ?? 0,
+
             'setting' => $data['menu_setting'] ?? 0,
             'user' => $data['menu_user'] ?? 0,
             'bank' => $data['menu_bank'] ?? 0,
