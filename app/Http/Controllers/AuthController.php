@@ -209,12 +209,12 @@ class AuthController extends Controller
                 Role_permission_menu_sub::create([
                     'user_id' => $user_id,
                     'menu_name' => $value->name_en,
-                    'add_data' => $data['menu_'.$value->name2.'_add'],
-                    'edit_data' => $data['menu_'.$value->name2.'_edit'],
-                    'delete_data' => $data['menu_'.$value->name2.'_delete'],
-                    'view_data' => $data['menu_'.$value->name2.'_view'],
-                    'discount' => $data['menu_'.$value->name2.'_discount'],
-                    'special_discount' => $data['menu_'.$value->name2.'_special_discount'],
+                    'add_data' => $data['menu_'.$value->name2.'_add'] ?? 0,
+                    'edit_data' => $data['menu_'.$value->name2.'_edit'] ?? 0,
+                    'delete_data' => $data['menu_'.$value->name2.'_delete'] ?? 0,
+                    'view_data' => $data['menu_'.$value->name2.'_view'] ?? 0,
+                    'discount' => $data['menu_'.$value->name2.'_discount'] ?? 0,
+                    'special_discount' => $data['menu_'.$value->name2.'_special_discount'] ?? 0,
                 ]);
             }
           }
