@@ -469,6 +469,8 @@
                             Front Desk Revenue
                         @elseif($item->status == 7)
                             Credit Card Water Park Revenue
+                        @elseif($item->status == 8)
+                            Elexa EGAT Revenue
                         @endif
 
                         @if ($item->split_status == 1)
@@ -637,6 +639,8 @@
                                 Front Desk Revenue
                             @elseif($item->status == 7)
                                 Credit Card Water Park Revenue
+                            @elseif($item->status == 8)
+                                Elexa EGAT Revenue
                             @endif
 
                             @if ($item->split_status == 1)
@@ -806,6 +810,8 @@
                                 Front Desk Revenue
                             @elseif($item->status == 7)
                                 Credit Card Water Park Revenue
+                            @elseif($item->status == 8)
+                                Elexa EGAT Revenue
                             @endif
 
                             @if ($item->split_status == 1)
