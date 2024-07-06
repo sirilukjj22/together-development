@@ -55,6 +55,11 @@ class User extends Authenticatable
         return $this->hasOne(Role_permission_revenue::class, 'user_id', 'id');
     }
 
+    // public function roleMenage()
+    // {
+    //     return $this->hasOne(Role_permission_menu_sub::class, 'user_id', 'id');
+    // }
+
     public static function roleMenuAdd($menu)
     {
         $check = Role_permission_menu_sub::where('menu_name', $menu)->first();

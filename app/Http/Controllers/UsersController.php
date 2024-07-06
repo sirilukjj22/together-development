@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role_permission_menu;
+use App\Models\Role_permission_menu_sub;
 use App\Models\Role_permission_revenue;
 use App\Models\User;
 use Carbon\Carbon;
@@ -49,8 +50,18 @@ class UsersController extends Controller
     public function create()
     {
         $tb_menu = DB::table('tb_menu')->get();
+
+        $tb_revenue_type = [
+            'Front Desk Revenue', 'Guest Deposit Revenue', 'All Outlet Revenue', 'Agoda Revenue', 'Credit Card Hotel Revenue', 'Elexa EGAT Revenue',
+            'Water Park Revenue', 'Credit Card Water Park Revenue', 'No Category', 'Transfer', 'Update Time', 'Split Revenue', 'Edit / Delete',
+        ];
+
+        $tb_revenue_type2 = [
+            'front_desk', 'guest_deposit', 'all_outlet', 'agoda', 'credit_card_hotel', 'elexa',
+            'water_park', 'credit_water_park', 'no_category', 'transfer', 'time', 'split', 'edit',
+        ];
         
-        return view('users.create', compact('tb_menu'));
+        return view('users.create', compact('tb_menu', 'tb_revenue_type', 'tb_revenue_type2'));
     }
 
     /**
@@ -84,8 +95,19 @@ class UsersController extends Controller
     public function edit($id)
     {
         $user = User::where('id', $id)->first();
+        $tb_menu = DB::table('tb_menu')->get();
 
-        return view('users.edit', compact('user', $user));
+        $tb_revenue_type = [
+            'Front Desk Revenue', 'Guest Deposit Revenue', 'All Outlet Revenue', 'Agoda Revenue', 'Credit Card Hotel Revenue', 'Elexa EGAT Revenue',
+            'Water Park Revenue', 'Credit Card Water Park Revenue', 'No Category', 'Transfer', 'Update Time', 'Split Revenue', 'Edit / Delete',
+        ];
+
+        $tb_revenue_type2 = [
+            'front_desk', 'guest_deposit', 'all_outlet', 'agoda', 'credit_card_hotel', 'elexa',
+            'water_park', 'credit_water_park', 'no_category', 'transfer', 'time', 'split', 'edit',
+        ];
+
+        return view('users.edit', compact('user', 'tb_menu', 'tb_revenue_type', 'tb_revenue_type2'));
     }
 
     /**
@@ -175,6 +197,32 @@ class UsersController extends Controller
                 'edit' => $request->edit ?? 0,
                 'select_revenue_all' => $request->select_revenue_all ?? 0,
               ]);
+
+              $menu_name = DB::table('tb_menu')->where('category_name', 2)->get();
+              $check_menu = Role_permission_menu_sub::where('user_id', $request->id)->delete();
+          foreach ($menu_name as $key => $value) {
+                $add_data = 'menu_'.$value->name2.'_add';
+                $edit_data = 'menu_'.$value->name2.'_edit';
+                $delete_data = 'menu_'.$value->name2.'_delete';
+                $view_data = 'menu_'.$value->name2.'_view';
+                $discount = 'menu_'.$value->name2.'_discount';
+                $special_discount = 'menu_'.$value->name2.'_special_discount';
+                $menu_name2 = 'menu_'.$value->name2;
+
+            if ($request->$menu_name2 == 1) {
+                Role_permission_menu_sub::create([
+                    'user_id' => $request->id,
+                    'menu_name' => $value->name_en,
+                    'add_data' => $request->$add_data ?? 0,
+                    'edit_data' => $request->$edit_data ?? 0,
+                    'delete_data' => $request->$delete_data ?? 0,
+                    'view_data' => $request->$view_data ?? 0,
+                    'discount' => $request->$discount ?? 0,
+                    'special_discount' => $request->$special_discount ?? 0,
+                ]);
+            }
+          }
+          
         } catch (\Throwable $th) {
             // return redirect(url('users', 'index'))->with('error', 'ระบบไม่สามารถทำการแก้ไขรายการชื่อ '.$request->name_th.' ได้');
             return $th->getMessage();

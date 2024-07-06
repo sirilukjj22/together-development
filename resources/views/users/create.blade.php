@@ -77,14 +77,17 @@
                                     </div>
                                 </div>
                                 <div class="row justify-content-between">
-                                    <div class="col-lg-12 col-md-12">
+                                    {{-- <div class="col-lg-3 col-md-3"></div> --}}
+                                    <div class="col-lg-12 col-md-12 mb-3">
                                         <div class="accordion card p-0 p-lg-4" id="accordionExample">
                                             <div class="card border-0">
                                                 <div class="card-body" id="heading1">
-                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1"><span class="fw-bold"></span><b>เมนู (หัวข้อหลัก) / Menu Main</b></h6>
+                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1">
+                                                        <b>เมนู / Menu</b><span style="float: right; color:rgb(26, 107, 87);">ย่อ/ขยาย</span>
+                                                    </h6>
                                                 </div>
-                                                <div id="faq1" class="collapse show" aria-labelledby="heading1" data-parent="#accordionExample">
-                                                    <div class="card-body border-top">
+                                                <div id="faq1" class="collapse" aria-labelledby="heading1" data-parent="#accordionExample">
+                                                    <div class="card-body">
                                                         <div class="col-12 table_wrapper print_invoice">
                                                             <table class="items">
                                                                 <thead>
@@ -109,42 +112,44 @@
                                                                                             <label class="form-check-label" for="menu_{{ $item->name2 }}"><b>{{ $item->name_en }}</b></label>
                                                                                         </div>
                                                                                     </td>
-                                                                                    <td>
-                                                                                        <div class="text-center">
-                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}_add" id="menu_{{ $item->name2 }}_add" value="1">
-                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}_add"></label>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <div class="text-center">
-                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}_edit" id="menu_{{ $item->name2 }}_edit" value="1">
-                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}_edit"></label>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <div class="text-center">
-                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}_delete" id="menu_{{ $item->name2 }}_delete" value="1">
-                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}_delete"></label>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <div class="text-center">
-                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}_view" id="menu_{{ $item->name2 }}_view" value="1">
-                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}_view"></label>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <div class="text-center">
-                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}_discount" id="menu_{{ $item->name2 }}_discount" value="1">
-                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}_discount"></label>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <div class="text-center">
-                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}_special_discount" id="menu_{{ $item->name2 }}_special_discount" value="1">
-                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}_special_discount"></label>
-                                                                                        </div>
-                                                                                    </td>
+                                                                                    @if ($item->name_en == "Product Item")
+                                                                                        <td>
+                                                                                            <div class="text-center">
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item->name2 }}_add" id="menu_{{ $item->name2 }}_add" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item->name2 }}_add"></label>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="text-center">
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item->name2 }}_edit" id="menu_{{ $item->name2 }}_edit" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item->name2 }}_edit"></label>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="text-center">
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item->name2 }}_delete" id="menu_{{ $item->name2 }}_delete" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item->name2 }}_delete"></label>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="text-center">
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item->name2 }}_view" id="menu_{{ $item->name2 }}_view" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item->name2 }}_view"></label>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="text-center">
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item->name2 }}_discount" id="menu_{{ $item->name2 }}_discount" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item->name2 }}_discount"></label>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="text-center">
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item->name2 }}_special_discount" id="menu_{{ $item->name2 }}_special_discount" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item->name2 }}_special_discount"></label>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    @endif
                                                                                 </tr>
                                                                             @endif
                                                                             @foreach ($tb_menu as $item2)
@@ -152,43 +157,43 @@
                                                                                     <tr>
                                                                                         <td>
                                                                                            <div>
-                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}" id="menu_{{ $item2->name2 }}" value="1">
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}" id="menu_{{ $item2->name2 }}" value="1">
                                                                                                 <label class="form-check-label" for="menu_{{ $item2->name2 }}">{{ $item2->name_en }}</label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}_add" id="menu_{{ $item2->name2 }}_add" value="1">
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_add" id="menu_{{ $item2->name2 }}_add" value="1">
                                                                                                 <label class="form-check-label" for="menu_{{ $item2->name2 }}_add"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}_edit" id="menu_{{ $item2->name2 }}_edit" value="1">
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_edit" id="menu_{{ $item2->name2 }}_edit" value="1">
                                                                                                 <label class="form-check-label" for="menu_{{ $item2->name2 }}_edit"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}_delete" id="menu_{{ $item2->name2 }}_delete" value="1">
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_delete" id="menu_{{ $item2->name2 }}_delete" value="1">
                                                                                                 <label class="form-check-label" for="menu_{{ $item2->name2 }}_delete"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}_view" id="menu_{{ $item2->name2 }}_view" value="1">
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_view" id="menu_{{ $item2->name2 }}_view" value="1">
                                                                                                 <label class="form-check-label" for="menu_{{ $item2->name2 }}_view"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}_discount" id="menu_{{ $item2->name2 }}_discount" value="1">
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_discount" id="menu_{{ $item2->name2 }}_discount" value="1">
                                                                                                 <label class="form-check-label" for="menu_{{ $item2->name2 }}_discount"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item2->name2 }}_special_discount" id="menu_{{ $item2->name2 }}_special_discount" value="1">
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_special_discount" id="menu_{{ $item2->name2 }}_special_discount" value="1">
                                                                                                 <label class="form-check-label" for="menu_{{ $item2->name2 }}_special_discount"></label>
                                                                                             </div>
                                                                                         </td>
@@ -202,277 +207,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="border-bottom"></div>
                                             </div> <!-- .card - FAQ 1  -->
-                                            <div class="card border-0">
-                                                <div class="card-body" id="heading2">
-                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="true" aria-controls="faq2"><span <span class="fw-bold"></span> How does the Genesis Simple FAQ plugin?</h6>
-                                                </div>
-                                                <div id="faq2" class="collapse" aria-labelledby="heading2" data-parent="#accordionExample">
-                                                    <div class="card-body border-top">
-                                                       <p>Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.</p>
-                                                       <div class="alert alert-primary" role="alert">
-                                                            A simple primary alert—check it out!
-                                                      </div>
-                                                    </div>
-                                                </div>
-                                            </div> <!-- .card - FAQ 2  -->
-                                            <div class="card border-0">
-                                                <div class="card-body" id="heading3">
-                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="true" aria-controls="faq3"><span <span class="fw-bold"></span> Can i customize the design of my FAQ section?</h6>
-                                                </div>
-                                                <div id="faq3" class="collapse" aria-labelledby="heading3" data-parent="#accordionExample">
-                                                    <div class="card-body border-top">
-                                                       <p>Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.</p>
-                                                       <figure>
-                                                            <blockquote class="blockquote">
-                                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                                                            </blockquote>
-                                                            <figcaption class="blockquote-footer">
-                                                            Someone famous in <cite title="Source Title">Source Title</cite>
-                                                            </figcaption>
-                                                      </figure>
-                                                    </div>
-                                                </div>
-                                            </div> <!-- .card - FAQ 3  -->
                                         </div>
                                     </div>
                                 </div> <!-- Row end  -->
-                                <div class="row mb-3">
-                                    <label for="main-menu" class="col-sm-3 col-form-label fw-bold">เมนู (หัวข้อหลัก) / Menu Main</label>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_profile" id="menu_profile" value="1">
-                                            <label class="form-check-label" for="menu_profile">Profile</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_freelancer" id="menu_freelancer" value="1">
-                                            <label class="form-check-label" for="menu_freelancer">Freelancer</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_document" id="menu_document" value="1">
-                                            <label class="form-check-label" for="menu_document">Document</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_product_item" id="menu_product_item" value="1">
-                                            <label class="form-check-label" for="menu_product_item">Product Item</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_debtor" id="menu_debtor" value="1">
-                                            <label class="form-check-label" for="menu_debtor">Debtor</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_maintenance" id="menu_maintenance" value="1">
-                                            <label class="form-check-label" for="menu_maintenance">Maintenance</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_general_ledger" id="menu_general_ledger" value="1">
-                                            <label class="form-check-label" for="menu_general_ledger">General Ledger</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_setting" id="menu_setting" value="1">
-                                            <label class="form-check-label" for="menu_setting">Setting</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="main-menu" class="col-sm-3 col-form-label fw-bold">เมนู (หัวข้อย่อย) / Submenu</label>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_company" id="menu_company" value="1">
-                                            <label class="form-check-label" for="menu_company">Company / Agent (Profile)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_guest" id="menu_guest" value="1">
-                                            <label class="form-check-label" for="menu_guest">Guest (Profile)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_membership" id="menu_membership" value="1">
-                                            <label class="form-check-label" for="menu_membership">Membership (Freelancer)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_message_inbox" id="menu_message_inbox" value="1">
-                                            <label class="form-check-label" for="menu_message_inbox">Message Inbox (Freelancer)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_registration_request" id="menu_registration_request" value="1">
-                                            <label class="form-check-label" for="menu_registration_request">Registration Request (Freelancer)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_message_request" id="menu_message_request" value="1">
-                                            <label class="form-check-label" for="menu_message_request">Message Request (Freelancer)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_proposal" id="menu_proposal" value="1">
-                                            <label class="form-check-label" for="menu_proposal">Proposal (Document)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_banquet_event_order" id="menu_banquet_event_order" value="1">
-                                            <label class="form-check-label" for="menu_banquet_event_order">Banquet Event Order (Document)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_hotel_contact_rate" id="menu_hotel_contact_rate" value="1">
-                                            <label class="form-check-label" for="menu_hotel_contact_rate">Hotel Contact rate (Document)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_proforma_invoice" id="menu_proforma_invoice" value="1">
-                                            <label class="form-check-label" for="menu_proforma_invoice">Proforma Invoice (Document)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_billing_folio" id="menu_billing_folio" value="1">
-                                            <label class="form-check-label" for="menu_billing_folio">Billing Folio (Document)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_agoda" id="menu_agoda" value="1">
-                                            <label class="form-check-label" for="menu_agoda">Agoda (Debtor)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_elexa" id="menu_elexa" value="1">
-                                            <label class="form-check-label" for="menu_elexa">Elexa (Debtor)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_request_repair" id="menu_request_repair" value="1">
-                                            <label class="form-check-label" for="menu_request_repair">Request Repair (Maintenance)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_repair_job" id="menu_repair_job" value="1">
-                                            <label class="form-check-label" for="menu_repair_job">Repair Job (Maintenance)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_preventive_maintenance" id="menu_preventive_maintenance" value="1">
-                                            <label class="form-check-label" for="menu_preventive_maintenance">Preventive Maintenance (Maintenance)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_sms_alert" id="menu_sms_alert" value="1">
-                                            <label class="form-check-label" for="menu_sms_alert">Daily Bank Transaction Revenue (General Ledger)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_revenue" id="menu_revenue" value="1">
-                                            <label class="form-check-label" for="menu_revenue">Hotel & Water Park Revenue (General Ledger)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_user" id="menu_user" value="1">
-                                            <label class="form-check-label" for="menu_user">Users (Setting)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_bank" id="menu_bank" value="1">
-                                            <label class="form-check-label" for="menu_bank">Bank (Setting)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_quantity" id="menu_quantity" value="1">
-                                            <label class="form-check-label" for="menu_quantity">Quantity (Setting)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_unit" id="menu_unit" value="1">
-                                            <label class="form-check-label" for="menu_unit">Unit (Setting)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_prefix" id="menu_prefix" value="1">
-                                            <label class="form-check-label" for="menu_prefix">Prename (Setting)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_company_type" id="menu_company_type" value="1">
-                                            <label class="form-check-label" for="menu_company_type">Company Type (Setting)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_company_market" id="menu_company_market" value="1">
-                                            <label class="form-check-label" for="menu_company_market">Company Market (Setting)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_company_event" id="menu_company_event" value="1">
-                                            <label class="form-check-label" for="menu_company_event">Company Event (Setting)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_booking" id="menu_booking" value="1">
-                                            <label class="form-check-label" for="menu_booking">Booking (Setting)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input select_menu" type="checkbox" name="menu_template" id="menu_template" value="1">
-                                            <label class="form-check-label" for="menu_template">Template (Setting)</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6"></div>
-                                </div>
-                                <div class="row mb-3">
+                                <div class="row mb-3 mt-3">
                                     <label for="main-menu" class="col-sm-3 col-form-label fw-bold">สิทธิ์ใช้งานประเภทรายได้ / <br> Revenue type permissions</label>
                                     <div class="col-sm-3">
                                         <div class="form-check mt-2">
@@ -481,91 +221,53 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input select_revenue" type="checkbox" name="front_desk" id="front_desk" value="1">
-                                            <label class="form-check-label" for="front_desk">Front Desk Revenue</label>
+                                <div class="row justify-content-between">
+                                    {{-- <div class="col-lg-3 col-md-3"></div> --}}
+                                    <div class="col-lg-12 col-md-12 mb-3">
+                                        <div class="accordion card p-0 p-lg-4" id="accordionExample2">
+                                            <div class="card border-0">
+                                                <div class="card-body" id="heading2">
+                                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="true" aria-controls="faq2"><b>ประเภทรายได้ / Revenue Type</b> <span style="float: right; color:rgb(26, 107, 87);">ย่อ/ขยาย</span></h6>
+                                                </div>
+                                                <div id="faq2" class="collapse" aria-labelledby="heading2" data-parent="#accordionExample2">
+                                                    <div class="card-body">
+                                                        <div class="col-12 table_wrapper print_invoice">
+                                                            <table class="items">
+                                                                <thead>
+                                                                    <tr class="text-center">
+                                                                        <th></th>
+                                                                        <th>ชื่อเมนู</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @if (isset($tb_revenue_type))
+                                                                        @foreach ($tb_revenue_type as $key => $item)
+                                                                        @php
+                                                                            $name2 = $tb_revenue_type2[$key];
+                                                                        @endphp
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="text-center">
+                                                                                        <input class="form-check-input select_revenue" type="checkbox" name="{{ $name2 }}" id="{{ $name2 }}" value="1">
+                                                                                        <label class="form-check-label" for="{{ $name2 }}"></label>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    {{ $item }}
+                                                                                </td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="border-bottom"></div>
+                                            </div> <!-- .card - FAQ 2  -->
                                         </div>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input select_revenue" type="checkbox" name="guest_deposit" id="guest_deposit" value="1">
-                                            <label class="form-check-label" for="guest_deposit">Guest Deposit Revenue</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input select_revenue" type="checkbox" name="all_outlet" id="all_outlet" value="1">
-                                            <label class="form-check-label" for="all_outlet">All Outlet Revenue</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input select_revenue" type="checkbox" name="agoda" id="agoda" value="1">
-                                            <label class="form-check-label" for="agoda">Agoda Revenue</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input select_revenue" type="checkbox" name="credit_card_hotel" id="credit_card_hotel" value="1">
-                                            <label class="form-check-label" for="credit_card_hotel">Credit Card Hotel Revenue</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input select_revenue" type="checkbox" name="elexa" id="elexa" value="1">
-                                            <label class="form-check-label" for="elexa">Elexa EGAT Revenue</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input select_revenue" type="checkbox" name="water_park" id="water_park" value="1">
-                                            <label class="form-check-label" for="water_park">Water Park Revenue</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input select_revenue" type="checkbox" name="credit_water_park" id="credit_water_park" value="1">
-                                            <label class="form-check-label" for="credit_water_park">Credit Card Water Park Revenue</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input select_revenue" type="checkbox" name="no_category" id="no_category" value="1">
-                                            <label class="form-check-label" for="no_category">No Category</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input select_revenue" type="checkbox" name="transfer" id="transfer" value="1">
-                                            <label class="form-check-label" for="transfer">Transfer</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input select_revenue" type="checkbox" name="time" id="time" value="1">
-                                            <label class="form-check-label" for="time">Update Time</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input select_revenue" type="checkbox" name="split" id="split" value="1">
-                                            <label class="form-check-label" for="split">Split Revenue</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3"></div>
-                                    <div class="col-sm-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input select_revenue" type="checkbox" name="edit" id="edit" value="1">
-                                            <label class="form-check-label" for="edit">Edit / Delete</label>
-                                        </div>
-                                    </div>
-                                </div>
+                                </div> <!-- Row end  -->
                                 <div class="text-end col-12">
                                     <a href="{{ route('users', 'index') }}" type="button" class="btn btn-outline-dark lift">Cancle</a>
                                     <button type="submit" class="btn btn-color-green lift">Save</button>
@@ -617,8 +319,16 @@
     });
 
     $('.select_menu').on('click', function() {
+        var select_menu = $(this).attr('id');
+
         $('#select_menu_all').val(0);
         $('#select_menu_all').prop('checked', false);
+
+        if ($(this).is(':checked')) {
+            $('.select_'+select_menu).prop('checked', true);
+        } else {
+            $('.select_'+select_menu).prop('checked', false);
+        }
     });
 
     $('.select_revenue').on('click', function() {
