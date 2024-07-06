@@ -60,9 +60,9 @@ class User extends Authenticatable
     //     return $this->hasOne(Role_permission_menu_sub::class, 'user_id', 'id');
     // }
 
-    public static function roleMenuAdd($menu)
+    public static function roleMenuAdd($menu, $user_id)
     {
-        $check = Role_permission_menu_sub::where('menu_name', $menu)->first();
+        $check = Role_permission_menu_sub::where('user_id', $user_id)->where('menu_name', $menu)->first();
 
         $permission = 0;
 
@@ -72,9 +72,9 @@ class User extends Authenticatable
         return $permission;
     }
 
-    public static function roleMenuEdit($menu)
+    public static function roleMenuEdit($menu, $user_id)
     {
-        $check = Role_permission_menu_sub::where('menu_name', $menu)->first();
+        $check = Role_permission_menu_sub::where('user_id', $user_id)->where('menu_name', $menu)->first();
 
         $permission = 0;
 
@@ -84,9 +84,9 @@ class User extends Authenticatable
         return $permission;
     }
 
-    public static function roleMenuDelete($menu)
+    public static function roleMenuDelete($menu, $user_id)
     {
-        $check = Role_permission_menu_sub::where('menu_name', $menu)->first();
+        $check = Role_permission_menu_sub::where('user_id', $user_id)->where('menu_name', $menu)->first();
 
         $permission = 0;
 
@@ -96,9 +96,9 @@ class User extends Authenticatable
         return $permission;
     }
 
-    public static function roleMenuView($menu)
+    public static function roleMenuView($menu, $user_id)
     {
-        $check = Role_permission_menu_sub::where('menu_name', $menu)->first();
+        $check = Role_permission_menu_sub::where('user_id', $user_id)->where('menu_name', $menu)->first();
 
         $permission = 0;
 
@@ -108,9 +108,9 @@ class User extends Authenticatable
         return $permission;
     }
 
-    public static function roleMenuDiscount($menu)
+    public static function roleMenuDiscount($menu, $user_id)
     {
-        $check = Role_permission_menu_sub::where('menu_name', $menu)->first();
+        $check = Role_permission_menu_sub::where('user_id', $user_id)->where('menu_name', $menu)->first();
 
         $permission = 0;
 
@@ -120,9 +120,9 @@ class User extends Authenticatable
         return $permission;
     }
 
-    public static function roleMenuSpecialDiscount($menu)
+    public static function roleMenuSpecialDiscount($menu, $user_id)
     {
-        $check = Role_permission_menu_sub::where('menu_name', $menu)->first();
+        $check = Role_permission_menu_sub::where('user_id', $user_id)->where('menu_name', $menu)->first();
 
         $permission = 0;
 

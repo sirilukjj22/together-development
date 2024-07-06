@@ -9,7 +9,7 @@
                 </div>
         
                 <div class="col-auto">
-                    @if (@Auth::user()->roleMenuAdd('User (Setting)') == 1)
+                    @if (@Auth::user()->roleMenuAdd('Users', Auth::user()->id) == 1)
                         <a href="{{ route('user-create') }}" type="button" class="btn btn-color-green text-white lift"><i class="fa fa-plus"></i> เพิ่มผู้ใช้งาน</a>
                     @endif
                 </div>
@@ -91,7 +91,7 @@
                                                         aria-expanded="false">
                                                         ทำรายการ
                                                     </button>
-                                                    @if (@Auth::user()->roleMenuEdit('User (Setting)') == 1)
+                                                    @if (@Auth::user()->roleMenuEdit('Users', Auth::user()->id) == 1)
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             <li>
                                                                 <a href="{{ route('user-edit', $item->id) }}" type="button" class="dropdown-item py-2 rounded">
