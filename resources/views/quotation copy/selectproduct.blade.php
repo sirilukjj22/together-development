@@ -1,7 +1,6 @@
 @extends('layouts.masterLayout')
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet">
+
 
 <style>
 
@@ -127,9 +126,9 @@
         <div class="row clearfix">
             <div class="col-sm-12 col-12">
                 <div class="card p-4 mb-4">
-                    <form id="myForm" action="{{url('/Quotation/company/update/quotationupdate/'.$Quotation->id)}}" method="POST"enctype="multipart/form-data">
+                    <form id="myForm" action="{{url('/Quotation/company/create/quotation/'.$Quotation->Quotation_ID)}}" method="POST"enctype="multipart/form-data">
                         @csrf
-
+                        <input type="hidden" name="Quotation_id" id="Quotation_id" value="{{ $Quotation->id }}">
                         <div class="row">
                             <div class="col-lg-8 col-md-12 col-sm-12 image-container">
                                 <img src="{{ asset('assets2/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
@@ -150,7 +149,7 @@
                                             <span  class="titleQuotation" style="font-size:28px;color:#ffffff;">PROPOSAL</span>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12 col-md-12 col-sm-12 d-flex justify-content-center mt-2" >
+                                    <div class="col-lg-12  d-flex justify-content-center mt-2" >
                                         <div class="proposalcode">
                                             <div style="padding: 4%">
 
@@ -159,9 +158,7 @@
                                                 <b >Issue Date : </b><span >{{ $Quotation->issue_date }}</span><br>
 
                                                 <b>Expiration Date : </b><span>{{ $Quotation->Expirationdate }}</span>
-                                                <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation->Quotation_ID}}">
-                                                <input type="hidden" id="Quotation_ID" name="IssueDate" value="{{ $Quotation->issue_date }}">
-                                                <input type="hidden" id="Quotation_ID" name="ExpirationDate" value="{{ $Quotation->Expirationdate }}">
+
                                             </div>
                                         </div>
                                     </div>
@@ -324,40 +321,17 @@
                                     <tr>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">No.</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Description</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center;">Quantity</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Quantity</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Unit</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Price / Unit</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center;">Discount</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Net price/Unit</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Amount</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Order</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price / Unit</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Discount</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price Discount</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Amount</th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Order</th>
                                     </tr>
                                 </thead>
                                 <tbody id="display-selected-items">
-                                    @if (!empty($selectproduct))
-                                        @foreach ($selectproduct as $key => $item)
-                                            @foreach ($unit as $singleUnit)
-                                                @if($singleUnit->id == @$item->product->unit)
-                                                    <tr id="tr-select-main{{$item->Product_ID}}">
-                                                        <input type="hidden" id="tr-select-main{{$item->Product_ID}}" name="tr-select-main[]" value="{{$item->Product_ID}}">
-                                                        <td><input type="hidden" id="ProductID" name="ProductIDmain[]" value="{{$item->Product_ID}}">{{$key+1}}</td>
-                                                        <td style="text-align:left;"><input type="hidden" id="Productname_th" name="Productname_th" value="{{@$item->product->name_th}}">{{@$item->product->name_th}}</td>
-                                                        <td class="Quantity" data-value="{{$item->Quantity}}"style="text-align:center;"><input type="hidden" id="Quantity" name="Quantitymain[]" value="{{$item->Quantity}}">{{$item->Quantity}}</td>
-                                                        <td><input type="hidden" id="unitname_th" name="unitname_th" value="{{ $singleUnit->name_th }}">{{ $singleUnit->name_th }}</td>
-                                                        <td class="priceproduct" data-value="{{$item->priceproduct}}"><input type="hidden" id="totalprice-unit{{$key+1}}" name="priceproductmain[]" value="{{$item->priceproduct}}">{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
-                                                        <td class="discount"style="text-align:center;"><input type="hidden" id="discount" name="discountmain[]" value="{{$item->discount}}">{{$item->discount}}%</td>
-                                                        <td class="net-price"style="text-align:center;" ><input type="hidden" id="net_discount{{$key+1}}" name="net_discountmain[]" value="{{$item->totaldiscount}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
-                                                        <td class="item-total"style="text-align:center;"><input type="hidden" id="allcounttotal{{$key+1}}" name="allcounttotalmain[]" value="{{$item->netpriceproduct}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
-                                                        <td>
-                                                            <button type="button" class="Btn remove-button1">
-                                                                <i class="fa fa-minus-circle text-danger fa-lg"></i>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                            @endforeach
-                                        @endforeach
-                                    @endif
+
                                 </tbody>
                             </table>
                         </div>
@@ -389,16 +363,12 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    @if (@Auth::user()->roleMenuSpecialDiscount('Proposal') == 1)
-                                                        <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" >
-                                                    @else
-                                                        <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
-                                                    @endif
+                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscount"></span></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscount">0</span></td>
                                             </tr>
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Price Before Tax</b></td>
@@ -420,11 +390,7 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    @if (@Auth::user()->roleMenuSpecialDiscount('Proposal') == 1)
-                                                        <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" >
-                                                    @else
-                                                        <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
-                                                    @endif
+                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -443,11 +409,7 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    @if (@Auth::user()->roleMenuSpecialDiscount('Proposal') == 1)
-                                                        <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" >
-                                                    @else
-                                                        <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
-                                                    @endif
+                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -540,6 +502,7 @@
                                         @endphp
                                         <div class="mt-3">
                                             {!! QrCode::size(90)->generate($linkQR); !!}
+
                                         </div>
                                     </div>
                                     <div class="col-lg-2 centered-content">
@@ -560,11 +523,11 @@
                                     <div class="col-lg-2 centered-content">
                                         <span>ผู้รับเอกสาร (ลูกค้า)</span>
                                         <br><br><br>
-                                            ---------------------
-                                        <span>{{ $Company_ID->Company_Name }}</span>
+                                        ______________________
+                                        <span>_____/__________/_____</span>
                                     </div>
                                     <div class="col-lg-2 centered-content">
-                                        <span>ตราประทับ (ลูกค้า)</span>
+                                        <span >ตราประทับ (ลูกค้า)</span>
                                         <div class="centered-content4 mt-1">
                                         </div>
                                     </div>
@@ -575,6 +538,9 @@
                         <div class="col-12 row mt-5">
                             <div class="col-4"></div>
                             <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
+                                <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
+                                    BACK
+                                </button>
                                 <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
                                     แสดงตัวอย่างใบเสนอ
                                 </button>
@@ -583,20 +549,35 @@
                             <div class="col-4"></div>
                         </div>
                     </form>
+                    <input type="hidden" name="preview" value="preview" id="preview">
                 </div>
-                <input type="hidden" name="preview" value="preview" id="preview">
             </div>
         </div>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
+    function submitPreview() {
+        var previewValue = document.getElementById("preview").value;
+
+        // สร้าง input แบบ hidden ใหม่
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "preview";
+        input.value = previewValue;
+
+        // เพิ่ม input ลงในฟอร์ม
+        document.getElementById("myForm").appendChild(input);
+        document.getElementById("myForm").submit();
+    }
+</script>
+<script>
     function fetchProducts(status) {
         var table = $('.myDataTableQuotationmodal').DataTable();
         var Quotation_ID = '{{ $Quotation->Quotation_ID }}'; // Replace this with the actual ID you want to send
         var clickCounter = 1;
         $.ajax({
-            url: '{{ route("Quotation.addProducttable", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+            url: '{{ route("Quotation.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
             method: 'GET',
             data: {
                 value: status
@@ -609,20 +590,16 @@
                     for (let i = 0; i < response.products.length; i++) {
                         const data = response.products[i];
                         const productId = data.id;
-                        if ($('#tr-select-main' + data.Product_ID).length == 0) {
-                            table.row.add([
-                                i + 1,
-                                data.Product_ID,
-                                data.name_th,
-                                data.unit_name,
-                                data.normal_price,
-                                `<button type="button"  class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
-                            ]).node().id = `row-${productId}`;
-                        }
-
+                        table.row.add([
+                            i + 1,
+                            data.Product_ID,
+                            data.name_th,
+                            data.unit_name,
+                            data.normal_price,
+                            `<button type="button"  class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
+                        ]).node().id = `row-${productId}`;
                     }
                     table.draw(false);
-
                 }
             },
             error: function(xhr, status, error) {
@@ -630,31 +607,32 @@
             }
         });
         $(document).ready(function() {
-            if (!$.fn.DataTable.isDataTable('.product-list-select')) {
-                var table = $('.product-list-select').DataTable();
-            } else {
-                var table = $('.product-list-select').DataTable();
+        if (!$.fn.DataTable.isDataTable('.product-list-select')) {
+            var table = $('.product-list-select').DataTable();
+        } else {
+            var table = $('.product-list-select').DataTable();
+        }
+        $(document).on('click', '.select-button-product', function() {
+            console.log(table);
+            var product = $(this).val();
+            if ($('#productselect' + product).length > 0) {
+                return;
             }
-            $(document).on('click', '.select-button-product', function() {
-                var product = $(this).val();
-                if ($('#productselect' + product).length > 0) {
-                    return;
-                }
-                $.ajax({
-                    url: '{{ route("Quotation.addProducttableselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
-                    method: 'GET',
-                    data: {
-                        value:product
-                    },
-                    success: function(response) {
-                        $.each(response.products, function(index, val) {
-                            var name = '';
-                            var price = 0;
-                            var rowNumber = $('#product-list-select tr').length+1;
-                            if ($('#productselect' + val.id).length > 0) {
-                                console.log("Product already exists after AJAX call: ", val.id);
-                            return;
-                            }
+            $.ajax({
+                url: '{{ route("Quotation.addProductselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+                method: 'GET',
+                data: {
+                    value:product
+                },
+                success: function(response) {
+                    $.each(response.products, function(index, val) {
+                        var name = '';
+                        var price = 0;
+                        var rowNumber = $('#product-list-select tr').length+1;
+                        if ($('#productselect' + val.id).length > 0) {
+                        console.log("Product already exists after AJAX call: ", val.id);
+                        return;
+                    }
                             $('#product-list-select').append(
                                 '<tr id="tr-select-add' + val.id + '">' +
                                 '<td>' + rowNumber + '</td>' +
@@ -662,18 +640,19 @@
                                 '<td style="text-align:left;">' + val.name_en + '</td>' +
                                 '<td style="text-align:right;">' + val.unit_name + '</td>' +
                                 '<td>' + val.normal_price + '</td>' +
-                                '<td><button type="button" class="Btn remove-button" value="' + val.id + '"> <i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                '<td><button type="button" class="Btn remove-button" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
                                 '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
                                 '</tr>'
                             );
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
-                    }
-                });
+
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
             });
         });
+    });
         function renumberRows() {
             $('#product-list-select tr').each(function(index) {
                 $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
@@ -693,7 +672,7 @@
             var number = $('#randomKey').val();
             console.log(number);
             $.ajax({
-                url: '{{ route("Quotation.addProducttablemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+                url: '{{ route("Quotation.addProducttablecreatemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
                 method: 'GET',
                 data: {
                     value: "all"
@@ -712,13 +691,16 @@
                                 var rowNumbemain = $('#display-selected-items tr').length + 1;
                                 let discountInput;
                                 var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
+                                var discountuser = document.getElementById('discountuser').value;
+                                console.log(discountuser);
                                 var maximum_discount = val.maximum_discount;
                                 if (roleMenuDiscount == 1) {
                                     discountInput = '<div class="input-group">' +
-                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" min="0" rel="' + number + '" style="text-align:center;" ' +
-                                        'oninput="if (parseFloat(this.value) > ' + discountuser + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';">' +
+                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                        'oninput="if (parseFloat(this.value) > ' + discountuser + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
                                         '<span class="input-group-text">%</span>' +
                                         '</div>';
+
                                 } else {
                                     discountInput = '<div class="input-group">' +
                                         '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
@@ -726,6 +708,7 @@
                                         '<span class="input-group-text">%</span>' +
                                         '</div>';
                                 }
+
                                 $('#display-selected-items').append(
                                     '<tr id="tr-select-addmain' + val.id + '">' +
                                     '<td>' + rowNumbemain + '</td>' +
@@ -748,7 +731,6 @@
                     console.error('Error:', error);
                 }
             });
-            $('#exampleModalproduct').modal('hide');
         });
         $(document).on('click', '.remove-buttonmain', function() {
             var product = $(this).val();
@@ -762,15 +744,7 @@
             totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
         });
     }
-    $(document).on('click', '.remove-button1', function() {
-        $(this).closest('tr').remove(); // Remove the row
-        $('#display-selected-items tbody tr').each(function(index) {
-                // เปลี่ยนเลขลำดับใหม่
-                $(this).find('td:first').text(index + 1);
-            });
-        calculateTotals();
-        totalAmost();// Recalculate totals after removing row
-    });
+    //----------------------------------------รายการ---------------------------
     $(document).ready(function() {
         $(document).on('keyup', '.quantitymain', function() {
             var number_ID = $(this).attr('rel');
@@ -790,6 +764,7 @@
         $(document).on('keyup', '.discountmain', function() {
             var number_ID = $(this).attr('rel');
             var discountmain =  Number($(this).val());
+            console.log(discountmain);
             var quantitymain =  Number($('.quantitymain').val());
             var number = Number($('#number-product').val());
             var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
@@ -802,59 +777,62 @@
             // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             totalAmost();
         });
+
     });
-    $('#SpecialDis').on('input', function() {
-        var specialDisValue = $(this).val();
-        var typevat = document.getElementById('vat_type_name').value;
-        let allprice = 0;
-        let lessDiscount = 0;
-        let beforetax =0;
-        let addedtax =0;
-        let Nettotal =0;
-        let totalperson=0;
-        $('#display-selected-items tr').each(function() {
 
-            var adultValue = parseFloat(document.getElementById('adult').value);
-            var childrenValue = parseFloat(document.getElementById('children').value);
-            let priceCell = $(this).find('td').eq(7);
-            let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
-            var person =adultValue+childrenValue;
+        $('#SpecialDis').on('input', function() {
+            var specialDisValue = $(this).val();
+            var typevat = document.getElementById('vat_type_name').value;
+            let allprice = 0;
+            let lessDiscount = 0;
+            let beforetax =0;
+            let addedtax =0;
+            let Nettotal =0;
+            let totalperson=0;
+            $('#display-selected-items tr').each(function() {
 
-            if (typevat == 'PRICE INCLUDE VAT') {
-                allprice += pricetotal;
-                lessDiscount = allprice-specialDisValue;
-                beforetax= lessDiscount/1.07;
-                addedtax = lessDiscount-beforetax;
-                Nettotal= beforetax+addedtax;
-                totalperson = Nettotal/person;
-            }
-            else if(typevat == 'PRICE EXCLUDE VAT')
-            {
-                allprice += pricetotal;
-                lessDiscount = allprice-specialDisValue;
-                beforetax= lessDiscount;
-                addedtax =0;
-                Nettotal= beforetax;
-                totalperson = Nettotal/person;
-            } else{
-                allprice += pricetotal;
-                lessDiscount = allprice-specialDisValue;
-                addedtax = lessDiscount*7/100;;
-                beforetax= lessDiscount+addedtax;
-                Nettotal= beforetax;
-                totalperson = Nettotal/person;
+                var adultValue = parseFloat(document.getElementById('adult').value);
+                var childrenValue = parseFloat(document.getElementById('children').value);
+                let priceCell = $(this).find('td').eq(7);
+                let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
+                var person =adultValue+childrenValue;
 
-            }
+                if (typevat == 'PRICE INCLUDE VAT') {
+                    allprice += pricetotal;
+                    lessDiscount = allprice-specialDisValue;
+                    beforetax= lessDiscount/1.07;
+                    addedtax = lessDiscount-beforetax;
+                    Nettotal= beforetax+addedtax;
+                    totalperson = Nettotal/person;
+                }
+                else if(typevat == 'PRICE EXCLUDE VAT')
+                {
+                    allprice += pricetotal;
+                    lessDiscount = allprice-specialDisValue;
+                    beforetax= lessDiscount;
+                    addedtax =0;
+                    Nettotal= beforetax;
+                    totalperson = Nettotal/person;
+                } else{
+                    allprice += pricetotal;
+                    lessDiscount = allprice-specialDisValue;
+                    addedtax = lessDiscount*7/100;;
+                    beforetax= lessDiscount+addedtax;
+                    Nettotal= beforetax;
+                    totalperson = Nettotal/person;
 
+                }
+
+            });
+
+            $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
         });
 
-        $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-    });
     function totalAmost() {
         $(document).ready(function() {
             var typevat = document.getElementById('vat_type_name').value;
@@ -909,19 +887,26 @@
     }
     totalAmost();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    function submitPreview() {
-        var previewValue = document.getElementById("preview").value;
-
-        // สร้าง input แบบ hidden ใหม่
-        var input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "preview";
-        input.value = previewValue;
-
-        // เพิ่ม input ลงในฟอร์ม
-        document.getElementById("myForm").appendChild(input);
-        document.getElementById("myForm").submit();
+    function BACKtoEdit(){
+        event.preventDefault();
+        var Quotation_id = "{{ $Quotation->id }}";
+        Swal.fire({
+            title: "คุณต้องการย้อนกลับใช่หรือไม่?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+            confirmButtonColor: "#28a745",
+            dangerMode: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                console.log(1);
+                // If user confirms, submit the form
+                window.location.href = "{{ route('Quotation.editCompany', ['id' => $Quotation->id]) }}";
+            }
+        });
     }
 </script>
 @endsection

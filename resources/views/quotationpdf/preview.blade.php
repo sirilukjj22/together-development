@@ -231,7 +231,7 @@
             <table style="line-height:12px;">
                 <tr>
                     <td ><span style="margin-left: 30px;">วันที่</span></td>
-                    <td>{{$Quotation->checkin}} - {{$Quotation->checkout}} ( {{$Quotation->day}} วัน {{$Quotation->night}} คืน)</td>
+                    <td> {{$Checkin}} - {{$Checkout}} ( {{$day}} วัน {{$night}} คืน)</td>
                 </tr>
                 <tr>
                     <td><span style="margin-left: 30px;">สถานที่</span></td>
@@ -243,7 +243,7 @@
                 </tr>
                 <tr>
                     <td><span style="margin-left: 30px;">จำนวน</span></td>
-                    <td>{{ $Quotation->adult + $Quotation->children }} ท่าน</td>
+                    <td>{{ $totalguest }} ท่าน</td>
                 </tr>
                 <tr>
                     <td><b style="margin-left: 30px;">Remark :</b></td>
@@ -357,11 +357,11 @@
 
                         <div style="padding: 4%">
 
-                            <b >Proposal ID : </b><span style="margin-left: 10px;">{{ $Quotation->Quotation_ID }}</span><br>
+                            <b >Proposal ID : </b><span style="margin-left: 10px;">{{ $Quotation }}</span><br>
 
-                            <b >Issue Date : </b><span >{{ $Quotation->issue_date }}</span><br>
+                            <b >Issue Date : </b><span >{{ $IssueDate }}</span><br>
 
-                            <b>Expiration Date : </b><span>{{ $Quotation->Expirationdate }}</span>
+                            <b>Expiration Date : </b><span>{{ $Expiration }}</span>
 
                         </div>
 
@@ -383,13 +383,13 @@
                             <img src="data:image/png;base64, {!! $qrCodeBase64 !!} " alt="QR Code" width="60" height="60"/>
                             <td style="text-align: center;" >
                                 <img src="test.png" style="width: 40%;"/>
-                                <span style="display: block; text-align: center;">{{@$Quotation->user->name}}</span>
-                                <span style="display: block; text-align: center;">{{ $Quotation->issue_date }}</span>
+                                <span style="display: block; text-align: center;">{{$user->name}}</span>
+                                <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                             </td>
                             <td style="text-align: center;">
                                 <img src="test.png" style="width: 40%;"/>
-                                <span style="display: block; text-align: center;">{{@$Quotation->user->name}}</span>
-                                <span style="display: block; text-align: center;">{{ $Quotation->issue_date }}</span>
+                                <span style="display: block; text-align: center;">{{$user->name}}</span>
+                                <span style="display: block; text-align: center;">{{ $IssueDate }}</span>
                             </td>
                             <td  style="text-align: center;">
 
@@ -448,10 +448,10 @@
                         <b class="com" style=" font-size:18px">Personal Information</b><br>
                         <b style="margin-left: 10px;">Contact Name : </b><span >คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span><br>
                         <b style="margin-left: 10px;">Contact Number : </b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span><br>
-                        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$Quotation->checkin}}</span>
-                        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$Quotation->checkout}}</span>
-                        <b style="margin-left: 10px">Length of Stay :</b><span style="margin-left: 23px;">{{$Quotation->day}} วัน {{$Quotation->night}} คืน</span><br>
-                        <b style="margin-left: 10px">Number of Guests :</b><span style="margin-left: 10px;">{{$Quotation->adult}} Adult , {{$Quotation->adult}} Children</span><br>
+                        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$Checkin}}</span>
+                        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$Checkout}}</span>
+                        <b style="margin-left: 10px">Length of Stay :</b><span style="margin-left: 23px;">{{$day}} วัน {{$night}} คืน</span><br>
+                        <b style="margin-left: 10px">Number of Guests :</b><span style="margin-left: 10px;">{{$adult}} Adult , {{$children}} Children</span><br>
                     </span>
                     <div style="border: 1px solid #2D7F7B"></div>
                     <div  style="line-height:15px;">
@@ -825,17 +825,27 @@
                     @endif
                     <b>Notes or Special Comment : </b><br>
                     <div style="line-height:15px;width: 65%;border: 1px solid #afafaf; height: 70px;border-radius: 5px;">
-                        <span>{{$Quotation->comment}}</span>
+                        <span>{{$comment}}</span>
                     </div>
                     <div style="line-height:10px;">
                     </div>
                     <strong class="com" style="font-size: 14px;">Method of Payment</strong><br>
-                    <span style="line-height:10px;font-size: 13px;">
-                        Please make a 50% deposit within 7 days after confirmed. <br>
-                        Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                        If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
-                        pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                    </span>
+                    @if ($Mevent == '43')
+                        <span style="line-height:10px;font-size: 13px;">
+                            Please make a 50% deposit within 7 days after confirmed. <br>
+                            Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
+                            If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
+                            pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
+                        </span>
+                    @else
+                        <span style="line-height:10px;font-size: 13px;">
+                            Please make a 100% deposit within 3 days after confirmed. <br>
+                            Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
+                            If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
+                            pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
+                        </span>
+                    @endif
+
                     <div style="margin-top: 15px">
                         <img src="SCB.jpg" style="width: 4%; border-radius: 50%;padding:4px"/>
                         <div style="float: right;margin-right:490px;line-height:10px;font-size: 13px;">

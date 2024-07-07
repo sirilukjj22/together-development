@@ -335,17 +335,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/create', 'create')->name('Quotation.create');
         Route::get('/Quotation/ac', 'ac')->name('Quotation.ac');
         Route::get('/Quotation/no', 'no')->name('Quotation.no');
-        Route::get('/Quotation/create/company/Contact/{companyID}','Contact')->name('Quotation.company');
+        Route::get('/Quotation/create/company/{companyID}','Contactcreate')->name('Quotation.Contactcreate');
         Route::post('/Quotation/create/save', 'save')->name('Quotation.save');
         Route::get('/Quotation/selectproduct/company/create/{id}', 'selectProduct')->name('Quotation.SelectProduct');
         Route::post('/Quotation/company/create/quotation/{Quotation_ID}', 'savequotation')->name('Quotation.quotation');
         Route::get('/Quotation/edit/quotation/{id}','edit')->name('Quotation.edit');
-        Route::get('/Quotation/change-Status/{id}','changestatus')->name('Quotation.changestatus');
-        Route::post('/Quotation/company/update/quotationupdate/{id}', 'updatequotation')->name('Quotation.updatequotation');
-
-        Route::post('/Quotation/edit/quotation/update/{id}', 'updateCompanyQuotation')->name('Quotation.updateCompanyQuotation');
+        Route::get('/Quotation/change-Status/{id}/{status}','changestatus')->name('Quotation.changestatus');
+        Route::post('/Quotation/edit/company/quotation/update/', 'update')->name('Quotation.update');
         Route::get('/Quotation/company/product/{Quotation_ID}/addProduct', 'addProduct')->name('Quotation.addProduct');
-        Route::get('/Quotation/edit/quotation/select/{id}','editselect')->name('Quotation.editselect');
         //----------------------------------Quotaion select product------------------------------------------------------
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttable', 'addProducttable')->name('Quotation.addProducttable');
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttableselect', 'addProducttableselect')->name('Quotation.addProducttableselect');
@@ -354,9 +351,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('Quotation.addProducttablecreatemain');
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
         Route::get('/Quotation/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('Quotation.sheet');
-        //---------------------------------------Quotation.index.check------------------------------------------------------
-        Route::get('/Quotation/index/check', 'index_check')->name('Quotation.index.check');
-        Route::get('/Quotation/change-confirm/{id}','changeconfirm')->name('Quotation.changeconfirm');
+        //---------------------------------------Quotation.------------------------------------------------------
     });
 
     ##-------------------------------TemplateController-----------------

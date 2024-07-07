@@ -223,9 +223,13 @@
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="col-lg-6 col-md-12 col-sm-12">
                                 <label for="Lastest_Introduce_By">แนะนำล่าสุดโดย / Lastest Introduce By</label><br>
                                 <input type="text" id="Lastest_Introduce_By" class="form-control" name="Lastest_Introduce_By" maxlength="70" required>
+                            </div>
+                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                <label for="Lastest_Introduce_By">Company Commission</label><br>
+                                <input type="text" id="Lastest_Introduce_By" class="form-control" name="Lastest_Introduce_By" maxlength="70" disabled>
                             </div>
                         </div>
                         <div class="row mt-2">

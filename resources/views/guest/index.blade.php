@@ -117,6 +117,7 @@
 @include('script.script')
 
 <script>
+
     function btnstatus(id) {
         jQuery.ajax({
             type: "GET",
