@@ -22,6 +22,7 @@ use App\Http\Controllers\MasterEventFormatController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\Master_TemplateController;
 use App\Http\Controllers\Master_Vat;
+use App\Http\Controllers\DummyQuotationController;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -354,6 +355,30 @@ Route::middleware(['auth'])->group(function () {
         //---------------------------------------Quotation.------------------------------------------------------
     });
 
+    #DummyQuotaion
+    Route::controller(DummyQuotationController::class)->group(function () {
+        Route::get('/Dummy/Quotation/index', 'index')->name('DummyQuotation.index');
+        Route::get('/Dummy/Quotation/create', 'create')->name('DummyQuotation.create');
+        Route::get('/Dummy/Quotation/ac', 'ac')->name('DummyQuotation.ac');
+        Route::get('/Dummy/Quotation/no', 'no')->name('DummyQuotation.no');
+        Route::get('/Dummy/Quotation/create/company/{companyID}','Contactcreate')->name('DummyQuotation.Contactcreate');
+        Route::post('/Dummy/Quotation/create/save', 'save')->name('DummyQuotation.save');
+        Route::get('/Dummy/Quotation/selectproduct/company/create/{id}', 'selectProduct')->name('DummyQuotation.SelectProduct');
+        Route::post('/Dummy/Quotation/company/create/quotation/{Quotation_ID}', 'savequotation')->name('DummyQuotation.quotation');
+
+        Route::get('/Dummy/Quotation/change-Status/{id}/{status}','changestatus')->name('DummyQuotation.changestatus');
+        Route::post('/Dummy/Quotation/edit/company/quotation/update/{id}', 'update')->name('DummyQuotation.update');
+        Route::get('/Dummy/Quotation/company/product/{Quotation_ID}/addProduct', 'addProduct')->name('DummyQuotation.addProduct');
+        //----------------------------------Quotaion select product------------------------------------------------------
+        Route::get('/Dummy/Quotation/selectproduct/{Quotation_ID}/addProducttable', 'addProducttable')->name('DummyQuotation.addProducttable');
+        Route::get('/Dummy/Quotation/selectproduct/{Quotation_ID}/addProducttableselect', 'addProducttableselect')->name('DummyQuotation.addProducttableselect');
+        Route::get('/Dummy/Quotation/selectproduct/{Quotation_ID}/addProducttablemain', 'addProducttablemain')->name('DummyQuotation.addProducttablemain');
+        Route::get('/Dummy/Quotation/selectproduct/{Quotation_ID}/addProductselect', 'addProductselect')->name('DummyQuotation.addProductselect');
+        Route::get('/Dummy/Quotation/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('DummyQuotation.addProducttablecreatemain');
+        Route::get('/Dummy/Quotation/edit/{id}','edit')->name('DummyQuotation.edit');
+        //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
+        Route::get('/Dummy/Quotation/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('DummyQuotation.sheet');
+    });
     ##-------------------------------TemplateController-----------------
     Route::controller(Master_TemplateController::class)->group(function () {
         Route::get('/Template/PDF/Template', 'TemplateA1')->name('Template.TemplateA1');

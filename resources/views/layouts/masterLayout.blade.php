@@ -118,7 +118,7 @@
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Document">
                                         @if (Auth::user()->roleMenu->proposal == 1)
-                                            <li><a class="ms-link" href="#">Dummy Proposal</a></li>
+                                            <li><a class="ms-link" href="{{ route('DummyQuotation.index') }}">Dummy Proposal</a></li>
                                             <li><a class="ms-link" href="#">Proposal Request</a></li>
                                             <li><a class="ms-link" href="{{ route('Quotation.index') }}">Proposal</a></li>
                                         @endif

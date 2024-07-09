@@ -231,7 +231,7 @@
             <table style="line-height:12px;">
                 <tr>
                     <td ><span style="margin-left: 30px;">วันที่</span></td>
-                    <td>{{$Quotation->checkin}} - {{$Quotation->checkout}} ( {{$Quotation->day}} วัน {{$Quotation->night}} คืน)</td>
+                    <td>{{$checkin}} - {{$checkout}} ( {{$Quotation->day}} วัน {{$Quotation->night}} คืน)</td>
                 </tr>
                 <tr>
                     <td><span style="margin-left: 30px;">สถานที่</span></td>
@@ -450,8 +450,8 @@
                         <b class="com" style=" font-size:18px">Personal Information</b><br>
                         <b style="margin-left: 10px;">Contact Name : </b><span >คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span><br>
                         <b style="margin-left: 10px;">Contact Number : </b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span><br>
-                        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$Quotation->checkin}}</span>
-                        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$Quotation->checkout}}</span>
+                        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$checkin}}</span>
+                        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$checkout}}</span>
                         <b style="margin-left: 10px">Length of Stay :</b><span style="margin-left: 23px;">{{$Quotation->day}} วัน {{$Quotation->night}} คืน</span><br>
                         <b style="margin-left: 10px">Number of Guests :</b><span style="margin-left: 10px;">{{$Quotation->adult}} Adult , {{$Quotation->adult}} Children</span><br>
                     </span>
