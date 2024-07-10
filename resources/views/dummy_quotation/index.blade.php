@@ -34,8 +34,9 @@
                 <li></li>
             </ol>
         </div>
-        <div class="col-auto">
+        <div class="col-auto ">
             <div class="dropdown">
+                <button type="button" class="btn btn-color-green lift btn_modal" id="Submit_Documents"><i class="fa fa-paper-plane-o"></i> ส่งเอกสาร</button>
                 <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                     สถานะการใช้งาน
                 </button>
@@ -57,7 +58,7 @@
                 <table class="myDataTableQuotation table table-hover align-middle mb-0" style="width:100%">
                     <thead>
                         <tr>
-                            <th>No</th>
+                            <th>#</th>
                             <th>ID</th>
                             <th>Company</th>
                             <th>Issue Date</th>
@@ -75,7 +76,12 @@
                         @if(!empty($Quotation))
                             @foreach ($Quotation as $key => $item)
                             <tr>
-                                <td style="text-align: center;">{{ $key + 1 }}</td>
+                                <td style="text-align: center;">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                    </div>
+                                </td>
                                 <td>{{ $item->DummyNo}}</td>
                                 <td>{{ @$item->company->Company_Name}}</td>
                                 <td>{{ $item->issue_date }}</td>
@@ -93,9 +99,9 @@
                                 <td >{{ @$item->userOperated->name }}</td>
                                 <td style="text-align: center;">
                                     @if ($item->status_document == 1)
-                                        <span class="badge rounded-pill bg-warning">Pending</span>
+                                        <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
                                     @elseif ($item->status_document == 2)
-                                        <span class="badge rounded-pill bg-success">Awaiting Approva</span>
+                                        <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
                                     @endif
                                 </td>
                                 <td style="text-align: center;">
@@ -147,5 +153,39 @@ function btnstatus(itemId, status) {
         }
     });
 }
+document.getElementById('Submit_Documents').addEventListener('click', function() {
+        // Select all checked checkboxes
+        const checkedCheckboxes = document.querySelectorAll('.form-check-input:checked');
+
+        // Get all the IDs of checked checkboxes
+        const ids = Array.from(checkedCheckboxes).map(checkbox => checkbox.value);
+
+        if (ids.length > 0) {
+            // Create query string from ids array
+            const queryString = new URLSearchParams({ ids: ids }).toString();
+            const url = `{{ route('DummyQuotation.senddocuments') }}?${queryString}`;
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                } else {
+                    alert('Failed to submit documents.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting documents.');
+            });
+        } else {
+            alert('Please select at least one checkbox.');
+        }
+    });
 </script>
 @endsection

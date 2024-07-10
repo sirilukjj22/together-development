@@ -41,10 +41,9 @@ class DummyQuotationController extends Controller
     }
     public function changestatus($id ,$status)
     {
-
         try {
             $statusdata = dummy_quotation::find($id);
-            if ($status == 2 ) {
+            if ($statusdata->status == 2 ) {
                 $statusdata->status_document = $status;
             }elseif ($status == 0) {
                 $statusdata->status_document = $status;
@@ -929,8 +928,6 @@ class DummyQuotationController extends Controller
                     $discountedPricestotal[] = $discountedPriceTotal;
                 }
             }
-            // dd( $priceUnit,$discountedPrices);
-
             $items = master_product_item::where('Product_ID', $productID)->get();
             $QuotationVat= $Quotation->vat_type;
             $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
@@ -1079,12 +1076,21 @@ class DummyQuotationController extends Controller
         return $pdf->stream();
     }
 
-
-
-
-
-
-
+    public function senddocuments(Request $request){
+        $idsString = $request->query('ids');
+        // แปลง string เป็น array
+        $idArray = explode(',', $idsString);
+        $documents = dummy_quotation::whereIn('id', $idArray)->get();
+        foreach ($documents as $document) {
+            if ($document->status_document == 1) {
+                $document->status_document = 2; // สมมติว่าคุณต้องการตั้งค่าเป็น 1
+            } elseif ($document->status_document == 0) {
+                $document->status_document = 1;
+            }
+            $document->save();
+        }
+        return response()->json(['success' => true, 'message' => 'Documents updated successfully!']);
+    }
 
 
     public function addProduct($Quotation_ID, Request $request) {
@@ -1196,4 +1202,6 @@ class DummyQuotationController extends Controller
 
         ]);
     }
+
+
 }

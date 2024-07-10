@@ -23,6 +23,7 @@ use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\Master_TemplateController;
 use App\Http\Controllers\Master_Vat;
 use App\Http\Controllers\DummyQuotationController;
+use App\Http\Controllers\proposal_request;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -378,6 +379,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Dummy/Quotation/edit/{id}','edit')->name('DummyQuotation.edit');
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
         Route::get('/Dummy/Quotation/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('DummyQuotation.sheet');
+        //-----------------------------------ส่งเอกสาร-----------------------------------------------------------------------
+        Route::get('/Dummy/Quotation/send/documents', 'senddocuments')->name('DummyQuotation.senddocuments');
+    });
+
+    #Proposal Request
+    Route::controller(proposal_request::class)->group(function () {
+        Route::get('/Proposal/request/index', 'index')->name('ProposalReq.index');
+        Route::get('/Dummy/Proposal/Request/document/view/{id}', 'view')->name('ProposalReq.view');
+        Route::get('/Dummy/Proposal/Request/document/view/Approve', 'Approve')->name('DummyQuotation.Approve');
     });
     ##-------------------------------TemplateController-----------------
     Route::controller(Master_TemplateController::class)->group(function () {
