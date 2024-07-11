@@ -140,6 +140,22 @@
 @csrf
     <div class="container">
         <div class="container mt-3">
+            <div class="row align-items-center mb-2">
+                @if (session("error"))
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading">!กรอกข้อมูลไม่ถูกต้อง</h4>
+                    <hr>
+                    <p class="mb-0">{{ session('error') }}</p>
+                </div>
+                @endif
+                <div class="col">
+                    <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ol>
+                </div>
+            </div>
             <div class="row clearfix">
                 <div class="col-sm-12 col-12">
                     <div class="card p-4 mb-4">
@@ -1277,7 +1293,7 @@
             if (result.isConfirmed) {
                 console.log(1);
                 // If user confirms, submit the form
-                window.location.href = "";
+                window.location.href = "{{ route('DummyQuotation.index') }}";
             }
         });
     }

@@ -25,6 +25,28 @@
 </style>
 @section('content')
 <div class="container">
+    <div class="row align-items-center mb-2">
+        @if (session("success"))
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
+            <hr>
+            <p class="mb-0">{{ session('success') }}</p>
+        </div>
+        @endif
+        <div class="col">
+            <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
+                <li></li>
+                <li></li>
+                <li></li>
+            </ol>
+        </div>
+        <div class="col-auto ">
+            <div class="dropdown">
+                <button type="button" class="btn btn-secondary lift btn_modal"style="float: right"onclick="Reject()" >Reject</button>
+            </div>
+        </div>
+    </div> <!-- Row end  -->
+
     <div class="col-sm-12 col-12">
         <div class="row clearfix">
             @foreach($proposal as  $key => $item )
@@ -39,6 +61,7 @@
                 $Add52=0;
                 $Net52=0;
             @endphp
+
                 <div class="col-6">
                     <div class="card mb-4" style="height: 830px;  overflow-x: hidden; overflow-y: auto;">
                         <div class='card-body'>
@@ -172,10 +195,9 @@
                         <div class="row mt-2 my-4">
                             <div class="col-3"></div>
                             <div class="col-6" style="display:flex; justify-content:center; align-items:center;">
-                                <button type="button" class="btn btn-secondary lift btn_modal btn-space" >Reject</button>
-                                <a type="button" class="btn btn-success lift btn_modal" >
+                                <button type="button" class="btn btn-success lift btn_modal" onclick="Approve(this)" value="{{$item->DummyNo}}">
                                     <i class="fa fa-check"></i> Approve
-                                </a>
+                                </button>
                             </div>
                             <div class="col-3">
                             </div>
@@ -193,8 +215,51 @@
             $('.DummyNo').each(function() {
                 DummyNo.push($(this).val());
             });
-
-        console.log(DummyNo);
     });
+    function Approve(button) {
+        var id = $(button).val();
+        jQuery.ajax({
+            type: "GET",
+            url: "{!! url('/Dummy/Proposal/Request/document/view/Approve/" + id + "') !!}",
+            datatype: "JSON",
+            async: false,
+            success: function(response) {
+                console.log("AJAX request successful: ", response);
+                if (response.success) {
+                // เปลี่ยนไปยังหน้าที่ต้องการ
+                window.location.href = "/Proposal/request/index";
+                } else {
+                    alert("An error occurred while processing the request.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX request failed: ", status, error);
+            }
+        });
+    }
+    function Reject() {
+        var dummyNos = [];
+        $('.DummyNo').each(function() {
+            dummyNos.push($(this).val());
+        });
+        jQuery.ajax({
+            type: "GET",
+            url: "{!! url('/Dummy/Proposal/Request/document/view/Reject/" + dummyNos + "') !!}",
+            datatype: "JSON",
+            async: false,
+            success: function(response) {
+                console.log("AJAX request successful: ", response);
+                if (response.success) {
+                // เปลี่ยนไปยังหน้าที่ต้องการ
+                window.location.href = "/Proposal/request/index";
+                } else {
+                    alert("An error occurred while processing the request.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX request failed: ", status, error);
+            }
+        });
+    }
 </script>
 @endsection

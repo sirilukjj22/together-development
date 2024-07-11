@@ -377,6 +377,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Dummy/Quotation/selectproduct/{Quotation_ID}/addProductselect', 'addProductselect')->name('DummyQuotation.addProductselect');
         Route::get('/Dummy/Quotation/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('DummyQuotation.addProducttablecreatemain');
         Route::get('/Dummy/Quotation/edit/{id}','edit')->name('DummyQuotation.edit');
+        Route::get('/Dummy/Quotation/cancel/{id}','cancel')->name('DummyQuotation.cancel');
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
         Route::get('/Dummy/Quotation/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('DummyQuotation.sheet');
         //-----------------------------------ส่งเอกสาร-----------------------------------------------------------------------
@@ -387,7 +388,8 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(proposal_request::class)->group(function () {
         Route::get('/Proposal/request/index', 'index')->name('ProposalReq.index');
         Route::get('/Dummy/Proposal/Request/document/view/{id}', 'view')->name('ProposalReq.view');
-        Route::get('/Dummy/Proposal/Request/document/view/Approve', 'Approve')->name('DummyQuotation.Approve');
+        Route::get('/Dummy/Proposal/Request/document/view/Approve/{id}', 'Approve')->name('DummyQuotation.Approve');
+        Route::get('/Dummy/Proposal/Request/document/view/Reject/{id}', 'Reject')->name('DummyQuotation.Approve');
     });
     ##-------------------------------TemplateController-----------------
     Route::controller(Master_TemplateController::class)->group(function () {

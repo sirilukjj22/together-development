@@ -16,7 +16,12 @@
         </div>
     </div>
 @endsection
-
+<style>
+    .tab1{
+    background-color: white;
+    color: black; /* เปลี่ยนสีตัวอักษรเป็นสีดำหากต้องการ */
+}
+</style>
 @section('content')
 <div class="container">
     <div class="row align-items-center mb-2">
@@ -37,94 +42,518 @@
         <div class="col-auto ">
             <div class="dropdown">
                 <button type="button" class="btn btn-color-green lift btn_modal" id="Submit_Documents"><i class="fa fa-paper-plane-o"></i> ส่งเอกสาร</button>
-                <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                {{-- <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                     สถานะการใช้งาน
                 </button>
                 <ul class="dropdown-menu border-0 shadow p-3">
                     <li><a class="dropdown-item py-2 rounded" href="{{ route('DummyQuotation.index') }}">ทั้งหมด</a></li>
                     <li><a class="dropdown-item py-2 rounded" href="{{ route('DummyQuotation.ac', ['value' => 1]) }}">ใช้งาน</a></li>
                     <li><a class="dropdown-item py-2 rounded" href="{{ route('DummyQuotation.no', ['value' => 0]) }}">ปิดใช้งาน</a></li>
-                </ul>
+                </ul> --}}
             </div>
         </div>
     </div> <!-- Row end  -->
 
     <div class="row clearfix">
         <div class="col-sm-12 col-12">
-            <div class="card p-4 mb-4">
-                <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
-                    @csrf
-                    <input type="hidden" name="category" value="prename">
-                <table class="myDataTableQuotation table table-hover align-middle mb-0" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>ID</th>
-                            <th>Company</th>
-                            <th>Issue Date</th>
-                            <th>Expiration Date</th>
-                            <th>Check In</th>
-                            <th>Check Out</th>
-                            <th class="text-center">Special Discount</th>
-                            <th class="text-center">Approve Special Discount By</th>
-                            <th class="text-center">Operated By</th>
-                            <th class="text-center">Document status</th>
-                            <th class="text-center">Order</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if(!empty($Quotation))
-                            @foreach ($Quotation as $key => $item)
-                            <tr>
-                                <td style="text-align: center;">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
-                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                    </div>
-                                </td>
-                                <td>{{ $item->DummyNo}}</td>
-                                <td>{{ @$item->company->Company_Name}}</td>
-                                <td>{{ $item->issue_date }}</td>
-                                <td>{{ $item->Expirationdate }}</td>
-                                <td>{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                <td>{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
-                                <td style="text-align: center;">
-                                    @if ($item->SpecialDiscount == 0)
-                                        -
-                                    @else
-                                        <i class="bi bi-check-lg text-green" ></i>
-                                    @endif
-                                </td>
-                                <td >{{ @$item->userConfirm->name }}</td>
-                                <td >{{ @$item->userOperated->name }}</td>
-                                <td style="text-align: center;">
-                                    @if ($item->status_document == 1)
-                                        <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                    @elseif ($item->status_document == 2)
-                                        <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
-                                    @endif
-                                </td>
-                                <td style="text-align: center;">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
-                                        <ul class="dropdown-menu border-0 shadow p-3">
-                                            @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
-                                            <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">View</a></li>
+            <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
+                <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab"> <span class="badge" style="background-color:#64748b">{{$Quotationcount}}</span> Dummy</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nav-Pending" role="tab"><span class="badge" style="background-color:#FF6633">{{$Pendingcount}}</span> Pending</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting" role="tab"><span class="badge bg-warning" >{{$Awaitingcount}}</span> Awaiting</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nav-Generate" role="tab"><span class="badge" style="background-color: #0ea5e9" >{{$Generatecount}}</span> Generate</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nav-Reject" role="tab"><span class="badge "style="background-color:#1d4ed8" >{{$Rejectcount}}</span> Reject</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge bg-danger" >{{$cancelcount}}</span> Cancel</a></li>
+            </ul>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="nav-Dummy" role="tabpanel">
+                            <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
+                                @csrf
+                                <input type="hidden" name="category" value="prename">
+                            <table class="myDataTableQuotation table table-hover align-middle mb-0" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ID</th>
+                                        <th>Company</th>
+                                        <th>Issue Date</th>
+                                        <th>Expiration Date</th>
+                                        <th class="text-center">Special Discount</th>
+                                        <th class="text-center">Approve By</th>
+                                        <th class="text-center">Document status</th>
+                                        <th class="text-center">Order</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(!empty($Quotation))
+                                        @foreach ($Quotation as $key => $item)
+                                        <tr>
+                                            <td style="text-align: center;">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                    <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                </div>
+                                            </td>
+                                            <td>{{ $item->DummyNo}}</td>
+                                            <td>{{ @$item->company->Company_Name}}</td>
+                                            <td>{{ $item->issue_date }}</td>
+                                            <td>{{ $item->Expirationdate }}</td>
+                                            <td style="text-align: center;">
+                                                @if ($item->SpecialDiscount == 0)
+                                                    -
+                                                @else
+                                                    <i class="bi bi-check-lg text-green" ></i>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if (@$item->userConfirm->name == null)
+                                                    -
+                                                @else
+                                                    {{ @$item->userConfirm->name }}
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if($item->status_document == 0)
+                                                    <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                @elseif ($item->status_document == 1)
+                                                    <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                @elseif ($item->status_document == 2)
+                                                    <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                @elseif ($item->status_document == 3)
+                                                    <span class="badge rounded-pill "  style="background-color: #0ea5e9" >Generate</span>
+                                                @elseif ($item->status_document == 4)
+                                                    <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                    <ul class="dropdown-menu border-0 shadow p-3">
+                                                        @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">View</a></li>
+                                                    @endif
+                                                    @if ($item->status_document == 1)
+                                                        @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/edit/'.$item->id) }}">Edit</a></li>
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/cancel/'.$item->id) }}">Cancel</a></li>
+                                                        @endif
+                                                    @elseif ($item->status_document == 2)
+                                                    @elseif ($item->status_document == 3)
+                                                    @elseif ($item->status_document == 4)
+                                                        @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/edit/'.$item->id) }}">Edit</a></li>
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/cancel/'.$item->id) }}">Cancel</a></li>
+                                                        @endif
+                                                    @endif
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
                                         @endif
-                                        @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
-                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/edit/'.$item->id) }}">Edit</a></li>
+                                </tbody>
+                            </table>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="nav-Pending" role="tabpanel">
+                            <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
+                                @csrf
+                                <input type="hidden" name="category" value="prename">
+                            <table class="myDataTableQuotation table table-hover align-middle mb-0" >
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ID</th>
+                                        <th>Company</th>
+                                        <th>Issue Date</th>
+                                        <th>Expiration Date</th>
+                                        <th class="text-center">Special Discount</th>
+                                        <th class="text-center">Approve By</th>
+                                        <th class="text-center">Document status</th>
+                                        <th class="text-center">Order</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(!empty($Pending))
+                                        @foreach ($Pending as $key => $item)
+                                        <tr>
+                                            <td style="text-align: center;">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                    <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                </div>
+                                            </td>
+                                            <td>{{ $item->DummyNo}}</td>
+                                            <td>{{ @$item->company->Company_Name}}</td>
+                                            <td>{{ $item->issue_date }}</td>
+                                            <td>{{ $item->Expirationdate }}</td>
+                                            <td style="text-align: center;">
+                                                @if ($item->SpecialDiscount == 0)
+                                                    -
+                                                @else
+                                                    <i class="bi bi-check-lg text-green" ></i>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if (@$item->userConfirm->name == null)
+                                                    -
+                                                @else
+                                                    {{ @$item->userConfirm->name }}
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if($item->status_document == 0)
+                                                    <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                @elseif ($item->status_document == 1)
+                                                    <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                @elseif ($item->status_document == 2)
+                                                    <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                @elseif ($item->status_document == 3)
+                                                    <span class="badge rounded-pill "  style="background-color: #0ea5e9" >Generate</span>
+                                                @elseif ($item->status_document == 4)
+                                                    <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                    <ul class="dropdown-menu border-0 shadow p-3">
+                                                        @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                            <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">View</a></li>
+                                                        @endif
+                                                        @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/edit/'.$item->id) }}">Edit</a></li>
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/cancel/'.$item->id) }}">Cancel</a></li>
+                                                        @endif
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
                                         @endif
-                                            <li><a class="dropdown-item py-2 rounded" onclick="btnstatus('{{ $item->id }}', 0)">Canceled</a></li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                            @endif
-                    </tbody>
-                </table>
-                </form>
-            </div> <!-- .card end -->
+                                </tbody>
+                            </table>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="nav-Awaiting" role="tabpanel">
+                            <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
+                                @csrf
+                                <input type="hidden" name="category" value="prename">
+                            <table class="myDataTableQuotation table table-hover align-middle mb-0" >
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ID</th>
+                                        <th>Company</th>
+                                        <th>Issue Date</th>
+                                        <th>Expiration Date</th>
+                                        <th class="text-center">Special Discount</th>
+                                        <th class="text-center">Approve By</th>
+                                        <th class="text-center">Document status</th>
+                                        <th class="text-center">Order</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(!empty($Awaiting))
+                                        @foreach ($Awaiting as $key => $item)
+                                        <tr>
+                                            <td style="text-align: center;">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                    <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                </div>
+                                            </td>
+                                            <td>{{ $item->DummyNo}}</td>
+                                            <td>{{ @$item->company->Company_Name}}</td>
+                                            <td>{{ $item->issue_date }}</td>
+                                            <td>{{ $item->Expirationdate }}</td>
+                                            <td style="text-align: center;">
+                                                @if ($item->SpecialDiscount == 0)
+                                                    -
+                                                @else
+                                                    <i class="bi bi-check-lg text-green" ></i>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if (@$item->userConfirm->name == null)
+                                                    -
+                                                @else
+                                                    {{ @$item->userConfirm->name }}
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if($item->status_document == 0)
+                                                    <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                @elseif ($item->status_document == 1)
+                                                    <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                @elseif ($item->status_document == 2)
+                                                    <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                @elseif ($item->status_document == 3)
+                                                    <span class="badge rounded-pill "  style="background-color: #0ea5e9" >Generate</span>
+                                                @elseif ($item->status_document == 4)
+                                                    <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                    <ul class="dropdown-menu border-0 shadow p-3">
+                                                        @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                            <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">View</a></li>
+                                                        @endif
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                        @endif
+                                </tbody>
+                            </table>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="nav-Generate" role="tabpanel">
+                            <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
+                                @csrf
+                                <input type="hidden" name="category" value="prename">
+                            <table class="myDataTableQuotation table table-hover align-middle mb-0" >
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ID</th>
+                                        <th>Company</th>
+                                        <th>Issue Date</th>
+                                        <th>Expiration Date</th>
+                                        <th class="text-center">Special Discount</th>
+                                        <th class="text-center">Approve By</th>
+                                        <th class="text-center">Document status</th>
+                                        <th class="text-center">Order</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(!empty($Generate))
+                                        @foreach ($Generate as $key => $item)
+                                        <tr>
+                                            <td style="text-align: center;">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                    <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                </div>
+                                            </td>
+                                            <td>{{ $item->DummyNo}}</td>
+                                            <td>{{ @$item->company->Company_Name}}</td>
+                                            <td>{{ $item->issue_date }}</td>
+                                            <td>{{ $item->Expirationdate }}</td>
+                                            <td style="text-align: center;">
+                                                @if ($item->SpecialDiscount == 0)
+                                                    -
+                                                @else
+                                                    <i class="bi bi-check-lg text-green" ></i>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if (@$item->userConfirm->name == null)
+                                                    -
+                                                @else
+                                                    {{ @$item->userConfirm->name }}
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if($item->status_document == 0)
+                                                    <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                @elseif ($item->status_document == 1)
+                                                    <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                @elseif ($item->status_document == 2)
+                                                    <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                @elseif ($item->status_document == 3)
+                                                    <span class="badge rounded-pill "  style="background-color: #0ea5e9" >Generate</span>
+                                                @elseif ($item->status_document == 4)
+                                                    <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                    <ul class="dropdown-menu border-0 shadow p-3">
+                                                        @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                            <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">View</a></li>
+                                                        @endif
+                                                        @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
+                                                            <li><a class="dropdown-item py-2 rounded" href="">Generate</a></li>
+                                                        @endif
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                        @endif
+                                </tbody>
+                            </table>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="nav-Reject" role="tabpanel">
+                            <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
+                                @csrf
+                                <input type="hidden" name="category" value="prename">
+                            <table class="myDataTableQuotation table table-hover align-middle mb-0" >
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ID</th>
+                                        <th>Company</th>
+                                        <th>Issue Date</th>
+                                        <th>Expiration Date</th>
+                                        <th class="text-center">Special Discount</th>
+                                        <th class="text-center">Approve By</th>
+                                        <th class="text-center">Document status</th>
+                                        <th class="text-center">Order</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(!empty($Reject))
+                                        @foreach ($Reject as $key => $item)
+                                        <tr>
+                                            <td style="text-align: center;">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                    <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                </div>
+                                            </td>
+                                            <td>{{ $item->DummyNo}}</td>
+                                            <td>{{ @$item->company->Company_Name}}</td>
+                                            <td>{{ $item->issue_date }}</td>
+                                            <td>{{ $item->Expirationdate }}</td>
+                                            <td style="text-align: center;">
+                                                @if ($item->SpecialDiscount == 0)
+                                                    -
+                                                @else
+                                                    <i class="bi bi-check-lg text-green" ></i>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if (@$item->userConfirm->name == null)
+                                                    -
+                                                @else
+                                                    {{ @$item->userConfirm->name }}
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if($item->status_document == 0)
+                                                    <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                @elseif ($item->status_document == 1)
+                                                    <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                @elseif ($item->status_document == 2)
+                                                    <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                @elseif ($item->status_document == 3)
+                                                    <span class="badge rounded-pill "  style="background-color: #0ea5e9" >Generate</span>
+                                                @elseif ($item->status_document == 4)
+                                                    <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                    <ul class="dropdown-menu border-0 shadow p-3">
+                                                        @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                            <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">View</a></li>
+                                                        @endif
+                                                        @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/edit/'.$item->id) }}">Edit</a></li>
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/cancel/'.$item->id) }}">Cancel</a></li>
+                                                        @endif
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                        @endif
+                                </tbody>
+                            </table>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="nav-Cancel" role="tabpanel">
+                            <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
+                                @csrf
+                                <input type="hidden" name="category" value="prename">
+                            <table class="myDataTableQuotation table table-hover align-middle mb-0" >
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ID</th>
+                                        <th>Company</th>
+                                        <th>Issue Date</th>
+                                        <th>Expiration Date</th>
+                                        <th class="text-center">Special Discount</th>
+                                        <th class="text-center">Approve By</th>
+                                        <th class="text-center">Document status</th>
+                                        <th class="text-center">Order</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(!empty($cancel))
+                                        @foreach ($cancel as $key => $item)
+                                        <tr>
+                                            <td style="text-align: center;">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                    <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                </div>
+                                            </td>
+                                            <td>{{ $item->DummyNo}}</td>
+                                            <td>{{ @$item->company->Company_Name}}</td>
+                                            <td>{{ $item->issue_date }}</td>
+                                            <td>{{ $item->Expirationdate }}</td>
+                                            <td style="text-align: center;">
+                                                @if ($item->SpecialDiscount == 0)
+                                                    -
+                                                @else
+                                                    <i class="bi bi-check-lg text-green" ></i>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if (@$item->userConfirm->name == null)
+                                                    -
+                                                @else
+                                                    {{ @$item->userConfirm->name }}
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if($item->status_document == 0)
+                                                    <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                @elseif ($item->status_document == 1)
+                                                    <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                @elseif ($item->status_document == 2)
+                                                    <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                @elseif ($item->status_document == 3)
+                                                    <span class="badge rounded-pill "  style="background-color: #0ea5e9" >Generate</span>
+                                                @elseif ($item->status_document == 4)
+                                                    <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                    <ul class="dropdown-menu border-0 shadow p-3">
+                                                        @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                            <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">View</a></li>
+                                                        @endif
+                                                        @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/cancel/'.$item->id) }}">Cancel</a></li>
+                                                        @endif
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                        @endif
+                                </tbody>
+                            </table>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -174,7 +603,7 @@ document.getElementById('Submit_Documents').addEventListener('click', function()
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert(data.message);
+                    location.reload();
                 } else {
                     alert('Failed to submit documents.');
                 }

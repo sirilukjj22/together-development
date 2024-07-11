@@ -21,13 +21,7 @@
             <p class="mb-0">{{ session('success') }}</p>
         </div>
         @endif
-        <div class="col">
-            <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
-                <li></li>
-                <li></li>
-                <li></li>
-            </ol>
-        </div>
+
     </div> <!-- Row end  -->
 
     <div class="row clearfix">
@@ -40,9 +34,10 @@
                     <h5>Dummy Proposal Request</h5>
                     <thead>
                         <tr>
-                            <th style="width: 5%">No</th>
+                            <th  class="text-center"style="width: 5%">No</th>
                             <th>Company</th>
-                            <th style="width: 5%">Count</th>
+                            <th  class="text-center" style="width: 15%">Operated_by</th>
+                            <th  class="text-center"style="width: 5%">Count</th>
                             <th class="text-center" style="width: 10%">Order</th>
                         </tr>
                     </thead>
@@ -52,6 +47,7 @@
                             <tr>
                                 <td style="text-align: center;">{{ $key+1}}</td>
                                 <td>{{ @$item->company2->Company_Name}}</td>
+                                <td style="text-align: center;">{{ @$item->userOperated->name }}</td>
                                 <td style="text-align: center;">{{ $item->COUNTDummyNo }}</td>
                                 <td style="text-align: center;">
                                     <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Dummy/Proposal/Request/document/view/'.$item->Company_ID) }}'">
