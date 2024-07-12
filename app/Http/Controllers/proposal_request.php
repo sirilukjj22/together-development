@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\dummy_quotation;
 use Illuminate\Support\Facades\DB;
 use App\Models\document_quotation;
+use App\Models\document_dummy_quotation;
 use App\Models\Quotation;
 use Carbon\Carbon;
 use App\Models\companys;
+use App\Models\log_dummy;
 use App\Models\representative;
 use App\Models\representative_phone;
 use App\Models\company_fax;
@@ -40,7 +42,52 @@ class proposal_request extends Controller
             ->groupBy('Company_ID','Operated_by')
             ->select('dummy_quotation.*',DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
             ->get();
-        return view('proposal_req.index',compact('proposal'));
+        $Logproposal = dummy_quotation::whereIn('status_document', [3,5])->get();
+        $Logproposalcount = dummy_quotation::whereIn('status_document', [3,5])->count();
+        $logdummy = log_dummy::select('Quotation_ID','Approve_date','Approve_time')->get();
+        $logdummycount = log_dummy::query()->count();
+        $path = 'Log_PDF/dummy_proposal/';
+        return view('proposal_req.index',compact('proposal','Logproposal','Logproposalcount','logdummy','path','logdummycount'));
+    }
+    public function searchcancel(Request $request)
+    {
+        $selectedDate = $request->input('selectday');
+        $proposal = dummy_quotation::where('status_document', 2)
+            ->groupBy('Company_ID','Operated_by')
+            ->select('dummy_quotation.*',DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
+            ->get();
+        $Logproposal = dummy_quotation::whereIn('status_document', [3,5])->get();
+        $Logproposalcount = dummy_quotation::whereIn('status_document', [3,5])->count();
+        $checkbox = $request->input('checkbox');
+        if ($checkbox) {
+            $logdummy = log_dummy::select('Quotation_ID','Approve_date','Approve_time')->get();
+        }else{
+            $logdummy = log_dummy::where('Approve_date',$selectedDate)->select('Quotation_ID','Approve_date','Approve_time')->get();
+        }
+
+        $logdummycount = log_dummy::query()->count();
+        $path = 'Log_PDF/dummy_proposal/';
+        return view('proposal_req.index',compact('proposal','Logproposal','Logproposalcount','logdummy','path','logdummycount'));
+    }
+    public function searchApproved(Request $request)
+    {
+        $selectedDate = $request->input('selectday');
+        $checkbox = $request->input('checkbox');
+        if ($checkbox) {
+            $Logproposal = dummy_quotation::whereIn('status_document', [3,5])->get();
+        }else{
+            $Logproposal = dummy_quotation::where('Approve_at',$selectedDate)->whereIn('status_document', [3,5])->get();
+        }
+        $proposal = dummy_quotation::where('status_document', 2)
+            ->groupBy('Company_ID','Operated_by')
+            ->select('dummy_quotation.*',DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
+            ->get();
+
+        $Logproposalcount = dummy_quotation::whereIn('status_document', [3,5])->count();
+        $logdummy = log_dummy::where('Approve_date',$selectedDate)->select('Quotation_ID','Approve_date','Approve_time')->get();
+        $logdummycount = log_dummy::query()->count();
+        $path = 'Log_PDF/dummy_proposal/';
+        return view('proposal_req.index',compact('proposal','Logproposal','Logproposalcount','logdummy','path','logdummycount'));
     }
     public function view($id)
     {
@@ -53,9 +100,17 @@ class proposal_request extends Controller
             $status = $proposal->status_document;
             $company = $proposal->Company_ID;
             $userid = Auth::user()->id;
+            $currentDateTime = Carbon::now();
+            $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
+            $currentTime = $currentDateTime->toTimeString(); // Format: HH:MM:SS
+
+            // Optionally, you can format the date and time as per your requirement
+            $formattedDate = $currentDateTime->format('Y-m-d'); // Custom format for date
+            $formattedTime = $currentDateTime->format('H:i:s');
             if ($status == 2) {
                 $proposal->status_document = 3;
                 $proposal->Confirm_by = $userid;
+                $proposal->Approve_at = $currentDateTime;
                 $proposal->save();
             }
            // ดึงข้อมูลใบเสนอราคาที่สถานะเอกสารเป็น 2
@@ -63,7 +118,11 @@ class proposal_request extends Controller
 
             foreach ($proposalNo as $item) {
                 $dummyNoid = $item->DummyNo;
-
+                $savePDF = new log_dummy();
+                $savePDF->Quotation_ID = $dummyNoid;
+                $savePDF->Approve_date = $formattedDate;
+                $savePDF->Approve_time = $formattedTime;
+                $savePDF->save();
                 // ดึงข้อมูลใบเสนอราคาที่มี DummyNo ตามที่กำหนด
                 $Quotation = dummy_quotation::where('DummyNo', $dummyNoid)->first();
                 $id = $Quotation->id;
@@ -126,7 +185,7 @@ class proposal_request extends Controller
                 $date = Carbon::now();
 
                 // ดึงข้อมูลสินค้าที่อยู่ในใบเสนอราคา
-                $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+                $selectproduct = document_dummy_quotation::where('Quotation_ID', $Quotation_ID)->get();
 
                 // ดึงข้อมูลภาษี
                 $QuotationVat = $Quotation->vat_type;
@@ -321,6 +380,7 @@ class proposal_request extends Controller
                 // บันทึกไฟล์ PDF
                 $path = 'Log_PDF/dummy_proposal/';
                 $pdf->save($path . $Quotation_ID . '.pdf');
+
                 $dummyldID = dummy_quotation::where('DummyNo',$Quotation_ID)->delete();
                 $documentQuotationoldID = document_quotation::where('Quotation_ID',$Quotation_ID)->delete();
             }
@@ -349,5 +409,46 @@ class proposal_request extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function viewApprove($id)
+    {
+        $Quotation = dummy_quotation::where('id', $id)->first();
+        $QuotationID= $Quotation->DummyNo;
+        $Company_ID = $Quotation->Company_ID;
+        $contact = $Quotation->company_contact;
+
+        $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
+        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
+        $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
+        $Company = companys::select('Company_Name','id','Profile_ID')->get();
+        $CompanyID = companys::where('Profile_ID',$Company_ID)->first();
+        $Company_typeID=$CompanyID->Company_type;
+        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+        if ($comtype->name_th =="บริษัทจำกัด") {
+            $comtypefullname = "บริษัท ". $CompanyID->Company_Name . " จำกัด";
+        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+            $comtypefullname = "บริษัท ". $CompanyID->Company_Name . " จำกัด (มหาชน)";
+        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+            $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $CompanyID->Company_Name ;
+        }else {
+            $comtypefullname = $CompanyID->Company_Name;
+        }
+        $CityID=$CompanyID->City;
+        $amphuresID = $CompanyID->Amphures;
+        $TambonID = $CompanyID->Tambon;
+        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+        $company_fax = company_fax::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
+        $company_phone = company_phone::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
+        $Contact_name = representative::where('Company_ID',$Company_ID)->where('id',$contact)->where('status',1)->first();
+        $profilecontact = $Contact_name->Profile_ID;
+        $Contact_phone = representative_phone::where('Company_ID',$Company_ID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
+        $selectproduct = document_dummy_quotation::where('Quotation_ID', $QuotationID)->get();
+        $unit = master_unit::where('status',1)->get();
+        $quantity = master_quantity::where('status',1)->get();
+        return view('proposal_req.viewlog',compact('Quotation','Freelancer_member','Company','Mevent','Mvat','Contact_name','comtypefullname','CompanyID'
+        ,'TambonID','amphuresID','CityID','provinceNames','company_fax','company_phone','Contact_phone','selectproduct','unit','quantity','QuotationID'));
     }
 }

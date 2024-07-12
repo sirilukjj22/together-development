@@ -62,7 +62,7 @@ class dummy_quotation extends Model
     }
     public function  document()
     {
-        return $this->hasMany(document_quotation::class, 'Quotation_ID', 'DummyNo');
+        return $this->hasMany(document_dummy_quotation::class, 'Quotation_ID', 'DummyNo');
     }
     public function  contact2()
     {

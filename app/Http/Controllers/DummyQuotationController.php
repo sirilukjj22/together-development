@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\dummy_quotation;
+use App\Models\Quotation;
 use Carbon\Carbon;
 use App\Models\companys;
 use App\Models\representative;
@@ -19,6 +20,7 @@ use App\Models\master_document;
 use App\Models\master_product_item;
 use App\Models\master_quantity;
 use App\Models\master_unit;
+use App\Models\document_dummy_quotation;
 use App\Models\document_quotation;
 use Auth;
 use App\Models\User;
@@ -41,19 +43,21 @@ class DummyQuotationController extends Controller
         $Pendingcount = dummy_quotation::where('Operated_by',$userid)->where('status_document',1)->count();
         $Awaitingcount = dummy_quotation::where('Operated_by',$userid)->where('status_document',2)->count();
         $Awaiting  = dummy_quotation::where('Operated_by',$userid)->where('status_document', 2 )->get();
-        $Generatecount = dummy_quotation::where('Operated_by',$userid)->where('status_document',3)->count();
-        $Generate = dummy_quotation::where('Operated_by',$userid)->where('status_document', 3 )->get();
+        $Approvedcount = dummy_quotation::where('Operated_by',$userid)->where('status_document',3)->count();
+        $Approved = dummy_quotation::where('Operated_by',$userid)->where('status_document', 3 )->get();
         $Rejectcount = dummy_quotation::where('Operated_by',$userid)->where('status_document',4)->count();
         $Reject = dummy_quotation::where('Operated_by',$userid)->where('status_document', 4)->get();
         $cancelcount = dummy_quotation::where('Operated_by',$userid)->where('status_document',0)->count();
         $cancel = dummy_quotation::where('Operated_by',$userid)->where('status_document',0)->get();
+        $Generatecount = dummy_quotation::where('Operated_by',$userid)->where('status_document',5)->count();
+        $Generate = dummy_quotation::where('Operated_by',$userid)->where('status_document', 5 )->get();
 
         $DummyNo = dummy_quotation::query()->pluck('DummyNo');
-        $document = document_quotation::whereIn('Quotation_ID', $DummyNo)->get();
+        $document = document_dummy_quotation::whereIn('Quotation_ID', $DummyNo)->get();
         $document_IDs = $document->pluck('Quotation_ID');
         $missingQuotationIDs = $DummyNo->diff($document_IDs);
         dummy_quotation::whereIn('DummyNo', $missingQuotationIDs)->delete();
-        return view('dummy_quotation.index',compact('Quotation','Quotationcount','Pending','Pendingcount','Awaiting','Awaitingcount','Generatecount','Generate','Rejectcount','Reject','cancelcount','cancel'));
+        return view('dummy_quotation.index',compact('Quotation','Quotationcount','Pending','Pendingcount','Awaiting','Awaitingcount','Approvedcount','Approved','Rejectcount','Reject','cancelcount','cancel','Generatecount','Generate'));
     }
     public function changestatus($id ,$status)
     {
@@ -477,7 +481,7 @@ class DummyQuotationController extends Controller
 
             if ($Products !== null) {
                 foreach ($Products as $index => $ProductID) {
-                    $saveProduct = new document_quotation();
+                    $saveProduct = new document_dummy_quotation();
                     $saveProduct->Quotation_ID = $Quotation_IDnew;
                     $saveProduct->Company_ID = $request->Company;
                     $saveProduct->Product_ID = $ProductID;
@@ -541,7 +545,7 @@ class DummyQuotationController extends Controller
         $Contact_name = representative::where('Company_ID',$Company_ID)->where('id',$contact)->where('status',1)->first();
         $profilecontact = $Contact_name->Profile_ID;
         $Contact_phone = representative_phone::where('Company_ID',$Company_ID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
-        $selectproduct = document_quotation::where('Quotation_ID', $QuotationID)->get();
+        $selectproduct = document_dummy_quotation::where('Quotation_ID', $QuotationID)->get();
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
         return view('dummy_quotation.edit',compact('Quotation','Freelancer_member','Company','Mevent','Mvat','Contact_name','comtypefullname','CompanyID'
@@ -854,9 +858,9 @@ class DummyQuotationController extends Controller
 
             if ($Products !== null) {
                 $Productss = array_unique($Products);
-                document_quotation::where('Quotation_ID',$Quotation_ID)->delete();
+                document_dummy_quotation::where('Quotation_ID',$Quotation_ID)->delete();
                 foreach ($Productss as $index => $ProductID) {
-                    $saveProduct = new document_quotation();
+                    $saveProduct = new document_dummy_quotation();
                     $saveProduct->Quotation_ID = $Quotation_ID;
                     $saveProduct->Company_ID = $request->Company;
                     $saveProduct->Product_ID = $ProductID;
@@ -921,10 +925,10 @@ class DummyQuotationController extends Controller
         $Complimentary = $sheet->where('topic', 'Complimentary')->where('CodeTemplate',$CodeTemplate)->first();
         $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->where('CodeTemplate',$CodeTemplate)->first();
         $date = Carbon::now();
-        $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+        $selectproduct = document_dummy_quotation::where('Quotation_ID', $Quotation_ID)->get();
         $QuotationVat= $Quotation->vat_type;
         $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
-        $SpecialDiscount = document_quotation::where('Quotation_ID', $Quotation_ID)->first();
+        $SpecialDiscount = document_dummy_quotation::where('Quotation_ID', $Quotation_ID)->first();
         $SpecialDis=$SpecialDiscount->SpecialDiscount;
         $Checkin = $Quotation->checkin;
         $Checkout = $Quotation->checkout;
@@ -1134,6 +1138,68 @@ class DummyQuotationController extends Controller
         }
         $dummy->save();
         return redirect()->route('DummyQuotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+    }
+    public function Generate($id){
+        try {
+        $dummy = dummy_quotation::where('id', $id)->first();
+        $dummy->status_document = 5;
+        $dummy->save();
+        $dummyID = $dummy->DummyNo;
+
+        $save = new Quotation();
+        $save->DummyNo = $dummyID;
+        $save->Company_ID = $dummy->Company_ID;
+        $save->company_contact = $dummy->company_contact;
+        $save->checkin = $dummy->checkin;
+        $save->checkout = $dummy->checkout;
+        $save->day = $dummy->day;
+        $save->night = $dummy->night;
+        $save->adult = $dummy->adult;
+        $save->children = $dummy->children;
+        $save->ComRateCode = $dummy->ComRateCode;
+        $save->freelanceraiffiliate = $dummy->freelanceraiffiliate;
+        $save->commissionratecode = $dummy->commissionratecode;
+        $save->eventformat = $dummy->eventformat;
+        $save->vat_type = $dummy->vat_type;
+        $save->issue_date = $dummy->issue_date;
+        $save->Expirationdate = $dummy->Expirationdate;
+        $save->Document_issuer = $dummy->Document_issuer;
+        $save->Operated_by = $dummy->Operated_by;
+        $save->save();
+        $qutationID = Quotation::where('DummyNo',$dummyID)->first();
+        $IDmain =  $qutationID->id;
+        $ID = 'PD-';
+        $currentDate = Carbon::now();
+        $formattedDate = Carbon::parse($currentDate);       // วันที่
+        $month = $formattedDate->format('m'); // เดือน
+        $year = $formattedDate->format('y');
+        $newRunNumber = str_pad($IDmain, 4, '0', STR_PAD_LEFT);
+        $Quotation_IDnew = $ID.$year.$month.$newRunNumber;
+        $qutationID->Quotation_ID = $Quotation_IDnew;
+        $qutationID->save();
+        $Quotation_ID =  $qutationID->DummyNo;
+        $QuotationID =  $qutationID->Quotation_ID;
+
+        $document_dummy = document_dummy_quotation::where('Quotation_ID', $Quotation_ID)->get();
+        foreach ($document_dummy as $document) {
+            $saveProduct = new document_quotation();
+            $saveProduct->Quotation_ID = $QuotationID;
+            $saveProduct->Company_ID = $document->Company_ID;
+            $saveProduct->Product_ID = $document->Product_ID;
+            $saveProduct->Issue_date = $document->Issue_date;
+            $saveProduct->discount =$document->discount;
+            $saveProduct->priceproduct =$document->priceproduct;
+            $saveProduct->netpriceproduct =$document->netpriceproduct;
+            $saveProduct->totaldiscount =$document->totaldiscount;
+            $saveProduct->ExpirationDate = $document->ExpirationDate;
+            $saveProduct->freelanceraiffiliate = $document->freelanceraiffiliate;
+            $saveProduct->Quantity = $document->Quantity;
+            $saveProduct->save();
+        }
+            return redirect()->route('DummyQuotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        } catch (\Exception $e) {
+            return redirect()->route('DummyQuotation.index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        }
     }
     public function addProduct($Quotation_ID, Request $request) {
         $value = $request->input('value');
