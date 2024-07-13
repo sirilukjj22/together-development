@@ -729,5 +729,138 @@
 <script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
+<script>
+    $(document).ready(function() {
+        var typevat  = $('#Mvat').val();
+        let allprice = 0;
+        let lessDiscount = 0;
+        let beforetax =0;
+        let addedtax =0;
+        let Nettotal =0;
+        let totalperson=0;
+        let priceArray = [];
+        let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
+        var specialDisValue = parseFloat(document.getElementById('SpecialDis').value);
+        $('#display-selected-items tr').each(function() {
+            var adultValue = parseFloat(document.getElementById('Adult').value);
+            var childrenValue = parseFloat(document.getElementById('Children').value);
+            let priceCell = $(this).find('td').eq(7);
+            let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
+            var person =adultValue+childrenValue;
+            if (typevat == '50') {
+                allprice += pricetotal;
+                lessDiscount = allprice-specialDisValue;
+                beforetax= lessDiscount/1.07;
+                addedtax = lessDiscount-beforetax;
+                Nettotal= beforetax+addedtax;
+                totalperson = Nettotal/person;
+                $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            }
+            else if(typevat == '51')
+            {
+                allprice += pricetotal;
+                lessDiscount = allprice-specialDisValue;
+                beforetax= lessDiscount;
+                addedtax =0;
+                Nettotal= beforetax;
+                totalperson = Nettotal/person;
+                $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#lessDiscountEXCLUDE').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#Net-priceEXCLUDE').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#total-VatEXCLUDE').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            } else if(typevat == '52'){
+                allprice += pricetotal;
+                lessDiscount = allprice-specialDisValue;
+                addedtax = lessDiscount*7/100;;
+                beforetax= lessDiscount+addedtax;
+                Nettotal= beforetax;
+                totalperson = Nettotal/person;
+                $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#lessDiscountpus').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#Net-pricepus').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#total-Vatpus').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            }
+        });
+        function masterevent() {
+        var Mevent =$('#Mevent').val();
+        if (Mevent == '43') {
 
+            $('#Payment50').css('display', 'block');
+            $('#Payment100').css('display', 'none');
+        } else if (Mevent == '53') {
+
+            $('#Payment50').css('display', 'none');
+            $('#Payment100').css('display', 'block');
+        } else {
+            $('#Payment50').css('display', 'none');
+            $('#Payment100').css('display', 'none');
+        }
+    }
+    function mastervat() {
+        var Mvat =$('#Mvat').val();
+        if (Mvat == '50') {
+            $('#PRICE_INCLUDE_VAT').css('display', 'block');
+            $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+            $('#PRICE_PLUS_VAT').css('display', 'none');
+        }else if (Mvat == '51') {
+            $('#PRICE_INCLUDE_VAT').css('display', 'none');
+            $('#PRICE_EXCLUDE_VAT').css('display', 'block');
+            $('#PRICE_PLUS_VAT').css('display', 'none');
+        }
+        else if (Mvat == '52') {
+            $('#PRICE_INCLUDE_VAT').css('display', 'none');
+            $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+            $('#PRICE_PLUS_VAT').css('display', 'block');
+        }else{
+            $('#PRICE_INCLUDE_VAT').css('display', 'none');
+            $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+            $('#PRICE_PLUS_VAT').css('display', 'none');
+        }
+        totalAmost()
+    }
+    });
+    $(document).ready(function() {
+        var Mvat ={{$Quotation->vat_type}};
+        if (Mvat == '50') {
+            $('#PRICE_INCLUDE_VAT').css('display', 'block');
+            $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+            $('#PRICE_PLUS_VAT').css('display', 'none');
+        }else if (Mvat == '51') {
+            $('#PRICE_INCLUDE_VAT').css('display', 'none');
+            $('#PRICE_EXCLUDE_VAT').css('display', 'block');
+            $('#PRICE_PLUS_VAT').css('display', 'none');
+        }
+        else if (Mvat == '52') {
+            $('#PRICE_INCLUDE_VAT').css('display', 'none');
+            $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+            $('#PRICE_PLUS_VAT').css('display', 'block');
+        }else{
+            $('#PRICE_INCLUDE_VAT').css('display', 'none');
+            $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+            $('#PRICE_PLUS_VAT').css('display', 'none');
+        }
+        var Mevent ={{$Quotation->eventformat}};
+        if (Mevent == '43') {
+
+            $('#Payment50').css('display', 'block');
+            $('#Payment100').css('display', 'none');
+        } else if (Mevent == '53') {
+
+            $('#Payment50').css('display', 'none');
+            $('#Payment100').css('display', 'block');
+        } else {
+            $('#Payment50').css('display', 'none');
+            $('#Payment100').css('display', 'none');
+        }
+    });
+</script>
 @endsection

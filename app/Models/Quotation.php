@@ -54,4 +54,8 @@ class Quotation extends Model
     {
         return $this->hasOne(User::class, 'id','Confirm_by');
     }
+    public function  company2()
+    {
+        return $this->hasOne(companys::class, 'Profile_ID', 'Company_ID');
+    }
 }

@@ -888,6 +888,16 @@ class DummyQuotationController extends Controller
     }
     public function sheetpdf(Request $request ,$id) {
         $Quotation = dummy_quotation::where('id', $id)->first();
+        if ($Quotation) {
+            $QuotationID= $Quotation->DummyNo;
+            $selectproduct = document_dummy_quotation::where('Quotation_ID', $QuotationID)->get();
+            $SpecialDiscount = document_dummy_quotation::where('Quotation_ID', $QuotationID)->first();
+        }else{
+            $Quotation = Quotation::where('id', $id)->first();
+            $QuotationID= $Quotation->Quotation_ID;
+            $selectproduct = document_quotation::where('Quotation_ID', $QuotationID)->get();
+            $SpecialDiscount = document_quotation::where('Quotation_ID', $QuotationID)->first();
+        }
         $Company = $Quotation->Company_ID;
         $Quotation_ID = $Quotation->DummyNo;
         $eventformat = $Quotation->eventformat;
@@ -925,10 +935,9 @@ class DummyQuotationController extends Controller
         $Complimentary = $sheet->where('topic', 'Complimentary')->where('CodeTemplate',$CodeTemplate)->first();
         $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->where('CodeTemplate',$CodeTemplate)->first();
         $date = Carbon::now();
-        $selectproduct = document_dummy_quotation::where('Quotation_ID', $Quotation_ID)->get();
         $QuotationVat= $Quotation->vat_type;
         $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
-        $SpecialDiscount = document_dummy_quotation::where('Quotation_ID', $Quotation_ID)->first();
+
         $SpecialDis=$SpecialDiscount->SpecialDiscount;
         $Checkin = $Quotation->checkin;
         $Checkout = $Quotation->checkout;

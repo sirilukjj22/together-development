@@ -393,7 +393,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Dummy/Proposal/Request/document/view/Reject/{id}', 'Reject')->name('DummyQuotation.Approve');
         Route::get('/Proposal/request/search/cancel', 'searchcancel')->name('search.by.date');
         Route::get('/Proposal/request/search/Approved', 'searchApproved')->name('search.by.Approved');
-        Route::get('/Dummy/Proposal/Request/document/view/Approve/{id}','viewApprove')->name('DummyQuotation.viewApprove');
+        Route::get('/Dummy/Proposal/Request/document/view/Approve/viewApprove/{id}','viewApprove')->name('DummyQuotation.viewApprove');
     });
     ##-------------------------------TemplateController-----------------
     Route::controller(Master_TemplateController::class)->group(function () {

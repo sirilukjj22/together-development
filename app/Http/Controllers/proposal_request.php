@@ -10,7 +10,7 @@ use App\Models\document_dummy_quotation;
 use App\Models\Quotation;
 use Carbon\Carbon;
 use App\Models\companys;
-use App\Models\log_dummy;
+use App\Models\log;
 use App\Models\representative;
 use App\Models\representative_phone;
 use App\Models\company_fax;
@@ -38,16 +38,31 @@ class proposal_request extends Controller
 {
     public function index()
     {
+        $quotation = Quotation::where('status_document', 2)
+        ->groupBy('Company_ID','Operated_by')->select('id','DummyNo', 'Company_ID','Operated_by','QuotationType',DB::raw("COUNT(DummyNo) as COUNTDummyNo"));
+
         $proposal = dummy_quotation::where('status_document', 2)
             ->groupBy('Company_ID','Operated_by')
-            ->select('dummy_quotation.*',DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
+            ->select('id','DummyNo', 'Company_ID','Operated_by','QuotationType',DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
+            ->union($quotation)
             ->get();
-        $Logproposal = dummy_quotation::whereIn('status_document', [3,5])->get();
-        $Logproposalcount = dummy_quotation::whereIn('status_document', [3,5])->count();
-        $logdummy = log_dummy::select('Quotation_ID','Approve_date','Approve_time')->get();
-        $logdummycount = log_dummy::query()->count();
+        $proposalcount = dummy_quotation::where('status_document', 2)->select('id','DummyNo', 'Company_ID','Operated_by','QuotationType',DB::raw("COUNT(DummyNo) as COUNTDummyNo"))->union($quotation)->count();
+        $Quotation = Quotation::where('status_document', 3)
+            ->select('id','DummyNo', 'Company_ID', 'issue_date', 'Expirationdate', 'SpecialDiscount','Confirm_by','Approve_at', 'Operated_by', 'status_document', 'QuotationType');
+
+        $Logproposal = dummy_quotation::whereIn('status_document', [3, 5])
+                    ->select('id','DummyNo', 'Company_ID', 'issue_date', 'Expirationdate', 'SpecialDiscount','Confirm_by', 'Approve_at','Operated_by', 'status_document', 'QuotationType')
+                    ->union($Quotation)
+                    ->get();
+        $Logproposalcount = dummy_quotation::whereIn('status_document', [3,5])
+                    ->select('id','DummyNo', 'Company_ID', 'issue_date', 'Expirationdate', 'SpecialDiscount', 'Confirm_by','Approve_at','Operated_by', 'status_document', 'QuotationType')
+                    ->union($Quotation)
+                    ->count();
+        $logdummy = log::select('Quotation_ID','Approve_date','Approve_time')->get();
+        $logdummycount = log::query()->count();
         $path = 'Log_PDF/dummy_proposal/';
-        return view('proposal_req.index',compact('proposal','Logproposal','Logproposalcount','logdummy','path','logdummycount'));
+
+        return view('proposal_req.index',compact('proposal','Logproposal','Logproposalcount','logdummy','path','logdummycount','proposalcount'));
     }
     public function searchcancel(Request $request)
     {
@@ -60,12 +75,12 @@ class proposal_request extends Controller
         $Logproposalcount = dummy_quotation::whereIn('status_document', [3,5])->count();
         $checkbox = $request->input('checkbox');
         if ($checkbox) {
-            $logdummy = log_dummy::select('Quotation_ID','Approve_date','Approve_time')->get();
+            $logdummy = log::select('Quotation_ID','Approve_date','Approve_time')->get();
         }else{
-            $logdummy = log_dummy::where('Approve_date',$selectedDate)->select('Quotation_ID','Approve_date','Approve_time')->get();
+            $logdummy = log::where('Approve_date',$selectedDate)->select('Quotation_ID','Approve_date','Approve_time')->get();
         }
 
-        $logdummycount = log_dummy::query()->count();
+        $logdummycount = log::query()->count();
         $path = 'Log_PDF/dummy_proposal/';
         return view('proposal_req.index',compact('proposal','Logproposal','Logproposalcount','logdummy','path','logdummycount'));
     }
@@ -118,8 +133,9 @@ class proposal_request extends Controller
 
             foreach ($proposalNo as $item) {
                 $dummyNoid = $item->DummyNo;
-                $savePDF = new log_dummy();
+                $savePDF = new log();
                 $savePDF->Quotation_ID = $dummyNoid;
+                $savePDF->QuotationType = 'DummyProposal';
                 $savePDF->Approve_date = $formattedDate;
                 $savePDF->Approve_time = $formattedTime;
                 $savePDF->save();
@@ -378,7 +394,7 @@ class proposal_request extends Controller
                 $pdf = FacadePdf::loadView('quotationpdf.' . $view, $data);
 
                 // บันทึกไฟล์ PDF
-                $path = 'Log_PDF/dummy_proposal/';
+                $path = 'Log_PDF/proposal/';
                 $pdf->save($path . $Quotation_ID . '.pdf');
 
                 $dummyldID = dummy_quotation::where('DummyNo',$Quotation_ID)->delete();
@@ -414,7 +430,15 @@ class proposal_request extends Controller
     public function viewApprove($id)
     {
         $Quotation = dummy_quotation::where('id', $id)->first();
-        $QuotationID= $Quotation->DummyNo;
+        if ($Quotation) {
+            $QuotationID= $Quotation->DummyNo;
+            $selectproduct = document_dummy_quotation::where('Quotation_ID', $QuotationID)->get();
+        }else{
+            $Quotation = Quotation::where('id', $id)->first();
+            $QuotationID= $Quotation->Quotation_ID;
+            $selectproduct = document_quotation::where('Quotation_ID', $QuotationID)->get();
+        }
+
         $Company_ID = $Quotation->Company_ID;
         $contact = $Quotation->company_contact;
 
@@ -445,7 +469,7 @@ class proposal_request extends Controller
         $Contact_name = representative::where('Company_ID',$Company_ID)->where('id',$contact)->where('status',1)->first();
         $profilecontact = $Contact_name->Profile_ID;
         $Contact_phone = representative_phone::where('Company_ID',$Company_ID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
-        $selectproduct = document_dummy_quotation::where('Quotation_ID', $QuotationID)->get();
+
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
         return view('proposal_req.viewlog',compact('Quotation','Freelancer_member','Company','Mevent','Mvat','Contact_name','comtypefullname','CompanyID'
