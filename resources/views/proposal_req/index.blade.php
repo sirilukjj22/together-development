@@ -30,9 +30,9 @@
     <div class="row clearfix">
         <div class="col-sm-12 col-12">
             <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Awaiting" role="tab"><span class="badge bg-warning" >{{$proposalcount}}</span> Awaiting Approval</a></li>
-                <li class="nav-item"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" role="tab"><span class="badge bg-success" >{{$Logproposalcount}}</span> Approved</a></li>
-                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge bg-danger" >{{$logdummycount}}</span> Cancel</a></li>
+                <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Awaiting" role="tab"><span class="badge bg-warning" >{{$proposalcount}}</span> Awaiting Approval</a></li>
+                <li class="nav-item" id="nav2"><a class="nav-link" data-bs-toggle="tab" href="#nav-Approved" role="tab"><span class="badge bg-success" >{{$Logproposalcount}}</span> Approved</a></li>
+                <li class="nav-item"id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge bg-danger" >{{$logdummycount}}</span> Cancel</a></li>
             </ul>
             <div class="card mb-3">
                 <div class="card-body">
@@ -41,7 +41,7 @@
                             <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
                                 @csrf
                                 <input type="hidden" name="category" value="prename">
-                            <table class="myDataTableQuotationRequest table table-hover align-middle mb-0" >
+                            <table class="myTableProposalRequest1 table table-hover align-middle mb-0" >
                                 <thead>
                                     <tr>
                                         <th  class="text-center"style="width: 5%">No</th>
@@ -76,7 +76,7 @@
                             </table>
                             </form>
                         </div>
-                        <div class="tab-pane fade show" id="nav-Approved" role="tabpanel">
+                        <div class="tab-pane fade" id="nav-Approved" role="tabpanel">
                             <div class="col-md-12">
                                 <form action="{{ url('/Proposal/request/search/Approved') }}" method="GET">
                                     <div class="row">
@@ -93,7 +93,7 @@
                             <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
                                 @csrf
                                 <input type="hidden" name="category" value="prename">
-                                <table id="" class="myTableProposalRequest table display dataTable table-hover" style="width:100%">
+                            <table  class="myTableProposalRequest2 table table-hover align-middle mb-0" >
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -162,7 +162,7 @@
                             </table>
                             </form>
                         </div>
-                        <div class="tab-pane fade show" id="nav-Cancel" role="tabpanel">
+                        <div class="tab-pane fade" id="nav-Cancel" role="tabpanel">
                             <div class="col-md-12">
                                 <form action="{{ url('/Proposal/request/search/cancel') }}" method="GET">
                                     <div class="row">
@@ -179,7 +179,7 @@
                             <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
                                 @csrf
                             <input type="hidden" name="category" value="prename">
-                            <table class="myDataTableQuotation table table-hover align-middle mb-0" >
+                            <table class="myTableProposalRequest3 table table-hover align-middle mb-0" >
                                 <thead>
                                     <tr>
                                         <th style="text-align: center">No</th>
@@ -208,15 +208,8 @@
                                 </tbody>
                             </table>
                             </form>
-
-
-
-
-
                         </div>
-                        
                     </div>
-                    
                 </div>
             </div>
         </div>
@@ -229,11 +222,10 @@
 </form>
 
 @include('script.script')
-
-
 <script>
-    $('.nav-item').on('click', function () {
-        $('.myTableProposalRequest').addClass('nowrap').dataTable({
+
+    $('#nav1').on('click', function () {
+        $('.myTableProposalRequest1').addClass('nowrap').dataTable({
                 responsive: true,
                 searching: true,
                 paging: true,
@@ -246,5 +238,35 @@
 
             });
     })
+    $('#nav2').on('click', function () {
+        $('.myTableProposalRequest2').addClass('nowrap').dataTable({
+                responsive: true,
+                searching: true,
+                paging: true,
+                ordering: true,
+                info: true,
+                columnDefs: [
+                    // className: 'bolded'
+                    // { targets: [-1, -3], className: 'dt-body-right' }
+                ]
+
+            });
+    })
+    $('#nav3').on('click', function () {
+        $('.myTableProposalRequest3').addClass('nowrap').dataTable({
+                responsive: true,
+                searching: true,
+                paging: true,
+                ordering: true,
+                info: true,
+                columnDefs: [
+                    // className: 'bolded'
+                    // { targets: [-1, -3], className: 'dt-body-right' }
+                ]
+
+            });
+    })
+
+
 </script>
 @endsection

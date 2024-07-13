@@ -297,7 +297,7 @@
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label  for="">User Discount </label>{{--ดึงของuserมาใส่--}}
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="Max_discount"value="{{@Auth::user()->discount}}" placeholder="ส่วนลดคิดเป็น %" disabled>
+                                    <input type="number" class="form-control" name="Max_discount"value="{{@Auth::user()->discount}}" placeholder="ส่วนลดคิดเป็น %" disabled>
                                     <span class="input-group-text">%</span>
                                 </div>
                             </div>
@@ -306,7 +306,7 @@
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label  for="">Special Discount</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="SpecialDiscount" id="SpecialDiscount" placeholder="ส่วนลดคิดเป็น %" >
+                                    <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount" placeholder="ส่วนลดคิดเป็น %" >
                                     <span class="input-group-text">%</span>
                                 </div>
                             </div>
