@@ -445,7 +445,7 @@
 
         $('.select2').select2();
 
-        $('.select2').select2({
+        $('.select2').select2({ 
 
             searchInputPlaceholder: 'Search...'
 
