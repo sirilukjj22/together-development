@@ -37,7 +37,7 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <div class="tab-content">
-                        <div class="tab-pane fade show active" id="nav-Awaiting" role="tabpanel">
+                        <div class="tab-pane fade show active" id="nav-Awaiting" role="tabpanel" rel="0">
                             <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
                                 @csrf
                                 <input type="hidden" name="category" value="prename">
@@ -76,7 +76,7 @@
                             </table>
                             </form>
                         </div>
-                        <div class="tab-pane fade" id="nav-Approved" role="tabpanel">
+                        <div class="tab-pane fade" id="nav-Approved" role="tabpanel" rel="0">
                             <div class="col-md-12">
                                 <form action="{{ url('/Proposal/request/search/Approved') }}" method="GET">
                                     <div class="row">
@@ -162,7 +162,7 @@
                             </table>
                             </form>
                         </div>
-                        <div class="tab-pane fade" id="nav-Cancel" role="tabpanel">
+                        <div class="tab-pane fade" id="nav-Cancel" role="tabpanel" rel="0">
                             <div class="col-md-12">
                                 <form action="{{ url('/Proposal/request/search/cancel') }}" method="GET">
                                     <div class="row">
@@ -224,7 +224,7 @@
 @include('script.script')
 <script>
 
-    $('#nav1').on('click', function () {
+    $(document).ready(function () {
         $('.myTableProposalRequest1').addClass('nowrap').dataTable({
                 responsive: true,
                 searching: true,
@@ -237,9 +237,14 @@
                 ]
 
             });
-    })
+    });
+
     $('#nav2').on('click', function () {
-        $('.myTableProposalRequest2').addClass('nowrap').dataTable({
+        var status = $('#nav-Approved').attr('rel');
+
+        if (status == 0) {
+            document.getElementById("nav-Approved").setAttribute("rel", "1"); 
+            $('.myTableProposalRequest2').addClass('nowrap').dataTable({
                 responsive: true,
                 searching: true,
                 paging: true,
@@ -251,20 +256,26 @@
                 ]
 
             });
+        }
     })
     $('#nav3').on('click', function () {
-        $('.myTableProposalRequest3').addClass('nowrap').dataTable({
-                responsive: true,
-                searching: true,
-                paging: true,
-                ordering: true,
-                info: true,
-                columnDefs: [
-                    // className: 'bolded'
-                    // { targets: [-1, -3], className: 'dt-body-right' }
-                ]
+        var status = $('#nav-Cancel').attr('rel');
 
-            });
+        if (status == 0) {
+            document.getElementById("nav-Cancel").setAttribute("rel", "1"); 
+            $('.myTableProposalRequest3').addClass('nowrap').dataTable({
+                    responsive: true,
+                    searching: true,
+                    paging: true,
+                    ordering: true,
+                    info: true,
+                    columnDefs: [
+                        // className: 'bolded'
+                        // { targets: [-1, -3], className: 'dt-body-right' }
+                    ]
+
+                });
+        }
     })
 
 
