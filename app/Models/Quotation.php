@@ -58,4 +58,8 @@ class Quotation extends Model
     {
         return $this->hasOne(companys::class, 'Profile_ID', 'Company_ID');
     }
+    public function  document()
+    {
+        return $this->hasMany(document_quotation::class, 'Quotation_ID', 'DummyNo');
+    }
 }

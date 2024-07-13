@@ -192,16 +192,22 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="row mt-2 my-4">
-                            <div class="col-3"></div>
-                            <div class="col-6" style="display:flex; justify-content:center; align-items:center;">
-                                <button type="button" class="btn btn-success lift btn_modal" onclick="Approve(this)" value="{{$item->DummyNo}}">
-                                    <i class="fa fa-check"></i> Approve
-                                </button>
+                        <form id="myForm" action="{{route('DummyQuotation.Approve')}}" method="POST">
+                            @csrf
+                            <div class="row mt-2 my-4">
+                                <div class="col-3"></div>
+                                <input type="hidden" name="DummyNo" value="{{$item->DummyNo}}">
+                                <input type="hidden" name="QuotationType" value="{{$item->QuotationType}}">
+                                <div class="col-6" style="display:flex; justify-content:center; align-items:center;">
+                                    <button type="submit" class="btn btn-success lift btn_modal" >
+                                        <i class="fa fa-check"></i> Approve
+                                    </button>
+                                </div>
+                                <div class="col-3">
+                                </div>
                             </div>
-                            <div class="col-3">
-                            </div>
-                        </div>
+                        </form>
+
                     </div>
                 </div>
             @endforeach
@@ -216,27 +222,6 @@
                 DummyNo.push($(this).val());
             });
     });
-    function Approve(button) {
-        var id = $(button).val();
-        jQuery.ajax({
-            type: "GET",
-            url: "{!! url('/Dummy/Proposal/Request/document/view/Approve/" + id + "') !!}",
-            datatype: "JSON",
-            async: false,
-            success: function(response) {
-                console.log("AJAX request successful: ", response);
-                if (response.success) {
-                // เปลี่ยนไปยังหน้าที่ต้องการ
-                window.location.href = "/Proposal/request/index";
-                } else {
-                    alert("An error occurred while processing the request.");
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX request failed: ", status, error);
-            }
-        });
-    }
     function Reject() {
         var dummyNos = [];
         $('.DummyNo').each(function() {

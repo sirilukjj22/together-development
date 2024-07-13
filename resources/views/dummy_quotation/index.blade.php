@@ -663,7 +663,7 @@ function btnstatus(itemId, status) {
         }
     });
 }
-document.getElementById('Submit_Documents').addEventListener('click', function() {
+    document.getElementById('Submit_Documents').addEventListener('click', function() {
         // Select all checked checkboxes
         const checkedCheckboxes = document.querySelectorAll('.form-check-input:checked');
 

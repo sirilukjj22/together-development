@@ -428,24 +428,13 @@
                     { targets: [0, -2, -1], className: 'dt-body-center' }
                 ]
             });
-            $('.myDataTableQuotationRequest').addClass( 'nowrap' ).dataTable( {
-                responsive: true,
-                searching: true,
-                paging: true,
-                ordering: true,
-                info: true,
-                scrollX: true,
-                columnDefs: [
-                    { targets: [0, -2, -1], className: 'dt-body-center' }
-                ]
-            });
         });
 
 
 
         $('.select2').select2();
 
-        $('.select2').select2({ 
+        $('.select2').select2({
 
             searchInputPlaceholder: 'Search...'
 

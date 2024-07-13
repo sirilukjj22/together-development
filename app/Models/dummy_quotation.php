@@ -64,6 +64,10 @@ class dummy_quotation extends Model
     {
         return $this->hasMany(document_dummy_quotation::class, 'Quotation_ID', 'DummyNo');
     }
+    public function  document2()
+    {
+        return $this->hasMany(document_quotation::class, 'Quotation_ID', 'DummyNo');
+    }
     public function  contact2()
     {
         return $this->hasOne(representative::class, 'id', 'company_contact');

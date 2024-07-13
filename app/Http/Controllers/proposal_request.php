@@ -104,14 +104,23 @@ class proposal_request extends Controller
         $path = 'Log_PDF/dummy_proposal/';
         return view('proposal_req.index',compact('proposal','Logproposal','Logproposalcount','logdummy','path','logdummycount'));
     }
-    public function view($id)
+    public function view($id,$Type)
     {
-        $proposal = dummy_quotation::where('Company_ID',$id)->where('status_document', 2)->get();
-        return view('proposal_req.view',compact('proposal'));
+        if ($Type == 'DummyProposal') {
+            $proposal = dummy_quotation::where('Company_ID', $id)->where('status_document', 2)->get();
+        } else if ($Type == 'Proposal') {
+            $proposal = Quotation::where('Company_ID', $id)->where('status_document', 2)->get();
+        }
+
+        return view('proposal_req.view', compact('proposal'));
     }
-    public function Approve(Request $request,$id){
+    public function Approve(Request $request){
         try {
+            $id = $request->DummyNo;
+            $QuotationType = $request->QuotationType;
+            dd($id,$QuotationType);
             $proposal = dummy_quotation::where('DummyNo',$id)->first();
+
             $status = $proposal->status_document;
             $company = $proposal->Company_ID;
             $userid = Auth::user()->id;

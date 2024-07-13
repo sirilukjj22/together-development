@@ -64,7 +64,7 @@
                                             <td style="text-align: center;">{{ $item->COUNTDummyNo }}</td>
                                             <td><span class="badge rounded-pill bg-warning">Awaiting Approva</span></td>
                                             <td style="text-align: center;">
-                                                <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Dummy/Proposal/Request/document/view/'.$item->Company_ID) }}'">
+                                                <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Dummy/Proposal/Request/document/view/'.$item->Company_ID.'/'.$item->QuotationType) }}'">
                                                     <i class="fa fa-folder-open-o"></i> View
                                                 </button>
                                             </td>
@@ -243,7 +243,7 @@
         var status = $('#nav-Approved').attr('rel');
 
         if (status == 0) {
-            document.getElementById("nav-Approved").setAttribute("rel", "1"); 
+            document.getElementById("nav-Approved").setAttribute("rel", "1");
             $('.myTableProposalRequest2').addClass('nowrap').dataTable({
                 responsive: true,
                 searching: true,
@@ -262,7 +262,7 @@
         var status = $('#nav-Cancel').attr('rel');
 
         if (status == 0) {
-            document.getElementById("nav-Cancel").setAttribute("rel", "1"); 
+            document.getElementById("nav-Cancel").setAttribute("rel", "1");
             $('.myTableProposalRequest3').addClass('nowrap').dataTable({
                     responsive: true,
                     searching: true,

@@ -291,14 +291,14 @@
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label  for="">Special Discount</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"  placeholder="ส่วนลดคิดเป็น %" >
+                                    <input type="number" class="form-control" name="SpecialDiscount"  placeholder="ส่วนลดคิดเป็น %" >
                                     <span class="input-group-text">%</span>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label  for="">Discount Amount</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท" >
+                                    <input type="number" class="form-control" name="DiscountAmount"   placeholder="ส่วนลดคิดเป็นบาท" >
                                     <span class="input-group-text">Bath</span>
                                 </div>
                             </div>
@@ -504,7 +504,7 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    <span id="sp">0</span>
+                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -530,7 +530,7 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    <span id="spEXCLUDE">0</span>
+                                                    <input type="text" id="SpecialDisEXCLUDE" name="SpecialDis" class="form-control" value="0" disabled>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -548,7 +548,7 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    <span id="sppus">0</span>
+                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -1047,12 +1047,13 @@
                                 var rowNumbemain = $('#display-selected-items tr').length + 1;
                                 let discountInput;
                                 var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
-                                var SpecialDiscount = document.getElementById('SpecialDiscount').value;
+                                var discountuser = document.getElementById('discountuser').value;
+                                console.log(discountuser);
                                 var maximum_discount = val.maximum_discount;
                                 if (roleMenuDiscount == 1) {
                                     discountInput = '<div class="input-group">' +
                                         '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
-                                        'oninput="if (parseFloat(this.value) > ' + SpecialDiscount + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
+                                        'oninput="if (parseFloat(this.value) > ' + discountuser + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
                                         '<span class="input-group-text">%</span>' +
                                         '</div>';
 
@@ -1135,6 +1136,60 @@
         });
     });
 
+        // $('#SpecialDis').on('input', function() {
+        //     var specialDisValue = $(this).val();
+        //     var typevat  = $('#Mvat').val();
+        //     let allprice = 0;
+        //     let lessDiscount = 0;
+        //     let beforetax =0;
+        //     let addedtax =0;
+        //     let Nettotal =0;
+        //     let totalperson=0;
+        //     $('#display-selected-items tr').each(function() {
+
+        //         var adultValue = parseFloat(document.getElementById('Adult').value);
+        //         var childrenValue = parseFloat(document.getElementById('Children').value);
+        //         let priceCell = $(this).find('td').eq(7);
+        //         let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
+        //         var person =adultValue+childrenValue;
+
+        //         if (typevat == '50') {
+        //             console.log(500);
+        //             allprice += pricetotal;
+        //             lessDiscount = allprice-specialDisValue;
+        //             beforetax= lessDiscount/1.07;
+        //             addedtax = lessDiscount-beforetax;
+        //             Nettotal= beforetax+addedtax;
+        //             totalperson = Nettotal/person;
+        //         }
+        //         else if(typevat == '51')
+        //         {  console.log(511);
+        //             allprice += pricetotal;
+        //             lessDiscount = allprice-specialDisValue;
+        //             beforetax= lessDiscount;
+        //             addedtax =0;
+        //             Nettotal= beforetax;
+        //             totalperson = Nettotal/person;
+        //         } else if(typevat == '52'){
+        //             console.log(522);
+        //             allprice += pricetotal;
+        //             lessDiscount = allprice-specialDisValue;
+        //             addedtax = lessDiscount*7/100;;
+        //             beforetax= lessDiscount+addedtax;
+        //             Nettotal= beforetax;
+        //             totalperson = Nettotal/person;
+
+        //         }
+
+        //     });
+
+        //     $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        //     $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        //     $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        //     $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        //     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        //     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        // });
 
     function totalAmost() {
         $(document).ready(function() {
@@ -1147,25 +1202,22 @@
             let totalperson=0;
             let priceArray = [];
             let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
-            let Discount = [];
-            var DiscountAmount = document.getElementById('DiscountAmount').value;
-
+            var specialDisValue = parseFloat(document.getElementById('SpecialDis').value);
             $('#display-selected-items tr').each(function() {
                 var adultValue = parseFloat(document.getElementById('Adult').value);
                 var childrenValue = parseFloat(document.getElementById('Children').value);
                 let priceCell = $(this).find('td').eq(7);
                 let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
                 var person =adultValue+childrenValue;
-                var Discount = parseFloat(DiscountAmount);
+
                 if (typevat == '50') {
                     console.log(50);
                     allprice += pricetotal;
-                    lessDiscount = allprice-DiscountAmount;
+                    lessDiscount = allprice-specialDisValue;
                     beforetax= lessDiscount/1.07;
                     addedtax = lessDiscount-beforetax;
                     Nettotal= beforetax+addedtax;
                     totalperson = Nettotal/person;
-                    $('#sp').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1176,28 +1228,26 @@
                 else if(typevat == '51')
                 {
                     allprice += pricetotal;
-                    lessDiscount = allprice-DiscountAmount;
+                    lessDiscount = allprice-specialDisValue;
                     beforetax= lessDiscount;
                     addedtax =0;
                     Nettotal= beforetax;
                     totalperson = Nettotal/person;
-
-                    $('#spEXCLUDE').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscountEXCLUDE').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-priceEXCLUDE').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-VatEXCLUDE').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+
                 } else if(typevat == '52'){
                     console.log(52);
                     allprice += pricetotal;
-                    lessDiscount = allprice-DiscountAmount;
+                    lessDiscount = allprice-specialDisValue;
                     addedtax = lessDiscount*7/100;;
                     beforetax= lessDiscount+addedtax;
                     Nettotal= beforetax;
                     totalperson = Nettotal/person;
-                    $('#sppus').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscountpus').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-pricepus').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));

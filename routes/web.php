@@ -353,7 +353,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('Quotation.addProducttablecreatemain');
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
         Route::get('/Quotation/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('Quotation.sheet');
-        //---------------------------------------Quotation.------------------------------------------------------
+        //---------------------------------------ส่งรายงาน------------------------------------------------------
+        Route::get('/Quotation/Quotation/send/documents', 'senddocuments')->name('Quotation.senddocuments');
+
     });
 
     #DummyQuotaion
@@ -388,9 +390,9 @@ Route::middleware(['auth'])->group(function () {
     #Proposal Request
     Route::controller(proposal_request::class)->group(function () {
         Route::get('/Proposal/request/index', 'index')->name('ProposalReq.index');
-        Route::get('/Dummy/Proposal/Request/document/view/{id}', 'view')->name('ProposalReq.view');
-        Route::get('/Dummy/Proposal/Request/document/view/Approve/{id}', 'Approve')->name('DummyQuotation.Approve');
-        Route::get('/Dummy/Proposal/Request/document/view/Reject/{id}', 'Reject')->name('DummyQuotation.Approve');
+        Route::get('/Dummy/Proposal/Request/document/view/{id}/{Type}', 'view')->name('ProposalReq.view');
+        Route::post('/Dummy/Proposal/Request/document/view/Approve/', 'Approve')->name('DummyQuotation.Approve');
+        Route::get('/Dummy/Proposal/Request/document/view/Reject/{id}', 'Reject')->name('DummyQuotation.Reject');
         Route::get('/Proposal/request/search/cancel', 'searchcancel')->name('search.by.date');
         Route::get('/Proposal/request/search/Approved', 'searchApproved')->name('search.by.Approved');
         Route::get('/Dummy/Proposal/Request/document/view/Approve/viewApprove/{id}','viewApprove')->name('DummyQuotation.viewApprove');

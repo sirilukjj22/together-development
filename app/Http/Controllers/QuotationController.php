@@ -41,8 +41,10 @@ class QuotationController extends Controller
         $document_IDs = $document->pluck('Quotation_ID');
         $missingQuotationIDs = $Quotation_IDs->diff($document_IDs);
         Quotation::whereIn('Quotation_ID', $missingQuotationIDs)->delete();
-        $Quotation = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document', [1, 2, 3])->get();
-        return view('quotation.index',compact('Quotation'));
+        $Proposalcount = Quotation::query()->where('Operated_by',$userid)->count();
+        $Proposal = Quotation::query()->where('Operated_by',$userid)->get();
+        $Awaiting = Quotation::query()->where('Operated_by',$userid)->where('');
+        return view('quotation.index',compact('Proposalcount','Proposal'));
     }
     public function changestatus($id ,$status)
     {
@@ -107,6 +109,21 @@ class QuotationController extends Controller
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
         return view('quotation.create',compact('Quotation_ID','Company','Mevent','Freelancer_member','Issue_date','Valid_Until','Mvat'));
     }
+    public function senddocuments(Request $request){
+        $idsString = $request->query('ids');
+        // แปลง string เป็น array
+        $idArray = explode(',', $idsString);
+        $documents = Quotation::whereIn('id', $idArray)->get();
+        foreach ($documents as $document) {
+            if ($document->status_document == 1) {
+                $document->status_document = 2; // สมมติว่าคุณต้องการตั้งค่าเป็น 1
+            } elseif ($document->status_document == 0) {
+                $document->status_document = 1;
+            }
+            $document->save();
+        }
+        return response()->json(['success' => true, 'message' => 'Documents updated successfully!']);
+    }
     public function Contactcreate($companyID)
     {
         $company =  companys::where('Profile_ID',$companyID)->first();
@@ -143,10 +160,14 @@ class QuotationController extends Controller
 
     public function save(Request $request){
         try {
+            $data = $request->all();
+
             $preview=$request->preview;
             $Quotation_IDcheck =$request->Quotation_ID;
             $adult=$request->Adult;
             $children=$request->Children;
+            $SpecialDiscount = $request->SpecialDiscount;
+            $SpecialDiscountBath = $request->DiscountAmount;
             $userid = Auth::user()->id;
             $IDquotation = Quotation::where('Quotation_ID',$Quotation_IDcheck)->first();
             if ($preview ==1) {
@@ -397,8 +418,10 @@ class QuotationController extends Controller
             }else{
                 $Quotation_ID =$Quotation_IDcheck;
             }
+
             $save = new Quotation();
             $save->Quotation_ID = $Quotation_ID;
+            $save->DummyNo = $Quotation_ID;
             $save->Company_ID = $request->Company;
             $save->company_contact = $request->Company_Contact;
             $save->checkin = $request->Checkin;
@@ -414,9 +437,16 @@ class QuotationController extends Controller
             $save->vat_type = $request->Mvat;
             $save->issue_date = $request->IssueDate;
             $save->Expirationdate = $request->Expiration;
-            $save->Document_issuer = $userid;
             $save->Operated_by = $userid;
-            $save->save();
+            if ($SpecialDiscount == 0 && $SpecialDiscountBath == 0) {
+                $save->status_document = 3;
+                $save->save();
+            }else {
+                $save->SpecialDiscount = $SpecialDiscount;
+                $save->SpecialDiscountBath = $SpecialDiscountBath;
+                $save->status_document = 1;
+                $save->save();
+            }
             //-----------------------------ส่วน product
             $quantities = $request->input('Quantitymain', []); // ตัวอย่างใช้ 'pricetotal' เป็น quantity
             $discounts = $request->input('discountmain', []);
