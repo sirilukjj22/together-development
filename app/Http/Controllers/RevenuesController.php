@@ -19,8 +19,6 @@ class RevenuesController extends Controller
         $from = date("Y-m-d 21:00:00", strtotime("-1 day"));
         $to = date('Y-m-d 21:00:00');
 
-        // dd($to);
-
         $check_data = Revenues::whereMonth('date', date('m'))->whereYear('date', date('Y'))->first();
 
         if (empty($check_data)) {
@@ -33,8 +31,6 @@ class RevenuesController extends Controller
                 ]);
             }
         }
-
-        // dd(date("Y-m-01 21:00:00"));
 
         ## Update จำนวนเงินของแต่ละวัน
         $room_array = [];
@@ -56,43 +52,76 @@ class RevenuesController extends Controller
 
                 $sum_bill = 0;
                 foreach ($check_sms as $key => $value) {
+                    // Guest Deposit
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
                         $room_array[$i] = [
                             'total_room' => $check_sms[$key]['total_amount'],
                         ];
-                    } 
+                    } else {
+                        $room_array[$i] = [ 'total_room' => 0 ];
+                    }
+                    // All Outlet
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
                         $fb_array[$i] = [
                             'total_fb' => $check_sms[$key]['total_amount'],
                         ];
-                    } 
+                    } else {
+                        $fb_array[$i] = [ 'total_fb' => 0 ];
+                    }
+                    // Water Park
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
                         $wp_array[$i] = [
                             'total_wp' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4) {
+                    } else {
+                        $wp_array[$i] = [ 'total_wp' => 0 ];
+                    }
+                    // Credit Card Hotel
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
                         $credit_array[$i] = [
                             'total_credit' => $check_sms[$key]['amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
+                    } else {
+                        $credit_array[$i] = [ 'total_credit' => 0 ];
+                    }
+                    // Agoda
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
                         $agoda_array[$i] = [
                             'total_agoda' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
+                    } else {
+                        $agoda_array[$i] = [ 'total_agoda' => 0 ];
+                    }
+                    // Front Desk
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
                         $front_array[$i] = [
                             'total_front' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
+                    } else {
+                        $front_array[$i] = [ 'total_front' => 0 ];
+                    }
+                    // Credit Card Water Park
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
                         $credit_wp_array[$i] = [
                             'total_credit_wp' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
+                    } else {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0 ];
+                    } 
+                    // Elexa
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
                         $ev_array[$i] = [
                             'total_ev' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
+                    } else {
+                        $ev_array[$i] = [ 'total_ev' => 0 ];
+                    } 
+                    // No Category
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
                         $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
-                    }
+                    } else {
+                        $no_type_array[$i] = [ 'no_type' => 0 ];
+                    } 
 
                     $sum_bill += $check_sms[$key]['transaction_bill'];
                 }
@@ -107,43 +136,76 @@ class RevenuesController extends Controller
                 // dd($check_sms);
                 $sum_bill = 0;
                 foreach ($check_sms as $key => $value) {
+                    // Guest Deposit
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
                         $room_array[$i] = [
                             'total_room' => $check_sms[$key]['total_amount'],
                         ];
-                    } 
+                    } else {
+                        $room_array[$i] = [ 'total_room' => 0 ];
+                    }
+                    // All Outlet
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
                         $fb_array[$i] = [
                             'total_fb' => $check_sms[$key]['total_amount'],
                         ];
-                    } 
+                    } else {
+                        $fb_array[$i] = [ 'total_fb' => 0 ];
+                    }
+                    // Water Park
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
                         $wp_array[$i] = [
                             'total_wp' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
+                    } else {
+                        $wp_array[$i] = [ 'total_wp' => 0 ];
+                    }
+                    // Credit Card Hotel
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
                         $credit_array[$i] = [
                             'total_credit' => $check_sms[$key]['amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
+                    } else {
+                        $credit_array[$i] = [ 'total_credit' => 0 ];
+                    }
+                    // Agoda
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
                         $agoda_array[$i] = [
                             'total_agoda' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
+                    } else {
+                        $agoda_array[$i] = [ 'total_agoda' => 0 ];
+                    }
+                    // Front Desk
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
                         $front_array[$i] = [
                             'total_front' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
+                    } else {
+                        $front_array[$i] = [ 'total_front' => 0 ];
+                    }
+                    // Credit Card Water Park
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
                         $credit_wp_array[$i] = [
                             'total_credit_wp' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
+                    } else {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0 ];
+                    } 
+                    // Elexa
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
                         $ev_array[$i] = [
                             'total_ev' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
+                    } else {
+                        $ev_array[$i] = [ 'total_ev' => 0 ];
+                    } 
+                    // No Category
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
                         $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
-                    }
+                    } else {
+                        $no_type_array[$i] = [ 'no_type' => 0 ];
+                    } 
 
                     $sum_bill += $check_sms[$key]['transaction_bill'];
                     
@@ -152,9 +214,6 @@ class RevenuesController extends Controller
             }
             
         }
-
-        // $check_sms = SMS_alerts::whereBetween('date', [date("Y-m-".str_pad(5 - 1, 2, '0', STR_PAD_LEFT).' 21:00:00'), date('Y-m-'.str_pad(5, 2, '0', STR_PAD_LEFT).' 21:00:00')])
-        //         ->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))->groupBy('status')->get();
 
         $room_transfer = 0;
         $fb_transfer = 0;
@@ -500,43 +559,76 @@ class RevenuesController extends Controller
 
                 $sum_bill = 0;
                 foreach ($check_sms as $key => $value) {
+                    // Guest Deposit
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
                         $room_array[$i] = [
                             'total_room' => $check_sms[$key]['total_amount'],
                         ];
-                    } 
+                    } else {
+                        $room_array[$i] = [ 'total_room' => 0 ];
+                    }
+                    // All Outlet
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
                         $fb_array[$i] = [
                             'total_fb' => $check_sms[$key]['total_amount'],
                         ];
-                    } 
+                    } else {
+                        $fb_array[$i] = [ 'total_fb' => 0 ];
+                    }
+                    // Water Park
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
                         $wp_array[$i] = [
                             'total_wp' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
+                    } else {
+                        $wp_array[$i] = [ 'total_wp' => 0 ];
+                    }
+                    // Credit Card Hotel
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
                         $credit_array[$i] = [
                             'total_credit' => $check_sms[$key]['amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
+                    } else {
+                        $credit_array[$i] = [ 'total_credit' => 0 ];
+                    }
+                    // Agoda
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
                         $agoda_array[$i] = [
                             'total_agoda' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
+                    } else {
+                        $agoda_array[$i] = [ 'total_agoda' => 0 ];
+                    }
+                    // Front Desk
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
                         $front_array[$i] = [
                             'total_front' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
+                    } else {
+                        $front_array[$i] = [ 'total_front' => 0 ];
+                    }
+                    // Credit Card Water Park
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
                         $credit_wp_array[$i] = [
                             'total_credit_wp' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
+                    } else {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0 ];
+                    } 
+                    // Elexa
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
                         $ev_array[$i] = [
                             'total_ev' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
+                    } else {
+                        $ev_array[$i] = [ 'total_ev' => 0 ];
+                    } 
+                    // No Category
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
                         $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
-                    }
+                    } else {
+                        $no_type_array[$i] = [ 'no_type' => 0 ];
+                    } 
 
                     $sum_bill += $check_sms[$key]['transaction_bill'];
                 }
@@ -551,43 +643,76 @@ class RevenuesController extends Controller
                 // dd($check_sms);
                 $sum_bill = 0;
                 foreach ($check_sms as $key => $value) {
+                    // Guest Deposit
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
                         $room_array[$i] = [
                             'total_room' => $check_sms[$key]['total_amount'],
                         ];
-                    } 
+                    } else {
+                        $room_array[$i] = [ 'total_room' => 0 ];
+                    }
+                    // All Outlet
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
                         $fb_array[$i] = [
                             'total_fb' => $check_sms[$key]['total_amount'],
                         ];
-                    } 
+                    } else {
+                        $fb_array[$i] = [ 'total_fb' => 0 ];
+                    }
+                    // Water Park
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
                         $wp_array[$i] = [
                             'total_wp' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4) {
+                    } else {
+                        $wp_array[$i] = [ 'total_wp' => 0 ];
+                    }
+                    // Credit Card Hotel
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
                         $credit_array[$i] = [
                             'total_credit' => $check_sms[$key]['amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
+                    } else {
+                        $credit_array[$i] = [ 'total_credit' => 0 ];
+                    }
+                    // Agoda
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
                         $agoda_array[$i] = [
                             'total_agoda' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
+                    } else {
+                        $agoda_array[$i] = [ 'total_agoda' => 0 ];
+                    }
+                    // Front Desk
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
                         $front_array[$i] = [
                             'total_front' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
+                    } else {
+                        $front_array[$i] = [ 'total_front' => 0 ];
+                    }
+                    // Credit Card Water Park
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
                         $credit_wp_array[$i] = [
                             'total_credit_wp' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
+                    } else {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0 ];
+                    } 
+                    // Elexa
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
                         $ev_array[$i] = [
                             'total_ev' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
+                    } else {
+                        $ev_array[$i] = [ 'total_ev' => 0 ];
+                    } 
+                    // No Category
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
                         $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
-                    }
+                    } else {
+                        $no_type_array[$i] = [ 'no_type' => 0 ];
+                    } 
 
                     $sum_bill += $check_sms[$key]['transaction_bill'];
                     
@@ -728,43 +853,76 @@ class RevenuesController extends Controller
 
                 $sum_bill = 0;
                 foreach ($check_sms as $key => $value) {
+                    // Guest Deposit
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
                         $room_array[$i] = [
                             'total_room' => $check_sms[$key]['total_amount'],
                         ];
-                    } 
+                    } else {
+                        $room_array[$i] = [ 'total_room' => 0 ];
+                    }
+                    // All Outlet
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
                         $fb_array[$i] = [
                             'total_fb' => $check_sms[$key]['total_amount'],
                         ];
-                    } 
+                    } else {
+                        $fb_array[$i] = [ 'total_fb' => 0 ];
+                    }
+                    // Water Park
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
                         $wp_array[$i] = [
                             'total_wp' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
+                    } else {
+                        $wp_array[$i] = [ 'total_wp' => 0 ];
+                    }
+                    // Credit Card Hotel
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
                         $credit_array[$i] = [
                             'total_credit' => $check_sms[$key]['amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
+                    } else {
+                        $credit_array[$i] = [ 'total_credit' => 0 ];
+                    }
+                    // Agoda
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
                         $agoda_array[$i] = [
                             'total_agoda' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
+                    } else {
+                        $agoda_array[$i] = [ 'total_agoda' => 0 ];
+                    }
+                    // Front Desk
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
                         $front_array[$i] = [
                             'total_front' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
+                    } else {
+                        $front_array[$i] = [ 'total_front' => 0 ];
+                    }
+                    // Credit Card Water Park
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
                         $credit_wp_array[$i] = [
                             'total_credit_wp' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
+                    } else {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0 ];
+                    } 
+                    // Elexa
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
                         $ev_array[$i] = [
                             'total_ev' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
+                    } else {
+                        $ev_array[$i] = [ 'total_ev' => 0 ];
+                    } 
+                    // No Category
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
                         $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
-                    }
+                    } else {
+                        $no_type_array[$i] = [ 'no_type' => 0 ];
+                    } 
 
                     $sum_bill += $check_sms[$key]['transaction_bill'];
                 }
@@ -778,43 +936,76 @@ class RevenuesController extends Controller
 
                 $sum_bill = 0;
                 foreach ($check_sms as $key => $value) {
+                    // Guest Deposit
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
                         $room_array[$i] = [
                             'total_room' => $check_sms[$key]['total_amount'],
                         ];
-                    } 
+                    } else {
+                        $room_array[$i] = [ 'total_room' => 0 ];
+                    }
+                    // All Outlet
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
                         $fb_array[$i] = [
                             'total_fb' => $check_sms[$key]['total_amount'],
                         ];
-                    } 
+                    } else {
+                        $fb_array[$i] = [ 'total_fb' => 0 ];
+                    }
+                    // Water Park
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
                         $wp_array[$i] = [
                             'total_wp' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4) {
+                    } else {
+                        $wp_array[$i] = [ 'total_wp' => 0 ];
+                    }
+                    // Credit Card Hotel
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
                         $credit_array[$i] = [
                             'total_credit' => $check_sms[$key]['amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
+                    } else {
+                        $credit_array[$i] = [ 'total_credit' => 0 ];
+                    }
+                    // Agoda
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
                         $agoda_array[$i] = [
                             'total_agoda' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
+                    } else {
+                        $agoda_array[$i] = [ 'total_agoda' => 0 ];
+                    }
+                    // Front Desk
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
                         $front_array[$i] = [
                             'total_front' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
+                    } else {
+                        $front_array[$i] = [ 'total_front' => 0 ];
+                    }
+                    // Credit Card Water Park
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
                         $credit_wp_array[$i] = [
                             'total_credit_wp' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
+                    } else {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0 ];
+                    } 
+                    // Elexa
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
                         $ev_array[$i] = [
                             'total_ev' => $check_sms[$key]['total_amount'],
                         ];
-                    } if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
+                    } else {
+                        $ev_array[$i] = [ 'total_ev' => 0 ];
+                    } 
+                    // No Category
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
                         $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
-                    }
+                    } else {
+                        $no_type_array[$i] = [ 'no_type' => 0 ];
+                    } 
 
                     $sum_bill += $check_sms[$key]['transaction_bill'];
                     
@@ -823,10 +1014,6 @@ class RevenuesController extends Controller
             }
             
         }
-
-        // dd($front_array);
-        // dd($agoda_array);
-
 
         $room_transfer = 0;
         $fb_transfer = 0;
