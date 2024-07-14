@@ -136,641 +136,610 @@
     </div>
 @endsection
 @section('content')
-<form id="myForm" action="{{route('Quotation.update')}}" method="POST">
-@csrf
-    <div class="container">
-        <div class="container mt-3">
-            <div class="row clearfix">
-                <div class="col-sm-12 col-12">
-                    <div class="card p-4 mb-4">
-                        <div class="row">
-                            <div class="col-lg-8 col-md-12 col-sm-12 image-container">
-                                <img src="{{ asset('assets2/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
-                                <div class="info">
-                                    <p class="titleh1">Together Resort Limited Partnership</p>
-                                    <p>168 Moo 2 Kaengkrachan Phetchaburi 76170</p>
-                                    <p>Tel : 032-708-888, 098-393-944-4 Fax :</p>
-                                    <p>Email : reservation@together-resort.com Website : www.together-resort.com</p>
-                                    <p></p>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-12 col-sm-12">
-                                <div class="row">
-                                    <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Proposal</b>
-                                    <span class="titleQuotation">{{$Quotation_ID}}</span>
-                                    <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
-                                    <input type="hidden" id="Quotationold" name="Quotationold" value="{{$QuotationID}}">
-                                    <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
-                                        <div class="col-12 col-md-12 col-sm-12">
-                                            <div class="row">
-                                                <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
-                                                    <span>Issue Date:</span>
-                                                </div>
-                                                <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
-                                                    <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;" >
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-12 col-sm-12 mt-2">
-                                            <div class="row">
-                                                <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
-                                                    <span>Expiration Date:</span>
-                                                </div>
-                                                <div class="col-lg-6 col-md-12 col-sm-12">
-                                                    <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly >
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
-                        <div class="row mt-5">
-                            <div class="col-lg-6 col-md-6 col-sm-12">
-                                <label class="labelcontact" for="">Customer Company</label>
-                                <select name="Company" id="Company" class="select2" onchange="companyContact()" required>
-                                    @foreach($Company as $item)
-                                        <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->Company_Name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-sm-12">
-                                <label class="labelcontact" for="">Customer Contact</label>
-                                <input type="text" name="Company_Contact" id="Company_Contact" class="form-control" value="{{$Contact_name->First_name}} {{$Contact_name->Last_name}}" disabled>
-                                <input type="hidden" name="Company_Contact" id="Company_Contactname" class="form-control" value="{{$Contact_name->id}}">
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-sm-12 mt-2">
-                                <button style="float: right;" type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Company.index') }}'">
-                                    <i class="fa fa-plus"></i> เพิ่มบริษัท</button>
-                            </div>
-                        </div>
-                        <hr class="mt-3 my-3" style="border: 1px solid #000">
-                        <div class="row mt-2">
-                            <div class="col-lg-2 col-md-6 col-sm-12">
-                                <label for="chekin">Check In Date</label>
-                                <input type="date" name="Checkin" id="Checkin" class="form-control" onchange="CheckDate()" value="{{$Quotation->checkin}}" required>
-                            </div>
-                            <div class="col-lg-2 col-md-6 col-sm-12">
-                                <label for="chekin">Check Out Date </label>
-                                <input type="date" name="Checkout" id="Checkout" class="form-control"onchange="CheckDate()"  value="{{$Quotation->checkout}}"  required>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                <label for="">จำนวน</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="Day" id="Day" placeholder="จำนวนวัน" value="{{$Quotation->day}}">
-                                    <span class="input-group-text">Day</span>
-                                    <input type="text" class="form-control" name="Night" id="Night" placeholder="จำนวนคืน" value="{{$Quotation->night}}">
-                                    <span class="input-group-text">Night</span>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                <label for="">จำนวนผู้เข้าพัก (ผู้ใหญ่/เด็ก)</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่" value="{{$Quotation->adult}}">
-                                    <span class="input-group-text">ผู้ใหญ่</span>
-                                    <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก" value="{{$Quotation->children}}">
-                                    <span class="input-group-text">เด็ก</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                <label  for="">Event Format</label>
-                                <select name="Mevent" id="Mevent" class="select2"  onchange="masterevent()" required>
-                                    <option value=""></option>
-                                    @foreach($Mevent as $item)
-                                        <option value="{{ $item->id }}"{{$Quotation->eventformat == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
-                                    @endforeach
-                                </select>
-
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                <label  for="">Vat Type</label>
-                                <select name="Mvat" id="Mvat" class="select2"  onchange="mastervat()" required>
-                                    <option value=""></option>
-                                    @foreach($Mvat as $item)
-                                        <option value="{{ $item->id }}"{{$Quotation->vat_type == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
-                                    @endforeach
-                                </select>
-
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                <label class="Freelancer_member" for="">Introduce By</label>
-                                <select name="Freelancer_member" id="Freelancer_member" class="select2" required>
-                                    <option value=""></option>
-                                    @foreach($Freelancer_member as $item)
-                                        <option value="{{ $item->Profile_ID }}"{{$Quotation->freelanceraiffiliate == $item->Profile_ID ? 'selected' : ''}}>{{ $item->First_name }} {{ $item->Last_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                <label  for="">Company Discount Contract</label>{{--ดึงของcompanyมาใส่--}}
-                                <div class="input-group">
-                                    <span class="input-group-text">DC</span>
-                                    <input type="text" class="form-control" name="Company_Rate_Code" aria-label="Amount (to the nearest dollar)" disabled>
-                                    <span class="input-group-text">%</span>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                <label  for="">Company Commission</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control"  name="Company_Commission_Rate_Code" disabled>
-                                    <span class="input-group-text">%</span>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                <label  for="">User discount </label>{{--ดึงของuserมาใส่--}}
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="Max_discount"  value="{{@Auth::user()->discount}}" placeholder="ส่วนลดคิดเป็น %" disabled>
-                                    <span class="input-group-text">%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <input type="hidden" id="vat_type" value="{{$Quotation->vat_type}}">
-    <input type="hidden" id="Meventcheck" value="{{$Quotation->eventformat}}">
-    <div class="container" style="font-size: 16px; font-family: Arial, sans-serif;position: relative;">
-        <div class="container mt-3">
-            <div class="row clearfix">
-                <div class="col-sm-12 col-12">
-                    <div class="card p-4 mb-4">
-                            <div class="row mt-2">
-                                <div class="col-lg-7 col-md-12 col-sm-12" style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#109699">
-                                    <b class="com mt-2 my-2"style="font-size:18px">Company Information</b>
-                                    <table>
-                                        <tr>
-                                            <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Company Name :</b></td>
-                                            <td>
-                                                <span id="Company_name" name="Company_name" >{{$comtypefullname}}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Address :</b></td>
-                                            <td><span id="Address" >{{$CompanyID->Address}} {{'ตำบล' . $TambonID->name_th}} </span></td>
-
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td><span id="Address2" >{{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
-                                            <td>
-                                                <span id="Company_Number">{{$company_phone->Phone_number}}</span>
-                                                <b style="margin-left: 10px;color:#000;">Company Fax : </b><span id="Company_Fax">{{$company_fax->Fax_number}}</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Email :</b></td>
-                                            <td><span id="Company_Email">{{$CompanyID->Company_Email}}</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Taxpayer Identification : </b></td>
-                                            <td><span id="Taxpayer">{{$CompanyID->Taxpayer_Identification}}</span></td>
-                                        </tr>
-
-                                    </table>
-                                    <div>
-                                        <br>
-                                    </div>
-                                    <div>
-                                        <b class="com my-2" style="font-size:18px">Personal Information</b>
-                                    </div>
-                                    <div class="col-12 row">
-                                        <div class="col-6">
-                                            <p style="display: inline-block;font-weight: bold;margin-left: 10px;">Contact Name :</p>
-                                            <p style="display: inline-block;"><span id="Company_contact">{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span></p>
-                                        </div>
-                                        <div class="col-6">
-                                            <p style="display: inline-block;font-weight: bold;">Contact Number :</p>
-                                            <p style="display: inline-block;"><span id="Contact_Phone">{{$Contact_phone->Phone_number}}</span></p>
-                                        </div>
-                                        <div>
-                                            <p style="display: inline-block;font-weight: bold;margin-left: 10px;">Contact Email :</p>
-                                            <p style="display: inline-block;"><span id="Contact_Email">{{$Contact_name->Email}}</span></p>
-                                        </div>
+<form id="myForm" action="{{url('/Dummy/Quotation/edit/company/quotation/update/'.$Quotation->id)}}" method="POST">
+    @csrf
+        <div class="container">
+            <div class="container mt-3">
+                <div class="row clearfix">
+                    <div class="col-sm-12 col-12">
+                        <div class="card p-4 mb-4">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-12 col-sm-12 image-container">
+                                    <img src="{{ asset('assets2/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
+                                    <div class="info">
+                                        <p class="titleh1">Together Resort Limited Partnership</p>
+                                        <p>168 Moo 2 Kaengkrachan Phetchaburi 76170</p>
+                                        <p>Tel : 032-708-888, 098-393-944-4 Fax :</p>
+                                        <p>Email : reservation@together-resort.com Website : www.together-resort.com</p>
+                                        <p></p>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-12 col-sm-12">
-                                    <div><br><br><br><br></div>
-                                    <div class="col-12 row" >
-                                        <div class="col-lg-6">
-                                            <p style="display: inline-block;font-weight: bold;">Check In :</p><br>
-                                            <p style="display: inline-block;font-weight: bold;">Check Out :</p><br>
-                                            <p style="display: inline-block;font-weight: bold;">Length of Stay :</p><br>
-                                            <p style="display: inline-block;font-weight: bold;">Number of Guests :</p>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <p style="display: inline-block;"><span id="checkinpo">{{$Quotation->checkin}}</span></p><br>
-                                            <p style="display: inline-block;"><span id="checkoutpo">{{$Quotation->checkout}}</span></p><br>
-                                            <p style="display: inline-block;"><span id="daypo">{{$Quotation->day}}</span> วัน <span id="nightpo">{{$Quotation->night}}</span> คืน</p><br>
-                                            <p style="display: inline-block;"><span id="Adultpo">{{$Quotation->adult}}</span> Adult , <span id="Childrenpo">{{$Quotation->children}}</span> Children</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="styled-hr"></div>
-                            </div>
-                            <div class="mt-2">
-                                <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-lg-2 col-md-12 col-sm-12">
-                                    <button  id="addproduct" type="button" class="btn btn-color-green lift btn_modal my-3" data-bs-toggle="modal" data-bs-target="#exampleModalproduct"onclick="fetchProducts('all')">
-                                        <i class="fa fa-plus"></i> Add Product</button>
-                                </div>
-                                <div class="modal fade" id="exampleModalproduct" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-xl">
-                                    <div class="modal-content">
-                                        <div class="modal-header btn-color-green ">
-                                            <h5 class="modal-title text-white" id="exampleModalLabel">Product</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="col-12 mt-3">
-                                                <div class="dropdown">
-                                                    <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        ประเภท Product
-                                                    </button>
-                                                    <ul class="dropdown-menu border-0 shadow p-3">
-                                                        <li><a class="dropdown-item py-2 rounded" data-value="all" onclick="fetchProducts('all')">All Product</a></li>
-                                                        <li><a class="dropdown-item py-2 rounded" data-value="Room_Type"onclick="fetchProducts('Room_Type')">Room</a></li>
-                                                        <li><a class="dropdown-item py-2 rounded" data-value="Banquet"onclick="fetchProducts('Banquet')">Banquet</a></li>
-                                                        <li><a class="dropdown-item py-2 rounded" data-value="Meals"onclick="fetchProducts('Meals')">Meal</a></li>
-                                                        <li><a class="dropdown-item py-2 rounded" data-value="Entertainment"onclick="fetchProducts('Entertainment')">Entertainment</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <hr class="mt-3 my-3" style="border: 1px solid #000">
-                                                <table  class="myDataTableQuotationmodal table table-hover align-middle mb-0" style="width:100%">
-                                                    <thead >
-                                                        <tr>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">ราคา</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%">คำสั่ง</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="product-list">
-
-                                                    </tbody>
-                                                </table>
-                                            <div class="col-12 mt-3">
-                                                <h3>รายการที่เลือก</h3>
-                                                <table  class="table table-hover align-middle mb-0">
-                                                    <thead >
-                                                        <tr>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">ราคา</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%">คำสั่ง</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="product-list-select">
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
-                                            <button type="button" class="btn btn-color-green lift confirm-button" id="confirm-button">สร้าง</button>
-                                        </div>
-                                    </div>
-                                    </div>
-                                    <div id="modalOverlay" class="modal-overlay"></div>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <table class=" table table-hover align-middle mb-0" style="width:100%">
-                                    <thead >
-                                        <tr>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">No.</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Description</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Quantity</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Unit</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price / Unit</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Discount</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price Discount</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Amount</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Order</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="display-selected-items">
-                                        @if (!empty($selectproduct))
-                                            @foreach ($selectproduct as $key => $item)
-                                                @foreach ($unit as $singleUnit)
-                                                    @if($singleUnit->id == @$item->product->unit)
-                                                        <tr id="tr-select-main{{$item->Product_ID}}">
-                                                            <input type="hidden" id="tr-select-main{{$item->Product_ID}}" name="tr-select-main[]" value="{{$item->Product_ID}}">
-                                                            <td><input type="hidden" id="ProductID" name="ProductIDmain[]" value="{{$item->Product_ID}}">{{$key+1}}</td>
-                                                            <td style="text-align:left;"><input type="hidden" id="Productname_th" name="Productname_th" value="{{@$item->product->name_th}}">{{@$item->product->name_th}}</td>
-                                                            <td class="Quantity" data-value="{{$item->Quantity}}"style="text-align:center;"><input type="hidden" id="Quantity" name="Quantitymain[]" value="{{$item->Quantity}}">{{$item->Quantity}}</td>
-                                                            <td><input type="hidden" id="unitname_th" name="unitname_th" value="{{ $singleUnit->name_th }}">{{ $singleUnit->name_th }}</td>
-                                                            <td class="priceproduct" data-value="{{$item->priceproduct}}"><input type="hidden" id="totalprice-unit{{$key+1}}" name="priceproductmain[]" value="{{$item->priceproduct}}">{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
-                                                            <td class="discount"style="text-align:center;"><input type="hidden" id="discount" name="discountmain[]" value="{{$item->discount}}">{{$item->discount}}%</td>
-                                                            <td class="net-price"style="text-align:center;" ><input type="hidden" id="net_discount{{$key+1}}" name="net_discountmain[]" value="{{$item->totaldiscount}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
-                                                            <td class="item-total"style="text-align:center;"><input type="hidden" id="allcounttotal{{$key+1}}" name="allcounttotalmain[]" value="{{$item->netpriceproduct}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
-                                                            <td>
-                                                                <button type="button" class="Btn remove-button1">
-                                                                    <i class="fa fa-minus-circle text-danger fa-lg"></i>
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                @endforeach
-                                            @endforeach
-                                        @endif
-                                    </tbody>
-                                </table>
-                            </div>
-                            @if (@Auth::user()->roleMenuDiscount('Proposal',Auth::user()->id) == 1)
-                                <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="1">
-                            @else
-                                <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="0">
-                            @endif
-                            <input type="hidden" name="discountuser" id="discountuser" value="{{@Auth::user()->discount}}">
-                            <div class="col-12 row ">
-                                <div class="col-lg-8 col-md-8 col-sm-12 mt-2" >
-                                    <span >Notes or Special Comment</span>
-                                    <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-                                </div>
-                                <div class="col-lg-4 col-md-4 col-sm-12 " >
-                                    <table class="table table-borderless" id="PRICE_INCLUDE_VAT" style="display: none;">
-                                        <tbody>
-                                            <tr >
-                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amount">0</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    @if (@Auth::user()->roleMenuSpecialDiscount('Proposal',Auth::user()->id) == 1)
-                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" >
-                                                    @else
-                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscount">0</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Price Before Tax</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Net-price">0</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td scope="row" style="text-align:right;width: 55%;font-size: 14px;"><b>Value Added Tax</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-Vat">0</span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <table class="table table-borderless" id="PRICE_EXCLUDE_VAT" style="display: none;">
-                                        <tbody>
-                                            <tr >
-                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amountEXCLUDE">0</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    @if (@Auth::user()->roleMenuSpecialDiscount('Proposal',Auth::user()->id) == 1)
-                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" >
-                                                    @else
-                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscountEXCLUDE">0</span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <table class="table table-borderless "id="PRICE_PLUS_VAT" style="display: none;">
-                                        <tbody>
-                                            <tr >
-                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amountpus">0</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    @if (@Auth::user()->roleMenuSpecialDiscount('Proposal',Auth::user()->id) == 1)
-                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" >
-                                                    @else
-                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscountpus">0</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td scope="row" style="text-align:right;width: 55%;font-size: 14px;"><b>Value Added Tax</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-Vatpus">0</span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <input type="hidden" id="SpecialDischeck" name="SpecialDischeck" class="form-control" >
-                            <div class="col-12 row">
-                                <div class="col-8"></div>
-                                <div class="col-lg-4 col-md-3 col-sm-12">
-                                    <table class="table table-borderless1" >
-                                        <tbody>
-                                            <tr>
-                                                <td colspan="2" style="text-align:center;">
-                                                    <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;padding:5px;  padding-bottom: 8px;">
-                                                        <b style="font-size: 14px;">Net Total</b>
-                                                        <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"><span id="Net-Total">0</span></strong>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="col-12 row">
-                                <div class="col-8"></div>
-                                <div class="col-4 styled-hr"></div>
-                            </div>
-                            <div class="col-12 row">
-                                <div class="col-8">
-                                </div>
-                                <div class="col-lg-4 col-md-3 col-sm-12">
-                                    <table class="table table-borderless" >
-                                        <tbody>
-                                            <tr>
-                                                <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="col-12 mt-3">
-                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <strong class="com" style="font-size: 18px">Method of Payment</strong>
-                                </div>
-                                <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
-                                    Please make a 50% deposit within 7 days after confirmed. <br>
-                                    Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
-                                    If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
-                                    pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                                </span>
-                                <span class="col-md-8 col-sm-12"  id="Payment100" style="display: none">
-                                    Please make a 100% deposit within 3 days after confirmed. <br>
-                                    Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
-                                    If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
-                                    pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                                </span>
-                                <div class="row">
-                                    <div class="col-lg-8 col-md-6 col-sm-12">
-                                        <div class="col-12  mt-2">
-                                            <div class="row">
-                                                <div class="col-2 mt-3" style="display: flex;justify-content: center;align-items: center;">
-                                                    <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 60%;border-radius: 50%;"/>
-                                                </div>
-                                                <div class="col-7 mt-2">
-                                                    <strong>The Siam Commercial Bank Public Company Limited <br>Bank Account No. 708-226791-3<br>Tha Yang - Phetchaburi Branch (Savings Account)</strong>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="styled-hr mt-3"></div>
-                            <div class="col-12 mt-2">
-                                <div class="col-4">
-                                    <strong class="titleh1">รับรอง</strong>
-                                </div>
-                                <div class="col-12 my-2">
                                     <div class="row">
-                                        <div class="col-lg-2 centered-content">
-                                            <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
-                                            @php
-                                                use SimpleSoftwareIO\QrCode\Facades\QrCode;
-
-                                            @endphp
-                                            <div class="mt-3">
-                                                {!! QrCode::size(90)->generate('No found'); !!}
+                                        <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Proposal</b>
+                                        <span class="titleQuotation">{{$Quotation_ID}}</span>
+                                        <input type="hidden" id="Quotationold" name="Quotationold" value="{{$Quotation_ID}}">
+                                        <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
+                                            <div class="col-12 col-md-12 col-sm-12">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                        <span>Issue Date:</span>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
+                                                        <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;"value="{{$Quotation->issue_date}}" >
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-lg-2 centered-content">
-                                            <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
-                                            <br><br>
-                                            <span>{{@Auth::user()->name}}</span>
-                                            <span id="issue_date_document"></span>
-                                        </div>
-                                        <div class="col-lg-2 centered-content">
-                                            <span>ผู้อนุมัติเอกสาร (ผู้ขาย)</span><br>
-                                            <br><br>
-                                            <span>{{@Auth::user()->name}}</span>
-                                            <span id="issue_date_document1"></span>
-                                        </div>
-                                        <div class="col-lg-2 centered-content">
-                                            <span>ตราประทับ (ผู้ขาย)</span>
-                                        </div>
-                                        <div class="col-lg-2 centered-content">
-                                            <span>ผู้รับเอกสาร (ลูกค้า)</span>
-                                            <br><br><br>
-                                            ______________________
-                                            <span>_____/__________/_____</span>
-                                        </div>
-                                        <div class="col-lg-2 centered-content">
-                                            <span >ตราประทับ (ลูกค้า)</span>
-                                            <div class="centered-content4 mt-1">
+                                            <div class="col-12 col-md-12 col-sm-12 mt-2">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                        <span>Expiration Date:</span>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12">
+                                                        <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly  value="{{$Quotation->Expirationdate}}">
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="styled-hr mt-3"></div>
-                            <div class="col-12 row mt-5">
-                                <div class="col-4"></div>
-                                <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
-                                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
-                                        Cancel
-                                    </button>
-                                    <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
-                                        Preview
-                                    </button>
-                                    <button type="submit" class="btn btn-color-green lift btn_modal">Select</button>
+                            <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$QuotationID}}">
+                            <div class="row mt-5">
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <label class="labelcontact" for="">Customer Company</label>
+                                    <select name="Company" id="Company" class="select2" onchange="companyContact()" required>
+                                        @foreach($Company as $item)
+                                            <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->Company_Name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <div class="col-4"></div>
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <label class="labelcontact" for="">Customer Contact</label>
+                                    <input type="text" name="Company_Contact" id="Company_Contact" class="form-control" value="{{$Contact_name->First_name}} {{$Contact_name->Last_name}}" disabled>
+                                    <input type="hidden" name="Company_Contact" id="Company_Contactname" class="form-control" value="{{$Contact_name->id}}">
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12 mt-2">
+                                    <button style="float: right;" type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Company.index') }}'">
+                                        <i class="fa fa-plus"></i> เพิ่มบริษัท</button>
+                                </div>
                             </div>
+                            <hr class="mt-3 my-3" style="border: 1px solid #000">
+                            <div class="row mt-2">
+                                <div class="col-lg-2 col-md-6 col-sm-12">
+                                    <label for="chekin">Check In Date</label>
+                                    <input type="date" name="Checkin" id="Checkin" class="form-control" onchange="CheckDate()" value="{{$Quotation->checkin}}" required>
+                                </div>
+                                <div class="col-lg-2 col-md-6 col-sm-12">
+                                    <label for="chekin">Check Out Date </label>
+                                    <input type="date" name="Checkout" id="Checkout" class="form-control"onchange="CheckDate()"  value="{{$Quotation->checkout}}"  required>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label for="">จำนวน</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="Day" id="Day" placeholder="จำนวนวัน" value="{{$Quotation->day}}">
+                                        <span class="input-group-text">Day</span>
+                                        <input type="text" class="form-control" name="Night" id="Night" placeholder="จำนวนคืน" value="{{$Quotation->night}}">
+                                        <span class="input-group-text">Night</span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label for="">จำนวนผู้เข้าพัก (ผู้ใหญ่/เด็ก)</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่" value="{{$Quotation->adult}}">
+                                        <span class="input-group-text">ผู้ใหญ่</span>
+                                        <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก" value="{{$Quotation->children}}">
+                                        <span class="input-group-text">เด็ก</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label  for="">Event Format</label>
+                                    <select name="Mevent" id="Mevent" class="select2"  onchange="masterevent()" required>
+                                        <option value=""></option>
+                                        @foreach($Mevent as $item)
+                                            <option value="{{ $item->id }}"{{$Quotation->eventformat == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
+                                        @endforeach
+                                    </select>
 
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label  for="">Vat Type</label>
+                                    <select name="Mvat" id="Mvat" class="select2"  onchange="mastervat()" required>
+                                        <option value=""></option>
+                                        @foreach($Mvat as $item)
+                                            <option value="{{ $item->id }}"{{$Quotation->vat_type == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
+                                        @endforeach
+                                    </select>
+
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label class="Freelancer_member" for="">Introduce By</label>
+                                    <select name="Freelancer_member" id="Freelancer_member" class="select2" required>
+                                        <option value=""></option>
+                                        @foreach($Freelancer_member as $item)
+                                            <option value="{{ $item->Profile_ID }}"{{$Quotation->freelanceraiffiliate == $item->Profile_ID ? 'selected' : ''}}>{{ $item->First_name }} {{ $item->Last_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label  for="">Company Discount Contract</label>{{--ดึงของcompanyมาใส่--}}
+                                    <div class="input-group">
+                                        <span class="input-group-text">DC</span>
+                                        <input type="text" class="form-control" name="Company_Rate_Code" aria-label="Amount (to the nearest dollar)" disabled value="{{$Quotation->ComRateCode}}">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label  for="">Company Commission</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control"  name="Company_Commission_Rate_Code" disabled value="{{$Quotation->commissionratecode}}">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label  for="">User discount </label>{{--ดึงของuserมาใส่--}}
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="Max_discount"  value="{{@Auth::user()->discount}}" placeholder="ส่วนลดคิดเป็น %" disabled>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label  for="">Special Discount</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="SpecialDiscount" id="SpecialDiscount" placeholder="ส่วนลดคิดเป็น %"  value="{{$Quotation->SpecialDiscount}}" >
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label  for="">Discount Amount</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท" value="{{$Quotation->SpecialDiscountBath}}">
+                                        <span class="input-group-text">Bath</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+        <input type="hidden" id="vat_type" value="{{$Quotation->vat_type}}">
+        <input type="hidden" id="Meventcheck" value="{{$Quotation->eventformat}}">
+        <div class="container" style="font-size: 16px; font-family: Arial, sans-serif;position: relative;">
+            <div class="container mt-3">
+                <div class="row clearfix">
+                    <div class="col-sm-12 col-12">
+                        <div class="card p-4 mb-4">
+                                <div class="row mt-2">
+                                    <div class="col-lg-7 col-md-12 col-sm-12" style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#109699">
+                                        <b class="com mt-2 my-2"style="font-size:18px">Company Information</b>
+                                        <table>
+                                            <tr>
+                                                <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Company Name :</b></td>
+                                                <td>
+                                                    <span id="Company_name" name="Company_name" >{{$comtypefullname}}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Address :</b></td>
+                                                <td><span id="Address" >{{$CompanyID->Address}} {{'ตำบล' . $TambonID->name_th}} </span></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td><span id="Address2" >{{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
+                                                <td>
+                                                    <span id="Company_Number">{{$company_phone->Phone_number}}</span>
+                                                    <b style="margin-left: 10px;color:#000;">Company Fax : </b><span id="Company_Fax">{{$company_fax->Fax_number}}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Email :</b></td>
+                                                <td><span id="Company_Email">{{$CompanyID->Company_Email}}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Taxpayer Identification : </b></td>
+                                                <td><span id="Taxpayer">{{$CompanyID->Taxpayer_Identification}}</span></td>
+                                            </tr>
+
+                                        </table>
+                                        <div>
+                                            <br>
+                                        </div>
+                                        <div>
+                                            <b class="com my-2" style="font-size:18px">Personal Information</b>
+                                        </div>
+                                        <div class="col-12 row">
+                                            <div class="col-6">
+                                                <p style="display: inline-block;font-weight: bold;margin-left: 10px;">Contact Name :</p>
+                                                <p style="display: inline-block;"><span id="Company_contact">{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span></p>
+                                            </div>
+                                            <div class="col-6">
+                                                <p style="display: inline-block;font-weight: bold;">Contact Number :</p>
+                                                <p style="display: inline-block;"><span id="Contact_Phone">{{$Contact_phone->Phone_number}}</span></p>
+                                            </div>
+                                            <div>
+                                                <p style="display: inline-block;font-weight: bold;margin-left: 10px;">Contact Email :</p>
+                                                <p style="display: inline-block;"><span id="Contact_Email">{{$Contact_name->Email}}</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-12 col-sm-12">
+                                        <div><br><br><br><br></div>
+                                        <div class="col-12 row" >
+                                            <div class="col-lg-6">
+                                                <p style="display: inline-block;font-weight: bold;">Check In :</p><br>
+                                                <p style="display: inline-block;font-weight: bold;">Check Out :</p><br>
+                                                <p style="display: inline-block;font-weight: bold;">Length of Stay :</p><br>
+                                                <p style="display: inline-block;font-weight: bold;">Number of Guests :</p>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <p style="display: inline-block;"><span id="checkinpo">{{$Quotation->checkin}}</span></p><br>
+                                                <p style="display: inline-block;"><span id="checkoutpo">{{$Quotation->checkout}}</span></p><br>
+                                                <p style="display: inline-block;"><span id="daypo">{{$Quotation->day}}</span> วัน <span id="nightpo">{{$Quotation->night}}</span> คืน</p><br>
+                                                <p style="display: inline-block;"><span id="Adultpo">{{$Quotation->adult}}</span> Adult , <span id="Childrenpo">{{$Quotation->children}}</span> Children</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="styled-hr"></div>
+                                </div>
+                                <div class="mt-2">
+                                    <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-lg-2 col-md-12 col-sm-12">
+                                        <button  id="addproduct" type="button" class="btn btn-color-green lift btn_modal my-3" data-bs-toggle="modal" data-bs-target="#exampleModalproduct"onclick="fetchProducts('all')">
+                                            <i class="fa fa-plus"></i> Add Product</button>
+                                    </div>
+                                    <div class="modal fade" id="exampleModalproduct" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-xl">
+                                        <div class="modal-content">
+                                            <div class="modal-header btn-color-green ">
+                                                <h5 class="modal-title text-white" id="exampleModalLabel">Product</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="col-12 mt-3">
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            ประเภท Product
+                                                        </button>
+                                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                                            <li><a class="dropdown-item py-2 rounded" data-value="all" onclick="fetchProducts('all')">All Product</a></li>
+                                                            <li><a class="dropdown-item py-2 rounded" data-value="Room_Type"onclick="fetchProducts('Room_Type')">Room</a></li>
+                                                            <li><a class="dropdown-item py-2 rounded" data-value="Banquet"onclick="fetchProducts('Banquet')">Banquet</a></li>
+                                                            <li><a class="dropdown-item py-2 rounded" data-value="Meals"onclick="fetchProducts('Meals')">Meal</a></li>
+                                                            <li><a class="dropdown-item py-2 rounded" data-value="Entertainment"onclick="fetchProducts('Entertainment')">Entertainment</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <hr class="mt-3 my-3" style="border: 1px solid #000">
+                                                    <table  class="myDataTableQuotationmodal table table-hover align-middle mb-0" style="width:100%">
+                                                        <thead >
+                                                            <tr>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">ราคา</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%">คำสั่ง</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="product-list">
+
+                                                        </tbody>
+                                                    </table>
+                                                <div class="col-12 mt-3">
+                                                    <h3>รายการที่เลือก</h3>
+                                                    <table  class="table table-hover align-middle mb-0">
+                                                        <thead >
+                                                            <tr>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">ราคา</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%">คำสั่ง</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="product-list-select">
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
+                                                <button type="button" class="btn btn-color-green lift confirm-button" id="confirm-button">สร้าง</button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        <div id="modalOverlay" class="modal-overlay"></div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <table class=" table table-hover align-middle mb-0" style="width:100%">
+                                        <thead >
+                                            <tr>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">No.</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Description</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Quantity</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Unit</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price / Unit</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Discount</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price Discount</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Amount</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Order</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="display-selected-items">
+                                            @if (!empty($selectproduct))
+                                                @foreach ($selectproduct as $key => $item)
+                                                    @foreach ($unit as $singleUnit)
+                                                        @if($singleUnit->id == @$item->product->unit)
+                                                            @php
+                                                            $var = $key+1;
+                                                            @endphp
+                                                            <tr id="tr-select-main{{$item->Product_ID}}">
+                                                                <input type="hidden" id="tr-select-main{{$item->Product_ID}}" name="tr-select-main[]" value="{{$item->Product_ID}}">
+                                                                <td><input type="hidden" id="ProductID" name="ProductIDmain[]" value="{{$item->Product_ID}}">{{$key+1}}</td>
+                                                                <td style="text-align:left;"><input type="hidden" id="Productname_th" name="Productname_th" value="{{@$item->product->name_th}}">{{@$item->product->name_th}}</td>
+                                                                <td class="Quantity" data-value="{{$item->Quantity}}" style="text-align:center;">
+                                                                    <input type="text" id="quantity{{$var}}" name="Quantitymain[]" rel="{{$var}}" style="text-align:center;"class="quantity-input form-control" value="{{$item->Quantity}}">
+                                                                </td>
+                                                                <td><input type="hidden" id="unitname_th" name="unitname_th" value="{{ $singleUnit->name_th }}">{{ $singleUnit->name_th }}</td>
+                                                                <td class="priceproduct" data-value="{{$item->priceproduct}}"><input type="hidden" id="totalprice-unit{{$var}}" name="priceproductmain[]" value="{{$item->priceproduct}}">{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
+                                                                <td class="discount"style="text-align:center;">
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="discount{{$var}}" name="discountmain[]" rel="{{$var}}"style="text-align:center;" class="discount-input form-control" value="{{$item->discount}}">
+                                                                        <input type="hidden" id="maxdiscount{{$var}}" name="maxdiscount[]" rel="{{$var}}" class=" form-control" value="{{$item->product->maximum_discount}}">
+                                                                        <span class="input-group-text">%</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="net-price"style="text-align:center;" ><span id="net_discount{{$var}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</span></td>
+                                                                <td class="item-total"style="text-align:center;"><span id="all-total{{$var}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</span></td>
+                                                                <td>
+                                                                    <button type="button" class="Btn remove-button1"  id="remove-button1{{$var}}" value="{{$item->Product_ID}}">
+                                                                        <i class="fa fa-minus-circle text-danger fa-lg"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        @endif
+                                                    @endforeach
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @if (@Auth::user()->roleMenuDiscount('Proposal',Auth::user()->id) == 1)
+                                    <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="1">
+                                @else
+                                    <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="0">
+                                @endif
+                                <input type="hidden" name="discountuser" id="discountuser" value="{{@Auth::user()->discount}}">
+                                <div class="col-12 row ">
+                                    <div class="col-lg-8 col-md-8 col-sm-12 mt-2" >
+                                        <span >Notes or Special Comment</span>
+                                        <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-12 " >
+                                        <table class="table table-borderless" id="PRICE_INCLUDE_VAT" style="display: none;">
+                                            <tbody>
+                                                <tr >
+                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amount">0</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;">
+                                                        <span id="sp">0</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscount">0</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Price Before Tax</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Net-price">0</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td scope="row" style="text-align:right;width: 55%;font-size: 14px;"><b>Value Added Tax</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-Vat">0</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <table class="table table-borderless" id="PRICE_EXCLUDE_VAT" style="display: none;">
+                                            <tbody>
+                                                <tr >
+                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amountEXCLUDE">0</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;">
+                                                        <span id="spEXCLUDE">0</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscountEXCLUDE">0</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <table class="table table-borderless "id="PRICE_PLUS_VAT" style="display: none;">
+                                            <tbody>
+                                                <tr >
+                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amountpus">0</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;">
+                                                        <span id="sppus">0</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscountpus">0</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td scope="row" style="text-align:right;width: 55%;font-size: 14px;"><b>Value Added Tax</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-Vatpus">0</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="SpecialDischeck" name="SpecialDischeck" class="form-control" >
+                                <div class="col-12 row">
+                                    <div class="col-8"></div>
+                                    <div class="col-lg-4 col-md-3 col-sm-12">
+                                        <table class="table table-borderless1" >
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="2" style="text-align:center;">
+                                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;padding:5px;  padding-bottom: 8px;">
+                                                            <b style="font-size: 14px;">Net Total</b>
+                                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"><span id="Net-Total">0</span></strong>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-12 row">
+                                    <div class="col-8"></div>
+                                    <div class="col-4 styled-hr"></div>
+                                </div>
+                                <div class="col-12 row">
+                                    <div class="col-8">
+                                    </div>
+                                    <div class="col-lg-4 col-md-3 col-sm-12">
+                                        <table class="table table-borderless" >
+                                            <tbody>
+                                                <tr>
+                                                    <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <div class="col-lg-4 col-md-6 col-sm-12">
+                                        <strong class="com" style="font-size: 18px">Method of Payment</strong>
+                                    </div>
+                                    <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
+                                        Please make a 50% deposit within 7 days after confirmed. <br>
+                                        Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
+                                        If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
+                                        pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
+                                    </span>
+                                    <span class="col-md-8 col-sm-12"  id="Payment100" style="display: none">
+                                        Please make a 100% deposit within 3 days after confirmed. <br>
+                                        Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
+                                        If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
+                                        pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
+                                    </span>
+                                    <div class="row">
+                                        <div class="col-lg-8 col-md-6 col-sm-12">
+                                            <div class="col-12  mt-2">
+                                                <div class="row">
+                                                    <div class="col-2 mt-3" style="display: flex;justify-content: center;align-items: center;">
+                                                        <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 60%;border-radius: 50%;"/>
+                                                    </div>
+                                                    <div class="col-7 mt-2">
+                                                        <strong>The Siam Commercial Bank Public Company Limited <br>Bank Account No. 708-226791-3<br>Tha Yang - Phetchaburi Branch (Savings Account)</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="styled-hr mt-3"></div>
+                                <div class="col-12 mt-2">
+                                    <div class="col-4">
+                                        <strong class="titleh1">รับรอง</strong>
+                                    </div>
+                                    <div class="col-12 my-2">
+                                        <div class="row">
+                                            <div class="col-lg-2 centered-content">
+                                                <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
+                                                @php
+                                                    use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
+                                                @endphp
+                                                <div class="mt-3">
+                                                    {!! QrCode::size(90)->generate('No found'); !!}
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 centered-content">
+                                                <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
+                                                <br><br>
+                                                <span>{{@Auth::user()->name}}</span>
+                                                <span id="issue_date_document"></span>
+                                            </div>
+                                            <div class="col-lg-2 centered-content">
+                                                <span>ผู้อนุมัติเอกสาร (ผู้ขาย)</span><br>
+                                                <br><br>
+                                                <span>{{@Auth::user()->name}}</span>
+                                                <span id="issue_date_document1"></span>
+                                            </div>
+                                            <div class="col-lg-2 centered-content">
+                                                <span>ตราประทับ (ผู้ขาย)</span>
+                                            </div>
+                                            <div class="col-lg-2 centered-content">
+                                                <span>ผู้รับเอกสาร (ลูกค้า)</span>
+                                                <br><br><br>
+                                                ______________________
+                                                <span>_____/__________/_____</span>
+                                            </div>
+                                            <div class="col-lg-2 centered-content">
+                                                <span >ตราประทับ (ลูกค้า)</span>
+                                                <div class="centered-content4 mt-1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="styled-hr mt-3"></div>
+                                <div class="col-12 row mt-5">
+                                    <div class="col-4"></div>
+                                    <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
+                                        <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
+                                            Cancel
+                                        </button>
+                                        <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
+                                            Preview
+                                        </button>
+                                        <button type="submit" class="btn btn-color-green lift btn_modal">Select</button>
+                                    </div>
+                                    <div class="col-4"></div>
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 <input type="hidden" name="preview" value="1" id="preview">
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
 <script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
-<script>
-    function CheckDate() {
-        const checkoutDateValue = document.getElementById('Checkout').value;
-        const checkinDateValue = document.getElementById('Checkin').value;
-
-        const checkinDate = new Date(checkinDateValue);
-        const checkoutDate = new Date(checkoutDateValue);
-
-        if (checkoutDate > checkinDate) {
-            const timeDiff = checkoutDate - checkinDate;
-            const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-            // เนื่องจาก Check-in นับเป็นวันแรกด้วย
-            const totalDays = diffDays + 1;
-            const nights = diffDays;
-
-            $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
-            $('#Night').val(isNaN(nights) ? '0' : nights);
-
-            console.log(`จำนวนวัน: ${totalDays} วัน`);
-            console.log(`จำนวนคืน: ${nights} คืน`);
-            $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-            $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-            $('#daypo').text(totalDays);
-            $('#nightpo').text(nights);
-        } else if (checkoutDate.getTime() === checkinDate.getTime()) {
-            // กรณีที่ Check-in Date เท่ากับ Check-out Date
-            const totalDays = 1;
-            $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
-            $('#Night').val('0');
-
-            $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-            $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-            $('#daypo').text(isNaN(totalDays) ? '0' : totalDays);
-            $('#nightpo').text('0');
-            console.log(`จำนวนวัน: ${totalDays} วัน`);
-            console.log(`จำนวนคืน: 0 คืน`);
-        } else {
-            // กรณีที่ Check-out Date น้อยกว่าหรือเท่ากับ Check-in Date
-            console.log("วัน Check-out ต้องมากกว่าวัน Check-in");
-            $('#Day').val('0');
-            $('#Night').val('0');
-        }
-    }
-</script>
 <script>
     $(document).ready(function() {
         $('.select2').select2({
@@ -786,6 +755,10 @@
     $(document).on('keyup', '#Adult', function() {
         var adult =  Number($(this).val());
         $('#Adultpo').text(adult);
+        totalAmost();
+    });
+    $(document).on('keyup', '#DiscountAmount', function() {
+        var DiscountAmount =  Number($(this).val());
         totalAmost();
     });
     function masterevent() {
@@ -862,14 +835,14 @@
 </script>
 <script type="text/javascript">
     $(function() {
-        var start = moment();
-        var end = moment().add(7, 'days');
+        var start = moment("{{ $Quotation->issue_date }}", "DD/MM/YYYY");
+        var end = moment("{{ $Quotation->Expirationdate }}", "DD/MM/YYYY");
+
         function cb(start, end) {
-            $('#datestart').val(start.format('DD/MM/Y'));
-            $('#dateex').val(end.format('DD/MM/Y'));
-            $('#issue_date_document').text(start.format('DD/MM/Y'));
-            $('#issue_date_document1').text(start.format('DD/MM/Y'));
+            $('#datestart').val(start.format('DD/MM/YYYY'));
+            $('#dateex').val(end.format('DD/MM/YYYY'));
         }
+
         $('#reportrange1').daterangepicker({
             startDate: start,
             endDate: end,
@@ -877,10 +850,10 @@
                 '3 Days': [moment(), moment().add(3, 'days')],
                 '7 Days': [moment(), moment().add(7, 'days')],
                 '15 Days': [moment(), moment().add(15, 'days')],
-                '30 Days': [moment(), moment().add(30, 'days')],
+                '30 Days': [moment(), moment().add(30, 'days')]
             }
-        },
-        cb);
+        }, cb);
+
         cb(start, end);
     });
 </script>
@@ -906,7 +879,7 @@
     }
     function companyContact() {
         var companyID = $('#Company').val();
-    //    id="tr-select-main{{$item->Product_ID}}
+        console.log(companyID);
         jQuery.ajax({
             type: "GET",
             url: "{!! url('/Quotation/create/company/" + companyID + "') !!}",
@@ -929,6 +902,7 @@
                 var companyphone = response.company_phone.Phone_number;
                 var companyfax = response.company_fax.Fax_number;
                 var CompanyEmail = response.company.Company_Email;
+                var Discount_Contract_Rate = response.company.Discount_Contract_Rate;
                 var TaxpayerIdentification = response.company.Taxpayer_Identification;
                 var companyphone = response.company_phone.Phone_number;
 
@@ -937,6 +911,7 @@
 
                 console.log(response.data.First_name);
                 $('#Company_Contact').val(fullName).prop('disabled', true);
+                $('#Company_Discount').val(Discount_Contract_Rate);
                 $('#Company_Contactname').val(fullid);
                 $('#Company_name').text(fullNameCompany);
                 $('#Address').text(Address);
@@ -953,28 +928,6 @@
                 console.error("AJAX request failed: ", status, error);
             }
         });
-        @if (!empty($selectproduct))
-            @foreach ($selectproduct as $item)
-                // สร้างตัวแปร JavaScript สำหรับแต่ละ Product_ID
-                var productId = "{{ $item->Product_ID }}";
-                // log ค่า <tr> ที่มี id เท่ากับ tr-select-main + productId
-                $('#tr-select-main' + productId).remove();
-            @endforeach
-        @endif
-        $('#total-amount').text(0.00);
-        $('#lessDiscount').text(0.00);
-        $('#Net-price').text(0.00);
-        $('#total-Vat').text(0.00);
-        $('#Net-Total').text(0.00);
-        $('#Average').text(0.00);
-        $('#total-amountEXCLUDE').text(0.00);
-        $('#lessDiscountEXCLUDE').text(0.00);
-        $('#Net-priceEXCLUDE').text(0.00);
-        $('#total-VatEXCLUDE').text(0.00);
-        $('#total-amountpus').text(0.00);
-        $('#lessDiscountpus').text(0.00);
-        $('#Net-pricepus').text(0.00);
-        $('#total-Vatpus').text(0.00);
     }
 </script>
 <script>
@@ -1132,23 +1085,41 @@
                                 var rowNumbemain = $('#display-selected-items tr').length + 1;
                                 let discountInput;
                                 var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
+                                var SpecialDiscount = document.getElementById('SpecialDiscount').value;
                                 var discountuser = document.getElementById('discountuser').value;
-                                console.log(discountuser);
                                 var maximum_discount = val.maximum_discount;
-                                if (roleMenuDiscount == 1) {
-                                    discountInput = '<div class="input-group">' +
-                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
-                                        'oninput="if (parseFloat(this.value) > ' + discountuser + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
-                                        '<span class="input-group-text">%</span>' +
-                                        '</div>';
-
-                                } else {
-                                    discountInput = '<div class="input-group">' +
-                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
-                                        'oninput="if (parseFloat(this.value) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                        '<span class="input-group-text">%</span>' +
-                                        '</div>';
+                                if (SpecialDiscount >= 1) {
+                                    if (roleMenuDiscount == 1) {
+                                        discountInput = '<div class="input-group">' +
+                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                            'oninput="if (parseFloat(this.value) > ' + SpecialDiscount + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
+                                            '<span class="input-group-text">%</span>' +
+                                            '</div>';
+                                    } else {
+                                        discountInput = '<div class="input-group">' +
+                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
+                                            'oninput="if (parseFloat(this.value) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                            '<span class="input-group-text">%</span>' +
+                                            '</div>';
+                                    }
                                 }
+                                else{
+                                    if (roleMenuDiscount == 1) {
+                                        discountInput = '<div class="input-group">' +
+                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                            'oninput="if (parseFloat(this.value) > ' + discountuser + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
+                                            '<span class="input-group-text">%</span>' +
+                                            '</div>';
+
+                                    } else {
+                                        discountInput = '<div class="input-group">' +
+                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
+                                            'oninput="if (parseFloat(this.value) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                            '<span class="input-group-text">%</span>' +
+                                            '</div>';
+                                    }
+                                }
+
 
                                 $('#display-selected-items').append(
                                     '<tr id="tr-select-addmain' + val.id + '">' +
@@ -1189,7 +1160,6 @@
     //----------------------------------------รายการ---------------------------
     $(document).ready(function() {
         $(document).on('keyup', '.quantitymain', function() {
-            var number_ID = $(this).attr('rel');
             var quantitymain =  Number($(this).val());
             var discountmain =  $('#discountmain'+number_ID).val();
             var number = Number($('#number-product').val());
@@ -1219,78 +1189,53 @@
             // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             totalAmost();
         });
-    });
-
-        $('#SpecialDis').on('input', function() {
-            var specialDisValue = $(this).val();
-            var typevat  = $('#Mvat').val();
-            let allprice = 0;
-            let lessDiscount = 0;
-            let beforetax =0;
-            let addedtax =0;
-            let Nettotal =0;
-            let totalperson=0;
-            $('#display-selected-items tr').each(function() {
-
-                var adultValue = parseFloat(document.getElementById('Adult').value);
-                var childrenValue = parseFloat(document.getElementById('Children').value);
-                let priceCell = $(this).find('td').eq(7);
-                let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
-                var person =adultValue+childrenValue;
-
-                if (typevat == '50') {
-                    console.log(500);
-                    allprice += pricetotal;
-                    lessDiscount = allprice-specialDisValue;
-                    beforetax= lessDiscount/1.07;
-                    addedtax = lessDiscount-beforetax;
-                    Nettotal= beforetax+addedtax;
-                    totalperson = Nettotal/person;
-                    $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#SpecialDischeck').val(isNaN(specialDisValue) ? '0' : specialDisValue);
-                }
-                else if(typevat == '51')
-                {  console.log(511);
-                    allprice += pricetotal;
-                    lessDiscount = allprice-specialDisValue;
-                    beforetax= lessDiscount;
-                    addedtax =0;
-                    Nettotal= beforetax;
-                    totalperson = Nettotal/person;
-                    $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#lessDiscountEXCLUDE').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Net-priceEXCLUDE').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#total-VatEXCLUDE').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#SpecialDischeck').val(isNaN(specialDisValue) ? '0' : specialDisValue);
-                } else if(typevat == '52'){
-                    console.log(522);
-                    allprice += pricetotal;
-                    lessDiscount = allprice-specialDisValue;
-                    addedtax = lessDiscount*7/100;;
-                    beforetax= lessDiscount+addedtax;
-                    Nettotal= beforetax;
-                    totalperson = Nettotal/person;
-                    $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#lessDiscountpus').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Net-pricepus').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#total-Vatpus').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#SpecialDischeck').val(isNaN(specialDisValue) ? '0' : specialDisValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                }
-
-            });
+        $(document).on('keyup', '.quantity-input', function() {
+            var number_ID = $(this).attr('rel');
+            var quantitymain =  Number($(this).val());
+            var discountmain =  parseFloat($('#discount'+number_ID).val().replace(/,/g, ''));
+            var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
+            var pricediscount =  (price*discountmain /100);
+            console.log(quantitymain,discountmain,price,pricediscount);
+            var allcount0 = price - pricediscount;
+            $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+            var pricenew = price*quantitymain
+            var pricediscount = pricenew - (pricenew*discountmain /100);
+            $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+            // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+            totalAmost();
         });
-
+        $(document).on('keyup', '.discount-input', function() {
+            var number_ID = $(this).attr('rel');
+            var discountmain =  Number($(this).val());
+            var SpecialDiscount =  parseFloat($('#SpecialDiscount').val().replace(/,/g, ''));
+            var maxdiscount =  parseFloat($('#maxdiscount'+number_ID).val().replace(/,/g, ''));
+            if (discountmain > SpecialDiscount || discountmain > maxdiscount) {
+                var discount =  Number($(this).val(0));
+                var discountmain = 0 ;
+                var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
+                var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
+                var pricediscount =  (price*discountmain /100);
+                var allcount0 = price - pricediscount;
+                $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                var pricenew = price*quantitymain
+                var pricediscount = pricenew - (pricenew*discountmain /100);
+                $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+            }else{
+                var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
+                var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
+                var pricediscount =  (price*discountmain /100);
+                var allcount0 = price - pricediscount;
+                $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                var pricenew = price*quantitymain
+                var pricediscount = pricenew - (pricenew*discountmain /100);
+                $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+            }
+            totalAmost();
+        });
+        totalAmost();
+    });
     function totalAmost() {
-        $(document).ready(function() {
+
             var typevat  = $('#Mvat').val();
             let allprice = 0;
             let lessDiscount = 0;
@@ -1300,23 +1245,32 @@
             let totalperson=0;
             let priceArray = [];
             let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
-            var specialDisValue = parseFloat(document.getElementById('SpecialDis').value);
+            let Discount = 0;
+            // var discountElement = document.getElementById('DiscountAmount');
+            // if (discountElement) {
+            //     var DiscountAmount = discountElement.value;
+            // }
+            var discountElement  = $('#DiscountAmount').val();
+            console.log(discountElement);
             $('#display-selected-items tr').each(function() {
+                console.log(DiscountAmount);
                 var adultValue = parseFloat(document.getElementById('Adult').value);
                 var childrenValue = parseFloat(document.getElementById('Children').value);
                 let priceCell = $(this).find('td').eq(7);
                 let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
                 var person =adultValue+childrenValue;
-
+                var Discount = parseFloat(DiscountAmount)|| 0;
                 if (typevat == '50') {
-                    console.log(50);
+
                     allprice += pricetotal;
-                    lessDiscount = allprice-specialDisValue;
+                    lessDiscount = allprice-Discount;
                     beforetax= lessDiscount/1.07;
                     addedtax = lessDiscount-beforetax;
                     Nettotal= beforetax+addedtax;
                     totalperson = Nettotal/person;
+
                     $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#sp').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1326,26 +1280,28 @@
                 else if(typevat == '51')
                 {
                     allprice += pricetotal;
-                    lessDiscount = allprice-specialDisValue;
+                    lessDiscount = allprice-Discount;
                     beforetax= lessDiscount;
                     addedtax =0;
                     Nettotal= beforetax;
                     totalperson = Nettotal/person;
+
+                    $('#spEXCLUDE').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscountEXCLUDE').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-priceEXCLUDE').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-VatEXCLUDE').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-
                 } else if(typevat == '52'){
                     console.log(52);
                     allprice += pricetotal;
-                    lessDiscount = allprice-specialDisValue;
+                    lessDiscount = allprice-Discount;
                     addedtax = lessDiscount*7/100;;
                     beforetax= lessDiscount+addedtax;
                     Nettotal= beforetax;
                     totalperson = Nettotal/person;
+                    $('#sppus').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscountpus').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-pricepus').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1355,9 +1311,9 @@
                 }
             });
 
-        });
     }
     totalAmost();
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>

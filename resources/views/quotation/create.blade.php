@@ -268,7 +268,7 @@
                                 <label  for="">Company Discount Contract</label>{{--ดึงของcompanyมาใส่--}}
                                 <div class="input-group">
                                     <span class="input-group-text">DC</span>
-                                    <input type="text" class="form-control" name="Company_Rate_Code" aria-label="Amount (to the nearest dollar)" disabled>
+                                    <input type="text" class="form-control" name="Company_Discount" id="Company_Discount" aria-label="Amount (to the nearest dollar)" disabled>
                                     <span class="input-group-text">%</span>
                                 </div>
                             </div>
@@ -866,6 +866,7 @@
                 var companyphone = response.company_phone.Phone_number;
                 var companyfax = response.company_fax.Fax_number;
                 var CompanyEmail = response.company.Company_Email;
+                var Discount_Contract_Rate = response.company.Discount_Contract_Rate;
                 var TaxpayerIdentification = response.company.Taxpayer_Identification;
                 var companyphone = response.company_phone.Phone_number;
 
@@ -874,6 +875,7 @@
 
                 console.log(response.data.First_name);
                 $('#Company_Contact').val(fullName).prop('disabled', true);
+                $('#Company_Discount').val(Discount_Contract_Rate);
                 $('#Company_Contactname').val(fullid);
                 $('#Company_name').text(fullNameCompany);
                 $('#Address').text(Address);
@@ -1048,21 +1050,40 @@
                                 let discountInput;
                                 var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
                                 var SpecialDiscount = document.getElementById('SpecialDiscount').value;
+                                var discountuser = document.getElementById('discountuser').value;
                                 var maximum_discount = val.maximum_discount;
-                                if (roleMenuDiscount == 1) {
-                                    discountInput = '<div class="input-group">' +
-                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
-                                        'oninput="if (parseFloat(this.value) > ' + SpecialDiscount + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
-                                        '<span class="input-group-text">%</span>' +
-                                        '</div>';
-
-                                } else {
-                                    discountInput = '<div class="input-group">' +
-                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
-                                        'oninput="if (parseFloat(this.value) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                        '<span class="input-group-text">%</span>' +
-                                        '</div>';
+                                if (SpecialDiscount >= 1) {
+                                    if (roleMenuDiscount == 1) {
+                                        discountInput = '<div class="input-group">' +
+                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                            'oninput="if (parseFloat(this.value) > ' + SpecialDiscount + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
+                                            '<span class="input-group-text">%</span>' +
+                                            '</div>';
+                                    } else {
+                                        discountInput = '<div class="input-group">' +
+                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
+                                            'oninput="if (parseFloat(this.value) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                            '<span class="input-group-text">%</span>' +
+                                            '</div>';
+                                    }
                                 }
+                                else{
+                                    if (roleMenuDiscount == 1) {
+                                        discountInput = '<div class="input-group">' +
+                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                            'oninput="if (parseFloat(this.value) > ' + discountuser + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
+                                            '<span class="input-group-text">%</span>' +
+                                            '</div>';
+
+                                    } else {
+                                        discountInput = '<div class="input-group">' +
+                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
+                                            'oninput="if (parseFloat(this.value) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                            '<span class="input-group-text">%</span>' +
+                                            '</div>';
+                                    }
+                                }
+
 
                                 $('#display-selected-items').append(
                                     '<tr id="tr-select-addmain' + val.id + '">' +

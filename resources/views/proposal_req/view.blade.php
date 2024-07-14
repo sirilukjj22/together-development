@@ -8,6 +8,18 @@
                 <h1 class="h4 mt-1">Proposal Request View</h1>
             </div>
         </div>
+        <div class="col-auto ">
+            <div class="dropdown">
+                <form id="myForm" action="{{route('DummyQuotation.Reject')}}" method="POST">
+                @csrf
+                @foreach($proposal as  $key => $item )
+                    <input type="hidden" name="DummyNo[]" value="{{$item->DummyNo}}">
+                    <input type="hidden" name="QuotationType" value="{{$item->QuotationType}}">
+                @endforeach
+                <button type="submit" class="btn btn-secondary lift btn_modal"style="float: right" >Reject</button>
+            </form>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -25,28 +37,6 @@
 </style>
 @section('content')
 <div class="container">
-    <div class="row align-items-center mb-2">
-        @if (session("success"))
-        <div class="alert alert-success" role="alert">
-            <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
-            <hr>
-            <p class="mb-0">{{ session('success') }}</p>
-        </div>
-        @endif
-        <div class="col">
-            <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
-                <li></li>
-                <li></li>
-                <li></li>
-            </ol>
-        </div>
-        <div class="col-auto ">
-            <div class="dropdown">
-                <button type="button" class="btn btn-secondary lift btn_modal"style="float: right"onclick="Reject()" >Reject</button>
-            </div>
-        </div>
-    </div> <!-- Row end  -->
-
     <div class="col-sm-12 col-12">
         <div class="row clearfix">
             @foreach($proposal as  $key => $item )
@@ -60,8 +50,11 @@
                 $price52=0;
                 $Add52=0;
                 $Net52=0;
+                $sp50=0;
+                $sp51=0;
+                $sp52=0;
+                $sp = 0;
             @endphp
-
                 <div class="col-6">
                     <div class="card mb-4" style="height: 830px;  overflow-x: hidden; overflow-y: auto;">
                         <div class='card-body'>
@@ -81,6 +74,14 @@
                                 </div>
                                 <div class="col-6">
                                     <span>ตัวแทน : {{@$item->contact2->First_name}} {{@$item->contact2->Last_name}}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <span>วันที่สร้างเอกสาร : {{@$item->issue_date}}</span>
+                                </div>
+                                <div class="col-6">
+                                    <span>วันที่หมดอายุเอกสาร : {{@$item->Expirationdate}}</span>
                                 </div>
                             </div>
                             <table class="table table-hover align-middle mb-0 mt-2" style="width:100%;overflow-x: hidden; overflow-y: auto;" >
@@ -114,13 +115,17 @@
                                             </tr>
                                             @php
                                                 $price50 += @$itemproduct->netpriceproduct * @$itemproduct->Quantity;
-                                                $priceless50 = $price50/1.07;
-                                                $Add50 = $price50-$priceless50;
+                                                $sp = $item->SpecialDiscountBath;
+                                                $sp50 = $price50-$item->SpecialDiscountBath;
+                                                $priceless50 = $sp50/1.07;
+                                                $Add50 = $sp50-$priceless50;
                                                 $Net50 = $priceless50+$Add50;
 
                                                 $price51 += @$itemproduct->netpriceproduct * @$itemproduct->Quantity;
+                                                $sp51 = $price51-$item->SpecialDiscountBath;
                                                 $price52 += @$itemproduct->netpriceproduct * @$itemproduct->Quantity;
-                                                $Add52 = $price50*7/100;
+                                                $sp52 = $price52-$item->SpecialDiscountBath;
+                                                $Add52 = $sp52*7/100;
                                                 $pricebefore52 = $price52+$Add52;
                                             @endphp
                                     @endforeach
@@ -141,8 +146,8 @@
                                             </div>
                                             <div class="col-4">
                                                 {{ number_format($price50, 2, '.', ',') }} <br>
-                                                0<br>
-                                                {{ number_format($price50, 2, '.', ',') }}<br>
+                                                {{ number_format($sp, 2, '.', ',') }}<br>
+                                                {{ number_format($sp50, 2, '.', ',') }}<br>
                                                 {{ number_format($priceless50, 2, '.', ',') }}<br>
                                                 {{ number_format($Add50, 2, '.', ',') }}<br>
                                                 {{ number_format($Net50, 2, '.', ',') }}<br>
@@ -161,10 +166,9 @@
                                             </div>
                                             <div class="col-4">
                                                 {{ number_format($price51, 2, '.', ',') }} <br>
-                                                0<br>
-                                                {{ number_format($price51, 2, '.', ',') }} <br>
-                                                0<br>
-                                                {{ number_format($price51, 2, '.', ',') }} <br>
+                                                {{ number_format($sp, 2, '.', ',') }}<br>
+                                                {{ number_format($sp51, 2, '.', ',') }}<br>
+                                                {{ number_format($sp51, 2, '.', ',') }} <br>
                                             </div>
                                         </div>
 
@@ -182,9 +186,9 @@
                                             </div>
                                             <div class="col-4">
                                                 {{ number_format($price52, 2, '.', ',') }} <br>
-                                                0<br>
+                                                {{ number_format($sp, 2, '.', ',') }}<br>
+                                                {{ number_format($sp52, 2, '.', ',') }} <br>
                                                 {{ number_format($Add52, 2, '.', ',') }} <br>
-                                                {{ number_format($pricebefore52, 2, '.', ',') }} <br>
                                                 {{ number_format($pricebefore52, 2, '.', ',') }} <br>
                                             </div>
                                         </div>
@@ -222,29 +226,5 @@
                 DummyNo.push($(this).val());
             });
     });
-    function Reject() {
-        var dummyNos = [];
-        $('.DummyNo').each(function() {
-            dummyNos.push($(this).val());
-        });
-        jQuery.ajax({
-            type: "GET",
-            url: "{!! url('/Dummy/Proposal/Request/document/view/Reject/" + dummyNos + "') !!}",
-            datatype: "JSON",
-            async: false,
-            success: function(response) {
-                console.log("AJAX request successful: ", response);
-                if (response.success) {
-                // เปลี่ยนไปยังหน้าที่ต้องการ
-                window.location.href = "/Proposal/request/index";
-                } else {
-                    alert("An error occurred while processing the request.");
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX request failed: ", status, error);
-            }
-        });
-    }
 </script>
 @endsection

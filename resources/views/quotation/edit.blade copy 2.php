@@ -157,8 +157,8 @@
                             <div class="col-lg-4 col-md-12 col-sm-12">
                                 <div class="row">
                                     <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Proposal</b>
-                                    <span class="titleQuotation">{{$QuotationID}}</span>
-                                    <input type="hidden" id="Quotationold" name="Quotationold" value="{{$QuotationID}}">
+                                    <span class="titleQuotation">{{$Quotation_ID}}</span>
+                                    <input type="hidden" id="Quotationold" name="Quotationold" value="{{$Quotation_ID}}">
                                     <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
                                         <div class="col-12 col-md-12 col-sm-12">
                                             <div class="row">
@@ -166,7 +166,7 @@
                                                     <span>Issue Date:</span>
                                                 </div>
                                                 <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
-                                                    <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;" >
+                                                    <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;"value="{{$Quotation->issue_date}}" >
                                                 </div>
                                             </div>
                                         </div>
@@ -176,7 +176,7 @@
                                                     <span>Expiration Date:</span>
                                                 </div>
                                                 <div class="col-lg-6 col-md-12 col-sm-12">
-                                                    <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly >
+                                                    <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly  value="{{$Quotation->Expirationdate}}">
                                                 </div>
                                             </div>
                                         </div>
@@ -269,14 +269,14 @@
                                 <label  for="">Company Discount Contract</label>{{--ดึงของcompanyมาใส่--}}
                                 <div class="input-group">
                                     <span class="input-group-text">DC</span>
-                                    <input type="text" class="form-control" name="Company_Rate_Code" aria-label="Amount (to the nearest dollar)" disabled>
+                                    <input type="text" class="form-control" name="Company_Rate_Code" aria-label="Amount (to the nearest dollar)" disabled value="{{$Quotation->ComRateCode}}">
                                     <span class="input-group-text">%</span>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label  for="">Company Commission</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control"  name="Company_Commission_Rate_Code" disabled>
+                                    <input type="text" class="form-control"  name="Company_Commission_Rate_Code" disabled value="{{$Quotation->commissionratecode}}">
                                     <span class="input-group-text">%</span>
                                 </div>
                             </div>
@@ -299,7 +299,7 @@
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label  for="">Discount Amount</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="DiscountAmount"   placeholder="ส่วนลดคิดเป็นบาท" disabled>
+                                    <input type="text" class="form-control" name="DiscountAmount"   placeholder="ส่วนลดคิดเป็นบาท" value="{{$Quotation->SpecialDiscountBath}}">
                                     <span class="input-group-text">Bath</span>
                                 </div>
                             </div>
@@ -541,7 +541,7 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
+                                                    <span id="sp">0</span>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -567,7 +567,7 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
+                                                    <span id="spEXCLUDE">0</span>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -585,7 +585,7 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
+                                                    <span id="sppus">0</span>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -1309,77 +1309,9 @@
             }
         });
     });
-
-        // $('#SpecialDis').on('input', function() {
-        //     var specialDisValue = $(this).val();
-        //     var typevat  = $('#Mvat').val();
-        //     let allprice = 0;
-        //     let lessDiscount = 0;
-        //     let beforetax =0;
-        //     let addedtax =0;
-        //     let Nettotal =0;
-        //     let totalperson=0;
-        //     $('#display-selected-items tr').each(function() {
-
-        //         var adultValue = parseFloat(document.getElementById('Adult').value);
-        //         var childrenValue = parseFloat(document.getElementById('Children').value);
-        //         let priceCell = $(this).find('td').eq(7);
-        //         let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
-        //         var person =adultValue+childrenValue;
-
-        //         if (typevat == '50') {
-        //             console.log(500);
-        //             allprice += pricetotal;
-        //             lessDiscount = allprice-specialDisValue;
-        //             beforetax= lessDiscount/1.07;
-        //             addedtax = lessDiscount-beforetax;
-        //             Nettotal= beforetax+addedtax;
-        //             totalperson = Nettotal/person;
-        //             $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#SpecialDischeck').val(isNaN(specialDisValue) ? '0' : specialDisValue);
-        //         }
-        //         else if(typevat == '51')
-        //         {  console.log(511);
-        //             allprice += pricetotal;
-        //             lessDiscount = allprice-specialDisValue;
-        //             beforetax= lessDiscount;
-        //             addedtax =0;
-        //             Nettotal= beforetax;
-        //             totalperson = Nettotal/person;
-        //             $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#lessDiscountEXCLUDE').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Net-priceEXCLUDE').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#total-VatEXCLUDE').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#SpecialDischeck').val(isNaN(specialDisValue) ? '0' : specialDisValue);
-        //         } else if(typevat == '52'){
-        //             console.log(522);
-        //             allprice += pricetotal;
-        //             lessDiscount = allprice-specialDisValue;
-        //             addedtax = lessDiscount*7/100;;
-        //             beforetax= lessDiscount+addedtax;
-        //             Nettotal= beforetax;
-        //             totalperson = Nettotal/person;
-        //             $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#lessDiscountpus').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Net-pricepus').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#total-Vatpus').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#SpecialDischeck').val(isNaN(specialDisValue) ? '0' : specialDisValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //         }
-
-        //     });
-        // });
-
     function totalAmost() {
         $(document).ready(function() {
+
             var typevat  = $('#Mvat').val();
             let allprice = 0;
             let lessDiscount = 0;
@@ -1398,6 +1330,7 @@
                 var person =adultValue+childrenValue;
 
                 if (typevat == '50') {
+                    console.log(50);
                     allprice += pricetotal;
                     lessDiscount = allprice-specialDisValue;
                     beforetax= lessDiscount/1.07;
@@ -1427,6 +1360,7 @@
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
                 } else if(typevat == '52'){
+                    console.log(52);
                     allprice += pricetotal;
                     lessDiscount = allprice-specialDisValue;
                     addedtax = lessDiscount*7/100;;

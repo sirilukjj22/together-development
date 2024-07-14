@@ -1174,6 +1174,8 @@ class DummyQuotationController extends Controller
         $save->Expirationdate = $dummy->Expirationdate;
         $save->Document_issuer = $dummy->Document_issuer;
         $save->Operated_by = $dummy->Operated_by;
+        $save->Operated_by = $dummy->Confirm_by;
+        $save->Approve_at = $dummy->Approve_at;
         $save->save();
         $qutationID = Quotation::where('DummyNo',$dummyID)->first();
         $IDmain =  $qutationID->id;

@@ -136,7 +136,7 @@
     </div>
 @endsection
 @section('content')
-<form id="myForm" action="{{url('/Dummy/Quotation/edit/company/quotation/update/'.$Quotation->id)}}" method="POST">
+<form id="myForm" action="{{route('Quotation.update')}}" method="POST">
 @csrf
     <div class="container">
         <div class="container mt-3">
@@ -157,7 +157,8 @@
                             <div class="col-lg-4 col-md-12 col-sm-12">
                                 <div class="row">
                                     <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Proposal</b>
-                                    <span class="titleQuotation">{{$QuotationID}}</span>
+                                    <span class="titleQuotation">{{$Quotation_ID}}</span>
+                                    <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
                                     <input type="hidden" id="Quotationold" name="Quotationold" value="{{$QuotationID}}">
                                     <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
                                         <div class="col-12 col-md-12 col-sm-12">
@@ -166,7 +167,7 @@
                                                     <span>Issue Date:</span>
                                                 </div>
                                                 <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
-                                                    <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;" >
+                                                    <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;" value="{{$Quotation->issue_date}}">
                                                 </div>
                                             </div>
                                         </div>
@@ -176,7 +177,7 @@
                                                     <span>Expiration Date:</span>
                                                 </div>
                                                 <div class="col-lg-6 col-md-12 col-sm-12">
-                                                    <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly >
+                                                    <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly value="{{$Quotation->Expirationdate}}">
                                                 </div>
                                             </div>
                                         </div>
@@ -184,7 +185,7 @@
                                 </div>
                             </div>
                         </div>
-                        <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$QuotationID}}">
+                        <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
                         <div class="row mt-5">
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <label class="labelcontact" for="">Customer Company</label>
@@ -285,22 +286,6 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="Max_discount"  value="{{@Auth::user()->discount}}" placeholder="ส่วนลดคิดเป็น %" disabled>
                                     <span class="input-group-text">%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                <label  for="">Special Discount</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="SpecialDiscount" id="SpecialDiscount" placeholder="ส่วนลดคิดเป็น %"  value="{{$Quotation->SpecialDiscount}}" >
-                                    <span class="input-group-text">%</span>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                <label  for="">Discount Amount</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="DiscountAmount"   placeholder="ส่วนลดคิดเป็นบาท" disabled>
-                                    <span class="input-group-text">Bath</span>
                                 </div>
                             </div>
                         </div>
@@ -486,29 +471,18 @@
                                             @foreach ($selectproduct as $key => $item)
                                                 @foreach ($unit as $singleUnit)
                                                     @if($singleUnit->id == @$item->product->unit)
-                                                        @php
-                                                        $var = $key+1;
-                                                        @endphp
                                                         <tr id="tr-select-main{{$item->Product_ID}}">
                                                             <input type="hidden" id="tr-select-main{{$item->Product_ID}}" name="tr-select-main[]" value="{{$item->Product_ID}}">
                                                             <td><input type="hidden" id="ProductID" name="ProductIDmain[]" value="{{$item->Product_ID}}">{{$key+1}}</td>
                                                             <td style="text-align:left;"><input type="hidden" id="Productname_th" name="Productname_th" value="{{@$item->product->name_th}}">{{@$item->product->name_th}}</td>
-                                                            <td class="Quantity" data-value="{{$item->Quantity}}" style="text-align:center;">
-                                                                <input type="text" id="quantity{{$var}}" name="Quantitymain[]" rel="{{$var}}" style="text-align:center;"class="quantity-input form-control" value="{{$item->Quantity}}">
-                                                            </td>
+                                                            <td class="Quantity" data-value="{{$item->Quantity}}"style="text-align:center;"><input type="hidden" id="Quantity" name="Quantitymain[]" value="{{$item->Quantity}}">{{$item->Quantity}}</td>
                                                             <td><input type="hidden" id="unitname_th" name="unitname_th" value="{{ $singleUnit->name_th }}">{{ $singleUnit->name_th }}</td>
-                                                            <td class="priceproduct" data-value="{{$item->priceproduct}}"><input type="hidden" id="totalprice-unit{{$var}}" name="priceproductmain[]" value="{{$item->priceproduct}}">{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
-                                                            <td class="discount"style="text-align:center;">
-                                                                <div class="input-group">
-                                                                    <input type="text" id="discount{{$var}}" name="discountmain[]" rel="{{$var}}"style="text-align:center;" class="discount-input form-control" value="{{$item->discount}}">
-                                                                    <input type="hidden" id="maxdiscount{{$var}}" name="maxdiscount[]" rel="{{$var}}" class=" form-control" value="{{$item->product->maximum_discount}}">
-                                                                    <span class="input-group-text">%</span>
-                                                                </div>
-                                                            </td>
-                                                            <td class="net-price"style="text-align:center;" ><span id="net_discount{{$var}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</span></td>
-                                                            <td class="item-total"style="text-align:center;"><span id="all-total{{$var}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</span></td>
+                                                            <td class="priceproduct" data-value="{{$item->priceproduct}}"><input type="hidden" id="totalprice-unit{{$key+1}}" name="priceproductmain[]" value="{{$item->priceproduct}}">{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
+                                                            <td class="discount"style="text-align:center;"><input type="hidden" id="discount" name="discountmain[]" value="{{$item->discount}}">{{$item->discount}}%</td>
+                                                            <td class="net-price"style="text-align:center;" ><input type="hidden" id="net_discount{{$key+1}}" name="net_discountmain[]" value="{{$item->totaldiscount}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
+                                                            <td class="item-total"style="text-align:center;"><input type="hidden" id="allcounttotal{{$key+1}}" name="allcounttotalmain[]" value="{{$item->netpriceproduct}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
                                                             <td>
-                                                                <button type="button" class="Btn remove-button1"  id="remove-button1{{$var}}" value="{{$item->Product_ID}}">
+                                                                <button type="button" class="Btn remove-button1">
                                                                     <i class="fa fa-minus-circle text-danger fa-lg"></i>
                                                                 </button>
                                                             </td>
@@ -541,7 +515,11 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
+                                                    @if (@Auth::user()->roleMenuSpecialDiscount('Proposal',Auth::user()->id) == 1)
+                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" >
+                                                    @else
                                                     <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
@@ -567,7 +545,11 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
+                                                    @if (@Auth::user()->roleMenuSpecialDiscount('Proposal',Auth::user()->id) == 1)
+                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" >
+                                                    @else
                                                     <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
@@ -585,7 +567,11 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
+                                                    @if (@Auth::user()->roleMenuSpecialDiscount('Proposal',Auth::user()->id) == 1)
+                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" >
+                                                    @else
                                                     <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
@@ -876,14 +862,14 @@
 </script>
 <script type="text/javascript">
     $(function() {
-        var start = moment();
-        var end = moment().add(7, 'days');
+        var start = moment("{{ $Quotation->issue_date }}", "DD/MM/YYYY");
+        var end = moment("{{ $Quotation->Expirationdate }}", "DD/MM/YYYY");
+
         function cb(start, end) {
-            $('#datestart').val(start.format('DD/MM/Y'));
-            $('#dateex').val(end.format('DD/MM/Y'));
-            $('#issue_date_document').text(start.format('DD/MM/Y'));
-            $('#issue_date_document1').text(start.format('DD/MM/Y'));
+            $('#datestart').val(start.format('DD/MM/YYYY'));
+            $('#dateex').val(end.format('DD/MM/YYYY'));
         }
+
         $('#reportrange1').daterangepicker({
             startDate: start,
             endDate: end,
@@ -891,13 +877,14 @@
                 '3 Days': [moment(), moment().add(3, 'days')],
                 '7 Days': [moment(), moment().add(7, 'days')],
                 '15 Days': [moment(), moment().add(15, 'days')],
-                '30 Days': [moment(), moment().add(30, 'days')],
+                '30 Days': [moment(), moment().add(30, 'days')]
             }
-        },
-        cb);
+        }, cb);
+
         cb(start, end);
     });
 </script>
+
 <script>
     function Onclickreadonly() {
         var startDate = document.getElementById('contract_rate_start_date').value;
@@ -1116,14 +1103,12 @@
                 $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
             });
         }
-
         $(document).on('click', '.remove-button', function() {
             console.log(1);
             var product = $(this).val();
             $('#tr-select-add' + product).remove();
             renumberRows(); // ลบแถวที่มี id เป็น 'tr-select-add' + product
         });
-
         $(document).on('click', '.confirm-button', function() {
             var product = $(this).val();
             var number = $('#randomKey').val();
@@ -1137,7 +1122,7 @@
                 success: function(response) {
                     $.each(response.products, function (key, val) {
                         if ($('#productselect' + val.id).val() !== undefined) {
-                            if ($('#display-selected-items #tr-select-main' + val.Product_ID).length === 0) {
+                            if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
                                 number += 1;
                                 var name = '';
                                 var price = 0;
@@ -1148,40 +1133,24 @@
                                 var rowNumbemain = $('#display-selected-items tr').length + 1;
                                 let discountInput;
                                 var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
-                                var SpecialDiscount = document.getElementById('SpecialDiscount').value;
                                 var discountuser = document.getElementById('discountuser').value;
+                                console.log(discountuser);
                                 var maximum_discount = val.maximum_discount;
-                                if (SpecialDiscount >= 1) {
-                                    if (roleMenuDiscount == 1) {
-                                        discountInput = '<div class="input-group">' +
-                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
-                                            'oninput="if (parseFloat(this.value) > ' + SpecialDiscount + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
-                                            '<span class="input-group-text">%</span>' +
-                                            '</div>';
-                                    } else {
-                                        discountInput = '<div class="input-group">' +
-                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
-                                            'oninput="if (parseFloat(this.value) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                            '<span class="input-group-text">%</span>' +
-                                            '</div>';
-                                    }
-                                }
-                                else{
-                                    if (roleMenuDiscount == 1) {
-                                        discountInput = '<div class="input-group">' +
-                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
-                                            'oninput="if (parseFloat(this.value) > ' + discountuser + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
-                                            '<span class="input-group-text">%</span>' +
-                                            '</div>';
+                                if (roleMenuDiscount == 1) {
+                                    discountInput = '<div class="input-group">' +
+                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                        'oninput="if (parseFloat(this.value) > ' + discountuser + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
+                                        '<span class="input-group-text">%</span>' +
+                                        '</div>';
 
-                                    } else {
-                                        discountInput = '<div class="input-group">' +
-                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
-                                            'oninput="if (parseFloat(this.value) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                            '<span class="input-group-text">%</span>' +
-                                            '</div>';
-                                    }
+                                } else {
+                                    discountInput = '<div class="input-group">' +
+                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
+                                        'oninput="if (parseFloat(this.value) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                        '<span class="input-group-text">%</span>' +
+                                        '</div>';
                                 }
+
                                 $('#display-selected-items').append(
                                     '<tr id="tr-select-addmain' + val.id + '">' +
                                     '<td>' + rowNumbemain + '</td>' +
@@ -1220,8 +1189,8 @@
     }
     //----------------------------------------รายการ---------------------------
     $(document).ready(function() {
-
         $(document).on('keyup', '.quantitymain', function() {
+            var number_ID = $(this).attr('rel');
             var quantitymain =  Number($(this).val());
             var discountmain =  $('#discountmain'+number_ID).val();
             var number = Number($('#number-product').val());
@@ -1251,132 +1220,75 @@
             // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             totalAmost();
         });
-        $(document).on('keyup', '.quantity-input', function() {
-            var number_ID = $(this).attr('rel');
-            var quantitymain =  Number($(this).val());
-            var discountmain =  parseFloat($('#discount'+number_ID).val().replace(/,/g, ''));
-            var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
-            var pricediscount =  (price*discountmain /100);
-            console.log(quantitymain,discountmain,price,pricediscount);
-            var allcount0 = price - pricediscount;
-            $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            var pricenew = price*quantitymain
-            var pricediscount = pricenew - (pricenew*discountmain /100);
-            $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            totalAmost();
-        });
-        $(document).on('keyup', '.discount-input', function() {
-            var number_ID = $(this).attr('rel');
-            var discountmain =  Number($(this).val());
-            var SpecialDiscount =  parseFloat($('#SpecialDiscount').val().replace(/,/g, ''));
-            var maxdiscount =  parseFloat($('#maxdiscount'+number_ID).val().replace(/,/g, ''));
-            if (discountmain > SpecialDiscount || discountmain > maxdiscount) {
-                var discount =  Number($(this).val(0));
-                var discountmain = 0 ;
-                var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
-                var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
-                var pricediscount =  (price*discountmain /100);
-                var allcount0 = price - pricediscount;
-                $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                var pricenew = price*quantitymain
-                var pricediscount = pricenew - (pricenew*discountmain /100);
-                $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            }else{
-                var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
-                var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
-                var pricediscount =  (price*discountmain /100);
-                var allcount0 = price - pricediscount;
-                $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                var pricenew = price*quantitymain
-                var pricediscount = pricenew - (pricenew*discountmain /100);
-                $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            }
-            totalAmost();
-        });
-        $(document).on('click', '.remove-button1', function() {
-            var productId = $(this).val();
-            $('#tr-select-main' + productId).remove();
-
-            // Update the sequence numbers
-            $('#display-selected-items tr').each(function(index) {
-                $(this).find('td:first').text(index + 1); // Change the text of the first cell to be the new sequence number
-            });
-
-            // Optionally, call a function to update totals after removing a row
-            if (typeof totalAmost === 'function') {
-                totalAmost();
-            }
-        });
     });
 
-        // $('#SpecialDis').on('input', function() {
-        //     var specialDisValue = $(this).val();
-        //     var typevat  = $('#Mvat').val();
-        //     let allprice = 0;
-        //     let lessDiscount = 0;
-        //     let beforetax =0;
-        //     let addedtax =0;
-        //     let Nettotal =0;
-        //     let totalperson=0;
-        //     $('#display-selected-items tr').each(function() {
+        $('#SpecialDis').on('input', function() {
+            var specialDisValue = $(this).val();
+            var typevat  = $('#Mvat').val();
+            let allprice = 0;
+            let lessDiscount = 0;
+            let beforetax =0;
+            let addedtax =0;
+            let Nettotal =0;
+            let totalperson=0;
+            $('#display-selected-items tr').each(function() {
 
-        //         var adultValue = parseFloat(document.getElementById('Adult').value);
-        //         var childrenValue = parseFloat(document.getElementById('Children').value);
-        //         let priceCell = $(this).find('td').eq(7);
-        //         let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
-        //         var person =adultValue+childrenValue;
+                var adultValue = parseFloat(document.getElementById('Adult').value);
+                var childrenValue = parseFloat(document.getElementById('Children').value);
+                let priceCell = $(this).find('td').eq(7);
+                let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
+                var person =adultValue+childrenValue;
 
-        //         if (typevat == '50') {
-        //             console.log(500);
-        //             allprice += pricetotal;
-        //             lessDiscount = allprice-specialDisValue;
-        //             beforetax= lessDiscount/1.07;
-        //             addedtax = lessDiscount-beforetax;
-        //             Nettotal= beforetax+addedtax;
-        //             totalperson = Nettotal/person;
-        //             $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#SpecialDischeck').val(isNaN(specialDisValue) ? '0' : specialDisValue);
-        //         }
-        //         else if(typevat == '51')
-        //         {  console.log(511);
-        //             allprice += pricetotal;
-        //             lessDiscount = allprice-specialDisValue;
-        //             beforetax= lessDiscount;
-        //             addedtax =0;
-        //             Nettotal= beforetax;
-        //             totalperson = Nettotal/person;
-        //             $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#lessDiscountEXCLUDE').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Net-priceEXCLUDE').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#total-VatEXCLUDE').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#SpecialDischeck').val(isNaN(specialDisValue) ? '0' : specialDisValue);
-        //         } else if(typevat == '52'){
-        //             console.log(522);
-        //             allprice += pricetotal;
-        //             lessDiscount = allprice-specialDisValue;
-        //             addedtax = lessDiscount*7/100;;
-        //             beforetax= lessDiscount+addedtax;
-        //             Nettotal= beforetax;
-        //             totalperson = Nettotal/person;
-        //             $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#lessDiscountpus').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Net-pricepus').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#total-Vatpus').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //             $('#SpecialDischeck').val(isNaN(specialDisValue) ? '0' : specialDisValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //         }
+                if (typevat == '50') {
+                    console.log(500);
+                    allprice += pricetotal;
+                    lessDiscount = allprice-specialDisValue;
+                    beforetax= lessDiscount/1.07;
+                    addedtax = lessDiscount-beforetax;
+                    Nettotal= beforetax+addedtax;
+                    totalperson = Nettotal/person;
+                    $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#SpecialDischeck').val(isNaN(specialDisValue) ? '0' : specialDisValue);
+                }
+                else if(typevat == '51')
+                {
+                    allprice += pricetotal;
+                    lessDiscount = allprice-specialDisValue;
+                    beforetax= lessDiscount;
+                    addedtax =0;
+                    Nettotal= beforetax;
+                    totalperson = Nettotal/person;
+                    $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#lessDiscountEXCLUDE').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#Net-priceEXCLUDE').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#total-VatEXCLUDE').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#SpecialDischeck').val(isNaN(specialDisValue) ? '0' : specialDisValue);
+                } else if(typevat == '52'){
+                    console.log(522);
+                    allprice += pricetotal;
+                    lessDiscount = allprice-specialDisValue;
+                    addedtax = lessDiscount*7/100;;
+                    beforetax= lessDiscount+addedtax;
+                    Nettotal= beforetax;
+                    totalperson = Nettotal/person;
+                    $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#lessDiscountpus').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#Net-pricepus').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#total-Vatpus').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#SpecialDischeck').val(isNaN(specialDisValue) ? '0' : specialDisValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                }
 
-        //     });
-        // });
+            });
+        });
 
     function totalAmost() {
         $(document).ready(function() {
@@ -1398,6 +1310,7 @@
                 var person =adultValue+childrenValue;
 
                 if (typevat == '50') {
+                    console.log(50);
                     allprice += pricetotal;
                     lessDiscount = allprice-specialDisValue;
                     beforetax= lessDiscount/1.07;
@@ -1427,6 +1340,7 @@
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
                 } else if(typevat == '52'){
+                    console.log(52);
                     allprice += pricetotal;
                     lessDiscount = allprice-specialDisValue;
                     addedtax = lessDiscount*7/100;;
