@@ -106,6 +106,39 @@ class RevenuesController extends Controller
                     } 
 
                     $sum_bill += $check_sms[$key]['transaction_bill'];
+
+                    // เช็คค่า 0
+                    if (!isset($room_array[$i])) {
+                        $room_array[$i] = [ 'total_room' => 0, ];
+                    }
+
+                    if (!isset($fb_array[$i])) {
+                        $fb_array[$i] = [ 'total_fb' => 0, ];
+                    }
+
+                    if (!isset($wp_array[$i])) {
+                        $wp_array[$i] = [ 'total_wp' => 0, ];
+                    }
+
+                    if (!isset($credit_array[$i])) {
+                        $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                    }
+
+                    if (!isset($agoda_array[$i])) {
+                        $agoda_array[$i] = [ 'total_agoda' => 0, ];
+                    }
+
+                    if (!isset($front_array[$i])) {
+                        $front_array[$i] = [ 'total_front' => 0, ];
+                    }
+
+                    if (!isset($credit_wp_array[$i])) {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0, ];
+                    } 
+
+                    if (!isset($ev_array[$i])) {
+                        $ev_array[$i] = [ 'total_ev' => 0, ];
+                    }
                 }
 
                 $transaction_array[$i] = ['bill' => $sum_bill];
@@ -173,6 +206,7 @@ class RevenuesController extends Controller
 
                     $sum_bill += $check_sms[$key]['transaction_bill'];
 
+                    // เช็คค่า 0
                     if (!isset($room_array[$i])) {
                         $room_array[$i] = [ 'total_room' => 0, ];
                     }
@@ -181,8 +215,28 @@ class RevenuesController extends Controller
                         $fb_array[$i] = [ 'total_fb' => 0, ];
                     }
 
+                    if (!isset($wp_array[$i])) {
+                        $wp_array[$i] = [ 'total_wp' => 0, ];
+                    }
+
+                    if (!isset($credit_array[$i])) {
+                        $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                    }
+
+                    if (!isset($agoda_array[$i])) {
+                        $agoda_array[$i] = [ 'total_agoda' => 0, ];
+                    }
+
                     if (!isset($front_array[$i])) {
                         $front_array[$i] = [ 'total_front' => 0, ];
+                    }
+
+                    if (!isset($credit_wp_array[$i])) {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0, ];
+                    } 
+
+                    if (!isset($ev_array[$i])) {
+                        $ev_array[$i] = [ 'total_ev' => 0, ];
                     }
                     
                 }
@@ -191,7 +245,7 @@ class RevenuesController extends Controller
             
         }
 
-        // dd($front_array);
+        // dd($room_array);
 
         $room_transfer = 0;
         $fb_transfer = 0;
@@ -591,6 +645,39 @@ class RevenuesController extends Controller
                     } 
 
                     $sum_bill += $check_sms[$key]['transaction_bill'];
+
+                    // เช็คค่า 0
+                    if (!isset($room_array[$i])) {
+                        $room_array[$i] = [ 'total_room' => 0, ];
+                    }
+
+                    if (!isset($fb_array[$i])) {
+                        $fb_array[$i] = [ 'total_fb' => 0, ];
+                    }
+
+                    if (!isset($wp_array[$i])) {
+                        $wp_array[$i] = [ 'total_wp' => 0, ];
+                    }
+
+                    if (!isset($credit_array[$i])) {
+                        $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                    }
+
+                    if (!isset($agoda_array[$i])) {
+                        $agoda_array[$i] = [ 'total_agoda' => 0, ];
+                    }
+
+                    if (!isset($front_array[$i])) {
+                        $front_array[$i] = [ 'total_front' => 0, ];
+                    }
+
+                    if (!isset($credit_wp_array[$i])) {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0, ];
+                    } 
+
+                    if (!isset($ev_array[$i])) {
+                        $ev_array[$i] = [ 'total_ev' => 0, ];
+                    }
                 }
 
                 $transaction_array[$i] = ['bill' => $sum_bill];
@@ -657,6 +744,39 @@ class RevenuesController extends Controller
                     } 
 
                     $sum_bill += $check_sms[$key]['transaction_bill'];
+
+                    // เช็คค่า 0
+                    if (!isset($room_array[$i])) {
+                        $room_array[$i] = [ 'total_room' => 0, ];
+                    }
+
+                    if (!isset($fb_array[$i])) {
+                        $fb_array[$i] = [ 'total_fb' => 0, ];
+                    }
+
+                    if (!isset($wp_array[$i])) {
+                        $wp_array[$i] = [ 'total_wp' => 0, ];
+                    }
+
+                    if (!isset($credit_array[$i])) {
+                        $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                    }
+
+                    if (!isset($agoda_array[$i])) {
+                        $agoda_array[$i] = [ 'total_agoda' => 0, ];
+                    }
+
+                    if (!isset($front_array[$i])) {
+                        $front_array[$i] = [ 'total_front' => 0, ];
+                    }
+
+                    if (!isset($credit_wp_array[$i])) {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0, ];
+                    } 
+
+                    if (!isset($ev_array[$i])) {
+                        $ev_array[$i] = [ 'total_ev' => 0, ];
+                    }
                     
                 }
                 $transaction_array[$i] = ['bill' => $sum_bill];
@@ -849,6 +969,39 @@ class RevenuesController extends Controller
                     } 
 
                     $sum_bill += $check_sms[$key]['transaction_bill'];
+
+                    // เช็คค่า 0
+                    if (!isset($room_array[$i])) {
+                        $room_array[$i] = [ 'total_room' => 0, ];
+                    }
+
+                    if (!isset($fb_array[$i])) {
+                        $fb_array[$i] = [ 'total_fb' => 0, ];
+                    }
+
+                    if (!isset($wp_array[$i])) {
+                        $wp_array[$i] = [ 'total_wp' => 0, ];
+                    }
+
+                    if (!isset($credit_array[$i])) {
+                        $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                    }
+
+                    if (!isset($agoda_array[$i])) {
+                        $agoda_array[$i] = [ 'total_agoda' => 0, ];
+                    }
+
+                    if (!isset($front_array[$i])) {
+                        $front_array[$i] = [ 'total_front' => 0, ];
+                    }
+
+                    if (!isset($credit_wp_array[$i])) {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0, ];
+                    } 
+
+                    if (!isset($ev_array[$i])) {
+                        $ev_array[$i] = [ 'total_ev' => 0, ];
+                    }
                 }
 
                 $transaction_array[$i] = ['bill' => $sum_bill];
@@ -914,6 +1067,39 @@ class RevenuesController extends Controller
                     } 
 
                     $sum_bill += $check_sms[$key]['transaction_bill'];
+
+                    // เช็คค่า 0
+                    if (!isset($room_array[$i])) {
+                        $room_array[$i] = [ 'total_room' => 0, ];
+                    }
+
+                    if (!isset($fb_array[$i])) {
+                        $fb_array[$i] = [ 'total_fb' => 0, ];
+                    }
+
+                    if (!isset($wp_array[$i])) {
+                        $wp_array[$i] = [ 'total_wp' => 0, ];
+                    }
+
+                    if (!isset($credit_array[$i])) {
+                        $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                    }
+
+                    if (!isset($agoda_array[$i])) {
+                        $agoda_array[$i] = [ 'total_agoda' => 0, ];
+                    }
+
+                    if (!isset($front_array[$i])) {
+                        $front_array[$i] = [ 'total_front' => 0, ];
+                    }
+
+                    if (!isset($credit_wp_array[$i])) {
+                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0, ];
+                    } 
+
+                    if (!isset($ev_array[$i])) {
+                        $ev_array[$i] = [ 'total_ev' => 0, ];
+                    }
                     
                 }
                 $transaction_array[$i] = ['bill' => $sum_bill];
