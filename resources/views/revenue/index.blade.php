@@ -441,7 +441,7 @@
                 </div>
             </div>
 
-            @if (Auth::user()->permission > 0)
+            {{-- @if (Auth::user()->permission > 0) --}}
                 <div class="col-lg-3 col-md-12 col-sm-12">
                     <div class="title-box2">
                         <h1>Monthly Revenue</h1>
@@ -484,7 +484,7 @@
                       </a>
                     </div>
                 </div>
-            @endif
+            {{-- @endif --}}
         </div>
     </div>
 
