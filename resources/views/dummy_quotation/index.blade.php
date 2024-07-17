@@ -670,7 +670,7 @@
                                                         @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
                                                             <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                         @endif
-                                                        <li><a class="dropdown-item py-2 rounded" onclick="Cancel()">Cancel</a></li>
+                                                        <li><a class="dropdown-item py-2 rounded" onclick="Cancel()">Revice</a></li>
                                                     </ul>
                                                 </div>
                                             </td>
