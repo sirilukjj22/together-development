@@ -46,7 +46,15 @@ class proposal_request extends Controller
             ->select('id','DummyNo', 'Company_ID','Operated_by','QuotationType',DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
             ->union($quotation)
             ->get();
-        $proposalcount = dummy_quotation::where('status_document', 2)->select('id','DummyNo', 'Company_ID','Operated_by','QuotationType',DB::raw("COUNT(DummyNo) as COUNTDummyNo"))->union($quotation)->count();
+        $quotation1 = Quotation::where('status_document', 2)
+        ->groupBy('Company_ID', 'Operated_by')
+        ->select('id', 'DummyNo', 'Company_ID', 'Operated_by', 'QuotationType', DB::raw("COUNT(DummyNo) as COUNTDummyNo"));
+
+        $proposal1 = dummy_quotation::where('status_document', 2)
+        ->groupBy('Company_ID', 'Operated_by')
+        ->select('id', 'DummyNo', 'Company_ID', 'Operated_by', 'QuotationType', DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
+        ->union($quotation1);
+        $proposalcount = DB::table(DB::raw("({$proposal1->toSql()}) as sub"))->mergeBindings($proposal1->getQuery())->count();
         $Quotation = Quotation::whereIn('status_document', [3])
             ->select('id','DummyNo', 'Company_ID', 'issue_date', 'Expirationdate', 'SpecialDiscount','Confirm_by','Approve_at', 'Operated_by', 'status_document', 'QuotationType');
 
@@ -58,9 +66,9 @@ class proposal_request extends Controller
                     ->select('id','DummyNo', 'Company_ID', 'issue_date', 'Expirationdate', 'SpecialDiscount', 'Confirm_by','Approve_at','Operated_by', 'status_document', 'QuotationType')
                     ->union($Quotation)
                     ->count();
-        $logdummy = log::select('Quotation_ID','Approve_date','Approve_time')->get();
-        $logdummycount = log::query()->count();
-        $path = 'Log_PDF/dummy_proposal/';
+        $logdummy = log::select('Quotation_ID','Approve_date','Approve_time')->where('QuotationType','DummyProposal')->get();
+        $logdummycount = log::query()->where('QuotationType','DummyProposal')->count();
+        $path = 'Log_PDF/proposal/';
 
         return view('proposal_req.index',compact('proposal','Logproposal','Logproposalcount','logdummy','path','logdummycount','proposalcount'));
     }

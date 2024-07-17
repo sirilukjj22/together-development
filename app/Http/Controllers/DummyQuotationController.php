@@ -815,6 +815,7 @@ class DummyQuotationController extends Controller
             $save->vat_type = $request->Mvat;
             $save->issue_date = $request->IssueDate;
             $save->Expirationdate = $request->Expiration;
+            $save->status_document = 1;
             $save->Operated_by = $userid;
             $save->SpecialDiscount=$request->SpecialDiscount;
             $save->save();

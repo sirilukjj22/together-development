@@ -91,10 +91,17 @@
                                         @foreach ($Quotation as $key => $item)
                                         <tr>
                                             <td style="text-align: center;">
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
-                                                    <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                </div>
+                                                @if ($item->status_document == 1)
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @else
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @endif
                                             </td>
                                             <td>{{ $item->DummyNo}}<input type="hidden" name="id" id="id" value="{{$item->id}}"></td>
                                             <td>{{ @$item->company->Company_Name}}</td>
@@ -184,10 +191,17 @@
                                         @foreach ($Pending as $key => $item)
                                         <tr>
                                             <td style="text-align: center;">
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
-                                                    <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                </div>
+                                                @if ($item->status_document == 1)
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @else
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @endif
                                             </td>
                                             <td>{{ $item->DummyNo}}<input type="hidden" name="id" id="id" value="{{$item->id}}"></td>
                                             <td>{{ @$item->company->Company_Name}}</td>
@@ -264,10 +278,17 @@
                                         @foreach ($Awaiting as $key => $item)
                                         <tr>
                                             <td style="text-align: center;">
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
-                                                    <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                </div>
+                                                @if ($item->status_document == 1)
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @else
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @endif
                                             </td>
                                             <td>{{ $item->DummyNo}}<input type="hidden" name="id" id="id" value="{{$item->id}}"></td>
                                             <td>{{ @$item->company->Company_Name}}</td>
@@ -340,10 +361,17 @@
                                         @foreach ($Approved as $key => $item)
                                         <tr>
                                             <td style="text-align: center;">
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
-                                                    <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                </div>
+                                                @if ($item->status_document == 1)
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @else
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @endif
                                             </td>
                                             <td>{{ $item->DummyNo}} <input type="hidden" name="id" id="id" value="{{$item->id}}"></td>
                                             <td>{{ @$item->company->Company_Name}}</td>
@@ -419,10 +447,17 @@
                                         @foreach ($Generate as $key => $item)
                                         <tr>
                                             <td style="text-align: center;">
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
-                                                    <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                </div>
+                                                @if ($item->status_document == 1)
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @else
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @endif
                                             </td>
                                             <td>{{ $item->DummyNo}}<input type="hidden" name="id" id="id" value="{{$item->id}}"></td>
                                             <td>{{ @$item->company->Company_Name}}</td>
@@ -498,10 +533,17 @@
                                         @foreach ($Reject as $key => $item)
                                         <tr>
                                             <td style="text-align: center;">
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
-                                                    <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                </div>
+                                                @if ($item->status_document == 1)
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @else
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @endif
                                             </td>
                                             <td>{{ $item->DummyNo}}<input type="hidden" name="id" id="id" value="{{$item->id}}"></td>
                                             <td>{{ @$item->company->Company_Name}}</td>
@@ -578,10 +620,17 @@
                                         @foreach ($cancel as $key => $item)
                                         <tr>
                                             <td style="text-align: center;">
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
-                                                    <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                </div>
+                                                @if ($item->status_document == 1)
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @else
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                        <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                    </div>
+                                                @endif
                                             </td>
                                             <td>{{ $item->DummyNo}}<input type="hidden" name="id" id="id" value="{{$item->id}}"></td>
                                             <td>{{ @$item->company->Company_Name}}</td>
@@ -717,7 +766,7 @@ function btnstatus(itemId, status) {
     function Cancel(){
         var id  = $('#id').val();
         Swal.fire({
-        title: "คุณต้องการ Generate รายการนี้ใช่หรือไม่?",
+        title: "คุณต้องการปิดการใช้งานรายการนี้ใช่หรือไม่?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "ตกลง",

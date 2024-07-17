@@ -51,7 +51,9 @@ class QuotationController extends Controller
         $Approvedcount = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->count();
         $Reject = Quotation::query()->where('Operated_by',$userid)->where('status_document',4)->get();
         $Rejectcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',4)->count();
-        return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject'));
+        $Cancel = Quotation::query()->where('Operated_by',$userid)->where('status_document',0)->get();
+        $Cancelcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',0)->count();
+        return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount'));
     }
     public function changestatus($id ,$status)
     {
@@ -1425,9 +1427,18 @@ class QuotationController extends Controller
         return view('quotation.document',compact('log','path'));
     }
 
-
-
-
+    public function cancel($id){
+        $Quotation = Quotation::where('id', $id)->first();
+        $Quotation->status_document = 0;
+        $Quotation->save();
+        return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+    }
+    public function Revice($id){
+        $Quotation = Quotation::where('id', $id)->first();
+        $Quotation->status_document = 1;
+        $Quotation->save();
+        return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+    }
 
     public function addProduct($Quotation_ID, Request $request) {
         $value = $request->input('value');

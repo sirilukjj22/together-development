@@ -359,6 +359,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Proposal/Request/document/Approve/guest/{id}', 'Approve')->name('Quotation.Approve');
         //---------------------------------------LOG-----------------------------------------------------------
         Route::get('/Quotation/view/quotation/LOG/{id}','LOG')->name('Quotation.LOG');
+        //-------------------------------------------------------------.
+        Route::get('/Quotation/cancel/{id}','cancel')->name('Quotation.cancel');
+        //--------------------------------------------------------------
+        Route::get('/Quotation/Revice/{id}','Revice')->name('Quotation.Revice');
 
 
     });
@@ -384,7 +388,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Dummy/Quotation/selectproduct/{Quotation_ID}/addProductselect', 'addProductselect')->name('DummyQuotation.addProductselect');
         Route::get('/Dummy/Quotation/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('DummyQuotation.addProducttablecreatemain');
         Route::get('/Dummy/Quotation/edit/{id}','edit')->name('DummyQuotation.edit');
-        Route::get('/Dummy/Quotation/cancel/{id}','cancel')->name('DummyQuotation.cancel');
+        Route::get('/Dummy/Quotation/cancel/{id}','Cancel')->name('DummyQuotation.cancel');
         Route::get('/Dummy/Quotation/Generate/{id}','Generate')->name('DummyQuotation.Generate');
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
         Route::get('/Dummy/Quotation/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('DummyQuotation.sheet');
