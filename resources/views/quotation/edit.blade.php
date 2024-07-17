@@ -136,7 +136,7 @@
     </div>
 @endsection
 @section('content')
-<form id="myForm" action="{{url('/Dummy/Quotation/edit/company/quotation/update/'.$Quotation->id)}}" method="POST">
+<form id="myForm" action="{{route('Quotation.update')}}" method="POST">
     @csrf
         <div class="container">
             <div class="container mt-3">
@@ -158,7 +158,7 @@
                                     <div class="row">
                                         <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Proposal</b>
                                         <span class="titleQuotation">{{$Quotation_ID}}</span>
-                                        <input type="hidden" id="Quotationold" name="Quotationold" value="{{$Quotation_ID}}">
+                                        <input type="hidden" id="Quotationold" name="Quotationold" value="{{$QuotationID}}">
                                         <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
                                             <div class="col-12 col-md-12 col-sm-12">
                                                 <div class="row">
@@ -184,7 +184,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$QuotationID}}">
+                            <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
                             <div class="row mt-5">
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                     <label class="labelcontact" for="">Customer Company</label>
@@ -492,11 +492,11 @@
                                                             <tr id="tr-select-main{{$item->Product_ID}}">
                                                                 <input type="hidden" id="tr-select-main{{$item->Product_ID}}" name="tr-select-main[]" value="{{$item->Product_ID}}">
                                                                 <td><input type="hidden" id="ProductID" name="ProductIDmain[]" value="{{$item->Product_ID}}">{{$key+1}}</td>
-                                                                <td style="text-align:left;"><input type="hidden" id="Productname_th" name="Productname_th" value="{{@$item->product->name_th}}">{{@$item->product->name_th}}</td>
+                                                                <td style="text-align:left;">{{@$item->product->name_th}}</td>
                                                                 <td class="Quantity" data-value="{{$item->Quantity}}" style="text-align:center;">
                                                                     <input type="text" id="quantity{{$var}}" name="Quantitymain[]" rel="{{$var}}" style="text-align:center;"class="quantity-input form-control" value="{{$item->Quantity}}">
                                                                 </td>
-                                                                <td><input type="hidden" id="unitname_th" name="unitname_th" value="{{ $singleUnit->name_th }}">{{ $singleUnit->name_th }}</td>
+                                                                <td>{{ $singleUnit->name_th }}</td>
                                                                 <td class="priceproduct" data-value="{{$item->priceproduct}}"><input type="hidden" id="totalprice-unit{{$var}}" name="priceproductmain[]" value="{{$item->priceproduct}}">{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
                                                                 <td class="discount"style="text-align:center;">
                                                                     <div class="input-group">
@@ -600,7 +600,6 @@
                                         </table>
                                     </div>
                                 </div>
-                                <input type="hidden" id="SpecialDischeck" name="SpecialDischeck" class="form-control" >
                                 <div class="col-12 row">
                                     <div class="col-8"></div>
                                     <div class="col-lg-4 col-md-3 col-sm-12">
@@ -723,7 +722,7 @@
                                         <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
                                             Preview
                                         </button>
-                                        <button type="submit" class="btn btn-color-green lift btn_modal">Select</button>
+                                        <button type="submit" class="btn btn-color-green lift btn_modal" onclick="confirmSubmit(event)">Save</button>
                                     </div>
                                     <div class="col-4"></div>
                                 </div>
@@ -1246,20 +1245,15 @@
             let priceArray = [];
             let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
             let Discount = 0;
-            // var discountElement = document.getElementById('DiscountAmount');
-            // if (discountElement) {
-            //     var DiscountAmount = discountElement.value;
-            // }
             var discountElement  = $('#DiscountAmount').val();
-            console.log(discountElement);
             $('#display-selected-items tr').each(function() {
-                console.log(DiscountAmount);
+                console.log(discountElement);
                 var adultValue = parseFloat(document.getElementById('Adult').value);
                 var childrenValue = parseFloat(document.getElementById('Children').value);
                 let priceCell = $(this).find('td').eq(7);
                 let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
                 var person =adultValue+childrenValue;
-                var Discount = parseFloat(DiscountAmount)|| 0;
+                var Discount = parseFloat(discountElement)|| 0;
                 if (typevat == '50') {
 
                     allprice += pricetotal;
@@ -1325,13 +1319,37 @@
             showCancelButton: true,
             confirmButtonText: "ตกลง",
             cancelButtonText: "ยกเลิก",
-            confirmButtonColor: "#28a745",
+            confirmButtonColor: "#2C7F7A",
             dangerMode: true
         }).then((result) => {
             if (result.isConfirmed) {
                 console.log(1);
                 // If user confirms, submit the form
-                window.location.href = "";
+                window.location.href = "{{ route('Quotation.index') }}";
+            }
+        });
+    }
+    function confirmSubmit(event) {
+        event.preventDefault(); // Prevent the form from submitting
+
+        var Quotationold = $('#Quotationold').val();
+        var Quotation_ID = $('#Quotation_ID').val();
+        var message = `หากบันทึกข้อมูลใบข้อเสนอรหัส ${Quotationold} ทำการยกเลิกใบข้อเสนอ`;
+        var title = `คุณต้องการบันทึกข้อมูลรหัส ${Quotation_ID} ใช่หรือไม่?`;
+        Swal.fire({
+            title: title,
+            text: message,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "บันทึกข้อมูล",
+            cancelButtonText: "ยกเลิก",
+            confirmButtonColor: "#2C7F7A",
+            dangerMode: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                console.log(1);
+                // If user confirms, submit the form
+                document.getElementById("myForm").submit();
             }
         });
     }

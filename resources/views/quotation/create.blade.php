@@ -685,7 +685,7 @@
                                     <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
                                         Preview
                                     </button>
-                                    <button type="submit" class="btn btn-color-green lift btn_modal">Select</button>
+                                    <button type="submit" class="btn btn-color-green lift btn_modal" onclick="confirmSubmit(event)">Save</button>
                                 </div>
                                 <div class="col-4"></div>
                             </div>
@@ -1248,7 +1248,28 @@
             if (result.isConfirmed) {
                 console.log(1);
                 // If user confirms, submit the form
-                window.location.href = "";
+                window.location.href = "{{ route('Quotation.index') }}";
+            }
+        });
+    }
+    function confirmSubmit(event) {
+        event.preventDefault(); // Prevent the form from submitting
+        var Quotation_ID = $('#Quotation_ID').val();
+        var title = `คุณต้องการบันทึกข้อมูลรหัส ${Quotation_ID} ใช่หรือไม่?`;
+        Swal.fire({
+            title: title,
+            // text: message,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "บันทึกข้อมูล",
+            cancelButtonText: "ยกเลิก",
+            confirmButtonColor: "#2C7F7A",
+            dangerMode: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                console.log(1);
+                // If user confirms, submit the form
+                document.getElementById("myForm").submit();
             }
         });
     }

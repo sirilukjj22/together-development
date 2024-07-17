@@ -357,6 +357,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/Quotation/send/documents', 'senddocuments')->name('Quotation.senddocuments');
         //--------------------------------------ลูกค้ายืนยัน------------------------------------------------------
         Route::get('/Proposal/Request/document/Approve/guest/{id}', 'Approve')->name('Quotation.Approve');
+        //---------------------------------------LOG-----------------------------------------------------------
+        Route::get('/Quotation/view/quotation/LOG/{id}','LOG')->name('Quotation.LOG');
+
 
     });
 

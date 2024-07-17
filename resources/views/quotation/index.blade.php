@@ -4,8 +4,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col">
-                <small class="text-muted">Welcome to Dummy Proposal.</small>
-                <h1 class="h4 mt-1">Dummy Proposal (แบบร่างข้อเสนอ)</h1>
+                <small class="text-muted">Welcome to Proposal.</small>
+                <h1 class="h4 mt-1">Proposal (ข้อเสนอ)</h1>
             </div>
             <div class="col-auto">
                 @if (@Auth::user()->roleMenuAdd('Proposal',Auth::user()->id) == 1)
@@ -54,7 +54,7 @@
                 <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting" role="tab"><span class="badge bg-warning" >{{$Awaitingcount}}</span> Awaiting Approval</a></li>
                 <li class="nav-item" id="nav4"><a class="nav-link" data-bs-toggle="tab" href="#nav-Approved" role="tab"><span class="badge bg-success" >{{$Approvedcount}}</span> Approved</a></li>
                 <li class="nav-item" id="nav5"><a class="nav-link" data-bs-toggle="tab" href="#nav-Reject" role="tab"><span class="badge "style="background-color:#1d4ed8" >{{$Rejectcount}}</span> Reject</a></li>
-                <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge bg-danger" >{{0}}</span> Cancel</a></li>
+                {{-- <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge bg-danger" >{{0}}</span> Cancel</a></li> --}}
             </ul>
             <div class="card mb-3">
                 <div class="card-body">
@@ -166,7 +166,7 @@
                                                                 <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">View</a></li>
                                                             @endif
                                                             @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
-                                                                @if (in_array($item->status_document, [1, 6]))
+                                                                @if (in_array($item->status_document, [1, 6,3]))
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                 @endif
                                                             @endif
@@ -180,6 +180,7 @@
                                                                     <li><a class="dropdown-item py-2 rounded" onclick="Approved({{ $item->id }})">Approved</a></li>
                                                                 @endif
                                                             @endif
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                         </ul>
                                                     </div>
                                                 </td>
@@ -674,9 +675,6 @@
                                     </tbody>
                                 </table>
                             </form>
-                        </div>
-                        <div class="tab-pane fade" id="nav-Cancel" role="tabpanel" rel="0">
-
                         </div>
                     </div>
                 </div>

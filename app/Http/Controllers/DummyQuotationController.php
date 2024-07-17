@@ -817,7 +817,7 @@ class DummyQuotationController extends Controller
             $save->Expirationdate = $request->Expiration;
             $save->Operated_by = $userid;
             $save->SpecialDiscount=$request->SpecialDiscount;
-            // $save->save();
+            $save->save();
             //-----------------------------ส่วน product-----------------------------
             $Products = $request->input('ProductIDmain', []);
             // นับจำนวนค่าที่ปรากฏซ้ำกันในอาร์เรย์ $Products
@@ -881,8 +881,9 @@ class DummyQuotationController extends Controller
                 return redirect()->route('DummyQuotation.index')->with('success', 'ใบเสนอราคายังไม่ถูกสร้าง');
             }
         } catch (\Exception $e) {
-            // return response()->json(['error' => 'Error updating status.'], 500);
-            return $e->getMessage();
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
 
     }
