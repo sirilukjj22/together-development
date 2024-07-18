@@ -1,646 +1,403 @@
-@extends('layouts.test')
-
-@section('content')
+@extends('layouts.masterLayout')
 <style>
-    .container {
-        margin-top: 40px;
-        background-color: white;
-        padding: 5% 5%;
-        overflow-x: hidden;
-    }
-    input[type=text], select {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-        }
-        input[type=tel], select {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-        }
-        input[type=tel1], select {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-        }
-
-        input[type="date"] {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        outline: none;
-        font-size: 16px;
-        background-color: #f8f8f8; /* เพิ่มสีพื้นหลัง */
-    }
-    input[type="number"] {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-    .button-guest{
-        background-color: #2D7F7B;
-        color: whitesmoke;
-        border-color: #9a9a9a;
-        border-style: solid;
-        border-width: 1px;
-        border-radius: 8px;
-        width: 30%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        box-sizing: border-box;
-
-    }
-    .button-guest-end{
-        background-color: #ff0000;
-        color: whitesmoke;
-        border-color: #9a9a9a;
-        border-style: solid;
-        border-width: 1px;
-        border-radius: 8px;
-        width: 30%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        box-sizing: border-box;
-    }
-    .textarea{
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-    .add-phone {
-        /* เพิ่มสไตล์ที่คุณต้องการในส่วนนี้ */
-        color: #fff;
-        background-color: #28a745;
-        border-color: #28a745;
-        border-radius: 0.25rem;
-        padding: 0.375rem 0.75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        cursor: pointer;
-    }
-
-    .add-phone:hover {
-        background-color: #218838;
-        border-color: #1e7e34;
-    }
-
-    .add-phone:disabled {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        cursor: not-allowed;
-    }
-    .remove-phone {
-        /* เพิ่มสไตล์ที่คุณต้องการในส่วนนี้ */
-        color: #fff;
-        background-color: #dc3545;
-        /* สีแดง */
-        border-color: #dc3545;
-        /* สีเหลือง */
-        border-radius: 0.25rem;
-        padding: 0.375rem 0.75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        cursor: not-allowed;
-    }
-    .remove-phone {
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        margin: auto;
-        margin-right: 6%;
-        margin-top: 10px;
-        height: 50%;
-        font-size: 14px !important;
-        border: none;
-        background: #dc3545;
-        /* Adjust the button style as needed */
-        padding: 0px 20px;
-        cursor: pointer;
-    }
-    .phone-group {
-        position: relative;
-    }
-
-    .phone-group input {
-        width: 100%;
-        padding-right: 40px;
-        /* space for the remove button */
-    }
-
-    .card {
-        width: 200px; /* กำหนดความกว้างตามต้องการ */
-        height: 200px; /* กำหนดความสูงตามต้องการ */
-        background-color: #fff;
-        border: 1px solid #ccc; /* เพิ่มเส้นขอบ */
-        border-radius: 10px; /* เพิ่มมุมโค้งมน */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* เพิ่มเงา */
-        overflow: hidden; /* ซ่อนส่วนเกิน */
-        position: relative; /* สำหรับการวางปุ่ม */
-    }
-
-    .image-container {
-        width: 100%;
-        height: 100%;
+    .profile-pic {
+        color: transparent;
+        transition: all 0.3s ease;
         display: flex;
-        align-items: center;
         justify-content: center;
-        background-color: #f0f0f0;
-        background: url('{{ asset('assets2/images/no-image.jpg') }}') no-repeat center center;
-        background-size: cover;
+        align-items: center;
         position: relative;
+        transition: all 0.3s ease;
     }
-
-    .image-upload-button {
+    .profile-pic input {
+        display: none;
+    }
+    .profile-pic img {
         position: absolute;
-        bottom: 10px; /* ตำแหน่งจากด้านล่าง */
-        right: 10px; /* ตำแหน่งจากด้านขวา */
-        width: 32px; /* ขนาดของปุ่ม */
-        height: 32px; /* ขนาดของปุ่ม */
-        background: url('{{ asset('assets2/images/photo-camera.png') }}') no-repeat center center;
-        background-size: cover;
-        border: none; /* ไม่มีเส้นขอบ */
-        border-radius: 50%; /* ทำให้ปุ่มเป็นวงกลม */
-        cursor: pointer;* เปลี่ยนรูปแบบของ cursor เมื่อวางเหนือปุ่ม */
-        box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.8);
+        object-fit: cover;
+        width: 165px;
+        height: 165px;
+        box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.35);
+        border-radius: 100px;
+        z-index: 0;
+        border: 2px solid #999999;
     }
-    .deleteImage{
-        position: absolute;
-        bottom: 10px; /* ตำแหน่งจากด้านล่าง */
-        right: 10px; /* ตำแหน่งจากด้านขวา */
-        width: 32px; /* ขนาดของปุ่ม */
-        height: 32px; /* ขนาดของปุ่ม */
-        background: url('{{ asset('assets2/images/delete.png') }}') no-repeat center center;
-        background-size: cover;
-        border: none; /* ไม่มีเส้นขอบ */
-        border-radius: 50%; /* ทำให้ปุ่มเป็นวงกลม */
-        cursor: pointer;* เปลี่ยนรูปแบบของ cursor เมื่อวางเหนือปุ่ม */
-        box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.8);
+    .profile-pic .-label {
+        cursor: pointer;
+        height: 165px;
+        width: 165px;
     }
-    .select2-container {
-        width: 100% !important;
-    }
-    .flex-container {
+    .profile-pic:hover .-label {
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 10000;
+        color: #fafafa;
+        transition: background-color 0.2s ease-in-out;
+        border-radius: 100px;
+        margin-bottom: 0;
     }
-    .row label {
-        margin: 0;
-        margin-bottom: 5px;
+    .profile-pic span {
+        display: inline-flex;
+        padding: 0.2em;
+        height: 2em;
     }
-    .row input {
-        margin: 0;
-        margin-bottom: 2%;
+    .btn-space {
+        margin-right: 10px;
     }
-
-    .row select {
-        margin: 0;
-        margin-bottom: 2%;
-    }
-
-    .row .select2-selection {
-        margin: 0 !important;
-        margin-bottom: 2% !important;
-    }
-
-    .row .select2-selection .select2-selection__arrow {
-        margin: 10px !important;
-    }
-    .button-return {
-    align-items: center;
-    appearance: none;
-    background-color: #6b6b6b;
-    border-radius: 8px;
-    border-style: none;
-    box-shadow: rgba(0, 0, 0, 0.2) 0 3px 5px -1px,
-      rgba(0, 0, 0, 0.14) 0 6px 10px 0, rgba(0, 0, 0, 0.12) 0 1px 18px 0;
-    box-sizing: border-box;
-    color: #ffffff;
-    cursor: pointer;
-    display: inline-flex;
-    fill: currentcolor;
-    font-size: 14px;
-    font-weight: 500;
-    height: 40px;
-    justify-content: center;
-    letter-spacing: 0.25px;
-    line-height: normal;
-    max-width: 100%;
-    overflow: visible;
-    padding: 2px 24px;
-    position: relative;
-    text-align: center;
-    text-transform: none;
-    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
-      opacity 15ms linear 30ms, transform 270ms cubic-bezier(0, 0, 0.2, 1) 0ms;
-    touch-action: manipulation;
-    width: auto;
-    will-change: transform, opacity;
-    margin-left: 5px;
-  }
-
-  .button-return:hover {
-    background-color: #ffffff !important;
-    color: #000000;
-    transform: scale(1.1);
-  }
 </style>
 
 
-<div class="container-fluid border rounded-3 p-5 mt-3 bg-white" style="width: 98%;">
-    <div class="row">
-        <div class="usertopic">
-            <h1>Registration Request</h1>
+
+@section('pretitle')
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <small class="text-muted">Welcome to Register Freelancer.</small>
+                <h1 class="h4 mt-1">Register Freelancer (ลงทะเบียนตัวแทน)</h1>
+            </div>
         </div>
     </div>
-    <br>
-    <form action="{{url('/Freelancer/check/save')}}" method="POST" enctype="multipart/form-data">
-        {!! csrf_field() !!}
-        <div class="col-12 row">
-            <div class="col-lg-4 col-md-6 col-sm-12"></div>
-            <div class="col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center">
-                <div class="card">
-                    <div class="image-container">
-                        <button type="button" class="image-upload-button"></button>
-                        <input type="file" name="imageFile" id="imageFile" accept="image/jpeg, image/png, image/svg" required style="display: none;">
-                        <img src=""class="image_preview" style="display: none; width: 100%; height: 100%; object-fit:cover;">
-                        <button class="deleteImage" type="button" id="deleteImage" style="display: none;"></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 row">
-            <div class="col-lg-2 col-md-6 col-sm-12"></div>
-            <div class="col-lg-2 col-md-6 col-sm-12"><label for="Preface">Title</label><br>
-                <select name="Preface" id="PrefaceSelect" class="select" >
-                    <option value=""></option>
-                        @foreach($prefix as $item)
-                            <option value="{{ $item->id }}">{{ $item->name_th }}</option>
-                        @endforeach
-                </select></div>
-            <div class="col-lg-3 col-md-6 col-sm-12" ><label for="first_name">First Name</label><br>
-            <input type="text" id="first_name" name="first_name"maxlength="70" required></div>
-            <div class="col-lg-3 col-md-6 col-sm-12" ><label for="last_name" >Last Name</label><br>
-            <input type="text" id="last_name" name="last_name"maxlength="70" required></div>
-        </div>
-        <div class="col-12 row mt-2">
-            <div class="col-lg-2 col-md-6 col-sm-12"></div>
-            <div class="col-lg-4 col-md-6 col-sm-12"><label for="country">Country</label><br>
-                <select name="countrydata" id="countrySelect" class="select" onchange="showcityInput()">
-                    <option value="Thailand">ประเทศไทย</option>
-                    <option value="Other_countries">ประเทศอื่นๆ</option>
-                </select>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12" id="cityInput" style="display:none;">
-                <label for="city">City</label><br>
-                <input type="text" id="city" name="city">
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:block;">
-                <label for="city">City</label><br>
-                <select name="province" id = "province" class="select2" onchange="select_province()"style="border: 1px solid #000">
-                    <option value=""></option>
-                    @foreach($provinceNames as $item)
-                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-        <div class="col-12 row mt-2">
-            <div class="col-lg-2 col-md-2 col-sm-12"></div>
-            <div class="col-lg-3 col-md-3 col-sm-12">
-                <label for="Amphures">Amphures</label><br>
-                <select name="amphures" id = "amphures" class="select2"  onchange="select_amphures()">
-                    <option value=""></option>
+@endsection
 
-                </select>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-12">
-                <label for="Tambon">Tambon  </label><br>
-                <select name="Tambon" id ="Tambon" class="select2" onchange="select_Tambon()">
-                    <option value=""></option>
-                </select>
-            </div>
-            <div class="col-lg-2 col-md-3 col-sm-12">
-                <label for="zip_code">Zip Code</label><br>
-                <select name="zip_code" id ="zip_code" class="select2" >
-                    <option value=""></option>
-                </select>
-            </div>
-        </div>
-        <div class="col-12 row mt-2">
-            <div class="col-lg-2 col-md-6 col-sm-12"></div>
-            <div class="col-lg-8 col-md-8 col-sm-12" >
-                <label for="address">Address:</label><br>
-                <textarea type="text" id="address" name="address" rows="5" cols="35" class="textarea" aria-label="With textarea" required></textarea>
-            </div>
-
-        </div>
-        <div class="col-12 row mt-2">
-            <div class="col-lg-2 col-md-6 col-sm-12"></div>
-            <div class="col-lg-8 col-md-8 col-sm-12" >
-                <label for="email">Email</label><br>
-                <input type="text" id="email" name="email"maxlength="70" required>
-            </div>
-        </div>
-        <div class="col-12 row mt-2">
-            <div class="col-lg-2 col-md-6 col-sm-12"></div>
-            <div class="col-lg-4 col-md-6 col-sm-12" >
-                <label for="Birthday">Birthday</label><br>
-                <input type="date" id="Birthday" name="Birthday" required>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12" >
-                <label for="First_day_work">First day of work</label><br>
-                <input type="date" id="First_day_work" name="First_day_work" required>
-            </div>
-        </div>
-        <div class="col-12 row mt-2">
-            <div class="col-lg-2 col-md-6 col-sm-12"></div>
-            <div class="col-lg-4 col-md-6 col-sm-12 mt-4" >
-                <label for="booking_channel">Booking Channel:</label><br>
-                <select name="booking_channel[]" id="booking_channel" class="select2" multiple>
-                    <option value=""></option>
-                    @foreach($booking_channel as $item)
-                    <option value="{{ $item->id }}">{{ $item->name_en }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="row">
-                    <div class="col-lg-7 col-md-6 col-sm-12">
-                        <label for="Phone_number">หมายเลขโทรศัพท์ / Phone number</label>
+@section('content')
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-sm-12 col-12">
+            <form action="{{route('freelancer.save')}}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="card p-4 mb-4">
+                    <div class="row">
+                        <div class="col-sm-5 col-5"></div>
+                        <div class="col-sm-2 col-2">
+                            <div class="profile-pic" >
+                                <label class="-label" for="file">
+                                    <span class="glyphicon glyphicon-camera"></span>
+                                    <span>Change Image</span>
+                                </label>
+                                <input id="file" name="image" type="file" onchange="loadFile(event)" />
+                                <img src="{{ asset('assets2/images/no-image.jpg') }}" id="output" width="200" />
+                            </div>
+                        </div>
+                        <div class="col-sm-5 col-5"></div>
                     </div>
-                    <div class="col-lg-5 col-md-6 col-sm-12">
-                        <button type="button" class="add-phone" id="add-phone" data-target="phone-container">เพิ่มเบอร์โทรศัพท์</button>
+                    <div class="row mt-2">
+                        <div class="col-lg-2 col-md-2 col-sm-12">
+                            <label for="Preface" >คำนำหน้า / Title</label><br>
+                            <select name="Preface" id="PrefaceSelect" class="form-select">
+                                <option value=""></option>
+                                @foreach($prefix as $item)
+                                <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-5 col-md-4 col-sm-12">
+                            <label for="first_name">ชื่อจริง / First Name</label><br>
+                            <input type="text"class="form-control" placeholder="First Name" id="first_name" name="first_name" maxlength="70" required>
+                        </div>
+                        <div class="col-lg-5 col-md-4 col-sm-12"><label for="last_name">นามสกุล / Last Name</label><br>
+                            <input type="text" class="form-control" placeholder="Last Name" id="last_name" name="last_name" maxlength="70" required>
+                        </div>
                     </div>
-                </div>
-                <div id="phone-container" class="flex-container row mt-1">
-                    <!-- Initial input field -->
-                    <div class="col-lg-12 col-md-6 col-sm-12 phone-group">
-                        <input type="text" name="phone[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
-                        <button type="button" class="remove-phone">ลบ</button>
+                    <div class="row mt-2">
+                        <div class="col-lg-4 col-md-6 col-sm-12" >
+                            <label for="booking_channel">ช่องทางการจอง / Booking Channel</label><br>
+                            <select name="booking_channel[]" id="booking_channel" class="select2" multiple>
+                                <option value=""></option>
+                                @foreach($booking_channel as $item)
+                                <option value="{{ $item->id }}">{{ $item->name_en }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12"><label for="country">ประเทศ / Country</label><br>
+                            <select name="countrydata" id="countrySelect" class="form-select" onchange="showcityInput()">
+                                <option value="Thailand">ประเทศไทย</option>
+                                <option value="Other_countries">ประเทศอื่นๆ</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12" id="cityInput" style="display:none;">
+                            <label for="city">จังหวัด / Province</label><br>
+                            <input type="text" id="city" name="city">
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:block;">
+                            <label for="city">จังหวัด / Province</label><br>
+                            <select name="province" id = "province" class="select2" onchange="select_province()"style="border: 1px solid #000">
+                                <option value=""></option>
+                                @foreach($provinceNames as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                </div>
-            </div>
+                    <div class="row mt-2">
+                        <div class="col-lg-4 col-md-4  col-sm-12">
+                            <label for="Amphures">อำเภอ / District</label><br>
+                            <select name="amphures" id = "amphures" class="select2"  onchange="select_amphures()">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <label for="Tambon">ตำบล / Sub-district</label><br>
+                            <select name="Tambon" id ="Tambon" class="select2" onchange="select_Tambon()">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <label for="zip_code">รหัสไปรษณีย์ / Postal Code</label><br>
+                            <select name="zip_code" id ="zip_code" class="select2" >
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-lg-12 col-md-12 col-sm-12" >
+                            <label for="address">ที่อยู่ / Address</label><br>
+                            <textarea type="text" id="address" name="address" rows="3" cols="35" class="form-control" aria-label="With textarea" required></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-lg-4 col-md-4 col-sm-12" >
+                            <label for="email">อีเมล / Email</label><br>
+                            <input type="text" class="form-control" id="email" name="email"maxlength="70" required>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12" >
+                            <label for="Birthday">วันเดือนปีเกิด / Birthday</label><br>
+                            <input type="date" class="form-control" id="Birthday" name="Birthday" required>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12" >
+                            <label for="First_day_work">วันที่เริ่มทำงาน / First day of work</label><br>
+                            <input type="date" class="form-control" id="First_day_work" name="First_day_work" required>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <span for="Company_Phone" class="flex-container">
+                                โทรศัพท์/ Phone number
+                            </span>
+                            <button type="button" class="btn btn-color-green my-2" id="add-phone">เพิ่มหมายเลขโทรศัพท์</button>
+                        </div>
+                        <div id="phone-container" class="flex-container row">
+                            <!-- Initial input fields -->
+                            <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                                <div class="input-group show">
+                                    <input type="text" name="phone[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                    <button type="button" class="btn btn-outline-danger remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-lg-6 col-md-6 col-sm-12" >
+                            <label for="identification_number">หมายเลขประจำตัว / Identification Number</label><br>
+                            <input type="text" class="form-control" id="identification_number" name="identification_number"maxlength="13" required>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <label for="Identification_Number_file">เอกสารหมายเลขประจำตัว / Identification File </label><br>
+                            <input type="file" id="Identification_Number_file" class="form-control" name="Identification_Number_file" accept="image/jpeg, image/png, image/svg" required>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-lg-3 col-md-6 col-sm-12">
+                            <label for="Bank_number">Bank Account Number</label><br>
+                            <input type="text" id="Bank_number" name="Bank_number"maxlength="10" class="form-control" required>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12">
+                            <label for="Account_Name">Bank Account Name</label><br>
+                            <input type="text" id="Account_Name" name="Account_Name"maxlength="70" class="form-control" required>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12">
+                            <label for="Bank">Bank</label><br>
+                            <select name="Mbank" id="Mbank" class="select2">
+                                <option value=""></option>
+                                @foreach($Mbank as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12">
+                            <label for="Bank_file">Bank File</label><br>
+                            <input type="file" id="Bank_file" name="Bank_file" class="form-control" accept="image/jpeg, image/png, image/svg"  required>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-lg-3 col-sm-12"></div>
+                        <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
+                            <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{ route('freelancer.index') }}'">{{ __('ย้อนกลับ') }}</button>
+                            <button type="submit" class="btn btn-color-green lift ">บันทึกข้อมูล</button>
+                        </div>
+                        <div class="col-lg-3 col-sm-12"></div>
+                    </div>
+                </div> <!-- .card end -->
+            </form>
         </div>
-        <div class="col-12 row mt-2">
-            <div class="col-lg-2 col-md-6 col-sm-12"></div>
-            <div class="col-lg-4 col-md-6 col-sm-12" >
-                <label for="identification_number">Identification Number</label><br>
-                <input type="text" id="identification_number" name="identification_number"maxlength="13" required>
-
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
-                <label for="Identification_Number_file">Identification Number File</label><br>
-                <input type="file" id="Identification_Number_file" name="Identification_Number_file"
-                 required style="width: 100%;border: 2px solid  #b4b4b4"accept="image/jpeg, image/png, image/svg">
-            </div>
-        </div>
-        <div class="col-12 row mt-2">
-            <div class="col-lg-2 col-md-6 col-sm-12"></div>
-            <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
-                <label for="Bank_number">Bank Account Number</label><br>
-                <input type="text" id="Bank_number" name="Bank_number"maxlength="10" required>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
-                <label for="Account_Name">Bank Account Name</label><br>
-                <input type="text" id="Account_Name" name="Account_Name"maxlength="70" required>
-            </div>
-        </div>
-        <div class="col-12 row mt-2">
-            <div class="col-lg-2 col-md-6 col-sm-12"></div>
-            <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
-                <label for="Bank">Bank</label><br>
-                    <select name="Mbank" id = "Mbank" class="select2">
-                        <option value=""></option>
-                        @foreach($Mbank as $item)
-                            <option value="{{ $item->id }}">{{ $item->name_th }}</option>
-                        @endforeach
-                    </select>
-            </div>
-            <div class="col-4 mt-2" >
-                <label for="Bank_file">Bank File</label><br>
-                <input type="file" id="Bank_file" name="Bank_file"   required
-                style="width: 100%;  border: 2px solid  #b4b4b4"
-                accept="image/jpeg, image/png, image/svg">
-
-            </div>
-        </div>
-        <div class="col-12 row">
-            <div class="col-6 col-md-4 col-sm-12"></div>
-            <div class="col-4 col-md-4 col-sm-12" style="display:flex; justify-content:center; align-items:center;">
-                <button type="button" class="button-return" onclick="window.location.href='{{ route('freelancer.index') }}'" >{{ __('ย้อนกลับ') }}</button>
-                <button type="submit" class="button-10" style="background-color: #109699;">บันทึกข้อมูล</button>
-            </div>
-            <div class="col-4 col-md-4 col-sm-12"></div>
-        </div>
-    </form>
+    </div> <!-- .row end -->
 </div>
-<script>
-$(document).ready(function(){
-    $('.select2').select2();
-});
-$(document).ready(function(){
-    $('#identification_number').mask('0-0000-00000-00-0');
-});
-$('#first_name').on('keyup',function(){
-    var first_name = $(this).val();
-    var last_name =$('#last_name').val();
-    $('#Account_Name').val(first_name+" "+last_name);
-    console.log(last_name);
-});
-$('#last_name').on('keyup',function(){
-    var first_name = $('#first_name').val();
-    var last_name = $(this).val();
-    $('#Account_Name').val(first_name+" "+last_name);
-    console.log(first_name);
-});
-// window.onload = function() {
-//     document.getElementById("defaultOpen").click(); // เปิดแท็บ Summary Visit info เมื่อหน้าโหลด
-//     document.getElementById("lastestOpen").click();
-// }
-function openHistory(evt, cityName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("nav-link");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(cityName).style.display = "block";
-    evt.currentTarget.className += " active";
-}
 
-function showcityInput() {
-    var countrySelect = document.getElementById("countrySelect");
-    var cityInput = document.getElementById("cityInput");
-    var citythai = document.getElementById("citythai");
-    var amphuresSelect = document.getElementById("amphures");
-    var tambonSelect = document.getElementById("Tambon");
-    var zipCodeSelect = document.getElementById("zip_code");
 
-    // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
-    if (countrySelect.value === "Other_countries") {
-        // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
-        cityInput.style.display = "block";
-        citythai.style.display = "none";
-        // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
-        amphuresSelect.disabled = true;
-        tambonSelect.disabled = true;
-        zipCodeSelect.disabled = true;
-    } else {
-        // ถ้าไม่เลือก "Other_countries" ซ่อน input field สำหรับเมืองอื่นๆ และแสดง input field สำหรับเมืองไทย
-        cityInput.style.display = "none";
-        citythai.style.display = "block";
-        // เรียกใช้ฟังก์ชัน select_amphures() เพื่อเปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
-        select_amphures();
-    }
-}
+@include('script.script')
 
-function Onclickreadonly(){
-    var startDate = document.getElementById('contract_rate_start_date').value;
-    if (startDate !== '') {
-        // หากมีค่า กำหนด input field ที่มี id เป็น contract_rate_end_date เป็น readonly
-        document.getElementById('contract_rate_end_date').readOnly = false;
-    } else {
-        // หากไม่มีค่า กำหนด input field ที่มี id เป็น contract_rate_end_date เป็น readonly
-        document.getElementById('contract_rate_end_date').readOnly = true;
-    }
-}
-//----------------------------------------------------------------------------
-function select_province(){
-    var provinceID = $('#province').val();
-    jQuery.ajax({
-        type:   "GET",
-        url:    "{!! url('/Freelancer/checked/create/amphures/"+provinceID+"') !!}",
-        datatype:   "JSON",
-        async:  false,
-        success: function(result) {
-            jQuery('#amphures').children().remove().end();
-            //ตัวแปร
-            $('#amphures').append(new Option('', ''));
-            jQuery.each(result.data, function(key, value) {
-                var amphures = new Option(value.name_th,value.id);
-                $('#amphures').append(amphures);
-                console.log(amphures);
-            });
-        },
-    })
-}
-
-function select_amphures(){
-    var amphuresID  = $('#amphures').val();
-    $.ajax({
-        type:   "GET",
-        url:    "{!! url('/Freelancer/checked/create/Tambon/"+amphuresID+"') !!}",
-        datatype:   "JSON",
-        async:  false,
-        success: function(result) {
-            jQuery('#Tambon').children().remove().end();
-            $('#Tambon').append(new Option('', ''));
-            jQuery.each(result.data, function(key, value) {
-                var Tambon  = new Option(value.name_th,value.id);
-                $('#Tambon ').append(Tambon );
-            });
-        },
-    })
-}
-function select_Tambon(){
-    var Tambon  = $('#Tambon').val();
-    $.ajax({
-        type:   "GET",
-        url:    "{!! url('/Freelancer/checked/create/districts/"+Tambon+"') !!}",
-        datatype:   "JSON",
-        async:  false,
-        success: function(result) {
-            jQuery('#zip_code').children().remove().end();
-            $('#zip_code').append(new Option('', ''));
-            jQuery.each(result.data, function(key, value) {
-                var zip_code  = new Option(value.zip_code,value.zip_code);
-                $('#zip_code ').append(zip_code );
-            });
-        },
-    })
-}
-document.getElementById('add-phone').addEventListener('click', function() {
-    var phoneContainer = document.getElementById('phone-container');
-    var newPhoneGroup = phoneContainer.firstElementChild.cloneNode(true);
-    newPhoneGroup.querySelector('input').value = '';
-    phoneContainer.appendChild(newPhoneGroup);
-    attachRemoveEvent(newPhoneGroup.querySelector('.remove-phone'));
-});
-
-function attachRemoveEvent(button) {
-    button.addEventListener('click', function() {
-        var phoneContainer = document.getElementById('phone-container');
-        if (phoneContainer.childElementCount > 1) {
-            phoneContainer.removeChild(button.parentElement);
-        }
-    });
-}
-
-// Attach the remove event to the initial remove button
-attachRemoveEvent(document.querySelector('.remove-phone'));
-</script>
 <script>
     $(document).ready(function() {
-        // Open file input when upload button is clicked
-        $(document).on('click', '.image-upload-button', function() {
-            $('#imageFile').click();
+        $('.select2').select2({
+            placeholder: "Please select an option"
         });
+    });
+    $('#first_name').on('keyup',function(){
+        var first_name = $(this).val();
+        var last_name =$('#last_name').val();
+        $('#Account_Name').val(first_name+" "+last_name);
+        console.log(last_name);
+    });
+    $('#last_name').on('keyup',function(){
+        var first_name = $('#first_name').val();
+        var last_name = $(this).val();
+        $('#Account_Name').val(first_name+" "+last_name);
+        console.log(first_name);
+    });
+    function openHistory(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("nav-link");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
 
-        // Display image preview when file is selected
-        $(document).on('change', '#imageFile', function() {
-            if (this.files && this.files[0]) {
-                let img = document.querySelector('.image_preview');
-                let imageUploadButton = document.querySelector('.image-upload-button');
-                let deleteImage = document.querySelector('.deleteImage');
+    function showcityInput() {
+        var countrySelect = document.getElementById("countrySelect");
+        var cityInput = document.getElementById("cityInput");
+        var citythai = document.getElementById("citythai");
+        var amphuresSelect = document.getElementById("amphures");
+        var tambonSelect = document.getElementById("Tambon");
+        var zipCodeSelect = document.getElementById("zip_code");
 
-                img.onload = () => {
-                    URL.revokeObjectURL(img.src);
-                };
-                img.src = URL.createObjectURL(this.files[0]);
-                img.style.display = 'block';
-                imageUploadButton.style.display = 'none';
-                deleteImage.style.display = 'block';
+        // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
+        if (countrySelect.value === "Other_countries") {
+            // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+            cityInput.style.display = "block";
+            citythai.style.display = "none";
+            // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+            amphuresSelect.disabled = true;
+            tambonSelect.disabled = true;
+            zipCodeSelect.disabled = true;
+        } else {
+            // ถ้าไม่เลือก "Other_countries" ซ่อน input field สำหรับเมืองอื่นๆ และแสดง input field สำหรับเมืองไทย
+            cityInput.style.display = "none";
+            citythai.style.display = "block";
+            // เรียกใช้ฟังก์ชัน select_amphures() เพื่อเปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+            select_amphures();
+        }
+    }
+
+    function Onclickreadonly(){
+        var startDate = document.getElementById('contract_rate_start_date').value;
+        if (startDate !== '') {
+            // หากมีค่า กำหนด input field ที่มี id เป็น contract_rate_end_date เป็น readonly
+            document.getElementById('contract_rate_end_date').readOnly = false;
+        } else {
+            // หากไม่มีค่า กำหนด input field ที่มี id เป็น contract_rate_end_date เป็น readonly
+            document.getElementById('contract_rate_end_date').readOnly = true;
+        }
+    }
+    //----------------------------------------------------------------------------
+    function select_province(){
+        var provinceID = $('#province').val();
+        jQuery.ajax({
+            type:   "GET",
+            url:    "{!! url('/Freelancer/checked/create/amphures/"+provinceID+"') !!}",
+            datatype:   "JSON",
+            async:  false,
+            success: function(result) {
+                jQuery('#amphures').children().remove().end();
+                //ตัวแปร
+                $('#amphures').append(new Option('', ''));
+                jQuery.each(result.data, function(key, value) {
+                    var amphures = new Option(value.name_th,value.id);
+                    $('#amphures').append(amphures);
+                    console.log(amphures);
+                });
+            },
+        })
+    }
+
+    function select_amphures(){
+        var amphuresID  = $('#amphures').val();
+        $.ajax({
+            type:   "GET",
+            url:    "{!! url('/Freelancer/checked/create/Tambon/"+amphuresID+"') !!}",
+            datatype:   "JSON",
+            async:  false,
+            success: function(result) {
+                jQuery('#Tambon').children().remove().end();
+                $('#Tambon').append(new Option('', ''));
+                jQuery.each(result.data, function(key, value) {
+                    var Tambon  = new Option(value.name_th,value.id);
+                    $('#Tambon ').append(Tambon );
+                });
+            },
+        })
+    }
+    function select_Tambon(){
+        var Tambon  = $('#Tambon').val();
+        $.ajax({
+            type:   "GET",
+            url:    "{!! url('/Freelancer/checked/create/districts/"+Tambon+"') !!}",
+            datatype:   "JSON",
+            async:  false,
+            success: function(result) {
+                jQuery('#zip_code').children().remove().end();
+                $('#zip_code').append(new Option('', ''));
+                jQuery.each(result.data, function(key, value) {
+                    var zip_code  = new Option(value.zip_code,value.zip_code);
+                    $('#zip_code ').append(zip_code );
+                });
+            },
+        })
+    }
+    var loadFile = function (event) {
+        var image = document.getElementById("output");
+        image.src = URL.createObjectURL(event.target.files[0]);
+    };
+</script>
+<script>
+    document.getElementById('add-phone').addEventListener('click', function() {
+        var phoneContainer = document.getElementById('phone-container');
+        var newCol = document.createElement('div');
+        newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12');
+        newCol.innerHTML = `
+            <div class="input-group mt-2">
+                <input type="text" name="phone[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                <button type="button" class="btn btn-outline-danger remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+            </div>
+        `;
+        phoneContainer.appendChild(newCol);
+
+        // Add the show class after a slight delay to trigger the transition
+        setTimeout(function() {
+            newCol.querySelector('.input-group').classList.add('show');
+        }, 10);
+
+        attachRemoveEvent(newCol.querySelector('.remove-phone'));
+    });
+
+    function attachRemoveEvent(button) {
+        button.addEventListener('click', function() {
+            var phoneContainer = document.getElementById('phone-container');
+            if (phoneContainer.childElementCount > 1) {
+                phoneContainer.removeChild(button.closest('.col-lg-4, .col-md-6, .col-sm-12'));
             }
         });
+    }
 
-        // Remove image preview and reset the input
-        $(document).on('click', '#deleteImage', function(event) {
-            event.preventDefault();
-
-            let img = document.querySelector('.image_preview');
-            img.src = "";
-            img.style.display = 'none';
-
-            let imageUploadButton = document.querySelector('.image-upload-button');
-            imageUploadButton.style.display = 'block';
-
-            let deleteImage = document.querySelector('.deleteImage');
-            deleteImage.style.display = 'none';
-
-            let inputImageFile = document.getElementById('imageFile');
-            inputImageFile.value = "";
-        });
+    // Attach the remove event to the initial remove buttons
+    document.querySelectorAll('.remove-phone').forEach(function(button) {
+        attachRemoveEvent(button);
     });
 </script>
 @endsection

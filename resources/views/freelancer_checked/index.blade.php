@@ -32,6 +32,21 @@
                 <li></li>
             </ol>
         </div>
+        <div class="col-auto">
+            <div class="dropdown">
+                <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    สถานะการใช้งาน
+                </button>
+                {{-- <button type="button" class="btn btn-danger lift sa-buttons"><i class="fa fa-trash-o"></i> ลบหลายรายการ</button> --}}
+
+                <ul class="dropdown-menu border-0 shadow p-3">
+                    <li><a class="dropdown-item py-2 rounded" href="{{ route('freelancer.index') }}">ทั้งหมด</a></li>
+                    <li><a class="dropdown-item py-2 rounded" href="{{ route('freelancer.ac', ['value' => 1]) }}">ใช้งาน</a></li>
+                    <li><a class="dropdown-item py-2 rounded" href="{{ route('freelancer.no', ['value' => 0]) }}">ปิดใช้งาน</a></li>
+                    <li><a class="dropdown-item py-2 rounded" href="{{ route('freelancer.ap', ['value' => 2]) }}">ยืนยันตัวตน</a></li>
+                </ul>
+            </div>
+        </div>
     </div> <!-- Row end  -->
 
     <div class="row clearfix">
@@ -40,7 +55,7 @@
                 <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
                     @csrf
                     <input type="hidden" name="category" value="prename">
-                <table class="myDataTableProductItem table table-hover align-middle mb-0" style="width:100%">
+                <table class="myDataTableQuotation table table-hover align-middle mb-0" style="width:100%">
                     <thead>
                         <tr>
                             <th>เรียงลำดับ</th>
@@ -77,8 +92,9 @@
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                         <ul class="dropdown-menu border-0 shadow p-3">
-                                            <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>
-                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Freelancer/check/view/'.$item->id) }}" >ดูรายละเอียด</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Freelancer/check/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" onclick="Approved({{ $item->id }})">Approved</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -111,6 +127,26 @@
                 Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
                 location.reload();
             },
+        });
+    }
+    function Approved(id) {
+        jQuery.ajax({
+            type: "GET",
+            url: "/Freelancer/checked/Approve/" + id,
+            datatype: "JSON",
+            async: false,
+            success: function(response) {
+                console.log("AJAX request successful: ", response);
+                if (response.success) {
+                    // เปลี่ยนไปยังหน้าที่ต้องการ
+                    location.reload();
+                } else {
+                    alert("An error occurred while processing the request.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX request failed: ", status, error);
+            }
         });
     }
 </script>

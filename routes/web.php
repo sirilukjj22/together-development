@@ -16,7 +16,7 @@ use App\Http\Controllers\Master_bank;
 use App\Http\Controllers\Master_prefix;
 use App\Http\Controllers\Master_Company_type;
 use App\Http\Controllers\Master_market;
-use App\Http\Controllers\FreelancerCheckedController;
+use App\Http\Controllers\freelancer_register;
 use App\Http\Controllers\FreelancerMemberController;
 use App\Http\Controllers\MasterEventFormatController;
 use App\Http\Controllers\QuotationController;
@@ -270,20 +270,20 @@ Route::middleware(['auth'])->group(function () {
     });
 
 #Freelancer Check
-    Route::controller(FreelancerCheckedController::class)->group(function() {
+    Route::controller(freelancer_register::class)->group(function() {
         Route::get('/Freelancer/checked/index','index')->name('freelancer.index');
         Route::get('/Freelancer/checked/create','create')->name('freelancer.create');
         Route::get('/Freelancer/checked/create/amphures/{id}','amphures')->name('freelancer.amphures');
         Route::get('/Freelancer/checked/create/districts/{id}','district')->name('freelancer.districts');
         Route::get('/Freelancer/checked/create/Tambon/{id}','Tambon')->name('freelancer.Tambon');
-        Route::post('/Freelancer/checked/create/Save_Agent','Save_Agent')->name('Save_Agent');
+        Route::post('/Freelancer/check/save','save')->name('freelancer.save');
+        Route::post('/Freelancer/check/update/{id}','update')->name('freelancer.update');
         Route::get('/Freelancer/checked/change-status/{id}','changeStatus')->name('freelancer.changeStatus');
-        Route::post('/Freelancer/checked/delete/{id}','delete');
-        Route::post('/Freelancer/checked/AgentM/delete/','AgentM_delete');
+        Route::get('/Freelancer/checked/ac','ac')->name('freelancer.ac');
+        Route::get('/Freelancer/checked/no','no')->name('freelancer.no');
+        Route::get('/Freelancer/checked/ap','ap')->name('freelancer.ap');
+        Route::get('/Freelancer/checked/Approve/{id}','delete');
         Route::get('/Freelancer/check/edit/{id}','edit')->name('freelancer.edit');
-        Route::post('/Freelancer/check/edit/update/{id}','ProfileAgent_update')->name('ProfileAgent_update');
-        Route::post('/Freelancer/check/save','savefreelancercheck')->name('savefreelancercheck');
-        Route::post('/Freelancer/check/save/update/{id}','updatefreelancercheck')->name('updatefreelancercheck');
         Route::get('/Freelancer/check/view/{id}','view')->name('freelancer.view');
     });
 #Freelancer Member

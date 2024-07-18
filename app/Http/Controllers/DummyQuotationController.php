@@ -436,17 +436,7 @@ class DummyQuotationController extends Controller
             $save->Operated_by = $userid;
             $save->SpecialDiscount=$SpecialDiscount;
             $save->save();
-            $dummyId = $save->id;
-            $ID = 'DD-';
-            $currentDate = Carbon::now();
-            $formattedDate = Carbon::parse($currentDate);       // วันที่
-            $month = $formattedDate->format('m'); // เดือน
-            $year = $formattedDate->format('y');
-            $newRunNumber = str_pad($dummyId, 4, '0', STR_PAD_LEFT);
-            $Quotation_IDnew = $ID.$year.$month.$newRunNumber;
-            $saveid = dummy_quotation::find($dummyId);
-            $saveid->DummyNo = $Quotation_IDnew;
-            $saveid->save();
+
             //-----------------------------ส่วน product
             $quantities = $request->input('Quantitymain', []); // ตัวอย่างใช้ 'pricetotal' เป็น quantity
             $discounts = $request->input('discountmain', []);
@@ -474,6 +464,25 @@ class DummyQuotationController extends Controller
                     $discountedPriceTotal = $totalPrice - $discountedPrice;
                     $discountedPricestotal[] = $discountedPriceTotal;
                 }
+                $totalDiscountedPrice = array_sum($discountedPricestotal);
+                $beforTax = $totalDiscountedPrice/1.07;
+                $AddTax = $totalDiscountedPrice - $beforTax;
+                $dummyId = $save->id;
+                $ID = 'DD-';
+                $currentDate = Carbon::now();
+                $formattedDate = Carbon::parse($currentDate);       // วันที่
+                $month = $formattedDate->format('m'); // เดือน
+                $year = $formattedDate->format('y');
+                $newRunNumber = str_pad($dummyId, 4, '0', STR_PAD_LEFT);
+                $Quotation_IDnew = $ID.$year.$month.$newRunNumber;
+                $vat_type = $request->Mvat;
+                $saveid = dummy_quotation::find($dummyId);
+                $saveid->DummyNo = $Quotation_IDnew;
+                if ($vat_type == 50 || $vat_type == 52) {
+                    $saveid->AddTax = $AddTax;
+                }
+                $saveid->Nettotal = $totalDiscountedPrice;
+                $saveid->save();
             }
             foreach ($priceUnits as $key => $price) {
                 $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
@@ -796,7 +805,6 @@ class DummyQuotationController extends Controller
             // dd($data);
             $preview = $request->preview;
             $Quotation_ID=$request->Quotation_ID;
-            $QuotationID = dummy_quotation::where('DummyNo', $Quotation_ID)->first();
             $userid = Auth::user()->id;
             $save =  dummy_quotation::find($id);
             $save->DummyNo = $Quotation_ID;
@@ -852,11 +860,17 @@ class DummyQuotationController extends Controller
                     $discountedPriceTotal = $totalPrice - $discountedPrice;
                     $discountedPricestotal[] = $discountedPriceTotal;
                 }
+                $totalDiscountedPrice = array_sum($discountedPricestotal);
+                $beforTax = $totalDiscountedPrice/1.07;
+                $AddTax = $totalDiscountedPrice - $beforTax;
             }
             foreach ($priceUnits as $key => $price) {
                 $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
             }
-
+            $savetotal =  dummy_quotation::find($id);
+            $savetotal->Nettotal = $totalDiscountedPrice;
+            $savetotal->AddTax = $AddTax;
+            $savetotal->save();
             if ($Products !== null) {
                 $Productss = array_unique($Products);
                 document_dummy_quotation::where('Quotation_ID',$Quotation_ID)->delete();
@@ -1168,6 +1182,9 @@ class DummyQuotationController extends Controller
         $save->adult = $dummy->adult;
         $save->children = $dummy->children;
         $save->ComRateCode = $dummy->ComRateCode;
+        $save->SpecialDiscount = $dummy->SpecialDiscount;
+        $save->Nettotal = $dummy->Nettotal;
+        $save->AddTax = $dummy->AddTax;
         $save->freelanceraiffiliate = $dummy->freelanceraiffiliate;
         $save->commissionratecode = $dummy->commissionratecode;
         $save->eventformat = $dummy->eventformat;

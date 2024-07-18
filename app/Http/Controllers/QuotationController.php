@@ -751,6 +751,10 @@ class QuotationController extends Controller
                 // บันทึกไฟล์ PDF
                 $path = 'Log_PDF/proposal/';
                 $pdf->save($path . $Quotation_ID . '.pdf');
+                $Quotation = Quotation::where('Quotation_ID',$Quotation_IDcheck)->first();
+                $Quotation->AddTax = $AddTax;
+                $Quotation->Nettotal = $Nettotal;
+                $Quotation->save();
                 return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
             }else{
             $delete = Quotation::find($id);
@@ -1315,6 +1319,10 @@ class QuotationController extends Controller
                     $totalaverage =$Nettotal/$totalguest;
                 }
             }
+
+            $Quotation->AddTax = $AddTax;
+            $Quotation->Nettotal = $Nettotal;
+            $Quotation->save();
             $protocol = $request->secure() ? 'https' : 'http';
             $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
 
@@ -1395,6 +1403,7 @@ class QuotationController extends Controller
             $savePDF->Approve_date = $formattedDate;
             $savePDF->	Approve_time = $formattedTime;
             $savePDF->save();
+
             $QuotationoldID = Quotation::where('Quotation_ID',$Quotationold)->delete();
             $documentQuotationoldID = document_quotation::where('Quotation_ID',$Quotationold)->delete();
             return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');

@@ -57,10 +57,10 @@
                             </div>
                             <div class="col-lg-5 col-md-4 col-sm-12">
                                 <label for="first_name">ชื่อจริง / First Name</label><br>
-                                <input type="text"class="form-select" placeholder="First Name" id="first_name" name="first_name" maxlength="70" required>
+                                <input type="text"class="form-control" placeholder="First Name" id="first_name" name="first_name" maxlength="70" required>
                             </div>
                             <div class="col-lg-5 col-md-4 col-sm-12"><label for="last_name">นามสกุล / Last Name</label><br>
-                                <input type="text"class="form-select" placeholder="Last Name" id="last_name" name="last_name" maxlength="70" required>
+                                <input type="text" class="form-control" placeholder="Last Name" id="last_name" name="last_name" maxlength="70" required>
                             </div>
                         </div>
                         <div class="row mt-2">

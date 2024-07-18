@@ -134,9 +134,9 @@ class GuestController extends Controller
 
         $save->save();
         if ($save->save()) {
-            return redirect()->route('guest.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->route('guest.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } else {
-            return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
     public function ac(Request $request)
@@ -261,9 +261,9 @@ class GuestController extends Controller
         }
          $save->save();
          if ($save->save()) {
-             return redirect()->route('guest.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+             return redirect()->route('guest.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
          } else {
-             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+             return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
          }
     }
 }

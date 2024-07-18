@@ -24,7 +24,7 @@ class FreelancerCheckedController extends Controller
     {
         $provinceNames = province::select('name_th','id')->get();
         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
-        $prefix = master_document::select('name_th','id')->Where('Category','Mprefix')->where('status', 1)->get();
+        $prefix = master_document::select('name_th','id')->Where('Category','Mprename')->where('status', 1)->get();
         $Mbank = master_document::select('name_th','id')->Where('Category','Mbank')->where('status', 1)->get();
         return view('freelancer_checked.create',compact('provinceNames','booking_channel','prefix','Mbank'));
     }
@@ -93,11 +93,10 @@ class FreelancerCheckedController extends Controller
 
         ]);
     }
-    public function savefreelancercheck(Request $request)
+    public function save(Request $request)
     {
-
-
-        $image = $request->file('imageFile');
+        $data = $request->all();
+        $image = $request->file('image');
         $image_name_gen = hexdec(uniqid());
         $img_ext = strtolower($image->getClientOriginalExtension());
         $img_name1 = $image_name_gen . '.' . $img_ext;
@@ -217,7 +216,7 @@ class FreelancerCheckedController extends Controller
     public function updatefreelancercheck(Request $request ,$id)
     {
 
-        if ($request->hasFile('imageFile')) {
+        if ($request->hasFile('image')) {
             $image = Freelancer_checked::find($id);
             $filePath = public_path($image->Imagefreelan);
             if (file_exists($filePath)) {
