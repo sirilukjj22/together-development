@@ -291,14 +291,14 @@
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label  for="">Special Discount</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"  placeholder="ส่วนลดคิดเป็น %" >
+                                    <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"  placeholder="ส่วนลดคิดเป็น %" required>
                                     <span class="input-group-text">%</span>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label  for="">Discount Amount</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท" >
+                                    <input type="number" class="form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท" required>
                                     <span class="input-group-text">Bath</span>
                                 </div>
                             </div>
