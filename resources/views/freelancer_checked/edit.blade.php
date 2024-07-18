@@ -82,8 +82,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col">
-                <small class="text-muted">Welcome to Register Freelancer.</small>
-                <h1 class="h4 mt-1">Register Freelancer (ลงทะเบียนตัวแทน)</h1>
+                <small class="text-muted">Welcome to Edit Register Freelancer .</small>
+                <h1 class="h4 mt-1">Edit Register Freelancer (แก้ไขการลงทะเบียนตัวแทน)</h1>
             </div>
         </div>
     </div>

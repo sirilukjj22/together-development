@@ -867,9 +867,12 @@ class DummyQuotationController extends Controller
             foreach ($priceUnits as $key => $price) {
                 $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
             }
+            $vat_type = $request->Mvat;
             $savetotal =  dummy_quotation::find($id);
             $savetotal->Nettotal = $totalDiscountedPrice;
-            $savetotal->AddTax = $AddTax;
+            if ($vat_type == 50 || $vat_type == 52) {
+                $savetotal->AddTax = $AddTax;
+            }
             $savetotal->save();
             if ($Products !== null) {
                 $Productss = array_unique($Products);
