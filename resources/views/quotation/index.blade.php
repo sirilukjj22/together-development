@@ -916,10 +916,10 @@
         }
     })
     $('#nav6').on('click', function () {
-        var status = $('#nav-Approved').attr('rel');
+        var status = $('#nav-Cancel').attr('rel');
 
         if (status == 0) {
-            document.getElementById("nav-Approved").setAttribute("rel", "1");
+            document.getElementById("nav-Cancel").setAttribute("rel", "1");
             $('.myTableProposalRequest6').addClass('nowrap').dataTable({
                 responsive: true,
                 searching: true,

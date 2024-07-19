@@ -129,7 +129,7 @@
                                             <li><a class="ms-link" href="#">Hotel Contract Rate Agreement</a></li>
                                         @endif
                                         @if (Auth::user()->roleMenu->proforma_invoice == 1)
-                                            <li><a class="ms-link" href="#">Proforma Invoice</a></li>
+                                            <li><a class="ms-link" href="{{ route('invoice.index') }}">Proforma Invoice</a></li>
                                         @endif
                                         @if (Auth::user()->roleMenu->billing_folio == 1)
                                             <li><a class="ms-link" href="#">Billing Folio</a></li>

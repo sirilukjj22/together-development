@@ -24,6 +24,7 @@ use App\Http\Controllers\Master_TemplateController;
 use App\Http\Controllers\Master_Vat;
 use App\Http\Controllers\DummyQuotationController;
 use App\Http\Controllers\proposal_request;
+use App\Http\Controllers\Document_invoice;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -411,6 +412,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Template/PDF/Template', 'TemplateA1')->name('Template.TemplateA1');
         Route::post('/Template/PDF/Template/save', 'save')->name('Template.save');
         Route::post('/Template/PDF/document/sheet/savetemplate','savesheet')->name('Template.savesheet');
+    });
+    ##-------------------------------document invoice-----------------
+    Route::controller(Document_invoice::class)->group(function () {
+        Route::get('/Document/invoice/index', 'index')->name('invoice.index');
+        Route::get('/Document/invoice/Generate/{id}','Generate')->name('invoice.Generate');
     });
 
 Route::get('/clear-cache', function () {

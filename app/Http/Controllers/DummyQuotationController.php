@@ -22,6 +22,7 @@ use App\Models\master_quantity;
 use App\Models\master_unit;
 use App\Models\document_dummy_quotation;
 use App\Models\document_quotation;
+use App\Models\log;
 use Auth;
 use App\Models\User;
 use PDF;
@@ -1167,13 +1168,12 @@ class DummyQuotationController extends Controller
         $dummy->save();
         return redirect()->route('DummyQuotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
-    public function Generate($id){
+    public function Generate(Request $request ,$id){
         try {
         $dummy = dummy_quotation::where('id', $id)->first();
         $dummy->status_document = 5;
         $dummy->save();
         $dummyID = $dummy->DummyNo;
-
         $save = new Quotation();
         $save->DummyNo = $dummyID;
         $save->Company_ID = $dummy->Company_ID;
@@ -1196,7 +1196,7 @@ class DummyQuotationController extends Controller
         $save->Expirationdate = $dummy->Expirationdate;
         $save->Document_issuer = $dummy->Document_issuer;
         $save->Operated_by = $dummy->Operated_by;
-        $save->Operated_by = $dummy->Confirm_by;
+        $save->Confirm_by = $dummy->Confirm_by;
         $save->Approve_at = $dummy->Approve_at;
         $save->save();
         $qutationID = Quotation::where('DummyNo',$dummyID)->first();
@@ -1212,7 +1212,6 @@ class DummyQuotationController extends Controller
         $qutationID->save();
         $Quotation_ID =  $qutationID->DummyNo;
         $QuotationID =  $qutationID->Quotation_ID;
-
         $document_dummy = document_dummy_quotation::where('Quotation_ID', $Quotation_ID)->get();
         foreach ($document_dummy as $document) {
             $saveProduct = new document_quotation();
@@ -1229,9 +1228,262 @@ class DummyQuotationController extends Controller
             $saveProduct->Quantity = $document->Quantity;
             $saveProduct->save();
         }
+            $currentDateTime = Carbon::now();
+            $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
+            $currentTime = $currentDateTime->toTimeString(); // Format: HH:MM:SS
+
+            // Optionally, you can format the date and time as per your requirement
+            $formattedDate = $currentDateTime->format('Y-m-d'); // Custom format for date
+            $formattedTime = $currentDateTime->format('H:i:s');
+            $savePDF = new log();
+            $savePDF->Quotation_ID = $QuotationID;
+            $savePDF->QuotationType = 'Proposal';
+            $savePDF->Approve_date = $formattedDate;
+            $savePDF->Approve_time = $formattedTime;
+            $savePDF->save();
+            $Quotation = Quotation::where('Quotation_ID', $QuotationID)->first();
+
+            $id = $Quotation->id;
+            $Company = $Quotation->Company_ID;
+            $Quotation_ID = $Quotation->Quotation_ID;
+            $eventformat = $Quotation->eventformat;
+            $Company_ID = companys::where('Profile_ID',$Company)->first();
+
+            $Company_typeID=$Company_ID->Company_type;
+            $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+            $company_fax = company_fax::where('Profile_ID',$Company)->where('Sequence','main')->first();
+            $company_phone = company_phone::where('Profile_ID',$Company)->where('Sequence','main')->first();
+            $Contact_name = representative::where('Company_ID',$Company)->where('status',1)->first();
+            $Contact_phone = representative_phone::where('Company_ID',$Company)->where('Sequence','main')->first();
+            $eventformat = master_document::where('id',$eventformat)->select('name_th','id')->first();
+
+            if ($comtype->name_th =="บริษัทจำกัด") {
+                $comtypefullname = "บริษัท ". $Company_ID->Company_Name . " จำกัด";
+            }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                $comtypefullname = "บริษัท ". $Company_ID->Company_Name . " จำกัด (มหาชน)";
+            }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company_ID->Company_Name ;
+            }else {
+                $comtypefullname = $Company_ID->Company_Name;
+            }
+
+            $checkin = $Quotation->checkin;
+            $checkout = $Quotation->checkout;
+            $CityID=$Company_ID->City;
+            $amphuresID = $Company_ID->Amphures;
+            $TambonID = $Company_ID->Tambon;
+
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $template = master_template::query()->latest()->first();
+            $CodeTemplate = $template->CodeTemplate;
+            $sheet = master_document_sheet::select('topic','name_th','id','CodeTemplate')->get();
+            $Reservation_show = $sheet->where('topic', 'Reservation')->where('CodeTemplate',$CodeTemplate)->first();
+            $Paymentterms = $sheet->where('topic', 'Paymentterms')->where('CodeTemplate',$CodeTemplate)->first();
+            $note = $sheet->where('topic', 'note')->where('CodeTemplate',$CodeTemplate)->first();
+            $Cancellations = $sheet->where('topic', 'Cancellations')->where('CodeTemplate',$CodeTemplate)->first();
+            $Complimentary = $sheet->where('topic', 'Complimentary')->where('CodeTemplate',$CodeTemplate)->first();
+            $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->where('CodeTemplate',$CodeTemplate)->first();
+            $date = Carbon::now();
+            $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+
+            $QuotationVat= $Quotation->vat_type;
+            $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
+
+            $Products = Arr::wrap($selectproduct->pluck('Product_ID')->toArray());
+            $quantities = $selectproduct->pluck('Quantity')->toArray();
+            $discounts = $selectproduct->pluck('discount')->toArray();
+            $priceUnits = $selectproduct->pluck('priceproduct')->toArray();
+            $productItems = [];
+            $totaldiscount = [];
+            foreach ($Products as $index => $productID) {
+
+                if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+                    $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
+                    $discountedPrices = [];
+                    $discountedPricestotal = [];
+                    $totaldiscount = [];
+                    // คำนวณราคาสำหรับแต่ละรายการ
+                    for ($i = 0; $i < count($quantities); $i++) {
+                        $quantity = intval($quantities[$i]);
+                        $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
+                        $discount = floatval($discounts[$i]);
+
+                        $totaldiscount0 = (($priceUnit * $discount)/100);
+                        $totaldiscount[] = $totaldiscount0;
+
+                        $totalPrice = ($quantity * $priceUnit);
+                        $totalPrices[] = $totalPrice;
+
+                        $discountedPrice = (($totalPrice * $discount )/ 100);
+                        $discountedPrices[] = $priceUnit-$totaldiscount0;
+
+                        $discountedPriceTotal = $totalPrice - $discountedPrice;
+                        $discountedPricestotal[] = $discountedPriceTotal;
+                    }
+                }
+                // dd( $priceUnit,$discountedPrices);
+
+                $items = master_product_item::where('Product_ID', $productID)->get();
+                $QuotationVat= $Quotation->vat_type;
+                $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
+                foreach ($items as $item) {
+                    // ตรวจสอบและกำหนดค่า quantity และ discount
+                    $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+                    $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
+                    $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
+                    $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
+                    $discountedPricestotal = isset($discountedPricestotal[$index]) ? $discountedPricestotal[$index] : 0;
+                    $totaldiscount = isset($totaldiscount[$index]) ? $totaldiscount[$index] : 0;
+                    // รวมข้อมูลของผลิตภัณฑ์เข้ากับ quantity และ discount
+                    $productItems[] = [
+                        'product' => $item,
+                        'quantity' => $quantity,
+                        'discount' => $discount,
+                        'totalPrices'=>$totalPrices,
+                        'discountedPrices'=>$discountedPrices,
+                        'discountedPricestotal'=>$discountedPricestotal,
+                        'totaldiscount'=>$totaldiscount,
+                    ];
+
+                }
+            }
+
+            $totalAmount = 0;
+            $totaldiscount = 0;
+            $netprice=0;
+            $totalPrice = 0;
+            $vat=0;
+            $total=0;
+            $adult = $Quotation->adult;
+            $children = $Quotation->children;
+            $totalguest = $adult+$children;
+            $totalaverage=0;
+            $SpecialDiscountBath=0;
+            if ($Mvat->id == 50) {
+                foreach ($selectproduct as $item) {
+                    $totalPrice +=  $item->priceproduct;
+                    $totalAmount += $item->netpriceproduct;
+                    $subtotal = $totalAmount;
+                    $beforeTax = $subtotal/1.07;
+                    $AddTax = $subtotal-$beforeTax;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$totalguest;
+                }
+            }
+            elseif ($Mvat->id == 51) {
+                foreach ($selectproduct as $item) {
+                    $totalPrice +=  $item->priceproduct;
+                    $totalAmount += $item->netpriceproduct;
+                    $subtotal = $totalAmount;
+                    $beforeTax = 0;
+                    $AddTax = 0;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$totalguest;
+                }
+            }
+            elseif ($Mvat->id == 52) {
+                foreach ($selectproduct as $item) {
+                    $totalPrice +=  $item->priceproduct;
+                    $totalAmount += $item->netpriceproduct;
+                    $subtotal = $totalAmount;
+                    $beforeTax = $subtotal/1.07;
+                    $AddTax = $subtotal*7/100;
+                    $Nettotal = $subtotal+$AddTax;
+                    $totalaverage =$Nettotal/$totalguest;
+                }
+            }else
+            {
+                foreach ($selectproduct as $item) {
+                    $totalPrice +=  $item->priceproduct;
+                    $totalAmount += $item->netpriceproduct;
+                    $subtotal = $totalAmount;
+                    $beforeTax = $subtotal/1.07;
+                    $AddTax = $subtotal-$beforeTax;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$totalguest;
+                }
+            }
+
+            $protocol = $request->secure() ? 'https' : 'http';
+            $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+
+            // Generate the QR code as PNG
+            $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
+            $qrCodeBase64 = base64_encode($qrCodeImage);
+            $unit = master_unit::where('status',1)->get();
+            $quantity = master_quantity::where('status',1)->get();
+
+
+
+            $pagecount = count($selectproduct);
+                $page = $pagecount/10;
+
+                $page_item = 1;
+                if ($page > 1.1 && $page < 2.1) {
+                    $page_item += 1;
+
+                } elseif ($page > 1.1) {
+                $page_item = 1 + $page > 1.1 ? ceil($page) : 1;
+                }
+
+
+            $data = [
+                'date' => $date,
+                'comtypefullname'=>$comtypefullname,
+                'Company_ID'=>$Company_ID,
+                'TambonID'=>$TambonID,
+                'CityID'=>$CityID,
+                'checkin'=>$checkin,
+                'checkout'=>$checkout,
+                'amphuresID'=>$amphuresID,
+                'provinceNames'=>$provinceNames,
+                'company_fax'=>$company_fax,
+                'company_phone'=>$company_phone,
+                'Contact_name'=>$Contact_name,
+                'Contact_phone'=>$Contact_phone,
+                'Quotation'=>$Quotation,
+                'eventformat'=>$eventformat,
+                'Reservation_show'=>$Reservation_show,
+                'Paymentterms'=>$Paymentterms,
+                'note'=>$note,
+                'Cancellations'=>$Cancellations,
+                'Complimentary'=>$Complimentary,
+                'All_rights_reserved'=>$All_rights_reserved,
+                'productItems'=>$productItems,
+                'unit'=>$unit,
+                'quantity'=>$quantity,
+                'totalAmount'=>$totalAmount,
+                'SpecialDis'=>$SpecialDiscountBath,
+                'subtotal'=>$subtotal,
+                'beforeTax'=>$beforeTax,
+                'AddTax'=>$AddTax,
+                'Nettotal'=>$Nettotal,
+                'totalguest'=>$totalguest,
+                'totalaverage'=>$totalaverage,
+                'pagecount'=>$pagecount,
+                'page'=>$page,
+                'page_item'=>$page_item,
+                'qrCodeBase64'=>$qrCodeBase64,
+                'Mvat'=>$Mvat,
+            ];
+
+            $view= $template->name;
+            $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
+            $path = 'Log_PDF/proposal/';
+            $pdf->save($path . $Quotation_ID . '.pdf');
+
+
+
+
+
+
             return redirect()->route('DummyQuotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } catch (\Exception $e) {
-            return redirect()->route('DummyQuotation.index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
     public function addProduct($Quotation_ID, Request $request) {

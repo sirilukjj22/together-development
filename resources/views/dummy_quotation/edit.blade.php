@@ -129,8 +129,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col">
-                <small class="text-muted">Welcome to Create Proposal.</small>
-                <h1 class="h4 mt-1">Create Proposal (เพิ่มข้อเสนอ)</h1>
+                <small class="text-muted">Welcome to Edit Dummy Proposal.</small>
+                <h1 class="h4 mt-1">Edit Dummy Proposal (แก้ไขแบบร่างข้อเสนอ)</h1>
             </div>
         </div>
     </div>

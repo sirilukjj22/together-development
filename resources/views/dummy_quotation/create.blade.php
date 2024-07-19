@@ -1,129 +1,129 @@
 @extends('layouts.masterLayout')
 <style>
-.image-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    text-align: left;
-}
-.image-container img.logo {
-    width: 15%; /* กำหนดขนาดคงที่ */
-    height: auto;
-    margin-right: 20px;
-}
-
-.image-container .info {
-    margin-top: 0;
-}
-
-.image-container .info p {
-    margin: 5px 0;
-}
-
-.image-container .titleh1 {
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-.titleQuotation{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-.select2{
-    margin: 4px 0;
-    border: 1px solid #ffffff;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-.calendar-icon {
-    background: #fff no-repeat center center;
-    vertical-align: middle;
-    margin-right: 5px;
-    transition: background-color 0.3s, transform 0.3s;/* ระยะห่างจากข้อความ */
-}
-.calendar-icon:hover {
-    background: #fff ;
-    transform: scale(1.1);
-}
-.calendar-icon:active {
-    transform: scale(0.9);
-}
-.com {
-    display: inline-block;  /* ทำให้ border-bottom มีความยาวเท่ากับข้อความ */
-    border-bottom: 2px solid #2D7F7B;  /* กำหนดเส้นใต้ */
-    padding-bottom: 5px;
-    font-size: 20px;
-}
-.Profile{
-    width: 15%;
-}
-.styled-hr {
-    border: none; /* เอาขอบออก */
-    border: 1px solid #2D7F7B; /* กำหนดระยะห่างด้านล่าง */
-}
-.table-borderless1{
-    border-radius: 6px;
-    background-color: #109699;
-    color:#fff;
-}
-.centered-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-.centered-content4 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border: 2px solid #6b6b6b; /* กำหนดกรอบสี่เหลี่ยม */
-    padding: 20px; /* เพิ่ม padding ภายในกรอบ */
-    border-radius: 5px; /* เพิ่มมุมโค้ง (ถ้าต้องการ) */
-    height: 120px;
-    width: 120px; /* กำหนดความสูงของกรอบ */
-}
-.proposal{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    top: 0px;
-    right: 6;
-    width: 70%;
-    height: 60px;
-    border: 3px solid #2D7F7B;
-    border-radius: 10px;
-    background-color: #109699;
-}
-.proposalcode{
-    top: 0px;
-    right: 6;
-    width: 70%;
-    height: 90px;
-    border: 3px solid #2D7F7B;
-    border-radius: 10px;
-}
-.btn-space {
-    margin-right: 10px; /* ปรับขนาดช่องว่างตามต้องการ */
-}
-@media (max-width: 768px) {
     .image-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+    }
+    .image-container img.logo {
+        width: 15%; /* กำหนดขนาดคงที่ */
+        height: auto;
+        margin-right: 20px;
+    }
+
+    .image-container .info {
+        margin-top: 0;
+    }
+
+    .image-container .info p {
+        margin: 5px 0;
+    }
+
+    .image-container .titleh1 {
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .titleQuotation{
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+    .select2{
+        margin: 4px 0;
+        border: 1px solid #ffffff;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    .calendar-icon {
+        background: #fff no-repeat center center;
+        vertical-align: middle;
+        margin-right: 5px;
+        transition: background-color 0.3s, transform 0.3s;/* ระยะห่างจากข้อความ */
+    }
+    .calendar-icon:hover {
+        background: #fff ;
+        transform: scale(1.1);
+    }
+    .calendar-icon:active {
+        transform: scale(0.9);
+    }
+    .com {
+        display: inline-block;  /* ทำให้ border-bottom มีความยาวเท่ากับข้อความ */
+        border-bottom: 2px solid #2D7F7B;  /* กำหนดเส้นใต้ */
+        padding-bottom: 5px;
+        font-size: 20px;
+    }
+    .Profile{
+        width: 15%;
+    }
+    .styled-hr {
+        border: none; /* เอาขอบออก */
+        border: 1px solid #2D7F7B; /* กำหนดระยะห่างด้านล่าง */
+    }
+    .table-borderless1{
+        border-radius: 6px;
+        background-color: #109699;
+        color:#fff;
+    }
+    .centered-content {
+        display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
     }
+    .centered-content4 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border: 2px solid #6b6b6b; /* กำหนดกรอบสี่เหลี่ยม */
+        padding: 20px; /* เพิ่ม padding ภายในกรอบ */
+        border-radius: 5px; /* เพิ่มมุมโค้ง (ถ้าต้องการ) */
+        height: 120px;
+        width: 120px; /* กำหนดความสูงของกรอบ */
+    }
+    .proposal{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        top: 0px;
+        right: 6;
+        width: 70%;
+        height: 60px;
+        border: 3px solid #2D7F7B;
+        border-radius: 10px;
+        background-color: #109699;
+    }
+    .proposalcode{
+        top: 0px;
+        right: 6;
+        width: 70%;
+        height: 90px;
+        border: 3px solid #2D7F7B;
+        border-radius: 10px;
+    }
+    .btn-space {
+        margin-right: 10px; /* ปรับขนาดช่องว่างตามต้องการ */
+    }
+    @media (max-width: 768px) {
+        .image-container {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
 
-    .image-container img.logo {
-        margin-bottom: 20px;
-        width: 50%;
+        .image-container img.logo {
+            margin-bottom: 20px;
+            width: 50%;
+        }
+        .Profile{
+            width: 100%;
+        }
     }
-    .Profile{
-        width: 100%;
-    }
-}
 </style>
 @section('pretitle')
     <div class="container">
