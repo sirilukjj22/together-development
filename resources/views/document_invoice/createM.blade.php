@@ -247,8 +247,8 @@
                                 <tr>
                                     <td style="text-align:center">1</td>
                                     <td style="text-align:left">{{$InvoiceID}} อ้างอิง Proposal เลขที่ {{$QuotationID}} ชำระจำนวน <span id="Amount" style="display: none;"></span>
-                                        <span id="Amount1" style="display: none;"></span> ยอดเต็ม {{ number_format($Quotation->Nettotal, 2) }} บาท <br>กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit"  style="width: 2%"  id="Deposit" value="{{$Deposit}}" disabled></td>
-                                    <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Quotation->Nettotal}}"></td>
+                                        <span id="Amount1" style="display: none;"></span> ยอดเต็ม {{$balance}} บาท <br>กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit"  style="width: 2%"  id="Deposit" value="{{$Deposit}}" disabled></td>
+                                    <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
                                 </tr>
                                 <tr>
                                     <td><br></td>
@@ -380,7 +380,7 @@
 <script>
     $(document).on('keyup', '#Payment0', function() {
         var Payment0 =  Number($(this).val());
-        var Nettotal = parseFloat(document.getElementById('Nettotal').value);
+        var Nettotal = parseFloat(document.getElementById('Nettotal').value.replace(/,/g, ''));
         let Subtotal =0;
         let total =0;
         let addtax = 0;
@@ -400,7 +400,7 @@
     });
     $(document).on('keyup', '#Payment1', function() {
         var Payment1 =  Number($(this).val());
-        var Nettotal = parseFloat(document.getElementById('Nettotal').value);
+        var Nettotal = parseFloat(document.getElementById('Nettotal').value.replace(/,/g, ''));
         let Subtotal =0;
         let total =0;
         let addtax = 0;

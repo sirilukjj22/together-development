@@ -904,7 +904,6 @@ class DummyQuotationController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
-
     }
     public function sheetpdf(Request $request ,$id) {
         $Quotation = dummy_quotation::where('id', $id)->first();
