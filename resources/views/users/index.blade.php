@@ -44,6 +44,11 @@
                             <strong>บันทึกข้อมูลเรียบร้อย!</strong> {{ session('success') }}
                             <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                         </div>
+                    @elseif(session("error"))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>บันทึกข้อมูลไม่สำเร็จ!</strong> {{ session('error') }}
+                            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     @endif
                     <div class="card p-4 mb-4">
                         <table id="myTable" class=" table display dataTable table-hover">
