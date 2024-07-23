@@ -264,7 +264,7 @@
                         <div class="row mt-2">
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="Discount_Contract_Rate">อัตราคิดลด / Discount Contract Rate</label><br>
-                                <input type="text" id="Discount_Contract_Rate" class="form-control" name="Discount_Contract_Rate" maxlength="70" required value="{{$Company->Discount_Contract_Rate}}">
+                                <input type="text" id="Discount_Contract_Rate" class="form-control" name="Discount_Contract_Rate" maxlength="70" disabled value="{{$Company->Discount_Contract_Rate}}">
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="contract_rate_start_date">Contract Rate Start Date</label><br>

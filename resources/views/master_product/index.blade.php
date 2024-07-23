@@ -26,8 +26,23 @@
 
 @section('content')
 <div class="container mt-3">
+    <div class="row align-items-center mb-2">
+        @if (session("success"))
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
+            <hr>
+            <p class="mb-0">{{ session('success') }}</p>
+        </div>
+        @endif
+        @if (session("error"))
+        <div class="alert alert-error" role="alert">
+            <h4 class="alert-heading">เกิดข้อพิดพลาด!</h4>
+            <hr>
+            <p class="mb-0">{{ session('error') }}</p>
+        </div>
+        @endif
+    </div> <!-- Row end  -->
     <div class="row clearfix" >
-
         <div class="col-sm-12 col-12">
             <div class="row">
                 <div class="col-lg-1"></div>
@@ -182,6 +197,7 @@
                                         <ul class="dropdown-menu border-0 shadow p-3" >
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/view/'.$item->id) }}">ดูรายละเอียด</a></li>
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/delete/'.$item->id) }}">ลบรายการ</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -243,6 +259,7 @@
                                         <ul class="dropdown-menu border-0 shadow p-3" >
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/view/'.$item->id) }}">ดูรายละเอียด</a></li>
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/delete/'.$item->id) }}">ลบรายการ</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -296,6 +313,7 @@
                                         <ul class="dropdown-menu border-0 shadow p-3">
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/view/'.$item->id) }}">ดูรายละเอียด</a></li>
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/delete/'.$item->id) }}">ลบรายการ</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -349,6 +367,7 @@
                                         <ul class="dropdown-menu border-0 shadow p-3">
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/view/'.$item->id) }}">ดูรายละเอียด</a></li>
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/delete/'.$item->id) }}">ลบรายการ</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -402,6 +421,7 @@
                                         <ul class="dropdown-menu border-0 shadow p-3">
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/view/'.$item->id) }}">ดูรายละเอียด</a></li>
                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Mproduct/delete/'.$item->id) }}">ลบรายการ</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -424,34 +444,6 @@
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    var apexwc12 = {
-        chart: {
-            height: 310,
-            type: 'donut',
-        },
-        labels: ['Room', 'Banquet', 'Meals', 'Entertainment'],
-        dataLabels: {
-            enabled: false,
-        },
-        legend: {
-            position: 'bottom', // left, right, top, bottom
-            horizontalAlign: 'center',  // left, right, top, bottom
-        },
-        colors: ['#FF5733', '#62e079', '#3357FF', '#F333FF'],
-        series: [{{ number_format($CountRoom, 2) }},{{ number_format($CountBanquet, 2) }},{{ number_format($CountMeals, 2) }},{{ number_format($CountEntertainment, 2) }}],
-        responsive: [{
-            breakpoint: 420,
-            options: {
-                chart: {
-                    width: 300
-                },
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }]
-    }
-    new ApexCharts(document.querySelector("#apex-wc-12"), apexwc12).render();
     function btnstatus(id) {
         jQuery.ajax({
             type: "GET",

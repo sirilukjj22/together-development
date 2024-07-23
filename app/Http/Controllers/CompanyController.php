@@ -492,7 +492,7 @@ class CompanyController extends Controller
             $save->Company_Email = $request->Company_Email;
             $save->Company_Website = $request->Company_Website;
             $save->Taxpayer_Identification = $request->Taxpayer_Identification;
-            $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
+            // $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
             $save->Contract_Rate_Start_Date = $request->contract_rate_start_date;
             $save->Contract_Rate_End_Date = $request->contract_rate_end_date;
             $save->Lastest_Introduce_By =$request->Lastest_Introduce_By;
@@ -685,7 +685,7 @@ class CompanyController extends Controller
         $save->Company_Email = $request->Company_Email;
         $save->Company_Website = $request->Company_Website;
         $save->Taxpayer_Identification = $request->Taxpayer_Identification;
-        $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
+        // $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
         $save->Contract_Rate_Start_Date = $request->contract_rate_start_date;
         $save->Contract_Rate_End_Date = $request->contract_rate_end_date;
         $save->Lastest_Introduce_By =$request->Lastest_Introduce_By;

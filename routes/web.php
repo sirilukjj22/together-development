@@ -199,6 +199,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mproduct/change-Status/{id}','changeStatus')->name('Mproduct.changeStatus');
         Route::post('/Mproduct/master_Mproduct/Mproduct_update/{id}','update')->name('Mproduct.update');
         Route::post('/Mproduct/check/Category','Category')->name('Mproduct.Category');
+        Route::get('/Mproduct/delete/{id}','delete')->name('Mproduct.delete');
         // ----------------------------------Quantity-----------------------------------------------
         Route::get('/Mproduct/Quantity/index','index_quantity')->name('Mproduct.index.quantity');
         Route::post('/Mproduct/Quantity/Save','save_quantity')->name('Mproduct.save.quantity');

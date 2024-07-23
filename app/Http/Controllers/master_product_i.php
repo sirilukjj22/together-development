@@ -121,92 +121,91 @@ class master_product_i extends Controller
             chmod($upload_location_image, 0777);
         }
         $full_path_image = $upload_location_image . $img_name1;
-       if ($Category == 'Room_Type')
-       {
-            $lastProfile = master_product_item::where('Category', 'Room_Type')->count() + 1;
-            $Profile_ID ="R-";
-            $Product_ID = $Profile_ID.$lastProfile;
-            $type = 'Room_Revenue';
+        if ($Category == 'Room_Type')
+        {
+                $lastProfile = master_product_item::where('Category', 'Room_Type')->count() + 1;
+                $Profile_ID ="R-";
+                $Product_ID = $Profile_ID.$lastProfile;
+                $type = 'Room_Revenue';
 
 
-       }else if ($Category == 'Banquet')
-       {
-            $lastProfile = master_product_item::where('Category', 'Banquet')->count() + 1;
-            $Profile_ID ="B-";
-            $Product_ID = $Profile_ID.$lastProfile;
-            $type = 'Other_Revenue';
+        }else if ($Category == 'Banquet')
+        {
+                $lastProfile = master_product_item::where('Category', 'Banquet')->count() + 1;
+                $Profile_ID ="B-";
+                $Product_ID = $Profile_ID.$lastProfile;
+                $type = 'Other_Revenue';
 
-       }elseif ($Category == 'Meals')
-       {
-            $lastProfile = master_product_item::where('Category', 'Meals')->count() + 1;
-            $Profile_ID ="M-";
-            $Product_ID = $Profile_ID.$lastProfile;
-            $type = 'F&B_Revenue';
-       }elseif ($Category == 'Entertainment')
-       {
-            $lastProfile = master_product_item::where('Category', 'Entertainment')->count() + 1;
-            $Profile_ID ="E-";
-            $Product_ID = $Profile_ID.$lastProfile;
-            $type = 'Other_Revenue';
-       }else{
-            return redirect()->back()->with('error_', 'Please enter the product type.');
-       }
-       $userid = Auth::user()->id;
-       $save = new master_product_item();
-       $save->Product_ID = $Product_ID;
-       $save->created_by = $userid;
-       $save->type = $type;
-       $save->name_th = $name_th;
-       $save->name_en = $name_en;
-       $save->detail_th = $detail_th;
-       $save->detail_en = $detail_en;
-       $save->Category = $Category;
-       $save->pax = $pax;
-       $save->room_size = $room_size;
-       $save->normal_price = $normal_price;
-       $save->weekend_price = $weekend_price;
-       $save->long_weekend_price = $long_weekend_price;
-       $save->end_weekend_price = $end_weekend_price;
-       $save->quantity = $Quantity;
-       $save->unit = $Unit;
-       $save->maximum_discount = $Maximum_Discount;
-       $save->image_product = $full_path_image;
-       $save->save();
-       if ($request->hasFile('image_other')) {
-    $imageother = $request->file('image_other');
-    $upload_location_image2 = 'image/product/image-orther/';
+        }elseif ($Category == 'Meals')
+        {
+                $lastProfile = master_product_item::where('Category', 'Meals')->count() + 1;
+                $Profile_ID ="M-";
+                $Product_ID = $Profile_ID.$lastProfile;
+                $type = 'F&B_Revenue';
+        }elseif ($Category == 'Entertainment')
+        {
+                $lastProfile = master_product_item::where('Category', 'Entertainment')->count() + 1;
+                $Profile_ID ="E-";
+                $Product_ID = $Profile_ID.$lastProfile;
+                $type = 'Other_Revenue';
+        }else{
+                return redirect()->back()->with('error_', 'Please enter the product type.');
+        }
+            $userid = Auth::user()->id;
+            $save = new master_product_item();
+            $save->Product_ID = $Product_ID;
+            $save->created_by = $userid;
+            $save->type = $type;
+            $save->name_th = $name_th;
+            $save->name_en = $name_en;
+            $save->detail_th = $detail_th;
+            $save->detail_en = $detail_en;
+            $save->Category = $Category;
+            $save->pax = $pax;
+            $save->room_size = $room_size;
+            $save->normal_price = $normal_price;
+            $save->weekend_price = $weekend_price;
+            $save->long_weekend_price = $long_weekend_price;
+            $save->end_weekend_price = $end_weekend_price;
+            $save->quantity = $Quantity;
+            $save->unit = $Unit;
+            $save->maximum_discount = $Maximum_Discount;
+            $save->image_product = $full_path_image;
+            $save->save();
+            if ($request->hasFile('image_other')) {
+                $imageother = $request->file('image_other');
+                $upload_location_image2 = 'image/product/image-orther/';
 
-    if (!file_exists($upload_location_image2)) {
-        // สร้างโฟลเดอร์ถ้ายังไม่มี
-        mkdir($upload_location_image2, 0777, true);
-    }
+                if (!file_exists($upload_location_image2)) {
+                    // สร้างโฟลเดอร์ถ้ายังไม่มี
+                    mkdir($upload_location_image2, 0777, true);
+                }
 
-    if (!is_writable($upload_location_image2)) {
-        // ให้สิทธิ์ในการเขียนไฟล์
-        chmod($upload_location_image2, 0777);
-    }
+                if (!is_writable($upload_location_image2)) {
+                    // ให้สิทธิ์ในการเขียนไฟล์
+                    chmod($upload_location_image2, 0777);
+                }
 
-    foreach ($imageother as $file) {
-        $image_name_gen = hexdec(uniqid());
-        $img_ext = strtolower($file->getClientOriginalExtension());
-        $img_name2 = $image_name_gen . '.' . $img_ext;
-        $fullimageother = $upload_location_image2 . $img_name2;
+                foreach ($imageother as $file) {
+                    $image_name_gen = hexdec(uniqid());
+                    $img_ext = strtolower($file->getClientOriginalExtension());
+                    $img_name2 = $image_name_gen . '.' . $img_ext;
+                    $fullimageother = $upload_location_image2 . $img_name2;
 
-        // ย้ายไฟล์ไปยังตำแหน่งที่กำหนด
-        $file->move($upload_location_image2, $img_name2);
-        $saveimage = new master_product_image();
-        $saveimage->Product_ID = $Product_ID;
-        $saveimage->image_other	=$fullimageother;
-        $saveimage->save();
-    }
-}
-    if ($save->save()) {
-        $image->move($upload_location_image,$img_name1);
-        return redirect()->route('Mproduct.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
-    } else {
-        return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-    }
-
+                    // ย้ายไฟล์ไปยังตำแหน่งที่กำหนด
+                    $file->move($upload_location_image2, $img_name2);
+                    $saveimage = new master_product_image();
+                    $saveimage->Product_ID = $Product_ID;
+                    $saveimage->image_other	=$fullimageother;
+                    $saveimage->save();
+                }
+            }
+        if ($save->save()) {
+            $image->move($upload_location_image,$img_name1);
+            return redirect()->route('Mproduct.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
+        } else {
+            return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        }
     }
     public function ac(Request $request)
     {
@@ -353,7 +352,8 @@ class master_product_i extends Controller
                 // ให้สิทธิ์ในการเขียนไฟล์
                 chmod($upload_location_image2, 0777);
             }
-
+           $Product_ID= master_product_item::where('id',$id)->first();
+           $idProduct = $Product_ID->Product_ID;
         foreach ($imageother as $file) {
             $image_name_gen = hexdec(uniqid());
             $img_ext = strtolower($file->getClientOriginalExtension());
@@ -363,7 +363,7 @@ class master_product_i extends Controller
             // ย้ายไฟล์ไปยังตำแหน่งที่กำหนด
             $file->move($upload_location_image2, $img_name2);
             $saveimage = new master_product_image();
-            $saveimage->Product_ID = $Product_ID;
+            $saveimage->Product_ID = $idProduct;
             $saveimage->image_other	=$fullimageother;
             $saveimage->save();
         }
@@ -377,6 +377,12 @@ class master_product_i extends Controller
             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
 
+    }
+    public function delete($id)
+    {
+        $product = master_product_item::find($id);
+        $product->delete();
+        return redirect()->route('Mproduct.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
     //------------------------------------------------------------------------------------------------
     //-----------------------------------Quantity-----------------------------------------------------
