@@ -1176,14 +1176,18 @@
             var number_ID = $(this).attr('rel');
             var discountmain =  Number($(this).val());
             console.log(discountmain);
-            var quantitymain =  Number($('.quantitymain').val());
+            var quantitymain =  $('#quantitymain'+number_ID).val();
+            console.log(quantitymain);
             var number = Number($('#number-product').val());
             var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
             var pricediscount =  (price*discountmain /100);
+
             var allcount0 = price - pricediscount;
+            console.log(allcount0);
             $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             var pricenew = price*quantitymain
             var pricediscount = pricenew - (pricenew*discountmain /100);
+
             $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             totalAmost();
