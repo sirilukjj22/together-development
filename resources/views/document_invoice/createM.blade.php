@@ -108,14 +108,14 @@
                         <div class="col-lg-4 col-md-12 col-sm-12">
                             <div class="row">
                                 <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Profoma Invoice</b>
-                                <span class="titleQuotation">Profoma Invoice ID :{{$InvoiceID}}</span>
+                                <span class="titleQuotation">Profoma Invoice ID : {{$InvoiceID}}</span>
                                 <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
                                     <div class="col-12 col-md-12 col-sm-12">
                                         <div class="row">
                                             <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
                                                 <span>Issue Date:</span>
                                             </div>
-                                            <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
+                                            <div class="col-lg-4 col-md-12 col-sm-12" id="reportrange1">
                                                 <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;"readonly>
                                             </div>
                                         </div>
@@ -125,7 +125,7 @@
                                             <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
                                                 <span>Expiration Date:</span>
                                             </div>
-                                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                            <div class="col-lg-4 col-md-12 col-sm-12">
                                                 <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly>
                                             </div>
                                         </div>
@@ -263,8 +263,8 @@
                             <tbody id="display-selected-items">
                                 <tr>
                                     <td style="text-align:center">1</td>
-                                    <td style="text-align:left">{{$InvoiceID}} อ้างอิง Proposal เลขที่ {{$QuotationID}} ชำระจำนวน <span id="Amount" style="display: none;"></span>
-                                        <span id="Amount1" style="display: none;"></span> ยอดเต็ม {{$balance}} บาท <br>กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit"  style="width: 2%"  id="Deposit" value="{{$Deposit}}" disabled></td>
+                                    <td style="text-align:left">Proposal ID : {{$QuotationID}} <span id="Amount" style="display: none;"></span>
+                                        <span id="Amount1" style="display: none;"></span> of {{$balance}} THB กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit"  style="width: 2%"  id="Deposit" value="{{$Deposit}}" disabled></td>
                                     <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
                                 </tr>
                                 <tr>
@@ -295,13 +295,7 @@
                             <strong class="com" style="font-size: 18px">Method of Payment</strong>
                         </div>
                         <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
-                            Please make a 50% deposit within 7 days after confirmed. <br>
-                            Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
-                            If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
-                            pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                        </span>
-                        <span class="col-md-8 col-sm-12"  id="Payment100" style="display: none">
-                            Please make a 100% deposit within 3 days after confirmed. <br>
+                            <strong>FULL PAYMENT AFTER RESERVATION </strong><br>
                             Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
                             If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
                             pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
@@ -328,41 +322,29 @@
                         </div>
                         <div class="col-12 my-2">
                             <div class="row">
-                                <div class="col-lg-2 centered-content">
+                                <div class="col-lg-3 centered-content">
                                     <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
                                     @php
                                         use SimpleSoftwareIO\QrCode\Facades\QrCode;
-
                                     @endphp
                                     <div class="mt-3">
                                         {!! QrCode::size(90)->generate('No found'); !!}
                                     </div>
                                 </div>
-                                <div class="col-lg-2 centered-content">
+                                <div class="col-lg-3 centered-content">
                                     <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
                                     <br><br>
                                     <span>{{@Auth::user()->name}}</span>
                                     <span id="issue_date_document"></span>
                                 </div>
-                                <div class="col-lg-2 centered-content">
+                                <div class="col-lg-3 centered-content">
                                     <span>ผู้อนุมัติเอกสาร (ผู้ขาย)</span><br>
                                     <br><br>
                                     <span>{{@Auth::user()->name}}</span>
                                     <span id="issue_date_document1"></span>
                                 </div>
-                                <div class="col-lg-2 centered-content">
+                                <div class="col-lg-3 centered-content">
                                     <span>ตราประทับ (ผู้ขาย)</span>
-                                </div>
-                                <div class="col-lg-2 centered-content">
-                                    <span>ผู้รับเอกสาร (ลูกค้า)</span>
-                                    <br><br><br>
-                                    ___________________
-                                    <span>_____/________/_____</span>
-                                </div>
-                                <div class="col-lg-2 centered-content">
-                                    <span >ตราประทับ (ลูกค้า)</span>
-                                    <div class="centered-content4 mt-1">
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -464,21 +446,6 @@
         $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
         $('#balance').val(isNaN(balance) ? '0' : balance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     });
-    $(document).ready(function() {
-        var Mevent =$('#eventformat').val();
-        if (Mevent == '43') {
-            console.log(1);
-            $('#Payment50').css('display', 'block');
-            $('#Payment100').css('display', 'none');
-        } else if (Mevent == '53') {
-            console.log(0);
-            $('#Payment50').css('display', 'none');
-            $('#Payment100').css('display', 'block');
-        } else {
-            $('#Payment50').css('display', 'none');
-            $('#Payment100').css('display', 'none');
-        }
-    });
     function togglePaymentFields() {
         var radio0 = document.getElementById('radio0');
         var radio1 = document.getElementById('radio1');
@@ -508,7 +475,7 @@
         $('#Amount').text(input.value + '%');
     }
     function validateInput1(input) {
-        $('#Amount1').text(input.value + 'บาท');
+        $('#Amount1').text(input.value );
     }
 </script>
 

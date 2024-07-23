@@ -294,14 +294,8 @@
                         <div class="col-lg-4 col-md-6 col-sm-12">
                             <strong class="com" style="font-size: 18px">Method of Payment</strong>
                         </div>
-                        <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
-                            Please make a 50% deposit within 7 days after confirmed. <br>
-                            Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
-                            If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
-                            pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                        </span>
-                        <span class="col-md-8 col-sm-12"  id="Payment100" style="display: none">
-                            Please make a 100% deposit within 3 days after confirmed. <br>
+                        <span class="col-md-8 col-sm-12">
+                            <strong>FULL PAYMENT AFTER RESERVATION</strong><br>
                             Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
                             If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
                             pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
@@ -352,17 +346,6 @@
                                 </div>
                                 <div class="col-lg-2 centered-content">
                                     <span>ตราประทับ (ผู้ขาย)</span>
-                                </div>
-                                <div class="col-lg-2 centered-content">
-                                    <span>ผู้รับเอกสาร (ลูกค้า)</span>
-                                    <br><br><br>
-                                    ___________________
-                                    <span>_____/________/_____</span>
-                                </div>
-                                <div class="col-lg-2 centered-content">
-                                    <span >ตราประทับ (ลูกค้า)</span>
-                                    <div class="centered-content4 mt-1">
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -463,21 +446,6 @@
         $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
         $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
         $('#balance').val(isNaN(balance) ? '0' : balance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-    });
-    $(document).ready(function() {
-        var Mevent =$('#eventformat').val();
-        if (Mevent == '43') {
-            console.log(1);
-            $('#Payment50').css('display', 'block');
-            $('#Payment100').css('display', 'none');
-        } else if (Mevent == '53') {
-            console.log(0);
-            $('#Payment50').css('display', 'none');
-            $('#Payment100').css('display', 'block');
-        } else {
-            $('#Payment50').css('display', 'none');
-            $('#Payment100').css('display', 'none');
-        }
     });
     function togglePaymentFields() {
         var radio0 = document.getElementById('radio0');

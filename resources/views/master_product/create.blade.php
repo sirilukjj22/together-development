@@ -227,7 +227,7 @@
                                         <div class="card1">
                                             <div class="image-container">
                                                 <button type="button" class="image-upload-button"></button>
-                                                <input type="file" name="imageFile" id="imageFile" accept="image/jpeg, image/png, image/svg" required style="display: none;">
+                                                <input type="file" name="imageFile" id="imageFile" accept="image/jpeg, image/png, image/svg" value="{{ asset('assets2/images/no-image.jpg') }}" style="display: none;">
                                                 <img src=""  class="image_preview" style="display: none;">
                                                 <button class="buttonIcon" type="button" id="imageSubmit" style="display: none;"></button>
                                                 <button class="deleteImage" id="deleteImage" type="button" style="display: none;"></button>
@@ -294,22 +294,22 @@
                                             <input type="text" id="room_size" class="price-input" name="room_size"maxlength="70">
                                         </div>
                                     </div>
-                                    <div class=" row">
-                                        <div class="col-lg-3 col-sm-12" >
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-12" id="normal_price_container" style="display: block;">
                                             <label for="normal_price">Normal Price <br>(Include VAT)</label><br>
-                                            <input type="text"  class="price-input"id="normal_price" name="normal_price"maxlength="70" >
+                                            <input type="text" class="price-input" id="normal_price" name="normal_price" maxlength="70">
                                         </div>
-                                        <div class="col-lg-3 col-sm-12">
+                                        <div class="col-lg-3 col-sm-12" id="weekend_price_container" style="display: block;">
                                             <label for="weekend_price">Weekday Price <br>(Include VAT)</label><br>
-                                            <input type="text"  class="price-input"id="weekend_price" name="weekend_price"maxlength="70">
+                                            <input type="text" class="price-input" id="weekend_price" name="weekend_price" maxlength="70">
                                         </div>
-                                        <div class="col-lg-3 col-sm-12" >
+                                        <div class="col-lg-3 col-sm-12" id="long_weekend_price_container" style="display: block;">
                                             <label for="long_weekend_price">Long Weekend Price<br> (Include VAT)</label><br>
-                                            <input type="text"  class="price-input"id="long_weekend_price" name="long_weekend_price"maxlength="70">
+                                            <input type="text" class="price-input" id="long_weekend_price" name="long_weekend_price" maxlength="70">
                                         </div>
-                                        <div class="col-lg-3 col-sm-12" >
-                                            <label for="long_weekend_price">End Weekend Price<br> (Include VAT)</label><br>
-                                            <input type="text"  class="price-input"id="end_weekend_price" name="end_weekend_price"maxlength="70">
+                                        <div class="col-lg-3 col-sm-12" id="end_weekend_price_container" style="display: block;">
+                                            <label for="end_weekend_price">End Weekend Price<br> (Include VAT)</label><br>
+                                            <input type="text" class="price-input" id="end_weekend_price" name="end_weekend_price" maxlength="70">
                                         </div>
                                     </div>
                                     <div class=" row">
@@ -354,7 +354,44 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
-
+// document.getElementById('category').addEventListener('change', function() {
+//     var selectedValue = this.value;
+//     console.log(1);
+//     console.log("Selected value: " + selectedValue);
+//     document.getElementById('normal_price_container').style.display = 'block';
+//     document.getElementById('weekend_price_container').style.display = 'block';
+//     document.getElementById('long_weekend_price_container').style.display = 'block';
+//     document.getElementById('end_weekend_price_container').style.display = 'block';
+//     switch(selectedValue) {
+//         case 'Room_Type':
+//             document.getElementById('normal_price_container').style.display = 'block';
+//             document.getElementById('weekend_price_container').style.display = 'block';
+//             document.getElementById('long_weekend_price_container').style.display = 'block';
+//             document.getElementById('end_weekend_price_container').style.display = 'block';
+//             break;
+//         case 'Banquet':
+//             document.getElementById('weekend_price_container').style.display = 'block';
+//             document.getElementById('weekend_price_container').style.display = 'block';
+//             document.getElementById('long_weekend_price_container').style.display = 'none';
+//             document.getElementById('end_weekend_price_container').style.display = 'none';
+//             break;
+//         case 'Meals':
+//             document.getElementById('long_weekend_price_container').style.display = 'block';
+//             document.getElementById('weekend_price_container').style.display = 'none';
+//             document.getElementById('long_weekend_price_container').style.display = 'none';
+//             document.getElementById('end_weekend_price_container').style.display = 'none';
+//             break;
+//         case 'Entertainment':
+//             document.getElementById('end_weekend_price_container').style.display = 'block';
+//             document.getElementById('weekend_price_container').style.display = 'none';
+//             document.getElementById('long_weekend_price_container').style.display = 'none';
+//             document.getElementById('end_weekend_price_container').style.display = 'none';
+//             break;
+//         default:
+//             // ถ้าไม่มีค่าที่เลือกหรือค่าที่เลือกไม่ตรงกับที่กำหนดไว้ ให้ซ่อนทุก container
+//             break;
+//     }
+// });
  $(document).ready(function() {
         $('.select2').select2({
             placeholder: "Please select an option"
@@ -492,6 +529,35 @@ $(document).ready(function() {
                     console.error(xhr.responseText);
                 }
             });
+            switch(selectedCategory) {
+                case 'Room_Type':
+                    document.getElementById('normal_price_container').style.display = 'block';
+                    document.getElementById('weekend_price_container').style.display = 'block';
+                    document.getElementById('long_weekend_price_container').style.display = 'block';
+                    document.getElementById('end_weekend_price_container').style.display = 'block';
+                    break;
+                case 'Banquet':
+                    document.getElementById('weekend_price_container').style.display = 'block';
+                    document.getElementById('weekend_price_container').style.display = 'none';
+                    document.getElementById('long_weekend_price_container').style.display = 'none';
+                    document.getElementById('end_weekend_price_container').style.display = 'none';
+                    break;
+                case 'Meals':
+                    document.getElementById('long_weekend_price_container').style.display = 'block';
+                    document.getElementById('weekend_price_container').style.display = 'none';
+                    document.getElementById('long_weekend_price_container').style.display = 'none';
+                    document.getElementById('end_weekend_price_container').style.display = 'none';
+                    break;
+                case 'Entertainment':
+                    document.getElementById('end_weekend_price_container').style.display = 'block';
+                    document.getElementById('weekend_price_container').style.display = 'none';
+                    document.getElementById('long_weekend_price_container').style.display = 'none';
+                    document.getElementById('end_weekend_price_container').style.display = 'none';
+                    break;
+                default:
+                    // ถ้าไม่มีค่าที่เลือกหรือค่าที่เลือกไม่ตรงกับที่กำหนดไว้ ให้ซ่อนทุก container
+                    break;
+            }
         });
     });
 </script>

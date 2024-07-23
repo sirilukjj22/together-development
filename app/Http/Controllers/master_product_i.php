@@ -114,21 +114,24 @@ class master_product_i extends Controller
         $Quantity = $request->quantity;
         $Unit = $request->unit;
         $Maximum_Discount = $request->Maximum_Discount;
-        $image = $request->file('imageFile');
-        $image_name_gen = hexdec(uniqid());
-        $img_ext = strtolower($image->getClientOriginalExtension());
-        $img_name1 = $image_name_gen . '.' . $img_ext;
-        $upload_location_image = 'image/product/image-product/';
-        if (!file_exists($upload_location_image)) {
-            // สร้างโฟลเดอร์ถ้ายังไม่มี
-            mkdir($upload_location_image, 0777, true);
-        }
+        if ($request->hasFile('imageFile')) {
+            $image = $request->file('imageFile');
+            $image_name_gen = hexdec(uniqid());
+            $img_ext = strtolower($image->getClientOriginalExtension());
+            $img_name1 = $image_name_gen . '.' . $img_ext;
+            $upload_location_image = 'image/product/image-product/';
+            if (!file_exists($upload_location_image)) {
+                // สร้างโฟลเดอร์ถ้ายังไม่มี
+                mkdir($upload_location_image, 0777, true);
+            }
 
-        if (!is_writable($upload_location_image)) {
-            // ให้สิทธิ์ในการเขียนไฟล์
-            chmod($upload_location_image, 0777);
+            if (!is_writable($upload_location_image)) {
+                // ให้สิทธิ์ในการเขียนไฟล์
+                chmod($upload_location_image, 0777);
+            }
+            $full_path_image = $upload_location_image . $img_name1;
+            $image->move($upload_location_image,$img_name1);
         }
-        $full_path_image = $upload_location_image . $img_name1;
         if ($Category == 'Room_Type')
         {
                 $lastProfile = master_product_item::where('Category', 'Room_Type')->count() + 1;
@@ -178,8 +181,12 @@ class master_product_i extends Controller
             $save->quantity = $Quantity;
             $save->unit = $Unit;
             $save->maximum_discount = $Maximum_Discount;
-            $save->image_product = $full_path_image;
-            $save->save();
+            if ($request->hasFile('imageFile')) {
+                $save->image_product = $full_path_image;
+                $save->save();
+            }else{
+                $save->save();
+            }
             if ($request->hasFile('image_other')) {
                 $imageother = $request->file('image_other');
                 $upload_location_image2 = 'image/product/image-orther/';
@@ -208,8 +215,9 @@ class master_product_i extends Controller
                     $saveimage->save();
                 }
             }
+
         if ($save->save()) {
-            $image->move($upload_location_image,$img_name1);
+
             return redirect()->route('Mproduct.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
         } else {
             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
