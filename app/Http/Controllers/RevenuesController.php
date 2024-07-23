@@ -1784,6 +1784,10 @@ class RevenuesController extends Controller
                     ]);
                 }
             }
+        } else {
+            if (!isset($request->agoda_batch)) {
+                Revenue_credit::where('revenue_id', $check_credit->id)->where('status', 5)->delete();
+            }
         }
 
         if (!empty($request->front_batch)) {
