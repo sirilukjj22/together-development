@@ -194,7 +194,7 @@ class Document_invoice extends Controller
                     $balance = $Nettotal-$Subtotal;
 
                 }
-                 $balanceold =$request->balance;
+                $balanceold =$request->balance;
                 $data = [
                     'valid'=>$valid,
                     'date'=>$date,
@@ -229,6 +229,7 @@ class Document_invoice extends Controller
                 return $pdf->stream();
             }
             $data = $request->all();
+            dd( $data );
             $save = new document_invoices();
             $save->deposit =$request->Deposit;
             $save->valid =$request->valid;
@@ -239,6 +240,8 @@ class Document_invoice extends Controller
             $save->Invoice_ID=$request->InvoiceID;
             $save->Quotation_ID =$request->QuotationID;
             $save->Nettotal = $request->Nettotal;
+            $save->IssueDate= $request->IssueDate;
+            $save->Expiration= $request->Expiration;
             $save->save();
             return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } catch (\Throwable $e) {

@@ -291,11 +291,10 @@
                         </table>
                     </div>
                     <div class="col-12 mt-3">
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <strong class="com" style="font-size: 18px">Method of Payment</strong>
+                        <div class="col-lg-4 col-md-6 col-sm-12 my-1">
+                            <strong class="com" style="font-size: 18px">FULL PAYMENT AFTER RESERVATION</strong>
                         </div>
                         <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
-                            <strong>FULL PAYMENT AFTER RESERVATION </strong><br>
                             Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
                             If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
                             pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
@@ -304,7 +303,7 @@
                             <div class="col-lg-8 col-md-6 col-sm-12">
                                 <div class="col-12  mt-2">
                                     <div class="row">
-                                        <div class="col-2 mt-3" style="display: flex;justify-content: center;align-items: center;">
+                                        <div class="col-2 mt-2" style="display: flex;justify-content: center;align-items: center;">
                                             <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 60%;border-radius: 50%;"/>
                                         </div>
                                         <div class="col-7 mt-2">
@@ -317,12 +316,13 @@
                     </div>
                     <div class="styled-hr mt-3"></div>
                     <div class="col-12 mt-2">
-                        <div class="col-4">
-                            <strong style="font-size: 18px">รับรอง</strong>
-                        </div>
-                        <div class="col-12 my-2">
+                        <div class="col-12 my-4">
                             <div class="row">
-                                <div class="col-lg-3 centered-content">
+                                <div class="col-lg-2 centered-content"></div>
+                                <div class="col-lg-2 centered-content"></div>
+                                <div class="col-lg-2 centered-content"></div>
+                                <div class="col-lg-2 centered-content"></div>
+                                <div class="col-lg-2 centered-content">
                                     <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
                                     @php
                                         use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -331,20 +331,11 @@
                                         {!! QrCode::size(90)->generate('No found'); !!}
                                     </div>
                                 </div>
-                                <div class="col-lg-3 centered-content">
+                                <div class="col-lg-2 centered-content">
                                     <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
                                     <br><br>
                                     <span>{{@Auth::user()->name}}</span>
                                     <span id="issue_date_document"></span>
-                                </div>
-                                <div class="col-lg-3 centered-content">
-                                    <span>ผู้อนุมัติเอกสาร (ผู้ขาย)</span><br>
-                                    <br><br>
-                                    <span>{{@Auth::user()->name}}</span>
-                                    <span id="issue_date_document1"></span>
-                                </div>
-                                <div class="col-lg-3 centered-content">
-                                    <span>ตราประทับ (ผู้ขาย)</span>
                                 </div>
                             </div>
                         </div>

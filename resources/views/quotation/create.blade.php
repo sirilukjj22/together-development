@@ -209,7 +209,7 @@
                         <div class="row mt-2">
                             <div class="col-lg-2 col-md-6 col-sm-12">
                                 <label for="chekin">Check In Date</label>
-                                <input type="date" name="Checkin" id="Checkin" class="form-control" onchange="CheckDate()" required>
+                                <input type="date" name="Checkin" id="Checkin" class="form-control" onchange="CheckDate()" min="08/23/2024" required>
                             </div>
                             <div class="col-lg-2 col-md-6 col-sm-12">
                                 <label for="chekin">Check Out Date </label>
@@ -240,16 +240,15 @@
                                 <select name="Mevent" id="Mevent" class="select2"  onchange="masterevent()" required>
                                     <option value=""></option>
                                     @foreach($Mevent as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                        <option value="{{ $item->id }}"{{$item->lavel == 1 ? 'selected' : ''}}>{{ $item->name_th }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label  for="">Vat Type</label>
                                 <select name="Mvat" id="Mvat" class="select2"  onchange="mastervat()" required>
-                                    <option value=""></option>
                                     @foreach($Mvat as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                        <option value="{{ $item->id }}"{{$item->lavel == 1 ? 'selected' : ''}}>{{ $item->name_th }} </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -1142,14 +1141,18 @@
             var number_ID = $(this).attr('rel');
             var discountmain =  Number($(this).val());
             console.log(discountmain);
-            var quantitymain =  Number($('.quantitymain').val());
+            var quantitymain =  $('#quantitymain'+number_ID).val();
+            console.log(quantitymain);
             var number = Number($('#number-product').val());
             var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
             var pricediscount =  (price*discountmain /100);
+
             var allcount0 = price - pricediscount;
+            console.log(allcount0);
             $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             var pricenew = price*quantitymain
             var pricediscount = pricenew - (pricenew*discountmain /100);
+
             $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             totalAmost();

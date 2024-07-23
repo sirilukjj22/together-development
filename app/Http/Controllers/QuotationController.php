@@ -112,8 +112,8 @@ class QuotationController extends Controller
         $Valid_Until = Carbon::parse($currentDate)->addDays(7)->translatedFormat('d/m/Y');
         $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
         $Quotation_ID = $ID.$year.$month.$newRunNumber;
-        $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
-        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
+        $Mevent = master_document::select('name_th','id','lavel')->where('status', '1')->where('Category','Mevent')->get();
+        $Mvat = master_document::select('name_th','id','lavel')->where('status', '1')->where('Category','Mvat')->get();
         $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
         return view('quotation.create',compact('Quotation_ID','Company','Mevent','Freelancer_member','Issue_date','Valid_Until','Mvat'));
