@@ -299,22 +299,29 @@
                                         </div>
                                     </div>
                                     <div class=" row">
-                                        <div class="col-lg-3 col-sm-12" >
-                                            <label for="normal_price">Normal Price <br>(Include VAT)</label><br>
-                                            <input type="text"  class="price-input"id="normal_price" name="normal_price"maxlength="70" value="{{$product->normal_price}}">
-                                        </div>
-                                        <div class="col-lg-3 col-sm-12">
-                                            <label for="weekend_price">Weekday Price <br>(Include VAT)</label><br>
-                                            <input type="text"  class="price-input"id="weekend_price" name="weekend_price"maxlength="70"value="{{$product->weekend_price}}">
-                                        </div>
-                                        <div class="col-lg-3 col-sm-12" >
-                                            <label for="long_weekend_price">Long Weekend Price<br> (Include VAT)</label><br>
-                                            <input type="text"  class="price-input"id="long_weekend_price" name="long_weekend_price"maxlength="70"value="{{$product->long_weekend_price}}">
-                                        </div>
-                                        <div class="col-lg-3 col-sm-12" >
-                                            <label for="long_weekend_price">End Weekend Price<br> (Include VAT)</label><br>
-                                            <input type="text"  class="price-input"id="end_weekend_price" name="end_weekend_price"maxlength="70"value="{{$product->end_weekend_price}}">
-                                        </div>
+                                        @if ($product->Category == "Room_Type")
+                                            <div class="col-lg-3 col-sm-12" id="normal_price_container" style="display: block;">
+                                                <label for="normal_price">Normal Price <br>(Include VAT)</label><br>
+                                                <input type="text" class="price-input" id="normal_price" name="normal_price" maxlength="70" value="{{$product->normal_price}}">
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12" id="weekend_price_container" style="display: block;">
+                                                <label for="weekend_price">Weekday Price <br>(Include VAT)</label><br>
+                                                <input type="text" class="price-input" id="weekend_price" name="weekend_price" maxlength="70"value="{{$product->weekend_price}}">
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12" id="long_weekend_price_container" style="display: block;">
+                                                <label for="long_weekend_price">Long Weekend Price<br> (Include VAT)</label><br>
+                                                <input type="text" class="price-input" id="long_weekend_price" name="long_weekend_price" maxlength="70"value="{{$product->long_weekend_price}}">
+                                            </div>
+                                            <div class="col-lg-3 col-sm-12" id="end_weekend_price_container" style="display: block;">
+                                                <label for="end_weekend_price">End Weekend Price<br> (Include VAT)</label><br>
+                                                <input type="text" class="price-input" id="end_weekend_price" name="end_weekend_price" maxlength="70"value="{{$product->end_weekend_price}}">
+                                            </div>
+                                        @else
+                                            <div class="col-lg-3 col-sm-12" id="normal_price_container" style="display: block;">
+                                                <label for="normal_price">Normal Price <br>(Include VAT)</label><br>
+                                                <input type="text" class="price-input" id="normal_price" name="normal_price" maxlength="70" value="{{$product->normal_price}}">
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class=" row">
                                         <div class="col-lg-4 col-sm-12" >
