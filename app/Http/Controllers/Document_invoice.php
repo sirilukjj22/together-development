@@ -37,12 +37,13 @@ class Document_invoice extends Controller
         $userid = Auth::user()->id;
         $Approved = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->get();
         $Approvedcount = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->count();
+        $ref = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->get();
         return view('document_invoice.index',compact('Approved','Approvedcount'));
     }
     public function Generate($id){
 
         $currentDate = Carbon::now();
-        $ID = 'IV-';
+        $ID = 'PI-';
         $formattedDate = Carbon::parse($currentDate);       // วันที่
         $month = $formattedDate->format('m'); // เดือน
         $year = $formattedDate->format('y');
@@ -98,7 +99,7 @@ class Document_invoice extends Controller
             $Deposit =$deposit+ 1;
             $balance = $invoices->balance;
             return view('document_invoice.createM',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company'
-            ,'TambonID','company_phone','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','balance','invoices'));
+            ,'TambonID','company_phone','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','balance','invoices','Issue_date'));
         }else{
             $Deposit = 1;
             return view('document_invoice.create',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company'
@@ -107,7 +108,7 @@ class Document_invoice extends Controller
     }
     public function save(Request $request){
 
-        // try {
+        try {
             $preview=$request->preview;
             if ($preview == 1) {
                 $Quotation_ID =$request->QuotationID;
@@ -155,14 +156,14 @@ class Document_invoice extends Controller
                 // Generate the QR code as PNG
                 $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
                 $qrCodeBase64 = base64_encode($qrCodeImage);
-                $balance =$request->balance;
+
                 $Deposit = $request->Deposit;
                 $payment=$request->Payment;
-                $Nettotal= $request->Nettotal;
+                $Nettotal = floatval(str_replace(',', '', $request->Nettotal));
                 $valid=$request->valid;
                 $valid = Carbon::parse($valid)->format('d/m/Y');
                 if ($payment) {
-                    $payment0 = $payment.'บาท';
+                    $payment0 = $payment;
                     $Subtotal =0;
                     $total =0;
                     $addtax = 0;
@@ -173,7 +174,8 @@ class Document_invoice extends Controller
                     $total = $payment;
                     $addtax = 0;
                     $before = $payment;
-                    $balance = $Nettotal-$Subtotal;
+                    // $balance = $Nettotal-$Subtotal;
+                    $balance = $Subtotal;
                 }
                 $paymentPercent=$request->PaymentPercent;
                 if ($paymentPercent) {
@@ -190,7 +192,9 @@ class Document_invoice extends Controller
                     $addtax = $Subtotal-$total;
                     $before = $Subtotal-$addtax;
                     $balance = $Nettotal-$Subtotal;
+
                 }
+                 $balanceold =$request->balance;
                 $data = [
                     'valid'=>$valid,
                     'date'=>$date,
@@ -216,7 +220,7 @@ class Document_invoice extends Controller
                     'total'=>$total,
                     'addtax'=>$addtax,
                     'before'=>$before,
-                    'balance'=>$balance,
+                    'balanceold'=>$balanceold,
                     'vatname'=>$vatname,
                 ];
                 $template = master_template::query()->latest()->first();
@@ -237,10 +241,10 @@ class Document_invoice extends Controller
             $save->Nettotal = $request->Nettotal;
             $save->save();
             return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-        // } catch (\Throwable $e) {
-        //     return response()->json([
-        //         'error' => $e->getMessage()
-        //     ], 500);
-        // }
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

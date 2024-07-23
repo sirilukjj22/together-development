@@ -21,10 +21,18 @@ class master_product_i extends Controller
         $Entertainment = master_product_item::where('Category','Entertainment')->count();
         $productcount = master_product_item::query()->count();
 
-        $CountRoom = ($Room_Revenue*100)/$productcount;
-        $CountBanquet = ($Banquet*100)/$productcount;
-        $CountMeals = ($Meals*100)/$productcount;
-        $CountEntertainment = ($Entertainment*100)/$productcount;
+        if ($productcount != 0) {
+            $CountRoom = ($Room_Revenue * 100) / $productcount;
+            $CountBanquet = ($Banquet * 100) / $productcount;
+            $CountMeals = ($Meals * 100) / $productcount;
+            $CountEntertainment = ($Entertainment * 100) / $productcount;
+        }
+        else {
+            $CountRoom = 0;
+            $CountBanquet = 0;
+            $CountMeals = 0;
+            $CountEntertainment = 0;
+        }
         $productroom = master_product_item::where('Category','Room_Type')->get();
         $productBanquet = master_product_item::where('Category','Banquet')->get();
         $productMeals = master_product_item::where('Category','Meals')->get();

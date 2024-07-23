@@ -319,7 +319,7 @@
                         <tr>
                             <td style="text-align:center"></td>
                             <td style="text-align:center">1</td>
-                            <td style="text-align:left">{{$Invoice_ID}} อ้างอิง Proposal เลขที่ {{$Quotation->Quotation_ID}}  {{$payment}}  of {{ number_format($Nettotal) }} บาท ( {{$vatname}} )<br>กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
+                            <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}}  {{$payment}}  of {{ number_format($Nettotal) }} THB กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
                             <td style="text-align:right"><span id="Subtotal">   {{ number_format($Subtotal) }}</span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
                         </tr>
                         <tr>
@@ -355,7 +355,7 @@
                     <br><br><br><br><br><br><br><br>
                     <strong class="com" style="font-size: 14px;">Method of Payment</strong><br>
                     <span style="line-height:10px;font-size: 13px;">
-                        FULL PAYMENT AFTER RESERVATION DATE 3 DAYS<br>
+                        <strong>FULL PAYMENT AFTER RESERVATION </strong><br>
                         Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
                         If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
                         pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>

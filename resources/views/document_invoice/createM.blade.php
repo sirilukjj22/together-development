@@ -108,10 +108,27 @@
                         <div class="col-lg-4 col-md-12 col-sm-12">
                             <div class="row">
                                 <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Profoma Invoice</b>
-                                <span class="titleQuotation">{{$InvoiceID}}</span>
+                                <span class="titleQuotation">Profoma Invoice ID :{{$InvoiceID}}</span>
                                 <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
-                                    <div class="col-12 col-md-12 col-sm-12"style="display:flex; justify-content:center; align-items:center;">
-                                        <span>Proposal : {{$QuotationID}}</span>
+                                    <div class="col-12 col-md-12 col-sm-12">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                <span>Issue Date:</span>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
+                                                <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;"readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-12 col-sm-12 mt-2">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                <span>Expiration Date:</span>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                                <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -377,6 +394,34 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
+<script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
+<script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
+<script type="text/javascript">
+    $(function() {
+        var start = moment();
+        var end = moment().add(7, 'days');
+        function cb(start, end) {
+            $('#datestart').val(start.format('DD/MM/Y'));
+            $('#dateex').val(end.format('DD/MM/Y'));
+            $('#issue_date_document').text(start.format('DD/MM/Y'));
+            $('#issue_date_document1').text(start.format('DD/MM/Y'));
+        }
+        $('#reportrange1').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                '3 Days': [moment(), moment().add(3, 'days')],
+                '7 Days': [moment(), moment().add(7, 'days')],
+                '15 Days': [moment(), moment().add(15, 'days')],
+                '30 Days': [moment(), moment().add(30, 'days')],
+            }
+        },
+        cb);
+        cb(start, end);
+    });
+</script>
 <script>
     $(document).on('keyup', '#Payment0', function() {
         var Payment0 =  Number($(this).val());
