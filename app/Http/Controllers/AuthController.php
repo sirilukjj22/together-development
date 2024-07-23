@@ -83,7 +83,7 @@ class AuthController extends Controller
         if ($check == "Success") {
             return redirect(url('users', 'index'))->with('success', 'ระบบได้ทำการบันทึกเรียบร้อยแล้ว');
         } else {
-            return redirect(url('users', 'index'))->with('error', 'ระบบไม่สามารถทำการบันทึกได้');
+            return redirect(url('users', 'index'))->with('error', $check);
         }
 
     }
@@ -124,6 +124,8 @@ class AuthController extends Controller
     public function create(array $data)
     {
 
+        // dd($data);
+
       try {
         $user_id = User::create([
             'name' => $data['name'],
@@ -138,7 +140,7 @@ class AuthController extends Controller
             'user_id' => $user_id,
 
             'profile' => $data['menu_profile'] ?? 0,
-            'company' => $data['menu_company'] ?? 0,
+            'company' => isset($data['menu_company']) ? $data['menu_company'] : 0,
             'guest' => $data['menu_guest'] ?? 0,
 
             'freelancer' => $data['menu_freelancer'] ?? 0,
@@ -167,7 +169,7 @@ class AuthController extends Controller
             'sms_alert' => $data['menu_sms_alert'] ?? 0,
             'revenue' => $data['menu_revenue'] ?? 0,
             
-            'report' => $data['menu_report'] ?? 0,
+            // 'report' => $data['menu_report'] ?? 0,
 
             'setting' => $data['menu_setting'] ?? 0,
             'user' => $data['menu_user'] ?? 0,
@@ -207,7 +209,7 @@ class AuthController extends Controller
           $menu_name = DB::table('tb_menu')->where('category_name', 2)->get();
 
           foreach ($menu_name as $key => $value) {
-            if ($data['menu_'.$value->name2] == 1) {
+            if (isset($data['menu_'.$value->name2]) && $data['menu_'.$value->name2] == 1) {
                 Role_permission_menu_sub::create([
                     'user_id' => $user_id,
                     'menu_name' => $value->name_en,
