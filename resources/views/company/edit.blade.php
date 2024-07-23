@@ -753,7 +753,7 @@
         newInputGroup.classList.add('input-group');
         newInputGroup.innerHTML = `
             <div class="input-group mb-3">
-                <input type="text" name="fax[]" class="form-control fax-input" maxlength="11" value="" data-index="${index}" data-old-value="">
+                <input type="text" name="fax[]" class="form-control fax-input" maxlength="10" value="" data-index="${index}" data-old-value="">
                 <button class="btn btn-outline-danger remove-input" type="button" id="remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
             </div>
         `;

@@ -136,7 +136,7 @@ class CompanyController extends Controller
     {
         $data = $request->all();
       //dd($data,$companyId,$itemId);
-       $Company = companys::find($companyId);
+        $Company = companys::find($companyId);
         $countrydataA= $request->countrydataA;
         $provinceAgent= $request->province;
         $amphuresA= $request->amphures;
@@ -267,7 +267,7 @@ class CompanyController extends Controller
     public function detail($id)
     {
         $Company = companys::find($id);
-        $Company_ID = $Company->Company_ID;
+        $Company_ID = $Company->Profile_ID;
         $number =  preg_replace("/[^0-9]/", "", $Company->City);
         $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Company->City);
         $provinceNames = province::select('name_th','id')->get();
@@ -289,7 +289,7 @@ class CompanyController extends Controller
         $faxcount = company_fax::where('Profile_ID', 'like', "%{$Profile_ID}%")->count();
         $faxArray = $fax->toArray();
 
-        $representative = representative::where('Company_ID', 'like', "%{$Company_ID}%")->first();
+        $representative = representative::where('Company_ID', 'like', "%{$Company_ID}%")->where('status',1)->first();
         $representative_ID = $representative->Profile_ID;
         $repCompany_ID = $representative->Company_ID;
         $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
@@ -650,7 +650,7 @@ class CompanyController extends Controller
     public function Company_update(Request $request, $id) {
 
         $data = $request->all();
-        dd( $data);
+        // dd( $data);
         $CountryOther = $request->countrydata;
         $Branch = $request->Branch;
         $province = $request->province;
