@@ -125,6 +125,7 @@ class UsersController extends Controller
                 'email' => $request->email,
                 'discount' => $request->discount ?? 0,
                 'permission' => $request->permission,
+                'permission_edit' => $request->permission_edit ?? 0,
             ]);
     
             if ($request->password != '') {

@@ -124,8 +124,6 @@ class AuthController extends Controller
     public function create(array $data)
     {
 
-        // dd($data);
-
       try {
         $user_id = User::create([
             'name' => $data['name'],
@@ -133,6 +131,7 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
             'discount' => $data['discount'] ?? 0,
             'permission' => $data['permission'],
+            'permission_edit' => $data['permission_edit'] ?? 0,
             'status' => 1
           ])->id;
 

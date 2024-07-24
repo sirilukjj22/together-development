@@ -23,7 +23,8 @@ class User extends Authenticatable
         'password',
         'discount',
         'status',
-        'permission'
+        'permission',
+        'permission_edit'
     ];
 
     /**
@@ -44,6 +45,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function rolePermissionData($user_id)
+    {
+        $check = User::where('user_id', $user_id)->first();
+
+        $permission = $check->permission_edit;
+        
+        return $permission;
+    }
 
     public function roleMenu()
     {
