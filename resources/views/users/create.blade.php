@@ -49,11 +49,20 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="password" class="col-sm-3 col-form-label fw-bold">สิทธิ์ในการเข้าถึง / Access rights <sup class="text-danger">*</sup></label>
-                                    <div class="col-sm-9">
+                                    <label for="permission-select2" class="col-sm-3 col-form-label fw-bold">สิทธิ์ในการเข้าถึง / Access rights <sup class="text-danger">*</sup></label>
+                                    <div class="col-sm-3">
                                         <select class="form-control" name="permission" id="permission-select2">
                                             <option value="0">ผู้ใช้งานทั่วไป</option>
                                             <option value="1">แอดมิน</option>
+                                        </select>
+                                    </div>
+                                    <label for="permission-edit-select2" class="col-sm-2 col-form-label text-right fw-bold">สิทธิ์ในการใช้ข้อมูล<sup class="text-danger">*</sup></label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control" name="permission_edit" id="permission-edit-select2">
+                                            <option value="0">ดูได้อย่างเดียว</option>
+                                            <option value="1" selected>สามารถแก้ไขข้อมูลตัวเอง</option>
+                                            <option value="2">สามารถแก้ไขข้อมูลตัวเอง และดูข้อมูลคนอื่นได้</option>
+                                            <option value="3">สามารถแก้ไขข้อมูลตัวเอง และแก้ไขข้อมูลคนอื่นได้</option>
                                         </select>
                                     </div>
                                 </div>
@@ -292,6 +301,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $('#permission-select2').select2();
+        $('#permission-edit-select2').select2();
     });
 
     $('#select_menu_all').on('click', function() {
