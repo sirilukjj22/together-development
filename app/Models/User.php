@@ -50,8 +50,8 @@ class User extends Authenticatable
     {
         $check = User::where('user_id', $user_id)->first();
 
-        $permission = $check->permission_edit;
-        
+        $permission = !empty($check) ? $check->permission_edit : 0;
+
         return $permission;
     }
 
