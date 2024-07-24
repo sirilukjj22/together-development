@@ -48,7 +48,7 @@ class User extends Authenticatable
 
     public function rolePermissionData($user_id)
     {
-        $check = User::where('user_id', $user_id)->first();
+        $check = User::where('id', $user_id)->first();
 
         $permission = !empty($check) ? $check->permission_edit : 0;
 
