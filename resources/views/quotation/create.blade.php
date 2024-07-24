@@ -1,5 +1,6 @@
 @extends('layouts.masterLayout')
 <style>
+
 .image-container {
     display: flex;
     flex-direction: row;
@@ -109,6 +110,7 @@
 .btn-space {
     margin-right: 10px; /* ปรับขนาดช่องว่างตามต้องการ */
 }
+
 @media (max-width: 768px) {
     .image-container {
         flex-direction: column;
@@ -208,12 +210,14 @@
                         <hr class="mt-3 my-3" style="border: 1px solid #000">
                         <div class="row mt-2">
                             <div class="col-lg-2 col-md-6 col-sm-12">
-                                <label for="chekin">Check In Date</label>
-                                <input type="date" name="Checkin" id="Checkin" class="form-control" onchange="CheckDate()" min="08/23/2024" required>
+                                <div class="row">
+                                    <label for="chekin">Check In Date  <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" ></label>
+                                </div>
+                                <input type="date" name="Checkin" id="Checkin" class="form-control" onchange="CheckDate()" required>
                             </div>
                             <div class="col-lg-2 col-md-6 col-sm-12">
                                 <label for="chekin">Check Out Date </label>
-                                <input type="date" name="Checkout" id="Checkout" class="form-control"onchange="CheckDate()"  required>
+                                <input type="date" name="Checkout" id="Checkout" class="form-control" onchange="CheckDate()"  required>
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="">จำนวน</label>
@@ -236,7 +240,7 @@
                         </div>
                         <div class="row mt-2">
                             <div class="col-lg-4 col-md-6 col-sm-12">
-                                <label  for="">Event Format</label>
+                                <label  for="">Format</label>
                                 <select name="Mevent" id="Mevent" class="select2"  onchange="masterevent()" required>
                                     <option value=""></option>
                                     @foreach($Mevent as $item)
@@ -463,11 +467,12 @@
                                 </div>
                             </div>
                             <div class="row mt-2">
-                                <table class=" table table-hover align-middle mb-0" style="width:100%">
+                                <table class=" table align-middle mb-0" style="width:100%">
                                     <thead >
                                         <tr>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">No.</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Description</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:1%;"></th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Quantity</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Unit</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price / Unit</th>
@@ -590,6 +595,12 @@
                                     <table class="table table-borderless" >
                                         <tbody>
                                             <tr>
+                                                <td style="text-align:right;width: 55%;font-size: 14px;"><b>Room pax</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="PaxToTal">0</span>
+                                                    <input type="hidden" name="PaxToTalall" id="PaxToTalall">
+                                                </td>
+                                            </tr>
+                                            <tr>
                                                 <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span></td>
                                             </tr>
@@ -702,50 +713,81 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
 <script>
     function CheckDate() {
-        const checkoutDateValue = document.getElementById('Checkout').value;
-        const checkinDateValue = document.getElementById('Checkin').value;
+            const checkoutDateValue = document.getElementById('Checkout').value;
+            const checkinDateValue = document.getElementById('Checkin').value;
 
-        const checkinDate = new Date(checkinDateValue);
-        const checkoutDate = new Date(checkoutDateValue);
+            const checkinDate = new Date(checkinDateValue);
+            const checkoutDate = new Date(checkoutDateValue);
+            if (checkoutDate > checkinDate) {
 
-        if (checkoutDate > checkinDate) {
-            const timeDiff = checkoutDate - checkinDate;
-            const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                const timeDiff = checkoutDate - checkinDate;
+                const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-            // เนื่องจาก Check-in นับเป็นวันแรกด้วย
-            const totalDays = diffDays + 1;
-            const nights = diffDays;
+                // เนื่องจาก Check-in นับเป็นวันแรกด้วย
+                const totalDays = diffDays + 1;
+                const nights = diffDays;
 
-            $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
-            $('#Night').val(isNaN(nights) ? '0' : nights);
+                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
+                $('#Night').val(isNaN(nights) ? '0' : nights);
 
-            console.log(`จำนวนวัน: ${totalDays} วัน`);
-            console.log(`จำนวนคืน: ${nights} คืน`);
-            $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-            $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-            $('#daypo').text(totalDays);
-            $('#nightpo').text(nights);
-        } else if (checkoutDate.getTime() === checkinDate.getTime()) {
-            // กรณีที่ Check-in Date เท่ากับ Check-out Date
-            const totalDays = 1;
-            $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
-            $('#Night').val('0');
+                console.log(`จำนวนวัน: ${totalDays} วัน`);
+                console.log(`จำนวนคืน: ${nights} คืน`);
+                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#daypo').text(totalDays);
+                $('#nightpo').text(nights);
+            } else if (checkoutDate.getTime() === checkinDate.getTime()) {
+                // กรณีที่ Check-in Date เท่ากับ Check-out Date
+                const totalDays = 1;
+                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
+                $('#Night').val('0');
 
-            $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-            $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-            $('#daypo').text(isNaN(totalDays) ? '0' : totalDays);
-            $('#nightpo').text('0');
-            console.log(`จำนวนวัน: ${totalDays} วัน`);
-            console.log(`จำนวนคืน: 0 คืน`);
-        } else {
-            // กรณีที่ Check-out Date น้อยกว่าหรือเท่ากับ Check-in Date
-            console.log("วัน Check-out ต้องมากกว่าวัน Check-in");
-            $('#Day').val('0');
-            $('#Night').val('0');
+                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#daypo').text(isNaN(totalDays) ? '0' : totalDays);
+                $('#nightpo').text('0');
+                console.log(`จำนวนวัน: ${totalDays} วัน`);
+                console.log(`จำนวนคืน: 0 คืน`);
+            } else {
+                // กรณีที่ Check-out Date น้อยกว่าหรือเท่ากับ Check-in Date
+                console.log("วัน Check-out ต้องมากกว่าวัน Check-in");
+                $('#Day').val('0');
+                $('#Night').val('0');
+            }
         }
-    }
+        function setMinDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('Checkin').setAttribute('min', today);
+            document.getElementById('Checkout').setAttribute('min', today);
+        }
+
+        document.addEventListener('DOMContentLoaded', setMinDate);
 </script>
 <script>
+    document.getElementById('flexCheckChecked').addEventListener('change', function(event) {
+        var isChecked = event.target.checked;
+        var dateInput = document.getElementById('Checkin');
+        var dateout = document.getElementById('Checkout');
+        var Day = document.getElementById('Day');
+        var Night = document.getElementById('Night');
+        var Adult = document.getElementById('Adult');
+        var Children = document.getElementById('Children');
+        if (isChecked == true) {
+            dateInput.disabled = true;
+            dateout.disabled = true;
+            Day.disabled = true;
+            Night.disabled = true;
+            Adult.disabled = true;
+            Children.disabled = true;
+        } else {
+            dateInput.disabled = false;
+            dateout.disabled = false;
+            Day.disabled = false;
+            Night.disabled = false;
+            Adult.disabled = false;
+            Children.disabled = false;
+        }
+    });
     $(document).ready(function() {
         $('.select2').select2({
             placeholder: "Please select an option"
@@ -769,20 +811,24 @@
             console.log(0);
             $('#Payment50').css('display', 'none');
             $('#Payment100').css('display', 'block');
-        } else {
-            $('#Payment50').css('display', 'none');
+        }else if (Mevent == '54') {
+            $('#Payment50').css('display', 'block');
             $('#Payment100').css('display', 'none');
         }
     }
+    $(document).ready(function() {
+        $('#PRICE_INCLUDE_VAT').css('display', 'none');
+        $('#PRICE_EXCLUDE_VAT').css('display', 'block');
+        $('#PRICE_PLUS_VAT').css('display', 'none');
+        $('#Payment50').css('display', 'block');
+        $('#Payment100').css('display', 'none');
+    });
     function mastervat() {
+        console.log(Mvat);
         var Mvat =$('#Mvat').val();
         if (Mvat == '50') {
             $('#PRICE_INCLUDE_VAT').css('display', 'block');
             $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-            $('#PRICE_PLUS_VAT').css('display', 'none');
-        }else if (Mvat == '51') {
-            $('#PRICE_INCLUDE_VAT').css('display', 'none');
-            $('#PRICE_EXCLUDE_VAT').css('display', 'block');
             $('#PRICE_PLUS_VAT').css('display', 'none');
         }
         else if (Mvat == '52') {
@@ -791,7 +837,7 @@
             $('#PRICE_PLUS_VAT').css('display', 'block');
         }else{
             $('#PRICE_INCLUDE_VAT').css('display', 'none');
-            $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+            $('#PRICE_EXCLUDE_VAT').css('display', 'block');
             $('#PRICE_PLUS_VAT').css('display', 'none');
         }
     }
@@ -821,25 +867,6 @@
     });
 </script>
 <script>
-    function Onclickreadonly() {
-        var startDate = document.getElementById('contract_rate_start_date').value;
-        if (startDate !== '') {
-            // หากมีค่า กำหนด input field ที่มี id เป็น contract_rate_end_date เป็น readonly
-            document.getElementById('contract_rate_end_date').readOnly = false;
-        } else {
-            // หากไม่มีค่า กำหนด input field ที่มี id เป็น contract_rate_end_date เป็น readonly
-            document.getElementById('contract_rate_end_date').readOnly = true;
-        }
-    }
-    function toggleDateInput() {
-        var selectElement = document.getElementById('Select_a_date');
-        var dateInput = document.getElementById('contract_rate_start_date');
-        if (selectElement.value === 'Yes_date') {
-            dateInput.removeAttribute('readonly');
-        } else {
-            dateInput.setAttribute('readonly', true);
-        }
-    }
     function companyContact() {
         var companyID = $('#Company').val();
         console.log(companyID);
@@ -1022,7 +1049,7 @@
             console.log(1);
             var product = $(this).val();
             $('#tr-select-add' + product).remove();
-            renumberRows(); // ลบแถวที่มี id เป็น 'tr-select-add' + product
+            renumberRows();// ลบแถวที่มี id เป็น 'tr-select-add' + product
         });
         $(document).on('click', '.confirm-button', function() {
             var product = $(this).val();
@@ -1045,12 +1072,16 @@
                                 var normalPrice = parseFloat(normalPriceString);
                                 var netDiscount = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 var normalPriceview = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                var valpax = val.pax;
                                 var rowNumbemain = $('#display-selected-items tr').length + 1;
                                 let discountInput;
                                 var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
                                 var SpecialDiscount = document.getElementById('SpecialDiscount').value;
                                 var discountuser = document.getElementById('discountuser').value;
                                 var maximum_discount = val.maximum_discount;
+                                if (valpax == null) {
+                                    valpax = 0;
+                                }
                                 if (SpecialDiscount >= 1) {
                                     if (roleMenuDiscount == 1) {
                                         discountInput = '<div class="input-group">' +
@@ -1087,7 +1118,8 @@
                                 $('#display-selected-items').append(
                                     '<tr id="tr-select-addmain' + val.id + '">' +
                                     '<td>' + rowNumbemain + '</td>' +
-                                    '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en + '</td>' +
+                                    '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
+                                    '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
                                     '<td ><input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="1" min="1" rel="' + number + '" style="text-align:center;"></td>' +
                                     '<td>' + val.unit_name + '</td>' +
                                     '<td><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + val.normal_price + '</td>' +
@@ -1097,6 +1129,10 @@
                                     '<td><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
                                     '</tr>'
                                 );
+                                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                                    return new bootstrap.Tooltip(tooltipTriggerEl)
+                                });
                             }
                         }
                     });
@@ -1108,16 +1144,19 @@
             });
             $('#exampleModalproduct').modal('hide');
         });
-        $(document).on('click', '.remove-buttonmain', function() {
-            var product = $(this).val();
-            $('#tr-select-add' + product + ', #tr-select-addmain' + product).remove();
+        $(document).ready(function() {
+            totalAmost();
+            $(document).on('click', '.remove-buttonmain', function() {
+                var product = $(this).val();
+                $('#tr-select-add' + product + ', #tr-select-addmain' + product).remove();
 
-            $('#display-selected-items tbody tr').each(function(index) {
-                // เปลี่ยนเลขลำดับใหม่
-                $(this).find('td:first').text(index + 1);
+                $('#display-selected-items tbody tr').each(function(index) {
+                    // เปลี่ยนเลขลำดับใหม่
+                    $(this).find('td:first').text(index + 1);
+                });
+                renumberRows();
+                totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
             });
-            renumberRows();
-            totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
         });
     }
     //----------------------------------------รายการ---------------------------
@@ -1126,6 +1165,12 @@
             var number_ID = $(this).attr('rel');
             var quantitymain =  Number($(this).val());
             var discountmain =  $('#discountmain'+number_ID).val();
+            var paxmain = parseFloat($('#pax' + number_ID).val());
+            if (isNaN(paxmain)) {
+                paxmain = 0;
+            }
+            var pax = paxmain*quantitymain;
+            $('#paxtotal'+number_ID).text(pax);
             var number = Number($('#number-product').val());
             var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
             var pricediscount =  (price*discountmain /100);
@@ -1134,6 +1179,7 @@
             var pricenew = price*quantitymain
             var pricediscount = pricenew - (pricenew*discountmain /100);
             $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+
             // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             totalAmost();
         });
@@ -1146,13 +1192,11 @@
             var number = Number($('#number-product').val());
             var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
             var pricediscount =  (price*discountmain /100);
-
             var allcount0 = price - pricediscount;
             console.log(allcount0);
             $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             var pricenew = price*quantitymain
             var pricediscount = pricenew - (pricenew*discountmain /100);
-
             $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             totalAmost();
@@ -1168,7 +1212,9 @@
             let beforetax =0;
             let addedtax =0;
             let Nettotal =0;
+            let paxtotal=0;
             let totalperson=0;
+            let PaxToTalall=0;
             let priceArray = [];
             let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
             let Discount = [];
@@ -1177,12 +1223,16 @@
             $('#display-selected-items tr').each(function() {
                 var adultValue = parseFloat(document.getElementById('Adult').value);
                 var childrenValue = parseFloat(document.getElementById('Children').value);
-                let priceCell = $(this).find('td').eq(7);
+                let priceCell = $(this).find('td').eq(8);
                 let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
                 var person =adultValue+childrenValue;
                 var Discount = parseFloat(DiscountAmount);
+                let allpax = $(this).find('td').eq(2);
+                let pax = parseFloat(allpax.text());
+
                 if (typevat == '50') {
-                    console.log(50);
+                    paxtotal +=pax;
+                    PaxToTalall = paxtotal;
                     allprice += pricetotal;
                     lessDiscount = allprice-DiscountAmount;
                     beforetax= lessDiscount/1.07;
@@ -1196,16 +1246,19 @@
                     $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
+                    $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
                 }
                 else if(typevat == '51')
                 {
+                    paxtotal +=pax;
+                    PaxToTalall = paxtotal;
                     allprice += pricetotal;
                     lessDiscount = allprice-DiscountAmount;
                     beforetax= lessDiscount;
                     addedtax =0;
                     Nettotal= beforetax;
                     totalperson = Nettotal/person;
-
                     $('#spEXCLUDE').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscountEXCLUDE').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1213,8 +1266,11 @@
                     $('#total-VatEXCLUDE').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
+                    $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
                 } else if(typevat == '52'){
-                    console.log(52);
+                    paxtotal +=pax;
+                    PaxToTalall = paxtotal;
                     allprice += pricetotal;
                     lessDiscount = allprice-DiscountAmount;
                     addedtax = lessDiscount*7/100;;
@@ -1228,9 +1284,10 @@
                     $('#total-Vatpus').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
+                    $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
                 }
             });
-
         });
     }
     totalAmost();

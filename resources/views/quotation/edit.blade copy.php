@@ -1356,41 +1356,51 @@
         totalAmost();
     });
     function totalAmost() {
+        var typevat  = $('#Mvat').val();
+        let allprice = 0;
+        let lessDiscount = 0;
+        let beforetax =0;
+        let addedtax =0;
+        let Nettotal =0;
+        let paxtotal=0;
+        let totalperson=0;
+        let PaxToTalall=0;
+        let priceArray = [];
+        let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
+        let Discount = [];
+        var DiscountAmount = document.getElementById('DiscountAmount').value;
+        $('#display-selected-items tr').each(function() {
+            console.log(discountElement);
+            var adultValue = parseFloat(document.getElementById('Adult').value);
+            var childrenValue = parseFloat(document.getElementById('Children').value);
+            let priceCell = $(this).find('td').eq(8);
+            let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
+            var person =adultValue+childrenValue;
+            var Discount = parseFloat(DiscountAmount);
+            let allpax = $(this).find('td').eq(2);
+            let pax = parseFloat(allpax.text());
 
-            var typevat  = $('#Mvat').val();
-            let allprice = 0;
-            let lessDiscount = 0;
-            let beforetax =0;
-            let addedtax =0;
-            let Nettotal =0;
-            let totalperson=0;
-            let priceArray = [];
-            let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
-            let Discount = 0;
-            var discountElement  = $('#DiscountAmount').val();
-            $('#display-selected-items tr').each(function() {
-                var adultValue = parseFloat(document.getElementById('Adult').value);
-                var childrenValue = parseFloat(document.getElementById('Children').value);
-                let priceCell = $(this).find('td').eq(8);
-                let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
-                var person =adultValue+childrenValue;
-                var Discount = parseFloat(discountElement)|| 0;
+
                 if (typevat == '50') {
 
+                    paxtotal +=pax;
+                    PaxToTalall = paxtotal;
                     allprice += pricetotal;
-                    lessDiscount = allprice-Discount;
+                    lessDiscount = allprice-DiscountAmount;
                     beforetax= lessDiscount/1.07;
                     addedtax = lessDiscount-beforetax;
                     Nettotal= beforetax+addedtax;
                     totalperson = Nettotal/person;
 
-                    $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#sp').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
+                    $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
                 }
                 else if(typevat == '51')
                 {
@@ -1424,8 +1434,7 @@
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                 }
-            });
-
+        });
     }
     totalAmost();
 

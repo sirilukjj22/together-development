@@ -137,7 +137,7 @@ class master_product_i extends Controller
                 $lastProfile = master_product_item::where('Category', 'Room_Type')->count() + 1;
                 $Profile_ID ="R-";
                 $Product_ID = $Profile_ID.$lastProfile;
-                $type = 'Room_Revenue';
+                $type = '1';
 
 
         }else if ($Category == 'Banquet')
@@ -145,20 +145,20 @@ class master_product_i extends Controller
                 $lastProfile = master_product_item::where('Category', 'Banquet')->count() + 1;
                 $Profile_ID ="B-";
                 $Product_ID = $Profile_ID.$lastProfile;
-                $type = 'Other_Revenue';
+                $type = '2';
 
         }elseif ($Category == 'Meals')
         {
                 $lastProfile = master_product_item::where('Category', 'Meals')->count() + 1;
                 $Profile_ID ="M-";
                 $Product_ID = $Profile_ID.$lastProfile;
-                $type = 'F&B_Revenue';
+                $type = '3';
         }elseif ($Category == 'Entertainment')
         {
                 $lastProfile = master_product_item::where('Category', 'Entertainment')->count() + 1;
                 $Profile_ID ="E-";
                 $Product_ID = $Profile_ID.$lastProfile;
-                $type = 'Other_Revenue';
+                $type = '4';
         }else{
                 return redirect()->back()->with('error_', 'Please enter the product type.');
         }

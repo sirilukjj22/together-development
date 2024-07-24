@@ -35,24 +35,55 @@ class QuotationController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
         $userid = Auth::user()->id;
         $Quotation_IDs = Quotation::query()->pluck('Quotation_ID');
         $document = document_quotation::whereIn('Quotation_ID', $Quotation_IDs)->get();
         $document_IDs = $document->pluck('Quotation_ID');
         $missingQuotationIDs = $Quotation_IDs->diff($document_IDs);
         Quotation::whereIn('Quotation_ID', $missingQuotationIDs)->delete();
-        $Proposalcount = Quotation::query()->where('Operated_by',$userid)->count();
-        $Proposal = Quotation::query()->where('Operated_by',$userid)->get();
-        $Pending = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->where('status_guest',0)->get();
-        $Pendingcount = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->where('status_guest',0)->count();
-        $Awaiting = Quotation::query()->where('Operated_by',$userid)->where('status_document',2)->get();
-        $Awaitingcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',2)->count();
-        $Approved = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->get();
-        $Approvedcount = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->count();
-        $Reject = Quotation::query()->where('Operated_by',$userid)->where('status_document',4)->get();
-        $Rejectcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',4)->count();
-        $Cancel = Quotation::query()->where('Operated_by',$userid)->where('status_document',0)->get();
-        $Cancelcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',0)->count();
+        if ($user->permission_edit == 1) {
+            $Proposalcount = Quotation::query()->where('Operated_by',$userid)->count();
+            $Proposal = Quotation::query()->where('Operated_by',$userid)->get();
+            $Pending = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->where('status_guest',0)->get();
+            $Pendingcount = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->where('status_guest',0)->count();
+            $Awaiting = Quotation::query()->where('Operated_by',$userid)->where('status_document',2)->get();
+            $Awaitingcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',2)->count();
+            $Approved = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->get();
+            $Approvedcount = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->count();
+            $Reject = Quotation::query()->where('Operated_by',$userid)->where('status_document',4)->get();
+            $Rejectcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',4)->count();
+            $Cancel = Quotation::query()->where('Operated_by',$userid)->where('status_document',0)->get();
+            $Cancelcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',0)->count();
+        }
+        elseif ($user->permission_edit == 2 || $user->permission_edit == 3) {
+            $Proposalcount = Quotation::query()->count();
+            $Proposal = Quotation::query()->get();
+            $Pending = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->get();
+            $Pendingcount = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->count();
+            $Awaiting = Quotation::query()->where('status_document',2)->get();
+            $Awaitingcount = Quotation::query()->where('status_document',2)->count();
+            $Approved = Quotation::query()->where('status_guest',1)->get();
+            $Approvedcount = Quotation::query()->where('status_guest',1)->count();
+            $Reject = Quotation::query()->where('status_document',4)->get();
+            $Rejectcount = Quotation::query()->where('status_document',4)->count();
+            $Cancel = Quotation::query()->where('status_document',0)->get();
+            $Cancelcount = Quotation::query()->where('status_document',0)->count();
+        }
+        elseif ($user->permission_edit == 0) {
+            $Proposalcount = Quotation::query()->count();
+            $Proposal = Quotation::query()->get();
+            $Pending = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->get();
+            $Pendingcount = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->count();
+            $Awaiting = Quotation::query()->where('status_document',2)->get();
+            $Awaitingcount = Quotation::query()->where('status_document',2)->count();
+            $Approved = Quotation::query()->where('status_guest',1)->get();
+            $Approvedcount = Quotation::query()->where('status_guest',1)->count();
+            $Reject = Quotation::query()->where('status_document',4)->get();
+            $Rejectcount = Quotation::query()->where('status_document',4)->count();
+            $Cancel = Quotation::query()->where('status_document',0)->get();
+            $Cancelcount = Quotation::query()->where('status_document',0)->count();
+        }
         return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount'));
     }
     public function changestatus($id ,$status)
@@ -170,11 +201,11 @@ class QuotationController extends Controller
     public function save(Request $request){
         try {
             $data = $request->all();
-
             $preview=$request->preview;
             $Quotation_IDcheck =$request->Quotation_ID;
             $adult=$request->Adult;
             $children=$request->Children;
+
             $SpecialDiscount = $request->SpecialDiscount;
             $SpecialDiscountBath = $request->DiscountAmount;
             $userid = Auth::user()->id;
@@ -434,6 +465,7 @@ class QuotationController extends Controller
             $save->company_contact = $request->Company_Contact;
             $save->checkin = $request->Checkin;
             $save->checkout = $request->Checkout;
+            $save->TotalPax = $request->PaxToTalall;
             $save->day = $request->Day;
             $save->night = $request->Night;
             $save->adult = $request->Adult;
@@ -464,6 +496,7 @@ class QuotationController extends Controller
             $quantities = $request->input('Quantitymain', []); // ตัวอย่างใช้ 'pricetotal' เป็น quantity
             $discounts = $request->input('discountmain', []);
             $priceUnits = $request->input('priceproductmain', []);
+
             $discounts = array_map(function($value) {
                 return ($value !== null) ? $value : "0";
             }, $discounts);
@@ -492,12 +525,15 @@ class QuotationController extends Controller
                 $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
             }
             $Products=$request->input('ProductIDmain');
+            $pax=$request->input('pax');
             if ($Products !== null) {
                 foreach ($Products as $index => $ProductID) {
                     $saveProduct = new document_quotation();
                     $saveProduct->Quotation_ID = $Quotation_ID;
                     $saveProduct->Company_ID = $request->Company;
                     $saveProduct->Product_ID = $ProductID;
+                    $paxValue = $pax[$index] ?? 0;
+                    $saveProduct->pax = $paxValue;
                     $saveProduct->Issue_date = $request->IssueDate;
                     $saveProduct->discount =$discounts[$index];
                     $saveProduct->priceproduct =$priceUnits[$index];
@@ -590,9 +626,10 @@ class QuotationController extends Controller
                             $discountedPricestotal[] = $discountedPriceTotal;
                         }
                     }
-                    // dd( $priceUnit,$discountedPrices);
 
                     $items = master_product_item::where('Product_ID', $productID)->get();
+                    $adult = !empty($adult) ? $adult : 0;
+                    $children = !empty($children) ? $children : 0;
                     $totalguest = $adult+$children;
 
                     $QuotationVat= $request->Mvat;
@@ -636,7 +673,11 @@ class QuotationController extends Controller
                         $beforeTax = $subtotal/1.07;
                         $AddTax = $subtotal-$beforeTax;
                         $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$totalguest;
+                        if ($totalguest == 0) {
+                            $totalaverage = 0;
+                        }else{
+                            $totalaverage =$Nettotal/$totalguest;
+                        }
                     }
                 }
                 elseif ($Mvat->id == 51) {
@@ -645,7 +686,12 @@ class QuotationController extends Controller
                         $totalAmount += $item['discountedPricestotal'];
                         $subtotal = $totalAmount-$SpecialDiscountBath;
                         $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$totalguest;
+                        if ($totalguest == 0) {
+                            $totalaverage = 0;
+                        }else{
+                            $totalaverage =$Nettotal/$totalguest;
+                        }
+
                     }
                 }
                 elseif ($Mvat->id == 52) {
@@ -655,7 +701,11 @@ class QuotationController extends Controller
                         $subtotal = $totalAmount-$SpecialDiscountBath;
                         $AddTax = $subtotal*7/100;
                         $Nettotal = $subtotal+$AddTax;
-                        $totalaverage =$Nettotal/$totalguest;
+                        if ($totalguest == 0) {
+                            $totalaverage = 0;
+                        }else{
+                            $totalaverage =$Nettotal/$totalguest;
+                        }
                     }
                 }else
                 {
@@ -666,7 +716,11 @@ class QuotationController extends Controller
                         $beforeTax = $subtotal/1.07;
                         $AddTax = $subtotal-$beforeTax;
                         $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$totalguest;
+                        if ($totalguest == 0) {
+                            $totalaverage = 0;
+                        }else{
+                            $totalaverage =$Nettotal/$totalguest;
+                        }
                     }
                 }
                 $unit = master_unit::where('status',1)->get();
@@ -766,11 +820,9 @@ class QuotationController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
-
     }
     public function edit($id)
     {
-
         $Quotation = Quotation::where('id', $id)->first();
         $QuotationID= $Quotation->Quotation_ID;
         $Company_ID = $Quotation->Company_ID;
@@ -1470,7 +1522,7 @@ class QuotationController extends Controller
 
         }
         elseif ($value == 'all'){
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.type', 'asc')
             ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
         }
         return response()->json([
@@ -1502,7 +1554,7 @@ class QuotationController extends Controller
 
         }
         elseif ($value == 'all'){
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.type', 'asc')
             ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
 
         }
@@ -1515,7 +1567,7 @@ class QuotationController extends Controller
     public function addProductselect($Quotation_ID, Request $request) {
         $value = $request->input('value');
         $products = master_product_item::leftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
-        ->orderBy('master_product_items.Product_ID', 'asc')
+        ->orderBy('master_product_items.type', 'asc')
         ->where('master_product_items.status', 1)
         ->where('master_product_items.id', $value)
         ->select('master_product_items.*', 'master_units.name_th as unit_name')
@@ -1529,7 +1581,7 @@ class QuotationController extends Controller
     public function addProducttableselect($Quotation_ID, Request $request) {
         $value = $request->input('value');
         $products = master_product_item::leftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
-        ->orderBy('master_product_items.Product_ID', 'asc')
+        ->orderBy('master_product_items.type', 'asc')
         ->where('master_product_items.status', 1)
         ->where('master_product_items.id', $value)
         ->select('master_product_items.*', 'master_units.name_th as unit_name')
@@ -1542,7 +1594,7 @@ class QuotationController extends Controller
     }
     public function addProducttablemain($Quotation_ID, Request $request) {
         $value = $request->input('value');
-        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
+        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.type', 'asc')
         ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
         return response()->json([
             'products' => $products,
@@ -1551,7 +1603,7 @@ class QuotationController extends Controller
     }
     public function addProducttablecreatemain($Quotation_ID, Request $request) {
         $value = $request->input('value');
-        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
+        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.type', 'asc')
         ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
         return response()->json([
             'products' => $products,
