@@ -365,7 +365,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/cancel/{id}','cancel')->name('Quotation.cancel');
         //--------------------------------------------------------------
         Route::get('/Quotation/Revice/{id}','Revice')->name('Quotation.Revice');
-
+        //--------------------------------------------------------------
+        Route::post('/Quotation/preview/document/PDF/', 'preview')->name('Quotation.preview');
 
     });
 

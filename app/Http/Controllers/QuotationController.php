@@ -284,7 +284,8 @@ class QuotationController extends Controller
                     // dd( $priceUnit,$discountedPrices);
 
                     $items = master_product_item::where('Product_ID', $productID)->get();
-                    $totalguest = $adult+$children;
+
+                    $totalguest = $request->PaxToTalall;
 
                     $QuotationVat= $request->Mvat;
                     $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
@@ -329,6 +330,7 @@ class QuotationController extends Controller
                         $AddTax = $subtotal-$beforeTax;
                         $Nettotal = $subtotal;
                         $totalaverage =$Nettotal/$totalguest;
+
                     }
                 }
                 elseif ($Mvat->id == 51) {
@@ -338,6 +340,7 @@ class QuotationController extends Controller
                         $subtotal = $totalAmount-$SpecialDis;
                         $Nettotal = $subtotal;
                         $totalaverage =$Nettotal/$totalguest;
+
                     }
                 }
                 elseif ($Mvat->id == 52) {
@@ -359,6 +362,7 @@ class QuotationController extends Controller
                         $AddTax = $subtotal-$beforeTax;
                         $Nettotal = $subtotal;
                         $totalaverage =$Nettotal/$totalguest;
+
                     }
                 }
                 $unit = master_unit::where('status',1)->get();
@@ -628,10 +632,8 @@ class QuotationController extends Controller
                     }
 
                     $items = master_product_item::where('Product_ID', $productID)->get();
-                    $adult = !empty($adult) ? $adult : 0;
-                    $children = !empty($children) ? $children : 0;
-                    $totalguest = $adult+$children;
 
+                    $totalguest = $request->PaxToTalall;
                     $QuotationVat= $request->Mvat;
                     $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
                     foreach ($items as $item) {
@@ -663,7 +665,6 @@ class QuotationController extends Controller
                 $AddTax = 0;
                 $Nettotal =0;
                 $totalaverage=0;
-
                 $SpecialDiscountBath = $request->DiscountAmount;
                 if ($Mvat->id == 50) {
                     foreach ($productItems as $item) {
@@ -673,11 +674,7 @@ class QuotationController extends Controller
                         $beforeTax = $subtotal/1.07;
                         $AddTax = $subtotal-$beforeTax;
                         $Nettotal = $subtotal;
-                        if ($totalguest == 0) {
-                            $totalaverage = 0;
-                        }else{
-                            $totalaverage =$Nettotal/$totalguest;
-                        }
+                        $totalaverage =$Nettotal/$totalguest;
                     }
                 }
                 elseif ($Mvat->id == 51) {
@@ -686,11 +683,8 @@ class QuotationController extends Controller
                         $totalAmount += $item['discountedPricestotal'];
                         $subtotal = $totalAmount-$SpecialDiscountBath;
                         $Nettotal = $subtotal;
-                        if ($totalguest == 0) {
-                            $totalaverage = 0;
-                        }else{
-                            $totalaverage =$Nettotal/$totalguest;
-                        }
+                        $totalaverage =$Nettotal/$totalguest;
+
 
                     }
                 }
@@ -701,11 +695,7 @@ class QuotationController extends Controller
                         $subtotal = $totalAmount-$SpecialDiscountBath;
                         $AddTax = $subtotal*7/100;
                         $Nettotal = $subtotal+$AddTax;
-                        if ($totalguest == 0) {
-                            $totalaverage = 0;
-                        }else{
-                            $totalaverage =$Nettotal/$totalguest;
-                        }
+                        $totalaverage =$Nettotal/$totalguest;
                     }
                 }else
                 {
@@ -716,11 +706,7 @@ class QuotationController extends Controller
                         $beforeTax = $subtotal/1.07;
                         $AddTax = $subtotal-$beforeTax;
                         $Nettotal = $subtotal;
-                        if ($totalguest == 0) {
-                            $totalaverage = 0;
-                        }else{
-                            $totalaverage =$Nettotal/$totalguest;
-                        }
+                        $totalaverage =$Nettotal/$totalguest;
                     }
                 }
                 $unit = master_unit::where('status',1)->get();
@@ -749,8 +735,13 @@ class QuotationController extends Controller
                 $Day = $request->Day;
                 $Night = $request->Night;
                 $comment = $request->comment;
-                $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                if ($Checkin) {
+                    $checkin = Carbon::parse($Checkin)->format('d/m/Y');
+                    $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                }else{
+                    $checkin = '-';
+                    $checkout = '-';
+                }
                 $user = User::where('id',$userid)->select('id','name')->first();
                 $Mevent= $request->Mevent;
                 $data = [
@@ -876,7 +867,7 @@ class QuotationController extends Controller
     public function update(Request $request)
     {
         $data = $request->all();
-        // dd($data);
+
         try {
             $preview = $request->preview;
             $Quotation_ID=$request->Quotation_ID;
@@ -970,7 +961,7 @@ class QuotationController extends Controller
                     // dd( $priceUnit,$discountedPrices);
 
                     $items = master_product_item::where('Product_ID', $productID)->get();
-                    $totalguest = $adult+$children;
+                    $totalguest = $request->PaxToTalall;
 
                     $QuotationVat= $request->Mvat;
                     $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
@@ -1069,11 +1060,17 @@ class QuotationController extends Controller
                 $Expiration = $request->Expiration;
                 $Checkin = $request->Checkin;
                 $Checkout = $request->Checkout;
+                if ($Checkin) {
+                    $checkin = Carbon::parse($Checkin)->format('d/m/Y');
+                    $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                }else{
+                    $checkin = '-';
+                    $checkout = '-';
+                }
                 $Day = $request->Day;
                 $Night = $request->Night;
                 $comment = $request->comment;
-                $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+
                 $user = User::where('id',$userid)->select('id','name')->first();
                 $Mevent= $request->Mevent;
                 $data = [
@@ -1135,6 +1132,7 @@ class QuotationController extends Controller
             $save->company_contact = $request->Company_Contact;
             $save->checkin = $request->Checkin;
             $save->checkout = $request->Checkout;
+            $save->TotalPax = $request->PaxToTalall;
             $save->day = $request->Day;
             $save->night = $request->Night;
             $save->adult = $request->Adult;
@@ -1193,6 +1191,7 @@ class QuotationController extends Controller
                 $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
             }
             $Products=$request->input('ProductIDmain');
+            $pax=$request->input('pax');
             if ($Products !== null) {
                 foreach ($Products as $index => $ProductID) {
                     $saveProduct = new document_quotation();
@@ -1200,6 +1199,8 @@ class QuotationController extends Controller
                     $saveProduct->Company_ID = $request->Company;
                     $saveProduct->Product_ID = $ProductID;
                     $saveProduct->Issue_date = $request->IssueDate;
+                    $paxValue = $pax[$index] ?? 0;
+                    $saveProduct->pax = $paxValue;
                     $saveProduct->discount =$discounts[$index];
                     $saveProduct->priceproduct =$priceUnits[$index];
                     $saveProduct->netpriceproduct =$discountedPricestotal[$index];
@@ -1234,8 +1235,15 @@ class QuotationController extends Controller
             }else {
                 $comtypefullname = $Company_ID->Company_Name;
             }
-            $checkin = $request->Checkin;
-            $checkout = $request->Checkout;
+            $Checkin = $request->Checkin;
+            $Checkout = $request->Checkout;
+            if ($Checkin) {
+                $checkin = Carbon::parse($Checkin)->format('d/m/Y');
+                $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+            }else{
+                $checkin = '-';
+                $checkout = '-';
+            }
             $CityID=$Company_ID->City;
             $amphuresID = $Company_ID->Amphures;
             $TambonID = $Company_ID->Tambon;
@@ -1325,7 +1333,8 @@ class QuotationController extends Controller
             $total=0;
             $adult = $Quotation->adult;
             $children = $Quotation->children;
-            $totalguest = $adult+$children;
+
+            $totalguest = $Quotation->TotalPax;
             $totalaverage=0;
             if ($Mvat->id == 50) {
                 foreach ($selectproduct as $item) {
@@ -1726,6 +1735,8 @@ class QuotationController extends Controller
         $total=0;
         $adult = $Quotation->adult;
         $children = $Quotation->children;
+        $adult = !empty($adult) ? $adult : 0;
+        $children = !empty($children) ? $children : 0;
         $totalguest = $adult+$children;
         $totalaverage=0;
         if ($Mvat->id == 50) {
@@ -1736,7 +1747,11 @@ class QuotationController extends Controller
                 $beforeTax = $subtotal/1.07;
                 $AddTax = $subtotal-$beforeTax;
                 $Nettotal = $subtotal;
-                $totalaverage =$Nettotal/$totalguest;
+                if ($totalguest == 0) {
+                    $totalaverage = 0;
+                }else{
+                    $totalaverage =$Nettotal/$totalguest;
+                }
             }
         }
         elseif ($Mvat->id == 51) {
@@ -1747,7 +1762,11 @@ class QuotationController extends Controller
                 $beforeTax = 0;
                 $AddTax = 0;
                 $Nettotal = $subtotal;
-                $totalaverage =$Nettotal/$totalguest;
+                if ($totalguest == 0) {
+                    $totalaverage = 0;
+                }else{
+                    $totalaverage =$Nettotal/$totalguest;
+                }
             }
         }
         elseif ($Mvat->id == 52) {
@@ -1758,7 +1777,11 @@ class QuotationController extends Controller
                 $beforeTax = $subtotal/1.07;
                 $AddTax = $subtotal*7/100;
                 $Nettotal = $subtotal+$AddTax;
-                $totalaverage =$Nettotal/$totalguest;
+                if ($totalguest == 0) {
+                    $totalaverage = 0;
+                }else{
+                    $totalaverage =$Nettotal/$totalguest;
+                }
             }
         }else
         {
@@ -1769,7 +1792,11 @@ class QuotationController extends Controller
                 $beforeTax = $subtotal/1.07;
                 $AddTax = $subtotal-$beforeTax;
                 $Nettotal = $subtotal;
-                $totalaverage =$Nettotal/$totalguest;
+                if ($totalguest == 0) {
+                    $totalaverage = 0;
+                }else{
+                    $totalaverage =$Nettotal/$totalguest;
+                }
             }
         }
         $protocol = $request->secure() ? 'https' : 'http';
@@ -1839,7 +1866,6 @@ class QuotationController extends Controller
         $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
         return $pdf->stream();
     }
-
 
 
     public function  changeconfirm($id)

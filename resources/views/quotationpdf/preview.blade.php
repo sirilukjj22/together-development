@@ -449,9 +449,20 @@
                         <b style="margin-left: 10px;">Contact Name : </b><span >คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span><br>
                         <b style="margin-left: 10px;">Contact Number : </b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span><br>
                         <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$Checkin}}</span>
-                        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$Checkout}}</span>
-                        <b style="margin-left: 10px">Length of Stay :</b><span style="margin-left: 23px;">{{$day}} วัน {{$night}} คืน</span><br>
-                        <b style="margin-left: 10px">Number of Guests :</b><span style="margin-left: 10px;">{{$adult}} Adult , {{$children}} Children</span><br>
+                        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$Checkout}}</span><br>
+                        <b style="margin-left: 10px">Length of Stay :</b><span style="margin-left: 23px;">
+                        @if ($day == null)
+                            -
+                        @else
+                            {{$day}} วัน {{$night}} คืน
+                        @endif</span><br>
+                        <b style="margin-left: 10px">Number of Guests :</b><span style="margin-left: 10px;">
+                            @if ($adult == null)
+                            -
+                        @else
+                            {{$adult}} Adult , {{$children}} Children
+                        @endif</span><br>
+                        </span><br>
                     </span>
                     <div style="border: 1px solid #2D7F7B"></div>
                     <div  style="line-height:15px;">
@@ -537,8 +548,12 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalguest, 2, '.', ',') }} </strong> ท่าน</td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong> บาท</td>
                                 </tr>
 
                             </table>

@@ -129,8 +129,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col">
-                <small class="text-muted">Welcome to Create Proposal.</small>
-                <h1 class="h4 mt-1">Create Proposal (เพิ่มข้อเสนอ)</h1>
+                <small class="text-muted">Welcome to Edit Proposal.</small>
+                <h1 class="h4 mt-1">Edit Proposal (แก้ไขข้อเสนอ)</h1>
             </div>
         </div>
     </div>
@@ -493,8 +493,11 @@
                                                             <tr id="tr-select-main{{$item->Product_ID}}">
                                                                 <input type="hidden" id="tr-select-main{{$item->Product_ID}}" name="tr-select-main[]" value="{{$item->Product_ID}}">
                                                                 <td><input type="hidden" id="ProductID" name="ProductIDmain[]" value="{{$item->Product_ID}}">{{$key+1}}</td>
-                                                                <td style="text-align:left;">{{@$item->product->name_th}}</td>
-                                                                <td style="color: #fff">{{$item->pax}}</td>
+                                                                <td style="text-align:left;">{{@$item->product->name_th}} <span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="{{@$item->product->maximum_discount}} %"></span></td>
+                                                                <td style="color: #fff">
+                                                                    <input type="hidden" id="pax{{$var}}" name="pax[]" value="{{$item->pax}}" rel="{{$var}}">
+                                                                    <span id="paxtotal{{$var}}">{{ floatval($item->pax) * floatval($item->Quantity) }}</span>
+                                                                </td>
                                                                 <td class="Quantity" data-value="{{$item->Quantity}}" style="text-align:center;">
                                                                     <input type="text" id="quantity{{$var}}" name="Quantitymain[]" rel="{{$var}}" style="text-align:center;"class="quantity-input form-control" value="{{$item->Quantity}}">
                                                                 </td>
@@ -527,6 +530,7 @@
                                 @else
                                     <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="0">
                                 @endif
+                                <input type="hidden" id="paxold" name="paxold" value="{{$Quotation->TotalPax}}">
                                 <input type="hidden" name="discountuser" id="discountuser" value="{{@Auth::user()->discount}}">
                                 <div class="col-12 row ">
                                     <div class="col-lg-8 col-md-8 col-sm-12 mt-2" >
@@ -630,12 +634,14 @@
                                         <table class="table table-borderless" >
                                             <tbody>
                                                 <tr>
-                                                    <td style="text-align:right;width: 55%;font-size: 14px;"><b>Room pax</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="PaxToTal">0</span></td>
+                                                    <td style="text-align:right;width: 55%;font-size: 14px;"><b>Number of Guests</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="PaxToTal">0</span> ท่าน
+                                                        <input type="hidden" name="PaxToTalall" id="PaxToTalall">
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span> บาท</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -746,6 +752,10 @@
 <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
 <script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
     function CheckDate() {
         const checkoutDateValue = document.getElementById('Checkout').value;
         const checkinDateValue = document.getElementById('Checkin').value;
@@ -798,30 +808,63 @@
     document.addEventListener('DOMContentLoaded', setMinDate);
 </script>
 <script>
-    document.getElementById('flexCheckChecked').addEventListener('change', function(event) {
-        var isChecked = event.target.checked;
+    $(document).ready(function() {
         var dateInput = document.getElementById('Checkin');
         var dateout = document.getElementById('Checkout');
         var Day = document.getElementById('Day');
         var Night = document.getElementById('Night');
         var Adult = document.getElementById('Adult');
         var Children = document.getElementById('Children');
-        if (isChecked == true) {
-            dateInput.disabled = true;
-            dateout.disabled = true;
-            Day.disabled = true;
-            Night.disabled = true;
-            Adult.disabled = true;
-            Children.disabled = true;
-        } else {
-            dateInput.disabled = false;
-            dateout.disabled = false;
-            Day.disabled = false;
-            Night.disabled = false;
-            Adult.disabled = false;
-            Children.disabled = false;
+        var flexCheckChecked = document.getElementById('flexCheckChecked');
+
+        // ตรวจสอบค่า Checkin และตั้งค่า disabled และ flexCheckChecked
+        function updateFields() {
+            var Checkin = dateInput.value;
+
+            if (Checkin === "" || Checkin === null) {
+                dateInput.disabled = true;
+                dateout.disabled = true;
+                Day.disabled = true;
+                Night.disabled = true;
+                Adult.disabled = true;
+                Children.disabled = true;
+                flexCheckChecked.checked = true; // ตั้งค่า flexCheckChecked เป็น checked
+            } else {
+                dateInput.disabled = false;
+                dateout.disabled = false;
+                Day.disabled = false;
+                Night.disabled = false;
+                Adult.disabled = false;
+                Children.disabled = false;
+                flexCheckChecked.checked = false; // ตั้งค่า flexCheckChecked เป็น unchecked
+            }
         }
+
+        // เรียกใช้ updateFields เมื่อโหลดเริ่มต้น
+        updateFields();
+
+        // ตั้งค่าการเปลี่ยนแปลงสำหรับ flexCheckChecked
+        flexCheckChecked.addEventListener('change', function(event) {
+            var isChecked = event.target.checked;
+
+            if (isChecked) {
+                dateInput.disabled = true;
+                dateout.disabled = true;
+                Day.disabled = true;
+                Night.disabled = true;
+                Adult.disabled = true;
+                Children.disabled = true;
+            } else {
+                dateInput.disabled = false;
+                dateout.disabled = false;
+                Day.disabled = false;
+                Night.disabled = false;
+                Adult.disabled = false;
+                Children.disabled = false;
+            }
+        });
     });
+
     $(document).ready(function() {
         $('.select2').select2({
             placeholder: "Please select an option"
@@ -845,19 +888,13 @@
     function masterevent() {
         var Mevent =$('#Mevent').val();
         if (Mevent == '43') {
-
             $('#Payment50').css('display', 'block');
             $('#Payment100').css('display', 'none');
         } else if (Mevent == '53') {
-
             $('#Payment50').css('display', 'none');
             $('#Payment100').css('display', 'block');
-        } else if (Mevent == '54') {
+        }else if (Mevent == '54') {
             $('#Payment50').css('display', 'block');
-            $('#Payment100').css('display', 'none');
-        }
-        else {
-            $('#Payment50').css('display', 'none');
             $('#Payment100').css('display', 'none');
         }
     }
@@ -1047,6 +1084,7 @@
 
         // เพิ่ม input ลงในฟอร์ม
         document.getElementById("myForm").appendChild(input);
+        document.getElementById("myForm").setAttribute("target","_blank");
         document.getElementById("myForm").submit();
     }
 </script>
@@ -1173,6 +1211,10 @@
                                 var SpecialDiscount = document.getElementById('SpecialDiscount').value;
                                 var discountuser = document.getElementById('discountuser').value;
                                 var maximum_discount = val.maximum_discount;
+                                var valpax = val.pax;
+                                if (valpax == null) {
+                                    valpax = 0;
+                                }
                                 if (SpecialDiscount >= 1) {
                                     if (roleMenuDiscount == 1) {
                                         discountInput = '<div class="input-group">' +
@@ -1250,6 +1292,7 @@
     //----------------------------------------รายการ---------------------------
     $(document).ready(function() {
         $(document).on('keyup', '.quantitymain', function() {
+            var number_ID = $(this).attr('rel');
             var quantitymain =  Number($(this).val());
             var discountmain =  $('#discountmain'+number_ID).val();
             var number = Number($('#number-product').val());
@@ -1285,12 +1328,7 @@
             var pricediscount = pricenew - (pricenew*discountmain /100);
 
             $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            var paxmain = parseFloat($('#pax' + number_ID).val());
-            if (isNaN(paxmain)) {
-                paxmain = 0;
-            }
-            var pax = paxmain*quantitymain;
-            $('#paxtotal'+number_ID).text(pax);
+
             totalAmost();
         });
         $(document).on('keyup', '.quantity-input', function() {
@@ -1329,12 +1367,7 @@
                 var pricenew = price*quantitymain
                 var pricediscount = pricenew - (pricenew*discountmain /100);
                 $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                var paxmain = parseFloat($('#pax' + number_ID).val());
-                if (isNaN(paxmain)) {
-                    paxmain = 0;
-                }
-                var pax = paxmain*quantitymain;
-                $('#paxtotal'+number_ID).text(pax);
+
             }else{
                 var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
                 var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
@@ -1367,22 +1400,29 @@
             let priceArray = [];
             let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
             let Discount = 0;
+            let paxtotal=0;
+            let PaxToTalall=0;
             var discountElement  = $('#DiscountAmount').val();
             $('#display-selected-items tr').each(function() {
-                var adultValue = parseFloat(document.getElementById('Adult').value);
-                var childrenValue = parseFloat(document.getElementById('Children').value);
                 let priceCell = $(this).find('td').eq(8);
                 let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
-                var person =adultValue+childrenValue;
                 var Discount = parseFloat(discountElement)|| 0;
-                if (typevat == '50') {
+                let allpax = $(this).find('td').eq(2);
+                let pax = parseFloat(allpax.text());
+                    if (isNaN(pax)) { // ตรวจสอบว่าค่าที่แปลงเป็น NaN หรือไม่
+                        pax = 0; // แปลง NaN เป็น 0
+                    }
 
+
+                if (typevat == '50') {
+                    paxtotal +=pax;
+                    PaxToTalall = paxtotal;
                     allprice += pricetotal;
                     lessDiscount = allprice-Discount;
                     beforetax= lessDiscount/1.07;
                     addedtax = lessDiscount-beforetax;
                     Nettotal= beforetax+addedtax;
-                    totalperson = Nettotal/person;
+                    totalperson = Nettotal/paxtotal;
 
                     $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#sp').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1391,15 +1431,19 @@
                     $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
+                    $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
                 }
                 else if(typevat == '51')
                 {
+                    paxtotal +=pax;
+                    PaxToTalall = paxtotal;
                     allprice += pricetotal;
                     lessDiscount = allprice-Discount;
                     beforetax= lessDiscount;
                     addedtax =0;
                     Nettotal= beforetax;
-                    totalperson = Nettotal/person;
+                    totalperson = Nettotal/paxtotal;
 
                     $('#spEXCLUDE').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1408,14 +1452,17 @@
                     $('#total-VatEXCLUDE').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
+                    $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
                 } else if(typevat == '52'){
-                    console.log(52);
+                    paxtotal +=pax;
+                    PaxToTalall = paxtotal;
                     allprice += pricetotal;
                     lessDiscount = allprice-Discount;
                     addedtax = lessDiscount*7/100;;
                     beforetax= lessDiscount+addedtax;
                     Nettotal= beforetax;
-                    totalperson = Nettotal/person;
+                    totalperson = Nettotal/paxtotal;
                     $('#sppus').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscountpus').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1423,6 +1470,8 @@
                     $('#total-Vatpus').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
+                    $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
                 }
             });
 

@@ -595,14 +595,14 @@
                                     <table class="table table-borderless" >
                                         <tbody>
                                             <tr>
-                                                <td style="text-align:right;width: 55%;font-size: 14px;"><b>Room pax</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="PaxToTal">0</span>
+                                                <td style="text-align:right;width: 55%;font-size: 14px;"><b>Number of Guests</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="PaxToTal">0</span> ท่าน
                                                     <input type="hidden" name="PaxToTalall" id="PaxToTalall">
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span> บาท</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -804,11 +804,9 @@
     function masterevent() {
         var Mevent =$('#Mevent').val();
         if (Mevent == '43') {
-            console.log(1);
             $('#Payment50').css('display', 'block');
             $('#Payment100').css('display', 'none');
         } else if (Mevent == '53') {
-            console.log(0);
             $('#Payment50').css('display', 'none');
             $('#Payment100').css('display', 'block');
         }else if (Mevent == '54') {
@@ -824,7 +822,6 @@
         $('#Payment100').css('display', 'none');
     });
     function mastervat() {
-        console.log(Mvat);
         var Mvat =$('#Mvat').val();
         if (Mvat == '50') {
             $('#PRICE_INCLUDE_VAT').css('display', 'block');
@@ -952,6 +949,7 @@
 
         // เพิ่ม input ลงในฟอร์ม
         document.getElementById("myForm").appendChild(input);
+        document.getElementById("myForm").setAttribute("target","_blank");
         document.getElementById("myForm").submit();
     }
 </script>
@@ -1221,11 +1219,8 @@
             var DiscountAmount = document.getElementById('DiscountAmount').value;
 
             $('#display-selected-items tr').each(function() {
-                var adultValue = parseFloat(document.getElementById('Adult').value);
-                var childrenValue = parseFloat(document.getElementById('Children').value);
                 let priceCell = $(this).find('td').eq(8);
                 let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
-                var person =adultValue+childrenValue;
                 var Discount = parseFloat(DiscountAmount);
                 let allpax = $(this).find('td').eq(2);
                 let pax = parseFloat(allpax.text());
@@ -1238,7 +1233,7 @@
                     beforetax= lessDiscount/1.07;
                     addedtax = lessDiscount-beforetax;
                     Nettotal= beforetax+addedtax;
-                    totalperson = Nettotal/person;
+                    totalperson = Nettotal/paxtotal;
                     $('#sp').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1258,7 +1253,7 @@
                     beforetax= lessDiscount;
                     addedtax =0;
                     Nettotal= beforetax;
-                    totalperson = Nettotal/person;
+                    totalperson = Nettotal/paxtotal;
                     $('#spEXCLUDE').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscountEXCLUDE').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1276,7 +1271,7 @@
                     addedtax = lessDiscount*7/100;;
                     beforetax= lessDiscount+addedtax;
                     Nettotal= beforetax;
-                    totalperson = Nettotal/person;
+                    totalperson = Nettotal/paxtotal;
                     $('#sppus').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscountpus').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1329,6 +1324,7 @@
             if (result.isConfirmed) {
                 console.log(1);
                 // If user confirms, submit the form
+                document.getElementById("myForm").removeAttribute('target');
                 document.getElementById("myForm").submit();
             }
         });
