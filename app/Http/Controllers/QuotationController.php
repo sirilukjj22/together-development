@@ -867,7 +867,7 @@ class QuotationController extends Controller
     public function update(Request $request)
     {
         $data = $request->all();
-        dd($data);
+
         try {
             $preview = $request->preview;
             $Quotation_ID=$request->Quotation_ID;
