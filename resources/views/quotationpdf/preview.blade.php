@@ -510,7 +510,7 @@
                     </table>
                     @if ($page_item == $i )
                         @if ($Mvat->id == 50)
-                            <table  id="customers" class="table" style="width: 25%;float:right;" >
+                            <table  id="customers" class="table" style="width: 28%;float:right;" >
                                 <tr>
                                     <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                     <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
@@ -549,16 +549,16 @@
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalguest, 2, '.', ',') }} </strong> ท่าน</td>
+                                    <td style="text-align:left;"><strong id="total-Price">{{$totalguest}} </strong>ท่าน</td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong> บาท</td>
+                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong>บาท</td>
                                 </tr>
 
                             </table>
                         @elseif ($Mvat->id == 51)
-                            <table  id="customers" class="table" style="width: 25%;float:right;" >
+                            <table  id="customers" class="table" style="width: 28%;float:right;" >
                                 <tr>
                                     <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                     <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
@@ -588,13 +588,16 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> {{$totalguest}} </strong>ท่าน</td>
                                 </tr>
-
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>บาท</td>
+                                </tr>
                             </table>
                         @elseif ($Mvat->id == 52)
-                            <table  id="customers" class="table" style="width: 25%;float:right;" >
+                            <table  id="customers" class="table" style="width: 28%;float:right;" >
                                 <tr>
                                     <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                     <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
@@ -626,12 +629,16 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> {{$totalguest}} </strong>ท่าน</td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>บาท</td>
                                 </tr>
                             </table>
                         @else
-                            <table  id="customers" class="table" style="width: 25%;float:right;" >
+                            <table  id="customers" class="table" style="width: 28%;float:right;" >
                                 <tr>
                                     <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                     <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
@@ -669,10 +676,13 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> {{$totalguest}} </strong>ท่าน</td>
                                 </tr>
-
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>บาท</td>
+                                </tr>
                             </table>
                         @endif
                     @else
@@ -715,10 +725,13 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price"></strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> 0 </strong>ท่าน</td>
                                 </tr>
-
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> 0 </strong>บาท</td>
+                                </tr>
                             </table>
                         @elseif ($Mvat->id == 51)
                             <table  id="customers" class="table" style="width: 25%;float:right;" >
@@ -750,8 +763,12 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> 0 </strong>ท่าน</td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price"></strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> 0 </strong>บาท</td>
                                 </tr>
 
                             </table>
@@ -789,8 +806,12 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> 0 </strong>ท่าน</td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price"></strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> 0 </strong>บาท</td>
                                 </tr>
                             </table>
                         @else
@@ -832,8 +853,12 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> 0 </strong>ท่าน</td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price"></strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price"> 0 </strong>บาท</td>
                                 </tr>
                             </table>
                         @endif
