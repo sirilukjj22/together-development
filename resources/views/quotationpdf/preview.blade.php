@@ -548,11 +548,11 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price">{{$totalguest}} </strong>ท่าน</td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong>บาท</td>
                                 </tr>
 
@@ -588,11 +588,11 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> {{$totalguest}} </strong>ท่าน</td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>บาท</td>
                                 </tr>
                             </table>
@@ -629,11 +629,11 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> {{$totalguest}} </strong>ท่าน</td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>บาท</td>
                                 </tr>
                             </table>
@@ -676,11 +676,11 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> {{$totalguest}} </strong>ท่าน</td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>บาท</td>
                                 </tr>
                             </table>
@@ -725,11 +725,11 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> 0 </strong>ท่าน</td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> 0 </strong>บาท</td>
                                 </tr>
                             </table>
@@ -763,11 +763,11 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> 0 </strong>ท่าน</td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> 0 </strong>บาท</td>
                                 </tr>
 
@@ -806,11 +806,11 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> 0 </strong>ท่าน</td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> 0 </strong>บาท</td>
                                 </tr>
                             </table>
@@ -853,11 +853,11 @@
                                     <td></td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> 0 </strong>ท่าน</td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person </strong></td>
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
                                     <td style="text-align:left;"><strong id="total-Price"> 0 </strong>บาท</td>
                                 </tr>
                             </table>

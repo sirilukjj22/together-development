@@ -210,7 +210,7 @@ class QuotationController extends Controller
             $SpecialDiscountBath = $request->DiscountAmount;
             $userid = Auth::user()->id;
             $IDquotation = Quotation::where('Quotation_ID',$Quotation_IDcheck)->first();
-            if ($preview ==1) {
+            if ($preview == 1) {
                 $data = $request->all();
 
                 $company= $request->Company;
@@ -867,7 +867,7 @@ class QuotationController extends Controller
     public function update(Request $request)
     {
         $data = $request->all();
-
+        dd($data);
         try {
             $preview = $request->preview;
             $Quotation_ID=$request->Quotation_ID;

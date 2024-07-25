@@ -1322,8 +1322,15 @@
             dangerMode: true
         }).then((result) => {
             if (result.isConfirmed) {
-                console.log(1);
-                // If user confirms, submit the form
+
+                // สร้าง input แบบ hidden ใหม่
+                var input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "preview";
+                input.value = 0;
+
+                // เพิ่ม input ลงในฟอร์ม
+                document.getElementById("myForm").appendChild(input);
                 document.getElementById("myForm").removeAttribute('target');
                 document.getElementById("myForm").submit();
             }

@@ -804,7 +804,6 @@
         document.getElementById('Checkin').setAttribute('min', today);
         document.getElementById('Checkout').setAttribute('min', today);
     }
-
     document.addEventListener('DOMContentLoaded', setMinDate);
 </script>
 <script>
@@ -1517,8 +1516,14 @@
             dangerMode: true
         }).then((result) => {
             if (result.isConfirmed) {
-                console.log(1);
-                // If user confirms, submit the form
+                var input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "preview";
+                input.value = 0;
+
+                // เพิ่ม input ลงในฟอร์ม
+                document.getElementById("myForm").appendChild(input);
+                document.getElementById("myForm").removeAttribute('target');
                 document.getElementById("myForm").submit();
             }
         });
