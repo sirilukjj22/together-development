@@ -251,15 +251,15 @@
                 </tr>
             </table>
             <div style="border: 2px solid #2D7F7B;margin-top: 10px;"></div>
-            การจองห้องพัก
+            <b>การจองห้องพัก</b>
             <div style="margin-left: 60px;line-height:5px;">
                 {!! $Reservation_show->name_th !!}
             </div>
-            เงื่อนไขการจ่ายเงิน
+            <b>เงื่อนไขการจ่ายเงิน</b>
             <div style="margin-left: 60px;line-height:5px;">
                 {!! $Paymentterms->name_th !!}
             </div>
-            หมายเหตุ
+            <b>หมายเหตุ</b>
             <div style="margin-left: 60px;line-height:5px;">
                 {!! $note->name_th !!}
             </div>
@@ -292,15 +292,15 @@
             <br>
             <div style="border: 2px solid #2D7F7B"></div>
             <div style=" margin-top:10px;">
-                การยกเลิกและการเปลี่ยนแปลงการจอง
+                <b>การยกเลิกและการเปลี่ยนแปลงการจอง</b>
                 <div style="margin-left: 60px;line-height:5px;">
                     {!! $Cancellations->name_th !!}
                 </div>
-                อภินันทนาการทางรีสอร์ท
+                <b>อภินันทนาการทางรีสอร์ท</b>
                 <div style="margin-left: 60px;line-height:5px;">
                     {!! $Complimentary->name_th !!}
                 </div>
-                ทางรีสอร์ทขอสงวนสิทธิ์แก่ผู้ใช้บริการดังนี้
+                <b>ทางรีสอร์ทขอสงวนสิทธิ์แก่ผู้ใช้บริการดังนี้</b>
                 <div style="margin-left: 60px;line-height:5px;">
                     {!! $All_rights_reserved->name_th !!}
                 </div>

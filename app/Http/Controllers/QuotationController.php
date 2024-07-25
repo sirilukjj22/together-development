@@ -1698,8 +1698,8 @@ class QuotationController extends Controller
                 }
             }
             // dd( $priceUnit,$discountedPrices);
-            $Checkin = $request->Checkin;
-            $Checkout = $request->Checkout;
+            $Checkin = $Quotation->checkin;
+            $Checkout = $Quotation->checkout;
             if ($Checkin) {
                 $checkin = Carbon::parse($Checkin)->format('d/m/Y');
                 $checkout = Carbon::parse($Checkout)->format('d/m/Y');
