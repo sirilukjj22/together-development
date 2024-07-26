@@ -870,6 +870,9 @@ class QuotationController extends Controller
         $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
         $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
         $company_fax = company_fax::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
+        if (!$company_fax) {
+            $company_fax = '-';
+        }
         $company_phone = company_phone::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
         $Contact_name = representative::where('Company_ID',$Company_ID)->where('id',$contact)->where('status',1)->first();
         $profilecontact = $Contact_name->Profile_ID;

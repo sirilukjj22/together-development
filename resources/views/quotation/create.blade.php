@@ -775,22 +775,16 @@
         var dateout = document.getElementById('Checkout');
         var Day = document.getElementById('Day');
         var Night = document.getElementById('Night');
-        var Adult = document.getElementById('Adult');
-        var Children = document.getElementById('Children');
         if (isChecked == true) {
             dateInput.disabled = true;
             dateout.disabled = true;
             Day.disabled = true;
             Night.disabled = true;
-            Adult.disabled = true;
-            Children.disabled = true;
         } else {
             dateInput.disabled = false;
             dateout.disabled = false;
             Day.disabled = false;
             Night.disabled = false;
-            Adult.disabled = false;
-            Children.disabled = false;
         }
     });
     $(document).ready(function() {

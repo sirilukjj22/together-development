@@ -344,7 +344,12 @@
                                                 <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
                                                 <td>
                                                     <span id="Company_Number">{{$company_phone->Phone_number}}</span>
-                                                    <b style="margin-left: 10px;color:#000;">Company Fax : </b><span id="Company_Fax">{{$company_fax}}</span>
+                                                    <b style="margin-left: 10px;color:#000;">Company Fax : </b>
+                                                    @if ($company_fax)
+                                                        <span id="Company_Fax">{{$company_fax->Fax_number}}</span>
+                                                    @else
+                                                        <span id="Company_Fax">-</span>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
@@ -390,7 +395,13 @@
                                             <div class="col-lg-6">
                                                 <p style="display: inline-block;"><span id="checkinpo">{{$Quotation->checkin}}</span></p><br>
                                                 <p style="display: inline-block;"><span id="checkoutpo">{{$Quotation->checkout}}</span></p><br>
-                                                <p style="display: inline-block;"><span id="daypo">{{$Quotation->day}}</span> วัน <span id="nightpo">{{$Quotation->night}}</span> คืน</p><br>
+                                                <p style="display: inline-block;">
+                                                    @if ($Quotation->day == null)
+                                                     <span id="daypo">-</span> วัน <span id="nightpo">-</span> คืน
+                                                    @else
+                                                        <span id="daypo">{{$Quotation->day}}</span> วัน <span id="nightpo">{{$Quotation->night}}</span> คืน
+                                                    @endif
+                                                </p><br>
                                                 <p style="display: inline-block;"><span id="Adultpo">{{$Quotation->adult}}</span> Adult , <span id="Childrenpo">{{$Quotation->children}}</span> Children</p>
                                             </div>
                                         </div>
@@ -817,8 +828,6 @@
         var dateout = document.getElementById('Checkout');
         var Day = document.getElementById('Day');
         var Night = document.getElementById('Night');
-        var Adult = document.getElementById('Adult');
-        var Children = document.getElementById('Children');
         var flexCheckChecked = document.getElementById('flexCheckChecked');
 
         // ตรวจสอบค่า Checkin และตั้งค่า disabled และ flexCheckChecked
@@ -830,16 +839,12 @@
                 dateout.disabled = true;
                 Day.disabled = true;
                 Night.disabled = true;
-                Adult.disabled = true;
-                Children.disabled = true;
                 flexCheckChecked.checked = true; // ตั้งค่า flexCheckChecked เป็น checked
             } else {
                 dateInput.disabled = false;
                 dateout.disabled = false;
                 Day.disabled = false;
                 Night.disabled = false;
-                Adult.disabled = false;
-                Children.disabled = false;
                 flexCheckChecked.checked = false; // ตั้งค่า flexCheckChecked เป็น unchecked
             }
         }
@@ -856,15 +861,11 @@
                 dateout.disabled = true;
                 Day.disabled = true;
                 Night.disabled = true;
-                Adult.disabled = true;
-                Children.disabled = true;
             } else {
                 dateInput.disabled = false;
                 dateout.disabled = false;
                 Day.disabled = false;
                 Night.disabled = false;
-                Adult.disabled = false;
-                Children.disabled = false;
             }
         });
     });
