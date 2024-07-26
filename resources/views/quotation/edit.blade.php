@@ -635,7 +635,7 @@
                                 <div class="col-12 row">
                                     <div class="col-8">
                                     </div>
-                                    <div class="col-lg-4 col-md-3 col-sm-12">
+                                    <div class="col-lg-4 col-md-3 col-sm-12" id="Pax" style="display: block">
                                         <table class="table table-borderless" >
                                             <tbody>
                                                 <tr>
@@ -1437,6 +1437,9 @@
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
                     $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
+                    if (paxtotal == 0) {
+                        $('#Pax').css('display', 'none');
+                    }
                 }
                 else if(typevat == '51')
                 {
@@ -1458,6 +1461,9 @@
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
                     $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
+                    if (paxtotal == 0) {
+                        $('#Pax').css('display', 'none');
+                    }
                 } else if(typevat == '52'){
                     paxtotal +=pax;
                     PaxToTalall = paxtotal;
@@ -1476,6 +1482,9 @@
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
                     $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
+                    if (paxtotal == 0) {
+                        $('#Pax').css('display', 'none');
+                    }
                 }
             });
 
