@@ -344,7 +344,7 @@
                                                 <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
                                                 <td>
                                                     <span id="Company_Number">{{$company_phone->Phone_number}}</span>
-                                                    <b style="margin-left: 10px;color:#000;">Company Fax : </b><span id="Company_Fax">{{$company_fax->Fax_number}}</span>
+                                                    <b style="margin-left: 10px;color:#000;">Company Fax : </b><span id="Company_Fax">{{$company_fax}}</span>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -1416,8 +1416,6 @@
                     if (isNaN(pax)) { // ตรวจสอบว่าค่าที่แปลงเป็น NaN หรือไม่
                         pax = 0; // แปลง NaN เป็น 0
                     }
-
-
                 if (typevat == '50') {
                     paxtotal +=pax;
                     PaxToTalall = paxtotal;
