@@ -606,7 +606,7 @@
                             <div class="col-12 row">
                                 <div class="col-8">
                                 </div>
-                                <div class="col-lg-4 col-md-3 col-sm-12">
+                                <div class="col-lg-4 col-md-3 col-sm-12" id="Pax" style="display: block">
                                     <table class="table table-borderless" >
                                         <tbody>
                                             <tr>
@@ -791,15 +791,11 @@
             dateout.disabled = true;
             Day.disabled = true;
             Night.disabled = true;
-            Adult.disabled = true;
-            Children.disabled = true;
         } else {
             dateInput.disabled = false;
             dateout.disabled = false;
             Day.disabled = false;
             Night.disabled = false;
-            Adult.disabled = false;
-            Children.disabled = false;
         }
     });
     $(document).ready(function() {

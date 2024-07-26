@@ -245,7 +245,7 @@
                         </div>
                         <div class="row mt-2">
                             <div class="col-lg-4 col-md-6 col-sm-12">
-                                <label  for="">Format</label>
+                                <label  for="">Event</label>
                                 <select name="Mevent" id="Mevent" class="select2"  onchange="masterevent()" required>
                                     <option value=""></option>
                                     @foreach($Mevent as $item)
@@ -809,13 +809,13 @@
             $('#Payment50').css('display', 'none');
             $('#Payment100').css('display', 'block');
         }else if (Mevent == '54') {
-            $('#Payment50').css('display', 'block');
-            $('#Payment100').css('display', 'none');
+            $('#Payment50').css('display', 'none');
+            $('#Payment100').css('display', 'block');
         }
     }
     $(document).ready(function() {
-        $('#PRICE_INCLUDE_VAT').css('display', 'none');
-        $('#PRICE_EXCLUDE_VAT').css('display', 'block');
+        $('#PRICE_INCLUDE_VAT').css('display', 'block');
+        $('#PRICE_EXCLUDE_VAT').css('display', 'none');
         $('#PRICE_PLUS_VAT').css('display', 'none');
         $('#Payment50').css('display', 'block');
         $('#Payment100').css('display', 'none');
@@ -1200,9 +1200,8 @@
             totalAmost();
         });
     });
-
-
     function totalAmost() {
+
         $(document).ready(function() {
             var typevat  = $('#Mvat').val();
             let allprice = 0;
@@ -1217,14 +1216,13 @@
             let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
             let Discount = [];
             var DiscountAmount = document.getElementById('DiscountAmount').value;
-            Pax
             $('#display-selected-items tr').each(function() {
                 let priceCell = $(this).find('td').eq(8);
                 let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
                 var Discount = parseFloat(DiscountAmount);
                 let allpax = $(this).find('td').eq(2);
                 let pax = parseFloat(allpax.text());
-
+                var rowCount = $('#display-selected-items tr').length;
                 if (typevat == '50') {
                     paxtotal +=pax;
                     PaxToTalall = paxtotal;
@@ -1234,6 +1232,7 @@
                     addedtax = lessDiscount-beforetax;
                     Nettotal= beforetax+addedtax;
                     totalperson = Nettotal/paxtotal;
+
                     $('#sp').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -1291,8 +1290,46 @@
                         $('#Pax').css('display', 'none');
                     }
                 }
+
+
             });
+            function checkRowCount() {
+                var rowCount = $('#display-selected-items tr').not(':first').length;
+                if (rowCount === 0) {
+                    var Count = $('#display-selected-items tr:last').length;
+                    if (Count == 0 ) {
+                        if (typevat == '50') {
+                            $('#total-amount').text(0.00);
+                            $('#lessDiscount').text(0.00);
+                            $('#Net-price').text(0.00);
+                            $('#total-Vat').text(0.00);
+                            $('#Net-Total').text(0.00);
+                            $('#Average').text(0.00);
+                            $('#PaxToTal').text(0.00);
+                        }else if(typevat == '51')
+                        {
+                            $('#total-amountEXCLUDE').text(0.00);
+                            $('#lessDiscountEXCLUDE').text(0.00);
+                            $('#Net-priceEXCLUDE').text(0.00);
+                            $('#total-VatEXCLUDE').text(0.00);
+                            $('#Net-Total').text(0.00);
+                            $('#Average').text(0.00);
+                            $('#PaxToTal').text(0.00);
+                        } else if(typevat == '52'){
+                            $('#total-amountpus').text(0.00);
+                            $('#lessDiscountpus').text(0.00);
+                            $('#Net-pricepus').text(0.00);
+                            $('#total-Vatpus').text(0.00);
+                            $('#Net-Total').text(0.00);
+                            $('#Average').text(0.00);
+                            $('#PaxToTal').text(0.00);
+                        }
+                    }
+                }
+            }
+            checkRowCount();
         });
+
     }
     totalAmost();
 </script>

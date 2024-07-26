@@ -240,7 +240,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <label  for="">Event Format</label>
+                                    <label  for="">Event</label>
                                     <select name="Mevent" id="Mevent" class="select2"  onchange="masterevent()" required>
                                         <option value=""></option>
                                         @foreach($Mevent as $item)
@@ -345,8 +345,8 @@
                                                 <td>
                                                     <span id="Company_Number">{{$company_phone->Phone_number}}</span>
                                                     <b style="margin-left: 10px;color:#000;">Company Fax : </b>
-                                                    @if ($company_fax)
-                                                        <span id="Company_Fax">{{$company_fax->Fax_number}}</span>
+                                                    @if (is_object($company_fax) && property_exists($company_fax, 'Fax_number'))
+                                                        <span id="Company_Fax">{{ $company_fax->Fax_number }}</span>
                                                     @else
                                                         <span id="Company_Fax">-</span>
                                                     @endif
@@ -899,8 +899,8 @@
             $('#Payment50').css('display', 'none');
             $('#Payment100').css('display', 'block');
         }else if (Mevent == '54') {
-            $('#Payment50').css('display', 'block');
-            $('#Payment100').css('display', 'none');
+            $('#Payment50').css('display', 'none');
+            $('#Payment100').css('display', 'block');
         }
     }
     function mastervat() {
@@ -954,8 +954,11 @@
 
             $('#Payment50').css('display', 'none');
             $('#Payment100').css('display', 'block');
-        } else {
+        } else if (Mevent == '54'){
             $('#Payment50').css('display', 'none');
+            $('#Payment100').css('display', 'block');
+        }else{
+            $('#Payment50').css('display', 'block');
             $('#Payment100').css('display', 'none');
         }
     });
@@ -1092,6 +1095,20 @@
         document.getElementById("myForm").setAttribute("target","_blank");
         document.getElementById("myForm").submit();
     }
+    $(document).on('click', '.remove-button1', function() {
+            var productId = $(this).val();
+            $('#tr-select-main' + productId).remove();
+
+            // Update the sequence numbers
+            $('#display-selected-items tr').each(function(index) {
+                $(this).find('td:first').text(index + 1); // Change the text of the first cell to be the new sequence number
+            });
+
+            // Optionally, call a function to update totals after removing a row
+            if (typeof totalAmost === 'function') {
+                totalAmost();
+            }
+        });
 </script>
 <script>
     function fetchProducts(status) {
@@ -1394,7 +1411,7 @@
         totalAmost();
     });
     function totalAmost() {
-
+        $(document).ready(function() {
             var typevat  = $('#Mvat').val();
             let allprice = 0;
             let lessDiscount = 0;
@@ -1486,10 +1503,42 @@
                     }
                 }
             });
+            var rowCount = $('#display-selected-items tr').not(':first').length;
+            if (rowCount === 0) {
+                    var Count = $('#display-selected-items tr:last').length;
+                    if (Count == 0 ) {
+                        if (typevat == '50') {
+                            $('#total-amount').text(0.00);
+                            $('#lessDiscount').text(0.00);
+                            $('#Net-price').text(0.00);
+                            $('#total-Vat').text(0.00);
+                            $('#Net-Total').text(0.00);
+                            $('#Average').text(0.00);
+                            $('#PaxToTal').text(0.00);
+                        }else if(typevat == '51')
+                        {
+                            $('#total-amountEXCLUDE').text(0.00);
+                            $('#lessDiscountEXCLUDE').text(0.00);
+                            $('#Net-priceEXCLUDE').text(0.00);
+                            $('#total-VatEXCLUDE').text(0.00);
+                            $('#Net-Total').text(0.00);
+                            $('#Average').text(0.00);
+                            $('#PaxToTal').text(0.00);
+                        } else if(typevat == '52'){
+                            $('#total-amountpus').text(0.00);
+                            $('#lessDiscountpus').text(0.00);
+                            $('#Net-pricepus').text(0.00);
+                            $('#total-Vatpus').text(0.00);
+                            $('#Net-Total').text(0.00);
+                            $('#Average').text(0.00);
+                            $('#PaxToTal').text(0.00);
+                        }
+                    }
+            }
 
+        });
     }
     totalAmost();
-
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>

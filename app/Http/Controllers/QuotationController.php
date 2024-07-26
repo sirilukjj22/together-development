@@ -1478,7 +1478,6 @@ class QuotationController extends Controller
                 'qrCodeBase64'=>$qrCodeBase64,
                 'Mvat'=>$Mvat,
             ];
-
             $view= $template->name;
             $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
             $path = 'Log_PDF/proposal/';
