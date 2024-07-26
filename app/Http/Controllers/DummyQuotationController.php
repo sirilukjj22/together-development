@@ -117,7 +117,7 @@ class DummyQuotationController extends Controller
         $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
         $DummyNo = $ID.$year.$month.$newRunNumber;
         $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
-        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
+        $Mvat = master_document::select('name_th','id','lavel')->where('status', '1')->where('Category','Mvat')->get();
         $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
         return view('dummy_quotation.create',compact('DummyNo','Company','Mevent','Freelancer_member','Issue_date','Valid_Until','Mvat'));
@@ -134,6 +134,9 @@ class DummyQuotationController extends Controller
         $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
         $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
         $company_fax = company_fax::where('Profile_ID',$companyID)->where('Sequence','main')->first();
+        if (!$company_fax) {
+            $company_fax = '-';
+        }
         $company_phone = company_phone::where('Profile_ID',$companyID)->where('Sequence','main')->first();
 
         $Contact_names = representative::where('Company_ID', $companyID)
@@ -157,7 +160,6 @@ class DummyQuotationController extends Controller
 
     public function save(Request $request){
         try {
-
             $preview=$request->preview;
             $Quotation_IDcheck =$request->DummyNo;
             $adult=$request->Adult;
@@ -189,6 +191,11 @@ class DummyQuotationController extends Controller
                 $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
                 $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
                 $company_fax = company_fax::where('Profile_ID',$company)->where('Sequence','main')->first();
+                if ($company_fax) {
+                    $Fax_number =  $company_fax->Fax_number;
+                }else{
+                    $Fax_number = '-';
+                }
                 $company_phone = company_phone::where('Profile_ID',$company)->where('Sequence','main')->first();
                 $Contact_name = representative::where('Company_ID',$company)->where('status',1)->first();
                 $Contact_phone = representative_phone::where('Company_ID',$company)->where('Sequence','main')->first();
@@ -359,7 +366,7 @@ class DummyQuotationController extends Controller
                     'CityID'=>$CityID,
                     'amphuresID'=>$amphuresID,
                     'provinceNames'=>$provinceNames,
-                    'company_fax'=>$company_fax,
+                    'company_fax'=>$Fax_number,
                     'company_phone'=>$company_phone,
                     'Contact_name'=>$Contact_name,
                     'Contact_phone'=>$Contact_phone,
@@ -574,7 +581,6 @@ class DummyQuotationController extends Controller
             $company= $request->Company;
             $eventformat= $request->Mevent;
             $Company_ID = companys::where('Profile_ID',$company)->first();
-
             $Company_typeID=$Company_ID->Company_type;
             $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
             if ($comtype->name_th =="บริษัทจำกัด") {
@@ -593,6 +599,11 @@ class DummyQuotationController extends Controller
             $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
             $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
             $company_fax = company_fax::where('Profile_ID',$company)->where('Sequence','main')->first();
+            if ($company_fax) {
+                $Fax_number =  $company_fax->Fax_number;
+            }else{
+                $Fax_number = '-';
+            }
             $company_phone = company_phone::where('Profile_ID',$company)->where('Sequence','main')->first();
             $Contact_name = representative::where('Company_ID',$company)->where('status',1)->first();
             $Contact_phone = representative_phone::where('Company_ID',$company)->where('Sequence','main')->first();
@@ -765,7 +776,7 @@ class DummyQuotationController extends Controller
                 'CityID'=>$CityID,
                 'amphuresID'=>$amphuresID,
                 'provinceNames'=>$provinceNames,
-                'company_fax'=>$company_fax,
+                'company_fax'=>$Fax_number,
                 'company_phone'=>$company_phone,
                 'Contact_name'=>$Contact_name,
                 'Contact_phone'=>$Contact_phone,
@@ -924,6 +935,11 @@ class DummyQuotationController extends Controller
         $Company_typeID=$Company_ID->Company_type;
         $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
         $company_fax = company_fax::where('Profile_ID',$Company)->where('Sequence','main')->first();
+        if ($company_fax) {
+            $Fax_number =  $company_fax->Fax_number;
+        }else{
+            $Fax_number = '-';
+        }
         $company_phone = company_phone::where('Profile_ID',$Company)->where('Sequence','main')->first();
         $Contact_name = representative::where('Company_ID',$Company)->where('status',1)->first();
         $Contact_phone = representative_phone::where('Company_ID',$Company)->where('Sequence','main')->first();
@@ -1103,7 +1119,7 @@ class DummyQuotationController extends Controller
             'CityID'=>$CityID,
             'amphuresID'=>$amphuresID,
             'provinceNames'=>$provinceNames,
-            'company_fax'=>$company_fax,
+            'company_fax'=>$Fax_number,
             'company_phone'=>$company_phone,
             'Contact_name'=>$Contact_name,
             'Contact_phone'=>$Contact_phone,
@@ -1506,7 +1522,7 @@ class DummyQuotationController extends Controller
 
         }
         elseif ($value == 'all'){
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.type', 'asc')
             ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
         }
         return response()->json([
@@ -1538,7 +1554,7 @@ class DummyQuotationController extends Controller
 
         }
         elseif ($value == 'all'){
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.type', 'asc')
             ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
 
         }
@@ -1551,7 +1567,7 @@ class DummyQuotationController extends Controller
     public function addProductselect($Quotation_ID, Request $request) {
         $value = $request->input('value');
         $products = master_product_item::leftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
-        ->orderBy('master_product_items.Product_ID', 'asc')
+        ->orderBy('master_product_items.type', 'asc')
         ->where('master_product_items.status', 1)
         ->where('master_product_items.id', $value)
         ->select('master_product_items.*', 'master_units.name_th as unit_name')
@@ -1565,7 +1581,7 @@ class DummyQuotationController extends Controller
     public function addProducttableselect($Quotation_ID, Request $request) {
         $value = $request->input('value');
         $products = master_product_item::leftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
-        ->orderBy('master_product_items.Product_ID', 'asc')
+        ->orderBy('master_product_items.type', 'asc')
         ->where('master_product_items.status', 1)
         ->where('master_product_items.id', $value)
         ->select('master_product_items.*', 'master_units.name_th as unit_name')
@@ -1578,7 +1594,7 @@ class DummyQuotationController extends Controller
     }
     public function addProducttablemain($Quotation_ID, Request $request) {
         $value = $request->input('value');
-        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
+        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.type', 'asc')
         ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
         return response()->json([
             'products' => $products,
@@ -1587,7 +1603,7 @@ class DummyQuotationController extends Controller
     }
     public function addProducttablecreatemain($Quotation_ID, Request $request) {
         $value = $request->input('value');
-        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
+        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.type', 'asc')
         ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
         return response()->json([
             'products' => $products,

@@ -221,6 +221,11 @@
                             </div>
                         </div>
                         <hr class="mt-3 my-3" style="border: 1px solid #000">
+                        <div  class="row mt-2">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
+                            </div>
+                        </div>
                         <div class="row mt-2">
                             <div class="col-lg-2 col-md-6 col-sm-12">
                                 <label for="chekin">Check In Date</label>
@@ -251,20 +256,18 @@
                         </div>
                         <div class="row mt-2">
                             <div class="col-lg-4 col-md-6 col-sm-12">
-                                <label  for="">Event Format</label>
+                                <label  for="">Format</label>
                                 <select name="Mevent" id="Mevent" class="select2"  onchange="masterevent()" required>
-                                    <option value=""></option>
                                     @foreach($Mevent as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                        <option value="{{ $item->id }}"{{$item->lavel == 1 ? 'selected' : ''}}>{{ $item->name_th }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label  for="">Vat Type</label>
                                 <select name="Mvat" id="Mvat" class="select2"  onchange="mastervat()" required>
-                                    <option value=""></option>
                                     @foreach($Mvat as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                        <option value="{{ $item->id }}"{{$item->lavel == 1 ? 'selected' : ''}}>{{ $item->name_th }} </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -479,11 +482,12 @@
                                 </div>
                             </div>
                             <div class="row mt-2">
-                                <table class=" table table-hover align-middle mb-0" style="width:100%">
+                                <table class=" table align-middle mb-0" style="width:100%">
                                     <thead >
                                         <tr>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">No.</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Description</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:1%;"></th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Quantity</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Unit</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price / Unit</th>
@@ -606,8 +610,14 @@
                                     <table class="table table-borderless" >
                                         <tbody>
                                             <tr>
-                                                <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person</b></td>
-                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span></td>
+                                                <td style="text-align:right;width: 55%;font-size: 14px;"><b>Number of Guests :</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="PaxToTal">0</span> Adults
+                                                    <input type="hidden" name="PaxToTalall" id="PaxToTalall">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person :</b></td>
+                                                <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span> THB</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -619,13 +629,13 @@
                                 </div>
                                 <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
                                     Please make a 50% deposit within 7 days after confirmed. <br>
-                                    Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
+                                    Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
                                     If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
                                     pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
                                 </span>
                                 <span class="col-md-8 col-sm-12"  id="Payment100" style="display: none">
                                     Please make a 100% deposit within 3 days after confirmed. <br>
-                                    Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
+                                    Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
                                     If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
                                     pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
                                 </span>
@@ -700,7 +710,7 @@
                                     <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
                                         Preview
                                     </button>
-                                    <button type="submit" class="btn btn-color-green lift btn_modal">Select</button>
+                                    <button type="submit" class="btn btn-color-green lift btn_modal">Save</button>
                                 </div>
                                 <div class="col-4"></div>
                             </div>
@@ -717,51 +727,81 @@
 <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
 <script>
-    function CheckDate() {
-        const checkoutDateValue = document.getElementById('Checkout').value;
-        const checkinDateValue = document.getElementById('Checkin').value;
+   function CheckDate() {
+            const checkoutDateValue = document.getElementById('Checkout').value;
+            const checkinDateValue = document.getElementById('Checkin').value;
 
-        const checkinDate = new Date(checkinDateValue);
-        const checkoutDate = new Date(checkoutDateValue);
+            const checkinDate = new Date(checkinDateValue);
+            const checkoutDate = new Date(checkoutDateValue);
+            if (checkoutDate > checkinDate) {
 
-        if (checkoutDate > checkinDate) {
-            const timeDiff = checkoutDate - checkinDate;
-            const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                const timeDiff = checkoutDate - checkinDate;
+                const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-            // เนื่องจาก Check-in นับเป็นวันแรกด้วย
-            const totalDays = diffDays + 1;
-            const nights = diffDays;
+                // เนื่องจาก Check-in นับเป็นวันแรกด้วย
+                const totalDays = diffDays + 1;
+                const nights = diffDays;
 
-            $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
-            $('#Night').val(isNaN(nights) ? '0' : nights);
+                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
+                $('#Night').val(isNaN(nights) ? '0' : nights);
 
-            console.log(`จำนวนวัน: ${totalDays} วัน`);
-            console.log(`จำนวนคืน: ${nights} คืน`);
-            $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-            $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-            $('#daypo').text(totalDays);
-            $('#nightpo').text(nights);
-        } else if (checkoutDate.getTime() === checkinDate.getTime()) {
-            // กรณีที่ Check-in Date เท่ากับ Check-out Date
-            const totalDays = 1;
-            $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
-            $('#Night').val('0');
+                console.log(`จำนวนวัน: ${totalDays} วัน`);
+                console.log(`จำนวนคืน: ${nights} คืน`);
+                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#daypo').text(totalDays);
+                $('#nightpo').text(nights);
+            } else if (checkoutDate.getTime() === checkinDate.getTime()) {
+                // กรณีที่ Check-in Date เท่ากับ Check-out Date
+                const totalDays = 1;
+                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
+                $('#Night').val('0');
 
-            $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
-            $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-            $('#daypo').text(isNaN(totalDays) ? '0' : totalDays);
-            $('#nightpo').text('0');
-            console.log(`จำนวนวัน: ${totalDays} วัน`);
-            console.log(`จำนวนคืน: 0 คืน`);
-        } else {
-            // กรณีที่ Check-out Date น้อยกว่าหรือเท่ากับ Check-in Date
-            console.log("วัน Check-out ต้องมากกว่าวัน Check-in");
-            $('#Day').val('0');
-            $('#Night').val('0');
+                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#daypo').text(isNaN(totalDays) ? '0' : totalDays);
+                $('#nightpo').text('0');
+                console.log(`จำนวนวัน: ${totalDays} วัน`);
+                console.log(`จำนวนคืน: 0 คืน`);
+            } else {
+                // กรณีที่ Check-out Date น้อยกว่าหรือเท่ากับ Check-in Date
+                console.log("วัน Check-out ต้องมากกว่าวัน Check-in");
+                $('#Day').val('0');
+                $('#Night').val('0');
+            }
         }
-    }
+        function setMinDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('Checkin').setAttribute('min', today);
+            document.getElementById('Checkout').setAttribute('min', today);
+        }
+        document.addEventListener('DOMContentLoaded', setMinDate);
 </script>
 <script>
+    document.getElementById('flexCheckChecked').addEventListener('change', function(event) {
+        var isChecked = event.target.checked;
+        var dateInput = document.getElementById('Checkin');
+        var dateout = document.getElementById('Checkout');
+        var Day = document.getElementById('Day');
+        var Night = document.getElementById('Night');
+        var Adult = document.getElementById('Adult');
+        var Children = document.getElementById('Children');
+        if (isChecked == true) {
+            dateInput.disabled = true;
+            dateout.disabled = true;
+            Day.disabled = true;
+            Night.disabled = true;
+            Adult.disabled = true;
+            Children.disabled = true;
+        } else {
+            dateInput.disabled = false;
+            dateout.disabled = false;
+            Day.disabled = false;
+            Night.disabled = false;
+            Adult.disabled = false;
+            Children.disabled = false;
+        }
+    });
     $(document).ready(function() {
         $('.select2').select2({
             placeholder: "Please select an option"
@@ -778,27 +818,28 @@
     function masterevent() {
         var Mevent =$('#Mevent').val();
         if (Mevent == '43') {
-            console.log(1);
             $('#Payment50').css('display', 'block');
             $('#Payment100').css('display', 'none');
         } else if (Mevent == '53') {
-            console.log(0);
             $('#Payment50').css('display', 'none');
             $('#Payment100').css('display', 'block');
-        } else {
-            $('#Payment50').css('display', 'none');
+        }else if (Mevent == '54') {
+            $('#Payment50').css('display', 'block');
             $('#Payment100').css('display', 'none');
         }
     }
+    $(document).ready(function() {
+        $('#PRICE_INCLUDE_VAT').css('display', 'none');
+        $('#PRICE_EXCLUDE_VAT').css('display', 'block');
+        $('#PRICE_PLUS_VAT').css('display', 'none');
+        $('#Payment50').css('display', 'block');
+        $('#Payment100').css('display', 'none');
+    });
     function mastervat() {
         var Mvat =$('#Mvat').val();
         if (Mvat == '50') {
             $('#PRICE_INCLUDE_VAT').css('display', 'block');
             $('#PRICE_EXCLUDE_VAT').css('display', 'none');
-            $('#PRICE_PLUS_VAT').css('display', 'none');
-        }else if (Mvat == '51') {
-            $('#PRICE_INCLUDE_VAT').css('display', 'none');
-            $('#PRICE_EXCLUDE_VAT').css('display', 'block');
             $('#PRICE_PLUS_VAT').css('display', 'none');
         }
         else if (Mvat == '52') {
@@ -807,7 +848,7 @@
             $('#PRICE_PLUS_VAT').css('display', 'block');
         }else{
             $('#PRICE_INCLUDE_VAT').css('display', 'none');
-            $('#PRICE_EXCLUDE_VAT').css('display', 'none');
+            $('#PRICE_EXCLUDE_VAT').css('display', 'block');
             $('#PRICE_PLUS_VAT').css('display', 'none');
         }
     }
@@ -1064,7 +1105,10 @@
                                 var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
                                 var SpecialDiscount = document.getElementById('SpecialDiscount').value;
                                 var discountuser = document.getElementById('discountuser').value;
-                                // console.log(discountuser);
+                                var valpax = val.pax;
+                                if (valpax == null) {
+                                    valpax = 0;
+                                }
                                 var maximum_discount = val.maximum_discount;
                                 if (SpecialDiscount >= 1) {
                                     if (roleMenuDiscount == 1) {
@@ -1097,11 +1141,11 @@
                                             '</div>';
                                     }
                                 }
-
                                 $('#display-selected-items').append(
                                     '<tr id="tr-select-addmain' + val.id + '">' +
                                     '<td>' + rowNumbemain + '</td>' +
-                                    '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en + '</td>' +
+                                    '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
+                                    '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
                                     '<td ><input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="1" min="1" rel="' + number + '" style="text-align:center;"></td>' +
                                     '<td>' + val.unit_name + '</td>' +
                                     '<td><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + val.normal_price + '</td>' +
@@ -1111,6 +1155,10 @@
                                     '<td><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
                                     '</tr>'
                                 );
+                                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                                    return new bootstrap.Tooltip(tooltipTriggerEl)
+                                });
                             }
                         }
                     });
@@ -1140,6 +1188,12 @@
             var number_ID = $(this).attr('rel');
             var quantitymain =  Number($(this).val());
             var discountmain =  $('#discountmain'+number_ID).val();
+            var paxmain = parseFloat($('#pax' + number_ID).val());
+            if (isNaN(paxmain)) {
+                paxmain = 0;
+            }
+            var pax = paxmain*quantitymain;
+            $('#paxtotal'+number_ID).text(pax);
             var number = Number($('#number-product').val());
             var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
             var pricediscount =  (price*discountmain /100);
@@ -1148,6 +1202,7 @@
             var pricenew = price*quantitymain
             var pricediscount = pricenew - (pricenew*discountmain /100);
             $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+
             // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             totalAmost();
         });
@@ -1155,11 +1210,13 @@
             var number_ID = $(this).attr('rel');
             var discountmain =  Number($(this).val());
             console.log(discountmain);
-            var quantitymain =  Number($('.quantitymain').val());
+            var quantitymain =  $('#quantitymain'+number_ID).val();
+            console.log(quantitymain);
             var number = Number($('#number-product').val());
             var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
             var pricediscount =  (price*discountmain /100);
             var allcount0 = price - pricediscount;
+            console.log(allcount0);
             $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
             var pricenew = price*quantitymain
             var pricediscount = pricenew - (pricenew*discountmain /100);
@@ -1169,61 +1226,6 @@
         });
     });
 
-        // $('#SpecialDis').on('input', function() {
-        //     var specialDisValue = $(this).val();
-        //     var typevat  = $('#Mvat').val();
-        //     let allprice = 0;
-        //     let lessDiscount = 0;
-        //     let beforetax =0;
-        //     let addedtax =0;
-        //     let Nettotal =0;
-        //     let totalperson=0;
-        //     $('#display-selected-items tr').each(function() {
-
-        //         var adultValue = parseFloat(document.getElementById('Adult').value);
-        //         var childrenValue = parseFloat(document.getElementById('Children').value);
-        //         let priceCell = $(this).find('td').eq(7);
-        //         let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
-        //         var person =adultValue+childrenValue;
-
-        //         if (typevat == '50') {
-        //             console.log(500);
-        //             allprice += pricetotal;
-        //             lessDiscount = allprice-specialDisValue;
-        //             beforetax= lessDiscount/1.07;
-        //             addedtax = lessDiscount-beforetax;
-        //             Nettotal= beforetax+addedtax;
-        //             totalperson = Nettotal/person;
-        //         }
-        //         else if(typevat == '51')
-        //         {  console.log(511);
-        //             allprice += pricetotal;
-        //             lessDiscount = allprice-specialDisValue;
-        //             beforetax= lessDiscount;
-        //             addedtax =0;
-        //             Nettotal= beforetax;
-        //             totalperson = Nettotal/person;
-        //         } else if(typevat == '52'){
-        //             console.log(522);
-        //             allprice += pricetotal;
-        //             lessDiscount = allprice-specialDisValue;
-        //             addedtax = lessDiscount*7/100;;
-        //             beforetax= lessDiscount+addedtax;
-        //             Nettotal= beforetax;
-        //             totalperson = Nettotal/person;
-
-        //         }
-
-        //     });
-
-        //     $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //     $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //     $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //     $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        //     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        // });
-
     function totalAmost() {
         $(document).ready(function() {
             var typevat  = $('#Mvat').val();
@@ -1231,62 +1233,77 @@
             let lessDiscount = 0;
             let beforetax =0;
             let addedtax =0;
-            let Nettotal =0;
+            let paxtotal=0;
             let totalperson=0;
+            let PaxToTalall=0;
+            let Nettotal =0;
             let priceArray = [];
             let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
             var specialDisValue = parseFloat(document.getElementById('SpecialDis').value);
             $('#display-selected-items tr').each(function() {
                 var adultValue = parseFloat(document.getElementById('Adult').value);
                 var childrenValue = parseFloat(document.getElementById('Children').value);
-                let priceCell = $(this).find('td').eq(7);
+                let priceCell = $(this).find('td').eq(8);
                 let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
-                var person =adultValue+childrenValue;
-
+                let allpax = $(this).find('td').eq(2);
+                let pax = parseFloat(allpax.text());
                 if (typevat == '50') {
-                    console.log(50);
+                    paxtotal +=pax;
+                    PaxToTalall = paxtotal;
                     allprice += pricetotal;
                     lessDiscount = allprice-specialDisValue;
                     beforetax= lessDiscount/1.07;
                     addedtax = lessDiscount-beforetax;
                     Nettotal= beforetax+addedtax;
-                    totalperson = Nettotal/person;
+                    totalperson = Nettotal/PaxToTalall;
+                    console.log(allprice);
                     $('#total-amount').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscount').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-price').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-Vat').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
+                    $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
                 }
                 else if(typevat == '51')
                 {
+                    paxtotal +=pax;
+                    PaxToTalall = paxtotal;
                     allprice += pricetotal;
                     lessDiscount = allprice-specialDisValue;
                     beforetax= lessDiscount;
                     addedtax =0;
                     Nettotal= beforetax;
-                    totalperson = Nettotal/person;
+                    totalperson = Nettotal/PaxToTalall;
+                    console.log(allprice);
                     $('#total-amountEXCLUDE').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscountEXCLUDE').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-priceEXCLUDE').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-VatEXCLUDE').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
+                    $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
 
                 } else if(typevat == '52'){
-                    console.log(52);
+                    paxtotal +=pax;
+                    PaxToTalall = paxtotal;
                     allprice += pricetotal;
                     lessDiscount = allprice-specialDisValue;
                     addedtax = lessDiscount*7/100;;
                     beforetax= lessDiscount+addedtax;
                     Nettotal= beforetax;
-                    totalperson = Nettotal/person;
+                    totalperson = Nettotal/PaxToTalall;
+                    console.log(allprice);
                     $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#lessDiscountpus').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-pricepus').text(isNaN(beforetax) ? '0' : beforetax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#total-Vatpus').text(isNaN(addedtax) ? '0' : addedtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Net-Total').text(isNaN(Nettotal) ? '0' : Nettotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                     $('#Average').text(isNaN(totalperson) ? '0' : totalperson.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#PaxToTal').text(isNaN(paxtotal) ? '0' : paxtotal);
+                    $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
                 }
             });
 

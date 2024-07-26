@@ -175,9 +175,6 @@ class master_product_i extends Controller
             $save->pax = $pax;
             $save->room_size = $room_size;
             $save->normal_price = $normal_price;
-            $save->weekend_price = $weekend_price;
-            $save->long_weekend_price = $long_weekend_price;
-            $save->end_weekend_price = $end_weekend_price;
             $save->quantity = $Quantity;
             $save->unit = $Unit;
             $save->maximum_discount = $Maximum_Discount;
@@ -302,9 +299,6 @@ class master_product_i extends Controller
         $pax =$request->pax;
         $room_size = $request->room_size;
         $normal_price = $request->normal_price;
-        $weekend_price = $request->weekend_price;
-        $long_weekend_price = $request->long_weekend_price;
-        $end_weekend_price = $request->end_weekend_price;
         $Quantity = $request->quantity;
         $Unit = $request->unit;
         $Maximum_Discount = $request->Maximum_Discount;
@@ -340,9 +334,6 @@ class master_product_i extends Controller
         $save->pax = $pax;
         $save->room_size = $room_size;
         $save->normal_price = $normal_price;
-        $save->weekend_price = $weekend_price;
-        $save->long_weekend_price = $long_weekend_price;
-        $save->end_weekend_price = $end_weekend_price;
         $save->quantity = $Quantity;
         $save->unit = $Unit;
         $save->created_by = $userid;
@@ -368,8 +359,8 @@ class master_product_i extends Controller
                 // ให้สิทธิ์ในการเขียนไฟล์
                 chmod($upload_location_image2, 0777);
             }
-           $Product_ID= master_product_item::where('id',$id)->first();
-           $idProduct = $Product_ID->Product_ID;
+            $Product_ID= master_product_item::where('id',$id)->first();
+            $idProduct = $Product_ID->Product_ID;
         foreach ($imageother as $file) {
             $image_name_gen = hexdec(uniqid());
             $img_ext = strtolower($file->getClientOriginalExtension());

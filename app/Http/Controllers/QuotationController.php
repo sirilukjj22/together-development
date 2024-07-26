@@ -176,6 +176,9 @@ class QuotationController extends Controller
         $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
         $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
         $company_fax = company_fax::where('Profile_ID',$companyID)->where('Sequence','main')->first();
+        if (!$company_fax) {
+            $company_fax = '-';
+        }
         $company_phone = company_phone::where('Profile_ID',$companyID)->where('Sequence','main')->first();
 
         $Contact_names = representative::where('Company_ID', $companyID)
@@ -199,7 +202,7 @@ class QuotationController extends Controller
 
 
     public function save(Request $request){
-        try {
+        // try {
             $data = $request->all();
             $preview=$request->preview;
             $Quotation_IDcheck =$request->Quotation_ID;
@@ -235,6 +238,14 @@ class QuotationController extends Controller
                 $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
                 $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
                 $company_fax = company_fax::where('Profile_ID',$company)->where('Sequence','main')->first();
+
+                if ($company_fax) {
+                    $Fax_number =  $company_fax->Fax_number;
+
+                }else{
+                    $Fax_number = '-';
+                }
+                // dd($Fax_number);
                 $company_phone = company_phone::where('Profile_ID',$company)->where('Sequence','main')->first();
                 $Contact_name = representative::where('Company_ID',$company)->where('status',1)->first();
                 $Contact_phone = representative_phone::where('Company_ID',$company)->where('Sequence','main')->first();
@@ -409,7 +420,7 @@ class QuotationController extends Controller
                     'CityID'=>$CityID,
                     'amphuresID'=>$amphuresID,
                     'provinceNames'=>$provinceNames,
-                    'company_fax'=>$company_fax,
+                    'company_fax'=>$Fax_number,
                     'company_phone'=>$company_phone,
                     'Contact_name'=>$Contact_name,
                     'Contact_phone'=>$Contact_phone,
@@ -584,6 +595,12 @@ class QuotationController extends Controller
                 $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
                 $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
                 $company_fax = company_fax::where('Profile_ID',$company)->where('Sequence','main')->first();
+                if ($company_fax) {
+                    $Fax_number =  $company_fax->Fax_number;
+
+                }else{
+                    $Fax_number = '-';
+                }
                 $company_phone = company_phone::where('Profile_ID',$company)->where('Sequence','main')->first();
                 $Contact_name = representative::where('Company_ID',$company)->where('status',1)->first();
                 $Contact_phone = representative_phone::where('Company_ID',$company)->where('Sequence','main')->first();
@@ -758,7 +775,7 @@ class QuotationController extends Controller
                     'CityID'=>$CityID,
                     'amphuresID'=>$amphuresID,
                     'provinceNames'=>$provinceNames,
-                    'company_fax'=>$company_fax,
+                    'company_fax'=>$Fax_number,
                     'company_phone'=>$company_phone,
                     'Contact_name'=>$Contact_name,
                     'Contact_phone'=>$Contact_phone,
@@ -806,11 +823,11 @@ class QuotationController extends Controller
             $delete->delete();
                 return redirect()->route('Quotation.index')->with('success', 'ใบเสนอราคายังไม่ถูกสร้าง');
             }
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'error' => $e->getMessage()
+        //     ], 500);
+        // }
     }
     public function edit($id)
     {
@@ -912,6 +929,12 @@ class QuotationController extends Controller
                 $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
                 $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
                 $company_fax = company_fax::where('Profile_ID',$company)->where('Sequence','main')->first();
+                if ($company_fax) {
+                    $Fax_number =  $company_fax->Fax_number;
+
+                }else{
+                    $Fax_number = '-';
+                }
                 $company_phone = company_phone::where('Profile_ID',$company)->where('Sequence','main')->first();
                 $Contact_name = representative::where('Company_ID',$company)->where('status',1)->first();
                 $Contact_phone = representative_phone::where('Company_ID',$company)->where('Sequence','main')->first();
@@ -1087,7 +1110,7 @@ class QuotationController extends Controller
                     'CityID'=>$CityID,
                     'amphuresID'=>$amphuresID,
                     'provinceNames'=>$provinceNames,
-                    'company_fax'=>$company_fax,
+                    'company_fax'=>$Fax_number,
                     'company_phone'=>$company_phone,
                     'Contact_name'=>$Contact_name,
                     'Contact_phone'=>$Contact_phone,
@@ -1222,6 +1245,12 @@ class QuotationController extends Controller
             $Company_typeID=$Company_ID->Company_type;
             $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
             $company_fax = company_fax::where('Profile_ID',$Company)->where('Sequence','main')->first();
+            if ($company_fax) {
+                $Fax_number =  $company_fax->Fax_number;
+
+            }else{
+                $Fax_number = '-';
+            }
             $company_phone = company_phone::where('Profile_ID',$Company)->where('Sequence','main')->first();
             $Contact_name = representative::where('Company_ID',$Company)->where('status',1)->first();
             $Contact_phone = representative_phone::where('Company_ID',$Company)->where('Sequence','main')->first();
@@ -1417,7 +1446,7 @@ class QuotationController extends Controller
                 'checkout'=>$checkout,
                 'amphuresID'=>$amphuresID,
                 'provinceNames'=>$provinceNames,
-                'company_fax'=>$company_fax,
+                'company_fax'=>$Fax_number,
                 'company_phone'=>$company_phone,
                 'Contact_name'=>$Contact_name,
                 'Contact_phone'=>$Contact_phone,
@@ -1631,6 +1660,12 @@ class QuotationController extends Controller
         $Company_typeID=$Company_ID->Company_type;
         $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
         $company_fax = company_fax::where('Profile_ID',$Company)->where('Sequence','main')->first();
+        if ($company_fax) {
+            $Fax_number =  $company_fax->Fax_number;
+
+        }else{
+            $Fax_number = '-';
+        }
         $company_phone = company_phone::where('Profile_ID',$Company)->where('Sequence','main')->first();
         $Contact_name = representative::where('Company_ID',$Company)->where('status',1)->first();
         $Contact_phone = representative_phone::where('Company_ID',$Company)->where('Sequence','main')->first();
@@ -1818,7 +1853,7 @@ class QuotationController extends Controller
             'CityID'=>$CityID,
             'amphuresID'=>$amphuresID,
             'provinceNames'=>$provinceNames,
-            'company_fax'=>$company_fax,
+            'company_fax'=>$Fax_number,
             'company_phone'=>$company_phone,
             'Contact_name'=>$Contact_name,
             'Contact_phone'=>$Contact_phone,

@@ -205,9 +205,14 @@
                                 </div>
                             </div>
                             <hr class="mt-3 my-3" style="border: 1px solid #000">
+                            <div  class="row mt-2">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
+                                </div>
+                            </div>
                             <div class="row mt-2">
                                 <div class="col-lg-2 col-md-6 col-sm-12">
-                                    <label for="chekin">Check In Date <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" ></label>
+                                    <label for="chekin">Check In Date
                                     <input type="date" name="Checkin" id="Checkin" class="form-control" onchange="CheckDate()" value="{{$Quotation->checkin}}" required>
                                 </div>
                                 <div class="col-lg-2 col-md-6 col-sm-12">
@@ -634,14 +639,14 @@
                                         <table class="table table-borderless" >
                                             <tbody>
                                                 <tr>
-                                                    <td style="text-align:right;width: 55%;font-size: 14px;"><b>Number of Guests</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="PaxToTal">0</span> ท่าน
+                                                    <td style="text-align:right;width: 55%;font-size: 14px;"><b>Number of Guests :</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="PaxToTal">0</span> Adults
                                                         <input type="hidden" name="PaxToTalall" id="PaxToTalall">
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span> บาท</td>
+                                                    <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person :</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span> THB</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -653,13 +658,13 @@
                                     </div>
                                     <span class="col-md-8 col-sm-12"id="Payment50" style="display: block" >
                                         Please make a 50% deposit within 7 days after confirmed. <br>
-                                        Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
+                                        Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
                                         If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
                                         pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
                                     </span>
                                     <span class="col-md-8 col-sm-12"  id="Payment100" style="display: none">
                                         Please make a 100% deposit within 3 days after confirmed. <br>
-                                        Transfer to <strong> " Together Resort Limited Partnboership "</strong> following banks details.<br>
+                                        Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
                                         If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
                                         pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
                                     </span>

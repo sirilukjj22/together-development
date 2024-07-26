@@ -295,25 +295,16 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-lg-3 col-sm-12" id="normal_price_container" style="display: block;">
-                                            <label for="normal_price">Normal Price <br>(Include VAT)</label><br>
+                                        <div class="col-lg-6 col-sm-12" >
+                                            <label for="normal_price">Normal Price (Include VAT)</label><br>
                                             <input type="text" class="price-input" id="normal_price" name="normal_price" maxlength="70">
                                         </div>
-                                        <div class="col-lg-3 col-sm-12" id="weekend_price_container" style="display: block;">
-                                            <label for="weekend_price">Weekday Price <br>(Include VAT)</label><br>
-                                            <input type="text" class="price-input" id="weekend_price" name="weekend_price" maxlength="70">
-                                        </div>
-                                        <div class="col-lg-3 col-sm-12" id="long_weekend_price_container" style="display: block;">
-                                            <label for="long_weekend_price">Long Weekend Price<br> (Include VAT)</label><br>
-                                            <input type="text" class="price-input" id="long_weekend_price" name="long_weekend_price" maxlength="70">
-                                        </div>
-                                        <div class="col-lg-3 col-sm-12" id="end_weekend_price_container" style="display: block;">
-                                            <label for="end_weekend_price">End Weekend Price<br> (Include VAT)</label><br>
-                                            <input type="text" class="price-input" id="end_weekend_price" name="end_weekend_price" maxlength="70">
+                                        <div class="col-lg-6 col-sm-12" ><label for="Maximum_Discount">Maximum Discount</label><br>
+                                            <input type="text" id="Maximum_Discount" name="Maximum_Discount"maxlength="70" required>
                                         </div>
                                     </div>
                                     <div class=" row">
-                                        <div class="col-lg-4 col-sm-12" >
+                                        <div class="col-lg-6 col-sm-12" >
                                             <label for="Quantity"  style="padding: 5px">Quantity</label>
                                             <select name="quantity"  id = "quantity" class="select2">
                                                 <option value=""></option>
@@ -322,7 +313,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-lg-4 col-sm-12" >
+                                        <div class="col-lg-6 col-sm-12" >
                                             <label for="Unit" style="padding: 5px">Unit</label>
                                             <select name="unit" id = "unit" class="select2">
                                                 <option value=""></option>
@@ -331,11 +322,8 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-lg-4 col-sm-12" ><label for="Maximum_Discount">Maximum Discount</label><br>
-                                            <input type="text" id="Maximum_Discount" name="Maximum_Discount"maxlength="70" required>
-                                        </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row mt-3">
                                         <div class="col-lg-3 col-sm-12"></div>
                                         <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
                                             <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{ route('Mproduct.index') }}'">{{ __('ย้อนกลับ') }}</button>
@@ -392,7 +380,7 @@
 //             break;
 //     }
 // });
- $(document).ready(function() {
+$(document).ready(function() {
         $('.select2').select2({
             placeholder: "Please select an option"
         });
@@ -531,28 +519,20 @@ $(document).ready(function() {
             });
             switch(selectedCategory) {
                 case 'Room_Type':
-                    document.getElementById('normal_price_container').style.display = 'block';
-                    document.getElementById('weekend_price_container').style.display = 'block';
-                    document.getElementById('long_weekend_price_container').style.display = 'block';
-                    document.getElementById('end_weekend_price_container').style.display = 'block';
+                    document.getElementById('normal_price').disabled = false;
+                    document.getElementById('pax').disabled = false;
                     break;
                 case 'Banquet':
-                    document.getElementById('weekend_price_container').style.display = 'block';
-                    document.getElementById('weekend_price_container').style.display = 'none';
-                    document.getElementById('long_weekend_price_container').style.display = 'none';
-                    document.getElementById('end_weekend_price_container').style.display = 'none';
+                    document.getElementById('normal_price').disabled = false;
+                    document.getElementById('pax').disabled = true;
                     break;
                 case 'Meals':
-                    document.getElementById('long_weekend_price_container').style.display = 'block';
-                    document.getElementById('weekend_price_container').style.display = 'none';
-                    document.getElementById('long_weekend_price_container').style.display = 'none';
-                    document.getElementById('end_weekend_price_container').style.display = 'none';
+                    document.getElementById('normal_price').disabled = false;
+                    document.getElementById('pax').disabled = true;
                     break;
                 case 'Entertainment':
-                    document.getElementById('end_weekend_price_container').style.display = 'block';
-                    document.getElementById('weekend_price_container').style.display = 'none';
-                    document.getElementById('long_weekend_price_container').style.display = 'none';
-                    document.getElementById('end_weekend_price_container').style.display = 'none';
+                    document.getElementById('normal_price').disabled = false;
+                    document.getElementById('pax').disabled = true;
                     break;
                 default:
                     // ถ้าไม่มีค่าที่เลือกหรือค่าที่เลือกไม่ตรงกับที่กำหนดไว้ ให้ซ่อนทุก container
