@@ -1314,86 +1314,54 @@
     //----------------------------------------รายการ---------------------------
     $(document).ready(function() {
         $(document).on('keyup', '.quantitymain', function() {
-            var number_ID = $(this).attr('rel');
-            var quantitymain =  Number($(this).val());
-            var discountmain =  $('#discountmain'+number_ID).val();
-            var number = Number($('#number-product').val());
-            var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
-            var pricediscount =  (price*discountmain /100);
-            var allcount0 = price - pricediscount;
-            $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            var pricenew = price*quantitymain
-            var pricediscount = pricenew - (pricenew*discountmain /100);
-            $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            var paxmain = parseFloat($('#pax' + number_ID).val());
-            if (isNaN(paxmain)) {
-                paxmain = 0;
-            }
-            var pax = paxmain*quantitymain;
-            $('#paxtotal'+number_ID).text(pax);
-            totalAmost();
-        });
-        $(document).on('keyup', '.discountmain', function() {
-            var number_ID = $(this).attr('rel');
-            var discountmain =  Number($(this).val());
-            console.log(discountmain);
-            var quantitymain =  $('#quantitymain'+number_ID).val();
-            console.log(quantitymain);
-            var number = Number($('#number-product').val());
-            var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
-            var pricediscount =  (price*discountmain /100);
-
-            var allcount0 = price - pricediscount;
-            console.log(allcount0);
-            $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            var pricenew = price*quantitymain
-            var pricediscount = pricenew - (pricenew*discountmain /100);
-
-            $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-
-            totalAmost();
-        });
-        $(document).on('keyup', '.quantity-input', function() {
-            var number_ID = $(this).attr('rel');
-            var quantitymain =  Number($(this).val());
-            var discountmain =  parseFloat($('#discount'+number_ID).val().replace(/,/g, ''));
-            var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
-            var pricediscount =  (price*discountmain /100);
-            console.log(quantitymain,discountmain,price,pricediscount);
-            var allcount0 = price - pricediscount;
-            $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            var pricenew = price*quantitymain
-            var pricediscount = pricenew - (pricenew*discountmain /100);
-            $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-            var paxmain = parseFloat($('#pax' + number_ID).val());
-            if (isNaN(paxmain)) {
-                paxmain = 0;
-            }
-            var pax = paxmain*quantitymain;
-            $('#paxtotal'+number_ID).text(pax);
-            totalAmost();
-        });
-        $(document).on('keyup', '.discount-input', function() {
-            var number_ID = $(this).attr('rel');
-            var discountmain =  Number($(this).val());
-            var SpecialDiscount =  parseFloat($('#SpecialDiscount').val().replace(/,/g, ''));
-            var maxdiscount =  parseFloat($('#maxdiscount'+number_ID).val().replace(/,/g, ''));
-            if (discountmain > SpecialDiscount || discountmain > maxdiscount) {
-                var discount =  Number($(this).val(0));
-                var discountmain = 0 ;
-                var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
-                var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
+            for (let i = 0; i < 50; i++) {
+                var number_ID = $(this).attr('rel');
+                var quantitymain =  Number($(this).val());
+                var discountmain =  $('#discountmain'+number_ID).val();
+                var number = Number($('#number-product').val());
+                var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
                 var pricediscount =  (price*discountmain /100);
                 var allcount0 = price - pricediscount;
-                $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                 var pricenew = price*quantitymain
                 var pricediscount = pricenew - (pricenew*discountmain /100);
-                $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-
-            }else{
-                var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
+                $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                var paxmain = parseFloat($('#pax' + number_ID).val());
+                if (isNaN(paxmain)) {
+                    paxmain = 0;
+                }
+                var pax = paxmain*quantitymain;
+                $('#paxtotal'+number_ID).text(pax);
+                totalAmost();
+            }
+        });
+        $(document).on('keyup', '.discountmain', function() {
+            for (let i = 0; i < 50; i++) {
+                var number_ID = $(this).attr('rel');
+                var discountmain =  Number($(this).val());
+                console.log(discountmain);
+                var quantitymain =  $('#quantitymain'+number_ID).val();
+                console.log(quantitymain);
+                var number = Number($('#number-product').val());
+                var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
+                var pricediscount =  (price*discountmain /100);
+                var allcount0 = price - pricediscount;
+                console.log(allcount0);
+                $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                var pricenew = price*quantitymain
+                var pricediscount = pricenew - (pricenew*discountmain /100);
+                $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                totalAmost();
+            }
+        });
+        $(document).on('keyup', '.quantity-input', function() {
+            for (let i = 0; i < 50; i++) {
+                var number_ID = $(this).attr('rel');
+                var quantitymain =  Number($(this).val());
+                var discountmain =  parseFloat($('#discount'+number_ID).val().replace(/,/g, ''));
                 var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
                 var pricediscount =  (price*discountmain /100);
+                console.log(quantitymain,discountmain,price,pricediscount);
                 var allcount0 = price - pricediscount;
                 $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                 var pricenew = price*quantitymain
@@ -1405,8 +1373,45 @@
                 }
                 var pax = paxmain*quantitymain;
                 $('#paxtotal'+number_ID).text(pax);
+                totalAmost();
             }
-            totalAmost();
+        });
+        $(document).on('keyup', '.discount-input', function() {
+            for (let i = 0; i < 50; i++) {
+                var number_ID = $(this).attr('rel');
+                var discountmain =  Number($(this).val());
+                var SpecialDiscount =  parseFloat($('#SpecialDiscount').val().replace(/,/g, ''));
+                var maxdiscount =  parseFloat($('#maxdiscount'+number_ID).val().replace(/,/g, ''));
+                if (discountmain > SpecialDiscount || discountmain > maxdiscount) {
+                    var discount =  Number($(this).val(0));
+                    var discountmain = 0 ;
+                    var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
+                    var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
+                    var pricediscount =  (price*discountmain /100);
+                    var allcount0 = price - pricediscount;
+                    $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    var pricenew = price*quantitymain
+                    var pricediscount = pricenew - (pricenew*discountmain /100);
+                    $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+
+                }else{
+                    var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
+                    var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
+                    var pricediscount =  (price*discountmain /100);
+                    var allcount0 = price - pricediscount;
+                    $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    var pricenew = price*quantitymain
+                    var pricediscount = pricenew - (pricenew*discountmain /100);
+                    $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    var paxmain = parseFloat($('#pax' + number_ID).val());
+                    if (isNaN(paxmain)) {
+                        paxmain = 0;
+                    }
+                    var pax = paxmain*quantitymain;
+                    $('#paxtotal'+number_ID).text(pax);
+                }
+                totalAmost();
+            }
         });
         totalAmost();
     });

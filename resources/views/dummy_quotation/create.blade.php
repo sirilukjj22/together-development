@@ -273,7 +273,7 @@
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label class="Freelancer_member" for="">Introduce By</label>
-                                <select name="Freelancer_member" id="Freelancer_member" class="select2" required>
+                                <select name="Freelancer_member" id="Freelancer_member" class="select2">
                                     <option value=""></option>
                                     @foreach($Freelancer_member as $item)
                                         <option value="{{ $item->Profile_ID }}">{{ $item->First_name }} {{ $item->Last_name }}</option>
@@ -784,8 +784,6 @@
         var dateout = document.getElementById('Checkout');
         var Day = document.getElementById('Day');
         var Night = document.getElementById('Night');
-        var Adult = document.getElementById('Adult');
-        var Children = document.getElementById('Children');
         if (isChecked == true) {
             dateInput.disabled = true;
             dateout.disabled = true;
@@ -825,8 +823,8 @@
         }
     }
     $(document).ready(function() {
-        $('#PRICE_INCLUDE_VAT').css('display', 'none');
-        $('#PRICE_EXCLUDE_VAT').css('display', 'block');
+        $('#PRICE_INCLUDE_VAT').css('display', 'block');
+        $('#PRICE_EXCLUDE_VAT').css('display', 'none');
         $('#PRICE_PLUS_VAT').css('display', 'none');
         $('#Payment50').css('display', 'block');
         $('#Payment100').css('display', 'none');
@@ -1302,7 +1300,41 @@
                     $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
                 }
             });
-
+            function checkRowCount() {
+                var rowCount = $('#display-selected-items tr').not(':first').length;
+                if (rowCount === 0) {
+                    var Count = $('#display-selected-items tr:last').length;
+                    if (Count == 0 ) {
+                        if (typevat == '50') {
+                            $('#total-amount').text(0.00);
+                            $('#lessDiscount').text(0.00);
+                            $('#Net-price').text(0.00);
+                            $('#total-Vat').text(0.00);
+                            $('#Net-Total').text(0.00);
+                            $('#Average').text(0.00);
+                            $('#PaxToTal').text(0.00);
+                        }else if(typevat == '51')
+                        {
+                            $('#total-amountEXCLUDE').text(0.00);
+                            $('#lessDiscountEXCLUDE').text(0.00);
+                            $('#Net-priceEXCLUDE').text(0.00);
+                            $('#total-VatEXCLUDE').text(0.00);
+                            $('#Net-Total').text(0.00);
+                            $('#Average').text(0.00);
+                            $('#PaxToTal').text(0.00);
+                        } else if(typevat == '52'){
+                            $('#total-amountpus').text(0.00);
+                            $('#lessDiscountpus').text(0.00);
+                            $('#Net-pricepus').text(0.00);
+                            $('#total-Vatpus').text(0.00);
+                            $('#Net-Total').text(0.00);
+                            $('#Average').text(0.00);
+                            $('#PaxToTal').text(0.00);
+                        }
+                    }
+                }
+            }
+            checkRowCount();
         });
     }
     totalAmost();
