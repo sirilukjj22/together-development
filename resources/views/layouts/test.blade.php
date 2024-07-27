@@ -346,8 +346,8 @@
                         <i class="fa-solid fa-caret-down"></i></button>
                     <div id="myDropdownDocument" class="dropdown-content">
                         @if ($role_permisstion->proposal == 1)
-                            <a class="menu2" href="#">Dummy Proposal</a>
-                            <a class="menu2" href="#">Proposal Request</a>
+                            <a class="menu2" href="{{ url('Dummy/Quotation/index') }}">Dummy Proposal</a>
+                            <a class="menu2" href="{{ url('Proposal/request/index') }}">Proposal Request</a>
                             <a class="menu2" href="{{ route('Quotation.index') }}">Proposal</a>
                         @endif
                         @if ($role_permisstion->banquet_event_order == 1)
@@ -357,7 +357,7 @@
                             <a class="menu2" href="#">Hotel Contract Rate Agreement</a>
                         @endif
                         @if ($role_permisstion->proforma_invoice == 1)
-                            <a class="menu2" href="#">Proforma Invoice</a>
+                            <a class="menu2" href="{{ url('Document/invoice/index') }}">Proforma Invoice</a>
                         @endif
                         @if ($role_permisstion->billing_folio == 1)
                             <a class="menu2" href="#">Billing Folio</a>
