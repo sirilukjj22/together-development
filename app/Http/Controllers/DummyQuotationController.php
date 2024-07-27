@@ -904,6 +904,7 @@ class DummyQuotationController extends Controller
                 $savetotal->AddTax = $AddTax;
             }
             $savetotal->save();
+            $pax=$request->input('pax');
             if ($Products !== null) {
                 $Productss = array_unique($Products);
                 document_dummy_quotation::where('Quotation_ID',$Quotation_ID)->delete();

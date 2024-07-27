@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/al.style.min.css') }}">
     <!-- project layout css file -->
     <link rel="stylesheet" href="{{ asset('assets/css/layout.c.min.css') }}">
+
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>

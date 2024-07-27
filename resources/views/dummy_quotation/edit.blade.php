@@ -1111,6 +1111,20 @@
         document.getElementById("myForm").setAttribute("target","_blank");
         document.getElementById("myForm").submit();
     }
+    $(document).on('click', '.remove-button1', function() {
+            var productId = $(this).val();
+            $('#tr-select-main' + productId).remove();
+
+            // Update the sequence numbers
+            $('#display-selected-items tr').each(function(index) {
+                $(this).find('td:first').text(index + 1); // Change the text of the first cell to be the new sequence number
+            });
+
+            // Optionally, call a function to update totals after removing a row
+            if (typeof totalAmost === 'function') {
+                totalAmost();
+            }
+        });
 </script>
 <script>
     function fetchProducts(status) {

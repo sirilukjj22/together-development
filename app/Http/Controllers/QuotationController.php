@@ -1256,7 +1256,6 @@ class QuotationController extends Controller
             $company_fax = company_fax::where('Profile_ID',$Company)->where('Sequence','main')->first();
             if ($company_fax) {
                 $Fax_number =  $company_fax->Fax_number;
-
             }else{
                 $Fax_number = '-';
             }
