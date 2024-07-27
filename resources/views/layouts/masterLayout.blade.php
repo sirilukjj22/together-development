@@ -310,6 +310,10 @@
 
     <!-- Jquery Page Js -->
     <script src="{{ asset('assets/js/template.js') }}"></script>
+
+    <!-- for taiwind style -->
+    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
+
     <script>
         $(document).ready(function() {
 
