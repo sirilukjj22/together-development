@@ -160,6 +160,7 @@ class DummyQuotationController extends Controller
 
     public function save(Request $request){
         try {
+            $data = $request->all();
             $preview=$request->preview;
             $Quotation_IDcheck =$request->DummyNo;
             $adult=$request->Adult;
@@ -245,7 +246,7 @@ class DummyQuotationController extends Controller
                     // dd( $priceUnit,$discountedPrices);
 
                     $items = master_product_item::where('Product_ID', $productID)->get();
-                    $totalguest = $adult+$children;
+                    $totalguest = $request->PaxToTalall;
 
                     $QuotationVat= $request->Mvat;
                     $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
@@ -348,8 +349,13 @@ class DummyQuotationController extends Controller
                 $Day = $request->Day;
                 $Night = $request->Night;
                 $comment = $request->comment;
-                $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                if ($Checkin) {
+                    $checkin = Carbon::parse($Checkin)->format('d/m/Y');
+                    $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                }else{
+                    $checkin = '-';
+                    $checkout = '-';
+                }
                 $user = User::where('id',$userid)->select('id','name')->first();
                 $Mevent= $request->Mevent;
                 $data = [
@@ -430,6 +436,7 @@ class DummyQuotationController extends Controller
             $save->company_contact = $request->Company_Contact;
             $save->checkin = $request->Checkin;
             $save->checkout = $request->Checkout;
+            $save->TotalPax = $request->PaxToTalall;
             $save->day = $request->Day;
             $save->night = $request->Night;
             $save->adult = $request->Adult;
@@ -495,7 +502,7 @@ class DummyQuotationController extends Controller
             foreach ($priceUnits as $key => $price) {
                 $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
             }
-
+            $pax=$request->input('pax');
             if ($Products !== null) {
                 foreach ($Products as $index => $ProductID) {
                     $saveProduct = new document_dummy_quotation();
@@ -503,6 +510,8 @@ class DummyQuotationController extends Controller
                     $saveProduct->Company_ID = $request->Company;
                     $saveProduct->Product_ID = $ProductID;
                     $saveProduct->Issue_date = $request->IssueDate;
+                    $paxValue = $pax[$index] ?? 0;
+                    $saveProduct->pax = $paxValue;
                     $saveProduct->discount =$discounts[$index];
                     $saveProduct->priceproduct =$priceUnits[$index];
                     $saveProduct->netpriceproduct =$discountedPricestotal[$index];
@@ -558,6 +567,9 @@ class DummyQuotationController extends Controller
         $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
         $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
         $company_fax = company_fax::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
+        if (!$company_fax) {
+            $company_fax = '-';
+        }
         $company_phone = company_phone::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
         $Contact_name = representative::where('Company_ID',$Company_ID)->where('id',$contact)->where('status',1)->first();
         $profilecontact = $Contact_name->Profile_ID;
@@ -655,7 +667,7 @@ class DummyQuotationController extends Controller
                 // dd( $priceUnit,$discountedPrices);
 
                 $items = master_product_item::where('Product_ID', $productID)->get();
-                $totalguest = $adult+$children;
+                $totalguest = $request->PaxToTalall;
 
                 $QuotationVat= $request->Mvat;
                 $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
@@ -758,8 +770,13 @@ class DummyQuotationController extends Controller
             $Day = $request->Day;
             $Night = $request->Night;
             $comment = $request->comment;
-            $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-            $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+            if ($Checkin) {
+                $checkin = Carbon::parse($Checkin)->format('d/m/Y');
+                $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+            }else{
+                $checkin = '-';
+                $checkout = '-';
+            }
             $user = User::where('id',$userid)->select('id','name')->first();
             $Mevent= $request->Mevent;
             $data = [
@@ -824,6 +841,7 @@ class DummyQuotationController extends Controller
             $save->company_contact = $request->Company_Contact;
             $save->checkin = $request->Checkin;
             $save->checkout = $request->Checkout;
+            $save->TotalPax = $request->PaxToTalall;
             $save->day = $request->Day;
             $save->night = $request->Night;
             $save->adult = $request->Adult;
@@ -895,6 +913,8 @@ class DummyQuotationController extends Controller
                     $saveProduct->Company_ID = $request->Company;
                     $saveProduct->Product_ID = $ProductID;
                     $saveProduct->Issue_date = $request->IssueDate;
+                    $paxValue = $pax[$index] ?? 0;
+                    $saveProduct->pax = $paxValue;
                     $saveProduct->discount =$discounts[$index];
                     $saveProduct->priceproduct =$priceUnits[$index];
                     $saveProduct->netpriceproduct =$discountedPricestotal[$index];
@@ -1041,7 +1061,7 @@ class DummyQuotationController extends Controller
         $total=0;
         $adult = $Quotation->adult;
         $children = $Quotation->children;
-        $totalguest = $adult+$children;
+        $totalguest = $Quotation->TotalPax;
         $totalaverage=0;
         if ($Mvat->id == 50) {
             foreach ($selectproduct as $item) {
@@ -1095,10 +1115,13 @@ class DummyQuotationController extends Controller
         $qrCodeBase64 = base64_encode($qrCodeImage);
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
-        $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-        $checkout = Carbon::parse($Checkout)->format('d/m/Y');
-
-
+        if ($Checkin) {
+            $checkin = Carbon::parse($Checkin)->format('d/m/Y');
+            $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+        }else{
+            $checkin = '-';
+            $checkout = '-';
+        }
         $pagecount = count($selectproduct);
             $page = $pagecount/10;
 

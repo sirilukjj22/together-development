@@ -357,9 +357,15 @@
 
                         <div style="padding: 4%">
 
-                            <b >Proposal ID : </b><span style="margin-left: 10px;">{{ $Quotation->Quotation_ID }}</span><br>
+                            <b >Proposal ID : </b>
+                                @if ($Quotation->Quotation_ID)
+                                    <span style="margin-left: 15px;">{{ $Quotation->Quotation_ID }}</span>
+                                @else
+                                    <span style="margin-left: 15px;">{{ $Quotation->DummyNo }}</span>
+                                @endif
+                            <br>
 
-                            <b >Issue Date : </b><span >{{ $Quotation->issue_date }}</span><br>
+                            <b >Issue Date : </b><span style="margin-left: 25px;">{{ $Quotation->issue_date }}</span><br>
 
                             <b>Expiration Date : </b><span>{{ $Quotation->Expirationdate }}</span>
 

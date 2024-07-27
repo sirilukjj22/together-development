@@ -399,11 +399,17 @@ class QuotationController extends Controller
                 $Expiration = $request->Expiration;
                 $Checkin = $request->Checkin;
                 $Checkout = $request->Checkout;
+
                 $Day = $request->Day;
                 $Night = $request->Night;
                 $comment = $request->comment;
-                $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                if ($Checkin) {
+                    $checkin = Carbon::parse($Checkin)->format('d/m/Y');
+                    $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                }else{
+                    $checkin = '-';
+                    $checkout = '-';
+                }
                 $user = User::where('id',$userid)->select('id','name')->first();
                 $Mevent= $request->Mevent;
                 $data = [
