@@ -370,12 +370,6 @@
 
             });
 
-        });
-
-
-
-        $(document).ready(function() {
-
             $('#myDataTableOutstanding').dataTable({
 
                 responsive: false,
