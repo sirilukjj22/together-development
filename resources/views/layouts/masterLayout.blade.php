@@ -439,9 +439,6 @@
             searchInputPlaceholder: 'Search...'
 
         });
-
-
-
         // Select2
 
         $(".country, .language").select2({});
