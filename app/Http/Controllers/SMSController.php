@@ -1191,13 +1191,13 @@ class SMSController extends Controller
         if ($topic == "front") {
             $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 6)
                 ->orWhereDate('date_into', $adate)
-                ->where('status', 6)->get();
+                ->where('status', 6)->paginate(10);
             $title = "Front Desk Bank Transfer Revenue";
 
         } elseif ($topic == "room") {
             $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 1)
                 ->whereNull('date_into')->orWhereDate('date_into', $adate)
-                ->where('status', 1)->get();
+                ->where('status', 1)->paginate(1);
             $title = "Guest Deposit Bank Transfer Revenue";
 
         } elseif ($topic == "all_outlet") {

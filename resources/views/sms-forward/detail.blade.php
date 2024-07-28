@@ -1,178 +1,207 @@
 @extends('layouts.masterLayout')
 
 @section('pretitle')
-    <div class="top-content-sms">
-        <div class="sms-header">
-            <div class=""><span class="span1">SMS Alert</span><span class="span2"> / Front Dest Bank Transfer
-                    Revenue</span></div>
-            <div class="span3">Front Dest Bank Transfer Revenue</div>
-        </div>
-        <button type="button" class="button-all">ย้อนกลับ</button>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col sms-header">
+                <div class=""><span class="span1">Daily Bank Transaction Revenue</span><span class="span2"> / {{ $title ?? '' }}</span></div>
+                <div class="span3">{{ $title ?? '' }}</div>
+            </div>
+            <div class="col-auto">
+                <a href="javascript:history.back(1)" class="btn btn-color-green text-white lift">ย้อนกลับ</a>
+            </div>
+        </div> <!-- .row end -->
     </div>
 @endsection
 
 @section('content')
-    <!-- ตารางที่ 1 -->
-    <div class="card table-section">
-        <table id="" class="example ui striped table nowrap unstackable hover" style="width:60%">
-            <caption class="caption-top">
-                <div>
-                    <div class="flex-end-g2">
-                        <label class="enteriespage-label">entries per page : </label>
-                        <select class="enteriespage-button">
-                            <option value="7" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
-                            <option value="15" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
-                            <option value="30" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
-                            <option value="30" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
-                        </select>
-                        <input class="search-button" placeholder="Search" /><i class="fa fa-search fa-searh-middle"></i>
-                    </div>
-            </caption>
-
-            <thead>
-                <tr>
-                    <th class="t-center" data-priority="1">#</th>
-                    <th class="t-center" data-priority="1">วันที่</th>
-                    <th class="t-center" data-priority="1">เวลา</th>
-                    <th class="t-center">โอนจากบัญชี</th>
-                    <th class="t-center">เข้าบัญชี</th>
-                    <th class="t-center" data-priority="1">จำนวนเงิน</th>
-                    <th class="t-center">ผู้ทำรายการ</th>
-                    <th class="t-center">ประเภทรายได้</th>
-                    <th class="t-center">วันที่โอนย้าย</th>
-                    <th class="t-center" data-priority="1">คำสั่ง</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php $total = 0; ?>
-                    @foreach ($data_sms as $key => $item)
-                        @if ($item->split_status == 3)
-                        <tr class="my-row table-secondary">
-                        @else
-                        <tr class="my-row">
-                        @endif
-                            <td data-label="#">{{ $key + 1 }}</td>
-                            <td data-label="วันที่">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                            <td data-label="เวลา">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                            <td data-label="โอนจากบัญชี">
-                                <?php
-                                $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
-                                $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
-                                ?>
-                                <div class="flex justify-start pl-4">
-                                    @if (file_exists($filename))
-                                        <img src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.jpg"  alt="" class="w-10 h-10 rounded-md mr-1" />
-                                    @elseif (file_exists($filename2))
-                                        <img src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.png"  alt="" class="w-10 h-10 rounded-md mr-1" />
-                                    @endif
-                                    {{ @$item->transfer_bank->name_en }}
-                                </div>
-                            </td>
-                            <td data-label="เข้าบัญชี">
-                                <img class="" src="../../../image/bank/SCB.jpg" alt="avatar" title="">
-                                {{ 'SCB ' . $item->into_account }}
-                            </td>
-                            <td data-label="จำนวนเงิน">
-                                {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
-                            </td>
-                            <td data-label="ผู้ทำรายการ">{{ $item->remark ?? 'Auto' }}</td>
-                            <td data-label="ประเภทรายได้">
-                                @if ($item->status == 1)
-                                    Guest Deposit Revenue
-                                @elseif($item->status == 2)
-                                    F&B Revenue
-                                @elseif($item->status == 3)
-                                    Water Park Revenue
-                                @elseif($item->status == 4)
-                                    Credit Card Revenue
-                                @elseif($item->status == 5)
-                                    Credit Card Agoda Revenue
-                                @elseif($item->status == 6)
-                                    Front Desk Revenue
-                                @elseif($item->status == 7)
-                                    Credit Card Water Park Revenue
-                                @endif
-
-                                @if ($item->split_status == 1)
-                                    <br>
-                                    <span class="text-danger">(Split Credit Card From
-                                        {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
-                                @endif
-                            </td>
-
-                            <td data-label="วันที่โอนย้าย">
-                                {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '' }}
-                            </td>
-                            <td>
-                                @if ($item->split_status < 3)
-                                    <div class="dropdown">
-                                        <button class="button-18 button-17" type="button" data-toggle="dropdown">ทำรายการ
-                                            <span class="caret"></span></button>
-                                        <ul class="dropdown-menu">
-                                            <li class="licolor"
-                                                onclick="change_status({{ $item->id }}, 'Front Desk Revenue')">Front Desk
-                                                Bank Transfer Revenue</li>
-                                            <li class="licolor"
-                                                onclick="change_status({{ $item->id }}, 'Guest Deposit Revenue')">Guest
-                                                Deposit Bank Transfer Revenue</li>
-                                            <li class="licolor"
-                                                onclick="change_status({{ $item->id }}, 'All Outlet Revenue')">All Outlet
-                                                Revenue</li>
-                                            <li class="licolor"
-                                                onclick="change_status({{ $item->id }}, 'Credit Agoda Revenue')">Credit
-                                                Card Agoda Revenue</li>
-                                            <li class="licolor"
-                                                onclick="change_status({{ $item->id }}, 'Credit Card Revenue')">Credit
-                                                Card Hotel Revenue</li>
-                                            <li class="licolor"
-                                                onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">Elexa EGAT
-                                                Revenue</li>
-                                            <li class="licolor" onclick="change_status({{ $item->id }}, 'No Category')"> No
-                                                Category</li>
-
-                                            @if (Auth::user()->permission > 0)
-                                                <li class="licolor"><a
-                                                        href="{{ route('sms-change-status', [$item->id, 'Water Park Revenue']) }}"></a>Water
-                                                    Park Bank Transfer Revenue</li>
-                                                <li class="licolor"><a
-                                                        href="{{ route('sms-change-status', [$item->id, 'Credit Water Park Revenue']) }}">Credit
-                                                        Card Water Park Revenue</a></li>
-                                                <li class="licolor" onclick="transfer_data({{ $item->id }})">Transfer</li>
-                                                <li class="licolor" onclick="update_time_data({{ $item->id }})">Update Time
-                                                </li>
-                                                <li class="licolor"
-                                                    onclick="split_data({{ $item->id }}, {{ $item->amount }})">Split
-                                                    Revenue</li>
-                                                <li class="licolor" onclick="edit({{ $item->id }})">Edit</li>
-                                                <li class="licolor" onclick="deleted({{ $item->id }})">Delete</li>
-                                            @endif
-                                        </ul>
+        @php
+            $role_revenue = App\Models\Role_permission_revenue::where('user_id', Auth::user()->id)->first();
+        @endphp
+    <div id="content-index" class="body d-flex py-lg-4 py-3">
+        <div class="container">
+            <div class="row clearfix">
+                <div class="col-md-12 col-12">
+                    <div class="card p-4 mb-4">
+                        <table id=""
+                            class="example ui striped table nowrap unstackable hover" style="width:60%">
+                            <caption class="caption-top">
+                                <div>
+                                    <div class="flex-end-g2">
+                                        <label class="entriespage-label" >entries per page : </label>
+                                        <select class="enteriespage-button">
+                                            <option value="7" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                            <option value="15" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                            <option value="30" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                            <option value="30" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
+                                        </select>
+                                        <input class="search-button" placeholder="Search" /><i
+                                            class="fa fa-search fa-searh-middle"></i>
                                     </div>
-                                @endif
-                            </td>
-                        </tr>
-                        <?php $total += $item->amount; ?>
-                    @endforeach
-                </tbody>
-            </tbody>
+                            </caption>
 
-            <caption class="caption-bottom ">
-                <div class="md-flex-bt-i-c">
-                    <p class="py2">Showing 1 to 7 of 7 entries</p>
-                    <div class="font-bold">ยอดรวมทั้งหมด {{ number_format($total, 2) }} บาท</div>
-                    <div class="dp-flex js-center">
-                        <div class="pagination">
-                            <a href="#" class="r-l-md">&laquo;</a>
-                            <a href="#">1</a>
-                            <a href="#" class="active">2</a>
-                            <a href="#">3</a>
-                            <a href="#" class="r-r-md">&raquo;</a>
-                        </div>
-                    </div>
+                            <thead>
+                                <tr>
+                                    <th class="t-center" data-priority="1">#</th>
+                                    <th class="t-center" data-priority="1">วันที่</th>
+                                    <th class="t-center" data-priority="1">เวลา</th>
+                                    <th class="t-center">โอนจากบัญชี</th>
+                                    <th class="t-center">เข้าบัญชี</th>
+                                    <th class="t-center" data-priority="1">จำนวนเงิน</th>
+                                    <th class="t-center">ผู้ทำรายการ</th>
+                                    <th class="t-center">ประเภทรายได้</th>
+                                    <th class="t-center">วันที่โอนย้าย</th>
+                                    <th class="t-center" data-priority="1">คำสั่ง</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $total = 0; ?>
+                                @foreach ($data_sms as $key => $item)
+                                    @if ($item->split_status == 3)
+                                    <tr class="my-row table-secondary">
+                                    @else
+                                    <tr>
+                                    @endif
+                                        <td data-label="#">{{ $key + 1 }}</td>
+                                        <td data-label="วันที่">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                        <td data-label="เวลา">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
+                                        <td data-label="โอนจากบัญชี">
+                                            <?php
+                                            $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
+                                            $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
+                                            ?>
+                                            <div class="flex-jc p-left-4">
+                                                @if (file_exists($filename))
+                                                    <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.jpg" alt="" class="img-bank" />
+                                                @elseif (file_exists($filename2))
+                                                    <img  src="../../../image/bank/SCB.jpg" alt="" class="img-bank" />
+                                                @endif
+                                                {{ @$item->transfer_bank->name_en }}
+                                            </div>
+                                        </td>
+                                        <td data-label="เข้าบัญชี">
+                                            <div class="flex-jc p-left-4">
+                                                <img  src="../../../image/bank/SCB.jpg" alt="" class="img-bank" />{{ 'SCB ' . $item->into_account }}
+                                            </div>
+                                        </td>
+                                        <td data-label="จำนวนเงิน">
+                                            {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
+                                        </td>
+                                        <td data-label="ผู้ทำรายการ">{{ $item->remark ?? 'Auto' }}</td>
+                                        <td data-label="ประเภทรายได้">
+                                            @if ($item->status == 1) Guest Deposit Revenue
+                                            @elseif($item->status == 2) All Outlet
+                                            @elseif($item->status == 3) Water Park Revenue
+                                            @elseif($item->status == 4) Credit Card Hotel Revenue
+                                            @elseif($item->status == 5) Credit Card Agoda Revenue
+                                            @elseif($item->status == 6) Front Desk Revenue
+                                            @elseif($item->status == 7) Credit Card Water Park Revenue
+                                            @endif
+
+                                            @if ($item->split_status == 1)
+                                                <br>
+                                                <span class="text-danger">(Split Credit Card From {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
+                                            @endif
+                                        </td>
+
+                                        <td data-label="วันที่โอนย้าย">
+                                            {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '' }}
+                                        </td>
+                                        <td>
+                                            @if ($item->split_status < 3)
+                                                <div class="dropdown">
+                                                    <button class="btn btn-primary" type="button" data-bs-toggle="dropdown" type="button" data-toggle="dropdown" >ทำรายการ
+                                                        <span class="caret"></span></button>
+                                                        <ul class="dropdown-menu">
+                                                            @if ($role_revenue->front_desk == 1)
+                                                                <li class="button-li" onclick="change_status({{ $item->id }}, 'Front Desk Revenue')">
+                                                                    Front Desk Bank Transfer Revenue
+                                                                </li>
+                                                            @endif
+                                                            @if ($role_revenue->guest_deposit == 1)
+                                                                <li class="button-li" onclick="change_status({{ $item->id }}, 'Guest Deposit Revenue')">
+                                                                    Guest Deposit Bank Transfer Revenue
+                                                                </li>
+                                                            @endif
+                                                            @if ($role_revenue->all_outlet == 1)
+                                                                <li class="button-li" onclick="change_status({{ $item->id }}, 'All Outlet Revenue')">
+                                                                    All Outlet Bank Transfer Revenue
+                                                                </li>
+                                                            @endif
+                                                            @if ($role_revenue->agoda == 1)
+                                                                <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Agoda Revenue')">
+                                                                    Agoda Bank Transfer Revenue
+                                                                </li>
+                                                            @endif
+                                                            @if ($role_revenue->credit_card_hotel == 1)
+                                                                <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Card Revenue')">
+                                                                    Credit Card Hotel Revenue
+                                                                </li>
+                                                            @endif
+                                                            @if ($role_revenue->elexa == 1)
+                                                                <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
+                                                                    Elexa EGAT Bank Transfer Revenue
+                                                                </li>
+                                                            @endif
+                                                            @if ($role_revenue->no_category == 1)
+                                                                <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
+                                                                    No Category
+                                                                </li>
+                                                            @endif
+                                                            @if ($role_revenue->water_park == 1)
+                                                                <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
+                                                                    Water Park Bank Transfer Revenue
+                                                                </li>
+                                                            @endif
+                                                            @if ($role_revenue->credit_water_park == 1)
+                                                                <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
+                                                                    Credit Card Water Park Revenue
+                                                                </li>
+                                                            @endif
+                                                            @if ($role_revenue->transfer == 1)
+                                                                <li class="button-li" onclick="transfer_data({{ $item->id }})">Transfer</li>
+                                                            @endif
+                                                            @if ($role_revenue->time == 1)
+                                                                <li class="button-li" onclick="update_time_data({{ $item->id }})">Update Time</li>
+                                                            @endif
+                                                            @if ($role_revenue->split == 1)
+                                                                <li class="button-li" onclick="split_data({{ $item->id }}, {{ $item->amount }})">
+                                                                    Split Revenue
+                                                                </li>
+                                                            @endif
+                                                            @if ($role_revenue->edit == 1)
+                                                                <li class="button-li" onclick="edit({{ $item->id }})">Edit</li>
+                                                                <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
+                                                            @endif
+                                                        </ul>
+                                                </div>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <?php $total += $item->amount; ?>
+                                @endforeach
+                            </tbody>
+                            <caption class="caption-bottom ">
+                                <div class="md-flex-bt-i-c">
+                                    <p class="py2">Showing 1 to 7 of 7 entries</p>
+                                    <div class="font-bold">ยอดรวมทั้งหมด 00.00 บาท</div>
+                                    <div class="dp-flex js-center">
+                                        <div class="pagination">
+                                            <a href="{{ $data_sms->previousPageUrl() }}" class="r-l-md">&laquo;</a>
+                                            @for($i=1;$i<=$data_sms->lastPage();$i++)
+                                                <!-- a Tag for another page -->
+                                                <a class="{{ @$_GET['page'] == $i || empty(@$_GET['page']) && $i == 1 ? 'active' : '' }}" href="{{$data_sms->url($i)}}">{{$i}}</a>
+                                            @endfor
+                                            <a href="{{ $data_sms->nextPageUrl() }}" class="r-r-md">&raquo;</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </caption>
+                        </table>
+                    </div> <!-- .card end -->
                 </div>
-            </caption>
-
-        </table>
+            </div> <!-- .row end -->
+        </div>
     </div>
 
     <!-- Modal -->
@@ -393,15 +422,53 @@
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
     @endif
 
+    <!-- table design css -->
+    <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css')}}">
+
+    <!-- table design js -->
+    <script src="{{ asset('assets/js/semantic.min.js')}}"></script>
+    <script src="{{ asset('assets/js/dataTables.js')}}"></script>
+    <script src="{{ asset('assets/js/dataTables.semanticui.js')}}"></script>
+    <script src="{{ asset('assets/js/dataTables.responsive.js')}}"></script>
+    <script src="{{ asset('assets/js/responsive.semanticui.js')}}"></script>
+
     <script>
         $(document).ready(function() {
 
-            new DataTable('#example', {
+            new DataTable('.example', {
+                responsive: true,
+                searching: false,
+                paging: false,
+                info: false,
+                columnDefs: [{
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null,
+                    },
+                    {
+                        width: '7%',
+                        targets: 0
+                    },
+                    {
+                        width: '10%',
+                        targets: 3
+                    },
+                    {
+                        width: '15%',
+                        targets: 4
+                    }
 
-                //ajax: 'arrays.txt'
-
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                }
             });
-
         });
 
         function transfer_data(id) {
