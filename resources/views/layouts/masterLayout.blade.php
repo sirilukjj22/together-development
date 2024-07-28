@@ -19,6 +19,9 @@
     <link rel="stylesheet" href="{{ asset('assets/css/al.style.min.css') }}">
     <!-- project layout css file -->
     <link rel="stylesheet" href="{{ asset('assets/css/layout.c.min.css') }}">
+
+    <!-- for style -->
+    <link rel="stylesheet" href="{{ asset('assets/src/smsPage.css')}}">
 </head>
 
 <body>
@@ -254,7 +257,6 @@
             </div>
 
             <!-- Body: Footer -->
-
             <div class="body-footer">
                 <div class="container">
                     <div class="row">
@@ -308,9 +310,6 @@
 
     <!-- Jquery Page Js -->
     <script src="{{ asset('assets/js/template.js') }}"></script>
-
-    <!-- for taiwind style -->
-    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
 
     <script>
         $(document).ready(function() {
