@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/al.style.min.css') }}">
     <!-- project layout css file -->
     <link rel="stylesheet" href="{{ asset('assets/css/layout.c.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/src/smsPage.css')}}">
 </head>
 
 <body>
