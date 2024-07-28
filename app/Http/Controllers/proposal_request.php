@@ -530,4 +530,6 @@ class proposal_request extends Controller
         return view('proposal_req.viewlog',compact('Quotation','Freelancer_member','Company','Mevent','Mvat','Contact_name','comtypefullname','CompanyID'
         ,'TambonID','amphuresID','CityID','provinceNames','company_fax','company_phone','Contact_phone','selectproduct','unit','quantity','QuotationID'));
     }
+
+
 }

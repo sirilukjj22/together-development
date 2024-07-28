@@ -26,6 +26,8 @@ use App\Http\Controllers\DummyQuotationController;
 use App\Http\Controllers\proposal_request;
 use App\Http\Controllers\Document_invoice;
 
+
+
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -333,6 +335,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mvat/search-list2/{datakey}','search')->name('Mproduct.Mvat.search');
         Route::get('/Mvat/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.Mvat.dupicate');
     });
+
     #Quotation
     Route::controller(QuotationController::class)->group(function () {
         Route::get('/Quotation/index', 'index')->name('Quotation.index');
@@ -368,6 +371,9 @@ Route::middleware(['auth'])->group(function () {
         //--------------------------------------------------------------
         Route::post('/Quotation/preview/document/PDF/', 'preview')->name('Quotation.preview');
 
+        Route::get('/Quotation/send/email/{id}', 'email')->name('Quotation.email');
+
+        Route::post('/Quotation/send/detail/email/{id}', 'sendemail')->name('Quotation.sendemail');
     });
 
     #DummyQuotaion
@@ -422,6 +428,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Document/invoice/Generate/save', 'save')->name('invoice.save');
         // Route::get('/Invoice/cover/document/PDF/{id}','viewApprove')->name('DummyQuotation.viewApprove');
     });
+
 
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');

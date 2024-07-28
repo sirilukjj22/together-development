@@ -1914,5 +1914,49 @@ class QuotationController extends Controller
         $confirm->save();
     }
 
+    public function email($id){
+        $quotation = Quotation::where('id',$id)->first();
+        $comid = $quotation->Company_ID;
+        $Quotation_ID= $quotation->Quotation_ID;
+        $companys = companys::where('Profile_ID',$comid)->first();
+        $emailCom = $companys->Company_Email;
+        $contact = $quotation->company_contact;
+        $Contact_name = representative::where('id',$contact)->where('status',1)->first();
+        $name = $Contact_name->First_name;
+        $Company_typeID=$companys->Company_type;
+        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+        if ($comtype->name_th =="บริษัทจำกัด") {
+            $comtypefullname = "บริษัท ". $companys->Company_Name . " จำกัด";
+        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+            $comtypefullname = "บริษัท ". $companys->Company_Name . " จำกัด (มหาชน)";
+        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+            $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $companys->Company_Name ;
+        }else {
+            $comtypefullname = $companys->Company_Name;
+        }
+        $Checkin = $quotation->checkin;
+        $Checkout = $quotation->checkout;
+        if ($Checkin) {
+            $checkin = Carbon::parse($Checkin)->format('d/m/Y');
+            $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+        }else{
+            $checkin = '-';
+            $checkout = '-';
+        }
+        $day =$quotation->day;
+        $night= $quotation->night;
+        if ($day == null) {
+            $day = '-';
+            $night = '-';
+        }
+        return view('quotation_email.index',compact('emailCom','Quotation_ID','name','comtypefullname','checkin','checkout','night','day',
+                        'quotation'));
+    }
+
+    public function sendemail(Request $request,$id){
+        $data = $request->all();
+        dd($data);
+    }
+
 
 }

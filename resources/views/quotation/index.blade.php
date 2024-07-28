@@ -1123,7 +1123,7 @@
                 console.log("AJAX request successful: ", response);
                 if (response.success) {
                     // เปลี่ยนไปยังหน้าที่ต้องการ
-                    location.reload();
+                    window.location.href = '/Quotation/send/email/' + id;
                 } else {
                     alert("An error occurred while processing the request.");
                 }

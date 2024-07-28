@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/al.style.min.css') }}">
     <!-- project layout css file -->
     <link rel="stylesheet" href="{{ asset('assets/css/layout.c.min.css') }}">
+    <!-- for taiwind style -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
@@ -225,6 +227,7 @@
                                         @if (Auth::user()->roleMenu->document_template_pdf == 1)
                                             <li><a class="ms-link" href="{{ route('Template.TemplateA1') }}">Template</a></li>
                                         @endif
+
                                     </ul>
                                 </li>
                             @endif
