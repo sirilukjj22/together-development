@@ -31,6 +31,10 @@ use Illuminate\Support\Facades\DB;
 use App\Models\master_template;
 use Illuminate\Support\Arr;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Mail\QuotationEmail;
+use Illuminate\Support\Facades\Mail;
+use App\Models\master_document_email;
+
 class QuotationController extends Controller
 {
     public function index()
@@ -1949,14 +1953,24 @@ class QuotationController extends Controller
             $day = '-';
             $night = '-';
         }
+
         return view('quotation_email.index',compact('emailCom','Quotation_ID','name','comtypefullname','checkin','checkout','night','day',
                         'quotation'));
     }
 
     public function sendemail(Request $request,$id){
         $data = $request->all();
-        dd($data);
-    }
 
+        dd($data);
+        $save= new master_document_email();
+        $save->Title = $request->tital;
+        $save->detail = $request->detail;
+        $save->files = $request->file;
+        $save->comment = $request->Comment;
+        $save->email = $request->email;
+        $save->save();
+    }
+// $customEmail = new QuotationEmail('Together Resort');
+        // Mail::to($emailCom)->send($customEmail);
 
 }

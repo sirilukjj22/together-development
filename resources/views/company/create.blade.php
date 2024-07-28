@@ -215,11 +215,11 @@
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="contract_rate_start_date">Contract Rate Start Date</label><br>
-                                <input type="date" id="contract_rate_start_date" class="form-control" name="contract_rate_start_date" onchange="Onclickreadonly()" required>
+                                <input type="date" id="contract_rate_start_date" class="form-control" name="contract_rate_start_date" onchange="Onclickreadonly()" disabled>
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="contract_rate_end_date">Contract Rate End Date</label><br>
-                                <input type="date" id="contract_rate_end_date" class="form-control" name="contract_rate_end_date" readonly required>
+                                <input type="date" id="contract_rate_end_date" class="form-control" name="contract_rate_end_date" readonly disabled>
                             </div>
                         </div>
                         <div class="row mt-2">

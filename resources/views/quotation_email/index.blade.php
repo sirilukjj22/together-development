@@ -49,6 +49,7 @@
                         </div>
                         <div class="col-lg-10 col-md-10 col-sm-12">
                             <input type="text" class="form-control" value="เอกสารเสนอราคา เลขที่: {{$Quotation_ID}} -(คุณ{{$name}})" disabled>
+                            <input type="hidden" name="tital" value="เอกสารเสนอราคา เลขที่: {{$Quotation_ID}} -(คุณ{{$name}})">
                         </div>
                     </div>
                     <div class="row mt-2">
