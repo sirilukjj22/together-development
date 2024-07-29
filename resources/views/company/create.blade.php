@@ -266,19 +266,11 @@
                                             </div>
                                         </div>
                                         <div  class="row mt-2">
-                                            <div class="col-lg-2 col-md-4 col-sm-12">
+                                            <div class="col-lg-4 col-md-4 col-sm-12">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
                                                     <span class="form-check-label" for="flexRadioDefault1">
                                                         ที่อยู่ตามบริษัท
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-md-4 col-sm-12">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                                                    <span class="form-check-label" for="flexRadioDefault2">
-                                                        กำหนดที่อยู่
                                                     </span>
                                                 </div>
                                             </div>
@@ -362,6 +354,10 @@
                             </div>
                             <div class="col-lg-3 col-sm-12"></div>
                         </div>
+                        {{-- <input type="text" name="provinceB" id="provinceB">
+                        <input type="hidden" name="">
+                        <input type="hidden" name="">
+                        <input type="hidden" name=""> --}}
                     </form>
                 </div>
             </div>
@@ -374,29 +370,81 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Get the radio buttons
         const radio1 = document.getElementById('flexRadioDefault1');
-        const radio2 = document.getElementById('flexRadioDefault2');
-        var countrySelect =$('#countrySelect').val();
-        var address =$('#address').val();
-        var province =$('#province').val();
-        var amphures =$('#amphures').val();
-        var Tambon =$('#Tambon').val();
-        var zip_code =$('#zip_code').val();
+
         radio1.addEventListener('change', function() {
             if (radio1.checked) {
-                console.log('ที่อยู่ตามบริษัท selected');
+                var countrySelect =$('#countrySelect').val();
+                var province = document.getElementById('province').value;
+                var amphures = document.getElementById('amphures').value;
+                var Tambon = document.getElementById('Tambon').value;
+                var zip_code = document.getElementById('zip_code').value;
+                var address = document.getElementById('address').value;
                 $('#countrySelectA').val(countrySelect);
-                $('#provinceAgent').display('none');
-                $('#amphuresA').val(amphures);
-                $('#TambonA').val(Tambon);
-                $('#zip_codeA').val(zip_code);
                 $('#addressAgent').val(address);
-            }
-        });
-
-        radio2.addEventListener('change', function() {
-            if (radio2.checked) {
-                console.log('กำหนดที่อยู่ selected');
-                // Perform action for กำหนดที่อยู่
+                jQuery.ajax({
+                    type: "GET",
+                    url: "{!! url('/Company/provinces/" + province + "') !!}",
+                    datatype: "JSON",
+                    async: false,
+                    success: function(result) {
+                        jQuery.each(result.data, function(key, value) {
+                            var provinceA = new Option(value.name_th, value.id);
+                            if (value.id == province) {
+                                provinceA.selected = true;
+                            }
+                            $('#provinceAgent').append(provinceA);
+                        });
+                    },
+                })
+                jQuery.ajax({
+                    type: "GET",
+                    url: "{!! url('/Company/amphuresA/" + province + "') !!}",
+                    datatype: "JSON",
+                    async: false,
+                    success: function(result) {
+                        jQuery.each(result.data, function(key, value) {
+                            var amphuresA = new Option(value.name_th, value.id);
+                            if (value.id == amphures) {
+                                amphuresA.selected = true;
+                            }
+                            console.log(amphuresA);
+                            $('#amphuresA').append(amphuresA);
+                        });
+                    },
+                })
+                $.ajax({
+                    type: "GET",
+                    url: "{!! url('/Company/TambonA/" + amphures + "') !!}",
+                    datatype: "JSON",
+                    async: false,
+                    success: function(result) {
+                        jQuery.each(result.data, function(key, value) {
+                            var TambonA = new Option(value.name_th, value.id);
+                            if (value.id == Tambon) {
+                                TambonA.selected = true;
+                            }
+                            $('#TambonA').append(TambonA);
+                            // console.log(TambonA);
+                        });
+                    },
+                })
+                $.ajax({
+                    type: "GET",
+                    url: "{!! url('/Company/districtsA/" + Tambon + "') !!}",
+                    datatype: "JSON",
+                    async: false,
+                    success: function(result) {
+                        console.log(result);
+                        jQuery.each(result.data, function(key, value) {
+                            var zip_codeA = new Option(value.zip_code, value.zip_code);
+                            if (value.zip_code == zip_code) {
+                                zip_codeA.selected = true;
+                            }
+                            $('#zip_codeA').append(zip_codeA);
+                            console.log(zip_codeA);
+                        });
+                    },
+                })
             }
         });
     });

@@ -188,81 +188,7 @@ class CompanyController extends Controller
             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
-    // public function acCon(Request $request ,$id)
-    // {
-    //     $Company = companys::find($id);
-    //     $Company_Name = $Company->Company_Name;
-    //     $Branch = $Company->Branch;
-    //     $representative = representative::where('Company_Name', 'like', "%{$Company_Name}%")
-    //                     ->where('Branch', 'like', "%{$Branch}%")->get();
-    //     $N_Profile_ID = representative::where('Company_Name', 'like', "%{$Company_Name}%")
-    //                     ->where('Branch', 'like', "%{$Branch}%")
-    //                     ->where('status', '1')->count();
-    //     $N_Profile_ID = $N_Profile_ID + 1 ;
-    //     $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
-    //     $provinceNames = province::select('name_th','id')->get();
-    //     $ac = $request->value;
-    //     if ($ac == 1 ) {
-    //         $query = representative::query();
-    //         $representative = $query->where('status', '1')->get();
-    //     }
-    //     return view('Company.contact',compact('Company','N_Profile_ID','representative','Mprefix','provinceNames'));
-    // }
-    // public function noCon(Request $request,$id)
-    // {
-    //     $Company = companys::find($id);
-    //     $Company_Name = $Company->Company_Name;
-    //     $Branch = $Company->Branch;
-    //     $representative = representative::where('Company_Name', 'like', "%{$Company_Name}%")
-    //                     ->where('Branch', 'like', "%{$Branch}%")->get();
-    //     $N_Profile_ID = representative::where('Company_Name', 'like', "%{$Company_Name}%")
-    //                     ->where('Branch', 'like', "%{$Branch}%")
-    //                     ->where('status', '1')->count();
-    //     $N_Profile_ID = $N_Profile_ID + 1 ;
-    //     $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
-    //     $provinceNames = province::select('name_th','id')->get();
-    //     $no = $request->value;
-    //     if ($no == 0 ) {
-    //         $query = representative::query();
-    //         $representative = $query->where('status', '0')->get();
-    //     }
-    //     return view('company.contact',compact('Company','representative','N_Profile_ID','Mprefix','provinceNames'));
-    // }
-    // public function deleteContact($companyId, $itemId) {
-    //     // ตรวจสอบค่าที่ส่งมา
-    //     $checkID = representative::where('id', $itemId)->first();
 
-    // if (!$checkID) {
-    //     return response()->json(['success' => false, 'message' => 'ไม่พบข้อมูลที่ต้องการลบ'], 404);
-    // }
-
-    // $Profile_ID = $checkID->Profile_ID;
-    // $Company_ID = $checkID->Company_ID;
-
-    // try {
-    //     // เริ่มการทำธุรกรรม
-    //     DB::beginTransaction();
-
-    //     // ลบข้อมูลจากตาราง representative_phone
-    //     representative_phone::where('Profile_ID', $Profile_ID)
-    //         ->where('Company_ID', 'like', "%{$Company_ID}%")
-    //         ->delete();
-
-    //     // ลบข้อมูลจากตาราง representative
-    //     $checkID->delete();
-
-    //     // ทำการยืนยันการลบข้อมูล
-    //     DB::commit();
-
-    //     return response()->json(['success' => true, 'message' => 'ลบข้อมูลเรียบร้อยแล้ว']);
-    // } catch (\Exception $e) {
-    //     // ยกเลิกการทำธุรกรรมหากเกิดข้อผิดพลาด
-    //     DB::rollBack();
-
-    //     return response()->json(['success' => false, 'message' => 'เกิดข้อผิดพลาดในการลบข้อมูล', 'error' => $e->getMessage()], 500);
-    // }
-
-    // }
 
     public function detail($id)
     {
@@ -399,6 +325,16 @@ class CompanyController extends Controller
         ]);
 
     }
+    public function provinces($id)
+    {
+
+        $provinces = province::where('id',$id)->select('name_th','id')->orderby('id','desc')->get();
+        return response()->json([
+            'data' => $provinces,
+
+        ]);
+
+    }
 
 
 
@@ -434,7 +370,8 @@ class CompanyController extends Controller
         return view('company.index',compact('Company'));
     }
     public function save(Request $request){
-        $data = $request->all();
+        try {
+            $data = $request->all();
         $Company_Name = $request->Company_Name;
         $Branch = $request->Branch;
 
@@ -493,8 +430,10 @@ class CompanyController extends Controller
             $save->Company_Website = $request->Company_Website;
             $save->Taxpayer_Identification = $request->Taxpayer_Identification;
             // $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
-            $save->Contract_Rate_Start_Date = $request->contract_rate_start_date;
-            $save->Contract_Rate_End_Date = $request->contract_rate_end_date;
+            $contract_rate_start_date = $request->contract_rate_start_date;
+            $contract_rate_end_date = $request->contract_rate_end_date;
+            $save->Contract_Rate_Start_Date = $contract_rate_start_date;
+            $save->Contract_Rate_End_Date = $contract_rate_end_date;
             $save->Lastest_Introduce_By =$request->Lastest_Introduce_By;
             $save->save();
 
@@ -571,12 +510,14 @@ class CompanyController extends Controller
                     $savephoneA->save();
                 }
             }
-            if ($savephoneA->save()) {
-                return redirect()->route('Company.index')->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
-            } else {
-                return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-            }
+            return redirect()->route('Company.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
     }
     public function representative(Request $request)
     {

@@ -268,11 +268,11 @@
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="contract_rate_start_date">Contract Rate Start Date</label><br>
-                                <input class="form-control" type="date" id="contract_rate_start_date" name="contract_rate_start_date" value="{{$Company->Contract_Rate_Start_Date}}">
+                                <input class="form-control" type="date" id="contract_rate_start_date" name="contract_rate_start_date" value="{{$Company->Contract_Rate_Start_Date}}" disabled>
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="contract_rate_end_date">Contract Rate End Date</label><br>
-                                <input class="form-control" type="date" id="contract_rate_end_date" name="contract_rate_end_date" value="{{$Company->Contract_Rate_End_Date}}">
+                                <input class="form-control" type="date" id="contract_rate_end_date" name="contract_rate_end_date" value="{{$Company->Contract_Rate_End_Date}}"disabled>
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -375,6 +375,16 @@
                                                                 <input type="text" id="last_nameAgent" class="form-control" name="last_nameAgent"maxlength="70" required>
                                                             </div>
                                                         </div>
+                                                        <div  class="row mt-2">
+                                                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                                                    <span class="form-check-label" for="flexRadioDefault1">
+                                                                        ที่อยู่ตามบริษัท
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         <div class="row mt-2">
                                                             <div class="col-sm-4 col-4">
                                                                 <span for="Country">Country</span>
@@ -413,7 +423,6 @@
                                                             <div class="col-sm-4 col-4">
                                                                 <span for="zip_code">zip_code</span>
                                                                 <select name="zip_codeA" id ="zip_codeA" class="form-select"  style="width: 100%;">
-                                                                    <option value=""></option>
                                                                 </select>
                                                             </div>
                                                             <div class="col-sm-4 col-4">
@@ -460,6 +469,89 @@
 
                                                                 // Attach the remove event to the initial remove button
                                                                 attachRemoveEvent(document.querySelector('.remove-phone'));
+                                                            </script>
+                                                            <script>
+                                                                document.addEventListener('DOMContentLoaded', function() {
+                                                                    // Get the radio buttons
+                                                                    const radio1 = document.getElementById('flexRadioDefault1');
+
+                                                                    radio1.addEventListener('change', function() {
+                                                                        if (radio1.checked) {
+                                                                            var countrySelect =$('#countrySelect').val();
+                                                                            var province = document.getElementById('province').value;
+                                                                            var amphures = document.getElementById('amphures').value;
+                                                                            var Tambon = document.getElementById('Tambon').value;
+                                                                            var zip_code = document.getElementById('zip_code').value;
+                                                                            var address = document.getElementById('address').value;
+                                                                            $('#countrySelectA').val(countrySelect);
+                                                                            $('#addressAgent').val(address);
+                                                                            jQuery.ajax({
+                                                                                type: "GET",
+                                                                                url: "{!! url('/Company/provinces/" + province + "') !!}",
+                                                                                datatype: "JSON",
+                                                                                async: false,
+                                                                                success: function(result) {
+                                                                                    jQuery.each(result.data, function(key, value) {
+                                                                                        var provinceA = new Option(value.name_th, value.id);
+                                                                                        if (value.id == province) {
+                                                                                            provinceA.selected = true;
+                                                                                        }
+                                                                                        $('#provinceAgent').append(provinceA);
+                                                                                    });
+                                                                                },
+                                                                            })
+                                                                            jQuery.ajax({
+                                                                                type: "GET",
+                                                                                url: "{!! url('/Company/amphuresA/" + province + "') !!}",
+                                                                                datatype: "JSON",
+                                                                                async: false,
+                                                                                success: function(result) {
+                                                                                    jQuery.each(result.data, function(key, value) {
+                                                                                        var amphuresA = new Option(value.name_th, value.id);
+                                                                                        if (value.id == amphures) {
+                                                                                            amphuresA.selected = true;
+                                                                                        }
+                                                                                        console.log(amphuresA);
+                                                                                        $('#amphuresA').append(amphuresA);
+                                                                                    });
+                                                                                },
+                                                                            })
+                                                                            $.ajax({
+                                                                                type: "GET",
+                                                                                url: "{!! url('/Company/TambonA/" + amphures + "') !!}",
+                                                                                datatype: "JSON",
+                                                                                async: false,
+                                                                                success: function(result) {
+                                                                                    jQuery.each(result.data, function(key, value) {
+                                                                                        var TambonA = new Option(value.name_th, value.id);
+                                                                                        if (value.id == Tambon) {
+                                                                                            TambonA.selected = true;
+                                                                                        }
+                                                                                        $('#TambonA').append(TambonA);
+                                                                                        // console.log(TambonA);
+                                                                                    });
+                                                                                },
+                                                                            })
+                                                                            $.ajax({
+                                                                                type: "GET",
+                                                                                url: "{!! url('/Company/districtsA/" + Tambon + "') !!}",
+                                                                                datatype: "JSON",
+                                                                                async: false,
+                                                                                success: function(result) {
+                                                                                    console.log(result);
+                                                                                    jQuery.each(result.data, function(key, value) {
+                                                                                        var zip_codeA = new Option(value.zip_code, value.zip_code);
+                                                                                        if (value.zip_code == zip_code) {
+                                                                                            zip_codeA.selected = true;
+                                                                                        }
+                                                                                        $('#zip_codeA').append(zip_codeA);
+                                                                                        console.log(zip_codeA);
+                                                                                    });
+                                                                                },
+                                                                            })
+                                                                        }
+                                                                    });
+                                                                });
                                                             </script>
                                                         </div>
                                                     </div>

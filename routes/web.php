@@ -160,6 +160,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Company/save', 'save')->name('Company.save');
         Route::get('/Company/change-status/{id}', 'changeStatus')->name('Company.changeStatus');
         Route::post('/Company/Company_edit/Company_update/{id}', 'Company_update')->name('Company_update');
+        Route::get('/Company/provinces/{id}', 'provinces')->name('Company.provinces');
         Route::get('/Company/amphuresA/{id}', 'amphuresAgent')->name('Company.amphuresAgent');
         Route::get('/Company/TambonA/{id}', 'TambonAgent')->name('Company.TambonAgent');
         Route::get('/Company/districtsA/{id}', 'districtAgent')->name('Company.districtAgent');
