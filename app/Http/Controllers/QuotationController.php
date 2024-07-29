@@ -1651,7 +1651,7 @@ class QuotationController extends Controller
     }
     public function addProducttablecreatemain($Quotation_ID, Request $request) {
         $value = $request->input('value');
-        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.type', 'asc')
+        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')
         ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
         return response()->json([
             'products' => $products,

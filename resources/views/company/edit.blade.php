@@ -226,7 +226,7 @@
                                 <div id="phone-inputs-container" class="flex-container">
                                     @foreach($phoneDataArray as $index => $phone)
                                         <div class="input-group mb-3">
-                                            <input type="text" class="form-control" id="phone-main" name="phone[]" value="{{ $phone['Phone_number'] }}" data-index="{{ $index }}" data-old-value="{{ $phone['Phone_number'] }}"required>
+                                            <input type="text" class="form-control" id="phone-main" name="phone[]" value="{{ $phone['Phone_number'] }}" data-index="{{ $index }}" data-old-value="{{ $phone['Phone_number'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
                                             <button class="btn btn-outline-danger remove-input" type="button" id="remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                         </div>
                                     @endforeach
@@ -240,7 +240,7 @@
                                 <div id="fax-inputs-container" class="flex-container">
                                     @foreach($faxArray as $index => $phone)
                                         <div class="input-group mb-3">
-                                            <input type="text" class="form-control"  name="fax[]" maxlength="10"  value="{{ $phone['Fax_number'] }}" data-index="{{ $index }}" data-old-value="{{ $phone['Fax_number'] }}" required>
+                                            <input type="text" class="form-control"  name="fax[]" maxlength="10"  value="{{ $phone['Fax_number'] }}" data-index="{{ $index }}" data-old-value="{{ $phone['Fax_number'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
                                             <button class="btn btn-outline-danger remove-input" type="button" id="remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                         </div>
                                     @endforeach

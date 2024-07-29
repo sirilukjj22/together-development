@@ -146,7 +146,7 @@
                         @if (($Company->Country === 'Thailand'))
                             <div class="col-lg-3 col-md-6 col-sm-12" id="citythai" style="display:block;">
                                 <label for="city">จังหวัด / Province</label>
-                                <select name="province" id="province" class="select2" onchange="select_province()"disabled>
+                                <select name="province" id="province" class="form-select" onchange="select_province()"disabled>
                                     @foreach($provinceNames as $item)
                                     <option value="{{ $item->id }}" {{$Company->City == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
                                     @endforeach
@@ -155,7 +155,7 @@
                         @else
                             <div class="col-lg-3 col-md-6 col-sm-12" id="citythai" style="display:none;">
                                 <label for="city">จังหวัด / Province</label>
-                                <select name="province" id="province" class="select2" onchange="select_province()"disabled>
+                                <select name="province" id="province" class="form-select" onchange="select_province()"disabled>
                                     <option value=""></option>
                                     @foreach($provinceNames as $item)
                                     <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -166,7 +166,7 @@
                         @if ($Company->Country === 'Thailand')
                             <div class="col-lg-3 col-md-6 col-sm-12">
                                 <label for="Amphures">อำเภอ / District</label>
-                                <select name="amphures" id="amphures" class="select2" onchange="select_amphures()"disabled>
+                                <select name="amphures" id="amphures" class="form-select" onchange="select_amphures()"disabled>
                                     @foreach($amphures as $item)
                                     <option value="{{ $item->id }}" {{ $Company->Amphures == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
                                     @endforeach
@@ -175,7 +175,7 @@
                         @else
                             <div class="col-lg-3 col-md-6 col-sm-12">
                                 <label for="Amphures">อำเภอ / District</label>
-                                <select name="amphures" id="amphures" class="select2" onchange="select_amphures()" disabled>
+                                <select name="amphures" id="amphures" class="form-select" onchange="select_amphures()" disabled>
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -183,7 +183,7 @@
                         @if ($Company->Country === 'Thailand')
                             <div class="col-lg-3 col-md-6 col-sm-12">
                                 <label for="Tambon">ตำบล / Subdistrict </label>
-                                <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()"disabled>
+                                <select name="Tambon" id="Tambon" class="form-select" onchange="select_Tambon()"disabled>
                                     @foreach($Tambon as $item)
                                     <option value="{{ $item->id }}" {{ $Company->Tambon == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
                                     @endforeach
@@ -192,7 +192,7 @@
                         @else
                             <div class="col-lg-3 col-md-6 col-sm-12">
                                 <label for="Tambon">ตำบล / Subdistrict </label>
-                                <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()" disabled>
+                                <select name="Tambon" id="Tambon" class="form-select" onchange="select_Tambon()" disabled>
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -200,7 +200,7 @@
                             <div class="col-lg-3 col-md-6 col-sm-12">
                         @if ($Company->Country === 'Thailand')
                                 <label for="zip_code">รหัสไปรษณีย์ / Postal Code</label><br>
-                                <select name="zip_code" id="zip_code" class="select2"disabled>
+                                <select name="zip_code" id="zip_code" class="form-select"disabled>
                                     @foreach($Zip_code as $item)
                                     <option value="{{ $item->id }}" {{ $Company->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
                                     @endforeach
@@ -209,7 +209,7 @@
                         @else
                             <div class="col-3">
                                 <label for="zip_code">รหัสไปรษณีย์ / Postal Code</label><br>
-                                <select name="zip_code" id="zip_code" class="select2" disabled>
+                                <select name="zip_code" id="zip_code" class="form-select" disabled>
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -274,7 +274,7 @@
                     <div style="border: 1px solid #2D7F7B;" class="mt-5"></div>
                     <div class="card border-0">
                         <div class="card-body" id="heading3">
-                            <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="true" aria-controls="faq3"><span <span class="fw-bold"></span>รายละเอียดตัวแทนองค์กร</h6>
+                            <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="true" aria-controls="faq3"><span <span class="fw-bold"><i class="fa fa-caret-down float-end"></i></span>รายละเอียดตัวแทนองค์กร</h6>
                         </div>
                         <div id="faq3" class="collapse" aria-labelledby="heading3" data-parent="#accordionExample">
                             <div class="card-body border-top">
@@ -374,7 +374,7 @@
                                     @if ($representative->Country === 'Thailand')
                                         <div class="col-lg-4 col-md-6 col-sm-12">
                                             <label for="zip_code">Zip Code</label><br>
-                                            <select name="zip_code" id="zip_code" class="select2"disabled>
+                                            <select name="zip_code" id="zip_code" class="select2"  disabled>
                                                 @foreach($Zip_code as $item)
                                                 <option value="{{ $item->id }}" {{ $representative->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
                                                 @endforeach
@@ -414,7 +414,7 @@
                                     </div>
                                     @endforeach
                                 </div>
-                                <div class="row">
+                                <div class="row mt-3">
                                     <div class="col-4"></div>
                                     <div class="col-4" style="display:flex; justify-content:center; align-items:center;">
                                         <button type="button" class="btn btn-secondary lift " onclick="window.location.href='{{ route('Company.index') }}'" >{{ __('ย้อนกลับ') }}</button>
@@ -429,5 +429,15 @@
         </div>
     </div>
 </div>
+@include('script.script')
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function() {
+    $('.select2').select2({
+        placeholder: "Please select an option"
+    });
+});
+</script>
 
 @endsection
