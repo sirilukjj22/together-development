@@ -263,7 +263,7 @@
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label class="Freelancer_member" for="">Introduce By</label>
-                                <select name="Freelancer_member" id="Freelancer_member" class="select2" required>
+                                <select name="Freelancer_member" id="Freelancer_member" class="select2" required disabled>
                                     <option value=""></option>
                                     @foreach($Freelancer_member as $item)
                                         <option value="{{ $item->Profile_ID }}">{{ $item->First_name }} {{ $item->Last_name }}</option>
@@ -1250,6 +1250,8 @@
                     $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
                     if (paxtotal == 0) {
                         $('#Pax').css('display', 'none');
+                    }else{
+                        $('#Pax').css('display', 'block');
                     }
                 }
                 else if(typevat == '51')
@@ -1273,6 +1275,8 @@
                     $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
                     if (paxtotal == 0) {
                         $('#Pax').css('display', 'none');
+                    }else{
+                        $('#Pax').css('display', 'block');
                     }
                 } else if(typevat == '52'){
                     paxtotal +=pax;
@@ -1294,6 +1298,8 @@
                     $('#PaxToTalall').val(isNaN(PaxToTalall) ? '0' : PaxToTalall);
                     if (paxtotal == 0) {
                         $('#Pax').css('display', 'none');
+                    }else{
+                        $('#Pax').css('display', 'block');
                     }
                 }
 
