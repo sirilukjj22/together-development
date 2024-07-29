@@ -428,21 +428,6 @@
                                                 </div>
                                             </div>
                                             <hr class="mt-3 my-3" style="border: 1px solid #000">
-                                                <table  class="myDataTableQuotationmodal table table-hover align-middle mb-0" style="width:100%">
-                                                    <thead >
-                                                        <tr>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">ราคา</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%">คำสั่ง</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="product-list">
-
-                                                    </tbody>
-                                                </table>
                                             <div class="col-12 mt-3">
                                                 <h3>รายการที่เลือก</h3>
                                                 <table  class="table table-hover align-middle mb-0">
@@ -457,6 +442,23 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody id="product-list-select">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="col-12 mt-3">
+                                                <table  class="myDataTableQuotationmodal table table-hover align-middle mb-0" style="width:100%">
+                                                    <thead >
+                                                        <tr>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">ราคา</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%">คำสั่ง</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="product-list">
 
                                                     </tbody>
                                                 </table>
