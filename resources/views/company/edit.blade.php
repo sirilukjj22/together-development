@@ -96,6 +96,16 @@
                             </div>
                         </div>
                         <div class="row mt-2">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefaultBranch" id="flexRadioDefaultBranch">
+                                    <span class="form-check-label" for="flexRadioDefault1">
+                                        สำนักงานใหญ่
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <label for="Branch">สาขา / Company Branch</label>
                                 <input type="text" id="Branch" name="Branch" class="form-control" maxlength="70" required value="{{$Company->Branch}}">
@@ -360,7 +370,7 @@
                                                             <div class="col-sm-2 col-2">
                                                                 <span for="prefix">คำนำหน้า / Title</span>
                                                                 <select name="prefix" id="PrefaceSelect" class="form-select" required>
-                                                                    <option value=""></option>
+                                                                        <option value=""></option>
                                                                         @foreach($Mprefix as $item)
                                                                             <option value="{{ $item->id }}">{{ $item->name_th }}</option>
                                                                         @endforeach
@@ -666,6 +676,18 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the radio buttons
+        const Branch = document.getElementById('flexRadioDefaultBranch');
+
+        Branch.addEventListener('change', function() {
+            if (Branch.checked) {
+                $('#Branch').val('สำนักงานใหญ่');
+            }
+        });
+    });
+</script>
 <script>
     $(document).ready(function() {
         $('.select2').select2({

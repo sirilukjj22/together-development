@@ -49,7 +49,7 @@
                             <div class="col-lg-2 col-md-2 col-sm-12">
                                 <label for="Preface" >คำนำหน้า / Title</label><br>
                                 <select name="Preface" id="PrefaceSelect" class="form-select">
-                                    <option value=""></option>
+                                    <option value="" selected disabled>Title</option>
                                     @foreach($prefix as $item)
                                     <option value="{{ $item->id }}">{{ $item->name_th }}</option>
                                     @endforeach

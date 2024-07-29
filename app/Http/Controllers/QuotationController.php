@@ -204,7 +204,6 @@ class QuotationController extends Controller
         ]);
     }
 
-
     public function save(Request $request){
         try {
             $data = $request->all();
@@ -1970,6 +1969,9 @@ class QuotationController extends Controller
         $Quotation_ID= $quotation->Quotation_ID;
         $companys = companys::where('Profile_ID',$comid)->first();
         $emailCom = $companys->Company_Email;
+        $contact = $quotation->company_contact;
+        $Contact_name = representative::where('id',$contact)->where('status',1)->first();
+        $emailCon = $Contact_name->Email;
         $Title = $request->tital;
         $detail = $request->detail;
         $files = $request->file;
@@ -1984,7 +1986,7 @@ class QuotationController extends Controller
             'pdf'=>$pdf,
         ];
         $customEmail = new QuotationEmail($Data,$Title);
-        Mail::to($emailCom)->send($customEmail);
+        Mail::to($emailCon)->send($customEmail);
         return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลและส่งอีเมลเรียบร้อยแล้ว');
     }
 }

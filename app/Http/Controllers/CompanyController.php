@@ -130,7 +130,7 @@ class CompanyController extends Controller
         $phoneDataArray = $phone->toArray();
 
         return view('company.editContact',compact('representative','Company','Mprefix','provinceNames'
-    ,'number','Other_City','provinceNames','Tambon','amphures','Zip_code','phoneDataArray','phonecount','representative_ID'));
+        ,'number','Other_City','provinceNames','Tambon','amphures','Zip_code','phoneDataArray','phonecount','representative_ID'));
     }
     public function contactupdate(Request $request, $companyId , $itemId)
     {
@@ -372,6 +372,7 @@ class CompanyController extends Controller
     public function save(Request $request){
         try {
             $data = $request->all();
+
         $Company_Name = $request->Company_Name;
         $Branch = $request->Branch;
 
@@ -380,10 +381,9 @@ class CompanyController extends Controller
                         ->where('status', '1')->first();
         if ($Company_Name) {
             if ($Company_Name->status === 1) {
-                return redirect()->route('Company.create')->with('error_', 'ชื่อบริษัทและสาขาซ้ำกรุณากรอกใหม่');
+                return redirect()->route('Company.create')->with('error', 'ชื่อบริษัทและสาขาซ้ำกรุณากรอกใหม่');
             }
         } else {
-            //save company
             $data = $request->all();
             $latestCom = companys::latest('id')->first();
             if ($latestCom) {
@@ -404,7 +404,9 @@ class CompanyController extends Controller
             $Address= $request->address;
             $phone_company = $request->phone_company;
             $fax = $request->fax;
-
+            $contract_rate_start_date = $request->contract_rate_start_date;
+            $contract_rate_end_date = $request->contract_rate_end_date;
+            $Lastest_Introduce_By = $request->Lastest_Introduce_By;
             $save = new companys();
             $save->Profile_ID = $N_Profile;
             $save->Company_Name = $request->Company_Name;
@@ -430,11 +432,9 @@ class CompanyController extends Controller
             $save->Company_Website = $request->Company_Website;
             $save->Taxpayer_Identification = $request->Taxpayer_Identification;
             // $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
-            $contract_rate_start_date = $request->contract_rate_start_date;
-            $contract_rate_end_date = $request->contract_rate_end_date;
             $save->Contract_Rate_Start_Date = $contract_rate_start_date;
             $save->Contract_Rate_End_Date = $contract_rate_end_date;
-            $save->Lastest_Introduce_By =$request->Lastest_Introduce_By;
+            $save->Lastest_Introduce_By =$Lastest_Introduce_By;
             $save->save();
 
             foreach ($phone_company as $index => $phoneNumber) {
@@ -460,7 +460,6 @@ class CompanyController extends Controller
             if ($latestAgent) {
                 $latestAgent = $latestAgent->Profile_ID + 1;
             } else {
-                // ถ้าไม่มี Guest ในฐานข้อมูล เริ่มต้นด้วย 1
                 $latestAgent = 1;
             }
             $A_Profile = $latestAgent;
@@ -498,8 +497,8 @@ class CompanyController extends Controller
                 $saveAgent->Company_ID = $NProfile_ID;
                 $saveAgent->Company_Name = $Company_Name;
                 $saveAgent->Branch = $ABranch;
+                $saveAgent->save();
             }
-            $saveAgent->save();
             foreach ($phone as $index => $phoneNumber) {
                 if ($phoneNumber !== null) {
                     $savephoneA = new representative_phone();

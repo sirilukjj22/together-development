@@ -83,8 +83,8 @@
                         <div class="row">
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="Company_type">ประเภทบริษัท / Company Type</label>
-                                <select name="Company_type" id="Company_type" class="form-select" required>
-                                    <option value="" selected disabled>Company Type</option>
+                                <select name="Company_type" id="Company_type" class="select2" required>
+                                    {{-- <option value="" selected disabled>Company Type</option> --}}
                                     @foreach($MCompany_type as $item)
                                     <option value="{{ $item->id }}">{{ $item->name_th }}</option>
                                     @endforeach
@@ -93,6 +93,16 @@
                             <div class="col-lg-8 col-md-6 col-sm-12">
                                 <label for="Company_Name">ชื่อบริษัท / Company Name</label>
                                 <input type="text" class="form-control" id="Company_Name" name="Company_Name" maxlength="70" placeholder="Company Name" required>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefaultBranch" id="flexRadioDefaultBranch">
+                                    <span class="form-check-label" for="flexRadioDefault1">
+                                        สำนักงานใหญ่
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -122,7 +132,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <label for="country">ประเทศ / Country</label>
-                                <select name="countrydata" id="countrySelect" class="form-select" onchange="showcityInput()" required>
+                                <select name="countrydata" id="countrySelect" class="select2" onchange="showcityInput()" required>
                                     <option value="Thailand">ประเทศไทย</option>
                                     <option value="Other_countries">ประเทศอื่นๆ</option>
                                 </select>
@@ -142,7 +152,7 @@
                             <div class="col-lg-3 col-md-6 col-sm-12" id="citythai" style="display:block;">
                                 <label for="city">จังหวัด / Province</label><br>
                                 <select name="province" id="province" class="select2" onchange="select_province()" required>
-                                    <option value="" selected disabled>เลือกจังหวัด</option>
+                                    {{-- <option value="" selected disabled>เลือกจังหวัด</option> --}}
                                     @foreach($provinceNames as $item)
                                     <option value="{{ $item->id }}">{{ $item->name_th }}</option>
                                     @endforeach
@@ -194,6 +204,9 @@
                                 </div>
                             </div>
                         </div>
+                        <div>
+
+                        </div>
                         <div class="row mt-2">
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="Company_Email">ที่อยู่อีเมลของบริษัท / Company Email</label>
@@ -225,7 +238,7 @@
                         <div class="row mt-2">
                             <div class="col-lg-6 col-md-12 col-sm-12">
                                 <label for="Lastest_Introduce_By">แนะนำล่าสุดโดย / Lastest Introduce By</label><br>
-                                <input type="text" id="Lastest_Introduce_By" class="form-control" name="Lastest_Introduce_By" maxlength="70" required>
+                                <input type="text" id="Lastest_Introduce_By" class="form-control" name="Lastest_Introduce_By" maxlength="70" required disabled>
                             </div>
                             <div class="col-lg-6 col-md-12 col-sm-12">
                                 <label for="Lastest_Introduce_By">Company Commission</label><br>
@@ -242,10 +255,10 @@
                                             <div class="row">
                                                 <div class="col-lg-4 col-md-4 col-sm-4">
                                                     <span for="Preface" style="padding: 5px;">คำนำหน้า / Title</span><br>
-                                                    <select name="Preface" id="Mprefix" class="form-select">
-                                                        <option value=""></option>
+                                                    <select name="Preface" id="Mprefix" class="select2">
+                                                        {{-- <option value="" selected disabled>Title</option> --}}
                                                         @foreach($Mprefix as $item)
-                                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                            <option value="{{ $item->id }}">{{ $item->name_th }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -278,7 +291,7 @@
                                         <div class="row mt-2">
                                             <div class="col-lg-4 col-md-6 col-sm-12">
                                                 <span class="labelcontact" for="">Country</span>
-                                                <select name="countrydataA" id="countrySelectA" class="form-select" onchange="showcityAInput()" required>
+                                                <select name="countrydataA" id="countrySelectA" class="select2" onchange="showcityAInput()" required>
                                                     <option value="Thailand">ประเทศไทย</option>
                                                     <option value="Other_countries">ประเทศอื่นๆ</option>
                                                 </select>
@@ -364,13 +377,16 @@
         </div>
     </div>
 </div>
+@include('script.script')
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/bundles/jquerymaskedinput.bundle.js')}}"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Get the radio buttons
         const radio1 = document.getElementById('flexRadioDefault1');
-
+        const Branch = document.getElementById('flexRadioDefaultBranch');
         radio1.addEventListener('change', function() {
             if (radio1.checked) {
                 var countrySelect =$('#countrySelect').val();
@@ -447,10 +463,17 @@
                 })
             }
         });
+        Branch.addEventListener('change', function() {
+            if (Branch.checked) {
+                $('#Branch').val('สำนักงานใหญ่');
+            }
+        });
     });
 </script>
 <script>
+
     $(document).ready(function() {
+        $(".phone_company").mask('000-0000-0000');
         $('.select2').select2({
             placeholder: "Please select an option"
         });
