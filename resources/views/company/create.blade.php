@@ -265,6 +265,24 @@
                                                 <input type="text" class="form-control" id="last_nameAgent" name="last_nameAgent" maxlength="70" required>
                                             </div>
                                         </div>
+                                        <div  class="row mt-2">
+                                            <div class="col-lg-2 col-md-4 col-sm-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                                    <span class="form-check-label" for="flexRadioDefault1">
+                                                        ที่อยู่ตามบริษัท
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-md-4 col-sm-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                                                    <span class="form-check-label" for="flexRadioDefault2">
+                                                        กำหนดที่อยู่
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="row mt-2">
                                             <div class="col-lg-4 col-md-6 col-sm-12">
                                                 <span class="labelcontact" for="">Country</span>
@@ -293,7 +311,6 @@
                                                 </select>
                                             </div>
                                         </div>
-
                                         <div class="row mt-2">
                                             <div class="col-lg-4 col-md-6 col-sm-12">
                                                 <span class="labelcontact" for="">Tambon</span>
@@ -353,6 +370,37 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the radio buttons
+        const radio1 = document.getElementById('flexRadioDefault1');
+        const radio2 = document.getElementById('flexRadioDefault2');
+        var countrySelect =$('#countrySelect').val();
+        var address =$('#address').val();
+        var province =$('#province').val();
+        var amphures =$('#amphures').val();
+        var Tambon =$('#Tambon').val();
+        var zip_code =$('#zip_code').val();
+        radio1.addEventListener('change', function() {
+            if (radio1.checked) {
+                console.log('ที่อยู่ตามบริษัท selected');
+                $('#countrySelectA').val(countrySelect);
+                $('#provinceAgent').display('none');
+                $('#amphuresA').val(amphures);
+                $('#TambonA').val(Tambon);
+                $('#zip_codeA').val(zip_code);
+                $('#addressAgent').val(address);
+            }
+        });
+
+        radio2.addEventListener('change', function() {
+            if (radio2.checked) {
+                console.log('กำหนดที่อยู่ selected');
+                // Perform action for กำหนดที่อยู่
+            }
+        });
+    });
+</script>
 <script>
     $(document).ready(function() {
         $('.select2').select2({
