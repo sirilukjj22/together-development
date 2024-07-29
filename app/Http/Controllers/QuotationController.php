@@ -1926,7 +1926,9 @@ class QuotationController extends Controller
         $emailCom = $companys->Company_Email;
         $contact = $quotation->company_contact;
         $Contact_name = representative::where('id',$contact)->where('status',1)->first();
-        $name = $Contact_name->First_name;
+        $namefirst = $Contact_name->First_name;
+        $namelast = $Contact_name->Last_name;
+        $name = $namefirst.' '.$namelast;
         $Company_typeID=$companys->Company_type;
         $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
         if ($comtype->name_th =="บริษัทจำกัด") {
@@ -1960,21 +1962,29 @@ class QuotationController extends Controller
 
     public function sendemail(Request $request,$id){
         $data = $request->all();
-        $save= new master_document_email();
-        $save->Title = $request->tital;
-        $save->detail = $request->detail;
-        $save->files = $request->file;
-        $save->comment = $request->Comment;
-        $save->email = $request->email;
-        $save->save();
-        dd($save->id);
-        $emailData = [
-
+        $quotation = Quotation::where('id',$id)->first();
+        $QuotationID = $quotation->Quotation_ID;
+        $path = 'Log_PDF/proposal/';
+        $pdf = $path.$QuotationID;
+        $comid = $quotation->Company_ID;
+        $Quotation_ID= $quotation->Quotation_ID;
+        $companys = companys::where('Profile_ID',$comid)->first();
+        $emailCom = $companys->Company_Email;
+        $Title = $request->tital;
+        $detail = $request->detail;
+        $files = $request->file;
+        $comment = $request->Comment;
+        $email = $request->email;
+        $Data = [
+            'title' => $Title,
+            'detail' => $detail,
+            'files' => $files,
+            'comment' => $comment,
+            'email' => $email,
+            'pdf'=>$pdf,
         ];
-        $customEmail = new QuotationEmail('Together Resort');
+        $customEmail = new QuotationEmail($Data,$Title);
         Mail::to($emailCom)->send($customEmail);
+        return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลและส่งอีเมลเรียบร้อยแล้ว');
     }
-// $customEmail = new QuotationEmail('Together Resort');
-        // Mail::to($emailCom)->send($customEmail);
-
 }

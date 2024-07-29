@@ -27,10 +27,12 @@ class QuotationEmail extends Mailable
      * @return void
      *
      */
+    public $Data;
     public $subject;
-    public function __construct()
+    public function __construct($Data,$subject)
     {
-
+        $this->Data = $Data;
+        $this->subject = $subject;
     }
 
     /**
@@ -40,18 +42,9 @@ class QuotationEmail extends Mailable
      */
     public function build()
     {
-        dd($quotation);
+
         return $this->view('quotation_email.emailproposal')
-                    ->with([
-                        'emailCom' => $this->emailCom,
-                        'Quotation_ID' => $this->Quotation_ID,
-                        'name' => $this->name,
-                        'comtypefullname' => $this->comtypefullname,
-                        'checkin' => $this->checkin,
-                        'checkout' => $this->checkout,
-                        'night' => $this->night,
-                        'day' => $this->day,
-                        'quotation' => $this->quotation,
-                    ]);
+        ->subject($this->subject)
+        ->with('Data', $this->Data);
     }
 }
