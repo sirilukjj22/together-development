@@ -1571,7 +1571,7 @@ class QuotationController extends Controller
 
         }
         elseif ($value == 'all'){
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.type', 'asc')
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.Product_ID', 'asc')
             ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
         }
         return response()->json([
@@ -1960,8 +1960,6 @@ class QuotationController extends Controller
 
     public function sendemail(Request $request,$id){
         $data = $request->all();
-
-        dd($data);
         $save= new master_document_email();
         $save->Title = $request->tital;
         $save->detail = $request->detail;
@@ -1969,6 +1967,12 @@ class QuotationController extends Controller
         $save->comment = $request->Comment;
         $save->email = $request->email;
         $save->save();
+        dd($save->id);
+        $emailData = [
+
+        ];
+        $customEmail = new QuotationEmail('Together Resort');
+        Mail::to($emailCom)->send($customEmail);
     }
 // $customEmail = new QuotationEmail('Together Resort');
         // Mail::to($emailCom)->send($customEmail);

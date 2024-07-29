@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-
+use App\Models\master_document_email;
 class QuotationEmail extends Mailable
 {
     use Queueable, SerializesModels;
@@ -28,17 +28,9 @@ class QuotationEmail extends Mailable
      *
      */
     public $subject;
-    public function __construct($emailCom, $Quotation_ID, $name, $comtypefullname, $checkin, $checkout, $night, $day, $quotation)
+    public function __construct()
     {
-        $this->emailCom = $emailCom;
-        $this->Quotation_ID = $Quotation_ID;
-        $this->name = $name;
-        $this->comtypefullname = $comtypefullname;
-        $this->checkin = $checkin;
-        $this->checkout = $checkout;
-        $this->night = $night;
-        $this->day = $day;
-        $this->quotation = $quotation;
+
     }
 
     /**
@@ -48,7 +40,8 @@ class QuotationEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('quotation_email.index')
+        dd($quotation);
+        return $this->view('quotation_email.emailproposal')
                     ->with([
                         'emailCom' => $this->emailCom,
                         'Quotation_ID' => $this->Quotation_ID,
