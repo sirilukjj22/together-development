@@ -96,18 +96,8 @@
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <div class="col-lg-4 col-md-4 col-sm-12">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefaultBranch" id="flexRadioDefaultBranch">
-                                    <span class="form-check-label" for="flexRadioDefault1">
-                                        สำนักงานใหญ่
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
                             <div class="col-lg-6 col-md-6 col-sm-12">
-                                <label for="Branch">สาขา / Company Branch</label>
+                                <label for="Branch">สาขา / Company Branch <input class="form-check-input" type="radio" name="flexRadioDefaultBranch" id="flexRadioDefaultBranch"> สำนักงานใหญ่</label>
                                 <input type="text" id="Branch" class="form-control" name="Branch" maxlength="70" placeholder="Company Branch" required>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12">
@@ -152,7 +142,7 @@
                             <div class="col-lg-3 col-md-6 col-sm-12" id="citythai" style="display:block;">
                                 <label for="city">จังหวัด / Province</label><br>
                                 <select name="province" id="province" class="select2" onchange="select_province()" required>
-                                    {{-- <option value="" selected disabled>เลือกจังหวัด</option> --}}
+                                    <option value="" selected disabled>เลือกจังหวัด</option>
                                     @foreach($provinceNames as $item)
                                     <option value="{{ $item->id }}">{{ $item->name_th }}</option>
                                     @endforeach
@@ -380,7 +370,6 @@
 @include('script.script')
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{ asset('assets/bundles/jquerymaskedinput.bundle.js')}}"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -473,7 +462,6 @@
 <script>
 
     $(document).ready(function() {
-        $(".phone_company").mask('000-0000-0000');
         $('.select2').select2({
             placeholder: "Please select an option"
         });

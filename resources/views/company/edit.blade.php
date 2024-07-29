@@ -96,18 +96,8 @@
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <div class="col-lg-4 col-md-4 col-sm-12">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefaultBranch" id="flexRadioDefaultBranch">
-                                    <span class="form-check-label" for="flexRadioDefault1">
-                                        สำนักงานใหญ่
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
                             <div class="col-lg-6 col-md-6 col-sm-12">
-                                <label for="Branch">สาขา / Company Branch</label>
+                                <label for="Branch">สาขา / Company Branch <input class="form-check-input" type="radio" name="flexRadioDefaultBranch" id="flexRadioDefaultBranch"> สำนักงานใหญ่</label>
                                 <input type="text" id="Branch" name="Branch" class="form-control" maxlength="70" required value="{{$Company->Branch}}">
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12">
