@@ -468,7 +468,7 @@
                             @if ($Quotation->adult == null)
                                 -
                             @else
-                                {{$Quotation->adult}} Adult , {{$Quotation->adult}} Children
+                                {{$Quotation->adult}} Adult , {{$Quotation->children}} Children
                             @endif</span><br>
                             </span><br>
                     </span>
