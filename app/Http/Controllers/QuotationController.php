@@ -1964,7 +1964,7 @@ class QuotationController extends Controller
         $quotation = Quotation::where('id',$id)->first();
         $QuotationID = $quotation->Quotation_ID;
         $path = 'Log_PDF/proposal/';
-        $pdf = $path.$QuotationID;
+        $pdfPath = $path.$QuotationID;
         $comid = $quotation->Company_ID;
         $Quotation_ID= $quotation->Quotation_ID;
         $companys = companys::where('Profile_ID',$comid)->first();
@@ -1983,10 +1983,15 @@ class QuotationController extends Controller
             'files' => $files,
             'comment' => $comment,
             'email' => $email,
-            'pdf'=>$pdf,
+            'pdf'=>$pdfPath,
         ];
         $customEmail = new QuotationEmail($Data,$Title);
-        Mail::to($emailCon)->send($customEmail);
+        Mail::to($emailCon)->send($customEmail, function($message) use ($pdfPath) {
+            $message->attach($pdfPath, [
+                'as' => 'quotation.pdf',
+                'mime' => 'application/pdf',
+            ]);
+        });
         return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลและส่งอีเมลเรียบร้อยแล้ว');
     }
 }

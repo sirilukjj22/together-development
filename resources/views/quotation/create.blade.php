@@ -1112,8 +1112,6 @@
                                             '</div>';
                                     }
                                 }
-
-
                                 $('#display-selected-items').append(
                                     '<tr id="tr-select-addmain' + val.id + '">' +
                                     '<td>' + rowNumbemain + '</td>' +
