@@ -1942,17 +1942,20 @@ class QuotationController extends Controller
         $Checkin = $quotation->checkin;
         $Checkout = $quotation->checkout;
         if ($Checkin) {
-            $checkin = Carbon::parse($Checkin)->format('d/m/Y');
+            $checkin = Carbon::parse($Checkin)->format('d/m/Y').' '.'-'.'';
             $checkout = Carbon::parse($Checkout)->format('d/m/Y');
         }else{
-            $checkin = '-';
-            $checkout = '-';
+            $checkin = 'No Check in date';
+            $checkout = ' ';
         }
         $day =$quotation->day;
         $night= $quotation->night;
         if ($day == null) {
-            $day = '-';
-            $night = '-';
+            $day = ' ';
+            $night = ' ';
+        }else{
+            $day = '( '.$day.' วัน';
+            $night =$night.' คืน'.' )';
         }
 
         return view('quotation_email.index',compact('emailCom','Quotation_ID','name','comtypefullname','checkin','checkout','night','day',

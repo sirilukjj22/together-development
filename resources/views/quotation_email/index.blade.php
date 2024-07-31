@@ -61,7 +61,7 @@
                                 Dear คุณ{{$name}} <br>
                                 Company : {{$comtypefullname}} <br>
                                 Warmest Greeting from Together Resort Kaengkrachan. <br><br>
-                                Please kindly see attached file Proposal letter at Together Resort Kaengkrachan on on {{$checkin}} - {{$checkout}} ( {{$day}} วัน {{$night}} คืน ) .<br><br>
+                                Please kindly see attached file Proposal letter at Together Resort Kaengkrachan on on {{$checkin}}  {{$checkout}}  {{$day}} {{$night}} .<br><br>
                                 Should there be any further or assisance you may need please don't be hesitate to contact me any time. <br><br>
                                 Best regards,<br>
                                 อัครพล มโนโชคกวินสกุล (Tel : 081-410-8888) <br>
