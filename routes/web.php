@@ -25,7 +25,7 @@ use App\Http\Controllers\Master_Vat;
 use App\Http\Controllers\DummyQuotationController;
 use App\Http\Controllers\proposal_request;
 use App\Http\Controllers\Document_invoice;
-
+use App\Http\Controllers\Masterpromotion;
 
 
 use Illuminate\Support\Facades\Artisan;
@@ -247,6 +247,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mprefix/Mprename/edit/{id}','edit')->name('Mproduct.edit.Mprefix');
         Route::get('/Mprefix/Mprename/search-list2/{datakey}','searchMprename')->name('Mproduct.Mprefix.search');
         Route::get('/Mprefix/Mprename/check-edit-name/{id}/{datakey}','dupicateMprename')->name('Mproduct.Mprefix.dupicate');
+    });
+#master promotion
+    Route::controller(Masterpromotion::class)->group(function() {
+        Route::get('/Mpromotion/index','index')->name('Mpromotion.index');
+        Route::post('/Mpromotion/Save','save')->name('Mpromotion.save');
+        Route::get('/Mpromotion/ac','ac')->name('Mpromotion.ac');
+        Route::get('/Mpromotion/no','no')->name('Mpromotion.no');
+        Route::get('/Mpromotion/delete/{id}','delete')->name('Mpromotion.delete');
     });
 #master company type
     Route::controller(Master_Company_type::class)->group(function() {
