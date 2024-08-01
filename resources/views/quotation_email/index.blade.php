@@ -30,7 +30,7 @@
         </div>
         @endif
     </div> <!-- Row end  -->
-    <form action="{{url('/Quotation/send/detail/email/'.$quotation->id)}}" method="POST">
+    <form action="{{url('/Quotation/send/detail/email/'.$quotation->id)}}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="row clearfix">
             <div class="col-sm-12 col-12">
@@ -93,7 +93,7 @@
                         </div>
                         <div class="col-lg-10 col-md-10 col-sm-12">
                             ใบเสนอราคา Proposal เลขที่ {{$Quotation_ID}} <a href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$quotation->id) }}" target="_blank" >[เอกสาร]</a>
-                            <input type="file" cols="30" rows="5" name="file" class="form-control">
+                            <input type="file" name="files[]" class="form-control" multiple>
                         </div>
                     </div>
                     <div class="row mt-2">

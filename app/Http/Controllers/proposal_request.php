@@ -434,7 +434,7 @@ class proposal_request extends Controller
                     $proposal->Approve_at = $currentDateTime;
                     $proposal->save();
                 }
-                return redirect()->route('ProposalReq.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+                return redirect()->route('Quotation.email', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
             }
         } catch (\Throwable $e) {
             return response()->json([

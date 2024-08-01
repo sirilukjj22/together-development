@@ -20,19 +20,30 @@ class QuotationEmail extends Mailable
     public $night;
     public $day;
     public $quotation;
-
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     *
-     */
     public $Data;
     public $subject;
-    public function __construct($Data,$subject)
+    protected $pdfPath;
+    protected $filePaths ;
+    protected $promotions ;
+      /**
+     * Create a new message instance.
+     *
+     * @param array $data
+     * @param string $title
+     * @param string $pdfPath
+     * @param array $filePaths
+     *  @param array $promotions
+     * @return void
+     */
+
+
+    public function __construct($Data,$subject, $pdfPath,$filePaths,$promotions)
     {
         $this->Data = $Data;
         $this->subject = $subject;
+        $this->pdfPath = $pdfPath;
+        $this->filePaths  = $filePaths ;
+        $this->promotions  = $promotions ;
     }
 
     /**
@@ -43,8 +54,16 @@ class QuotationEmail extends Mailable
     public function build()
     {
 
-        return $this->view('quotation_email.emailproposal')
+        $email=$this->view('quotation_email.emailproposal')
         ->subject($this->subject)
-        ->with('Data', $this->Data);
+        ->with('Data', $this->Data)
+        ->attach($this->pdfPath);
+        foreach ($this->filePaths as $filePath) {
+            $email->attach($filePath);
+        }
+        foreach ($this->promotions as $promotions) {
+            $email->attach($promotions);
+        }
+        return $email;
     }
 }

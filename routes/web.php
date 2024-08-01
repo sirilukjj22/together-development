@@ -356,6 +356,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/selectproduct/company/create/{id}', 'selectProduct')->name('Quotation.SelectProduct');
         Route::post('/Quotation/company/create/quotation/{Quotation_ID}', 'savequotation')->name('Quotation.quotation');
         Route::get('/Quotation/edit/quotation/{id}','edit')->name('Quotation.edit');
+
         Route::get('/Quotation/change-Status/{id}/{status}','changestatus')->name('Quotation.changestatus');
         Route::post('/Quotation/edit/company/quotation/update/', 'update')->name('Quotation.update');
         Route::get('/Quotation/company/product/{Quotation_ID}/addProduct', 'addProduct')->name('Quotation.addProduct');
@@ -383,6 +384,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/send/email/{id}', 'email')->name('Quotation.email');
 
         Route::post('/Quotation/send/detail/email/{id}', 'sendemail')->name('Quotation.sendemail');
+
+        Route::get('/Quotation/view/{id}','view')->name('Quotation.view');
     });
 
     #DummyQuotaion
@@ -436,6 +439,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/invoice/Generate/{id}','Generate')->name('invoice.Generate');
         Route::post('/Document/invoice/Generate/save', 'save')->name('invoice.save');
         // Route::get('/Invoice/cover/document/PDF/{id}','viewApprove')->name('DummyQuotation.viewApprove');
+        Route::get('/Document/Request/document/Approve/invoice/{id}', 'Approve')->name('invoice.Approve');
     });
 
 

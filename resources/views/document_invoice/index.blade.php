@@ -39,8 +39,8 @@
         <div class="col-sm-12 col-12">
             <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
                 <li class="nav-item" id="nav4"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Approved" role="tab"><span class="badge "style="background-color:#64748b">{{$Approvedcount}}</span> Approved</a></li>
-                <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-invoice" role="tab"> <span class="badge bg-warning" >{{0}}</span> Invoice</a></li>
-                <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete" role="tab"><span class="badge bg-success" >{{0}}</span> Complete</a></li>
+                <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-invoice" role="tab"> <span class="badge bg-warning" >{{$invoicecount}}</span> Invoice</a></li>
+                <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete" role="tab"><span class="badge bg-success" >{{$Completecount}}</span> Complete</a></li>
                 <li class="nav-item" id="nav4"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge bg-danger" >{{0}}</span> Cancel</a></li>
             </ul>
             <div class="card mb-3">
@@ -106,10 +106,126 @@
                             </form>
                         </div>
                         <div class="tab-pane fade" id="nav-invoice" role="tabpanel" rel="0">
-
+                            <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
+                                @csrf
+                                <input type="hidden" name="category" value="prename">
+                                <table class="myTableProposalRequest2 table table-hover align-middle mb-0" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">#</th>
+                                            <th class="text-center">ID</th>
+                                            <th>Company</th>
+                                            <th class="text-center">Issue Date</th>
+                                            <th class="text-center">Expiration Date</th>
+                                            <th class="text-center">Payment</th>
+                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">Approve By</th>
+                                            <th class="text-center">Document status</th>
+                                            <th class="text-center">Order</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($invoice))
+                                        @foreach ($invoice as $key => $item)
+                                        <tr>
+                                            <td style="text-align: center;">
+                                               {{$key +1}}
+                                            </td>
+                                            <td>{{ $item->Invoice_ID}}</td>
+                                            <td>{{ @$item->company00->Company_Name}}</td>
+                                            <td style="text-align: center;">{{ $item->IssueDate }}</td>
+                                            <td style="text-align: center;">{{ $item->Expiration }}</td>
+                                            <td style="text-align: center;">{{$item->payment}}</td>
+                                            <td style="text-align: center;">
+                                                {{$item->Nettotal}}
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if (@$item->userConfirm->name == null)
+                                                    -
+                                                @else
+                                                    {{ @$item->userConfirm->name }}
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <span class="badge rounded-pill bg-warning">Invoice</span>
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                    <ul class="dropdown-menu border-0 shadow p-3">
+                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                        <li><a class="dropdown-item py-2 rounded" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                        <li><a class="dropdown-item py-2 rounded" onclick="Cancel('{{$item->id}}')">Cancel</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </form>
                         </div>
                         <div class="tab-pane fade" id="nav-Complete" role="tabpanel" rel="0">
-
+                            <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
+                                @csrf
+                                <input type="hidden" name="category" value="prename">
+                                <table class="myTableProposalRequest3 table table-hover align-middle mb-0" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">#</th>
+                                            <th class="text-center">ID</th>
+                                            <th>Company</th>
+                                            <th class="text-center">Issue Date</th>
+                                            <th class="text-center">Expiration Date</th>
+                                            <th class="text-center">Payment</th>
+                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">Approve By</th>
+                                            <th class="text-center">Document status</th>
+                                            <th class="text-center">Order</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($Complete))
+                                        @foreach ($Complete as $key => $item)
+                                        <tr>
+                                            <td style="text-align: center;">
+                                               {{$key +1}}
+                                            </td>
+                                            <td>{{ $item->Invoice_ID}}</td>
+                                            <td>{{ @$item->company00->Company_Name}}</td>
+                                            <td style="text-align: center;">{{ $item->IssueDate }}</td>
+                                            <td style="text-align: center;">{{ $item->Expiration }}</td>
+                                            <td style="text-align: center;">{{$item->payment}}</td>
+                                            <td style="text-align: center;">
+                                                {{$item->Nettotal}}
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if (@$item->userConfirm->name == null)
+                                                    -
+                                                @else
+                                                    {{ @$item->userConfirm->name }}
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <span class="badge rounded-pill bg-success">Invoice</span>
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                    <ul class="dropdown-menu border-0 shadow p-3">
+                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                        {{-- <li><a class="dropdown-item py-2 rounded" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                        <li><a class="dropdown-item py-2 rounded" onclick="Cancel('{{$item->id}}')">Cancel</a></li> --}}
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </form>
                         </div>
                         <div class="tab-pane fade" id="nav-Cancel" role="tabpanel" rel="0">
 
@@ -166,7 +282,7 @@
 
         if (status == 0) {
             document.getElementById("nav-Complete").setAttribute("rel", "1");
-            $('.myTableProposalRequest2').addClass('nowrap').dataTable({
+            $('.myTableProposalRequest3').addClass('nowrap').dataTable({
                 responsive: true,
                 searching: true,
                 paging: true,
@@ -185,7 +301,7 @@
 
         if (status == 0) {
             document.getElementById("nav-Cancel").setAttribute("rel", "1");
-            $('.myTableProposalRequest3').addClass('nowrap').dataTable({
+            $('.myTableProposalRequest4').addClass('nowrap').dataTable({
                 responsive: true,
                 searching: true,
                 paging: true,
@@ -199,6 +315,25 @@
             });
         }
     })
-
+    function Approved(id) {
+        jQuery.ajax({
+            type: "GET",
+            url: "/Document/Request/document/Approve/invoice/" + id,
+            datatype: "JSON",
+            async: false,
+            success: function(response) {
+                console.log("AJAX request successful: ", response);
+                if (response.success) {
+                    // เปลี่ยนไปยังหน้าที่ต้องการ
+                    location.reload();
+                } else {
+                    alert("An error occurred while processing the request.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX request failed: ", status, error);
+            }
+        });
+    }
 </script>
 @endsection

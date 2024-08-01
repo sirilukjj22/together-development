@@ -165,6 +165,7 @@
                                                             @if (@Auth::user()->rolePermissionData(Auth::user()->id) == 0)
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 1)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -186,6 +187,7 @@
                                                                 @endif
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 2)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (Auth::user()->id == $item->Operated_by)
@@ -209,6 +211,7 @@
                                                                 @endif
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 3)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -340,6 +343,7 @@
                                                             @if (@Auth::user()->rolePermissionData(Auth::user()->id) == 0)
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 1)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -361,13 +365,14 @@
                                                                 @endif
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 2)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (Auth::user()->id == $item->Operated_by)
                                                                     @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
                                                                         @if (in_array($item->status_document, [1,3,4,6]))
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                        @endif
+                                                                            @endif
                                                                         @if($item->status_document == 1)
                                                                             @if ($item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
                                                                                 <li><a class="dropdown-item py-2 rounded" onclick="Approved({{ $item->id }})">Approved</a></li>
@@ -384,6 +389,7 @@
                                                                 @endif
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 3)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -515,11 +521,13 @@
                                                             @if (@Auth::user()->rolePermissionData(Auth::user()->id) == 0)
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 1)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 2)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (Auth::user()->id == $item->Operated_by)
@@ -527,6 +535,7 @@
                                                                 @endif
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 3)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
@@ -642,6 +651,7 @@
                                                             @if (@Auth::user()->rolePermissionData(Auth::user()->id) == 0)
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 1)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -651,6 +661,7 @@
                                                                 @endif
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 2)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (Auth::user()->id == $item->Operated_by)
@@ -662,6 +673,7 @@
                                                                 @endif
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 3)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -782,6 +794,7 @@
                                                             @if (@Auth::user()->rolePermissionData(Auth::user()->id) == 0)
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 1)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -791,6 +804,7 @@
                                                                 <li><a class="dropdown-item py-2 rounded" onclick="Cancel()"><input type="hidden" name="id" id="id" value="{{$item->id}}">Cancel</a></li>
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 2)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (Auth::user()->id == $item->Operated_by)
@@ -802,6 +816,7 @@
                                                                 @endif
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 3)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -921,6 +936,7 @@
                                                             @if (@Auth::user()->rolePermissionData(Auth::user()->id) == 0)
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 1)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -929,6 +945,7 @@
                                                                 @endif
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 2)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (Auth::user()->id == $item->Operated_by)
@@ -939,6 +956,7 @@
                                                                 @endif
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 3)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -1123,7 +1141,7 @@
                 console.log("AJAX request successful: ", response);
                 if (response.success) {
                     // เปลี่ยนไปยังหน้าที่ต้องการ
-                    window.location.href = '/Quotation/send/email/' + id;
+                location.reload();
                 } else {
                     alert("An error occurred while processing the request.");
                 }

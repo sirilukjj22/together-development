@@ -10,7 +10,7 @@ use App\Models\representative;
 use App\Models\representative_phone;
 use App\Models\company_fax;
 use App\Models\company_phone;
-
+use App\Models\master_promotion;
 use App\Models\Freelancer_Member;
 use App\Models\province;
 use App\Models\amphures;
@@ -826,7 +826,13 @@ class QuotationController extends Controller
                 $Quotation->AddTax = $AddTax;
                 $Quotation->Nettotal = $Nettotal;
                 $Quotation->save();
-                return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+                $Auto = $Quotation->Confirm_by;
+                $id = $Quotation->id;
+                if ($Auto = 'Auto') {
+                    return redirect()->route('Quotation.email', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+                }else{
+                    return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+                }
             }else{
             $delete = Quotation::find($id);
             $delete->delete();
@@ -892,7 +898,49 @@ class QuotationController extends Controller
         return view('quotation.edit',compact('Quotation','Freelancer_member','Company','Mevent','Mvat','Quotation_ID','Contact_name','comtypefullname','CompanyID'
         ,'TambonID','amphuresID','CityID','provinceNames','company_fax','company_phone','Contact_phone','selectproduct','unit','quantity','QuotationID'));
     }
-
+    public function view($id)
+    {
+        $Quotation = Quotation::where('id', $id)->first();
+        $QuotationID= $Quotation->Quotation_ID;
+        $Quotation_ID= $Quotation->Quotation_ID;
+        $Company_ID = $Quotation->Company_ID;
+        $contact = $Quotation->company_contact;
+        $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
+        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
+        $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
+        $Company = companys::select('Company_Name','id','Profile_ID')->get();
+        $CompanyID = companys::where('Profile_ID',$Company_ID)->first();
+        $Company_typeID=$CompanyID->Company_type;
+        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+        if ($comtype->name_th =="บริษัทจำกัด") {
+            $comtypefullname = "บริษัท ". $CompanyID->Company_Name . " จำกัด";
+        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+            $comtypefullname = "บริษัท ". $CompanyID->Company_Name . " จำกัด (มหาชน)";
+        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+            $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $CompanyID->Company_Name ;
+        }else {
+            $comtypefullname = $CompanyID->Company_Name;
+        }
+        $CityID=$CompanyID->City;
+        $amphuresID = $CompanyID->Amphures;
+        $TambonID = $CompanyID->Tambon;
+        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+        $company_fax = company_fax::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
+        if (!$company_fax) {
+            $company_fax = '-';
+        }
+        $company_phone = company_phone::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
+        $Contact_name = representative::where('Company_ID',$Company_ID)->where('id',$contact)->where('status',1)->first();
+        $profilecontact = $Contact_name->Profile_ID;
+        $Contact_phone = representative_phone::where('Company_ID',$Company_ID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
+        $selectproduct = document_quotation::where('Quotation_ID', $QuotationID)->get();
+        $unit = master_unit::where('status',1)->get();
+        $quantity = master_quantity::where('status',1)->get();
+        return view('quotation.view',compact('Quotation','Freelancer_member','Company','Mevent','Mvat','Quotation_ID','Contact_name','comtypefullname','CompanyID'
+        ,'TambonID','amphuresID','CityID','provinceNames','company_fax','company_phone','Contact_phone','selectproduct','unit','quantity','QuotationID'));
+    }
     public function update(Request $request)
     {
         $data = $request->all();
@@ -1250,6 +1298,7 @@ class QuotationController extends Controller
             $Quotation_ID=$request->Quotation_ID;
             $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
             $id = $Quotation->id;
+            $Auto = $Quotation->Confirm_by;
             $Company = $Quotation->Company_ID;
             $Quotation_ID = $Quotation->Quotation_ID;
             $eventformat = $Quotation->eventformat;
@@ -1506,7 +1555,11 @@ class QuotationController extends Controller
 
             $QuotationoldID = Quotation::where('Quotation_ID',$Quotationold)->delete();
             $documentQuotationoldID = document_quotation::where('Quotation_ID',$Quotationold)->delete();
-            return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            if ($Auto = 'Auto') {
+                return redirect()->route('Quotation.email', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            }else{
+                return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -1963,11 +2016,13 @@ class QuotationController extends Controller
     }
 
     public function sendemail(Request $request,$id){
-        $data = $request->all();
+        $file = $request->all();
+
         $quotation = Quotation::where('id',$id)->first();
         $QuotationID = $quotation->Quotation_ID;
         $path = 'Log_PDF/proposal/';
-        $pdfPath = $path.$QuotationID;
+        $pdf = $path.$QuotationID;
+        $pdfPath = $path.$QuotationID.'.pdf';
         $comid = $quotation->Company_ID;
         $Quotation_ID= $quotation->Quotation_ID;
         $companys = companys::where('Profile_ID',$comid)->first();
@@ -1977,24 +2032,38 @@ class QuotationController extends Controller
         $emailCon = $Contact_name->Email;
         $Title = $request->tital;
         $detail = $request->detail;
-        $files = $request->file;
         $comment = $request->Comment;
         $email = $request->email;
+        $promotiondata = master_promotion::where('status', 1)->select('name')->get();
+        $promotion_path = 'promotion/';
+        $promotions = [];
+        foreach ($promotiondata as $promo) {
+            $promotions[] = $promotion_path . $promo->name;
+        }
+        $fileUploads = $request->file('files'); // ใช้ 'files' ถ้าฟิลด์ในฟอร์มเป็น 'files[]'
+
+        // ตรวจสอบว่ามีไฟล์ถูกอัปโหลดหรือไม่
+        if ($fileUploads) {
+            $filePaths = [];
+            foreach ($fileUploads as $file) {
+                $filename = $file->getClientOriginalName();
+                $file->move(public_path($path), $filename);
+                $filePaths[] = public_path($path . $filename);
+            }
+        } else {
+            // หากไม่มีไฟล์ที่อัปโหลด ให้กำหนด $filePaths เป็นอาร์เรย์ว่าง
+            $filePaths = [];
+        }
         $Data = [
             'title' => $Title,
             'detail' => $detail,
-            'files' => $files,
             'comment' => $comment,
             'email' => $email,
-            'pdf'=>$pdfPath,
+            'pdfPath'=>$pdfPath,
+            'pdf'=>$pdf,
         ];
-        $customEmail = new QuotationEmail($Data,$Title);
-        Mail::to($emailCon)->send($customEmail, function($message) use ($pdfPath) {
-            $message->attach($pdfPath, [
-                'as' => 'quotation.pdf',
-                'mime' => 'application/pdf',
-            ]);
-        });
+        $customEmail = new QuotationEmail($Data,$Title,$pdfPath,$filePaths,$promotions);
+        Mail::to($emailCon)->send($customEmail);
         return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลและส่งอีเมลเรียบร้อยแล้ว');
     }
 }

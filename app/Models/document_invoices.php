@@ -12,5 +12,10 @@ class document_invoices extends Model
     protected $fillable = [
         'Invoice_ID',
         'Quotation_ID',
+        'company',
     ];
+    public function company00()
+    {
+        return $this->hasOne(companys::class, 'Profile_ID', 'company');
+    }
 }

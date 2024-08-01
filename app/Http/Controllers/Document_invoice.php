@@ -37,8 +37,11 @@ class Document_invoice extends Controller
         $userid = Auth::user()->id;
         $Approved = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->get();
         $Approvedcount = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->count();
-        $ref = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->get();
-        return view('document_invoice.index',compact('Approved','Approvedcount'));
+        $invoice = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->get();
+        $invoicecount = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->count();
+        $Complete = document_invoices::query()->where('Operated_by',$userid)->where('document_status',2)->get();
+        $Completecount = document_invoices::query()->where('Operated_by',$userid)->where('document_status',2)->count();
+        return view('document_invoice.index',compact('Approved','Approvedcount','invoice','invoicecount','Complete','Completecount'));
     }
     public function Generate($id){
 
@@ -228,8 +231,10 @@ class Document_invoice extends Controller
                 $pdf = FacadePdf::loadView('invoicePDF.preview',$data);
                 return $pdf->stream();
             }
+            $userid = Auth::user()->id;
             $data = $request->all();
-            dd( $data );
+            $Nettotal =  $request->Nettotal;
+            $formattedNettotal = number_format((float) $Nettotal, 2, '.', ',');
             $save = new document_invoices();
             $save->deposit =$request->Deposit;
             $save->valid =$request->valid;
@@ -239,9 +244,10 @@ class Document_invoice extends Controller
             $save->company=$request->company;
             $save->Invoice_ID=$request->InvoiceID;
             $save->Quotation_ID =$request->QuotationID;
-            $save->Nettotal = $request->Nettotal;
+            $save->Nettotal = $formattedNettotal;
             $save->IssueDate= $request->IssueDate;
             $save->Expiration= $request->Expiration;
+            $save->Operated_by = $userid;
             $save->save();
             return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } catch (\Throwable $e) {
@@ -249,5 +255,11 @@ class Document_invoice extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+    public function Approve($id){
+        $quotation = document_invoices::find($id);
+        $quotation->document_status	 = 2;
+        $quotation->save();
+        return response()->json(['success' => true]);
     }
 }
