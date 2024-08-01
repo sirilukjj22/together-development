@@ -440,6 +440,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Document/invoice/Generate/save', 'save')->name('invoice.save');
         // Route::get('/Invoice/cover/document/PDF/{id}','viewApprove')->name('DummyQuotation.viewApprove');
         Route::get('/Document/Request/document/Approve/invoice/{id}', 'Approve')->name('invoice.Approve');
+        Route::get('/Document/invoice/ReviceCancel/{id}','Revice')->name('invoice.Revice');
+        Route::get('/Document/invoice/Delete/{id}','Delete')->name('invoice.Delete');
+        Route::get('/Document/invoice/view/{id}','view')->name('invoice.view');
     });
 
 

@@ -216,15 +216,11 @@
                 </div>
             </header>
             <footer>
-                <br><div style="border: 1px solid #2D7F7B;margin-top: 10px;"></div>
-                <table style="width: 100%;line-height:10px;margin-top: 10px;">
+                <div style="border: 1px solid #2D7F7B;margin-top: 10px;"></div>
+                <table style="width: 35%;line-height:10px;margin-top: 10px;float: right;" >
                     <tr>
                         <th >สแกนเพื่อเปิดด้วยเว็บไซต์</th>
                         <th >ผู้ออกเอกสาร </th>
-                        <th >ผู้อนุมัติเอกสาร  </th>
-                        <th >ตราประทับ  </th>
-                        <th >ผู้รับเอกสาร (ลูกค้า)</th>
-                        <th >ตราประทับ (ลูกค้า)</th>
                     </tr>
                     <tr>
                         <td style="text-align: center;width:10%">
@@ -233,24 +229,6 @@
                             <img src="test.png" style="width: 40%;"/>
                             <span style="display: block; text-align: center;">{{@$Quotation->user->name}}</span>
                             <span style="display: block; text-align: center;">{{ $date }}</span>
-                        </td>
-                        <td style="text-align: center;">
-                            <img src="test.png" style="width: 40%;"/>
-                            <span style="display: block; text-align: center;">{{@$Quotation->user->name}}</span>
-                            <span style="display: block; text-align: center;">{{ $date }}</span>
-                        </td>
-                        <td  style="text-align: center;">
-
-                        </td>
-                        <td>
-                            <br>
-                            <span style="display: block; text-align: center;">______________________</span>
-                            <span style="display: block; text-align: center;">_____/__________/_____</span>
-                        </td>
-                        <td>
-                            <div class="">
-                            </div>
-
                         </td>
                     </tr>
                 </table>
@@ -319,8 +297,8 @@
                         <tr>
                             <td style="text-align:center"></td>
                             <td style="text-align:center">1</td>
-                            <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}}  {{$payment}} of {{ number_format($Nettotal) }} THB กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
-                            <td style="text-align:right"><span id="Subtotal">   {{ number_format($Subtotal) }}</span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
+                            <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}}  {{ number_format($payment) }} of {{ number_format($Nettotal) }} THB กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
+                            <td style="text-align:right"><span id="Subtotal">  {{ number_format($Subtotal, 2) }}</span>฿<input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
                         </tr>
                         <tr>
                             <td style="text-align:center"></td>
@@ -352,10 +330,9 @@
                 <div style="line-height:10px;">
                 </div>
                 <div>
-                    <br><br><br><br><br><br><br><br>
-                    <strong class="com" style="font-size: 14px;">Method of Payment</strong><br>
+                    <br><br><br><br><br><br><br><br><br><br>
+                    <strong class="com" style="font-size: 14px;">FULL PAYMENT AFTER RESERVATION</strong><br>
                     <span style="line-height:10px;font-size: 13px;">
-                        <strong>FULL PAYMENT AFTER RESERVATION </strong><br>
                         Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
                         If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
                         pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
@@ -367,10 +344,6 @@
                             <strong  style="display: block; text-align: left;">Bank Account No. 708-226791-3</strong>
                             <strong  style="display: block; text-align: left;">Tha Yang - Phetchaburi Branch (Savings Account)</strong>
                         </div>
-                    </div><br>
-                    <div style="font-size: 13px;line-height:10px;">
-                        <b>PLEASE FAX YOUR REMITTANCE ADVICE TO US AT YOUR EARLIES CONVENIENCE</b><br>
-                        <span>THANK YOU MUCH FOR YOUR VALUE SUPPORT AND LOOKING FORWARD TO HEAR FROM YOU SOON</span>
                     </div>
                 </div>
             </main>

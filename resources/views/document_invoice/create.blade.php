@@ -403,15 +403,22 @@
         $('#Amount').text(input.value + '%');
     }
     function validateInput1(input) {
+        // แปลงค่าจาก input โดยเอาเครื่องหมายจุลภาคออก
         var inputValue = input.value.replace(/,/g, '');
-        console.log(inputValue);
+
+
+        // ตรวจสอบว่าค่าที่ได้รับไม่ใช่ค่าเปล่า
         if (inputValue) {
-                var formattedValue = formatNumber(inputValue);
-                $('#Amount1').text(formattedValue);
-            } else {
-                $('#Amount1').text('');
-            }
+            // แปลงเป็นตัวเลขและจัดรูปแบบ
+            var formattedValue = parseFloat(inputValue).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            console.log(formattedValue);
+            $('#Amount1').text(formattedValue);
+        } else {
+            // ถ้า input ว่าง ให้แสดงค่าเป็นค่าว่าง
+            $('#Amount1').text('');
+        }
     }
+
     $(document).on('keyup', '#Payment0', function() {
         var Payment0 =  Number($(this).val());
         var Nettotal = parseFloat(document.getElementById('Nettotal').value);

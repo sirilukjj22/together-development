@@ -44,7 +44,7 @@ class Quotation extends Model
     }
     public function  user()
     {
-        return $this->hasOne(User::class, 'id', 'Document_issuer');
+        return $this->hasOne(User::class, 'id', 'Operated_by');
     }
     public function  userOperated()
     {

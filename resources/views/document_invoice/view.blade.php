@@ -3,8 +3,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col">
-                <small class="text-muted">Welcome to Generate Proforma Invoice.</small>
-                <h1 class="h4 mt-1">Generate Proforma Invoice</h1>
+                <small class="text-muted">Welcome to View Proforma Invoice.</small>
+                <h1 class="h4 mt-1">View Proforma Invoice</h1>
             </div>
         </div>
     </div>
@@ -92,8 +92,8 @@
     <div class="row clearfix">
         <div class="col-sm-12 col-12">
             <div class="card p-4 mb-4">
-                <form id="myForm" action="{{ route('invoice.save') }}" method="POST">
-                    @csrf
+
+
                     <div class="row">
                         <div class="col-lg-8 col-md-12 col-sm-12 image-container">
                             <img src="{{ asset('assets2/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
@@ -116,7 +116,7 @@
                                                 <span>Issue Date:</span>
                                             </div>
                                             <div class="col-lg-4 col-md-12 col-sm-12" id="reportrange1">
-                                                <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;"readonly>
+                                                <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;" value="{{$IssueDate}}">
                                             </div>
                                         </div>
                                     </div>
@@ -126,7 +126,7 @@
                                                 <span>Expiration Date:</span>
                                             </div>
                                             <div class="col-lg-4 col-md-12 col-sm-12">
-                                                <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly>
+                                                <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"value="{{$Expiration}}">
                                             </div>
                                         </div>
                                     </div>
@@ -184,7 +184,7 @@
                                 <tr>
                                     <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Number :</b></td>
                                     <td>
-                                        <span id="Company_Number">{{$Contact_phone->Phone_number}}</span>
+                                        <span id="Company_Number">{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span>
                                     </td>
                                 </tr>
                             </table>
@@ -208,19 +208,31 @@
                                     <tr>
                                         <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Length of Stay :</b></td>
                                         <td>
-                                            <span id="Company_Number">{{$Quotation->day}} วัน {{$Quotation->night}} คืน</span>
+                                            <span id="Company_Number">
+                                                @if ($day == null)
+                                                    -
+                                                @else
+                                                    {{$day}} วัน {{$night}} คืน
+                                                @endif
+                                            </span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Number of Guests :</b></td>
                                         <td>
-                                            <span id="Company_Number">{{$Quotation->adult}} Adult , {{$Quotation->children}} Children</span>
+                                            <span id="Company_Number">
+                                                @if ($adult == null)
+                                                    -
+                                                @else
+                                                    {{$adult}} Adult , {{$children}} Children
+                                                @endif
+                                            </span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Valid :</b></td>
                                         <td>
-                                            <input type="date" class="form-control" name="valid" id="valid" required>
+                                            <input type="date" class="form-control" name="valid" id="valid" value="{{$valid}}" disabled>
                                         </td>
                                     </tr>
                                 </table>
@@ -229,28 +241,6 @@
                     </div>
                     <div class="styled-hr"></div>
                     <input type="hidden" name="eventformat" id="eventformat" value="{{$Quotation->eventformat}}">
-                    <div class="row mt-2">
-                        <div class="col-lg-6">
-                            <label for="Payment">Payment by (%) Remaining 100%</label>
-                            <div class="input-group">
-                                <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" value="0" id="radio0" name="paymentRadio" onclick="togglePaymentFields()">
-                                </div>
-                                <input type="number" class="form-control" id="Payment0" name="PaymentPercent" min="1" max="100" disabled oninput="validateInput(this)">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <label for="Payment by (THB)">Payment by (THB)</label>
-                            <div class="input-group">
-                                <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" value="1" id="radio1" name="paymentRadio" onclick="togglePaymentFields()">
-                                </div>
-                                <input type="text" class="form-control" id="Payment1" name="Payment" disabled oninput="validateInput1(this)">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="styled-hr mt-3"></div>
                     <div class="row mt-4">
                         <table class=" table table-hover align-middle mb-0" style="width:100%">
                             <thead >
@@ -263,29 +253,34 @@
                             <tbody id="display-selected-items">
                                 <tr>
                                     <td style="text-align:center">1</td>
-                                    <td style="text-align:left">Proposal ID : {{$QuotationID}} <span id="Amount" style="display: none;"></span>
-                                        <span id="Amount1" style="display: none;"></span> of {{$balance}} THB กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit"  style="width: 2%"  id="Deposit" value="{{$Deposit}}" disabled></td>
-                                    <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
+                                    <td style="text-align:left">Proposal ID : {{$QuotationID}}
+                                    @if ($payment)
+                                        {{ number_format((float) $payment, 2, '.', ',') }}
+                                    @else
+                                        {{$paymentPercent}}%
+                                    @endif
+                                    of {{$Nettotal}} THB กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit"  style="width: 2%"  id="Deposit" value="{{$Deposit}}" disabled></td>
+                                    <td style="text-align:right"><span id="Subtotal">{{ number_format($Subtotal, 2) }}</span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Nettotal}}"></td>
                                 </tr>
                                 <tr>
                                     <td><br></td>
                                     <td style="text-align:right">Subtotal :</td>
-                                    <td style="text-align:right"><span id="SubtotalAll"></span>฿</td>
+                                    <td style="text-align:right"><span id="SubtotalAll">{{ number_format($Subtotal, 2) }}</span>฿</td>
                                 </tr>
                                 <tr>
                                     <td><br></td>
                                     <td style="text-align:right">Price Before Tax :</td>
-                                    <td style="text-align:right"><span id="Before"></span>฿</td>
+                                    <td style="text-align:right"><span id="Before">{{ number_format($before, 2) }}</span>฿</td>
                                 </tr>
                                 <tr>
                                     <td><br></td>
                                     <td style="text-align:right">Value Added Tax :</td>
-                                    <td style="text-align:right"><span id="Added"></span>฿</td>
+                                    <td style="text-align:right"><span id="Added">{{ number_format($addtax, 2) }}</span>฿</td>
                                 </tr>
                                 <tr>
                                     <td><br></td>
                                     <td style="text-align:right">Net Total :</td>
-                                    <td style="text-align:right"><span id="Total"></span>฿</td>
+                                    <td style="text-align:right"><span id="Total">{{ $balance }}</span>฿</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -349,13 +344,9 @@
                             <input type="hidden" name="Deposit"  id="Deposit" value="{{$Deposit}}">
                         </div>
                         <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
-                            <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
-                                Cancel
+                            <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('invoice.index') }}'">
+                                Back
                             </button>
-                            <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
-                                Preview
-                            </button>
-                            <button type="submit" class="btn btn-color-green lift btn_modal">save</button>
                         </div>
                         <div class="col-4"></div>
                     </div>
@@ -365,155 +356,4 @@
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
-<script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
-<script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
-<script type="text/javascript">
-    $(function() {
-        var start = moment();
-        var end = moment().add(7, 'days');
-        function cb(start, end) {
-            $('#datestart').val(start.format('DD/MM/Y'));
-            $('#dateex').val(end.format('DD/MM/Y'));
-            $('#issue_date_document').text(start.format('DD/MM/Y'));
-            $('#issue_date_document1').text(start.format('DD/MM/Y'));
-        }
-        $('#reportrange1').daterangepicker({
-            startDate: start,
-            endDate: end,
-            ranges: {
-                '3 Days': [moment(), moment().add(3, 'days')],
-                '7 Days': [moment(), moment().add(7, 'days')],
-                '15 Days': [moment(), moment().add(15, 'days')],
-                '30 Days': [moment(), moment().add(30, 'days')],
-            }
-        },
-        cb);
-        cb(start, end);
-    });
-</script>
-<script>
-    $(document).on('keyup', '#Payment0', function() {
-        var Payment0 =  Number($(this).val());
-        var Nettotal = parseFloat(document.getElementById('Nettotal').value.replace(/,/g, ''));
-        let Subtotal =0;
-        let total =0;
-        let addtax = 0;
-        let before = 0;
-        let balance =0;
-        Subtotal = (Nettotal*Payment0)/100;
-        total = Subtotal/1.07;
-        addtax = Subtotal-total;
-        before = Subtotal-addtax;
-        balance = Nettotal-Subtotal;
-        $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#balance').val(isNaN(balance) ? '0' : balance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-    });
-    $(document).on('keyup', '#Payment1', function() {
-        var Payment1 =  Number($(this).val());
-        var Nettotal = parseFloat(document.getElementById('Nettotal').value.replace(/,/g, ''));
-        let Subtotal =0;
-        let total =0;
-        let addtax = 0;
-        let before = 0;
-        let balance =0;
-        Subtotal = Payment1;
-        total = Payment1;
-        addtax = 0;
-        before = Payment1;
-        balance = Nettotal-Subtotal;
-        console.log(balance);
-        $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#balance').val(isNaN(balance) ? '0' : balance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-    });
-    function togglePaymentFields() {
-        var radio0 = document.getElementById('radio0');
-        var radio1 = document.getElementById('radio1');
-        var payment0 = document.getElementById('Payment0');
-        var payment1 = document.getElementById('Payment1');
-        var amount = document.getElementById('Amount');
-        var amount1 = document.getElementById('Amount1');
-        if (radio0.checked) {
-            payment0.disabled = false;
-            payment1.disabled = true;
-            amount.style.display = 'inline';
-            amount1.style.display = 'none';
-            payment1.value=" ";
-        } else if (radio1.checked) {
-            payment0.disabled = true;
-            payment1.disabled = false;
-            amount.style.display = 'none';
-            amount1.style.display = 'inline';
-            payment0.value=" ";
-        }
-    }
-
-    function validateInput(input) {
-        if (input.value > 100) {
-            input.value = 100;
-        }
-        $('#Amount').text(input.value + '%');
-    }
-    function validateInput1(input) {
-        // แปลงค่าจาก input โดยเอาเครื่องหมายจุลภาคออก
-        var inputValue = input.value.replace(/,/g, '');
-
-
-        // ตรวจสอบว่าค่าที่ได้รับไม่ใช่ค่าเปล่า
-        if (inputValue) {
-            // แปลงเป็นตัวเลขและจัดรูปแบบ
-            var formattedValue = parseFloat(inputValue).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            console.log(formattedValue);
-            $('#Amount1').text(formattedValue);
-        } else {
-            // ถ้า input ว่าง ให้แสดงค่าเป็นค่าว่าง
-            $('#Amount1').text('');
-        }
-    }
-</script>
-
-<script>
-    function submitPreview() {
-        var previewValue = document.getElementById("preview").value;
-
-        // สร้าง input แบบ hidden ใหม่
-        var input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "preview";
-        input.value = previewValue;
-
-        // เพิ่ม input ลงในฟอร์ม
-        document.getElementById("myForm").appendChild(input);
-        document.getElementById("myForm").submit();
-    }
-    function BACKtoEdit(){
-        event.preventDefault();
-        Swal.fire({
-            title: "คุณต้องการยกเลิกใช่หรือไม่?",
-            icon: "info",
-            showCancelButton: true,
-            confirmButtonText: "ตกลง",
-            cancelButtonText: "ยกเลิก",
-            confirmButtonColor: "#28a745",
-            dangerMode: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                console.log(1);
-                // If user confirms, submit the form
-                window.location.href = "{{ route('invoice.index') }}";
-            }
-        });
-    }
-</script>
 @endsection
