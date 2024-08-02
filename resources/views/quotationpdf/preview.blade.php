@@ -231,7 +231,11 @@
             <table style="line-height:12px;">
                 <tr>
                     <td ><span style="margin-left: 30px;">วันที่</span></td>
-                    <td> {{$Checkin}} - {{$Checkout}} ( {{$day}} วัน {{$night}} คืน)</td>
+                    @if ($Checkin == '-')
+                    <td>No Check in date</td>
+                    @else
+                    <td>{{$Checkin}} - {{$Checkout}} ( {{$day}} วัน {{$night}} คืน)</td>
+                    @endif
                 </tr>
                 <tr>
                     <td><span style="margin-left: 30px;">สถานที่</span></td>

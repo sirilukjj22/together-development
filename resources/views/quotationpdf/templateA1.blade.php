@@ -231,7 +231,11 @@
             <table style="line-height:12px;">
                 <tr>
                     <td ><span style="margin-left: 30px;">วันที่</span></td>
-                    <td>{{$checkin}} - {{$checkout}} ( {{$Quotation->day}} วัน {{$Quotation->night}} คืน)</td>
+                    @if ($Checkin == '-')
+                    <td>No Check in date</td>
+                    @else
+                    <td>{{$Checkin}} - {{$Checkout}} ( {{$day}} วัน {{$night}} คืน)</td>
+                    @endif
                 </tr>
                 <tr>
                     <td><span style="margin-left: 30px;">สถานที่</span></td>
@@ -243,7 +247,7 @@
                 </tr>
                 <tr>
                     <td><span style="margin-left: 30px;">จำนวน</span></td>
-                    <td>{{ $Quotation->adult + $Quotation->children }} ท่าน</td>
+                    <td>{{ $totalguest }} ท่าน</td>
                 </tr>
                 <tr>
                     <td><b style="margin-left: 30px;">Remark :</b></td>
@@ -456,8 +460,8 @@
                         <b class="com" style=" font-size:18px">Personal Information</b><br>
                         <b style="margin-left: 10px;">Contact Name : </b><span >คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span><br>
                         <b style="margin-left: 10px;">Contact Number : </b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span><br>
-                        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$checkin}}</span>
-                        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$checkout}}</span><br>
+                        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$Checkin}}</span>
+                        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$Checkout}}</span><br>
                         <b style="margin-left: 10px">Length of Stay :</b><span style="margin-left: 23px;">
                             @if ($Quotation->day == null)
                                 -

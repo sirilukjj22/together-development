@@ -438,7 +438,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/invoice/index', 'index')->name('invoice.index');
         Route::get('/Document/invoice/Generate/{id}','Generate')->name('invoice.Generate');
         Route::post('/Document/invoice/Generate/save', 'save')->name('invoice.save');
-        // Route::get('/Invoice/cover/document/PDF/{id}','viewApprove')->name('DummyQuotation.viewApprove');
+        Route::get('/Invoice/cover/document/PDF/{id}','export')->name('invoice.export');
         Route::get('/Document/Request/document/Approve/invoice/{id}', 'Approve')->name('invoice.Approve');
         Route::get('/Document/invoice/ReviceCancel/{id}','Revice')->name('invoice.Revice');
         Route::get('/Document/invoice/Delete/{id}','Delete')->name('invoice.Delete');

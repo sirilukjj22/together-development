@@ -280,7 +280,7 @@
                                 <tr>
                                     <td><br></td>
                                     <td style="text-align:right">Net Total :</td>
-                                    <td style="text-align:right"><span id="Total">{{ $balance }}</span>฿</td>
+                                    <td style="text-align:right"><span id="Total">{{ $formattedNumber }}</span>฿</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -330,7 +330,7 @@
                                     <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
                                     <br><br>
                                     <span>{{@Auth::user()->name}}</span>
-                                    <span id="issue_date_document"></span>
+                                    <span id="issue_date_document">{{$IssueDate}}</span>
                                 </div>
                             </div>
                         </div>

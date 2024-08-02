@@ -205,7 +205,7 @@ class QuotationController extends Controller
     }
 
     public function save(Request $request){
-        try {
+        // try {
             $data = $request->all();
             $preview=$request->preview;
             $Quotation_IDcheck =$request->Quotation_ID;
@@ -768,6 +768,7 @@ class QuotationController extends Controller
                     $checkin = '-';
                     $checkout = '-';
                 }
+                $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
                 $user = User::where('id',$userid)->select('id','name')->first();
                 $Mevent= $request->Mevent;
                 $data = [
@@ -788,7 +789,7 @@ class QuotationController extends Controller
                     'company_phone'=>$company_phone,
                     'Contact_name'=>$Contact_name,
                     'Contact_phone'=>$Contact_phone,
-                    'Quotation'=>$Quotation_IDcheck,
+                    'Quotation'=>$Quotation,
                     'eventformat'=>$eventformat,
                     'Reservation_show'=>$Reservation_show,
                     'Paymentterms'=>$Paymentterms,
@@ -818,7 +819,7 @@ class QuotationController extends Controller
                     'Mevent'=>$Mevent,
                 ];
                 $view= $template->name;
-                $pdf = FacadePdf::loadView('quotationpdf.preview',$data);
+                $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
                 // บันทึกไฟล์ PDF
                 $path = 'Log_PDF/proposal/';
                 $pdf->save($path . $Quotation_ID . '.pdf');
@@ -838,11 +839,11 @@ class QuotationController extends Controller
             $delete->delete();
                 return redirect()->route('Quotation.index')->with('success', 'ใบเสนอราคายังไม่ถูกสร้าง');
             }
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'error' => $e->getMessage()
+        //     ], 500);
+        // }
     }
     public function edit($id)
     {
@@ -1351,7 +1352,7 @@ class QuotationController extends Controller
             $date = Carbon::now();
             $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
             $QuotationVat= $Quotation->vat_type;
-            $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
+            $Mvat = master_document::where('id',$QuotationVa)->twhere('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
             $SpecialDiscount = document_quotation::where('Quotation_ID', $Quotation_ID)->first();
             $SpecialDis=$SpecialDiscount->SpecialDiscount;
 
@@ -1550,7 +1551,7 @@ class QuotationController extends Controller
             $savePDF->Quotation_ID = $Quotation_ID;
             $savePDF->QuotationType = 'Proposal';
             $savePDF->Approve_date = $formattedDate;
-            $savePDF->	Approve_time = $formattedTime;
+            $savePDF->Approve_time = $formattedTime;
             $savePDF->save();
 
             $QuotationoldID = Quotation::where('Quotation_ID',$Quotationold)->delete();
@@ -1929,8 +1930,8 @@ class QuotationController extends Controller
             'Complimentary'=>$Complimentary,
             'All_rights_reserved'=>$All_rights_reserved,
             'productItems'=>$productItems,
-            'checkin'=>$checkin,
-            'checkout'=>$checkout,
+            'Checkin'=>$checkin,
+            'Checkout'=>$checkout,
             'unit'=>$unit,
             'quantity'=>$quantity,
             'totalAmount'=>$totalAmount,
