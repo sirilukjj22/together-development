@@ -19,9 +19,12 @@ class CompanyController extends Controller
 {
     public function index()
     {
-        $Company = companys::query()->get();
-        $Mbooking = master_document::select('name_en','id')->get();
-        return view('company.index',compact('Mbooking','Company'));
+        $Company = companys::query()
+            ->leftJoin('company_phones', 'companys.Profile_ID', '=', 'company_phones.Profile_ID')
+            ->where('companys.status', 1)
+            ->select('companys.*', 'company_phones.*')
+            ->get();
+        return view('company.index',compact('Company'));
     }
     public function contact($id)
     {

@@ -144,7 +144,6 @@ class proposal_request extends Controller
                     $proposal->Approve_at = $currentDateTime;
                     $proposal->save();
                 }
-               // ดึงข้อมูลใบเสนอราคาที่สถานะเอกสารเป็น 2
                 $proposalNo = dummy_quotation::where('Company_ID',$company)->where('status_document', 2)->get();
 
                 foreach ($proposalNo as $item) {
@@ -163,8 +162,13 @@ class proposal_request extends Controller
                     $eventformat = $Quotation->eventformat;
                     $Checkin =$Quotation->checkin;
                     $Checkout=$Quotation->checkout;
-                    $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                    $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                    if ($Checkin) {
+                        $checkin = Carbon::parse($Checkin)->format('d/m/Y');
+                        $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                    }else{
+                        $checkin = '-';
+                        $checkout = '-';
+                    }
                     // ดึงข้อมูลประเภทบริษัท
                     $Company_ID = companys::where('Profile_ID',$Company)->first();
                     $Company_typeID = $Company_ID->Company_type;
@@ -397,8 +401,8 @@ class proposal_request extends Controller
                         'page_item' => $page_item,
                         'qrCodeBase64' => $qrCodeBase64,
                         'Mvat' => $Mvat,
-                        'checkin'=>$checkin,
-                        'checkout'=>$checkout,
+                        'Checkin'=>$checkin,
+                        'Checkout'=>$checkout,
                     ];
 
                     // เลือกเทมเพลตสำหรับสร้าง PDF

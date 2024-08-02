@@ -61,14 +61,14 @@
                                 Dear คุณ{{$name}} <br>
                                 Company : {{$comtypefullname}} <br>
                                 Warmest Greeting from Together Resort Kaengkrachan. <br><br>
-                                Please kindly see attached file Proposal letter at Together Resort Kaengkrachan on on {{$checkin}}  {{$checkout}}  {{$day}} {{$night}} .<br><br>
+                                Please kindly see attached file Proposal letter at Together Resort Kaengkrachan  on {{$checkin}}  {{$checkout}}  {{$day}} {{$night}} .<br><br>
                                 Should there be any further or assisance you may need please don't be hesitate to contact me any time. <br><br>
                                 Best regards,<br>
                                 อัครพล มโนโชคกวินสกุล (Tel : 081-410-8888) <br>
                                 Adminstrator<br><br>
                                 < Together Resort Kaengkrachan ><br>
                                 168 Moo 2 Kaengkrachan Phetchaburi 76170<br>
-                                Tel : 032-708-888, 098-393-944-4 Fax :<br>
+                                Tel : 032-708-888, 098-393-9444<br>
                                 Email : reservation@together-resort.com <br>
                                 Website : www.together-resort.com<br>
                             </textarea>

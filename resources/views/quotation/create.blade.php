@@ -406,7 +406,7 @@
                                         <i class="fa fa-plus"></i> Add Product</button>
                                 </div>
                                 <div class="modal fade" id="exampleModalproduct" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-xl">
+                                    <div class="modal-dialog modal-fullscreen">
                                     <div class="modal-content">
                                         <div class="modal-header btn-color-green ">
                                             <h5 class="modal-title text-white" id="exampleModalLabel">Product</h5>
@@ -416,7 +416,7 @@
                                             <div class="col-12 mt-3">
                                                 <div class="dropdown">
                                                     <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        ประเภท Product
+                                                        <span id="ProductName">ประเภท Product</span>
                                                     </button>
                                                     <ul class="dropdown-menu border-0 shadow p-3">
                                                         <li><a class="dropdown-item py-2 rounded" data-value="all" onclick="fetchProducts('all')">All Product</a></li>
@@ -433,12 +433,12 @@
                                                 <table  class="table table-hover align-middle mb-0">
                                                     <thead >
                                                         <tr>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 7%">#</th>
                                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
                                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">ราคา</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%">คำสั่ง</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 11%">ราคา</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 11%">หน่วย</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 11%">คำสั่ง</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="product-list-select">
@@ -453,8 +453,8 @@
                                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
                                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
                                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
                                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">ราคา</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
                                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%">คำสั่ง</th>
                                                         </tr>
                                                     </thead>
@@ -955,6 +955,21 @@
 </script>
 <script>
     function fetchProducts(status) {
+        if (status == 'all' ) {
+            $('#ProductName').text('All Product');
+        }else if (status == 'Room_Type') {
+            $('#ProductName').text('Room');
+        }
+        else if (status == 'Banquet') {
+            $('#ProductName').text('Banquet');
+        }
+        else if (status == 'Meals') {
+            $('#ProductName').text('Meals');
+        }
+        else if (status == 'Entertainment') {
+            $('#ProductName').text('Entertainment');
+        }
+        $('#ProductName').text();
         var table = $('.myDataTableQuotationmodal').DataTable();
         var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
         var clickCounter = 1;
@@ -967,19 +982,33 @@
             success: function(response) {
                 if (response.products.length > 0) {
                     // Clear the existing rows
-                    table.clear();
 
+                    table.clear();
+                    var num = 0;
                     for (let i = 0; i < response.products.length; i++) {
+
+
                         const data = response.products[i];
                         const productId = data.id;
-                        table.row.add([
-                            i + 1,
-                            data.Product_ID,
-                            data.name_th,
-                            data.unit_name,
-                            data.normal_price,
-                            `<button type="button"  class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
-                        ]).node().id = `row-${productId}`;
+                        var existingRowId = $('#tr-select-add' + productId).attr('id'); // ดึงค่า id ของแถว
+
+                        console.log(existingRowId);
+                        // if (existingRowId) {
+                        // var productIdOnly = existingRowId.match(/\d+/)[0]; // ใช้ regex ดึงเฉพาะตัวเลข
+                        //     console.log(productIdOnly); // จะได้ค่า 1 หรือ 2 ขึ้นอยู่กับ id
+                        // }
+                        // $('#row-' + productIdOnly).remove();
+                        // $('#row-'+ productIdOnly).parents('tr').remove().draw();
+                        if ($('#'+existingRowId).val() == undefined) {
+                            table.row.add([
+                                num += 1,
+                                data.Product_ID,
+                                data.name_th,
+                                data.normal_price,
+                                data.unit_name,
+                                `<button type="button"  class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
+                            ]).node().id = `row-${productId}`;
+                        }
                     }
                     table.draw(false);
                 }
@@ -995,8 +1024,10 @@
             var table = $('.product-list-select').DataTable();
         }
         $(document).on('click', '.select-button-product', function() {
-            console.log(table);
+
             var product = $(this).val();
+            $('#row-' + product).prop('hidden',true);
+            console.log(product);
             if ($('#productselect' + product).length > 0) {
                 return;
             }
@@ -1010,22 +1041,26 @@
                     $.each(response.products, function(index, val) {
                         var name = '';
                         var price = 0;
-                        var rowNumber = $('#product-list-select tr').length+1;
+                        var rowNumber = $('#product-list-select tr:visible').length+1;
                         if ($('#productselect' + val.id).length > 0) {
-                        console.log("Product already exists after AJAX call: ", val.id);
-                        return;
-                    }
-                            $('#product-list-select').append(
-                                '<tr id="tr-select-add' + val.id + '">' +
-                                '<td>' + rowNumber + '</td>' +
-                                '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + val.Product_ID + '">' + val.Product_ID + '</td>' +
-                                '<td style="text-align:left;">' + val.name_en + '</td>' +
-                                '<td style="text-align:right;">' + val.unit_name + '</td>' +
-                                '<td>' + val.normal_price + '</td>' +
-                                '<td><button type="button" class="Btn remove-button" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
-                                '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
-                                '</tr>'
-                            );
+                            console.log("Product already exists after AJAX call: ", val.id);
+                            return;
+                        }
+                        if ($('#product-list' + val.Product_ID).length > 0) {
+                            console.log("Product already exists after AJAX call: ", val.Product_ID);
+                        }
+
+                        $('#product-list-select').append(
+                            '<tr id="tr-select-add' + val.id + '">' +
+                            '<td style="text-align:center;">' + rowNumber + '</td>' +
+                            '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + val.Product_ID + '">' + val.Product_ID + '</td>' +
+                            '<td style="text-align:left;">' + val.name_en + '</td>' +
+                            '<td style="text-align:left;">' + val.normal_price + '</td>' +
+                            '<td style="text-align:center;">' + val.unit_name + '</td>' +
+                            '<td style="text-align:center;"><button type="button" class="Btn remove-button" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                            '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
+                            '</tr>'
+                        );
 
                     });
                 },
@@ -1036,7 +1071,7 @@
         });
     });
         function renumberRows() {
-            $('#product-list-select tr').each(function(index) {
+            $('#product-list-select tr:visible').each(function(index) {
                 $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
             });
             $('#display-selected-items tr').each(function(index) {
@@ -1047,10 +1082,10 @@
             console.log(1);
             var product = $(this).val();
             $('#tr-select-add' + product).remove();
+            $('#row-' + product).prop('hidden',false);
             renumberRows();// ลบแถวที่มี id เป็น 'tr-select-add' + product
         });
         $(document).on('click', '.confirm-button', function() {
-            var product = $(this).val();
             var number = $('#randomKey').val();
             console.log(number);
             $.ajax({
@@ -1061,6 +1096,7 @@
                 },
                 success: function(response) {
                     $.each(response.products, function (key, val) {
+                        $('#tr-select-add' + val.id).prop('hidden',true);
                         if ($('#productselect' + val.id).val() !== undefined) {
                             if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
                                 number += 1;

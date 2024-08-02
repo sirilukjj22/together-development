@@ -34,7 +34,21 @@ class Document_invoice extends Controller
     public function index()
     {
         $userid = Auth::user()->id;
-        $Approved = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->get();
+        // $Approved = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->get();
+
+        $Approved = Quotation::query()
+        ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
+        ->where('quotation.Operated_by', $userid)
+        ->where('quotation.status_guest', 1)
+        ->select(
+            'quotation.*',
+            DB::raw('COALESCE(SUM(document_invoice.payment), -1) as total_payment'),
+            DB::raw('COALESCE(MIN(document_invoice.balance), -1) as min_balance')
+        )
+        ->groupBy('quotation.Quotation_ID', 'quotation.Operated_by', 'quotation.status_guest') // เพิ่มการ Group By ตามคอลัมน์ที่คุณต้องการ
+        ->get();
+
+        dd( $Approved);
         $Approvedcount = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->count();
         $invoice = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->get();
         $invoicecount = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->count();
@@ -503,7 +517,7 @@ class Document_invoice extends Controller
         return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
 
-    public function export($id){
+    public function export(Request $request,$id){
         $Invoice = document_invoices::where('id',$id)->first();
         $company = $Invoice->company;
         $Invoice_ID = $Invoice->Invoice_ID;
@@ -530,9 +544,101 @@ class Document_invoice extends Controller
         $company_phone = company_phone::where('Profile_ID',$company)->where('Sequence','main')->first();
         $Contact_name = representative::where('Company_ID',$company)->where('status',1)->first();
         $Contact_phone = representative_phone::where('Company_ID',$company)->where('Sequence','main')->first();
+        $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
+        $vat_type= $Quotation->vat_type;
+        $vat_type = master_document::where('id',$vat_type)->first();
+        $vatname = $vat_type->name_th;
+        $eventformat =$Quotation->eventformat;
+        $eventformat = master_document::where('id',$eventformat)->select('name_th','id')->first();
+        $Checkin  = $Quotation->checkin;
+        $Checkout = $Quotation->checkout;
+        if ($Checkin) {
+            $checkin = Carbon::parse($Checkin)->format('d/m/Y');
+            $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+        }else{
+            $checkin = '-';
+            $checkout = '-';
+        }
+        $date = Carbon::now();
+        $date = Carbon::parse($date)->format('d/m/Y');
+        $id = $Quotation_ID;
+        $protocol = $request->secure() ? 'https' : 'http';
+        $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
 
-        dd( $Invoice,$company);
-        // return $pdf->stream();
+        // Generate the QR code as PNG
+        $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
+        $qrCodeBase64 = base64_encode($qrCodeImage);
+
+        $Deposit = $Invoice->deposit;
+        $payment=$Invoice->payment;
+        $Nettotal = floatval(str_replace(',', '', $Invoice->Nettotal));
+        $valid=$Invoice->valid;
+        $valid = Carbon::parse($valid)->format('d/m/Y');
+        if ($payment) {
+            $payment0 = $payment;
+            $Subtotal =0;
+            $total =0;
+            $addtax = 0;
+            $before = 0;
+            $balance =0;
+
+            $Subtotal = $payment;
+            $total = $payment;
+            $addtax = 0;
+            $before = $payment;
+            $balance = $Subtotal;
+        }
+        $paymentPercent=$Invoice->paymentPercent;
+        if ($paymentPercent) {
+            $payment0 = $paymentPercent.'%';
+            $Subtotal =0;
+            $total =0;
+            $addtax = 0;
+            $before = 0;
+            $balance =0;
+            $Nettotal = floatval(str_replace(',', '', $request->Nettotal));
+            $paymentPercent = floatval($paymentPercent);
+            $Subtotal = ($Nettotal*$paymentPercent)/100;
+            $total = $Subtotal/1.07;
+            $addtax = $Subtotal-$total;
+            $before = $Subtotal-$addtax;
+            $balance = $Nettotal-$Subtotal;
+
+        }
+        // dd($payment);
+        $balanceold =$Invoice->balance;
+        $data = [
+            'valid'=>$valid,
+            'date'=>$date,
+            'qrCodeBase64'=>$qrCodeBase64,
+            'Quotation'=>$Quotation,
+            'Invoice_ID'=>$Invoice_ID,
+            'comtypefullname'=>$comtypefullname,
+            'Company_ID'=>$Company_ID,
+            'TambonID'=>$TambonID,
+            'provinceNames'=>$provinceNames,
+            'amphuresID'=>$amphuresID,
+            'company_fax'=>$company_fax,
+            'company_phone'=>$company_phone,
+            'Contact_name'=>$Contact_name,
+            'Contact_phone'=>$Contact_phone,
+            'checkin'=>$checkin,
+            'checkout'=>$checkout,
+            'balance'=>$balance,
+            'Deposit'=>$Deposit,
+            'payment'=>$payment0,
+            'Nettotal'=>$Nettotal,
+            'Subtotal'=>$Subtotal,
+            'total'=>$total,
+            'addtax'=>$addtax,
+            'before'=>$before,
+            'balanceold'=>$balanceold,
+            'vatname'=>$vatname,
+        ];
+        $template = master_template::query()->latest()->first();
+        $view= $template->name;
+        $pdf = FacadePdf::loadView('invoicePDF.'.$view,$data);
+        return $pdf->stream();
     }
 
 }

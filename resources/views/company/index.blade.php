@@ -61,7 +61,7 @@
                             <th>รหัสโปรไฟล์</th>
                             <th>ชื่อองค์กร</th>
                             <th>สาขา</th>
-                            <th>Booking Channal</th>
+                            <th>เบอร์โทรศัพท์</th>
                             <th class="text-center">สถานะการใช้งาน</th>
                             <th class="text-center">คำสั่ง</th>
                         </tr>
@@ -75,15 +75,7 @@
                                 <td>{{ $item->Company_Name }}</td>
                                 <td>{{ $item->Branch }}</td>
                                 <td>
-                                    @php
-                                        $Mbooking = explode(',', $item->Booking_Channel);
-
-                                        foreach ($Mbooking as $key => $value) {
-                                            $bc = App\Models\master_document::find($value);
-                                            echo $bc->name_en . '<br>';
-                                        }
-
-                                    @endphp
+                                    {{ substr($item->Phone_number, 0, 3) }}-{{ substr($item->Phone_number, 3, 3) }}-{{ substr($item->Phone_number, 6) }}
                                 </td>
                                 <td style="text-align: center;">
                                     @if ($item->status == 1)
