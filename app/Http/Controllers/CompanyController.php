@@ -560,8 +560,10 @@ class CompanyController extends Controller
     public function Company_edit($id)
     {
 
-        $Company = companys::find($id);
+        $Company = companys::where('id',$id)->first();
+
         $Company_ID = $Company->Profile_ID;
+
         $number =  preg_replace("/[^0-9]/", "", $Company->City);
         $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Company->City);
         $provinceNames = province::select('name_th','id')->get();
