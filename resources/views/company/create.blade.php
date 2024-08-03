@@ -66,7 +66,44 @@
 @endsection
 @section('content')
 <div class="container">
-    <div class="container mt-3">
+    <div class="container ">
+        <div class="row align-items-center mb-2">
+            @if (session("success"))
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
+                <hr>
+                <p class="mb-0">{{ session('success') }}</p>
+            </div>
+            @endif
+            @if (session("error"))
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">ERROR 500!</h4>
+                <hr>
+                <p class="mb-0">{{ session('error') }}</p>
+            </div>
+            @endif
+            <div class="col">
+                <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ol>
+            </div>
+            <div class="col-auto">
+                <div class="dropdown">
+                    <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        สถานะการใช้งาน
+                    </button>
+                    {{-- <button type="button" class="btn btn-danger lift sa-buttons"><i class="fa fa-trash-o"></i> ลบหลายรายการ</button> --}}
+
+                    <ul class="dropdown-menu border-0 shadow p-3">
+                        <li><a class="dropdown-item py-2 rounded" href="{{ route('Company.index') }}">ทั้งหมด</a></li>
+                        <li><a class="dropdown-item py-2 rounded" href="{{ route('Company.ac', ['value' => 1]) }}">ใช้งาน</a></li>
+                        <li><a class="dropdown-item py-2 rounded" href="{{ route('Company.no', ['value' => 0]) }}">ปิดใช้งาน</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div> <!-- Row end  -->
         <div class="row clearfix">
             <div class="col-sm-12 col-12">
                 <div class="card p-4 mb-4">

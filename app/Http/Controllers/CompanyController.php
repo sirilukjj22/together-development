@@ -376,148 +376,147 @@ class CompanyController extends Controller
         try {
             $data = $request->all();
 
-        $Company_Name = $request->Company_Name;
-        $Branch = $request->Branch;
-
-        $Company_Name = companys::where('Company_Name', 'like', "%{$Company_Name}%")
-                        ->where('Branch', 'like', "%{$Branch}%")
-                        ->where('status', '1')->first();
-        if ($Company_Name) {
-            if ($Company_Name->status === 1) {
-                return redirect()->route('Company.create')->with('error', 'ชื่อบริษัทและสาขาซ้ำกรุณากรอกใหม่');
-            }
-        } else {
-            $data = $request->all();
-            $latestCom = companys::latest('id')->first();
-            if ($latestCom) {
-                $Profile_ID = $latestCom->id + 1;
-            } else {
-                // ถ้าไม่มี Guest ในฐานข้อมูล เริ่มต้นด้วย 1
-                $Profile_ID = 1;
-            }
-            $Id_profile ="C-";
-            $N_Profile = $Id_profile.$Profile_ID;
-            $CountryOther = $request->countrydata;
-            $Branch = $request->Branch;
-            $province = $request->province;
-            $amphures = $request->amphures;
-            $Tambon = $request->Tambon;
-            $zip_code = $request->zip_code;
-            $city = $request->city;
-            $Address= $request->address;
-            $phone_company = $request->phone_company;
-            $fax = $request->fax;
-            $contract_rate_start_date = $request->contract_rate_start_date;
-            $contract_rate_end_date = $request->contract_rate_end_date;
-            $Lastest_Introduce_By = $request->Lastest_Introduce_By;
-            $save = new companys();
-            $save->Profile_ID = $N_Profile;
-            $save->Company_Name = $request->Company_Name;
-            $save->Company_type = $request->Company_type;
-            $save->Market =$request->Mmarket;
-            $save->Booking_Channel = $request->booking_channel;
-            if ($CountryOther == "Other_countries") {
-                if ($city === null) {
-                    return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
-                }else {
-                    $save->City = $city;
-                }
-            }else {
-                $save->Country = $CountryOther;
-                $save->City = $province;
-                $save->Amphures = $amphures;
-                $save->Address = $Address;
-                $save->Tambon = $Tambon;
-                $save->Zip_Code = $zip_code;
-                $save->Branch = $Branch;
-            }
-            $save->Company_Email = $request->Company_Email;
-            $save->Company_Website = $request->Company_Website;
-            $save->Taxpayer_Identification = $request->Taxpayer_Identification;
-            // $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
-            $save->Contract_Rate_Start_Date = $contract_rate_start_date;
-            $save->Contract_Rate_End_Date = $contract_rate_end_date;
-            $save->Lastest_Introduce_By =$Lastest_Introduce_By;
-            $save->save();
-
-            foreach ($phone_company as $index => $phoneNumber) {
-                if ($phoneNumber !== null) {
-                    $savephone = new company_phone();
-                    $savephone->Profile_ID = $N_Profile;
-                    $savephone->Phone_number = $phoneNumber;
-                    $savephone->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                    $savephone->save();
-                }
-            }
-            foreach ($fax as $index => $faxNumber) {
-                if ($faxNumber !== null) {
-                    $savefax = new company_fax();
-                    $savefax->Profile_ID = $N_Profile;
-                    $savefax->Fax_number = $faxNumber;
-                    $savefax->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                    $savefax->save();
-                }
-            }
-            //agent
-            $latestAgent = representative::where('Company_Name', 'like', "%{$Company_Name}%")->where('Branch', 'like', "%{$Branch}%")->first();
-            if ($latestAgent) {
-                $latestAgent = $latestAgent->Profile_ID + 1;
-            } else {
-                $latestAgent = 1;
-            }
-            $A_Profile = $latestAgent;
-            $saveAgent = new representative();
-            $saveAgent->Profile_ID = $A_Profile;
-            $saveAgent->prefix = $request->Preface;
-            $saveAgent->First_name = $request->first_nameAgent;
-            $saveAgent->Last_name = $request->last_nameAgent;
-            $countrydataA= $request->countrydataA;
-            $provinceAgent= $request->provinceAgent;
-            $amphuresA= $request->amphuresA;
-            $TambonA= $request->TambonA;
-            $zip_codeA= $request->zip_codeA;
-            $cityA = $request->cityA;
-            $addressAgent= $request->addressAgent;
-            $EmailAgent= $request->EmailAgent;
-            $NProfile_ID = $N_Profile;
-            $ABranch = $request->Branch;
             $Company_Name = $request->Company_Name;
-           $phone = $request->phone;
-            if ($countrydataA == "Other_countries") {
-                if ($cityA === null) {
-                    return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
+            $Branch = $request->Branch;
+            $Company_Name = companys::where('Company_Name', 'like', "%{$Company_Name}%")
+                            ->where('Branch', 'like', "%{$Branch}%")
+                            ->where('status', '1')->first();
+            if ($Company_Name) {
+                if ($Company_Name->status === 1) {
+                    return redirect()->route('Company.create')->with('error', 'ชื่อบริษัทและสาขาซ้ำกรุณากรอกใหม่');
+                }
+            } else {
+                $data = $request->all();
+                $latestCom = companys::latest('id')->first();
+                if ($latestCom) {
+                    $Profile_ID = $latestCom->id + 1;
+                } else {
+                    // ถ้าไม่มี Guest ในฐานข้อมูล เริ่มต้นด้วย 1
+                    $Profile_ID = 1;
+                }
+                $Id_profile ="C-";
+                $N_Profile = $Id_profile.$Profile_ID;
+                $CountryOther = $request->countrydata;
+                $Branch = $request->Branch;
+                $province = $request->province;
+                $amphures = $request->amphures;
+                $Tambon = $request->Tambon;
+                $zip_code = $request->zip_code;
+                $city = $request->city;
+                $Address= $request->address;
+                $phone_company = $request->phone_company;
+                $fax = $request->fax;
+                $contract_rate_start_date = $request->contract_rate_start_date;
+                $contract_rate_end_date = $request->contract_rate_end_date;
+                $Lastest_Introduce_By = $request->Lastest_Introduce_By;
+                $save = new companys();
+                $save->Profile_ID = $N_Profile;
+                $save->Company_Name = $request->Company_Name;
+                $save->Company_type = $request->Company_type;
+                $save->Market =$request->Mmarket;
+                $save->Booking_Channel = $request->booking_channel;
+                if ($CountryOther == "Other_countries") {
+                    if ($city === null) {
+                        return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
+                    }else {
+                        $save->City = $city;
+                    }
                 }else {
-                    $saveAgent->City = $cityA;
+                    $save->Country = $CountryOther;
+                    $save->City = $province;
+                    $save->Amphures = $amphures;
+                    $save->Address = $Address;
+                    $save->Tambon = $Tambon;
+                    $save->Zip_Code = $zip_code;
+                    $save->Branch = $Branch;
                 }
-            }else {
-                $saveAgent->Country = $countrydataA;
-                $saveAgent->City = $provinceAgent;
-                $saveAgent->Amphures = $amphuresA;
-                $saveAgent->Address = $addressAgent;
-                $saveAgent->Tambon = $TambonA;
-                $saveAgent->Zip_Code = $zip_codeA;
-                $saveAgent->Email = $EmailAgent;
-                $saveAgent->Company_ID = $NProfile_ID;
-                $saveAgent->Company_Name = $Company_Name;
-                $saveAgent->Branch = $ABranch;
-                $saveAgent->save();
-            }
-            foreach ($phone as $index => $phoneNumber) {
-                if ($phoneNumber !== null) {
-                    $savephoneA = new representative_phone();
-                    $savephoneA->Profile_ID = $A_Profile;
-                    $savephoneA->Company_ID = $NProfile_ID;
-                    $savephoneA->Phone_number = $phoneNumber;
-                    $savephoneA->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                    $savephoneA->save();
+                $save->Company_Email = $request->Company_Email;
+                $save->Company_Website = $request->Company_Website;
+                $save->Taxpayer_Identification = $request->Taxpayer_Identification;
+                // $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
+                $save->Contract_Rate_Start_Date = $contract_rate_start_date;
+                $save->Contract_Rate_End_Date = $contract_rate_end_date;
+                $save->Lastest_Introduce_By =$Lastest_Introduce_By;
+
+                foreach ($phone_company as $index => $phoneNumber) {
+                    if ($phoneNumber !== null) {
+                        $savephone = new company_phone();
+                        $savephone->Profile_ID = $N_Profile;
+                        $savephone->Phone_number = $phoneNumber;
+                        $savephone->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                        $savephone->save();
+                    }
                 }
+                foreach ($fax as $index => $faxNumber) {
+                    if ($faxNumber !== null) {
+                        $savefax = new company_fax();
+                        $savefax->Profile_ID = $N_Profile;
+                        $savefax->Fax_number = $faxNumber;
+                        $savefax->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                        $savefax->save();
+                    }
+                }
+
+                //agent
+                $latestAgent = representative::where('Company_Name', 'like', "%{$Company_Name}%")->where('Branch', 'like', "%{$Branch}%")->first();
+                if ($latestAgent) {
+                    $latestAgent = $latestAgent->Profile_ID + 1;
+                } else {
+                    $latestAgent = 1;
+                }
+                $A_Profile = $latestAgent;
+                $saveAgent = new representative();
+                $saveAgent->Profile_ID = $A_Profile;
+                $saveAgent->prefix = $request->Preface;
+                $saveAgent->First_name = $request->first_nameAgent;
+                $saveAgent->Last_name = $request->last_nameAgent;
+                $countrydataA= $request->countrydataA;
+                $provinceAgent= $request->provinceAgent;
+                $amphuresA= $request->amphuresA;
+                $TambonA= $request->TambonA;
+                $zip_codeA= $request->zip_codeA;
+                $cityA = $request->cityA;
+                $addressAgent= $request->addressAgent;
+                $EmailAgent= $request->EmailAgent;
+                $NProfile_ID = $N_Profile;
+                $ABranch = $request->Branch;
+                $Company_Name = $request->Company_Name;
+                $phone = $request->phone;
+                if ($countrydataA == "Other_countries") {
+                    if ($cityA === null) {
+                        return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
+                    }else {
+                        $saveAgent->City = $cityA;
+                    }
+                }else {
+                    $saveAgent->Country = $countrydataA;
+                    $saveAgent->City = $provinceAgent;
+                    $saveAgent->Amphures = $amphuresA;
+                    $saveAgent->Address = $addressAgent;
+                    $saveAgent->Tambon = $TambonA;
+                    $saveAgent->Zip_Code = $zip_codeA;
+                    $saveAgent->Email = $EmailAgent;
+                    $saveAgent->Company_ID = $NProfile_ID;
+                    $saveAgent->Company_Name = $Company_Name;
+                    $saveAgent->Branch = $ABranch;
+                    foreach ($phone as $index => $phoneNumber) {
+                        if ($phoneNumber !== null) {
+                            $savephoneA = new representative_phone();
+                            $savephoneA->Profile_ID = $A_Profile;
+                            $savephoneA->Company_ID = $NProfile_ID;
+                            $savephoneA->Phone_number = $phoneNumber;
+                            $savephoneA->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                            $savephoneA->save();
+                        }
+                    }
+
+                    $saveAgent->save();
+                }
+                $save->save();
+                return redirect()->route('Company.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
             }
-            return redirect()->route('Company.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-        }
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('Company.create')->with('error', 'เกิดข้อผิดพลาด');
         }
 
     }
@@ -559,42 +558,47 @@ class CompanyController extends Controller
     }
     public function Company_edit($id)
     {
+        try {
+            $Company = companys::where('id',$id)->first();
 
-        $Company = companys::where('id',$id)->first();
+            $Company_ID = $Company->Profile_ID;
 
-        $Company_ID = $Company->Profile_ID;
+            $number =  preg_replace("/[^0-9]/", "", $Company->City);
+            $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Company->City);
+            $provinceNames = province::select('name_th','id')->get();
+            $Tambon = districts::where('amphure_id', $Company->Amphures)->select('name_th','id')->get();
+            $amphures = amphures::where('province_id', $Company->City)->select('name_th','id')->get();
+            $Zip_code = districts::where('amphure_id', $Company->Amphures)->select('zip_code','id')->get();
 
-        $number =  preg_replace("/[^0-9]/", "", $Company->City);
-        $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Company->City);
-        $provinceNames = province::select('name_th','id')->get();
-        $Tambon = districts::where('amphure_id', $Company->Amphures)->select('name_th','id')->get();
-        $amphures = amphures::where('province_id', $Company->City)->select('name_th','id')->get();
-        $Zip_code = districts::where('amphure_id', $Company->Amphures)->select('zip_code','id')->get();
+            $Company_Contact = representative_phone::find($id);
+            $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
+            $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
+            $Mmarket = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mmarket')->get();
+            $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
+            $Profile_ID = $Company->Profile_ID;
+            $phone = company_phone::where('Profile_ID', 'like', "%{$Profile_ID}%")->get();
+            $phonecount = company_phone::where('Profile_ID', 'like', "%{$Profile_ID}%")->count();
+            $phoneDataArray = $phone->toArray();
 
-        $Company_Contact = representative_phone::find($id);
-        $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
-        $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
-        $Mmarket = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mmarket')->get();
-        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprefix')->get();
-        $Profile_ID = $Company->Profile_ID;
-        $phone = company_phone::where('Profile_ID', 'like', "%{$Profile_ID}%")->get();
-        $phonecount = company_phone::where('Profile_ID', 'like', "%{$Profile_ID}%")->count();
-        $phoneDataArray = $phone->toArray();
+            $fax = company_fax::where('Profile_ID', 'like', "%{$Profile_ID}%")->get();
+            $faxcount = company_fax::where('Profile_ID', 'like', "%{$Profile_ID}%")->count();
+            $faxArray = $fax->toArray();
 
-        $fax = company_fax::where('Profile_ID', 'like', "%{$Profile_ID}%")->get();
-        $faxcount = company_fax::where('Profile_ID', 'like', "%{$Profile_ID}%")->count();
-        $faxArray = $fax->toArray();
+            $representative = representative::where('Company_ID', 'like', "%{$Company_ID}%")->get();
+            $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
+            $provinceNames = province::select('name_th','id')->get();
+            return view('company.edit',compact('Company','booking_channel','provinceNames','Tambon','amphures',
+            'Zip_code','Other_City','faxArray','phoneDataArray','Company_Contact','Mmarket',
+            'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID','representative','Mprefix','provinceNames'));
+        } catch (\Throwable $th) {
+            return redirect()->route('Company.index')->with('error', 'เกิดข้อผิดพลาด');
+        }
 
-        $representative = representative::where('Company_ID', 'like', "%{$Company_ID}%")->get();
-        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
-        $provinceNames = province::select('name_th','id')->get();
-        return view('company.edit',compact('Company','booking_channel','provinceNames','Tambon','amphures',
-        'Zip_code','Other_City','faxArray','phoneDataArray','Company_Contact','Mmarket',
-        'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID','representative','Mprefix','provinceNames'));
     }
     public function Company_update(Request $request, $id) {
 
-        $data = $request->all();
+        try {
+            $data = $request->all();
         // dd( $data);
         $CountryOther = $request->countrydata;
         $Branch = $request->Branch;
@@ -662,16 +666,10 @@ class CompanyController extends Controller
                     $savefax->save();
                 }
             }
-
-        if ($save->save()) {
             $Company = Companys::find($id); // สมมุติว่า $id คือ ID ของ Company ที่ต้องการ
-            return redirect()->to(url('/Company/edit/'.$Company->id))->with('alert_', 'บันทึกข้อมูลเรียบร้อย');
-
-        } else {
-            return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return redirect()->to(url('/Company/edit/'.$Company->id))->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
-
-
-
 }

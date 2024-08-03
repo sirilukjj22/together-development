@@ -1235,12 +1235,14 @@ class QuotationController extends Controller
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
                 $save->status_document = 1;
                 $save->Confirm_by = 'Auto';
+                $save->Document_issuer = $userid;
                 $save->save();
             }else {
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
                 $save->status_document = 1;
                 $save->Confirm_by = '-';
+                $save->Document_issuer = $userid;
                 $save->save();
             }
             //-----------------------------ส่วน product
