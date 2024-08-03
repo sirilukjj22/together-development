@@ -2063,9 +2063,9 @@ class QuotationController extends Controller
             'pdfPath'=>$pdfPath,
             'pdf'=>$pdf,
         ];
-        $from_name = 'reservation@together-resort.com';
+
         $customEmail = new QuotationEmail($Data,$Title,$pdfPath,$filePaths,$promotions);
-        Mail::to($emailCon)->send($customEmail)->from('reservation@together-resort.com', $from_name);
+        Mail::to($emailCon)->send($customEmail);
         return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลและส่งอีเมลเรียบร้อยแล้ว');
     }
 }

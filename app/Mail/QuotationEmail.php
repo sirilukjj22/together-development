@@ -64,6 +64,6 @@ class QuotationEmail extends Mailable
         foreach ($this->promotions as $promotions) {
             $email->attach($promotions);
         }
-        return $email;
+        return $email->from(' reservation@together-resort.com', 'Together Resort');
     }
 }
