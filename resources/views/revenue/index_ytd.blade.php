@@ -2681,9 +2681,11 @@ $('#date').on('change', function () {
         var fee = (charge * 10) / 100;
         var vat7 = fee * 0.07;
 
-        $('#ev_transaction_fee').val(currencyFormat3(fee));
-        $('#ev_vat').val(currencyFormat3(vat7));
-        $('#ev_total_revenue').val(currencyFormat3(charge - (fee + vat7)));
+        var revenue = (charge - (fee + vat7)).toFixed(3);
+
+        $('#ev_transaction_fee').val(fee.toFixed(3));
+        $('#ev_vat').val(vat7.toFixed(3));
+        $('#ev_total_revenue').val(revenue);
     });
 
     // Sweetalert2
