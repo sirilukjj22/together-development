@@ -167,6 +167,7 @@
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/send/email/'.$item->id) }}">Send Email</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
                                                                     @if (in_array($item->status_document, [1, 6,3]))
@@ -189,6 +190,7 @@
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/send/email/'.$item->id) }}">Send Email</a></li>
                                                                 @endif
                                                                 @if (Auth::user()->id == $item->Operated_by)
                                                                     @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -213,6 +215,7 @@
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/send/email/'.$item->id) }}">Send Email</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
                                                                     @if (in_array($item->status_document, [1, 6,3]))
@@ -653,6 +656,7 @@
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/send/email/'.$item->id) }}">Send Email</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">Edit</a></li>
@@ -663,6 +667,7 @@
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/send/email/'.$item->id) }}">Send Email</a></li>
                                                                 @endif
                                                                 @if (Auth::user()->id == $item->Operated_by)
                                                                     @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -675,6 +680,7 @@
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
                                                                     <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/send/email/'.$item->id) }}">Send Email</a></li>
                                                                 @endif
                                                                 @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">Edit</a></li>

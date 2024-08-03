@@ -2019,55 +2019,60 @@ class QuotationController extends Controller
     }
 
     public function sendemail(Request $request,$id){
-        $file = $request->all();
+        try {
+            $file = $request->all();
 
-        $quotation = Quotation::where('id',$id)->first();
-        $QuotationID = $quotation->Quotation_ID;
-        $path = 'Log_PDF/proposal/';
-        $pdf = $path.$QuotationID;
-        $pdfPath = $path.$QuotationID.'.pdf';
-        $comid = $quotation->Company_ID;
-        $Quotation_ID= $quotation->Quotation_ID;
-        $companys = companys::where('Profile_ID',$comid)->first();
-        $emailCom = $companys->Company_Email;
-        $contact = $quotation->company_contact;
-        $Contact_name = representative::where('id',$contact)->where('status',1)->first();
-        $emailCon = $Contact_name->Email;
-        $Title = $request->tital;
-        $detail = $request->detail;
-        $comment = $request->Comment;
-        $email = $request->email;
-        $promotiondata = master_promotion::where('status', 1)->select('name')->get();
-        $promotion_path = 'promotion/';
-        $promotions = [];
-        foreach ($promotiondata as $promo) {
-            $promotions[] = $promotion_path . $promo->name;
-        }
-        $fileUploads = $request->file('files'); // ใช้ 'files' ถ้าฟิลด์ในฟอร์มเป็น 'files[]'
-
-        // ตรวจสอบว่ามีไฟล์ถูกอัปโหลดหรือไม่
-        if ($fileUploads) {
-            $filePaths = [];
-            foreach ($fileUploads as $file) {
-                $filename = $file->getClientOriginalName();
-                $file->move(public_path($path), $filename);
-                $filePaths[] = public_path($path . $filename);
+            $quotation = Quotation::where('id',$id)->first();
+            $QuotationID = $quotation->Quotation_ID;
+            $path = 'Log_PDF/proposal/';
+            $pdf = $path.$QuotationID;
+            $pdfPath = $path.$QuotationID.'.pdf';
+            $comid = $quotation->Company_ID;
+            $Quotation_ID= $quotation->Quotation_ID;
+            $companys = companys::where('Profile_ID',$comid)->first();
+            $emailCom = $companys->Company_Email;
+            $contact = $quotation->company_contact;
+            $Contact_name = representative::where('id',$contact)->where('status',1)->first();
+            $emailCon = $Contact_name->Email;
+            $Title = $request->tital;
+            $detail = $request->detail;
+            $comment = $request->Comment;
+            $email = $request->email;
+            $promotiondata = master_promotion::where('status', 1)->select('name')->get();
+            $promotion_path = 'promotion/';
+            $promotions = [];
+            foreach ($promotiondata as $promo) {
+                $promotions[] = $promotion_path . $promo->name;
             }
-        } else {
-            // หากไม่มีไฟล์ที่อัปโหลด ให้กำหนด $filePaths เป็นอาร์เรย์ว่าง
-            $filePaths = [];
-        }
-        $Data = [
-            'title' => $Title,
-            'detail' => $detail,
-            'comment' => $comment,
-            'email' => $email,
-            'pdfPath'=>$pdfPath,
-            'pdf'=>$pdf,
-        ];
+            $fileUploads = $request->file('files'); // ใช้ 'files' ถ้าฟิลด์ในฟอร์มเป็น 'files[]'
 
-        $customEmail = new QuotationEmail($Data,$Title,$pdfPath,$filePaths,$promotions);
-        Mail::to($emailCon)->send($customEmail);
-        return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลและส่งอีเมลเรียบร้อยแล้ว');
+            // ตรวจสอบว่ามีไฟล์ถูกอัปโหลดหรือไม่
+            if ($fileUploads) {
+                $filePaths = [];
+                foreach ($fileUploads as $file) {
+                    $filename = $file->getClientOriginalName();
+                    $file->move(public_path($path), $filename);
+                    $filePaths[] = public_path($path . $filename);
+                }
+            } else {
+                // หากไม่มีไฟล์ที่อัปโหลด ให้กำหนด $filePaths เป็นอาร์เรย์ว่าง
+                $filePaths = [];
+            }
+            $Data = [
+                'title' => $Title,
+                'detail' => $detail,
+                'comment' => $comment,
+                'email' => $email,
+                'pdfPath'=>$pdfPath,
+                'pdf'=>$pdf,
+            ];
+
+            $customEmail = new QuotationEmail($Data,$Title,$pdfPath,$filePaths,$promotions);
+            Mail::to($emailCon)->send($customEmail);
+            return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลและส่งอีเมลเรียบร้อยแล้ว');
+        } catch (\Throwable $th) {
+            return redirect()->route('Quotation.index')->with('error', 'เกิดข้อผิดพลาดในการส่งอีเมล์');
+        }
+
     }
 }

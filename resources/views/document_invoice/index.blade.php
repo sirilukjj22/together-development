@@ -59,6 +59,8 @@
                                             <th>Issue Date</th>
                                             <th>Expiration Date</th>
                                             <th class="text-center">Amount</th>
+                                            <th class="text-center">Deposit</th>
+                                            <th class="text-center">Balance</th>
                                             <th class="text-center">Approve By</th>
                                             <th class="text-center">Document status</th>
                                             <th class="text-center">Order</th>
@@ -76,7 +78,21 @@
                                             <td>{{ $item->issue_date }}</td>
                                             <td>{{ $item->Expirationdate }}</td>
                                             <td style="text-align: center;">
-                                                {{$item->Nettotal}}
+                                                {{ number_format($item->Nettotal) }}
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if ($item->total_payment == 0 )
+                                                    0.00
+                                                @else
+                                                    {{ number_format($item->total_payment) }}
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if ($item->min_balance == 0 )
+                                                    0.00
+                                                @else
+                                                    {{ $item->min_balance}}
+                                                @endif
                                             </td>
                                             <td style="text-align: center;">
                                                 @if (@$item->userConfirm->name == null)

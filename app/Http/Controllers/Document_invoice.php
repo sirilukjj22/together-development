@@ -42,13 +42,12 @@ class Document_invoice extends Controller
         ->where('quotation.status_guest', 1)
         ->select(
             'quotation.*',
-            DB::raw('COALESCE(SUM(document_invoice.payment), -1) as total_payment'),
-            DB::raw('COALESCE(MIN(document_invoice.balance), -1) as min_balance')
+            DB::raw('COALESCE(SUM(document_invoice.payment), 0) as total_payment'),
+            DB::raw('COALESCE(MIN(document_invoice.balance), 0) as min_balance')
         )
         ->groupBy('quotation.Quotation_ID', 'quotation.Operated_by', 'quotation.status_guest') // เพิ่มการ Group By ตามคอลัมน์ที่คุณต้องการ
         ->get();
 
-        dd( $Approved);
         $Approvedcount = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->count();
         $invoice = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->get();
         $invoicecount = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->count();
