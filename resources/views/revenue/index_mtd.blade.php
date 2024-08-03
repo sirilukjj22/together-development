@@ -2269,7 +2269,7 @@ $('#date').on('change', function () {
     }
 
     function currencyFormat3(num) {
-        return num.toFixed(3).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
     }
 
     $('.btn-todo-add').on('click', function() {
