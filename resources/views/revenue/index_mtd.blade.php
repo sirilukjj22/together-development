@@ -2269,7 +2269,7 @@ $('#date').on('change', function () {
     }
 
     function currencyFormat3(num) {
-        return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        return num.toFixed(3).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
     }
 
     $('.btn-todo-add').on('click', function() {
@@ -2682,9 +2682,11 @@ $('#date').on('change', function () {
         var fee = (charge * 10) / 100;
         var vat7 = fee * 0.07;
 
-        $('#ev_transaction_fee').val(currencyFormat3(fee));
-        $('#ev_vat').val(currencyFormat3(vat7));
-        $('#ev_total_revenue').val(currencyFormat3(charge - (fee + vat7)));
+        var revenue = (charge - (fee + vat7)).toFixed(3);
+
+        $('#ev_transaction_fee').val(fee.toFixed(3));
+        $('#ev_vat').val(vat7.toFixed(3));
+        $('#ev_total_revenue').val(revenue);
     });
 
     // Sweetalert2
