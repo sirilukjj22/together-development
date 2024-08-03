@@ -859,6 +859,7 @@ class DummyQuotationController extends Controller
             $save->save();
             //-----------------------------ส่วน product-----------------------------
             $Products = $request->input('ProductIDmain', []);
+            $Products2 = $request->input('tr-select-main', []);
             // นับจำนวนค่าที่ปรากฏซ้ำกันในอาร์เรย์ $Products
             $productCounts = array_count_values($Products);
             $duplicateValues = array_filter($productCounts, function($count) {
@@ -906,7 +907,7 @@ class DummyQuotationController extends Controller
             $savetotal->save();
             $pax=$request->input('pax');
             if ($Products !== null) {
-                $Productss = array_unique($Products);
+                $Productss = array_unique($Products2);
                 document_dummy_quotation::where('Quotation_ID',$Quotation_ID)->delete();
                 foreach ($Productss as $index => $ProductID) {
                     $saveProduct = new document_dummy_quotation();
@@ -926,7 +927,28 @@ class DummyQuotationController extends Controller
                     $saveProduct->save();
                 }
                 return redirect()->route('DummyQuotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-            }else{
+            }elseif ($Products == null) {
+                document_dummy_quotation::where('Quotation_ID',$Quotation_ID)->delete();
+                foreach ($Productss as $index => $ProductID) {
+                    $saveProduct = new document_dummy_quotation();
+                    $saveProduct->Quotation_ID = $Quotation_ID;
+                    $saveProduct->Company_ID = $request->Company;
+                    $saveProduct->Product_ID = $ProductID;
+                    $saveProduct->Issue_date = $request->IssueDate;
+                    $paxValue = $pax[$index] ?? 0;
+                    $saveProduct->pax = $paxValue;
+                    $saveProduct->discount =$discounts[$index];
+                    $saveProduct->priceproduct =$priceUnits[$index];
+                    $saveProduct->netpriceproduct =$discountedPricestotal[$index];
+                    $saveProduct->totaldiscount =$discountedPrices[$index];
+                    $saveProduct->ExpirationDate = $request->Expiration;
+                    $saveProduct->freelanceraiffiliate = $request->Freelancer_member;
+                    $saveProduct->Quantity = $quantities[$index];
+                    $saveProduct->save();
+                }
+                return redirect()->route('DummyQuotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            }
+            else{
             $delete = dummy_quotation::find($id);
             $delete->delete();
                 return redirect()->route('DummyQuotation.index')->with('success', 'ใบเสนอราคายังไม่ถูกสร้าง');
