@@ -205,7 +205,7 @@ class QuotationController extends Controller
     }
 
     public function save(Request $request){
-        // try {
+        try {
             $data = $request->all();
             $preview=$request->preview;
             $Quotation_IDcheck =$request->Quotation_ID;
@@ -839,11 +839,11 @@ class QuotationController extends Controller
             $delete->delete();
                 return redirect()->route('Quotation.index')->with('success', 'ใบเสนอราคายังไม่ถูกสร้าง');
             }
-        // } catch (\Exception $e) {
-        //     return response()->json([
-        //         'error' => $e->getMessage()
-        //     ], 500);
-        // }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
     public function edit($id)
     {

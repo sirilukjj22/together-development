@@ -23,6 +23,7 @@ class CompanyController extends Controller
             ->leftJoin('company_phones', 'companys.Profile_ID', '=', 'company_phones.Profile_ID')
             ->where('companys.status', 1)
             ->select('companys.*', 'company_phones.*')
+            ->orderBy('companys.id', 'asc')
             ->get();
         return view('company.index',compact('Company'));
     }
@@ -437,26 +438,28 @@ class CompanyController extends Controller
                 $save->Contract_Rate_Start_Date = $contract_rate_start_date;
                 $save->Contract_Rate_End_Date = $contract_rate_end_date;
                 $save->Lastest_Introduce_By =$Lastest_Introduce_By;
-
-                foreach ($phone_company as $index => $phoneNumber) {
-                    if ($phoneNumber !== null) {
-                        $savephone = new company_phone();
-                        $savephone->Profile_ID = $N_Profile;
-                        $savephone->Phone_number = $phoneNumber;
-                        $savephone->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                        $savephone->save();
+                if ($phone_company !== null) {
+                    foreach ($phone_company as $index => $phoneNumber) {
+                        if ($phoneNumber !== null) {
+                            $savephone = new company_phone();
+                            $savephone->Profile_ID = $N_Profile;
+                            $savephone->Phone_number = $phoneNumber;
+                            $savephone->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                            $savephone->save();
+                        }
                     }
                 }
-                foreach ($fax as $index => $faxNumber) {
-                    if ($faxNumber !== null) {
-                        $savefax = new company_fax();
-                        $savefax->Profile_ID = $N_Profile;
-                        $savefax->Fax_number = $faxNumber;
-                        $savefax->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                        $savefax->save();
+                if ($fax !== null) {
+                    foreach ($fax as $index => $faxNumber) {
+                        if ($faxNumber !== null) {
+                            $savefax = new company_fax();
+                            $savefax->Profile_ID = $N_Profile;
+                            $savefax->Fax_number = $faxNumber;
+                            $savefax->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                            $savefax->save();
+                        }
                     }
                 }
-
                 //agent
                 $latestAgent = representative::where('Company_Name', 'like', "%{$Company_Name}%")->where('Branch', 'like', "%{$Branch}%")->first();
                 if ($latestAgent) {
@@ -590,86 +593,90 @@ class CompanyController extends Controller
             return view('company.edit',compact('Company','booking_channel','provinceNames','Tambon','amphures',
             'Zip_code','Other_City','faxArray','phoneDataArray','Company_Contact','Mmarket',
             'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID','representative','Mprefix','provinceNames'));
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             return redirect()->route('Company.index')->with('error', 'เกิดข้อผิดพลาด');
         }
 
     }
     public function Company_update(Request $request, $id) {
 
-        try {
-            $data = $request->all();
-        // dd( $data);
-        $CountryOther = $request->countrydata;
-        $Branch = $request->Branch;
-        $province = $request->province;
-        $amphures = $request->amphures;
-        $Tambon = $request->Tambon;
-        $zip_code = $request->zip_code;
-        $city = $request->city;
-        $Address= $request->address;
-        $phone_company = $request->phone;
-        $faxNumber = $request->fax;
+            try {
+                $data = $request->all();
+                // dd( $data);
+                $CountryOther = $request->countrydata;
+                $Branch = $request->Branch;
+                $province = $request->province;
+                $amphures = $request->amphures;
+                $Tambon = $request->Tambon;
+                $zip_code = $request->zip_code;
+                $city = $request->city;
+                $Address= $request->address;
+                $phone_company = $request->phone;
+                $faxnew = $request->fax;
 
-        $save = companys::find($id);
-        $save->Company_Name = $request->Company_Name;
-        $save->Company_type = $request->Company_type;
-        $save->Market =$request->Mmarket;
-        $save->Booking_Channel = $request->booking_channel;
-        if ($CountryOther == "Other_countries") {
-            if ($city === null) {
-                return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
-            }else {
-                $save->City = $city;
-            }
-        }else {
-            $save->Country = $CountryOther;
-            $save->City = $province;
-            $save->Amphures = $amphures;
-            $save->Address = $Address;
-            $save->Tambon = $Tambon;
-            $save->Zip_Code = $zip_code;
-            $save->Branch = $Branch;
-        }
-        $save->Company_Email = $request->Company_Email;
-        $save->Company_Website = $request->Company_Website;
-        $save->Taxpayer_Identification = $request->Taxpayer_Identification;
-        // $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
-        $save->Contract_Rate_Start_Date = $request->contract_rate_start_date;
-        $save->Contract_Rate_End_Date = $request->contract_rate_end_date;
-        $save->Lastest_Introduce_By =$request->Lastest_Introduce_By;
-        $save->save();
-
-            $ID = companys::find($id);
-            $fax = company_fax::find($id);
-            $Profile_ID = $ID->Profile_ID;
-            $companyPhones = Company_phone::where('Profile_ID', $Profile_ID)->get();
-            $companyfax = company_fax::where('Profile_ID', $Profile_ID)->get();
-            Company_phone::where('Profile_ID', $Profile_ID)->delete();
-            company_fax::where('Profile_ID', $Profile_ID)->delete();
-            foreach ($phone_company as $index => $phoneNumber) {
-                if ($phoneNumber !== null) {
-                    $savephone = new company_phone();
-                    $savephone->Profile_ID = $Profile_ID;
-                    $savephone->Phone_number = $phoneNumber;
-                    $savephone->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                    $savephone->save();
+                $save = companys::find($id);
+                $save->Company_Name = $request->Company_Name;
+                $save->Company_type = $request->Company_type;
+                $save->Market =$request->Mmarket;
+                $save->Booking_Channel = $request->booking_channel;
+                if ($CountryOther == "Other_countries") {
+                    if ($city === null) {
+                        return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
+                    }else {
+                        $save->City = $city;
+                    }
+                }else {
+                    $save->Country = $CountryOther;
+                    $save->City = $province;
+                    $save->Amphures = $amphures;
+                    $save->Address = $Address;
+                    $save->Tambon = $Tambon;
+                    $save->Zip_Code = $zip_code;
+                    $save->Branch = $Branch;
                 }
-            }
+                $save->Company_Email = $request->Company_Email;
+                $save->Company_Website = $request->Company_Website;
+                $save->Taxpayer_Identification = $request->Taxpayer_Identification;
+                // $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
+                $save->Contract_Rate_Start_Date = $request->contract_rate_start_date;
+                $save->Contract_Rate_End_Date = $request->contract_rate_end_date;
+                $save->Lastest_Introduce_By =$request->Lastest_Introduce_By;
 
-            foreach ($faxNumber as $index => $faxNumber) {
-                if ($faxNumber !== null) {
-                    $savefax = new company_fax();
-                    $savefax->Profile_ID = $Profile_ID;
-                    $savefax->Fax_number = $faxNumber;
-                    $savefax->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                    $savefax->save();
+
+                $ID = companys::find($id);
+                $fax = company_fax::find($id);
+                $Profile_ID = $ID->Profile_ID;
+                $companyPhones = Company_phone::where('Profile_ID', $Profile_ID)->get();
+                $companyfax = company_fax::where('Profile_ID', $Profile_ID)->get();
+                Company_phone::where('Profile_ID', $Profile_ID)->delete();
+                company_fax::where('Profile_ID', $Profile_ID)->delete();
+                if ($phone_company !== null) {
+                    foreach ($phone_company as $index => $phoneNumber) {
+                        if ($phoneNumber !== null) {
+                            $savephone = new company_phone();
+                            $savephone->Profile_ID = $Profile_ID;
+                            $savephone->Phone_number = $phoneNumber;
+                            $savephone->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                            $savephone->save();
+                        }
+                    }
                 }
+                if ($faxnew !== null) {
+                    foreach ($faxnew as $index => $faxNumber) {
+                        if ($faxNumber !== null) {
+                            $savefax = new company_fax();
+                            $savefax->Profile_ID = $N_Profile;
+                            $savefax->Fax_number = $faxNumber;
+                            $savefax->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                            $savefax->save();
+                        }
+                    }
+                }
+                $save->save();
+                $Company = Companys::find($id);
+                return redirect()->to(url('/Company/edit/'.$Company->id))->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            } catch (\Throwable $e) {
+                return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
             }
-            $Company = Companys::find($id); // สมมุติว่า $id คือ ID ของ Company ที่ต้องการ
-            return redirect()->to(url('/Company/edit/'.$Company->id))->with('success', 'บันทึกข้อมูลเรียบร้อย');
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-        }
     }
 }

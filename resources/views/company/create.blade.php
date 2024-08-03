@@ -89,20 +89,6 @@
                     <li></li>
                 </ol>
             </div>
-            <div class="col-auto">
-                <div class="dropdown">
-                    <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        สถานะการใช้งาน
-                    </button>
-                    {{-- <button type="button" class="btn btn-danger lift sa-buttons"><i class="fa fa-trash-o"></i> ลบหลายรายการ</button> --}}
-
-                    <ul class="dropdown-menu border-0 shadow p-3">
-                        <li><a class="dropdown-item py-2 rounded" href="{{ route('Company.index') }}">ทั้งหมด</a></li>
-                        <li><a class="dropdown-item py-2 rounded" href="{{ route('Company.ac', ['value' => 1]) }}">ใช้งาน</a></li>
-                        <li><a class="dropdown-item py-2 rounded" href="{{ route('Company.no', ['value' => 0]) }}">ปิดใช้งาน</a></li>
-                    </ul>
-                </div>
-            </div>
         </div> <!-- Row end  -->
         <div class="row clearfix">
             <div class="col-sm-12 col-12">
