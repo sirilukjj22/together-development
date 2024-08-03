@@ -406,7 +406,7 @@
                                         <i class="fa fa-plus"></i> Add Product</button>
                                 </div>
                                 <div class="modal fade" id="exampleModalproduct" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-fullscreen">
+                                    <div class="modal-dialog modal-xl">
                                     <div class="modal-content">
                                         <div class="modal-header btn-color-green ">
                                             <h5 class="modal-title text-white" id="exampleModalLabel">Product</h5>
@@ -991,20 +991,12 @@
                         const data = response.products[i];
                         const productId = data.id;
                         var existingRowId = $('#tr-select-add' + productId).attr('id'); // ดึงค่า id ของแถว
-
-                        console.log(existingRowId);
-                        // if (existingRowId) {
-                        // var productIdOnly = existingRowId.match(/\d+/)[0]; // ใช้ regex ดึงเฉพาะตัวเลข
-                        //     console.log(productIdOnly); // จะได้ค่า 1 หรือ 2 ขึ้นอยู่กับ id
-                        // }
-                        // $('#row-' + productIdOnly).remove();
-                        // $('#row-'+ productIdOnly).parents('tr').remove().draw();
                         if ($('#'+existingRowId).val() == undefined) {
                             table.row.add([
                                 num += 1,
                                 data.Product_ID,
                                 data.name_th,
-                                data.normal_price,
+                                Number(data.normal_price).toLocaleString(),
                                 data.unit_name,
                                 `<button type="button"  class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
                             ]).node().id = `row-${productId}`;
@@ -1055,7 +1047,7 @@
                             '<td style="text-align:center;">' + rowNumber + '</td>' +
                             '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + val.Product_ID + '">' + val.Product_ID + '</td>' +
                             '<td style="text-align:left;">' + val.name_en + '</td>' +
-                            '<td style="text-align:left;">' + val.normal_price + '</td>' +
+                            '<td style="text-align:left;">' + Number(val.normal_price).toLocaleString() + '</td>' +
                             '<td style="text-align:center;">' + val.unit_name + '</td>' +
                             '<td style="text-align:center;"><button type="button" class="Btn remove-button" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
                             '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
@@ -1155,7 +1147,7 @@
                                     '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
                                     '<td ><input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]"  value="1" min="1" rel="' + number + '" style="text-align:center;" oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);"></td>' +
                                     '<td>' + val.unit_name + '</td>' +
-                                    '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + val.normal_price + '</td>' +
+                                    '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
                                     '<td>' + discountInput + '</td>' +
                                     '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
                                     '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value=" ' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
