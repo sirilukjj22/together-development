@@ -273,7 +273,7 @@
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label class="Freelancer_member" for="">Introduce By</label>
-                                <select name="Freelancer_member" id="Freelancer_member" class="select2">
+                                <select name="Freelancer_member" id="Freelancer_member" class="select2" disabled>
                                     <option value=""></option>
                                     @foreach($Freelancer_member as $item)
                                         <option value="{{ $item->Profile_ID }}">{{ $item->First_name }} {{ $item->Last_name }}</option>
@@ -426,7 +426,7 @@
                                             <div class="col-12 mt-3">
                                                 <div class="dropdown">
                                                     <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        ประเภท Product
+                                                        <span id="ProductName">ประเภท Product</span>
                                                     </button>
                                                     <ul class="dropdown-menu border-0 shadow p-3">
                                                         <li><a class="dropdown-item py-2 rounded" data-value="all" onclick="fetchProducts('all')">All Product</a></li>
@@ -438,35 +438,37 @@
                                                 </div>
                                             </div>
                                             <hr class="mt-3 my-3" style="border: 1px solid #000">
+                                            <div class="col-12 mt-3">
+                                                <h3>รายการที่เลือก</h3>
+                                                <table  class="table table-hover align-middle mb-0">
+                                                    <thead >
+                                                        <tr>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 7%">#</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 11%">ราคา</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 11%">หน่วย</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 11%">คำสั่ง</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="product-list-select">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="col-12 mt-3">
                                                 <table  class="myDataTableQuotationmodal table table-hover align-middle mb-0" style="width:100%">
                                                     <thead >
                                                         <tr>
                                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
                                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
                                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
                                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">ราคา</th>
+                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
                                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%">คำสั่ง</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="product-list">
-
-                                                    </tbody>
-                                                </table>
-                                            <div class="col-12 mt-3">
-                                                <h3>รายการที่เลือก</h3>
-                                                <table  class="table table-hover align-middle mb-0">
-                                                    <thead >
-                                                        <tr>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">ราคา</th>
-                                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%">คำสั่ง</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="product-list-select">
 
                                                     </tbody>
                                                 </table>
@@ -980,6 +982,20 @@
 </script>
 <script>
     function fetchProducts(status) {
+        if (status == 'all' ) {
+            $('#ProductName').text('All Product');
+        }else if (status == 'Room_Type') {
+            $('#ProductName').text('Room');
+        }
+        else if (status == 'Banquet') {
+            $('#ProductName').text('Banquet');
+        }
+        else if (status == 'Meals') {
+            $('#ProductName').text('Meals');
+        }
+        else if (status == 'Entertainment') {
+            $('#ProductName').text('Entertainment');
+        }
         var table = $('.myDataTableQuotationmodal').DataTable();
         var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
         var clickCounter = 1;
@@ -993,18 +1009,21 @@
                 if (response.products.length > 0) {
                     // Clear the existing rows
                     table.clear();
-
+                    var num = 0;
                     for (let i = 0; i < response.products.length; i++) {
                         const data = response.products[i];
                         const productId = data.id;
-                        table.row.add([
-                            i + 1,
-                            data.Product_ID,
-                            data.name_th,
-                            data.unit_name,
-                            data.normal_price,
-                            `<button type="button"  class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
-                        ]).node().id = `row-${productId}`;
+                        var existingRowId = $('#tr-select-add' + productId).attr('id'); // ดึงค่า id ของแถว
+                        if ($('#'+existingRowId).val() == undefined) {
+                            table.row.add([
+                                num += 1,
+                                data.Product_ID,
+                                data.name_th,
+                                Number(data.normal_price).toLocaleString(),
+                                data.unit_name,
+                                `<button type="button"  class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
+                            ]).node().id = `row-${productId}`;
+                        }
                     }
                     table.draw(false);
                 }
@@ -1020,8 +1039,8 @@
             var table = $('.product-list-select').DataTable();
         }
         $(document).on('click', '.select-button-product', function() {
-            console.log(table);
             var product = $(this).val();
+            $('#row-' + product).prop('hidden',true);
             if ($('#productselect' + product).length > 0) {
                 return;
             }
@@ -1035,23 +1054,25 @@
                     $.each(response.products, function(index, val) {
                         var name = '';
                         var price = 0;
-                        var rowNumber = $('#product-list-select tr').length+1;
+                        var rowNumber = $('#product-list-select tr:visible').length+1;
                         if ($('#productselect' + val.id).length > 0) {
-                        console.log("Product already exists after AJAX call: ", val.id);
-                        return;
-                    }
-                            $('#product-list-select').append(
-                                '<tr id="tr-select-add' + val.id + '">' +
-                                '<td>' + rowNumber + '</td>' +
-                                '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + val.Product_ID + '">' + val.Product_ID + '</td>' +
-                                '<td style="text-align:left;">' + val.name_en + '</td>' +
-                                '<td style="text-align:right;">' + val.unit_name + '</td>' +
-                                '<td>' + val.normal_price + '</td>' +
-                                '<td><button type="button" class="Btn remove-button" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
-                                '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
-                                '</tr>'
-                            );
-
+                            console.log("Product already exists after AJAX call: ", val.id);
+                            return;
+                        }
+                        if ($('#product-list' + val.Product_ID).length > 0) {
+                            console.log("Product already exists after AJAX call: ", val.Product_ID);
+                        }
+                        $('#product-list-select').append(
+                            '<tr id="tr-select-add' + val.id + '">' +
+                            '<td style="text-align:center;">' + rowNumber + '</td>' +
+                            '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + val.Product_ID + '">' + val.Product_ID + '</td>' +
+                            '<td style="text-align:left;">' + val.name_en + '</td>' +
+                            '<td style="text-align:left;">' + Number(val.normal_price).toLocaleString() + '</td>' +
+                            '<td style="text-align:center;">' + val.unit_name + '</td>' +
+                            '<td style="text-align:center;"><button type="button" class="Btn remove-button" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                            '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
+                            '</tr>'
+                        );
                     });
                 },
                 error: function(xhr, status, error) {
@@ -1061,7 +1082,7 @@
         });
     });
         function renumberRows() {
-            $('#product-list-select tr').each(function(index) {
+            $('#product-list-select tr:visible').each(function(index) {
                 $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
             });
             $('#display-selected-items tr').each(function(index) {
@@ -1069,9 +1090,9 @@
             });
         }
         $(document).on('click', '.remove-button', function() {
-            console.log(1);
             var product = $(this).val();
             $('#tr-select-add' + product).remove();
+            $('#row-' + product).prop('hidden',false);
             renumberRows(); // ลบแถวที่มี id เป็น 'tr-select-add' + product
         });
         $(document).on('click', '.confirm-button', function() {
@@ -1086,6 +1107,7 @@
                 },
                 success: function(response) {
                     $.each(response.products, function (key, val) {
+                        $('#tr-select-add' + val.id).prop('hidden',true);
                         if ($('#productselect' + val.id).val() !== undefined) {
                             if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
                                 number += 1;
@@ -1143,7 +1165,7 @@
                                     '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
                                     '<td ><input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="1" min="1" rel="' + number + '" style="text-align:center;" oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);"></td>' +
                                     '<td>' + val.unit_name + '</td>' +
-                                    '<td  style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + val.normal_price + '</td>' +
+                                    '<td  style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
                                     '<td>' + discountInput + '</td>' +
                                     '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
                                     '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value=" ' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +

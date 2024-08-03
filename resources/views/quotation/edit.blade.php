@@ -464,8 +464,8 @@
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">ราคา</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%">คำสั่ง</th>
                                                             </tr>
                                                         </thead>
@@ -1223,7 +1223,7 @@
                                 '<td style="text-align:left;">' + val.name_en + '</td>' +
                                 '<td style="text-align:left;">' + Number(val.normal_price).toLocaleString() + '</td>' +
                                 '<td style="text-align:center;">' + val.unit_name + '</td>' +
-                                '<td><button type="button" class="Btn remove-button" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                '<td style="text-align:center;"><button type="button" class="Btn remove-button" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
                                 '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
                                 '</tr>'
                             );
