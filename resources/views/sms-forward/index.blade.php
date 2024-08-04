@@ -125,7 +125,7 @@
                 <a href="{{ route('sms-agoda_detail', [$date_from]) }}">
                     <div class="rectangle-CCA">
                         <div class="credit-card-agoda-revenue">
-                            Agoda bank
+                            Agoda Bank
                             <br>
                             Transfer Revenue
                         </div>
@@ -472,7 +472,7 @@
                         @elseif($item->status == 8)
                             Elexa EGAT Revenue
                         @elseif($item->status == 9)
-                            Other Revenue Bank Transfer Bank Transfer
+                            Other Revenue Bank Transfer
                         @endif
 
                         @if ($item->split_status == 1)
@@ -546,7 +546,7 @@
                                     </li>
                                 @endif
                                 <li class="licolor" onclick="other_revenue_data({{ $item->id }})">
-                                    Other Revenue Bank Transfer Bank Transfer
+                                    Other Revenue Bank Transfer
                                 </li>
                                 @if ($role_revenue->transfer == 1)
                                     <li class="licolor" onclick="transfer_data({{ $item->id }})">
@@ -1038,7 +1038,7 @@
                             <option value="5">Agoda Revenue</option>
                             <option value="6">Front Desk Revenue</option>
                             <option value="8">Elexa EGAT Revenue</option>
-                            <option value="9">Other Revenue Bank Transfer Bank Transfer</option>
+                            <option value="9">Other Revenue Bank Transfer</option>
                         </select>
 
                         <div class="transfer_date">
