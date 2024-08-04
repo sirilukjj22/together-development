@@ -653,9 +653,36 @@ class SMSController extends Controller
         return back();
     }
 
+    public function get_other_revenue($id)
+    {
+        $data = SMS_alerts::where('status', 9)->where('id', $id)->select('other_remark')->first();
+
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+    public function other_revenue(Request $request)
+    {
+        try {
+            SMS_alerts::where('id', $request->dataID)->update([
+                'other_remark' => $request->other_revenue_remark,
+                'status' => 9
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 500,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+        ]);
+    }
+
     public function transfer(Request $request)
     {
-        $check_data = SMS_alerts::find($request->dataID);
+        // $check_data = SMS_alerts::find($request->dataID);
         SMS_alerts::where('id', $request->dataID)->update([
             'date_into' => date($request->date_transfer . ' 21:59:59'),
             'transfer_remark' => $request->transfer_remark,

@@ -30,6 +30,7 @@ class SMS_alerts extends Model
         'remark',
         'date_remark',
         'transfer_remark',
+        'other_remark',
         'created_by',
         'updated_by',
         'created_at',
