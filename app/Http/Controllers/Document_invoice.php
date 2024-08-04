@@ -34,19 +34,19 @@ class Document_invoice extends Controller
     public function index()
     {
         $userid = Auth::user()->id;
-        // $Approved = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->get();
-
         $Approved = Quotation::query()
         ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
         ->where('quotation.Operated_by', $userid)
         ->where('quotation.status_guest', 1)
         ->select(
             'quotation.*',
-            DB::raw('COALESCE(SUM(document_invoice.payment), 0) as total_payment'),
-            DB::raw('COALESCE(MIN(document_invoice.balance), 0) as min_balance')
+            DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (1, 2) THEN document_invoice.payment ELSE 0 END), 0) as total_payment'),
+            DB::raw('COALESCE(MIN(CASE WHEN document_invoice.document_status IN (1, 2) THEN document_invoice.balance ELSE NULL END), 0) as min_balance')
+
         )
         ->groupBy('quotation.Quotation_ID', 'quotation.Operated_by', 'quotation.status_guest') // เพิ่มการ Group By ตามคอลัมน์ที่คุณต้องการ
         ->get();
+
 
         $Approvedcount = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->count();
         $invoice = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->get();
@@ -118,6 +118,15 @@ class Document_invoice extends Controller
             return view('document_invoice.createM',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company'
             ,'TambonID','company_phone','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','balance','invoices','Issue_date'));
         }else{
+            $parts = explode('-', $QuotationID);
+            $cleanedID = $parts[0] . '-' . $parts[1];
+            $invoices =document_invoices::where('Quotation_ID',$cleanedID)->where('document_status',1)->latest()->first();
+            if ($invoices) {
+                # code...
+            }else {
+                # code...
+            }
+            dd($invoices,$cleanedID);
             $Deposit = 1;
             return view('document_invoice.create',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company'
             ,'TambonID','company_phone','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit'));

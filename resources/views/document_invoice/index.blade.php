@@ -96,7 +96,7 @@
                                             </td>
                                             <td style="text-align: center;">
                                                 @if (@$item->userConfirm->name == null)
-                                                    -
+                                                    Auto
                                                 @else
                                                     {{ @$item->userConfirm->name }}
                                                 @endif
@@ -130,12 +130,13 @@
                                         <tr>
                                             <th class="text-center">#</th>
                                             <th class="text-center">ID</th>
+                                            <th class="text-center">Proposal ID</th>
                                             <th>Company</th>
                                             <th class="text-center">Issue Date</th>
                                             <th class="text-center">Expiration Date</th>
-                                            <th class="text-center">Payment</th>
                                             <th class="text-center">Amount</th>
-                                            <th class="text-center">Approve By</th>
+                                            <th class="text-center">Payment</th>
+                                            <th class="text-center">Balance</th>
                                             <th class="text-center">Document status</th>
                                             <th class="text-center">Order</th>
                                         </tr>
@@ -148,20 +149,15 @@
                                                {{$key +1}}
                                             </td>
                                             <td>{{ $item->Invoice_ID}}</td>
+                                            <td>{{ $item->Quotation_ID}}</td>
                                             <td>{{ @$item->company00->Company_Name}}</td>
                                             <td style="text-align: center;">{{ $item->IssueDate }}</td>
                                             <td style="text-align: center;">{{ $item->Expiration }}</td>
-                                            <td style="text-align: center;">{{$item->payment}}</td>
                                             <td style="text-align: center;">
                                                 {{$item->Nettotal}}
                                             </td>
-                                            <td style="text-align: center;">
-                                                @if (@$item->userConfirm->name == null)
-                                                    -
-                                                @else
-                                                    {{ @$item->userConfirm->name }}
-                                                @endif
-                                            </td>
+                                            <td style="text-align: center;"> {{ number_format($item->payment) }}</td>
+                                            <td style="text-align: center;">{{$item->balance}}</td>
                                             <td style="text-align: center;">
                                                 <span class="badge rounded-pill bg-warning">Invoice</span>
                                             </td>
@@ -192,12 +188,13 @@
                                         <tr>
                                             <th class="text-center">#</th>
                                             <th class="text-center">ID</th>
+                                            <th class="text-center">Proposal ID</th>
                                             <th>Company</th>
                                             <th class="text-center">Issue Date</th>
                                             <th class="text-center">Expiration Date</th>
-                                            <th class="text-center">Payment</th>
                                             <th class="text-center">Amount</th>
-                                            <th class="text-center">Approve By</th>
+                                            <th class="text-center">Payment</th>
+                                            <th class="text-center">Balance</th>
                                             <th class="text-center">Document status</th>
                                             <th class="text-center">Order</th>
                                         </tr>
@@ -210,20 +207,15 @@
                                                {{$key +1}}
                                             </td>
                                             <td>{{ $item->Invoice_ID}}</td>
+                                            <td>{{ $item->Quotation_ID}}</td>
                                             <td>{{ @$item->company00->Company_Name}}</td>
                                             <td style="text-align: center;">{{ $item->IssueDate }}</td>
                                             <td style="text-align: center;">{{ $item->Expiration }}</td>
-                                            <td style="text-align: center;">{{$item->payment}}</td>
                                             <td style="text-align: center;">
-                                                {{$item->Nettotal}}
+                                                {{ number_format($item->Nettotal) }}
                                             </td>
-                                            <td style="text-align: center;">
-                                                @if (@$item->userConfirm->name == null)
-                                                    -
-                                                @else
-                                                    {{ @$item->userConfirm->name }}
-                                                @endif
-                                            </td>
+                                            <td style="text-align: center;"> {{ number_format($item->payment) }}</td>
+                                            <td style="text-align: center;">{{$item->balance}}</td>
                                             <td style="text-align: center;">
                                                 <span class="badge rounded-pill bg-success">Complete</span>
                                             </td>

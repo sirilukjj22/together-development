@@ -370,8 +370,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('Quotation.addProducttablecreatemain');
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
         Route::get('/Quotation/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('Quotation.sheet');
-        //---------------------------------------ส่งรายงาน------------------------------------------------------
-        Route::get('/Quotation/Quotation/send/documents', 'senddocuments')->name('Quotation.senddocuments');
         //--------------------------------------ลูกค้ายืนยัน------------------------------------------------------
         Route::get('/Proposal/Request/document/Approve/guest/{id}', 'Approve')->name('Quotation.Approve');
         //---------------------------------------LOG-----------------------------------------------------------

@@ -343,7 +343,7 @@
                                             <tr>
                                                 <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
                                                 <td>
-                                                    <span id="Company_Number">{{$company_phone->Phone_number}}</span>
+                                                    <span id="Company_Number">{{ substr($company_phone->Phone_number, 0, 3) }}-{{ substr($company_phone->Phone_number, 3, 3) }}-{{ substr($company_phone->Phone_number, 6) }}</span>
                                                     <b style="margin-left: 10px;color:#000;">Company Fax : </b>
                                                     @if (is_object($company_fax) && property_exists($company_fax, 'Fax_number'))
                                                         <span id="Company_Fax">{{ $company_fax->Fax_number }}</span>
@@ -375,7 +375,7 @@
                                             </div>
                                             <div class="col-6">
                                                 <p style="display: inline-block;font-weight: bold;">Contact Number :</p>
-                                                <p style="display: inline-block;"><span id="Contact_Phone">{{$Contact_phone->Phone_number}}</span></p>
+                                                <p style="display: inline-block;"><span id="Contact_Phone">{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span></p>
                                             </div>
                                             <div>
                                                 <p style="display: inline-block;font-weight: bold;margin-left: 10px;">Contact Email :</p>
@@ -393,16 +393,19 @@
                                                 <p style="display: inline-block;font-weight: bold;">Number of Guests :</p>
                                             </div>
                                             <div class="col-lg-6">
-                                                <p style="display: inline-block;"><span id="checkinpo">{{$Quotation->checkin}}</span></p><br>
-                                                <p style="display: inline-block;"><span id="checkoutpo">{{$Quotation->checkout}}</span></p><br>
-                                                <p style="display: inline-block;">
-                                                    @if ($Quotation->day == null)
-                                                     <span id="daypo">-</span> วัน <span id="nightpo">-</span> คืน
-                                                    @else
-                                                        <span id="daypo">{{$Quotation->day}}</span> วัน <span id="nightpo">{{$Quotation->night}}</span> คืน
-                                                    @endif
-                                                </p><br>
-                                                <p style="display: inline-block;"><span id="Adultpo">{{$Quotation->adult}}</span> Adult , <span id="Childrenpo">{{$Quotation->children}}</span> Children</p>
+                                                @if ($Quotation->checkin == null)
+                                                    <p style="display: inline-block;"><span id="checkinpo">-</span></p><br>
+                                                    <p style="display: inline-block;"><span id="checkoutpo">-</span></p><br>
+                                                @else
+                                                    <p style="display: inline-block;"><span >{{$Quotation->checkin}}</span></p><br>
+                                                    <p style="display: inline-block;"><span >{{$Quotation->checkout}}</span></p><br>
+                                                @endif
+                                                @if ($Quotation->day == null)
+                                                    <p style="display: inline-block;"><span id="daypo">-</span><span id="nightpo"></span></P><br>
+                                                @else
+                                                    <p style="display: inline-block;"><span >{{$Quotation->day}}</span> วัน <span >{{$Quotation->night}}</span> คืน</p><br>
+                                                @endif
+                                                    <p style="display: inline-block;"><span id="Adultpo">{{$Quotation->adult}}</span> Adult , <span id="Childrenpo">{{$Quotation->children}}</span> Children</p>
                                             </div>
                                         </div>
                                     </div>
@@ -796,8 +799,8 @@
             console.log(`จำนวนคืน: ${nights} คืน`);
             $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
             $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-            $('#daypo').text(totalDays);
-            $('#nightpo').text(nights);
+            $('#daypo').text(totalDays + ' วัน');
+            $('#nightpo').text(nights + ' คืน');
         } else if (checkoutDate.getTime() === checkinDate.getTime()) {
             // กรณีที่ Check-in Date เท่ากับ Check-out Date
             const totalDays = 1;
@@ -806,8 +809,8 @@
 
             $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
             $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-            $('#daypo').text(isNaN(totalDays) ? '0' : totalDays);
-            $('#nightpo').text('0');
+            $('#daypo').text(isNaN(totalDays) ? '0' : totalDays + ' วัน');
+            $('#nightpo').text('0 คืน');
             console.log(`จำนวนวัน: ${totalDays} วัน`);
             console.log(`จำนวนคืน: 0 คืน`);
         } else {
@@ -841,13 +844,18 @@
                 dateout.disabled = true;
                 Day.disabled = true;
                 Night.disabled = true;
-                flexCheckChecked.checked = true; // ตั้งค่า flexCheckChecked เป็น checked
+                flexCheckChecked.checked = true;
+                $('#checkinpo').text('No Check in date');// ตั้งค่า flexCheckChecked เป็น checked
+                $('#checkoutpo').text('-');
+                $('#daypo').text('-');
+                $('#nightpo').text(' ');
             } else {
                 dateInput.disabled = false;
                 dateout.disabled = false;
                 Day.disabled = false;
                 Night.disabled = false;
-                flexCheckChecked.checked = false; // ตั้งค่า flexCheckChecked เป็น unchecked
+                flexCheckChecked.checked = false;
+               // ตั้งค่า flexCheckChecked เป็น unchecked
             }
         }
 
@@ -863,11 +871,23 @@
                 dateout.disabled = true;
                 Day.disabled = true;
                 Night.disabled = true;
+                $('#checkinpo').text('No Check in date');
+                $('#checkoutpo').text('-');
+                $('#daypo').text('-');
+                $('#nightpo').text(' ');
+                $('#Checkin').val('');
+                $('#Checkout').val('');
+                $('#Day').val('');
+                $('#Night').val('');
             } else {
                 dateInput.disabled = false;
                 dateout.disabled = false;
                 Day.disabled = false;
                 Night.disabled = false;
+                $('#Checkin').val('');
+                $('#Checkout').val('');
+                $('#Day').val('');
+                $('#Night').val('');
             }
         });
     });
@@ -880,12 +900,12 @@
     });
     $(document).on('keyup', '#Children', function() {
         var Children =  Number($(this).val());
-        $('#Childrenpo').text(Children);
+        $('#Childrenpo').text(' , '+ Children +' Children');
         totalAmost();
     });
     $(document).on('keyup', '#Adult', function() {
         var adult =  Number($(this).val());
-        $('#Adultpo').text(adult);
+        $('#Adultpo').text(adult +' Adult');
         totalAmost();
     });
     $(document).on('keyup', '#DiscountAmount', function() {

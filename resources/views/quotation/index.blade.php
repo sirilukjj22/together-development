@@ -39,11 +39,6 @@
                 <li></li>
             </ol>
         </div>
-        <div class="col-auto ">
-            <div class="dropdown">
-                <button type="button" class="btn btn-color-green lift btn_modal" id="Submit_Documents"><i class="fa fa-paper-plane-o"></i> ส่งเอกสาร</button>
-            </div>
-        </div>
     </div> <!-- Row end  -->
 
     <div class="row clearfix">
@@ -87,22 +82,7 @@
                                             @foreach ($Proposal as $key => $item)
                                             <tr>
                                                 <td style="text-align: center;">
-                                                    @if ($item->Confirm_by == '-' && $item->status_document == 1)
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
-                                                            <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                        </div>
-                                                    @elseif($item->status_document == 2)
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
-                                                            <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                        </div>
-                                                    @else
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
-                                                            <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                        </div>
-                                                    @endif
+                                                    {{$key +1}}
                                                 </td>
                                                 <td  style="text-align: center;">
                                                     @if ($item->DummyNo == $item->Quotation_ID )
@@ -273,17 +253,7 @@
                                             @foreach ($Pending as $key => $item)
                                             <tr>
                                                 <td style="text-align: center;">
-                                                    @if ($item->Confirm_by == '-')
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
-                                                            <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                        </div>
-                                                    @else
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
-                                                            <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                        </div>
-                                                    @endif
+                                                    {{$key +1}}
                                                 </td>
                                                 <td  style="text-align: center;">
                                                     @if ($item->DummyNo == $item->Quotation_ID )
@@ -451,17 +421,7 @@
                                             @foreach ($Awaiting as $key => $item)
                                             <tr>
                                                 <td style="text-align: center;">
-                                                    @if ($item->Confirm_by == '-')
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}"disabled>
-                                                            <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                        </div>
-                                                    @else
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
-                                                            <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                        </div>
-                                                    @endif
+                                                    {{$key +1}}
                                                 </td>
                                                 <td  style="text-align: center;">
                                                     @if ($item->DummyNo == $item->Quotation_ID )
@@ -581,17 +541,7 @@
                                             @foreach ($Approved as $key => $item)
                                             <tr>
                                                 <td style="text-align: center;">
-                                                    @if ($item->Confirm_by == '-')
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
-                                                            <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                        </div>
-                                                    @else
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
-                                                            <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                        </div>
-                                                    @endif
+                                                    {{$key +1}}
                                                 </td>
                                                 <td  style="text-align: center;">
                                                     @if ($item->DummyNo == $item->Quotation_ID )
@@ -726,17 +676,7 @@
                                             @foreach ($Reject as $key => $item)
                                             <tr>
                                                 <td style="text-align: center;">
-                                                    @if ($item->Confirm_by == '-')
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
-                                                            <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                        </div>
-                                                    @else
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
-                                                            <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                        </div>
-                                                    @endif
+                                                    {{$key +1}}
                                                 </td>
                                                 <td  style="text-align: center;">
                                                     @if ($item->DummyNo == $item->Quotation_ID )
@@ -869,17 +809,7 @@
                                             @foreach ($Cancel as $key => $item)
                                             <tr>
                                                 <td style="text-align: center;">
-                                                    @if ($item->Confirm_by == '-')
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
-                                                            <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                        </div>
-                                                    @else
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
-                                                            <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
-                                                        </div>
-                                                    @endif
+                                                    {{$key +1}}
                                                 </td>
                                                 <td  style="text-align: center;">
                                                     @if ($item->DummyNo == $item->Quotation_ID )
@@ -995,40 +925,6 @@
 @include('script.script')
 
 <script>
-    document.getElementById('Submit_Documents').addEventListener('click', function() {
-        // Select all checked checkboxes
-        const checkedCheckboxes = document.querySelectorAll('.form-check-input:checked');
-
-        // Get all the IDs of checked checkboxes
-        const ids = Array.from(checkedCheckboxes).map(checkbox => checkbox.value);
-
-        if (ids.length > 0) {
-            // Create query string from ids array
-            const queryString = new URLSearchParams({ ids: ids }).toString();
-            const url = `{{ route('Quotation.senddocuments') }}?${queryString}`;
-
-            fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Failed to submit documents.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while submitting documents.');
-            });
-        } else {
-            alert('Please select at least one checkbox.');
-        }
-    });
     $(document).ready(function () {
         $('.myTableProposalRequest1').addClass('nowrap').dataTable({
             responsive: true,

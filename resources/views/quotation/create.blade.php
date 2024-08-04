@@ -390,8 +390,8 @@
                                         <div class="col-lg-6">
                                             <p style="display: inline-block;"><span id="checkinpo"></span></p><br>
                                             <p style="display: inline-block;"><span id="checkoutpo"></span></p><br>
-                                            <p style="display: inline-block;"><span id="daypo"></span> วัน <span id="nightpo"></span> คืน</p><br>
-                                            <p style="display: inline-block;"><span id="Adultpo"></span> Adult , <span id="Childrenpo"></span> Children</p>
+                                            <p style="display: inline-block;"><span id="daypo"></span> <span id="nightpo"></span></p><br>
+                                            <p style="display: inline-block;"><span id="Adultpo"></span><span id="Childrenpo"></span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -738,20 +738,20 @@
 
                 console.log(`จำนวนวัน: ${totalDays} วัน`);
                 console.log(`จำนวนคืน: ${nights} คืน`);
-                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY') );
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#daypo').text(totalDays);
-                $('#nightpo').text(nights);
+                $('#daypo').text(totalDays + ' วัน');
+                $('#nightpo').text(nights + ' คืน');
             } else if (checkoutDate.getTime() === checkinDate.getTime()) {
                 // กรณีที่ Check-in Date เท่ากับ Check-out Date
                 const totalDays = 1;
                 $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
                 $('#Night').val('0');
 
-                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY') );
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#daypo').text(isNaN(totalDays) ? '0' : totalDays);
-                $('#nightpo').text('0');
+                $('#daypo').text(isNaN(totalDays) ? '0' : totalDays + ' วัน');
+                $('#nightpo').text('0 คืน');
                 console.log(`จำนวนวัน: ${totalDays} วัน`);
                 console.log(`จำนวนคืน: 0 คืน`);
             } else {
@@ -781,11 +781,23 @@
             dateout.disabled = true;
             Day.disabled = true;
             Night.disabled = true;
+            $('#checkinpo').text('No Check in date');
+            $('#checkoutpo').text('-');
+            $('#daypo').text('-');
+            $('#nightpo').text(' ');
+            $('#Checkin').val('');
+            $('#Checkout').val('');
+            $('#Day').val('');
+            $('#Night').val('');
         } else {
             dateInput.disabled = false;
             dateout.disabled = false;
             Day.disabled = false;
             Night.disabled = false;
+            $('#Checkin').val('');
+            $('#Checkout').val('');
+            $('#Day').val('');
+            $('#Night').val('');
         }
     });
     $(document).ready(function() {
@@ -795,11 +807,13 @@
     });
     $(document).on('keyup', '#Children', function() {
         var Children =  Number($(this).val());
-        $('#Childrenpo').text(Children);
+        $('#Childrenpo').text(' , '+ Children +' Children');
+        totalAmost();
     });
     $(document).on('keyup', '#Adult', function() {
         var adult =  Number($(this).val());
-        $('#Adultpo').text(adult);
+        $('#Adultpo').text(adult +' Adult');
+        totalAmost();
     });
     function masterevent() {
         var Mevent =$('#Mevent').val();
@@ -886,7 +900,6 @@
                 }
                 var Address = response.company.Address + ' '+ 'ตำบล'+ response.Tambon.name_th;
                 var Address2 = 'อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
-                var companyphone = response.company_phone.Phone_number;
                 var companyfax = response.company_fax.Fax_number;
                 var CompanyEmail = response.company.Company_Email;
                 var Discount_Contract_Rate = response.company.Discount_Contract_Rate;
@@ -897,18 +910,32 @@
                 var Contactemail =response.data.Email;
 
                 console.log(response.data.First_name);
+                function formatPhoneNumber(phoneNumber) {
+                    if (phoneNumber.length === 10) {
+                        return phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 3) + '-' + phoneNumber.substr(6);
+                    }
+                }
+
+                var formattedPhoneNumber = formatPhoneNumber(companyphone);
+                function formatPhoneNumberContact(phoneNumber) {
+                    if (phoneNumber.length === 10) {
+                        return phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 3) + '-' + phoneNumber.substr(6);
+                    }
+                }
+
+                var formattedContactphones = formatPhoneNumberContact(Contactphones);
                 $('#Company_Contact').val(fullName).prop('disabled', true);
                 $('#Company_Discount').val(Discount_Contract_Rate);
                 $('#Company_Contactname').val(fullid);
                 $('#Company_name').text(fullNameCompany);
                 $('#Address').text(Address);
                 $('#Address2').text(Address2);
-                $('#Company_Number').text(companyphone);
+                $('#Company_Number').text(formattedPhoneNumber);
                 $('#Company_Fax').text(companyfax);
                 $('#Company_Email').text(CompanyEmail);
                 $('#Taxpayer').text(TaxpayerIdentification);
                 $('#Company_contact').text(fullName);
-                $('#Contact_Phone').text(Contactphones);
+                $('#Contact_Phone').text(formattedContactphones);
                 $('#Contact_Email').text(Contactemail);
             },
             error: function(xhr, status, error) {

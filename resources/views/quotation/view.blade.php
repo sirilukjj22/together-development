@@ -203,7 +203,7 @@
                             <hr class="mt-3 my-3" style="border: 1px solid #000">
                             <div  class="row mt-2">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" disabled> No Check In Date</label>
                                 </div>
                             </div>
                             <div class="row mt-2">
@@ -339,7 +339,7 @@
                                             <tr>
                                                 <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
                                                 <td>
-                                                    <span id="Company_Number">{{$company_phone->Phone_number}}</span>
+                                                    <span id="Company_Number">{{ substr($company_phone->Phone_number, 0, 3) }}-{{ substr($company_phone->Phone_number, 3, 3) }}-{{ substr($company_phone->Phone_number, 6) }}</span>
                                                     <b style="margin-left: 10px;color:#000;">Company Fax : </b>
                                                     @if (is_object($company_fax) && property_exists($company_fax, 'Fax_number'))
                                                         <span id="Company_Fax">{{ $company_fax->Fax_number }}</span>
@@ -371,7 +371,7 @@
                                             </div>
                                             <div class="col-6">
                                                 <p style="display: inline-block;font-weight: bold;">Contact Number :</p>
-                                                <p style="display: inline-block;"><span id="Contact_Phone">{{$Contact_phone->Phone_number}}</span></p>
+                                                <p style="display: inline-block;"><span id="Contact_Phone">{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span></p>
                                             </div>
                                             <div>
                                                 <p style="display: inline-block;font-weight: bold;margin-left: 10px;">Contact Email :</p>
@@ -389,15 +389,19 @@
                                                 <p style="display: inline-block;font-weight: bold;">Number of Guests :</p>
                                             </div>
                                             <div class="col-lg-6">
-                                                <p style="display: inline-block;"><span id="checkinpo">{{$Quotation->checkin}}</span></p><br>
-                                                <p style="display: inline-block;"><span id="checkoutpo">{{$Quotation->checkout}}</span></p><br>
-                                                <p style="display: inline-block;">
-                                                    @if ($Quotation->day == null)
-                                                     <span id="daypo">-</span> วัน <span id="nightpo">-</span> คืน
-                                                    @else
-                                                        <span id="daypo">{{$Quotation->day}}</span> วัน <span id="nightpo">{{$Quotation->night}}</span> คืน
-                                                    @endif
-                                                </p><br>
+
+                                                @if ($Quotation->checkin == NULL)
+                                                    <p style="display: inline-block;"><span id="checkinpo">No Check in date</span></p><br>
+                                                    <p style="display: inline-block;"><span id="checkoutpo">-</span></p><br>
+                                                @else
+                                                    <p style="display: inline-block;"><span id="checkinpo">{{$Quotation->checkin}}</span></p><br>
+                                                    <p style="display: inline-block;"><span id="checkoutpo">{{$Quotation->checkout}}</span></p><br>
+                                                @endif
+                                                @if ($Quotation->day == null)
+                                                    <p style="display: inline-block;"><span id="daypo">-</span><span id="nightpo"></span></P><br>
+                                                @else
+                                                    <p style="display: inline-block;"><span >{{$Quotation->day}}</span> วัน <span >{{$Quotation->night}}</span> คืน</p><br>
+                                                @endif
                                                 <p style="display: inline-block;"><span id="Adultpo">{{$Quotation->adult}}</span> Adult , <span id="Childrenpo">{{$Quotation->children}}</span> Children</p>
                                             </div>
                                         </div>

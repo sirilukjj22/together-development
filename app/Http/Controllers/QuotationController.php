@@ -153,21 +153,6 @@ class QuotationController extends Controller
         $Company = companys::select('Company_Name','id','Profile_ID')->get();
         return view('quotation.create',compact('Quotation_ID','Company','Mevent','Freelancer_member','Issue_date','Valid_Until','Mvat'));
     }
-    public function senddocuments(Request $request){
-        $idsString = $request->query('ids');
-        // แปลง string เป็น array
-        $idArray = explode(',', $idsString);
-        $documents = Quotation::whereIn('id', $idArray)->get();
-        foreach ($documents as $document) {
-            if ($document->status_document == 1) {
-                $document->status_document = 2; // สมมติว่าคุณต้องการตั้งค่าเป็น 1
-            } elseif ($document->status_document == 0) {
-                $document->status_document = 1;
-            }
-            $document->save();
-        }
-        return response()->json(['success' => true, 'message' => 'Documents updated successfully!']);
-    }
     public function Contactcreate($companyID)
     {
         $company =  companys::where('Profile_ID',$companyID)->first();
@@ -209,8 +194,8 @@ class QuotationController extends Controller
             $data = $request->all();
             $preview=$request->preview;
             $Quotation_IDcheck =$request->Quotation_ID;
-            $adult=$request->Adult;
-            $children=$request->Children;
+            $adult = (int) $request->input('Adult', 0); // ใช้ค่าเริ่มต้นเป็น 0 ถ้าค่าไม่ถูกต้อง
+            $children = (int) $request->input('Children', 0);
 
             $SpecialDiscount = $request->SpecialDiscount;
             $SpecialDiscountBath = $request->DiscountAmount;
@@ -299,7 +284,7 @@ class QuotationController extends Controller
 
                     $items = master_product_item::where('Product_ID', $productID)->get();
 
-                    $totalguest = $request->PaxToTalall;
+
 
                     $QuotationVat= $request->Mvat;
                     $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
@@ -335,6 +320,9 @@ class QuotationController extends Controller
 
                 $SpecialDistext = $request->SpecialDis;
                 $SpecialDis = floatval($SpecialDistext);
+                $totalguest = 0;
+                $totalguest = $adult + $children;
+                $guest = $request->PaxToTalall;
                 if ($Mvat->id == 50) {
                     foreach ($productItems as $item) {
                         $totalPrice += $item['totalPrices'];
@@ -343,7 +331,7 @@ class QuotationController extends Controller
                         $beforeTax = $subtotal/1.07;
                         $AddTax = $subtotal-$beforeTax;
                         $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$totalguest;
+                        $totalaverage =$Nettotal/$guest;
 
                     }
                 }
@@ -353,7 +341,7 @@ class QuotationController extends Controller
                         $totalAmount += $item['discountedPricestotal'];
                         $subtotal = $totalAmount-$SpecialDis;
                         $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$totalguest;
+                        $totalaverage =$Nettotal/$guest;
 
                     }
                 }
@@ -364,7 +352,7 @@ class QuotationController extends Controller
                         $subtotal = $totalAmount-$SpecialDis;
                         $AddTax = $subtotal*7/100;
                         $Nettotal = $subtotal+$AddTax;
-                        $totalaverage =$Nettotal/$totalguest;
+                        $totalaverage =$Nettotal/$guest;
                     }
                 }else
                 {
@@ -375,8 +363,7 @@ class QuotationController extends Controller
                         $beforeTax = $subtotal/1.07;
                         $AddTax = $subtotal-$beforeTax;
                         $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$totalguest;
-
+                        $totalaverage =$Nettotal/$guest;
                     }
                 }
                 $unit = master_unit::where('status',1)->get();
@@ -447,6 +434,7 @@ class QuotationController extends Controller
                     'beforeTax'=>$beforeTax,
                     'Nettotal'=>$Nettotal,
                     'totalguest'=>$totalguest,
+                    'guest'=>$guest,
                     'totalaverage'=>$totalaverage,
                     'AddTax'=>$AddTax,
                     'productItems'=>$productItems,
@@ -512,7 +500,7 @@ class QuotationController extends Controller
             }else {
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
-                $save->status_document = 1;
+                $save->status_document = 2;
                 $save->Confirm_by = '-';
                 $save->save();
             }
@@ -659,7 +647,6 @@ class QuotationController extends Controller
 
                     $items = master_product_item::where('Product_ID', $productID)->get();
 
-                    $totalguest = $request->PaxToTalall;
                     $QuotationVat= $request->Mvat;
                     $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
                     foreach ($items as $item) {
@@ -692,6 +679,9 @@ class QuotationController extends Controller
                 $Nettotal =0;
                 $totalaverage=0;
                 $SpecialDiscountBath = $request->DiscountAmount;
+                $totalguest = 0;
+                $totalguest = $adult + $children;
+                $guest = $request->PaxToTalall;
                 if ($Mvat->id == 50) {
                     foreach ($productItems as $item) {
                         $totalPrice += $item['totalPrices'];
@@ -700,7 +690,8 @@ class QuotationController extends Controller
                         $beforeTax = $subtotal/1.07;
                         $AddTax = $subtotal-$beforeTax;
                         $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$totalguest;
+                        $totalaverage =$Nettotal/$guest;
+
                     }
                 }
                 elseif ($Mvat->id == 51) {
@@ -709,9 +700,7 @@ class QuotationController extends Controller
                         $totalAmount += $item['discountedPricestotal'];
                         $subtotal = $totalAmount-$SpecialDiscountBath;
                         $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$totalguest;
-
-
+                        $totalaverage =$Nettotal/$guest;
                     }
                 }
                 elseif ($Mvat->id == 52) {
@@ -721,7 +710,7 @@ class QuotationController extends Controller
                         $subtotal = $totalAmount-$SpecialDiscountBath;
                         $AddTax = $subtotal*7/100;
                         $Nettotal = $subtotal+$AddTax;
-                        $totalaverage =$Nettotal/$totalguest;
+                        $totalaverage =$Nettotal/$guest;
                     }
                 }else
                 {
@@ -732,7 +721,7 @@ class QuotationController extends Controller
                         $beforeTax = $subtotal/1.07;
                         $AddTax = $subtotal-$beforeTax;
                         $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$totalguest;
+                        $totalaverage =$Nettotal/$guest;
                     }
                 }
                 $unit = master_unit::where('status',1)->get();
@@ -803,6 +792,7 @@ class QuotationController extends Controller
                     'beforeTax'=>$beforeTax,
                     'Nettotal'=>$Nettotal,
                     'totalguest'=>$totalguest,
+                    'guest'=>$guest,
                     'totalaverage'=>$totalaverage,
                     'AddTax'=>$AddTax,
                     'productItems'=>$productItems,
@@ -1045,7 +1035,7 @@ class QuotationController extends Controller
                     // dd( $priceUnit,$discountedPrices);
 
                     $items = master_product_item::where('Product_ID', $productID)->get();
-                    $totalguest = $request->PaxToTalall;
+
 
                     $QuotationVat= $request->Mvat;
                     $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
@@ -1078,7 +1068,9 @@ class QuotationController extends Controller
                 $AddTax = 0;
                 $Nettotal =0;
                 $totalaverage=0;
-
+                $totalguest = 0;
+                $totalguest = $adult + $children;
+                $guest = $request->PaxToTalall;
                 $SpecialDiscountBath = $request->DiscountAmount;
                 if ($Mvat->id == 50) {
                     foreach ($productItems as $item) {
@@ -1088,7 +1080,7 @@ class QuotationController extends Controller
                         $beforeTax = $subtotal/1.07;
                         $AddTax = $subtotal-$beforeTax;
                         $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$totalguest;
+                        $totalaverage =$Nettotal/$guest;
                     }
                 }
                 elseif ($Mvat->id == 51) {
@@ -1097,7 +1089,7 @@ class QuotationController extends Controller
                         $totalAmount += $item['discountedPricestotal'];
                         $subtotal = $totalAmount-$SpecialDiscountBath;
                         $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$totalguest;
+                        $totalaverage =$Nettotal/$guest;
                     }
                 }
                 elseif ($Mvat->id == 52) {
@@ -1107,7 +1099,7 @@ class QuotationController extends Controller
                         $subtotal = $totalAmount-$SpecialDiscountBath;
                         $AddTax = $subtotal*7/100;
                         $Nettotal = $subtotal+$AddTax;
-                        $totalaverage =$Nettotal/$totalguest;
+                        $totalaverage =$Nettotal/$guest;
                     }
                 }else
                 {
@@ -1118,7 +1110,7 @@ class QuotationController extends Controller
                         $beforeTax = $subtotal/1.07;
                         $AddTax = $subtotal-$beforeTax;
                         $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$totalguest;
+                        $totalaverage =$Nettotal/$guest;
                     }
                 }
                 $unit = master_unit::where('status',1)->get();
@@ -1189,6 +1181,7 @@ class QuotationController extends Controller
                     'beforeTax'=>$beforeTax,
                     'Nettotal'=>$Nettotal,
                     'totalguest'=>$totalguest,
+                    'guest'=>$guest,
                     'totalaverage'=>$totalaverage,
                     'AddTax'=>$AddTax,
                     'productItems'=>$productItems,
@@ -1240,7 +1233,7 @@ class QuotationController extends Controller
             }else {
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
-                $save->status_document = 1;
+                $save->status_document = 2;
                 $save->Confirm_by = '-';
                 $save->Document_issuer = $userid;
                 $save->save();
@@ -1298,6 +1291,9 @@ class QuotationController extends Controller
                     $saveProduct->save();
                 }
             }
+
+            $Day = $request->Day;
+            $Night = $request->Night;
             $Quotation_ID=$request->Quotation_ID;
             $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
             $id = $Quotation->id;
@@ -1354,7 +1350,7 @@ class QuotationController extends Controller
             $date = Carbon::now();
             $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
             $QuotationVat= $Quotation->vat_type;
-            $Mvat = master_document::where('id',$QuotationVa)->twhere('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
+            $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
             $SpecialDiscount = document_quotation::where('Quotation_ID', $Quotation_ID)->first();
             $SpecialDis=$SpecialDiscount->SpecialDiscount;
 
@@ -1425,8 +1421,9 @@ class QuotationController extends Controller
             $total=0;
             $adult = $Quotation->adult;
             $children = $Quotation->children;
-
-            $totalguest = $Quotation->TotalPax;
+            $totalguest = 0;
+            $totalguest = $adult + $children;
+            $guest = $request->PaxToTalall;
             $totalaverage=0;
             if ($Mvat->id == 50) {
                 foreach ($selectproduct as $item) {
@@ -1436,7 +1433,7 @@ class QuotationController extends Controller
                     $beforeTax = $subtotal/1.07;
                     $AddTax = $subtotal-$beforeTax;
                     $Nettotal = $subtotal;
-                    $totalaverage =$Nettotal/$totalguest;
+                    $totalaverage =$Nettotal/$guest;
                 }
             }
             elseif ($Mvat->id == 51) {
@@ -1447,7 +1444,7 @@ class QuotationController extends Controller
                     $beforeTax = 0;
                     $AddTax = 0;
                     $Nettotal = $subtotal;
-                    $totalaverage =$Nettotal/$totalguest;
+                    $totalaverage =$Nettotal/$guest;
                 }
             }
             elseif ($Mvat->id == 52) {
@@ -1458,7 +1455,7 @@ class QuotationController extends Controller
                     $beforeTax = $subtotal/1.07;
                     $AddTax = $subtotal*7/100;
                     $Nettotal = $subtotal+$AddTax;
-                    $totalaverage =$Nettotal/$totalguest;
+                    $totalaverage =$Nettotal/$guest;
                 }
             }else
             {
@@ -1469,7 +1466,7 @@ class QuotationController extends Controller
                     $beforeTax = $subtotal/1.07;
                     $AddTax = $subtotal-$beforeTax;
                     $Nettotal = $subtotal;
-                    $totalaverage =$Nettotal/$totalguest;
+                    $totalaverage =$Nettotal/$guest;
                 }
             }
 
@@ -1501,6 +1498,8 @@ class QuotationController extends Controller
 
             $data = [
                 'date' => $date,
+                'day'=>$Day,
+                'night'=>$Night,
                 'comtypefullname'=>$comtypefullname,
                 'Company_ID'=>$Company_ID,
                 'TambonID'=>$TambonID,
@@ -1531,6 +1530,7 @@ class QuotationController extends Controller
                 'AddTax'=>$AddTax,
                 'Nettotal'=>$Nettotal,
                 'totalguest'=>$totalguest,
+                'guest'=>$guest,
                 'totalaverage'=>$totalaverage,
                 'pagecount'=>$pagecount,
                 'page'=>$page,

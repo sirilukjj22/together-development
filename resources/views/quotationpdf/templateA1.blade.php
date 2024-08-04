@@ -460,8 +460,12 @@
                         <b class="com" style=" font-size:18px">Personal Information</b><br>
                         <b style="margin-left: 10px;">Contact Name : </b><span >คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span><br>
                         <b style="margin-left: 10px;">Contact Number : </b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span><br>
-                        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$Checkin}}</span>
-                        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$Checkout}}</span><br>
+                        @if ($Checkin == '-')
+                            <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">No Check in date</span><br>
+                        @else
+                            <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$Checkin}}</span>
+                            <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$Checkout}}</span><br>
+                        @endif
                         <b style="margin-left: 10px">Length of Stay :</b>
                         <span style="margin-left: 23px;">
                             @if ($Quotation->day == null)
@@ -564,7 +568,7 @@
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price"> {{$totalguest}} </strong>Adults</td>
+                                    <td style="text-align:left;"><strong id="total-Price"> {{$guest}} </strong>Adults</td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
@@ -604,7 +608,7 @@
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price"> {{$totalguest}} </strong>Adults</td>
+                                    <td style="text-align:left;"><strong id="total-Price"> {{$guest}} </strong>Adults</td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
@@ -646,7 +650,7 @@
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price"> {{$totalguest}} </strong>Adults</td>
+                                    <td style="text-align:left;"><strong id="total-Price"> {{$guest}} </strong>Adults</td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
@@ -693,7 +697,7 @@
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                    <td style="text-align:left;"><strong id="total-Price"> {{$totalguest}} </strong>Adults</td>
+                                    <td style="text-align:left;"><strong id="total-Price"> {{$guest}} </strong>Adults</td>
                                 </tr>
                                 <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                     <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
