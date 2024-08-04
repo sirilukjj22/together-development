@@ -454,18 +454,21 @@
                         <b style="margin-left: 10px;">Contact Number : </b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span><br>
                         <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$Checkin}}</span>
                         <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$Checkout}}</span><br>
-                        <b style="margin-left: 10px">Length of Stay :</b><span style="margin-left: 23px;">
-                        @if ($day == null)
-                            -
-                        @else
-                            {{$day}} วัน {{$night}} คืน
-                        @endif</span><br>
-                        <b style="margin-left: 10px">Number of Guests :</b><span style="margin-left: 10px;">
-                            @if ($adult == null)
-                            -
-                        @else
-                            {{$adult}} Adult , {{$children}} Children
-                        @endif</span><br>
+                        <b style="margin-left: 10px">Length of Stay :</b>
+                        <span style="margin-left: 23px;">
+                            @if ($day == null)
+                                -
+                            @else
+                                {{$day}} วัน {{$night}} คืน
+                            @endif
+                        </span><br>
+                        <b style="margin-left: 10px">Number of Guests :</b>
+                        <span style="margin-left: 10px;">
+                                @if ($adult == null)
+                                -
+                            @else
+                                {{$adult}} Adult , {{$children}} Children
+                            @endif
                         </span><br>
                     </span>
                     <div style="border: 1px solid #2D7F7B"></div>
