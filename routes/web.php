@@ -415,6 +415,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Dummy/Quotation/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('DummyQuotation.sheet');
         //-----------------------------------ส่งเอกสาร-----------------------------------------------------------------------
         Route::get('/Dummy/Quotation/send/documents', 'senddocuments')->name('DummyQuotation.senddocuments');
+
+        Route::get('/Dummy/Quotation/view/{id}','view')->name('Quotation.view');
     });
 
     #Proposal Request

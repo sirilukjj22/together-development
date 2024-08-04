@@ -133,6 +133,7 @@
                                                     <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                     <ul class="dropdown-menu border-0 shadow p-3">
                                                         @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/view/'.$item->id) }}">View</a></li>
                                                         <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                     @endif
                                                     @if ($item->status_document == 1)
@@ -231,6 +232,7 @@
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/view/'.$item->id) }}">View</a></li>
                                                                 <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                             @endif
                                                             @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -318,6 +320,7 @@
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/view/'.$item->id) }}">View</a></li>
                                                                 <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                             @endif
                                                         </ul>
@@ -401,6 +404,7 @@
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/view/'.$item->id) }}">View</a></li>
                                                                 <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                             @endif
                                                             @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -490,6 +494,7 @@
                                                     <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                     <ul class="dropdown-menu border-0 shadow p-3">
                                                         @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/view/'.$item->id) }}">View</a></li>
                                                             <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                         @endif
 
@@ -574,6 +579,7 @@
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/view/'.$item->id) }}">View</a></li>
                                                                 <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                             @endif
                                                             @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
@@ -661,6 +667,7 @@
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Quotation/view/'.$item->id) }}">View</a></li>
                                                                 <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                             @endif
                                                             <li><a class="dropdown-item py-2 rounded" onclick="Cancel('{{$item->id}}')">Revice</a></li>

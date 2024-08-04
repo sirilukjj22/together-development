@@ -1656,6 +1656,48 @@ class DummyQuotationController extends Controller
 
         ]);
     }
+    public function view($id)
+    {
+        $Quotation = dummy_quotation::where('id', $id)->first();
+        $QuotationID= $Quotation->DummyNo;
+        $Company_ID = $Quotation->Company_ID;
+        $contact = $Quotation->company_contact;
 
+        $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
+        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
+        $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
+        $Company = companys::select('Company_Name','id','Profile_ID')->get();
+        $CompanyID = companys::where('Profile_ID',$Company_ID)->first();
+        $Company_typeID=$CompanyID->Company_type;
+        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+        if ($comtype->name_th =="บริษัทจำกัด") {
+            $comtypefullname = "บริษัท ". $CompanyID->Company_Name . " จำกัด";
+        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+            $comtypefullname = "บริษัท ". $CompanyID->Company_Name . " จำกัด (มหาชน)";
+        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+            $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $CompanyID->Company_Name ;
+        }else {
+            $comtypefullname = $CompanyID->Company_Name;
+        }
+        $CityID=$CompanyID->City;
+        $amphuresID = $CompanyID->Amphures;
+        $TambonID = $CompanyID->Tambon;
+        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+        $company_fax = company_fax::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
+        if (!$company_fax) {
+            $company_fax = '-';
+        }
+        $company_phone = company_phone::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
+        $Contact_name = representative::where('Company_ID',$Company_ID)->where('id',$contact)->where('status',1)->first();
+        $profilecontact = $Contact_name->Profile_ID;
+        $Contact_phone = representative_phone::where('Company_ID',$Company_ID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
+        $selectproduct = document_dummy_quotation::where('Quotation_ID', $QuotationID)->get();
+        $unit = master_unit::where('status',1)->get();
+        $quantity = master_quantity::where('status',1)->get();
+        return view('dummy_quotation.view',compact('Quotation','Freelancer_member','Company','Mevent','Mvat','Contact_name','comtypefullname','CompanyID'
+        ,'TambonID','amphuresID','CityID','provinceNames','company_fax','company_phone','Contact_phone','selectproduct','unit','quantity','QuotationID'));
+    }
 
 }
