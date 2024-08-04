@@ -472,7 +472,7 @@
                         @elseif($item->status == 8)
                             Elexa EGAT Revenue
                         @elseif($item->status == 9)
-                            Other Revenue
+                            Other Revenue Bank Transfer Bank Transfer
                         @endif
 
                         @if ($item->split_status == 1)
@@ -546,7 +546,7 @@
                                     </li>
                                 @endif
                                 <li class="licolor" onclick="other_revenue_data({{ $item->id }})">
-                                    Other Revenue
+                                    Other Revenue Bank Transfer Bank Transfer
                                 </li>
                                 @if ($role_revenue->transfer == 1)
                                     <li class="licolor" onclick="transfer_data({{ $item->id }})">
@@ -647,7 +647,7 @@
                             @elseif($item->status == 8)
                                 Elexa EGAT Revenue
                             @elseif($item->status == 9)
-                                Other Revenue
+                                Other Revenue Bank Transfer
                             @endif
 
                             @if ($item->split_status == 1)
@@ -722,7 +722,7 @@
                                             </li>
                                         @endif
                                         <li class="licolor" onclick="other_revenue_data({{ $item->id }})">
-                                            Other Revenue
+                                            Other Revenue Bank Transfer
                                         </li>
                                         @if ($role_revenue->transfer == 1)
                                             <li class="licolor" onclick="transfer_data({{ $item->id }})">
@@ -823,7 +823,7 @@
                             @elseif($item->status == 8)
                                 Elexa EGAT Revenue
                             @elseif($item->status == 9)
-                                Other Revenue
+                                Other Revenue Bank Transfer
                             @endif
 
                             @if ($item->split_status == 1)
@@ -898,7 +898,7 @@
                                             </li>
                                         @endif
                                         <li class="licolor" onclick="other_revenue_data({{ $item->id }})">
-                                            Other Revenue
+                                            Other Revenue Bank Transfer
                                         </li>
                                         @if ($role_revenue->transfer == 1)
                                             <li class="licolor" onclick="transfer_data({{ $item->id }})">
@@ -963,7 +963,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalOtherRevenueTitle">Other Revenue</h5>
+                    <h5 class="modal-title" id="modalOtherRevenueTitle">Other Revenue Bank Transfer</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="POST" enctype="multipart/form-data" class="basic-form" id="form-other">
@@ -1038,7 +1038,7 @@
                             <option value="5">Agoda Revenue</option>
                             <option value="6">Front Desk Revenue</option>
                             <option value="8">Elexa EGAT Revenue</option>
-                            <option value="9">Other Revenue</option>
+                            <option value="9">Other Revenue Bank Transfer Bank Transfer</option>
                         </select>
 
                         <div class="transfer_date">
