@@ -53,18 +53,22 @@ class Master_market extends Controller
         }
 
     }
-    public function update($id,$datakey,$dataEN,$code) {
+    public function update(Request $request) {
+        try {
+            $id = $request->input('id');
+            $datakey = $request->input('datakey');
+            $dataEN = $request->input('dataEN');
+            $code = $request->input('code');
 
-        $userid = Auth::user()->id;
-        $Mmarket = master_document::find($id);
-        $Mmarket->code = $code;
-        $Mmarket->name_th = $datakey;
-        $Mmarket->name_en = $dataEN;
-        $Mmarket->created_by = $userid;
-        $Mmarket->save();
-        if ($Mmarket->save()) {
+            $userid = Auth::user()->id;
+            $Mmarket = master_document::find($id);
+            $Mmarket->code = $code;
+            $Mmarket->name_th = $datakey;
+            $Mmarket->name_en = $dataEN;
+            $Mmarket->created_by = $userid;
+            $Mmarket->save();
             return redirect()->route('Mmarket.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-        } else {
+        } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }

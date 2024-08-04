@@ -276,7 +276,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mmarket/no','no')->name('Mmarket.no');
         Route::post('/Mmarket/Save','save')->name('Mmarket.save');
         Route::get('/Mmarket/change-Status/{id}','changeStatus')->name('Mmarket.changeStatus');
-        Route::get('/Mmarket/update/{id}/{datakey}/{dataEN}/{code}/','update')->name('Mmarket.update');
+        Route::post('/Mmarket/update','update')->name('Mmarket.update');
         Route::get('/Mmarket/edit/{id}','edit')->name('Mproduct.edit.Mmarket');
         Route::get('/Mmarket/search-list2/{datakey}','search')->name('Mproduct.Mmarket.search');
         Route::get('/Mmarket/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.Mmarket.dupicate');

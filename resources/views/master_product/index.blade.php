@@ -140,7 +140,6 @@
                             <th>ราคาสัปดาห์ระยะยาว</th>
                             <th>ราคาสุดสัปดาห์</th>
                             <th>หน่วย</th>
-                            <th>Create by</th>
                             <th class="text-center">สถานะการใช้งาน</th>
                             <th class="text-center">คำสั่ง</th>
                         </tr>
@@ -183,7 +182,6 @@
                                     @endif
                                 </td>
                                 <td>{{ @$item->productunit->name_th}}</td>
-                                <td>{{ @$item->user_create_id->name}}</td>
                                 <td style="text-align: center;">
                                     @if ($item->status == 1)
                                         <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
@@ -226,7 +224,6 @@
                             <th>ราคาสัปดาห์ระยะยาว</th>
                             <th>ราคาสุดสัปดาห์</th>
                             <th>หน่วย</th>
-                            <th>Create by</th>
                             <th class="text-center">สถานะการใช้งาน</th>
                             <th class="text-center">คำสั่ง</th>
                         </tr>
@@ -245,7 +242,6 @@
                                 <td>{{ $item->long_weekend_price }}</td>
                                 <td>{{ $item->end_weekend_price	 }}</td>
                                 <td>{{ @$item->productunit->name_th}}</td>
-                                <td>{{ @$item->user_create_id->name}}</td>
                                 <td style="text-align: center;">
                                     @if ($item->status == 1)
                                         <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
@@ -284,7 +280,6 @@
                             <th>รายละเอียด</th>
                             <th>ราคาปกติ</th>
                             <th>หน่วย</th>
-                            <th>Create by</th>
                             <th class="text-center">สถานะการใช้งาน</th>
                             <th class="text-center">คำสั่ง</th>
                         </tr>
@@ -299,7 +294,6 @@
                                 <td>{{ $item->detail_th }}</td>
                                 <td>{{ $item->normal_price }}</td>
                                 <td>{{ @$item->productunit->name_th}}</td>
-                                <td>{{ @$item->user_create_id->name}}</td>
                                 <td style="text-align: center;">
                                     @if ($item->status == 1)
                                         <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
@@ -338,7 +332,6 @@
                             <th>รายละเอียด</th>
                             <th>ราคาปกติ</th>
                             <th>หน่วย</th>
-                            <th>Create by</th>
                             <th class="text-center">สถานะการใช้งาน</th>
                             <th class="text-center">คำสั่ง</th>
                         </tr>
@@ -353,7 +346,6 @@
                                 <td>{{ $item->detail_th }}</td>
                                 <td>{{ $item->normal_price }}</td>
                                 <td>{{ @$item->productunit->name_th}}</td>
-                                <td>{{ @$item->user_create_id->name}}</td>
                                 <td style="text-align: center;">
                                     @if ($item->status == 1)
                                         <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
@@ -392,7 +384,6 @@
                             <th>รายละเอียด</th>
                             <th>ราคาปกติ</th>
                             <th>หน่วย</th>
-                            <th>Create by</th>
                             <th class="text-center">สถานะการใช้งาน</th>
                             <th class="text-center">คำสั่ง</th>
                         </tr>
@@ -407,7 +398,6 @@
                                 <td>{{ $item->detail_th }}</td>
                                 <td>{{ $item->normal_price }}</td>
                                 <td>{{ @$item->productunit->name_th}}</td>
-                                <td>{{ @$item->user_create_id->name}}</td>
                                 <td style="text-align: center;">
                                     @if ($item->status == 1)
                                         <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>

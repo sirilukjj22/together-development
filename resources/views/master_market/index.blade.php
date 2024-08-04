@@ -111,7 +111,6 @@
                             <th>Code</th>
                             <th>ชื่อภาษาไทย</th>
                             <th>ชื่อภาษาอังกฤษ</th>
-                            <th>Create by</th>
                             <th class="text-center">สถานะการใช้งาน</th>
                             <th class="text-center">คำสั่ง</th>
                         </tr>
@@ -124,7 +123,6 @@
                                 <td>{{ $item->code }}</td>
                                 <td>{{ $item->name_th }}</td>
                                 <td>{{ $item->name_en }}</td>
-                                <td>{{ @$item->user_create_id->name }}</td>
                                 <td style="text-align: center;">
                                     @if ($item->status == 1)
                                         <button type="button" class="btn btn-light-success btn-sm btn-status" value="{{ $item->id }}">ใช้งาน</button>
@@ -285,13 +283,24 @@
                             document.getElementById('btn-save').disabled = true;
                         }else{
                             if (module_name == "edit") {
-                                jQuery.ajax({
-                                type:   "GET",
-                                url:    "{!! url('/Mmarket/update/"+id+"/"+datakey+"/"+dataEN+"/"+code+"') !!}",
-                                datatype:   "JSON",
-                                async:  false,
-                                success: function(response) {
-                                    location.reload();
+                                $.ajax({
+                                    type: "POST",
+                                    url: `{!! url('/Mmarket/update') !!}`,
+                                    data: {
+                                        id: id,
+                                        datakey: datakey,
+                                        dataEN: dataEN,
+                                        code: code
+                                    },
+                                    datatype: "JSON",
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    },
+                                    success: function(response) {
+                                        location.reload();
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error('An error occurred:', status, error);
                                     }
                                 });
                             }

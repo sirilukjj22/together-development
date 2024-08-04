@@ -106,7 +106,6 @@
                             <th>เรียงลำดับ</th>
                             <th>ชื่อภาษาไทย</th>
                             <th>ชื่อภาษาอังกฤษ</th>
-                            <th>Create by</th>
                             <th class="text-center">สถานะการใช้งาน</th>
                             <th class="text-center">คำสั่ง</th>
                         </tr>
@@ -118,7 +117,6 @@
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $item->name_th }}</td>
                                 <td>{{ $item->name_en }}</td>
-                                <td>{{ @$item->user_create_id->name }}</td>
                                 <td style="text-align: center;">
                                     @if ($item->status == 1)
                                         <button type="button" class="btn btn-light-success btn-sm btn-status" value="{{ $item->id }}">ใช้งาน</button>
