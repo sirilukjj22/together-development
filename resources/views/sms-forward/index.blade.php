@@ -471,6 +471,8 @@
                             Credit Card Water Park Revenue
                         @elseif($item->status == 8)
                             Elexa EGAT Revenue
+                        @elseif($item->status == 9)
+                            Other Revenue
                         @endif
 
                         @if ($item->split_status == 1)
@@ -543,6 +545,9 @@
                                         Credit Card Water Park Revenue
                                     </li>
                                 @endif
+                                <li class="licolor" onclick="other_revenue_data({{ $item->id }})">
+                                    Other Revenue
+                                </li>
                                 @if ($role_revenue->transfer == 1)
                                     <li class="licolor" onclick="transfer_data({{ $item->id }})">
                                         Transfer
@@ -641,6 +646,8 @@
                                 Credit Card Water Park Revenue
                             @elseif($item->status == 8)
                                 Elexa EGAT Revenue
+                            @elseif($item->status == 9)
+                                Other Revenue
                             @endif
 
                             @if ($item->split_status == 1)
@@ -714,6 +721,9 @@
                                                 Credit Card Water Park Revenue
                                             </li>
                                         @endif
+                                        <li class="licolor" onclick="other_revenue_data({{ $item->id }})">
+                                            Other Revenue
+                                        </li>
                                         @if ($role_revenue->transfer == 1)
                                             <li class="licolor" onclick="transfer_data({{ $item->id }})">
                                                 Transfer
@@ -812,6 +822,8 @@
                                 Credit Card Water Park Revenue
                             @elseif($item->status == 8)
                                 Elexa EGAT Revenue
+                            @elseif($item->status == 9)
+                                Other Revenue
                             @endif
 
                             @if ($item->split_status == 1)
@@ -885,6 +897,9 @@
                                                 Credit Card Water Park Revenue
                                             </li>
                                         @endif
+                                        <li class="licolor" onclick="other_revenue_data({{ $item->id }})">
+                                            Other Revenue
+                                        </li>
                                         @if ($role_revenue->transfer == 1)
                                             <li class="licolor" onclick="transfer_data({{ $item->id }})">
                                                 Transfer
@@ -944,8 +959,32 @@
         </div>
     </div>
 
-    <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalCenter2Title" aria-hidden="true">
+    <div class="modal fade" id="modalOtherRevenue" tabindex="-1" role="dialog" aria-labelledby="modalOtherRevenueTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalOtherRevenueTitle">Other Revenue</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" enctype="multipart/form-data" class="basic-form" id="form-other">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="box_modal">
+                            <label>หมายเหตุ</label>
+                            <textarea class="form-control" name="other_revenue_remark" id="other_revenue_remark" rows="7" cols="50" placeholder="กรุณาระบุหมายเหตุ..." required></textarea>
+                        </div>
+                        <input type="hidden" name="dataID" id="otherDataID">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" style="color: black;" data-bs-dismiss="modal">Close</button>
+                        <button type="button" id="btn-save-other-revenue" class="button-10" style="background-color: #109699;">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter2Title" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -978,7 +1017,7 @@
     </div>
 
     <div class="modal fade" id="exampleModalCenter5" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalCenter2Title" aria-hidden="true">
+        aria-labelledby="exampleModalCenter5Title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -999,6 +1038,7 @@
                             <option value="5">Agoda Revenue</option>
                             <option value="6">Front Desk Revenue</option>
                             <option value="8">Elexa EGAT Revenue</option>
+                            <option value="9">Other Revenue</option>
                         </select>
 
                         <div class="transfer_date">
@@ -1263,6 +1303,47 @@
                     $('#day').val('01').trigger('change');
                 }
             }
+        });
+
+        function other_revenue_data(id) {
+            $('#otherDataID').val(id);
+            $('#modalOtherRevenue').modal('show');
+
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('sms-get-remark-other-revenue/"+id+"') !!}",
+                datatype: "JSON",
+                cache: false,
+                async: false,
+                success: function(response) {
+                    $('#other_revenue_remark').val(response.data.other_remark);
+                },
+            });
+        }
+
+        $(document).on('click', '#btn-save-other-revenue', function () {
+            var id = $('#otherDataID').val();
+            var remark = $('#other_revenue_remark').val();
+
+            jQuery.ajax({
+                type: "POST",
+                url: "{!! url('sms-other-revenue') !!}",
+                datatype: "JSON",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {dataID: id, other_revenue_remark: remark},
+                cache: false,
+                async: false,
+                success: function(response) {
+                    if (response.status == 200) {
+                        Swal.fire('เรียบร้อย!', '', 'success');
+                        location.reload();
+                    } else {
+                        Swal.fire('ไม่สำเร็จ', '', 'info');
+                    }
+                },
+            });
         });
 
         function transfer_data(id) {
