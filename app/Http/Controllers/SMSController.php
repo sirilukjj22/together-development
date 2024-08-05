@@ -21,7 +21,7 @@ class SMSController extends Controller
      */
     public function index()
     {
-        // dd(explode(" ", "1.00 บ.จากBAY X955444 ชำระผ่านQR เข้า076355900016902 19/05@10:28"));
+        // dd(explode(" ", "เช็คเข้าบ/ช x267913 ยอด THB95,890.00 ผ่าน TELL"));
         $data_forward = SMS_forwards::where('is_status', 0)->get();
 
         foreach ($data_forward as $key => $value) {
@@ -71,6 +71,19 @@ class SMSController extends Controller
                         SMS_alerts::create([
                             'date' => $value->created_at,
                             'transfer_from' => SMS_alerts::check_bank($exp_form[5]),
+                            'into_account' => SMS_alerts::check_account($exp_form[1]),
+                            'amount' => str_replace(",", "", substr($exp_form[3], 3)),
+                            'remark' => "Auto",
+                            'status' => 0
+                        ]);
+
+                        SMS_forwards::where('id', $value->id)->update([
+                            'is_status' => 1
+                        ]);
+                    } if ($exp_form[0] == "เช็คเข้าบ/ช") {
+                        SMS_alerts::create([
+                            'date' => $value->created_at,
+                            'transfer_from' => 21, // เช็คธนาคาร
                             'into_account' => SMS_alerts::check_account($exp_form[1]),
                             'amount' => str_replace(",", "", substr($exp_form[3], 3)),
                             'remark' => "Auto",

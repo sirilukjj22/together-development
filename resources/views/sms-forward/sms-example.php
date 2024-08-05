@@ -62,7 +62,7 @@
 		$exp_form = explode(" ", $text);
 
 		if (!empty($exp_form[0]) ) {
-			if ($exp_form[0] == "เงินโอนจาก" || $exp_form[0] == "เงินโอนยอด" || $exp_form[4] == "เข้า076355900016902" || $exp_form[4] == "เข้า076355900016901" || $exp_form[4] == "เข้า076355900016911" || $exp_form[0] == "เงินเข้าบ/ช") {
+			if ($exp_form[0] == "เงินโอนจาก" || $exp_form[0] == "เงินโอนยอด" || $exp_form[4] == "เข้า076355900016902" || $exp_form[4] == "เข้า076355900016901" || $exp_form[4] == "เข้า076355900016911" || $exp_form[0] == "เงินเข้าบ/ช" || $exp_form[0] == "เช็คเข้าบ/ช") {
 				$date = date('Y-m-d H:i:s');
 				$sql = "INSERT INTO sms_forward (messages, is_status, created_at) VALUES ('$text', 0, '$date')";
 
