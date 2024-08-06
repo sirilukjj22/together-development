@@ -12,15 +12,110 @@
                 <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Quotation.create') }}'">
                     <i class="fa fa-plus"></i> เพิ่มใบเสนอราคา</button>
                 @endif
+                <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#allSearch">
+                    <i class="fa fa-reorder"></i> Filter</button>
+                <div class="col-md-12 my-2">
+                    <div class="modal fade" id="allSearch" tabindex="-1" aria-labelledby="PrenameModalCenterTitle"
+                    style="display: none;" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="PrenameModalCenterTitle"><i class="fa fa-reorder"></i> Filter</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="col-12">
+                                            <div class="card-body">
+                                                <form action="{{route('Quotation.Search')}}" method="GET" enctype="multipart/form-data" class="row g-3 basic-form">
+                                                    @csrf
+                                                    <div class="col-sm-12 col-12">
+                                                        <label for="Status">ตัวเลือก</label>
+                                                        <select name="Filter" id="Filter" class="form-select" >
+                                                            <option value=" "selected disabled>ตัวเลือก</option>
+                                                            <option value="All">ทั้งหมด</option>
+                                                            <option value="Nocheckin">No Check in date</option>
+                                                            <option value="Checkin">Check in & out</option>
+                                                        </select>
+                                                    </div>
+                                                    <div id="checkin" class="col-sm-6 col-12" style="display: none">
+                                                        <label for="checkin">Check-in Date</label><br>
+                                                        <input type="date" name="checkin"  class="form-control">
+                                                    </div>
+                                                    <div  id="checkout" class="col-sm-6 col-12" style="display: none">
+                                                        <label for="checkin">Check-out Date</label><br>
+                                                        <input type="date" name="checkout" class="form-control">
+                                                    </div>
+                                                    <div id="User"  class="col-sm-6 col-12" style="display: block">
+                                                        <label for="User">User</label>
+                                                        <select name="User" class="form-select">
+                                                            <option value="" selected disabled>ชื่อผู้ใช้งาน</option>
+                                                            @foreach($User as $item)
+                                                                <option value="{{ $item->id }}">{{ @$item->name}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div id="status" class="col-sm-6 col-12"style="display: block">
+                                                        <label for="Status">Status</label>
+                                                        <select name="status"  class="form-select">
+                                                            <option value=" "selected disabled>สถานะเอกสาร</option>
+                                                            <option value="1">Pending</option>
+                                                            <option value="2">Awaiting Approval</option>
+                                                            <option value="3">Approved</option>
+                                                            <option value="4">Reject</option>
+                                                            <option value="0">Cancel</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
+                                                        <button type="submit" class="btn btn-color-green lift" id="btn-save">ค้นหา</button>
+                                                    </div>
+                                                </form>
+                                                <script>
+                                                    document.getElementById('Filter').addEventListener('change', function() {
+                                                        const selectedValue = this.value;
+                                                        // ทำสิ่งที่คุณต้องการเมื่อมีการเปลี่ยนแปลง
+                                                        console.log('Selected filter:', selectedValue);
+                                                        const checkinDiv = document.getElementById('checkin');
+                                                        const checkoutDiv = document.getElementById('checkout');
+                                                        const status = document.getElementById('status');
+                                                        const User = document.getElementById('User');
+                                                        if (selectedValue === 'All') {
+                                                            checkinDiv.style.display = 'none';
+                                                            checkoutDiv.style.display = 'none';
+                                                            User.style.display = 'none';
+                                                            status.style.display = 'none';
+                                                        } else if (selectedValue === 'Nocheckin') {
+                                                            checkinDiv.style.display = 'none';
+                                                            checkoutDiv.style.display = 'none';
+                                                            User.style.display = 'block';
+                                                            status.style.display = 'block';
+                                                        } else if (selectedValue === 'Checkin') {
+                                                            checkinDiv.style.display = 'block';
+                                                            checkoutDiv.style.display = 'block';
+                                                            User.style.display = 'block';
+                                                            status.style.display = 'block';
+                                                        }
+                                                    });
+                                                </script>
+                                            </div>
+                                    </div><!-- Form Validation -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 @endsection
 <style>
     .tab1{
-    background-color: white;
-    color: black; /* เปลี่ยนสีตัวอักษรเป็นสีดำหากต้องการ */
-}
+        background-color: white;
+        color: black; /* เปลี่ยนสีตัวอักษรเป็นสีดำหากต้องการ */
+
+    }
+
+
 </style>
 @section('content')
 <div class="container">
@@ -55,6 +150,7 @@
                 <div class="card-body">
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="nav-Dummy" role="tabpanel" rel="0">
+
                             <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
                                 @csrf
                                 <input type="hidden" name="category" value="prename">
@@ -95,8 +191,14 @@
                                                 <td>{{ @$item->company->Company_Name}}</td>
                                                 <td>{{ $item->issue_date }}</td>
                                                 <td>{{ $item->Expirationdate }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                @if ($item->checkin)
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                @else
+                                                <td style="text-align: center;">-</td>
+                                                <td style="text-align: center;">-</td>
+                                                @endif
+
                                                 <td style="text-align: center;">
                                                     @if ($item->SpecialDiscount == 0)
                                                         -
@@ -266,8 +368,13 @@
                                                 <td>{{ @$item->company->Company_Name}}</td>
                                                 <td>{{ $item->issue_date }}</td>
                                                 <td>{{ $item->Expirationdate }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                @if ($item->checkin)
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                @else
+                                                <td style="text-align: center;">-</td>
+                                                <td style="text-align: center;">-</td>
+                                                @endif
                                                 <td style="text-align: center;">
                                                     @if ($item->SpecialDiscount == 0)
                                                         -
@@ -434,8 +541,13 @@
                                                 <td>{{ @$item->company->Company_Name}}</td>
                                                 <td>{{ $item->issue_date }}</td>
                                                 <td>{{ $item->Expirationdate }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                @if ($item->checkin)
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                @else
+                                                <td style="text-align: center;">-</td>
+                                                <td style="text-align: center;">-</td>
+                                                @endif
                                                 <td style="text-align: center;">
                                                     @if ($item->SpecialDiscount == 0)
                                                         -
@@ -554,8 +666,13 @@
                                                 <td>{{ @$item->company->Company_Name}}</td>
                                                 <td>{{ $item->issue_date }}</td>
                                                 <td>{{ $item->Expirationdate }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                @if ($item->checkin)
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                @else
+                                                <td style="text-align: center;">-</td>
+                                                <td style="text-align: center;">-</td>
+                                                @endif
                                                 <td style="text-align: center;">
                                                     @if ($item->SpecialDiscount == 0)
                                                         -
@@ -689,8 +806,13 @@
                                                 <td>{{ @$item->company->Company_Name}}</td>
                                                 <td>{{ $item->issue_date }}</td>
                                                 <td>{{ $item->Expirationdate }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                @if ($item->checkin)
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                @else
+                                                <td style="text-align: center;">-</td>
+                                                <td style="text-align: center;">-</td>
+                                                @endif
                                                 <td style="text-align: center;">
                                                     @if ($item->SpecialDiscount == 0)
                                                         -
@@ -822,8 +944,13 @@
                                                 <td>{{ @$item->company->Company_Name}}</td>
                                                 <td>{{ $item->issue_date }}</td>
                                                 <td>{{ $item->Expirationdate }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                @if ($item->checkin)
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
+                                                <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                @else
+                                                <td style="text-align: center;">-</td>
+                                                <td style="text-align: center;">-</td>
+                                                @endif
                                                 <td style="text-align: center;">
                                                     @if ($item->SpecialDiscount == 0)
                                                         -
@@ -923,7 +1050,15 @@
 </form>
 
 @include('script.script')
-
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
+<script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
+<script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
     $(document).ready(function () {
         $('.myTableProposalRequest1').addClass('nowrap').dataTable({
@@ -1085,5 +1220,15 @@
             }
         });
     }
+</script>
+<script>
+    flatpickr('#checkin', {
+        dateFormat: 'd/m/Y',
+        locale: 'th' // ใช้ locale ภาษาไทยถ้าต้องการ
+    });
+    flatpickr('#checkout', {
+        dateFormat: 'd/m/Y',
+        locale: 'th' // ใช้ locale ภาษาไทยถ้าต้องการ
+    });
 </script>
 @endsection

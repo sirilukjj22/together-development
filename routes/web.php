@@ -386,6 +386,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Quotation/send/detail/email/{id}', 'sendemail')->name('Quotation.sendemail');
 
         Route::get('/Quotation/view/{id}','view')->name('Quotation.view');
+
+        Route::get('/Quotation/Search/All', 'SearchAll')->name('Quotation.Search');
     });
 
     #DummyQuotaion
@@ -425,8 +427,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Dummy/Proposal/Request/document/view/{id}/{Type}', 'view')->name('ProposalReq.view');
         Route::post('/Dummy/Proposal/Request/document/view/Approve/', 'Approve')->name('DummyQuotation.Approve');
         Route::post('/Dummy/Proposal/Request/document/view/Reject/', 'Reject')->name('DummyQuotation.Reject');
-        Route::get('/Proposal/request/search/cancel', 'searchcancel')->name('search.by.date');
-        Route::get('/Proposal/request/search/Approved', 'searchApproved')->name('search.by.Approved');
         Route::get('/Dummy/Proposal/Request/document/view/Approve/viewApprove/{id}','viewApprove')->name('DummyQuotation.viewApprove');
     });
     ##-------------------------------TemplateController-----------------

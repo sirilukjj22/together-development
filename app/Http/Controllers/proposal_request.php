@@ -72,46 +72,6 @@ class proposal_request extends Controller
 
         return view('proposal_req.index',compact('proposal','Logproposal','Logproposalcount','logdummy','path','logdummycount','proposalcount'));
     }
-    public function searchcancel(Request $request)
-    {
-        $selectedDate = $request->input('selectday');
-        $proposal = dummy_quotation::where('status_document', 2)
-            ->groupBy('Company_ID','Operated_by')
-            ->select('dummy_quotation.*',DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
-            ->get();
-        $Logproposal = dummy_quotation::whereIn('status_document', [3,5])->get();
-        $Logproposalcount = dummy_quotation::whereIn('status_document', [3,5])->count();
-        $checkbox = $request->input('checkbox');
-        if ($checkbox) {
-            $logdummy = log::select('Quotation_ID','Approve_date','Approve_time')->get();
-        }else{
-            $logdummy = log::where('Approve_date',$selectedDate)->select('Quotation_ID','Approve_date','Approve_time')->get();
-        }
-
-        $logdummycount = log::query()->count();
-        $path = 'Log_PDF/dummy_proposal/';
-        return view('proposal_req.index',compact('proposal','Logproposal','Logproposalcount','logdummy','path','logdummycount'));
-    }
-    public function searchApproved(Request $request)
-    {
-        $selectedDate = $request->input('selectday');
-        $checkbox = $request->input('checkbox');
-        if ($checkbox) {
-            $Logproposal = dummy_quotation::whereIn('status_document', [3,5])->get();
-        }else{
-            $Logproposal = dummy_quotation::where('Approve_at',$selectedDate)->whereIn('status_document', [3,5])->get();
-        }
-        $proposal = dummy_quotation::where('status_document', 2)
-            ->groupBy('Company_ID','Operated_by')
-            ->select('dummy_quotation.*',DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
-            ->get();
-
-        $Logproposalcount = dummy_quotation::whereIn('status_document', [3,5])->count();
-        $logdummy = log_dummy::where('Approve_date',$selectedDate)->select('Quotation_ID','Approve_date','Approve_time')->get();
-        $logdummycount = log_dummy::query()->count();
-        $path = 'Log_PDF/dummy_proposal/';
-        return view('proposal_req.index',compact('proposal','Logproposal','Logproposalcount','logdummy','path','logdummycount'));
-    }
     public function view($id,$Type)
     {
         if ($Type == 'DummyProposal') {
@@ -293,12 +253,14 @@ class proposal_request extends Controller
                     $total = 0;
                     $adult = $Quotation->adult;
                     $children = $Quotation->children;
+                    $totalguest = 0;
                     $totalguest = $adult + $children;
                     $totalaverage = 0;
                     $subtotal =0;
                     $beforeTax=0;
                     $AddTax=0;
                     $Nettotal =0;
+                    $guest = $Quotation->TotalPax;
                     if ($Mvat->id == 50) {
                         foreach ($selectproduct as $item) {
                             $totalPrice += $item->priceproduct;
@@ -307,7 +269,7 @@ class proposal_request extends Controller
                             $beforeTax = $subtotal / 1.07;
                             $AddTax = $subtotal - $beforeTax;
                             $Nettotal = $subtotal;
-                            $totalaverage = $Nettotal / $totalguest;
+                            $totalaverage = $Nettotal / $guest;
                         }
                     } elseif ($Mvat->id == 51) {
                         foreach ($selectproduct as $item) {
@@ -317,7 +279,7 @@ class proposal_request extends Controller
                             $beforeTax = 0;
                             $AddTax = 0;
                             $Nettotal = $subtotal;
-                            $totalaverage = $Nettotal / $totalguest;
+                            $totalaverage = $Nettotal / $guest;
                         }
                     } elseif ($Mvat->id == 52) {
                         foreach ($selectproduct as $item) {
@@ -327,7 +289,7 @@ class proposal_request extends Controller
                             $beforeTax = $subtotal / 1.07;
                             $AddTax = $subtotal * 7 / 100;
                             $Nettotal = $subtotal + $AddTax;
-                            $totalaverage = $Nettotal / $totalguest;
+                            $totalaverage = $Nettotal / $guest;
                         }
                     } else {
                         foreach ($selectproduct as $item) {
@@ -337,7 +299,7 @@ class proposal_request extends Controller
                             $beforeTax = $subtotal / 1.07;
                             $AddTax = $subtotal - $beforeTax;
                             $Nettotal = $subtotal;
-                            $totalaverage = $Nettotal / $totalguest;
+                            $totalaverage = $Nettotal / $guest;
                         }
                     }
 
@@ -395,6 +357,7 @@ class proposal_request extends Controller
                         'AddTax' => $AddTax,
                         'Nettotal' => $Nettotal,
                         'totalguest' => $totalguest,
+                        'guest'=>$guest,
                         'totalaverage' => $totalaverage,
                         'pagecount' => $pagecount,
                         'page' => $page,

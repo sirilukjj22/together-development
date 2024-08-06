@@ -77,19 +77,6 @@
                             </form>
                         </div>
                         <div class="tab-pane fade" id="nav-Approved" role="tabpanel" rel="0">
-                            <div class="col-md-12">
-                                <form action="{{ url('/Proposal/request/search/Approved') }}" method="GET">
-                                    <div class="row">
-                                        <div class="col-md-3 d-flex align-items-center" >
-                                            <input type="date" name="selectday" id="selectday" class="form-control" style="margin-right: 10px;">
-                                            <input class="form-check-input" type="checkbox" name="checkbox" value="all" id="checkbox"> All
-                                        </div>
-                                        <div class="col-md-2 ">
-                                            <button type="submit" class="btn btn-color-green lift btn_modal">search</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
                             <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
                                 @csrf
                                 <input type="hidden" name="category" value="prename">
@@ -163,19 +150,6 @@
                             </form>
                         </div>
                         <div class="tab-pane fade" id="nav-Cancel" role="tabpanel" rel="0">
-                            <div class="col-md-12">
-                                <form action="{{ url('/Proposal/request/search/cancel') }}" method="GET">
-                                    <div class="row">
-                                        <div class="col-md-3 d-flex align-items-center" >
-                                            <input type="date" name="selectday" id="selectday" class="form-control" style="margin-right: 10px;">
-                                            <input class="form-check-input" type="checkbox" name="checkbox" value="all" id="checkbox"> All
-                                        </div>
-                                        <div class="col-md-2 ">
-                                            <button type="submit" class="btn btn-color-green lift btn_modal">search</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
                             <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
                                 @csrf
                             <input type="hidden" name="category" value="prename">
@@ -220,10 +194,15 @@
     @csrf
     <input type="hidden" id="deleteID" name="deleteID" value="">
 </form>
-
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 @include('script.script')
-<script>
 
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Please select an option"
+        });
+    });
     $(document).ready(function () {
         $('.myTableProposalRequest1').addClass('nowrap').dataTable({
                 responsive: true,
