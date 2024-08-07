@@ -41,7 +41,7 @@
                 <li class="nav-item" id="nav4"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Approved" role="tab"><span class="badge "style="background-color:#64748b">{{$Approvedcount}}</span> Approved</a></li>
                 <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-invoice" role="tab"> <span class="badge bg-warning" >{{$invoicecount}}</span> Invoice</a></li>
                 <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete" role="tab"><span class="badge bg-success" >{{$Completecount}}</span> Complete</a></li>
-                <li class="nav-item" id="nav4"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge bg-danger" >{{$Cancelcount}}</span> Cancel</a></li>
+                <li class="nav-item" id="nav4"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge" style="background-color: #1d4ed8" >{{$Cancelcount}}</span> Revice</a></li>
             </ul>
             <div class="card mb-3">
                 <div class="card-body">
@@ -91,7 +91,7 @@
                                                 @if ($item->min_balance == 0 )
                                                     0.00
                                                 @else
-                                                    {{ $item->min_balance}}
+                                                    {{ number_format($item->min_balance) }}
                                                 @endif
                                             </td>
                                             <td style="text-align: center;">
@@ -225,7 +225,6 @@
                                                     <ul class="dropdown-menu border-0 shadow p-3">
                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
                                                         <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Invoice/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                        <li><a class="dropdown-item py-2 rounded" onclick="Revice('{{$item->id}}')">Cancel</a></li>
                                                     </ul>
                                                 </div>
                                             </td>
@@ -278,15 +277,14 @@
                                                 @endif
                                             </td>
                                             <td style="text-align: center;">
-                                                <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                <span class="badge rounded-pill "style="background-color:#1d4ed8">Revice</span>
                                             </td>
                                             <td style="text-align: center;">
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                     <ul class="dropdown-menu border-0 shadow p-3">
                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
-                                                        <li><a class="dropdown-item py-2 rounded" onclick="Revice('{{$item->id}}')">Revice</a></li>
-                                                        <li><a class="dropdown-item py-2 rounded" onclick="Delete('{{$item->id}}')">Delete</a></li>
+                                                        <li><a class="dropdown-item py-2 rounded" onclick="Revice('{{$item->id}}')">update</a></li>
                                                     </ul>
                                                 </div>
                                             </td>
@@ -418,22 +416,5 @@
         });
 
     }
-    function Delete(id){
-        Swal.fire({
-        title: "คุณต้องการลบใบแจ้งหนี้นี้ใช่หรือไม่?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "ตกลง",
-        cancelButtonText: "ยกเลิก",
-        confirmButtonColor: "#28a745",
-        dangerMode: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = "{{ url('/Document/invoice/Delete/') }}/" + id;
-            }
-        });
-
-    }
-
 </script>
 @endsection

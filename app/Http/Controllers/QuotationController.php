@@ -482,6 +482,7 @@ class QuotationController extends Controller
             $save->ComRateCode = $request->Company_Discount;
             $save->Expirationdate = $request->Expiration;
             $save->Operated_by = $userid;
+            $save->Refler_ID=$Quotation_ID;
             if ($SpecialDiscount == 0 && $SpecialDiscountBath == 0) {
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
@@ -935,6 +936,8 @@ class QuotationController extends Controller
             $children=$request->Children;
             $SpecialDiscount = $request->SpecialDiscount;
             $SpecialDiscountBath = $request->DiscountAmount;
+            $parts = explode('-', $Quotation_ID);
+            $cleanedID = $parts[0] . '-' . $parts[1];
             $QuotationID = Quotation::where('Quotation_ID', $Quotation_ID)->first();
             if ($QuotationID) {
                 $parts = explode('-', $Quotation_ID);
@@ -1215,6 +1218,7 @@ class QuotationController extends Controller
             $save->Expirationdate = $request->Expiration;
             $save->Operated_by = $userid;
             $save->status_guest = 0;
+            $save->Refler_ID=$cleanedID;
             if ($SpecialDiscount == 0 && $SpecialDiscountBath == 0) {
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
@@ -2159,7 +2163,7 @@ class QuotationController extends Controller
                     }elseif ($Usercheck !== null && $status == 2) {
                         $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 3) {
-                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->get();
+                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_guest',1)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 4) {
                         $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->get();
                     }
@@ -2238,7 +2242,7 @@ class QuotationController extends Controller
                     }elseif ($Usercheck !== null && $status == 2) {
                         $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 3) {
-                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->get();
+                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_guest',1)->orderBy('created_at', 'desc')->get();
                     }elseif ($Usercheck !== null && $status == 4) {
                         $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->get();
                     }

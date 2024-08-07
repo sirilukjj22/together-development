@@ -13,6 +13,7 @@ class document_invoices extends Model
         'Invoice_ID',
         'Quotation_ID',
         'company',
+        'Refler_ID',
     ];
     public function company00()
     {

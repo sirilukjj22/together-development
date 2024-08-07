@@ -157,7 +157,13 @@
                                     <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
                                     <td>
                                         <span id="Company_Number">{{ substr($company_phone->Phone_number, 0, 3) }}-{{ substr($company_phone->Phone_number, 3, 3) }}-{{ substr($company_phone->Phone_number, 6) }}</span>
-                                        <b style="margin-left: 10px;color:#000;">Company Fax : </b  ><span id="Company_Fax">{{$company_fax->Fax_number}}</span>
+                                        <b style="margin-left: 10px;color:#000;">Company Fax : </b  ><span id="Company_Fax">
+                                            @if (is_object($company_fax) && property_exists($company_fax, 'Fax_number'))
+                                                <span id="Company_Fax">{{ $company_fax->Fax_number }}</span>
+                                            @else
+                                                <span id="Company_Fax">-</span>
+                                            @endif
+                                        </span>
                                     </td>
                                 </tr>
                                 <tr>
