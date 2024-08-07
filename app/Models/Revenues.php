@@ -31,6 +31,7 @@ class Revenues extends Model
         'charge',
         'agoda_charge',
         'ev_charge',
+        'other_revenue',
         'total_transaction',
         'total_no_type',
         'remark',

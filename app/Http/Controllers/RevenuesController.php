@@ -41,6 +41,7 @@ class RevenuesController extends Controller
         $front_array = [];
         $credit_wp_array = [];
         $ev_array = [];
+        $other_array = [];
         $no_type_array = [];
         $transaction_array = [];
         
@@ -100,6 +101,12 @@ class RevenuesController extends Controller
                             'total_ev' => $check_sms[$key]['total_amount'],
                         ];
                     } 
+                    // Other
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
+                        $other_array[$i] = [
+                            'total_other' => $check_sms[$key]['total_amount'],
+                        ];
+                    } 
                     // No Category
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
                         $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
@@ -138,6 +145,10 @@ class RevenuesController extends Controller
 
                     if (!isset($ev_array[$i])) {
                         $ev_array[$i] = [ 'total_ev' => 0, ];
+                    }
+
+                    if (!isset($other_array[$i])) {
+                        $other_array[$i] = [ 'total_other' => 0, ];
                     }
                 }
 
@@ -199,6 +210,12 @@ class RevenuesController extends Controller
                             'total_ev' => $check_sms[$key]['total_amount'],
                         ];
                     } 
+                    // Other
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
+                        $other_array[$i] = [
+                            'total_other' => $check_sms[$key]['total_amount'],
+                        ];
+                    } 
                     // No Category
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
                         $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
@@ -237,6 +254,10 @@ class RevenuesController extends Controller
 
                     if (!isset($ev_array[$i])) {
                         $ev_array[$i] = [ 'total_ev' => 0, ];
+                    }
+
+                    if (!isset($other_array[$i])) {
+                        $other_array[$i] = [ 'total_other' => 0, ];
                     }
                     
                 }
@@ -308,6 +329,14 @@ class RevenuesController extends Controller
             }
         }
 
+        if (isset($other_array)) {
+            foreach ($other_array as $key => $value) {
+                Revenues::where('date', date('Y-m-'.$key))->update([
+                    'other_revenue' => $value['total_other']
+                ]);
+            }
+        }
+
         if (isset($transaction_array)) {
             foreach ($transaction_array as $key => $value) {
                 Revenues::where('date', date('Y-m-'.$key))->update([
@@ -329,21 +358,22 @@ class RevenuesController extends Controller
             SUM(room_cash) + SUM(room_transfer) + SUM(room_credit) as room_amount, 
             SUM(fb_cash) + SUM(fb_transfer) + SUM(fb_credit) as fb_amount,
             SUM(wp_cash) + SUM(wp_transfer) + SUM(wp_credit) as wp_amount,
-            SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount"), 'total_credit')->first();
+            SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount"),
+            DB::raw("SUM(other_revenue) as other_revenue"), 'total_credit')->first();
 
-        $total_daily_revenue = $daily_revenue->front_amount + $daily_revenue->room_amount + $daily_revenue->fb_amount + $daily_revenue->wp_amount + $daily_revenue->credit_amount + $daily_revenue->total_credit;
+        $total_daily_revenue = $daily_revenue->front_amount + $daily_revenue->room_amount + $daily_revenue->fb_amount + $daily_revenue->wp_amount + $daily_revenue->credit_amount + $daily_revenue->other_revenue + $daily_revenue->total_credit;
 
         $total_verified = Revenues::whereMonth('date', date('m'))->whereYear('date', date('Y'))->where('status', 1)->count();
         $total_unverified = Revenues::whereMonth('date', date('m'))->whereYear('date', date('Y'))->where('status', 0)->count();
         // dd($total_daily_revenue);
         $total_revenue_today = Revenues::whereDate('date', date('Y-m-d'))->select(
             DB::raw("
-            front_cash + front_transfer + front_credit as front_amount, 
-            room_cash + room_transfer + room_credit as room_amount, 
-            fb_cash + fb_transfer + fb_credit as fb_amount,
-            wp_cash + wp_transfer + wp_credit as wp_amount,
-            room_credit + fb_credit + wp_credit as credit_amount
-            "), 'total_credit_agoda', 'total_transaction', 'total_no_type', 'status')->first();
+                front_cash + front_transfer + front_credit as front_amount, 
+                room_cash + room_transfer + room_credit as room_amount, 
+                fb_cash + fb_transfer + fb_credit as fb_amount,
+                wp_cash + wp_transfer + wp_credit as wp_amount,
+                room_credit + fb_credit + wp_credit as credit_amount
+            "), 'total_credit_agoda', 'other_revenue', 'total_transaction', 'total_no_type', 'status')->first();
         $total_transfer = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->sum('amount');
         $total_transfer2 = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->count();
         $total_split = SMS_alerts::where('date_into', date('Y-m-d'))->where('split_status', 1)->sum('amount');
@@ -355,7 +385,7 @@ class RevenuesController extends Controller
         $total_ev_outstanding = Revenues::getManualTotalEv();
 
         $total_day = $total_revenue_today->front_amount + $total_revenue_today->room_amount + $total_revenue_today->fb_amount + $total_revenue_today->wp_amount
-         + $total_revenue_today->credit_amount + $total_revenue_today->total_credit_agoda;
+         + $total_revenue_today->credit_amount + $total_revenue_today->total_credit_agoda + $total_revenue_today->other_revenue;
         // dd($total_guest_deposit);
 
         // dd($total_revenue_today->room_amount);
@@ -400,6 +430,10 @@ class RevenuesController extends Controller
         $total_ev_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select('total_elexa')->sum('total_elexa');
         $total_ev_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select('total_elexa')->sum('total_elexa');
         $ev_charge = Revenues::getManualEvCharge(date('Y-m-d'), date('m'), date('Y'), 8, 8);
+
+        $total_other_revenue = Revenues::whereDate('date', date('Y-m-d'))->select('other_revenue')->sum('other_revenue');
+        $total_other_month = Revenues::whereDay('date', $symbol, date('d'))->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select('other_revenue')->sum('other_revenue');
+        $total_other_year = Revenues::whereDate('date', '<=', date('Y-m-d'))->select('other_revenue')->sum('other_revenue');
 
         $total_credit_transaction = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('into_account', "708-226792-1")->where('status', 4)->count();
         $total_credit_transaction_month = SMS_alerts::whereMonth('date_into', date('m'))->whereYear('date_into', date('Y'))->where('into_account', "708-226792-1")->where('status', 4)->count();
@@ -518,6 +552,10 @@ class RevenuesController extends Controller
             'total_ev_year',
             'ev_charge',
 
+            'total_other_revenue',
+            'total_other_month',
+            'total_other_year',
+
             'total_not_type',
 
             'total_transaction',
@@ -575,6 +613,8 @@ class RevenuesController extends Controller
         $agoda_array = [];
         $front_array = [];
         $credit_wp_array = [];
+        $ev_array = [];
+        $other_array = [];
         $no_type_array = [];
         $transaction_array = [];
         
@@ -639,6 +679,12 @@ class RevenuesController extends Controller
                             'total_ev' => $check_sms[$key]['total_amount'],
                         ];
                     } 
+                    // Other
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
+                        $other_array[$i] = [
+                            'total_other' => $check_sms[$key]['total_amount'],
+                        ];
+                    } 
                     // No Category
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
                         $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
@@ -677,6 +723,10 @@ class RevenuesController extends Controller
 
                     if (!isset($ev_array[$i])) {
                         $ev_array[$i] = [ 'total_ev' => 0, ];
+                    }
+
+                    if (!isset($other_array[$i])) {
+                        $other_array[$i] = [ 'total_other' => 0, ];
                     }
                 }
 
@@ -738,6 +788,12 @@ class RevenuesController extends Controller
                             'total_ev' => $check_sms[$key]['total_amount'],
                         ];
                     } 
+                    // Other
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
+                        $other_array[$i] = [
+                            'total_other' => $check_sms[$key]['total_amount'],
+                        ];
+                    } 
                     // No Category
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
                         $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
@@ -776,6 +832,10 @@ class RevenuesController extends Controller
 
                     if (!isset($ev_array[$i])) {
                         $ev_array[$i] = [ 'total_ev' => 0, ];
+                    }
+
+                    if (!isset($other_array[$i])) {
+                        $other_array[$i] = [ 'total_other' => 0, ];
                     }
                     
                 }
@@ -850,6 +910,14 @@ class RevenuesController extends Controller
             }
         }
 
+        if (isset($other_array)) {
+            foreach ($other_array as $key => $value) {
+                Revenues::where('date', date('Y-m-'.$key))->update([
+                    'other_revenue' => $value['total_other']
+                ]);
+            }
+        }
+
         if (isset($transaction_array)) {
             foreach ($transaction_array as $key => $value) {
                 Revenues::where('date', date('Y-'.$month.'-'.$key))->update([
@@ -903,6 +971,8 @@ class RevenuesController extends Controller
         $agoda_array = [];
         $front_array = [];
         $credit_wp_array = [];
+        $ev_array = [];
+        $other_array = [];
         $no_type_array = [];
         $transaction_array = [];
         
@@ -963,6 +1033,12 @@ class RevenuesController extends Controller
                             'total_ev' => $check_sms[$key]['total_amount'],
                         ];
                     } 
+                    // Other
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
+                        $other_array[$i] = [
+                            'total_other' => $check_sms[$key]['total_amount'],
+                        ];
+                    }
                     // No Category
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
                         $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
@@ -1001,6 +1077,10 @@ class RevenuesController extends Controller
 
                     if (!isset($ev_array[$i])) {
                         $ev_array[$i] = [ 'total_ev' => 0, ];
+                    }
+
+                    if (!isset($other_array[$i])) {
+                        $other_array[$i] = [ 'total_other' => 0, ];
                     }
                 }
 
@@ -1061,6 +1141,12 @@ class RevenuesController extends Controller
                             'total_ev' => $check_sms[$key]['total_amount'],
                         ];
                     } 
+                    // Other
+                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
+                        $other_array[$i] = [
+                            'total_other' => $check_sms[$key]['total_amount'],
+                        ];
+                    } 
                     // No Category
                     if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
                         $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
@@ -1099,6 +1185,10 @@ class RevenuesController extends Controller
 
                     if (!isset($ev_array[$i])) {
                         $ev_array[$i] = [ 'total_ev' => 0, ];
+                    }
+
+                    if (!isset($other_array[$i])) {
+                        $other_array[$i] = [ 'total_other' => 0, ];
                     }
                     
                 }
@@ -1169,6 +1259,14 @@ class RevenuesController extends Controller
             }
         }
 
+        if (isset($other_array)) {
+            foreach ($other_array as $key => $value) {
+                Revenues::where('date', date('Y-m-'.$key))->update([
+                    'other_revenue' => $value['total_other']
+                ]);
+            }
+        }
+
         if (isset($transaction_array)) {
             foreach ($transaction_array as $key => $value) {
                 Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
@@ -1193,9 +1291,9 @@ class RevenuesController extends Controller
             SUM(room_cash) + SUM(room_transfer) + SUM(room_credit) as room_amount, 
             SUM(fb_cash) + SUM(fb_transfer) + SUM(fb_credit) as fb_amount,
             SUM(wp_cash) + SUM(wp_transfer) + SUM(wp_credit) as wp_amount,
-            SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount"), 'total_credit')->first();
+            SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount"), DB::raw("SUM(other_revenue) as other_revenue"), 'total_credit')->first();
 
-        $total_daily_revenue = $daily_revenue->front_amount + $daily_revenue->room_amount + $daily_revenue->fb_amount + $daily_revenue->wp_amount + $daily_revenue->credit_amount + $daily_revenue->total_credit;
+        $total_daily_revenue = $daily_revenue->front_amount + $daily_revenue->room_amount + $daily_revenue->fb_amount + $daily_revenue->wp_amount + $daily_revenue->credit_amount + $daily_revenue->total_credit + $daily_revenue->other_revenue;
 
         $total_verified = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->where('status', 1)->count();
         $total_unverified = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->where('status', 0)->count();
@@ -1207,7 +1305,7 @@ class RevenuesController extends Controller
             (fb_cash + fb_transfer + fb_credit) as fb_amount,
             (wp_cash + wp_transfer + wp_credit) as wp_amount,
             (room_credit + fb_credit + wp_credit) as credit_amount
-            "), 'total_credit_agoda', 'total_transaction', 'total_no_type', 'status')->first();
+            "), 'total_credit_agoda', 'other_revenue', 'total_transaction', 'total_no_type', 'status')->first();
 
         // dd($total_revenue_today);
         $total_transfer = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->sum('amount');
@@ -1221,7 +1319,7 @@ class RevenuesController extends Controller
         $total_ev_outstanding = Revenues::getManualTotalEv();
 
         $total_day = $total_revenue_today->front_amount + $total_revenue_today->room_amount + $total_revenue_today->fb_amount
-         + $total_revenue_today->wp_amount + $total_revenue_today->credit_amount + $total_revenue_today->total_credit_agoda;
+         + $total_revenue_today->wp_amount + $total_revenue_today->credit_amount + $total_revenue_today->total_credit_agoda + $total_revenue_today->other_revenue;
         // dd($total_revenue_today);
 
         ## ข้อมูลในตาราง
@@ -1290,14 +1388,18 @@ class RevenuesController extends Controller
         $total_no_type_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
         $total_no_type_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
 
-        $day = $request->day;
-        $month = $request->month;
-        $year = $request->year;
-
         $total_ev_revenue = Revenues::whereDay('date', $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_elexa')->sum('total_elexa');
         $total_ev_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select('total_elexa')->sum('total_elexa');
         $total_ev_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select('total_elexa')->sum('total_elexa');
         $ev_charge = Revenues::getManualEvCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 8, 8);
+
+        $total_other_revenue = Revenues::whereDay('date', $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('other_revenue')->sum('other_revenue');
+        $total_other_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select('other_revenue')->sum('other_revenue');
+        $total_other_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select('other_revenue')->sum('other_revenue');
+
+        $day = $request->day;
+        $month = $request->month;
+        $year = $request->year;
 
         // dd($agoda_charge);
         // dd($front_charge);
@@ -1363,6 +1465,10 @@ class RevenuesController extends Controller
                         'total_ev_month',
                         'total_ev_year',
                         'ev_charge',
+
+                        'total_other_revenue',
+                        'total_other_month',
+                        'total_other_year',
 
                         'btn_by_page',
 
@@ -1455,6 +1561,10 @@ class RevenuesController extends Controller
                     'total_ev_month',
                     'total_ev_year',
                     'ev_charge',
+
+                    'total_other_revenue',
+                    'total_other_month',
+                    'total_other_year',
         
                     'btn_by_page',
         
@@ -1475,9 +1585,9 @@ class RevenuesController extends Controller
             SUM(room_cash) + SUM(room_transfer) + SUM(room_credit) as room_amount, 
             SUM(fb_cash) + SUM(fb_transfer) + SUM(fb_credit) as fb_amount,
             SUM(wp_cash) + SUM(wp_transfer) + SUM(wp_credit) as wp_amount,
-            SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount"), 'total_credit')->first();
+            SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount"), DB::raw("SUM(other_revenue) as other_revenue"),  'total_credit')->first();
 
-        $total_daily_revenue = $daily_revenue->front_amount + $daily_revenue->room_amount + $daily_revenue->fb_amount + $daily_revenue->wp_amount + $daily_revenue->credit_amount + $daily_revenue->total_credit;
+        $total_daily_revenue = $daily_revenue->front_amount + $daily_revenue->room_amount + $daily_revenue->fb_amount + $daily_revenue->wp_amount + $daily_revenue->credit_amount + $daily_revenue->total_credit + $daily_revenue->other_revenue;
 
         $total_verified = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->where('status', 1)->count();
         $total_unverified = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->where('status', 0)->count();
@@ -1490,7 +1600,7 @@ class RevenuesController extends Controller
             SUM(wp_cash) + SUM(wp_transfer) + SUM(wp_credit) as wp_amount,
             SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount,
             SUM(total_transaction) as total_transaction
-            "), 'total_credit_agoda', 'total_no_type', 'status')->first();
+            "), 'total_credit_agoda', 'other_revenue', 'total_no_type', 'status')->first();
         $total_transfer = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->sum('amount');
         $total_transfer2 = SMS_alerts::whereBetween('date_into', [$from, $to])->where('transfer_status', 1)->count();
         $total_split = SMS_alerts::where('date_into', [$from, $to])->where('split_status', 1)->sum('amount');
@@ -1567,14 +1677,18 @@ class RevenuesController extends Controller
         $total_no_type_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
         $total_no_type_year = Revenues::whereYear('date', $request->year)->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
 
-        $day = $request->day;
-        $month = $request->month;
-        $year = $request->year;
-
         $total_ev_revenue = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_elexa')->sum('total_elexa');
         $total_ev_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_elexa')->sum('total_elexa');
         $total_ev_year = Revenues::whereYear('date', $request->year)->sum('total_elexa');
         $ev_charge = Revenues::getManualEvCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 8, 8);
+
+        $total_other_revenue = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('other_revenue')->sum('other_revenue');
+        $total_other_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select('other_revenue')->sum('other_revenue');
+        $total_other_year = Revenues::whereYear('date', $request->year)->select('other_revenue')->sum('other_revenue');
+
+        $day = $request->day;
+        $month = $request->month;
+        $year = $request->year;
 
         $by_page = 'index';
 
@@ -1672,6 +1786,10 @@ class RevenuesController extends Controller
             'total_ev_month',
             'total_ev_year',
             'ev_charge',
+
+            'total_other_revenue',
+            'total_other_month',
+            'total_other_year',
 
             'day', 'month', 'year'));
     }
