@@ -34,24 +34,30 @@
                                                             <option value=" "selected disabled>ตัวเลือก</option>
                                                             <option value="All">ทั้งหมด</option>
                                                             <option value="Nocheckin">No Check in date</option>
-                                                            <option value="Checkin">Check in & out</option>
+                                                            <option value="Checkin">Check in & Check out</option>
                                                         </select>
                                                     </div>
                                                     <div id="checkin" class="col-sm-6 col-12" style="display: none">
                                                         <label for="checkin">Check-in Date</label><br>
-                                                        <input type="date" name="checkin"  class="form-control">
+                                                        <input type="text" name="checkin" id="checkinput" class="form-control" required>
                                                     </div>
                                                     <div  id="checkout" class="col-sm-6 col-12" style="display: none">
                                                         <label for="checkin">Check-out Date</label><br>
-                                                        <input type="date" name="checkout" class="form-control">
+                                                        <input type="text" name="checkout" id="checkinout" class="form-control" required>
                                                     </div>
                                                     <div id="User"  class="col-sm-6 col-12" style="display: block">
                                                         <label for="User">User</label>
                                                         <select name="User" class="form-select">
-                                                            <option value="" selected disabled>ชื่อผู้ใช้งาน</option>
-                                                            @foreach($User as $item)
-                                                                <option value="{{ $item->id }}">{{ @$item->name}}</option>
-                                                            @endforeach
+                                                            @if ( Auth::user()->permission == 0)
+                                                                @foreach($User as $item)
+                                                                    <option value="{{ $item->id }}">{{ @$item->name}}</option>
+                                                                @endforeach
+                                                            @else
+                                                                <option value="" selected disabled>ชื่อผู้ใช้งาน</option>
+                                                                @foreach($User as $item)
+                                                                    <option value="{{ $item->id }}">{{ @$item->name}}</option>
+                                                                @endforeach
+                                                            @endif
                                                         </select>
                                                     </div>
                                                     <div id="status" class="col-sm-6 col-12"style="display: block">
@@ -79,21 +85,29 @@
                                                         const checkoutDiv = document.getElementById('checkout');
                                                         const status = document.getElementById('status');
                                                         const User = document.getElementById('User');
+                                                        const checkinput = document.getElementById('checkinput');
+                                                        const checkinout = document.getElementById('checkinout');
                                                         if (selectedValue === 'All') {
                                                             checkinDiv.style.display = 'none';
                                                             checkoutDiv.style.display = 'none';
                                                             User.style.display = 'none';
                                                             status.style.display = 'none';
+                                                            checkinput.disabled = true;
+                                                            checkinout.disabled = true;
                                                         } else if (selectedValue === 'Nocheckin') {
                                                             checkinDiv.style.display = 'none';
                                                             checkoutDiv.style.display = 'none';
                                                             User.style.display = 'block';
                                                             status.style.display = 'block';
+                                                            checkinput.disabled = true;
+                                                            checkinout.disabled = true;
                                                         } else if (selectedValue === 'Checkin') {
                                                             checkinDiv.style.display = 'block';
                                                             checkoutDiv.style.display = 'block';
                                                             User.style.display = 'block';
                                                             status.style.display = 'block';
+                                                            checkinput.disabled = false;
+                                                            checkinout.disabled = false;
                                                         }
                                                     });
                                                 </script>
@@ -1051,14 +1065,9 @@
 
 @include('script.script')
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
-<script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
-<script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
     $(document).ready(function () {
         $('.myTableProposalRequest1').addClass('nowrap').dataTable({
@@ -1221,12 +1230,14 @@
         });
     }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js"></script>
 <script>
-    flatpickr('#checkin', {
+    flatpickr('#checkinput', {
         dateFormat: 'd/m/Y',
         locale: 'th' // ใช้ locale ภาษาไทยถ้าต้องการ
     });
-    flatpickr('#checkout', {
+    flatpickr('#checkinout', {
         dateFormat: 'd/m/Y',
         locale: 'th' // ใช้ locale ภาษาไทยถ้าต้องการ
     });

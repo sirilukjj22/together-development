@@ -1214,6 +1214,7 @@ class QuotationController extends Controller
             $save->ComRateCode = $request->Company_Discount;
             $save->Expirationdate = $request->Expiration;
             $save->Operated_by = $userid;
+            $save->status_guest = 0;
             if ($SpecialDiscount == 0 && $SpecialDiscountBath == 0) {
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
@@ -2093,176 +2094,167 @@ class QuotationController extends Controller
 
             if ($Filter == 'All') {
                 $Proposal = Quotation::query()->orderBy('created_at', 'desc')->get();
-                $Pending = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->orderBy('created_at', 'desc')->get();
-                $Approved = Quotation::query()->where('status_guest',1)->orderBy('created_at', 'desc')->get();
             }elseif ($Filter == 'Nocheckin') {
-                $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->orderBy('created_at', 'desc')->get();
-                $Pending = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->where('checkin',null)->where('checkout',null)->orderBy('created_at', 'desc')->get();
-                $Approved = Quotation::query()->where('status_guest',1)->where('checkin',null)->where('checkout',null)->orderBy('created_at', 'desc')->get();
+                if ($Filter == 'Nocheckin'&&$checkin ==null&& $checkout == null) {
+                    if ($Filter == 'Nocheckin'&&$Usercheck ==null&& $status == null) {
+                        $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Filter == 'Nocheckin'&&$Usercheck !==null&& $status == null) {
+                        $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Filter == 'Nocheckin'&&$status == 1 && $Usercheck == null) {
+                        $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->whereIn('status_document',[1,3])->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Filter == 'Nocheckin'&&$status == 3 && $Usercheck == null) {
+                        $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('status_guest',1)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Filter == 'Nocheckin'&&$status == 2 && $Usercheck == null) {
+                        $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('status_document',2)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Filter == 'Nocheckin'&&$status == 4 && $Usercheck == null) {
+                        $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('status_document',4)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Filter == 'Nocheckin'&&$status == 0 && $Usercheck == null) {
+                        $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('status_document',0)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Filter == 'Nocheckin'&&$status == 1 && $Usercheck !== null) {
+                        $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->whereIn('status_document',[1,3])->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Filter == 'Nocheckin'&&$status == 3 && $Usercheck !== null) {
+                        $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_guest',1)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Filter == 'Nocheckin'&&$status == 2 && $Usercheck !== null) {
+                        $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Filter == 'Nocheckin'&&$status == 4 && $Usercheck !== null) {
+                        $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Filter == 'Nocheckin'&&$status == 0 && $Usercheck !== null) {
+                        $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->get();
+                    }
+                }
             }elseif ($Filter == 'Checkin') {
-                if ($checkin && $checkout ) {
+                if ($checkin && $checkout &&$Usercheck ==null&& $status == null ) {
                     $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->orderBy('created_at', 'desc')->get();
-                    $Pending = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->whereIn('status_document',[1,3])->where('status_guest',0)->orderBy('created_at', 'desc')->get();
-                    $Approved = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_guest',1)->orderBy('created_at', 'desc')->get();
-                }elseif ($Usercheck) {
-                    $Proposal = Quotation::query()->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->get();
-                    $Pending = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->get();
-                    $Approved = Quotation::query()->where('status_guest',1)->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->get();
-                }elseif ($checkin&& $checkout && $User) {
-                    $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->orderBy('created_at', 'desc')->get();
-                    $Pending = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->where('Operated_by',$Usercheck)->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->orderBy('created_at', 'desc')->get();
-                    $Approved = Quotation::query()->where('status_guest',1)->where('Operated_by',$Usercheck)->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->orderBy('created_at', 'desc')->get();
-                }elseif ($status == 0) {
-                    if ($status == null) {
-                        $Proposal = Quotation::query()->orderBy('created_at', 'desc')->get();
-                    }else{
-                        $Proposal = Quotation::query()->where('status_document',0)->get();
-                    }
-                }elseif ($status == 1) {
-                    $Proposal = Quotation::query()->whereIn('status_document',[1,3])->get();
-                    $Pending = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->whereIn('status_document',[1,3])->get();
-                }elseif ($status == 2) {
-                    $Proposal = Quotation::query()->where('status_document',2)->get();
-                }elseif ($status == 3) {
-                    $Proposal = Quotation::query()->where('status_guest',1)->get();
-                    $Approved = Quotation::query()->where('status_guest',1)->get();
-                }elseif ($status == 4) {
-                    $Proposal = Quotation::query()->where('status_document',4)->get();
-                }elseif ($checkin&& $checkout && $User && $status) {
-                    $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',$status)->orderBy('created_at', 'desc')->get();
-                    $Pending = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->where('Operated_by',$Usercheck)->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',$status)->orderBy('created_at', 'desc')->get();
-                }elseif ($checkin == null && $checkout == null) {
-                    $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == null ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck ==null&& $status == 1 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->whereIn('status_document',[1,3])->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck ==null&& $status == 2 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',2)->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck ==null&& $status == 3 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_guest',1)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck ==null&& $status == 4 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',4)->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck ==null&& $status == 0 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',0)->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 1 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->whereIn('status_document',[1,3])->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 2 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',2)->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 3 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_guest',1)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 4 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',4)->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 0 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',0)->where('status_guest',0)->orderBy('created_at', 'desc')->get();
                 }
-            }elseif ($Usercheck) {
-                $Proposal = Quotation::query()->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->get();
-                if ($status == 0) {
-                    if ($status == null) {
-                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->get();
-                    }else{
-                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',0)->get();
+            }elseif ($Filter == null) {
+                if ($Usercheck) {
+                    if ($Usercheck !== null && $status == null) {
+                        $Proposal = Quotation::query()->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->get();
+                    }elseif ($Usercheck !== null && $status == 0) {
+                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Usercheck !== null && $status == 1) {
+                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->whereIn('status_document',[1,3])->orderBy('created_at', 'desc')->get();
+                    }elseif ($Usercheck !== null && $status == 2) {
+                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Usercheck !== null && $status == 3) {
+                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Usercheck !== null && $status == 4) {
+                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->get();
                     }
-                }elseif ($status == 1) {
-                    $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->whereIn('status_document',[1,3])->get();
-                }elseif ($status == 2) {
-                    $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',2)->get();
-                }elseif ($status == 3) {
-                    $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_guest',1)->get();
-                    $Approved = Quotation::query()->where('status_guest',1)->where('Operated_by',$Usercheck)->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',$status)->orderBy('created_at', 'desc')->get();
-                }elseif ($status == 4) {
-                    $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',4)->get();
-                }
-            }elseif ($status) {
-                if ($status == 0) {
-                    if ($status == null) {
-                        $Proposal = Quotation::query()->orderBy('created_at', 'desc')->get();
-                    }else{
-                        $Proposal = Quotation::query()->where('status_document',0)->get();
+                }else {
+                    if ($status == 0) {
+                        if ($status == null) {
+                            $Proposal = Quotation::query()->where('status_document',0)->get();
+                        }else{
+                            $Proposal = Quotation::query()->where('status_document',0)->get();
+                        }
+                    }elseif ($status == 1) {
+                        $Proposal = Quotation::query()->whereIn('status_document',[1,3])->get();
+
+                    }elseif ($status == 2) {
+                        $Proposal = Quotation::query()->where('status_document',2)->get();
+                    }elseif ($status == 3) {
+                        $Proposal = Quotation::query()->where('status_guest',1)->get();
+
+                    }elseif ($status == 4) {
+                        $Proposal = Quotation::query()->where('status_document',4)->get();
                     }
-                }elseif ($status == 1) {
-                    $Proposal = Quotation::query()->whereIn('status_document',[1,3])->get();
-                    $Pending = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->whereIn('status_document',[1,3])->get();
-                }elseif ($status == 2) {
-                    $Proposal = Quotation::query()->where('status_document',2)->get();
-                }elseif ($status == 3) {
-                    $Proposal = Quotation::query()->where('status_guest',1)->get();
-                    $Approved = Quotation::query()->where('status_guest',1)->get();
-                }elseif ($status == 4) {
-                    $Proposal = Quotation::query()->where('status_document',4)->get();
                 }
             }
-
+            $Pending = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->get();
+            $Approved = Quotation::query()->where('status_guest',1)->get();
             $Pendingcount = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->count();
             $Awaiting = Quotation::query()->where('status_document',2)->get();
             $Awaitingcount = Quotation::query()->where('status_document',2)->count();
             $Approvedcount = Quotation::query()->where('status_guest',1)->count();
-            if ($checkbox == 'Nocheckin') {
-                $Reject = Quotation::query()->where('status_document',4)->where('checkin',null)->where('checkout',null)->orderBy('created_at', 'desc')->get();
-            }elseif ($checkin&& $checkout ) {
-                $Reject = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',4)->orderBy('created_at', 'desc')->get();
-            }elseif ($checkin !== null && $checkout == null) {
-                $Reject = Quotation::query()->where('checkin',$checkinDate)->where('status_document',4)->orderBy('created_at', 'desc')->get();
-            }elseif ($checkin == null && $checkout !== null) {
-                $Reject = Quotation::query()->where('checkout',$checkoutDate)->where('status_document',4)->orderBy('created_at', 'desc')->get();
-            }elseif ($Usercheck) {
-                $Reject = Quotation::query()->where('status_document',4)->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->get();
-            }elseif ($checkin&& $checkout && $User) {
-                $Reject = Quotation::query()->where('status_document',4)->where('Operated_by',$Usercheck)->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->orderBy('created_at', 'desc')->get();
-            }elseif ($status == 4) {
-                $Reject = Quotation::query()->where('status_document',4)->get();
-            }elseif ($checkin&& $checkout && $User && $status == 4) {
-                $Reject = Quotation::query()->where('status_document',4)->where('Operated_by',$Usercheck)->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->orderBy('created_at', 'desc')->get();
-            }else{
-                $Reject = Quotation::query()->where('status_document',4)->orderBy('created_at', 'desc')->get();
-            }
+            $Reject = Quotation::query()->where('status_document',4)->orderBy('created_at', 'desc')->get();
             $Rejectcount = Quotation::query()->where('status_document',4)->count();
-            if ($checkbox == 'Nocheckin') {
-                $Cancel = Quotation::query()->where('status_document',0)->where('checkin',null)->where('checkout',null)->orderBy('created_at', 'desc')->get();
-            }elseif ($checkin&& $checkout ) {
-                $Cancel = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',0)->orderBy('created_at', 'desc')->get();
-            }elseif ($checkin !== null && $checkout == null) {
-                $Cancel = Quotation::query()->where('checkin',$checkinDate)->where('status_document',0)->orderBy('created_at', 'desc')->get();
-            }elseif ($checkin == null && $checkout !== null) {
-                $Cancel = Quotation::query()->where('checkout',$checkoutDate)->where('status_document',0)->orderBy('created_at', 'desc')->get();
-            }elseif ($Usercheck) {
-                $Cancel = Quotation::query()->where('status_document',0)->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->get();
-            }elseif ($checkin&& $checkout && $User) {
-                $Cancel = Quotation::query()->where('status_document',0)->where('Operated_by',$Usercheck)->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->orderBy('created_at', 'desc')->get();
-            }elseif ($status == 0) {
-                $Cancel = Quotation::query()->where('status_document',0)->get();
-            }elseif ($checkin&& $checkout && $User && $status == 0) {
-                $Cancel = Quotation::query()->where('status_document',0)->where('Operated_by',$Usercheck)->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->orderBy('created_at', 'desc')->get();
-            }else{
-                $Cancel = Quotation::query()->where('status_document',0)->orderBy('created_at', 'desc')->get();
-            }
+            $Cancel = Quotation::query()->where('status_document',0)->orderBy('created_at', 'desc')->get();
             $Cancelcount = Quotation::query()->where('status_document',0)->count();
         }
         if ($user->permission == 0) {
 
-            $User = User::select('name','id')->where('permission',$userid)->get();
-            if ($checkbox == 'Nocheckin') {
-
-                $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$userid)->orderBy('created_at', 'desc')->get();
-            }
-
-            elseif ($checkin&& $checkout ) {
-                $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$userid)->orderBy('created_at', 'desc')->get();
-            }elseif ($checkin !== null && $checkout == null) {
-                $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('Operated_by',$userid)->orderBy('created_at', 'desc')->get();
-            }elseif ($checkin == null && $checkout !== null) {
-                $Proposal = Quotation::query()->where('checkout',$checkoutDate)->where('Operated_by',$userid)->orderBy('created_at', 'desc')->get();
-            }elseif ($status == 0) {
-                if ($status == null) {
-                    $Proposal = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->get();
-                }else{
-                    $Proposal = Quotation::query()->where('Operated_by',$userid)->where('status_document',0)->get();
+            $User = User::select('name','id')->where('id',$userid)->get();
+            if ($Filter == 'All') {
+                $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->get();
+            }elseif ($Filter == 'Nocheckin') {
+                if ($Filter == 'Nocheckin'&&$checkin ==null&& $checkout == null&&$status == null && $Usercheck !== null) {
+                    $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->get();
+                }elseif ($Filter == 'Nocheckin'&&$status == 1 && $Usercheck !== null) {
+                    $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->whereIn('status_document',[1,3])->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                }elseif ($Filter == 'Nocheckin'&&$status == 3 && $Usercheck !== null) {
+                    $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_guest',1)->orderBy('created_at', 'desc')->get();
+                }elseif ($Filter == 'Nocheckin'&&$status == 2 && $Usercheck !== null) {
+                    $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->get();
+                }elseif ($Filter == 'Nocheckin'&&$status == 4 && $Usercheck !== null) {
+                    $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->get();
+                }elseif ($Filter == 'Nocheckin'&&$status == 0 && $Usercheck !== null) {
+                    $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->get();
                 }
-            }elseif ($status == 1) {
-                $Proposal = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->get();
-            }elseif ($status == 2) {
-                $Proposal = Quotation::query()->where('Operated_by',$userid)->where('status_document',2)->get();
-            }elseif ($status == 3) {
-                $Proposal = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->get();
-            }elseif ($status == 4) {
-                $Proposal = Quotation::query()->where('Operated_by',$userid)->where('status_document',4)->get();
-            }elseif ($checkin&& $checkout && $User && $status) {
-                $Proposal = Quotation::query()->where('Operated_by',$userid)->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('status_document',$status)->orderBy('created_at', 'desc')->get();
-            }elseif ($checkin == null && $checkout == null) {
-                $Proposal = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->get();
-            }else{
-                $Proposal = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->get();
+            }elseif ($Filter == 'Checkin') {
+                if ($checkin && $checkout &&$Usercheck !==null&& $status == null ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 1 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->whereIn('status_document',[1,3])->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 2 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',2)->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 3 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_guest',1)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 4 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',4)->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 0 ) {
+                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',0)->where('status_guest',0)->orderBy('created_at', 'desc')->get();
+                }
+            }elseif ($Filter == null) {
+                if ($Usercheck) {
+                    if ($Usercheck !== null && $status == null) {
+                        $Proposal = Quotation::query()->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->get();
+                    }elseif ($Usercheck !== null && $status == 0) {
+                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Usercheck !== null && $status == 1) {
+                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->whereIn('status_document',[1,3])->orderBy('created_at', 'desc')->get();
+                    }elseif ($Usercheck !== null && $status == 2) {
+                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Usercheck !== null && $status == 3) {
+                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',3)->orderBy('created_at', 'desc')->get();
+                    }elseif ($Usercheck !== null && $status == 4) {
+                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->get();
+                    }
+                }
             }
-            $Proposalcount = Quotation::query()->where('Operated_by',$user)->count();
-            $Pending = Quotation::query()->where('Operated_by',$user)->whereIn('status_document',[1,3])->where('status_guest',0)->get();
-            $Pendingcount = Quotation::query()->where('Operated_by',$user)->whereIn('status_document',[1,3])->where('status_guest',0)->count();
-            $Awaiting = Quotation::query()->where('Operated_by',$user)->orderBy('created_at', 'desc')->where('status_document',2)->get();
-            $Awaitingcount = Quotation::query()->where('Operated_by',$user)->where('status_document',2)->count();
-            $Approved = Quotation::query()->where('Operated_by',$user)->orderBy('created_at', 'desc')->where('status_guest',1)->get();
-            $Approvedcount = Quotation::query()->where('Operated_by',$user)->where('status_guest',1)->count();
-            $Reject = Quotation::query()->where('Operated_by',$user)->orderBy('created_at', 'desc')->where('status_document',4)->get();
-            $Rejectcount = Quotation::query()->where('Operated_by',$user)->where('status_document',4)->count();
-            $Cancel = Quotation::query()->where('Operated_by',$user)->orderBy('created_at', 'desc')->where('status_document',0)->get();
-            $Cancelcount = Quotation::query()->where('Operated_by',$user)->where('status_document',0)->count();
+            $Proposalcount = Quotation::query()->where('Operated_by',$userid)->count();
+            $Pending = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->where('status_guest',0)->get();
+            $Pendingcount = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->where('status_guest',0)->count();
+            $Awaiting = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',2)->get();
+            $Awaitingcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',2)->count();
+            $Approved = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_guest',1)->get();
+            $Approvedcount = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->count();
+            $Reject = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',4)->get();
+            $Rejectcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',4)->count();
+            $Cancel = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',0)->get();
+            $Cancelcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',0)->count();
         }
         return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount'
         ,'User'));
