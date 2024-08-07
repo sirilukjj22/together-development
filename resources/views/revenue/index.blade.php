@@ -92,9 +92,9 @@
             $total_wp_cash_bank_month = $total_wp_month->wp_cash + $total_wp_month->wp_transfer;
             $total_wp_cash_bank_year = $total_wp_year->wp_cash + $total_wp_year->wp_transfer;    
 
-            $total_cash_bank = $total_cash + $total_bank_transfer;
-            $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month;
-            $total_cash_bank_year = $total_cash_year + $total_bank_transfer_year;
+            $total_cash_bank = $total_cash + $total_bank_transfer + $total_other_revenue;
+            $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month + $total_other_month;
+            $total_cash_bank_year = $total_cash_year + $total_bank_transfer_year + $total_other_year;
 
             $total_today_revenue_graph = $total_day + ($credit_revenue->total_credit ?? 0);
         ?>
@@ -789,6 +789,18 @@
                         <td>{{ number_format($fb_charge[0]['revenue_credit_month'], 2) }}</td>
                         <td>{{ number_format($fb_charge[0]['revenue_credit_year'], 2) }}</td>
                     </tr>
+                    <tr> <!-- Other Revenue-->
+                        <th class="text-light" style="background-color: #109699; color: white;" colspan="8">
+                            Other Revenue
+                        </th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Bank Transfer</td>
+                        <td>{{ number_format($total_other_revenue, 2) }}</td>
+                        <td>{{ number_format($total_other_month, 2) }}</td>
+                        <td>{{ number_format($total_other_year, 2) }}</td>
+                    </tr>
+
                     <tr>
                         <th colspan="2" style="text-align: right; padding-right: 1%;">Total Cash</th>
                         <td>{{ number_format($total_cash, 2) }}</td>
@@ -797,16 +809,16 @@
                     </tr>
                     <tr>
                         <th colspan="2" style="text-align: right; padding-right: 1%;">Total Bank Transfer</th>
-                        <td>{{ number_format($total_bank_transfer, 2) }}</td>
-                        <td>{{ number_format($total_bank_transfer_month, 2) }}</td>
-                        <td>{{ number_format($total_bank_transfer_year, 2) }}</td>
+                        <td>{{ number_format($total_bank_transfer + $total_other_revenue, 2) }}</td>
+                        <td>{{ number_format($total_bank_transfer_month + $total_other_month, 2) }}</td>
+                        <td>{{ number_format($total_bank_transfer_year + $total_other_year, 2) }}</td>
                     </tr>
                     <tr>
                         <th colspan="2" style="text-align: right; padding-right: 1%;">
                             Cash And Bank Transfer Hotel Revenue</th>
-                        <td>{{ number_format($total_cash_bank, 2) }}</td>
-                        <td>{{ number_format($total_cash_bank_month, 2) }}</td>
-                        <td>{{ number_format($total_cash_bank_year, 2) }}</td>
+                        <td>{{ number_format($total_cash_bank + $total_other_revenue, 2) }}</td>
+                        <td>{{ number_format($total_cash_bank_month + $total_other_month, 2) }}</td>
+                        <td>{{ number_format($total_cash_bank_year + $total_other_year, 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="8" style="background-color: #109699; color: white;"></td> <!-- ช่องเปล่า-->
