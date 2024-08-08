@@ -352,6 +352,7 @@
                             <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
                             <input type="hidden" name="company"  id="company" value="{{$CompanyID}}">
                             <input type="hidden" name="balance"  id="balance">
+                            <input type="hidden" name="sum"  id="sum">
                             <input type="hidden" name="Deposit"  id="Deposit" value="{{$Deposit}}">
                             <input type="hidden" name="Refler_ID"  id="Refler_ID" value="{{$Refler_ID}}">
                         </div>
@@ -362,12 +363,12 @@
                             <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
                                 Preview
                             </button>
-                            <button type="submit" class="btn btn-color-green lift btn_modal">save</button>
+                            <button type="button" class="btn btn-color-green lift btn_modal" onclick="submitsave()">save</button>
                         </div>
                         <div class="col-4"></div>
                     </div>
                 </form>
-                <input type="hidden" name="preview" value="1" id="preview">
+
             </div>
         </div>
     </div>
@@ -444,7 +445,8 @@
         $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
         $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
         $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#balance').val(isNaN(balance) ? '0' : balance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#balance').val(balance);
+        $('#sum').val(Subtotal);
 
     });
     $(document).on('keyup', '#Payment1', function() {
@@ -466,7 +468,8 @@
         $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
         $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
         $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#balance').val(isNaN(balance) ? '0' : balance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        $('#balance').val(balance);
+        $('#sum').val(Subtotal);
     });
     function togglePaymentFields() {
         var radio0 = document.getElementById('radio0');
@@ -494,17 +497,32 @@
 </script>
 
 <script>
+    function submitsave() {
+        console.log(1);
+        document.getElementById("myForm").removeAttribute('target');
+        // สร้าง input แบบ hidden ใหม่
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "save";
+        input.value = 1;
+
+        // เพิ่ม input ลงในฟอร์ม
+        document.getElementById("myForm").appendChild(input);
+        document.getElementById("myForm").submit();
+    }
     function submitPreview() {
+        document.getElementById("myForm").removeAttribute('target');
         var previewValue = document.getElementById("preview").value;
 
         // สร้าง input แบบ hidden ใหม่
         var input = document.createElement("input");
         input.type = "hidden";
         input.name = "preview";
-        input.value = previewValue;
+        input.value = 1;
 
         // เพิ่ม input ลงในฟอร์ม
         document.getElementById("myForm").appendChild(input);
+        document.getElementById("myForm").setAttribute("target","_blank");
         document.getElementById("myForm").submit();
     }
     function BACKtoEdit(){

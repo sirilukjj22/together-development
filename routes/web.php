@@ -445,6 +445,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/invoice/ReviceCancel/{id}','Revice')->name('invoice.Revice');
         Route::get('/Document/invoice/Delete/{id}','Delete')->name('invoice.Delete');
         Route::get('/Document/invoice/view/{id}','view')->name('invoice.view');
+        Route::get('/Document/invoice/Receipt/{id}','Receipt')->name('invoice.Receipt');
+        Route::post('/Document/invoice/update/Receipt/{id}', 'update')->name('invoice.update');
     });
 
 

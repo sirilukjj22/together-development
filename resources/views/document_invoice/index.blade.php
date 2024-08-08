@@ -41,7 +41,7 @@
                 <li class="nav-item" id="nav4"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Approved" role="tab"><span class="badge "style="background-color:#64748b">{{$Approvedcount}}</span> Approved</a></li>
                 <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-invoice" role="tab"> <span class="badge bg-warning" >{{$invoicecount}}</span> Invoice</a></li>
                 <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete" role="tab"><span class="badge bg-success" >{{$Completecount}}</span> Complete</a></li>
-                <li class="nav-item" id="nav4"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge" style="background-color: #1d4ed8" >{{$Cancelcount}}</span> Revice</a></li>
+                <li class="nav-item" id="nav4"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge" style="background-color: #1d4ed8" >{{$Cancelcount}}</span> Receipt</a></li>
             </ul>
             <div class="card mb-3">
                 <div class="card-body">
@@ -91,7 +91,7 @@
                                                 @if ($item->min_balance == 0 )
                                                     0.00
                                                 @else
-                                                    {{ number_format($item->min_balance) }}
+                                                    {{ $item->min_balance }}
                                                 @endif
                                             </td>
                                             <td style="text-align: center;">
@@ -136,6 +136,7 @@
                                             <th class="text-center">Expiration Date</th>
                                             <th class="text-center">Amount</th>
                                             <th class="text-center">Payment</th>
+                                            <th class="text-center">Payment(%)</th>
                                             <th class="text-center">Balance</th>
                                             <th class="text-center">Document status</th>
                                             <th class="text-center">Order</th>
@@ -157,6 +158,12 @@
                                                 {{$item->Nettotal}}
                                             </td>
                                             <td style="text-align: center;"> {{ number_format($item->payment) }}</td>
+                                            @if ($item->paymentPercent == null)
+                                                <td style="text-align: center;">0</td>
+                                            @else
+                                                <td style="text-align: center;">{{$item->paymentPercent	}} %</td>
+                                            @endif
+
                                             <td style="text-align: center;">{{$item->balance}}</td>
                                             <td style="text-align: center;">
                                                 <span class="badge rounded-pill bg-warning">Invoice</span>
@@ -284,7 +291,7 @@
                                                     <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                     <ul class="dropdown-menu border-0 shadow p-3">
                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
-                                                        <li><a class="dropdown-item py-2 rounded" onclick="Revice('{{$item->id}}')">update</a></li>
+                                                        <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/Receipt/'.$item->id) }}">update</a></li>
                                                     </ul>
                                                 </div>
                                             </td>

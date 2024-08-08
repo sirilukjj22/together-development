@@ -3,8 +3,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col">
-                <small class="text-muted">Welcome to Generate Proforma Invoice.</small>
-                <h1 class="h4 mt-1">Generate Proforma Invoice</h1>
+                <small class="text-muted">Welcome to Update Proforma Invoice.</small>
+                <h1 class="h4 mt-1">Update Proforma Invoice</h1>
             </div>
         </div>
     </div>
@@ -92,7 +92,7 @@
     <div class="row clearfix">
         <div class="col-sm-12 col-12">
             <div class="card p-4 mb-4">
-                <form id="myForm" action="{{ route('invoice.save') }}" method="POST">
+                <form id="myForm" action="{{url('/Document/invoice/update/Receipt/'.$id)}}" method="POST">
                     @csrf
                     <div class="row">
                         <div class="col-lg-8 col-md-12 col-sm-12 image-container">
@@ -108,14 +108,14 @@
                         <div class="col-lg-4 col-md-12 col-sm-12">
                             <div class="row">
                                 <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Profoma Invoice</b>
-                                <span class="titleQuotation">Profoma Invoice ID : {{$InvoiceID}}</span>
+                                <span class="titleQuotation">Profoma Invoice ID :{{$InvoiceID}}</span>
                                 <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
                                     <div class="col-12 col-md-12 col-sm-12">
                                         <div class="row">
                                             <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
                                                 <span>Issue Date:</span>
                                             </div>
-                                            <div class="col-lg-4 col-md-12 col-sm-12" id="reportrange1">
+                                            <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
                                                 <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;"readonly>
                                             </div>
                                         </div>
@@ -125,7 +125,7 @@
                                             <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
                                                 <span>Expiration Date:</span>
                                             </div>
-                                            <div class="col-lg-4 col-md-12 col-sm-12">
+                                            <div class="col-lg-6 col-md-12 col-sm-12">
                                                 <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly>
                                             </div>
                                         </div>
@@ -190,7 +190,7 @@
                                 <tr>
                                     <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Number :</b></td>
                                     <td>
-                                        <span id="Company_Number">{{$Contact_phone->Phone_number}}</span>
+                                        <span id="Company_Number">{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span>
                                     </td>
                                 </tr>
                             </table>
@@ -214,7 +214,11 @@
                                     <tr>
                                         <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Length of Stay :</b></td>
                                         <td>
-                                            <span id="Company_Number">{{$Quotation->day}} วัน {{$Quotation->night}} คืน</span>
+                                            @if ($Quotation->day == null)
+                                            <span >-</span> <span ></span><br>
+                                            @else
+                                                <span >{{$Quotation->day}}</span> วัน <span >{{$Quotation->night}}</span> คืน<br>
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
@@ -226,7 +230,7 @@
                                     <tr>
                                         <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Valid :</b></td>
                                         <td>
-                                            <input type="date" class="form-control" name="valid" id="valid" required>
+                                            <input type="date" class="form-control" name="valid" id="valid" value="{{$valid}}" required>
                                         </td>
                                     </tr>
                                 </table>
@@ -235,28 +239,6 @@
                     </div>
                     <div class="styled-hr"></div>
                     <input type="hidden" name="eventformat" id="eventformat" value="{{$Quotation->eventformat}}">
-                    <div class="row mt-2">
-                        <div class="col-lg-6">
-                            <label for="Payment">Payment by (%) Remaining 100%</label>
-                            <div class="input-group">
-                                <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" value="0" id="radio0" name="paymentRadio" onclick="togglePaymentFields()">
-                                </div>
-                                <input type="number" class="form-control" id="Payment0" name="PaymentPercent" min="1" max="100" disabled oninput="validateInput(this)">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <label for="Payment by (THB)">Payment by (THB)</label>
-                            <div class="input-group">
-                                <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" value="1" id="radio1" name="paymentRadio" onclick="togglePaymentFields()">
-                                </div>
-                                <input type="text" class="form-control" id="Payment1" name="Payment" disabled oninput="validateInput1(this)">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="styled-hr mt-3"></div>
                     <div class="row mt-4">
                         <table class=" table table-hover align-middle mb-0" style="width:100%">
                             <thead >
@@ -269,29 +251,34 @@
                             <tbody id="display-selected-items">
                                 <tr>
                                     <td style="text-align:center">1</td>
-                                    <td style="text-align:left">Proposal ID : {{$QuotationID}} <span id="Amount" style="display: none;"></span>
-                                        <span id="Amount1" style="display: none;"></span> of {{$balance}} THB กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit"  style="width: 2%"  id="Deposit" value="{{$Deposit}}" disabled></td>
-                                    <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
+                                    <td style="text-align:left">Proposal ID : {{$QuotationID}}
+                                        @if ($payment)
+                                            {{ number_format((float) $payment, 2, '.', ',') }}
+                                        @else
+                                            {{$paymentPercent}}%
+                                        @endif
+                                        of {{ number_format($Nettotal, 2) }} THB กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit"  style="width: 2%"  id="Deposit" value="{{$Deposit}}" disabled></td>
+                                        <td style="text-align:right"><span id="Subtotal">{{ number_format($Subtotal, 2) }}</span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Nettotal}}"></td>
                                 </tr>
                                 <tr>
                                     <td><br></td>
                                     <td style="text-align:right">Subtotal :</td>
-                                    <td style="text-align:right"><span id="SubtotalAll"></span>฿</td>
+                                    <td style="text-align:right"><span id="SubtotalAll">{{ number_format($Subtotal, 2) }}</span>฿</td>
                                 </tr>
                                 <tr>
                                     <td><br></td>
                                     <td style="text-align:right">Price Before Tax :</td>
-                                    <td style="text-align:right"><span id="Before"></span>฿</td>
+                                    <td style="text-align:right"><span id="Before">{{ number_format($before, 2) }}</span>฿</td>
                                 </tr>
                                 <tr>
                                     <td><br></td>
                                     <td style="text-align:right">Value Added Tax :</td>
-                                    <td style="text-align:right"><span id="Added"></span>฿</td>
+                                    <td style="text-align:right"><span id="Added">{{ number_format($addtax, 2) }}</span>฿</td>
                                 </tr>
                                 <tr>
                                     <td><br></td>
                                     <td style="text-align:right">Net Total :</td>
-                                    <td style="text-align:right"><span id="Total"></span>฿</td>
+                                    <td style="text-align:right"><span id="Total">{{ $formattedNumber }}</span>฿</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -351,8 +338,8 @@
                             <input type="hidden" name="InvoiceID"id="InvoiceID" value="{{$InvoiceID}}">
                             <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
                             <input type="hidden" name="company"  id="company" value="{{$CompanyID}}">
-                            <input type="hidden" name="balance"  id="balance">
-                            <input type="hidden" name="sum"  id="sum">
+                            <input type="hidden" name="Nettotal"  id="Nettotal" value="{{$Nettotal}}">
+                            <input type="hidden" name="balance"  id="balance"value="{{$Nettotal - $Subtotal}}">
                             <input type="hidden" name="Deposit"  id="Deposit" value="{{$Deposit}}">
                             <input type="hidden" name="Refler_ID"  id="Refler_ID" value="{{$Refler_ID}}">
                         </div>
@@ -363,12 +350,12 @@
                             <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
                                 Preview
                             </button>
-                            <button type="button" class="btn btn-color-green lift btn_modal"  onclick="submitsave()">save</button>
+                            <button type="submit" class="btn btn-color-green lift btn_modal">save</button>
                         </div>
                         <div class="col-4"></div>
                     </div>
                 </form>
-
+                <input type="hidden" name="preview" value="1" id="preview">
             </div>
         </div>
     </div>
@@ -404,118 +391,14 @@
     });
 </script>
 <script>
-    $(document).on('keyup', '#Payment0', function() {
-        var Payment0 =  Number($(this).val());
-        var Nettotal = parseFloat(document.getElementById('Nettotal').value.replace(/,/g, ''));
-        let Subtotal =0;
-        let total =0;
-        let addtax = 0;
-        let before = 0;
-        let balance =0;
-        Subtotal = (Nettotal*Payment0)/100;
-        total = Subtotal/1.07;
-        addtax = Subtotal-total;
-        before = Subtotal-addtax;
-        balance = Nettotal-Subtotal;
-        $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#balance').val(balance);
-        $('#sum').val(Subtotal);
-    });
-    $(document).on('keyup', '#Payment1', function() {
-        var Payment1 =  Number($(this).val());
-        var Nettotal = parseFloat(document.getElementById('Nettotal').value.replace(/,/g, ''));
-        let Subtotal =0;
-        let total =0;
-        let addtax = 0;
-        let before = 0;
-        let balance =0;
-        Subtotal = Payment1;
-        total = Payment1;
-        addtax = 0;
-        before = Payment1;
-        balance = Nettotal-Subtotal;
-        console.log(balance);
-        $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        $('#sum').val(Subtotal);
-        $('#balance').val(balance);
-    });
-    function togglePaymentFields() {
-        var radio0 = document.getElementById('radio0');
-        var radio1 = document.getElementById('radio1');
-        var payment0 = document.getElementById('Payment0');
-        var payment1 = document.getElementById('Payment1');
-        var amount = document.getElementById('Amount');
-        var amount1 = document.getElementById('Amount1');
-        if (radio0.checked) {
-            payment0.disabled = false;
-            payment1.disabled = true;
-            amount.style.display = 'inline';
-            amount1.style.display = 'none';
-            payment1.value=" ";
-        } else if (radio1.checked) {
-            payment0.disabled = true;
-            payment1.disabled = false;
-            amount.style.display = 'none';
-            amount1.style.display = 'inline';
-            payment0.value=" ";
-        }
-    }
-
-    function validateInput(input) {
-        if (input.value > 100) {
-            input.value = 100;
-        }
-        $('#Amount').text(input.value + '%');
-    }
-    function validateInput1(input) {
-        // แปลงค่าจาก input โดยเอาเครื่องหมายจุลภาคออก
-        var inputValue = input.value.replace(/,/g, '');
-
-
-        // ตรวจสอบว่าค่าที่ได้รับไม่ใช่ค่าเปล่า
-        if (inputValue) {
-            // แปลงเป็นตัวเลขและจัดรูปแบบ
-            var formattedValue = parseFloat(inputValue).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            console.log(formattedValue);
-            $('#Amount1').text(formattedValue);
-        } else {
-            // ถ้า input ว่าง ให้แสดงค่าเป็นค่าว่าง
-            $('#Amount1').text('');
-        }
-    }
-</script>
-
-<script>
-    function submitsave() {
-        console.log(1);
-        document.getElementById("myForm").removeAttribute('target');
-        // สร้าง input แบบ hidden ใหม่
-        var input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "save";
-        input.value = 1;
-
-        // เพิ่ม input ลงในฟอร์ม
-
-        document.getElementById("myForm").appendChild(input);
-        document.getElementById("myForm").submit();
-    }
     function submitPreview() {
-        console.log(1);
-        document.getElementById("myForm").removeAttribute('target');
+        var previewValue = document.getElementById("preview").value;
+
         // สร้าง input แบบ hidden ใหม่
         var input = document.createElement("input");
         input.type = "hidden";
         input.name = "preview";
-        input.value = 1;
+        input.value = previewValue;
 
         // เพิ่ม input ลงในฟอร์ม
         document.getElementById("myForm").appendChild(input);
@@ -541,4 +424,5 @@
         });
     }
 </script>
+
 @endsection
