@@ -92,7 +92,7 @@
     <div class="row clearfix">
         <div class="col-sm-12 col-12">
             <div class="card p-4 mb-4">
-                <form id="myForm" action="{{url('/Document/invoice/update/Receipt/'.$id)}}" method="POST">
+                <form id="myForm" action="{{url('/Document/invoice/update/revised/'.$id)}}" method="POST">
                     @csrf
                     <div class="row">
                         <div class="col-lg-8 col-md-12 col-sm-12 image-container">

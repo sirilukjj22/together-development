@@ -442,11 +442,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Document/invoice/Generate/save', 'save')->name('invoice.save');
         Route::get('/Invoice/cover/document/PDF/{id}','export')->name('invoice.export');
         Route::get('/Document/Request/document/Approve/invoice/{id}', 'Approve')->name('invoice.Approve');
-        Route::get('/Document/invoice/ReviceCancel/{id}','Revice')->name('invoice.Revice');
         Route::get('/Document/invoice/Delete/{id}','Delete')->name('invoice.Delete');
         Route::get('/Document/invoice/view/{id}','view')->name('invoice.view');
-        Route::get('/Document/invoice/Receipt/{id}','Receipt')->name('invoice.Receipt');
-        Route::post('/Document/invoice/update/Receipt/{id}', 'update')->name('invoice.update');
+        Route::get('/Document/invoice/revised/{id}','revised')->name('invoice.revised');
+        Route::post('/Document/invoice/update/revised/{id}', 'update')->name('invoice.revised');
+        Route::get('/Document/invoice/receive/{id}','receive')->name('invoice.receive');
+        Route::post('/Document/invoice/receive/check/payment/{id}', 'payment')->name('invoice.payment');
     });
 
 

@@ -1,5 +1,52 @@
 @extends('layouts.masterLayout')
+<!-- table design css -->
+<link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css')}}">
+<link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css')}}">
+<link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css')}}">
 
+<!-- table design js -->
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="{{ asset('assets/js/semantic.min.js')}}"></script>
+<script src="{{ asset('assets/js/dataTables.js')}}"></script>
+<script src="{{ asset('assets/js/dataTables.semanticui.js')}}"></script>
+<script src="{{ asset('assets/js/dataTables.responsive.js')}}"></script>
+<script src="{{ asset('assets/js/responsive.semanticui.js')}}"></script>
+<script>
+    $(document).ready(function() {
+    new DataTable('.example', {
+        responsive: true,
+        searching: false,
+        paging: false,
+        info: false,
+        columnDefs: [{
+                className: 'dtr-control',
+                orderable: true,
+                target: null,
+            },
+            {
+                width: '7%',
+                targets: 0
+            },
+            {
+                width: '10%',
+                targets: 3
+            },
+            {
+                width: '15%',
+                targets: 4
+            }
+
+        ],
+        order: [0, 'asc'],
+        responsive: {
+            details: {
+                type: 'column',
+                target: 'tr'
+            }
+        }
+    });
+    });
+</script>
 @section('pretitle')
     <div class="container">
         <div class="row align-items-center">
@@ -40,8 +87,8 @@
             <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
                 <li class="nav-item" id="nav4"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Approved" role="tab"><span class="badge "style="background-color:#64748b">{{$Approvedcount}}</span> Approved</a></li>
                 <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-invoice" role="tab"> <span class="badge bg-warning" >{{$invoicecount}}</span> Invoice</a></li>
-                <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete" role="tab"><span class="badge bg-success" >{{$Completecount}}</span> Complete</a></li>
-                <li class="nav-item" id="nav4"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge" style="background-color: #1d4ed8" >{{$Cancelcount}}</span> Receipt</a></li>
+                <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Complete" role="tab"><span class="badge bg-success" >{{$Completecount}}</span> Receipt </a></li>
+                <li class="nav-item" id="nav4"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" role="tab"><span class="badge" style="background-color: #1d4ed8" >{{$Cancelcount}}</span> Revised</a></li>
             </ul>
             <div class="card mb-3">
                 <div class="card-body">
@@ -50,7 +97,21 @@
                             <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
                                 @csrf
                                 <input type="hidden" name="category" value="prename">
-                                <table class="myTableProposalRequest1 table table-hover align-middle mb-0" style="width:100%">
+                                <table class="example ui striped table nowrap unstackable hover" style="width:100%">
+                                    <caption class="caption-top">
+                                        <div>
+                                            <div class="flex-end-g2">
+                                                <label class="entriespage-label" >entries per page : </label>
+                                                <select class="enteriespage-button">
+                                                    <option value="7" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
+                                                    <option value="15" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
+                                                    <option value="30" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
+                                                    <option value="30" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
+                                                </select>
+                                                <input class="search-button" placeholder="Search" /><i
+                                                    class="fa fa-search fa-searh-middle"></i>
+                                            </div>
+                                    </caption>
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -118,6 +179,22 @@
                                         @endforeach
                                         @endif
                                     </tbody>
+                                    <caption class="caption-bottom ">
+                                        <div class="md-flex-bt-i-c">
+                                            <p class="py2">Showing 1 to 7 of 7 entries</p>
+                                            <div class="font-bold">ยอดรวมทั้งหมด 00.00 บาท</div>
+                                            <div class="dp-flex js-center">
+                                                <div class="pagination">
+                                                    <a href="" class="r-l-md">&laquo;</a>
+                                                    {{-- @for($i=1;$i<=$data_sms->lastPage();$i++)
+                                                        <!-- a Tag for another page --> --}}
+                                                        <a class="active" href="">1</a>
+                                                    {{-- @endfor --}}
+                                                    <a href="" class="r-r-md">&raquo;</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </caption>
                                 </table>
                             </form>
                         </div>
@@ -174,8 +251,7 @@
                                                     <ul class="dropdown-menu border-0 shadow p-3">
                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
                                                         <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Invoice/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                        <li><a class="dropdown-item py-2 rounded" onclick="Approved({{ $item->id }})">Approved</a></li>
-                                                        <li><a class="dropdown-item py-2 rounded" onclick="Revice('{{$item->id}}')">Cancel</a></li>
+                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/receive/'.$item->id) }}">Receive Payment</a></li>
                                                     </ul>
                                                 </div>
                                             </td>
@@ -224,7 +300,7 @@
                                             <td style="text-align: center;"> {{ number_format($item->payment) }}</td>
                                             <td style="text-align: center;">{{$item->balance}}</td>
                                             <td style="text-align: center;">
-                                                <span class="badge rounded-pill bg-success">Complete</span>
+                                                <span class="badge rounded-pill bg-success">Receipt</span>
                                             </td>
                                             <td style="text-align: center;">
                                                 <div class="btn-group">
@@ -284,14 +360,14 @@
                                                 @endif
                                             </td>
                                             <td style="text-align: center;">
-                                                <span class="badge rounded-pill "style="background-color:#1d4ed8">Revice</span>
+                                                <span class="badge rounded-pill "style="background-color:#1d4ed8">Revised</span>
                                             </td>
                                             <td style="text-align: center;">
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                     <ul class="dropdown-menu border-0 shadow p-3">
                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
-                                                        <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/Receipt/'.$item->id) }}">update</a></li>
+                                                        <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">update</a></li>
                                                     </ul>
                                                 </div>
                                             </td>
@@ -387,41 +463,5 @@
             });
         }
     })
-    function Approved(id) {
-        jQuery.ajax({
-            type: "GET",
-            url: "/Document/Request/document/Approve/invoice/" + id,
-            datatype: "JSON",
-            async: false,
-            success: function(response) {
-                console.log("AJAX request successful: ", response);
-                if (response.success) {
-                    // เปลี่ยนไปยังหน้าที่ต้องการ
-                    location.reload();
-                } else {
-                    alert("An error occurred while processing the request.");
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX request failed: ", status, error);
-            }
-        });
-    }
-    function Revice(id){
-        Swal.fire({
-        title: "คุณต้องการปิดการใช้งานใบแจ้งหนี้นี้ใช่หรือไม่?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "ตกลง",
-        cancelButtonText: "ยกเลิก",
-        confirmButtonColor: "#28a745",
-        dangerMode: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = "{{ url('/Document/invoice/ReviceCancel/') }}/" + id;
-            }
-        });
-
-    }
 </script>
 @endsection

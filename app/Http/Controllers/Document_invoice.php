@@ -19,6 +19,8 @@ use App\Models\master_product_item;
 use App\Models\master_quantity;
 use App\Models\master_unit;
 use App\Models\log;
+use App\Models\Masters;
+use App\Models\receive_payment;
 use Auth;
 use App\Models\User;
 use Carbon\Carbon;
@@ -72,8 +74,9 @@ class Document_invoice extends Controller
         }
 
         $invoicecount = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->count();
-        $Complete = document_invoices::query()->where('Operated_by',$userid)->where('document_status',2)->get();
-        $Completecount = document_invoices::query()->where('Operated_by',$userid)->where('document_status',2)->count();
+        $Complete = receive_payment::query()->where('Operated_by',$userid)->where('document_status',1)->get();
+
+        $Completecount = receive_payment::query()->where('Operated_by',$userid)->where('document_status',1)->count();
         $Cancel = document_invoices::query()->where('Operated_by',$userid)->where('document_status',0)->get();
         $Cancelcount =document_invoices::query()->where('Operated_by',$userid)->where('document_status',0)->count();
         return view('document_invoice.index',compact('Approved','Approvedcount','invoice','invoicecount','Complete','Completecount','Cancel','Cancelcount'));
@@ -576,19 +579,6 @@ class Document_invoice extends Controller
         $quotation->save();
         return response()->json(['success' => true]);
     }
-
-    public function Revice($id){
-        $quotation = document_invoices::find($id);
-        $status = $quotation->document_status;
-        if ($status == 0) {
-            $quotation->document_status = 1;
-        }else {
-            $quotation->document_status = 0;
-        }
-
-        $quotation->save();
-        return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-    }
     public function Delete($id){
         $quotation = document_invoices::find($id);
         $quotation->delete();
@@ -718,7 +708,7 @@ class Document_invoice extends Controller
         $pdf = FacadePdf::loadView('invoicePDF.'.$view,$data);
         return $pdf->stream();
     }
-    public function Receipt($id){
+    public function revised($id){
 
         $invoice = document_invoices::where('id',$id)->where('document_status',0)->first();
         $Deposit = $invoice->deposit;
@@ -1152,6 +1142,48 @@ class Document_invoice extends Controller
                 $save->save();
 
                 return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function receive($id){
+        $invoice = document_invoices::where('id',$id)->where('document_status',1)->first();
+        $company = $invoice->company;
+        $name = companys::where('Profile_ID',$company)->first();
+        $Invoice_ID = $invoice->Invoice_ID;
+        $payment = $invoice->sumpayment;
+        $Quotation_ID = $invoice->Quotation_ID;
+        $IssueDate = $invoice->IssueDate;
+        $Expiration = $invoice->Expiration;
+        $Quotation = Quotation::where('Quotation_ID', $Quotation_ID)->first();
+        $vat = $Quotation->vat_tpe;
+        $Date = Carbon::now()->format('d/m/Y');
+        $Bank = Masters::select('name_th','id','picture')->where('category','bank')->get();
+        return view('document_invoice.receive',compact('Invoice_ID','payment','Quotation_ID','IssueDate','Expiration','Quotation','vat','Date','Bank','invoice','name'));
+    }
+    public function payment(Request $request,$id){
+        try {
+            $userid = Auth::user()->id;
+            $invoice = document_invoices::where('id',$id)->where('document_status',1)->first();
+            $Invoice_ID = $invoice->Invoice_ID;
+            $Quotation_ID = $invoice->Quotation_ID;
+            $save = new receive_payment();
+            $save->Invoice_ID =$Invoice_ID;
+            $save->Quotation_ID =$Quotation_ID;
+            $save->payment_date=$request->dateInput;
+            $save->category=$request->Filter;
+            $save->Amount=$request->Amount;
+            $save->Remark=$request->Remark;
+            $save->Bank=$request->Bank;
+            $save->Cheque=$request->Cheque;
+            $save->Credit=$request->Credit;
+            $save->Expire=$request->Expire;
+            $save->Operated_by = $userid;
+            $save->save();
+            return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } catch (\Throwable $e) {
             return response()->json([
                 'error' => $e->getMessage()

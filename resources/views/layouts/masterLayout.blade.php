@@ -317,7 +317,7 @@
             $('#myTable').addClass('nowrap').dataTable({
                 responsive: true,
                 searching: true,
-                paging: true,
+                paging: false,
                 ordering: true,
                 info: true,
                 columnDefs: [
@@ -326,7 +326,18 @@
                 ]
 
             });
+            $('#Receive').addClass('nowrap').dataTable({
+                responsive: true,
+                searching: false,
+                paging: false,
+                ordering: false,
+                info: false,
+                columnDefs: [
+                    // className: 'bolded'
+                    // { targets: [-1, -3], className: 'dt-body-right' }
+                ]
 
+            });
             $('#myTable2').addClass('nowrap').dataTable({
                 responsive: true,
                 searching: true,
