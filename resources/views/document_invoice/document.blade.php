@@ -4,8 +4,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col">
-                <small class="text-muted">Welcome to Log Proposal.</small>
-                <h1 class="h4 mt-1">Log Proposal (ประวัติการแก้ไข)</h1>
+                <small class="text-muted">Welcome to Log Invoice.</small>
+                <h1 class="h4 mt-1">Log Invoice (ประวัติใบแจ้งหนี้)</h1>
             </div>
         </div>
     </div>
@@ -46,7 +46,7 @@
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $item->Quotation_ID }}</td>
                                 <td>{{ $item->QuotationType }}</td>
-                                <td>{{ $item->correct  }}</td>
+                                <td>{{ $item->correct }}</td>
                                 <td class="text-center">
                                     @if ($item->correct == $correct)
                                         @if ($correct == 0)
@@ -75,7 +75,7 @@
         <div class="col-12 row">
             <div class="col-4"></div>
             <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
-                <button type="button" class="btn btn-secondary lift btn_modal btn-space"  onclick="window.location.href='{{ route('Quotation.index') }}'">
+                <button type="button" class="btn btn-secondary lift btn_modal btn-space"  onclick="window.location.href='{{ route('invoice.index') }}'">
                     Back
                 </button>
 

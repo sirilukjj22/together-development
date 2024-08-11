@@ -3,8 +3,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col">
-                <small class="text-muted">Welcome to Update Proforma Invoice.</small>
-                <h1 class="h4 mt-1">Update Proforma Invoice</h1>
+                <small class="text-muted">Welcome to Edit Proforma Invoice.</small>
+                <h1 class="h4 mt-1">Edit Proforma Invoice</h1>
             </div>
         </div>
     </div>
@@ -92,7 +92,7 @@
     <div class="row clearfix">
         <div class="col-sm-12 col-12">
             <div class="card p-4 mb-4">
-                <form id="myForm" action="{{url('/Document/invoice/update/revised/'.$id)}}" method="POST">
+                <form id="myForm" action="{{url('/Document/invoice/update/revised/'.$invoice->id)}}" method="POST">
                     @csrf
                     <div class="row">
                         <div class="col-lg-8 col-md-12 col-sm-12 image-container">
@@ -108,14 +108,14 @@
                         <div class="col-lg-4 col-md-12 col-sm-12">
                             <div class="row">
                                 <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Profoma Invoice</b>
-                                <span class="titleQuotation">Profoma Invoice ID :{{$InvoiceID}}</span>
+                                <span class="titleQuotation">Profoma Invoice ID : {{$InvoiceID}}</span>
                                 <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
                                     <div class="col-12 col-md-12 col-sm-12">
                                         <div class="row">
                                             <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
                                                 <span>Issue Date:</span>
                                             </div>
-                                            <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
+                                            <div class="col-lg-4 col-md-12 col-sm-12" id="reportrange1">
                                                 <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;"readonly>
                                             </div>
                                         </div>
@@ -125,7 +125,7 @@
                                             <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
                                                 <span>Expiration Date:</span>
                                             </div>
-                                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                            <div class="col-lg-4 col-md-12 col-sm-12">
                                                 <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly>
                                             </div>
                                         </div>
@@ -190,7 +190,7 @@
                                 <tr>
                                     <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Number :</b></td>
                                     <td>
-                                        <span id="Company_Number">{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span>
+                                        <span id="Company_Number">{{$Contact_phone->Phone_number}}</span>
                                     </td>
                                 </tr>
                             </table>
@@ -214,11 +214,7 @@
                                     <tr>
                                         <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Length of Stay :</b></td>
                                         <td>
-                                            @if ($Quotation->day == null)
-                                            <span >-</span> <span ></span><br>
-                                            @else
-                                                <span >{{$Quotation->day}}</span> วัน <span >{{$Quotation->night}}</span> คืน<br>
-                                            @endif
+                                            <span id="Company_Number">{{$Quotation->day}} วัน {{$Quotation->night}} คืน</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -230,7 +226,7 @@
                                     <tr>
                                         <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Valid :</b></td>
                                         <td>
-                                            <input type="date" class="form-control" name="valid" id="valid" value="{{$valid}}" required>
+                                            <input type="date" class="form-control" name="valid" id="valid" required>
                                         </td>
                                     </tr>
                                 </table>
@@ -239,6 +235,15 @@
                     </div>
                     <div class="styled-hr"></div>
                     <input type="hidden" name="eventformat" id="eventformat" value="{{$Quotation->eventformat}}">
+                    <div class="row mt-2">
+                        <div class="col-lg-6">
+                            <label for="Payment by (THB)">Payment by (THB)</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="Payment1" name="Payment"  oninput="validateInput1(this)" value="{{$invoice->sumpayment}}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="styled-hr mt-3"></div>
                     <div class="row mt-4">
                         <table class=" table table-hover align-middle mb-0" style="width:100%">
                             <thead >
@@ -252,33 +257,28 @@
                                 <tr>
                                     <td style="text-align:center">1</td>
                                     <td style="text-align:left">Proposal ID : {{$QuotationID}}
-                                        @if ($payment)
-                                            {{ number_format((float) $payment, 2, '.', ',') }}
-                                        @else
-                                            {{$paymentPercent}}%
-                                        @endif
-                                        of {{ number_format($Nettotal, 2) }} THB กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit"  style="width: 2%"  id="Deposit" value="{{$Deposit}}" disabled></td>
-                                        <td style="text-align:right"><span id="Subtotal">{{ number_format($Subtotal, 2) }}</span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Nettotal}}"></td>
+                                        <span id="Amount1"> {{ number_format((float)$invoice->sumpayment, 2, '.', ',') }}</span> กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit"  style="width: 2%"  id="Deposit" value="{{$Deposit}}" disabled></td>
+                                    <td style="text-align:right"><span id="Subtotal">{{ number_format((float)$invoice->sumpayment, 2, '.', ',') }}</span>฿</td>
                                 </tr>
                                 <tr>
                                     <td><br></td>
                                     <td style="text-align:right">Subtotal :</td>
-                                    <td style="text-align:right"><span id="SubtotalAll">{{ number_format($Subtotal, 2) }}</span>฿</td>
+                                    <td style="text-align:right"><span id="SubtotalAll">{{ number_format((float)$invoice->sumpayment, 2, '.', ',') }}</span>฿</td>
                                 </tr>
                                 <tr>
                                     <td><br></td>
                                     <td style="text-align:right">Price Before Tax :</td>
-                                    <td style="text-align:right"><span id="Before">{{ number_format($before, 2) }}</span>฿</td>
+                                    <td style="text-align:right"><span id="Before">{{ number_format((float)$invoice->sumpayment, 2, '.', ',') }}</span>฿</td>
                                 </tr>
                                 <tr>
                                     <td><br></td>
                                     <td style="text-align:right">Value Added Tax :</td>
-                                    <td style="text-align:right"><span id="Added">{{ number_format($addtax, 2) }}</span>฿</td>
+                                    <td style="text-align:right"><span id="Added">0.00</span>฿</td>
                                 </tr>
                                 <tr>
                                     <td><br></td>
                                     <td style="text-align:right">Net Total :</td>
-                                    <td style="text-align:right"><span id="Total">{{ $formattedNumber }}</span>฿</td>
+                                    <td style="text-align:right"><span id="Total">{{ number_format((float)$invoice->sumpayment, 2, '.', ',') }}</span>฿</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -338,8 +338,8 @@
                             <input type="hidden" name="InvoiceID"id="InvoiceID" value="{{$InvoiceID}}">
                             <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
                             <input type="hidden" name="company"  id="company" value="{{$CompanyID}}">
-                            <input type="hidden" name="Nettotal"  id="Nettotal" value="{{$Nettotal}}">
-                            <input type="hidden" name="balance"  id="balance"value="{{$Nettotal - $Subtotal}}">
+                            <input type="hidden" name="balance"  id="balance">
+                            <input type="hidden" name="sum"  id="sum">
                             <input type="hidden" name="Deposit"  id="Deposit" value="{{$Deposit}}">
                             <input type="hidden" name="Refler_ID"  id="Refler_ID" value="{{$Refler_ID}}">
                         </div>
@@ -350,12 +350,12 @@
                             <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
                                 Preview
                             </button>
-                            <button type="submit" class="btn btn-color-green lift btn_modal">save</button>
+                            <button type="button" class="btn btn-color-green lift btn_modal"  onclick="submitsave()">save</button>
                         </div>
                         <div class="col-4"></div>
                     </div>
                 </form>
-                <input type="hidden" name="preview" value="1" id="preview">
+
             </div>
         </div>
     </div>
@@ -391,14 +391,50 @@
     });
 </script>
 <script>
-    function submitPreview() {
-        var previewValue = document.getElementById("preview").value;
+    function validateInput1(input) {
+        // แปลงค่าจาก input โดยเอาเครื่องหมายจุลภาคออก
+        var inputValue = input.value.replace(/,/g, '');
+        // ตรวจสอบว่าค่าที่ได้รับไม่ใช่ค่าเปล่า
+        if (inputValue) {
+            // แปลงเป็นตัวเลขและจัดรูปแบบ
+            var formattedValue = parseFloat(inputValue).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            console.log(formattedValue);
+            $('#Amount1').text(formattedValue);
+            $('#Subtotal').text(formattedValue);
+            $('#SubtotalAll').text(formattedValue);
+            $('#Total').text(formattedValue);
+            $('#Before').text(formattedValue);
+            $('#Added').text('0.00');
+        } else {
+            // ถ้า input ว่าง ให้แสดงค่าเป็นค่าว่าง
+            $('#Amount1').text('');
+        }
+    }
+</script>
 
+<script>
+    function submitsave() {
+        console.log(1);
+        document.getElementById("myForm").removeAttribute('target');
+        // สร้าง input แบบ hidden ใหม่
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "save";
+        input.value = 1;
+
+        // เพิ่ม input ลงในฟอร์ม
+
+        document.getElementById("myForm").appendChild(input);
+        document.getElementById("myForm").submit();
+    }
+    function submitPreview() {
+        console.log(1);
+        document.getElementById("myForm").removeAttribute('target');
         // สร้าง input แบบ hidden ใหม่
         var input = document.createElement("input");
         input.type = "hidden";
         input.name = "preview";
-        input.value = previewValue;
+        input.value = 1;
 
         // เพิ่ม input ลงในฟอร์ม
         document.getElementById("myForm").appendChild(input);
@@ -424,5 +460,4 @@
         });
     }
 </script>
-
 @endsection

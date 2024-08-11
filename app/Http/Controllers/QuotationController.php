@@ -808,6 +808,7 @@ class QuotationController extends Controller
                 $Quotation = Quotation::where('Quotation_ID',$Quotation_IDcheck)->first();
                 $Quotation->AddTax = $AddTax;
                 $Quotation->Nettotal = $Nettotal;
+                $Quotation->total = $Nettotal;
                 $Quotation->save();
                 $Auto = $Quotation->Confirm_by;
                 $id = $Quotation->id;
@@ -830,21 +831,9 @@ class QuotationController extends Controller
     public function edit($id)
     {
         $Quotation = Quotation::where('id', $id)->first();
-        $QuotationID= $Quotation->Quotation_ID;
+        $Quotation_ID= $Quotation->Quotation_ID;
         $Company_ID = $Quotation->Company_ID;
         $contact = $Quotation->company_contact;
-        if (preg_match('/^PD-\d{8}$/', $QuotationID)) {
-            $editpart = '-';
-            $number = 1;
-            $Quotation_ID = $QuotationID.$editpart.$number;
-
-        } else {
-            $parts = explode('-', $QuotationID);
-            $numberPart = (int)array_pop($parts);
-            $newNumberPart = $numberPart + 1;
-            $Quotation_ID = implode('-', $parts) . '-' . $newNumberPart;
-        }
-
         $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
         $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
         $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
@@ -875,11 +864,11 @@ class QuotationController extends Controller
         $Contact_name = representative::where('Company_ID',$Company_ID)->where('id',$contact)->where('status',1)->first();
         $profilecontact = $Contact_name->Profile_ID;
         $Contact_phone = representative_phone::where('Company_ID',$Company_ID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
-        $selectproduct = document_quotation::where('Quotation_ID', $QuotationID)->get();
+        $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
         return view('quotation.edit',compact('Quotation','Freelancer_member','Company','Mevent','Mvat','Quotation_ID','Contact_name','comtypefullname','CompanyID'
-        ,'TambonID','amphuresID','CityID','provinceNames','company_fax','company_phone','Contact_phone','selectproduct','unit','quantity','QuotationID'));
+        ,'TambonID','amphuresID','CityID','provinceNames','company_fax','company_phone','Contact_phone','selectproduct','unit','quantity'));
     }
     public function view($id)
     {
@@ -924,28 +913,16 @@ class QuotationController extends Controller
         return view('quotation.view',compact('Quotation','Freelancer_member','Company','Mevent','Mvat','Quotation_ID','Contact_name','comtypefullname','CompanyID'
         ,'TambonID','amphuresID','CityID','provinceNames','company_fax','company_phone','Contact_phone','selectproduct','unit','quantity','QuotationID'));
     }
-    public function update(Request $request)
+    public function update(Request $request,$id)
     {
         $data = $request->all();
-
         try {
             $preview = $request->preview;
             $Quotation_ID=$request->Quotation_ID;
-            $Quotationold=$request->Quotationold;
             $adult=$request->Adult;
             $children=$request->Children;
             $SpecialDiscount = $request->SpecialDiscount;
             $SpecialDiscountBath = $request->DiscountAmount;
-            $parts = explode('-', $Quotation_ID);
-            $cleanedID = $parts[0] . '-' . $parts[1];
-            $QuotationID = Quotation::where('Quotation_ID', $Quotation_ID)->first();
-            if ($QuotationID) {
-                $parts = explode('-', $Quotation_ID);
-                $numberPart = (int)array_pop($parts);
-                $newNumberPart = $numberPart + 1;
-                $Quotation_ID = implode('-', $parts) . '-' . $newNumberPart;
-            }
-
             if ($preview == 1) {
                 $data = $request->all();
                 $adult=$request->Adult;
@@ -1196,7 +1173,14 @@ class QuotationController extends Controller
                 return $pdf->stream();
             }
             $userid = Auth::user()->id;
-            $save = new Quotation();
+            $Quotationcheck = Quotation::where('id',$id)->first();
+            $correct = $Quotationcheck->correct;
+            if ($correct >= 1) {
+                $correctup = $correct + 1;
+            }else{
+                $correctup = 1;
+            }
+            $save = Quotation::find($id);
             $save->Quotation_ID = $Quotation_ID;
             $save->DummyNo = $Quotation_ID;
             $save->Company_ID = $request->Company;
@@ -1218,7 +1202,8 @@ class QuotationController extends Controller
             $save->Expirationdate = $request->Expiration;
             $save->Operated_by = $userid;
             $save->status_guest = 0;
-            $save->Refler_ID=$cleanedID;
+            $save->Refler_ID=$Quotation_ID;
+            $save->correct =$correctup;
             if ($SpecialDiscount == 0 && $SpecialDiscountBath == 0) {
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
@@ -1267,6 +1252,10 @@ class QuotationController extends Controller
             }
             $Products=$request->input('ProductIDmain');
             $pax=$request->input('pax');
+            $productold = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+            foreach ($productold as $product) {
+                $product->delete();
+            }
             if ($Products !== null) {
                 foreach ($Products as $index => $ProductID) {
                     $saveProduct = new document_quotation();
@@ -1468,6 +1457,7 @@ class QuotationController extends Controller
 
             $Quotation->AddTax = $AddTax;
             $Quotation->Nettotal = $Nettotal;
+            $Quotation->total = $Nettotal;
             $Quotation->save();
             $protocol = $request->secure() ? 'https' : 'http';
             $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
@@ -1537,7 +1527,7 @@ class QuotationController extends Controller
             $view= $template->name;
             $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
             $path = 'Log_PDF/proposal/';
-            $pdf->save($path . $Quotation_ID . '.pdf');
+            $pdf->save($path . $Quotation_ID.'-'.$correctup . '.pdf');
 
             $currentDateTime = Carbon::now();
             $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
@@ -1550,10 +1540,8 @@ class QuotationController extends Controller
             $savePDF->QuotationType = 'Proposal';
             $savePDF->Approve_date = $formattedDate;
             $savePDF->Approve_time = $formattedTime;
+            $savePDF->correct = $correctup;
             $savePDF->save();
-
-            $QuotationoldID = Quotation::where('Quotation_ID',$Quotationold)->delete();
-            $documentQuotationoldID = document_quotation::where('Quotation_ID',$Quotationold)->delete();
             if ($Auto = 'Auto') {
                 return redirect()->route('Quotation.email', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
             }else{
@@ -1577,15 +1565,16 @@ class QuotationController extends Controller
         $Quotation = Quotation::where('id', $id)->first();
         if ($Quotation) {
             $QuotationID = $Quotation->Quotation_ID;
-
+            $correct = $Quotation->correct;
             // Use a regular expression to capture the part of the string before the first hyphen
             if (preg_match('/^(PD-\d{8})/', $QuotationID, $matches)) {
                 $QuotationID = $matches[1];
             }
+
         }
         $log = log::where('Quotation_ID', 'LIKE', $QuotationID . '%')->get();
         $path = 'Log_PDF/proposal/';
-        return view('quotation.document',compact('log','path'));
+        return view('quotation.document',compact('log','path','correct'));
     }
 
     public function cancel($id){
@@ -1837,8 +1826,9 @@ class QuotationController extends Controller
         $total=0;
         $adult = $Quotation->adult;
         $children = $Quotation->children;
-
-        $totalguest = $Quotation->TotalPax;
+        $totalguest = 0;
+        $totalguest = $adult + $children;
+        $guest = $Quotation->TotalPax;
         $totalaverage=0;
         if ($Mvat->id == 50) {
             foreach ($selectproduct as $item) {
@@ -1848,7 +1838,7 @@ class QuotationController extends Controller
                 $beforeTax = $subtotal/1.07;
                 $AddTax = $subtotal-$beforeTax;
                 $Nettotal = $subtotal;
-                $totalaverage =$Nettotal/$totalguest;
+                $totalaverage =$Nettotal/$guest;
             }
         }
         elseif ($Mvat->id == 51) {
@@ -1859,7 +1849,7 @@ class QuotationController extends Controller
                 $beforeTax = 0;
                 $AddTax = 0;
                 $Nettotal = $subtotal;
-                $totalaverage =$Nettotal/$totalguest;
+                $totalaverage =$Nettotal/$guest;
             }
         }
         elseif ($Mvat->id == 52) {
@@ -1870,7 +1860,7 @@ class QuotationController extends Controller
                 $beforeTax = $subtotal/1.07;
                 $AddTax = $subtotal*7/100;
                 $Nettotal = $subtotal+$AddTax;
-                $totalaverage =$Nettotal/$totalguest;
+                $totalaverage =$Nettotal/$guest;
             }
         }else
         {
@@ -1881,7 +1871,7 @@ class QuotationController extends Controller
                 $beforeTax = $subtotal/1.07;
                 $AddTax = $subtotal-$beforeTax;
                 $Nettotal = $subtotal;
-                $totalaverage =$Nettotal/$totalguest;
+                $totalaverage =$Nettotal/$guest;
             }
         }
         $protocol = $request->secure() ? 'https' : 'http';
@@ -1905,9 +1895,11 @@ class QuotationController extends Controller
             } elseif ($page > 1.1) {
             $page_item = 1 + $page > 1.1 ? ceil($page) : 1;
             }
-
-
+            $day = $Quotation->day;
+            $night = $Quotation->night;
         $data = [
+            'day'=>$day,
+            'night'=>$night,
             'date' => $date,
             'comtypefullname'=>$comtypefullname,
             'Company_ID'=>$Company_ID,
@@ -1938,6 +1930,7 @@ class QuotationController extends Controller
             'beforeTax'=>$beforeTax,
             'AddTax'=>$AddTax,
             'Nettotal'=>$Nettotal,
+            'guest'=>$guest,
             'totalguest'=>$totalguest,
             'totalaverage'=>$totalaverage,
             'pagecount'=>$pagecount,

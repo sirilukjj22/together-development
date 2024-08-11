@@ -25,6 +25,7 @@ use App\Http\Controllers\Master_Vat;
 use App\Http\Controllers\DummyQuotationController;
 use App\Http\Controllers\proposal_request;
 use App\Http\Controllers\Document_invoice;
+use App\Http\Controllers\receiptController;
 use App\Http\Controllers\Masterpromotion;
 
 
@@ -360,7 +361,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/edit/quotation/{id}','edit')->name('Quotation.edit');
 
         Route::get('/Quotation/change-Status/{id}/{status}','changestatus')->name('Quotation.changestatus');
-        Route::post('/Quotation/edit/company/quotation/update/', 'update')->name('Quotation.update');
+        Route::post('/Quotation/edit/company/quotation/update/{id}', 'update')->name('Quotation.update');
         Route::get('/Quotation/company/product/{Quotation_ID}/addProduct', 'addProduct')->name('Quotation.addProduct');
         //----------------------------------Quotaion select product------------------------------------------------------
         Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttable', 'addProducttable')->name('Quotation.addProducttable');
@@ -448,9 +449,19 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Document/invoice/update/revised/{id}', 'update')->name('invoice.revised');
         Route::get('/Document/invoice/receive/{id}','receive')->name('invoice.receive');
         Route::post('/Document/invoice/receive/check/payment/{id}', 'payment')->name('invoice.payment');
+        //---------------------------------------LOG-----------------------------------------------------------
+        Route::get('/Document/invoice/view/LOG/{id}','LOG')->name('invoice.LOG');
+        //-------------------------------------delete------------------------------------
+        Route::get('/Document/invoice/delete/{id}','Delete')->name('invoice.delete');
+        //--------------------------------------Re---------------------------------------
+
+        Route::get(' /Document/invoice/Generate/to/Re/{id}','GenerateRe')->name('invoice.GenerateRe');
     });
 
-
+    ##-------------------------------document receipt-----------------
+    Route::controller(receiptController::class)->group(function () {
+        Route::get('/Document/receipt/index', 'index')->name('receipt.index');
+    });
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');
     $exitCode = Artisan::call('cache:clear');

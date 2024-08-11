@@ -872,7 +872,6 @@
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
-
                                                             @if (@Auth::user()->rolePermissionData(Auth::user()->id) == 0)
                                                             @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 1)
                                                                 @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
@@ -1010,37 +1009,39 @@
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
-                                                            @if (@Auth::user()->rolePermissionData(Auth::user()->id) == 0)
-                                                            @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 1)
-                                                                @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
-                                                                    <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                @endif
-                                                                @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                    <li><a class="dropdown-item py-2 rounded" onclick="Revice()"><input type="hidden" name="id" id="id" value="{{$item->id}}">Revice</a></li>
-                                                                @endif
-                                                            @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 2)
-                                                                @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
-                                                                    <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                @endif
-                                                                @if (Auth::user()->id == $item->Operated_by)
+
+                                                                @if (@Auth::user()->rolePermissionData(Auth::user()->id) == 0)
+                                                                @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 1)
+                                                                    @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                    @endif
+                                                                    @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Revice()"><input type="hidden" name="id" id="id" value="{{$item->id}}">Revice</a></li>
+                                                                    @endif
+                                                                @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 2)
+                                                                    @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                    @endif
+                                                                    @if (Auth::user()->id == $item->Operated_by)
+                                                                        @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" onclick="Revice()"><input type="hidden" name="id" id="id" value="{{$item->id}}">Revice</a></li>
+                                                                        @endif
+                                                                    @endif
+                                                                @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 3)
+                                                                    @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                    @endif
                                                                     @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" onclick="Revice()"><input type="hidden" name="id" id="id" value="{{$item->id}}">Revice</a></li>
                                                                     @endif
                                                                 @endif
-                                                            @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 3)
-                                                                @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
-                                                                    <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                @endif
-                                                                @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                    <li><a class="dropdown-item py-2 rounded" onclick="Revice()"><input type="hidden" name="id" id="id" value="{{$item->id}}">Revice</a></li>
-                                                                @endif
-                                                            @endif
+
                                                         </ul>
                                                     </div>
                                                 </td>

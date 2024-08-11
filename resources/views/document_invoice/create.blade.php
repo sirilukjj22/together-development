@@ -270,7 +270,7 @@
                                 <tr>
                                     <td style="text-align:center">1</td>
                                     <td style="text-align:left">Proposal ID : {{$QuotationID}}  <span id="Amount" style="display: none;"></span>
-                                        <span id="Amount1" style="display: none;"></span> of {{ number_format($Quotation->Nettotal, 2) }} THB กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit"  style="width: 2%"  id="Deposit" value="{{$Deposit}}" disabled></td>
+                                        <span id="Amount1" style="display: none;"></span> กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit"  style="width: 2%"  id="Deposit" value="{{$Deposit}}" disabled></td>
                                     <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Quotation->Nettotal}}"></td>
                                 </tr>
                                 <tr>

@@ -136,7 +136,7 @@
     </div>
 @endsection
 @section('content')
-<form id="myForm" action="{{route('Quotation.update')}}" method="POST">
+<form id="myForm" action="{{url('/Quotation/edit/company/quotation/update/'.$Quotation->id)}}" method="POST">
     @csrf
         <div class="container">
             <div class="container mt-3">
@@ -158,7 +158,6 @@
                                     <div class="row">
                                         <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Proposal</b>
                                         <span class="titleQuotation">{{$Quotation_ID}}</span>
-                                        <input type="hidden" id="Quotationold" name="Quotationold" value="{{$QuotationID}}">
                                         <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
                                             <div class="col-12 col-md-12 col-sm-12">
                                                 <div class="row">
