@@ -483,7 +483,7 @@
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Unit</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price / Unit</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Discount</th>
-                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price Discount</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Net Price / Unit</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Amount</th>
                                             <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Order</th>
                                         </tr>

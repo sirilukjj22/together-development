@@ -461,6 +461,14 @@ Route::middleware(['auth'])->group(function () {
     ##-------------------------------document receipt-----------------
     Route::controller(receiptController::class)->group(function () {
         Route::get('/Document/receipt/index', 'index')->name('receipt.index');
+        Route::get('/Document/receipt/Proposal/invoice/view/LOG/{id}','LOG')->name('receipt.LOG');
+        Route::get('/Document/receipt/Proposal/invoice/Generate/{id}','Generate')->name('receipt.Generate');
+        Route::get('/Document/receipt/Proposal/invoice/CheckPI/{id}','CheckPI')->name('receipt.CheckPI');
+        Route::get('/Document/receipt/Proposal/invoice/CheckPI/PD/{quotationid}/{id}','CheckPD')->name('receipt.CheckPD');
+        //-------------------------------------save------------------------------------
+        Route::post('/Document/receipt/Proposal/invoice/Generate/save', 'save')->name('receipt.save');
+        //-------------------------------------view------------------------------------
+        Route::get('/Document/receipt/Proposal/invoice/view/{id}','view')->name('receipt.view');
     });
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');

@@ -298,7 +298,7 @@
                                         @foreach ($Complete as $key => $item)
                                         <tr>
                                             <td style="text-align: center;">
-                                               {{$key +1}}
+                                                {{$key +1}}
                                             </td>
                                             <td>{{ $item->Invoice_ID}}</td>
                                             <td>{{ $item->Quotation_ID}}</td>
