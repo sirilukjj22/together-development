@@ -156,14 +156,14 @@
 
 .fa-searh-middle {
   position: absolute;
-  top: 1.5rem;
+  top: 3rem;
   right: 2.5rem;
   font-size: 1rem;
 }
 
 @media (min-width: 768px) {
   .fa-searh-middle {
-    top: 1.5rem;
+    top: 3rem;
     right: 2.8rem;
   }
 }

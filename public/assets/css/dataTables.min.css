@@ -9,6 +9,8 @@ table.dataTable td.dt-control {
     cursor: pointer
 }
 
+
+
 table.dataTable td.dt-control:before {
     height: 1em;
     width: 1em;
@@ -212,7 +214,7 @@ div.dataTables_processing>div:last-child>div:nth-child(4) {
 
 table.dataTable.nowrap th,
 table.dataTable.nowrap td {
-    white-space: nowrap
+    white-space: nowrap;
 }
 
 table.dataTable th.dt-left,
@@ -401,6 +403,8 @@ div.dataTables_wrapper div.dataTables_filter input {
     margin-left: 0.5em;
     display: inline-block;
     width: auto
+    width: 50px;
+    border-color:red
 }
 
 div.dataTables_wrapper div.dataTables_info {

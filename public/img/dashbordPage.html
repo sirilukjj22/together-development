@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta
+      name="description"
+      content="Responsive Bootstrap 5 admin template and web Application ui kit."
+    />
+    <meta
+      name="keyword"
+      content="ALUI, Bootstrap 5, ReactJs, Angular, Laravel, VueJs, ASP .Net, Admin Dashboard, Admin Theme"
+    />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <title>TOGETHER DEVELOPMENT</title>
+    <link rel="icon" href="image/Logo1-01.png" type="image/x-icon" />
+    <!-- Favicon -->
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/2.0.8/css/dataTables.semanticui.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.semanticui.css"
+    />
+
+    <!-- Plugin Css -->
+    <link rel="stylesheet" href="assets/css/select2.min.css" />
+    <!-- project css file  -->
+    <link rel="stylesheet" href="assets/css/al.style.min.css" />
+
+    <!-- project layout css file -->
+    <link rel="stylesheet" href="assets/css/layout.c.min.css" />
+
+    <!-- table design css -->
+    <link rel="stylesheet" href="assets/css/dataTables.min.css" />
+    <link rel="stylesheet" href="assets/css/semantic.min.css" />
+    <link rel="stylesheet" href="semantic.min.css" />
+    <link rel="stylesheet" href="assets/css/dataTables.semanticui.css" />
+    <link rel="stylesheet" href="assets/css/responsive.semanticui.css" />
+
+    <!-- table design js -->
+    <script src="assets/js/"></script>
+    <script src="assets/js/dataTable.js"></script>
+    <script src="assets/js/dataTable.semanticui.js"></script>
+    <script src="assets/js/dataTables.responsive.js"></script>
+    <script src="assets/js/responsive.semanticui.js"></script>
+
+    <!-- new -->
+     <!-- bootstrap5 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+    <!-- for drop down -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- for taiwind style -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- end new -->
+  </head>
+
+  <body>
+    <style>
+      @media screen and (max-width: 500px) {
+        .mobileHidden {
+          display: none;
+        }
+
+        .mobileLabelShow {
+          display: inline;
+        }
+
+        #mobileshow {
+          margin-top: 60px;
+        }
+      }
+
+      .days div {
+        margin: 0.3rem;
+        height: 3rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.2s;
+      }
+
+    </style>
+
+    <div id="layout-c" class="theme-blue">
+      <!-- Navigation -->
+      <div
+        class="navigation navbar navbar-light justify-content-center px-2  py-md-3 d-xl-none"
+      >
+        <!-- Brand -->
+        <div class="d-flex align-items-center">
+          <a href="#" class="">
+            <img
+              class=""
+              src="image/Logo.png"
+              alt="logo of Together Resort"
+              width="50"
+            />
+            <label class="text-white me-3 mobileLabelShow"
+              >Together Resort Development</label
+            >
+          </a>
+        </div>
+
+        <!-- Menu: icon -->
+        <ul
+          class="nav navbar-nav flex-row flex-sm-column flex-grow-1 justify-content-start  py-lg-0"
+        >
+          <!-- Create group -->
+          <li class="nav-item">
+            <a
+              class="nav-link p-2 p-lg-3 d-block d-xl-none menu-toggle me-2 me-lg-0"
+              href="#"
+              ><i class="fa fa-lg fa-bars text-white"></i
+            ></a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- sidebar -->
+      <div class="sidebar pl-2 ">
+        <div class="d-flex flex-column h-100">
+          <div class="text-center mb-2" id="mobileshow">
+            <a href="#" class="">
+              <img
+                src="image/Logo.png"
+                alt="logo of Together Resort"
+                width="120"
+                class="text-center mobileHidden"
+              />
+            </a>
+          </div>
+
+          <!-- Menu: tab content -->
+          <div class="tab-content flex-grow-1 mt-1">
+            <div class="tab-pane fade show active" id="nav-menu">
+              <!-- Menu: main ul -->
+              <ul class="menu-list">
+                <li class="collapsed">
+                  <a
+                    class="m-link"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#menu-Profile"
+                    href="#"
+                    ><i class="fa fa-lg fa-user"></i> <span>Profile</span>
+                    <span class="arrow fa fa-angle-down ms-auto text-end"></span
+                  ></a>
+
+                  <!-- Menu: Sub menu ul -->
+                  <ul class="sub-menu collapse" id="menu-Profile">
+                    <li><a class="ms-link" href="#">Company / Agent</a></li>
+                    <li><a class="ms-link" href="#">Guest</a></li>
+                  </ul>
+                </li>
+                <li class="collapsed">
+                  <a
+                    class="m-link"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#menu-Freelancer"
+                    href="#"
+                    ><i class="fa fa-lg fa-user-plus"></i>
+                    <span>Freelancer</span>
+                    <span class="arrow fa fa-angle-down ms-auto text-end"></span
+                  ></a>
+
+                  <!-- Menu: Sub menu ul -->
+                  <ul class="sub-menu collapse" id="menu-Freelancer">
+                    <li><a class="ms-link" href="#">Membership</a></li>
+                    <li><a class="ms-link" href="#">Message Inbox</a></li>
+                    <li>
+                      <a class="ms-link" href="#">Registration Request</a>
+                    </li>
+                    <li><a class="ms-link" href="#">Message Request</a></li>
+                  </ul>
+                </li>
+                <li class="collapsed">
+                  <a
+                    class="m-link"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#menu-Document"
+                    href="#"
+                  >
+                    <i class="fa fa-lg fa-folder-open"></i>
+                    <span>Document</span>
+                    <span
+                      class="arrow fa fa-angle-down ms-auto text-end"
+                    ></span>
+                  </a>
+
+                  <!-- Menu: Sub menu ul -->
+                  <ul class="sub-menu collapse" id="menu-Document">
+                    <li><a class="ms-link" href="#">Dummy Proposal</a></li>
+                    <li><a class="ms-link" href="#">Proposal Request</a></li>
+                    <li><a class="ms-link" href="#">Proposal</a></li>
+                    <li><a class="ms-link" href="#">Banquet Event Order</a></li>
+                    <li>
+                      <a class="ms-link" href="#"
+                        >Hotel Contract Rate Agreement</a
+                      >
+                    </li>
+                    <li><a class="ms-link" href="#">Proforma Invoice</a></li>
+                    <li><a class="ms-link" href="#">Billing Folio</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a class="m-link" href="#"
+                    ><i
+                      class="fa fa-lg fa-cubes"
+                      style="font-weight: bold; color: white"
+                    ></i>
+                    <span>Product Item</span></a
+                  >
+                </li>
+                <li class="collapsed">
+                  <a
+                    class="m-link"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#menu-Debtor"
+                    href="#"
+                    ><i class="fa fa-lg fa-file-text"></i> <span>Debtor</span>
+                    <span class="arrow fa fa-angle-down ms-auto text-end"></span
+                  ></a>
+
+                  <!-- Menu: Sub menu ul -->
+                  <ul class="sub-menu collapse" id="menu-Debtor">
+                    <li><a class="ms-link" href="#">Agoda</a></li>
+                    <li><a class="ms-link" href="#">Elexa</a></li>
+                  </ul>
+                </li>
+                <li class="collapsed">
+                  <a
+                    class="m-link"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#menu-Maintenance"
+                    href="#"
+                    ><i class="fa fa-lg fa-gear"></i> <span>Maintenance</span>
+                    <span class="arrow fa fa-angle-down ms-auto text-end"></span
+                  ></a>
+
+                  <!-- Menu: Sub menu ul -->
+                  <ul class="sub-menu collapse" id="menu-Maintenance">
+                    <li><a class="ms-link" href="#">Request Repair</a></li>
+                    <li><a class="ms-link" href="#">Repair Job</a></li>
+                    <li>
+                      <a class="ms-link" href="#">Preventive Maintenance</a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="collapsed">
+                  <a
+                    class="m-link"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#menu-General-ledger"
+                    href="#"
+                    ><i class="fa fa-lg fa-bar-chart-o"></i>
+                    <span>General Ledger</span>
+                    <span class="arrow fa fa-angle-down ms-auto text-end"></span
+                  ></a>
+
+                  <!-- Menu: Sub menu ul -->
+                  <ul class="sub-menu collapse" id="menu-General-ledger">
+                    <li>
+                      <a class="ms-link" href="#"
+                        >Daily Bank Transaction Revenue</a
+                      >
+                    </li>
+                    <li>
+                      <a class="ms-link" href="#">Hotel & Water Park Revenue</a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a class="m-link" href="#"
+                    ><i
+                      class="fa fa-lg fa-list"
+                      style="font-weight: bold; color: white"
+                    ></i>
+                    <span>Report</span></a
+                  >
+                </li>
+                <li class="collapsed">
+                  <a
+                    class="m-link"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#menu-Setting"
+                    href="#"
+                    ><i class="fa fa-lg fa-cogs"></i> <span>Setting</span>
+                    <span class="arrow fa fa-angle-down ms-auto text-end"></span
+                  ></a>
+
+                  <!-- Menu: Sub menu ul -->
+                  <ul class="sub-menu collapse" id="menu-Setting">
+                    <li><a class="ms-link" href="#">User</a></li>
+                    <li><a class="ms-link" href="#">Bank</a></li>
+                    <li><a class="ms-link" href="#">Quantity</a></li>
+                    <li><a class="ms-link" href="#">Prename</a></li>
+                    <li><a class="ms-link" href="#">Company Type</a></li>
+                    <li><a class="ms-link" href="#">Company Market</a></li>
+                    <li><a class="ms-link" href="#">Company Event</a></li>
+                    <li><a class="ms-link" href="#">Booking</a></li>
+                    <li><a class="ms-link" href="#">Template</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a
+                    class="m-link"
+                    href="#"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModalLogout"
+                    ><i
+                      class="fa fa-lg fa-power-off"
+                      style="font-weight: bold; color: white"
+                    ></i>
+                    <span>Logout</span></a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- main body area -->
+      <div class="main">
+        <!-- Body: Body -->
+          <div class="p-2 grid  w-full gap-2 bg-slate-100">
+            <div class="w-full py-3">
+              <!--แถบเมนูข้างบน-->
+              <div class="h-full">
+                <div class="flex md:justify-between flex-wrap max-sm:flex-col">
+                  <div class="text-3xl font-semibold mb-3">
+                    Daily Revenue by Type
+                  </div>
+                  <div class="flex gap-2">
+
+                    <select class="active:bg-blue-700 max-sm:px-1 bg-[#2C7F7A]/90 rounded-b-lg border-b-teal-900 hover:translate-2 duration-200 border-b-2 rounded-lg text-white boder-[#21522f] text-center shadow-2xl px-3 py-1 focus:outline-none">
+                      <a href="#"><option class="bg-[#f7fffc] text-[#2C7F7A]">Daily</option></a> 
+                      <a href="#"><option class="bg-[#f7fffc] text-[#2C7F7A]">M-T-D</option></a>
+                      <a href="#"><option class="bg-[#f7fffc] text-[#2C7F7A]">Y-T-D</option></a>
+                    </select>
+                           
+
+                          
+                    <select class="active:bg-blue-700 max-sm:px-1 bg-[#2C7F7A]/90 rounded-b-lg border-b-teal-900 hover:translate-2 duration-200 border-b-2 rounded-lg text-white boder-[#21522f] text-center shadow-2xl px-3 py-1 focus:outline-none">
+                      <a href="#"><option class="bg-[#f7fffc] text-[#2C7F7A]">พิมพ์เอกสาร</option></a> 
+                      <a href="#"><option class="bg-[#f7fffc] text-[#2C7F7A]">เพิ่มข้อมูลเงินสด/เครดิต</option></a>
+                      <a href="#"><option class="bg-[#f7fffc] text-[#2C7F7A]">รายละเอียด</option></a> 
+                      </select>
+
+                    <button
+                      class="nowrap active:bg-blue-700 max-sm:px-1 bg-yellow-500 rounded-b-lg border-b-yellow-900 hover:translate-2 duration-200 border-b-2 rounded-lg boder-[#21522f] text-center shadow-2xl px-3 py-1"
+                    ><i class="fa ml-2">&#xf023;</i>
+                      Lock
+                    </button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+           
+          <div class="grid md:grid-cols-12 gap-x-2 gap-y-4 flex flex-wrap bg-white p-2 rounded-lg">
+
+            <div
+              class="md:col-span-3 w-full bg-white rounded-lg h-[100%] border-2">
+              <canvas
+                id="myChart"
+                style="width: 100%; max-width: 600px"
+              ></canvas>
+
+              <div class="flex flex-col">
+                <div class="grid grid-cols-2"><div class="ml-2"><i class="fa-solid fa fa-square text-[#b91d47] mr-1"></i>Cash</div><div class="">: 33.33%</div></div>
+                <div class="grid grid-cols-2"><div class="ml-2"><i class="fa-solid fa fa-square text-[#00aba9] mr-1"></i>Bank Transfe</div><div class="">: 33.33%</div></div>
+                <div class="grid grid-cols-2"><div class="ml-2"><i class="fa-solid fa fa-square text-[#2b5797] mr-1"></i>Credit Card Revenue</div><div class="">: 33.33%</div></div>
+              </div>
+
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+              <script>
+                const xValues = [
+                  "Cash",
+                  "Bank Transfer",
+                  "Credit Card Revenue",
+                ];
+                const yValues = [55, 49, 44];
+                const barColors = ["#b91d47", "#00aba9", "#2b5797"];
+
+                new Chart("myChart", {
+                  type: "doughnut",
+                  data: {
+                    labels: xValues,
+                    datasets: [
+                      {
+                        backgroundColor: barColors,
+                        data: yValues,
+                      },
+                    ],
+                  },
+                  options: {
+                    title: {
+                      display: true,
+                      text: "Daily revenue summary",
+                    },
+                  },
+                });
+              </script>
+            </div>
+
+            <!-- Box-2 -->
+            <div class="md:col-span-3 w-full h-[100%] bg-gradient-to-r from-blue-500/20 to-green-500/40 pt-1 rounded-xl">
+
+              <div class="flex flex-col justify-center text-center h-[15%] max-sm:[25%] max-sm:py-6 bg-[#2C7F7A]/90 text-white rounded-t-xl mx-1">
+                <div>Cash</div>
+                <div class="font-semibold">0.00</div>
+              </div>
+
+              <div class="grid grid-cols-2 h-[85%] max-sm:[60%]">
+                
+                <div class="flex justify-center items-center flex-col m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md py-2">
+                  <div class="">
+                    <img
+                      src="./img/reception.png"
+                      alt=""
+                      class="w-9 h-9 rounded-xl mr-1"
+                    />
+                  </div>
+                  <div>Front Dest</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-center items-center flex-col m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md py-2">
+                  <div class="">
+                    <img src="./img/quest-deposit.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                  </div>
+                  <div>Guest Deposit</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-center items-center flex-col m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md py-2">
+                  <div class="">
+                    <img src="./img/shop.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                  </div>
+                  <div>All outlet</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-center items-center flex-col m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md py-2">
+                  <div class="">
+                    <img src="./img/water-park.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                  </div>
+                  <div>Front Dest</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+              </div>
+              <br>
+            </div>
+
+            <!-- Box-3 -->
+
+           <div class="md:col-span-3 w-full h-[100%] bg-gradient-to-r from-blue-500/20 to-green-500/40 pt-1 rounded-xl ">
+              <div class="flex flex-col justify-center text-center h-[15%] max-sm:py-4 bg-[#2C7F7A]/90 text-white rounded-t-xl mx-1 ">
+                <div>Bank Transfer</div>
+                <div>95,720.00</div>
+              </div>
+
+              <div class="grid grid-cols-2 h-[85%]">
+                <div class="flex justify-center items-center flex-col m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md py-2">
+                  <div class="">
+                    <img
+                      src="./img/reception.png"
+                      alt=""
+                      class="w-9 h-9 rounded-xl mr-1"
+                    />
+                  </div>
+                  <div>Front Dest</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-center items-center flex-col m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md py-2">
+                  <div class="">
+                    <img src="./img/quest-deposit.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                  </div>
+                  <div>Guest Deposit</div>
+                  <div>95,720.00</div>
+                </div>
+
+                <div class="flex justify-center items-center flex-col m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md py-2">
+                  <div class="">
+                    <img src="./img/shop.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                  </div>
+                  <div>All outlet</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-center items-center flex-col m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md py-2">
+                  <div class="">
+                    <img src="./img/water-park.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                  </div>
+                  <div>Water Park</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-center items-center flex-col m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md py-2">
+                  <div class="">
+                    <img src="./img/agoda.jpg" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                  </div>
+                  <div>Agoda</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-center items-center flex-col m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md py-2">
+                  <div class="">
+                    <img src="./img/elexa.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                  </div>
+                  <div>Elexa EGAT</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+              </div>
+              
+                <br>
+            </div>
+
+            <!-- Box 4 -->
+            <div class="md:col-span-3 w-full h-[100%] bg-gradient-to-r from-blue-500/20 to-green-500/40 pt-1 rounded-xl " >
+              
+              <div class="flex flex-col justify-center text-center h-[15%] max-sm:h-[30%] max-sm:py-4 bg-[#2C7F7A]/90 text-white rounded-t-xl mx-1 ">
+                <div>Credit Card</div>
+                <div class="font-semibold">0.00</div>
+              </div>
+
+              <div class="grid md:grid-cols-1 grid-cols-2 h-[85%] max-sm:h-[70%]">
+                <div class="flex justify-center items-center flex-col m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md py-2">
+                  <div class="">
+                    <img src="./img/hotel.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                  </div>
+                  <div>Hotel</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-center items-center flex-col m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md py-2">
+                  <div class="">
+                    <img src="./img/water-park.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                  </div>
+                  <div>Water Park</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Box-5 -->
+            <div class="md:col-span-4 w-full h-[100%] bg-gradient-to-r from-blue-500/20 to-green-500/40 pt-1 rounded-xl" >
+              <div class="flex flex-col justify-center text-center h-[15%] bg-[#2C7F7A]/90 text-white rounded-t-xl mx-1">
+                <div>Manual Charge</div>
+                <div class="font-semibold">0.00</div>
+              </div>
+
+              <div class="grid mb-2 h-[85%]">
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1 text-center px-2 py-1">
+                  <div class="flex items-center">
+                    <img src="./img/reception.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                    <div>Credit Card Front Desk</div>
+                  </div>
+                  <div class="text-end">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1 text-center px-2 py-1">
+                  <div class="flex items-center">
+                    <img src="./img/quest-deposit.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                    <div>Credit Card Guest Deposit</div>
+                  </div>
+                  <div class="text-end">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1 text-center px-2 py-1">
+                  <div class="flex items-center">
+                    <img src="./img/shop.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                    <div>Credit Card All outlet</div>
+                  </div>
+                  <div class="text-end">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1 text-center px-2 py-1">
+                  <div class="flex items-center">
+                    <img src="./img/water-park.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                    <div>Credit Card Water Park</div>
+                  </div>
+                  <div class="text-end">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1 text-center px-2 py-1">
+                  <div class="flex items-center">
+                    <img src="./img/agoda.jpg" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                    <div>Agoda</div>
+                  </div>
+                  <div class="text-end">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1 text-center px-2 py-1">
+                  <div class="flex items-center">
+                    <img src="./img/elexa.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                    <div>Elaxa EGAT</div>
+                  </div>
+                  <div class="text-end">0.00</div>
+                </div>
+              </div>
+              <br>
+            </div>
+
+
+            <!-- Box-6 -->
+            <div class="md:col-span-4 w-full h-[100%] bg-gradient-to-r from-blue-500/20 to-green-500/40 pt-1 rounded-xl" >
+              <div class="flex flex-col justify-center text-center h-[15%] max-sm:h-[20%] max-sm:py-2 bg-[#2C7F7A]/90 text-white rounded-t-xl mx-1">
+                <div>Fee</div>
+                <div class="font-semibold">0.00</div>
+              </div>
+
+              <div class="grid h-[85%] max-sm:h-[80%] ">
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1 text-center px-2 py-1">
+                  <div class="flex items-center">
+                    <img src="./img/hotel.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                    <div>Credit Card Hotel Fee</div>
+                  </div>
+                  <div class="text-end">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1 text-center px-2 py-1">
+                  <div class="flex items-center">
+                    <img src="./img/water-park.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                    <div>Credit Card Water Park Fee</div>
+                  </div>
+                  <div class="text-end">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1 text-center px-2 py-1">
+                  <div class="flex items-center">
+                    <img src="./img/agoda.jpg" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                    <div>Agoda</div>
+                  </div>
+                  <div class="text-end">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1 text-center px-2 py-1">
+                  <div class="flex items-center">
+                    <img src="./img/elexa.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                    <div>Elaxa EGAT Fee</div>
+                  </div>
+                  <div class="text-end">0.00</div>
+                </div>
+                
+              </div>
+            </div>
+
+            <!-- Box-7 -->
+            <div class="md:col-span-4 w-full h-[100%] bg-gradient-to-r from-blue-500/20 to-green-500/40 pt-1 rounded-xl " >
+              <div class=" flex flex-col justify-center text-center md:h-[15%] max-sm:py-1 bg-[#2C7F7A]/90 text-white rounded-t-xl mx-1">
+                <div>Total Revenue Outstanding</div>
+                <div class="font-semibold">0.00</div>
+              </div>
+
+              <div class="grid md:h-[85%]">
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1 text-center px-2 py-1">
+                  <div class="flex items-center">
+                    <img src="./img/agoda.jpg" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                    <div>Credit Card Agoda Revenue Outstanding</div>
+                  </div>
+                  <div class="text-end">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1 text-center px-2 py-1">
+                  <div class="flex items-center">
+                    <img src="./img/elexa.png" alt="" class="w-9 h-9 rounded-xl mr-1" />
+                    <div>Elaxa EGAT Revenue Outstanding</div>
+                  </div>
+                  <div class="text-end">0.00</div>
+                </div>               
+              </div>              
+            </div>
+
+
+            <!-- Box-8 -->
+            <div class="md:col-span-6 w-full h-[100%] bg-gradient-to-r from-blue-500/20 to-green-500/40 pt-1 rounded-xl" >
+              <div class="flex flex-col justify-center text-center h-[20%] max-sm:h-[15%] bg-[#2C7F7A]/90 text-white rounded-t-xl mx-1">
+                <div>Type</div>
+              </div>
+
+              <div class="grid h-[80%] max-sm:h-[85%] md:grid-cols-2 grid-cols-1">
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1">
+                  <div>Transfer Revenue</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1">
+                  <div>Credit Card Hote<br>Transfer Transaction</div>
+                  <div >0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1">
+                  <div>Spit Credit Card Hotel Revenue</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1">
+                  <div>Spit Credit Card Hotel Transaction</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1">
+                  <div>No Income Revenue</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1">
+                  <div>Total Transaction</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1">
+                  <div>Transfer Transaction</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+
+                <div class="flex justify-between items-center m-1 border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md px-3 py-1">
+                  <div>No incoming Type</div>
+                  <div class="font-semibold">0.00</div>
+                </div>
+              </div>
+              <br>
+                <br>
+            </div>
+
+            <!-- box 9 -->
+
+            <div class="md:col-span-3 w-full grid md:grid-cols-1 grid-cols-2 h-[100%] bg-slate-900/20 gap-2 rounded-xl p-1">
+                <div class="h-full mb-4 pb-1">
+                  <div class="flex flex-col justify-center text-center h-[39%] bg-[#2C7F7A]/90 text-white rounded-t-xl py-3">Monthly Revenue</div>
+                  <div class="flex justify-center items-center border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md h-[65%]">1,234,657.67 <span>/ Month</span></div>
+                </div>
+
+                <div class="h-full pb-1">
+                  <div class="flex flex-col justify-center text-center h-[39%] bg-[#2C7F7A]/90 text-white rounded-t-xl py-3">Monthly Revenue</div>
+                  <div class="flex justify-center items-center border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md h-[65%]">98,657.67 <span>/ Day</span></div>
+                </div>
+            </div>
+
+            <!-- box 10 -->
+
+            <div class="md:col-span-3 w-full grid md:grid-cols-1 grid-cols-2 h-[100%] bg-slate-900/20 gap-2 rounded-xl p-1">
+                <div class="h-full mb-4 pb-1">
+                  <div class="flex flex-col justify-center text-center h-[39%] bg-[#2C7F7A]/90 text-white rounded-t-xl py-3">Verified</div>
+                  <div class="flex justify-center items-center border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md h-[65%]">6</div>
+                </div>
+
+                <div class="h-full pb-1">
+                  <div class="flex flex-col justify-center text-center h-[39%] bg-[#2C7F7A]/90 text-white rounded-t-xl py-3">Unverified</div>
+                  <div class="flex justify-center items-center border-1 border-teal-700/40 bg-gradient-to-r from-green-500/70 to-blue-500/40 rounded-md h-[65%]">25</span></div>
+                </div>
+            </div>
+
+          </div>
+          </div>
+
+
+            <!-- Table -->
+           <div class="p-2 grid md:grid-cols-12 w-full gap-2 bg-slate-200">
+
+ 
+             <div class="md:col-span-12 border-2 bg-white px-2 py-3 rounded-lg">
+
+        <!-- Modal: calendar -->
+        <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content rounded-xl">
+              <div class="modal-header">        
+                  <div class="w-full">
+                    <h5 class="text-center text-2xl text-[#2C7F7A] font-semibold">ค้นหารายการ</h5>
+                  </div>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>    
+                </div>
+
+                
+                <div class="modal-body ">
+                
+                    <div id="showDays" class="duration-800">
+                    <p class="text-[#2C7F7A] text-2xl my-2"> filter by date</p>
+                      <div class="calendar rounded-xl border-1 border-teal-800/20">
+                        <div class="month w-full bg-[#2C7F7A]/90 text-white text-2xl flex justify-between items-center rounded-t-xl">
+                          <i class="fa fa-angle-left prev pointe ml-3"></i>
+                          <div class="date my-2 justify-center">
+                            <h1 id="mymonth" class="thisMont uppercase text-center"></h1>
+                            <p id="myDay" class="dateShose text-md"> วันที่เลือก</p> 
+                            <!-- <p id="" class="date-current border-2"> วันที่เลือก</p> -->
+                          </div>
+                          <i class="fa fa-angle-right next pointe mr-3"></i>
+                        </div>
+                      
+                        <div class="p-4">
+                          <div class="weekdays grid grid-cols-7 text-center text-[#2C7F7A]">
+                            <div>Sun</div>
+                            <div>Mon</div>
+                            <div>Tue</div>
+                            <div>Wed</div>
+                            <div>Thu</div>
+                            <div>Fri</div>
+                            <div>Sat</div>
+                          </div>
+                          <div class="days grid grid-cols-7  text-center"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                      <!-- ล่าง modal -->
+                      <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" id="btn-save-date" class="btn btn-success">Save changes</button>
+                      </div>
+                      </div>
+                  </div>
+                </div>
+                
+
+            <div class="md:col-span-12">
+            
+              <div class="flex items-center gap-2">
+
+                  <input type="text" id="select-date" name="" class="border-2 rounded-lg text-[#2C7F7A] border-teal-900 bg-white my-1 text-center px-3 py-2" value="แสดงวันที่ค้นหา">                          
+                  <!-- Button trigger modal -->
+                  <button type="button" class="active:bg-blue-700 bg-[#2C7F7A]/90 rounded-b-lg border-b-teal-900 hover:translate-2 duration-200 border-b-4 border-r-6 rounded-lg text-white boder-[#21522f] text-center px-3 py-2" data-toggle="modal" data-target="#exampleModal2">
+                  <i class="fa fa-calendar"></i>
+                  </button>
+
+                  <!-- Button Group -->
+                    
+                  <button class="active:bg-blue-700 bg-[#2C7F7A]/90 rounded-b-lg border-b-teal-900 hover:translate-2 duration-200 border-b-4 border-r-6 rounded-lg text-white boder-[#21522f] text-center px-3 py-2">
+                  <input type="submit"class="" value="">ค้นหา<i class="fa fa-search ext-xl"></i></button>
+              </button>
+            </div>
+            <Br>
+            
+
+              <table class="w-full md:text-md border-2 border-teal-80/20">
+                  <thead>
+                    <tr class="border-y-2 border-teal-800/20">
+                      <th class="w-[45%] text-center">Description</th>
+                      <th class="text-end w-[15%] pr-2">Today</th>
+                      <th class="text-end w-[20%] pr-2">M-T-D</th>
+                      <th class="text-end w-[20%] pr-2">Y-T-D</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="text-center">Hotel</td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                    </tr>
+                    <tr class="bg-[#2C7F7A]/90 text-white font-semibold border-2 border-teal-800/20">
+                      <td class="pl-2 ">Front Desk Revenue</td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                    </tr>
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Cash</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+                     <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Bank Transfer</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">4,034.00</td>
+                      <td class="text-end px-2">103,034.00</td>
+                    </tr>
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Credit Card Front Desk Charge</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">22,934.00</td>
+                      <td class="text-end px-2">174,034.00</td>
+                    </tr>
+
+                    <tr class="bg-[#2C7F7A]/90 text-white font-semibold border-2 border-teal-800/20">
+                      <td class="pl-2 ">Guest Deposit Revenue</td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                    </tr>
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Cash</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+                     <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Bank Transfer</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">4,034.00</td>
+                      <td class="text-end px-2">103,034.00</td>
+                    </tr>
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Credit Card Front Desk Charge</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">22,934.00</td>
+                      <td class="text-end px-2">174,034.00</td>
+                    </tr>
+
+                    <tr class="bg-[#2C7F7A]/90 text-white font-semibold border-2 border-teal-800/20">
+                      <td class="pl-2 ">All Outlet Revenue</td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                    </tr>
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Cash</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+                     <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Bank Transfer</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">4,034.00</td>
+                      <td class="text-end px-2">103,034.00</td>
+                    </tr>
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Credit Card Front Desk Charge</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">22,934.00</td>
+                      <td class="text-end px-2">174,034.00</td>
+                    </tr>
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="text-end font-semibold">Total Cash</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">75,983.00</td>
+                      <td class="text-end px-2">814,765,876.00</td>
+                    </tr>
+
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="text-end font-semibold">Total Bank Transfer</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">75,983.00</td>
+                      <td class="text-end px-2">814,765,876.00</td>
+                    </tr>
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="text-end font-semibold">Cash And Transfer Hotel Revenue</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">75,983.00</td>
+                      <td class="text-end px-2">814,876.00</td>
+                    </tr>
+
+                    <tr class="bg-[#2C7F7A]/90 text-white font-semibold border-2 border-teal-800/20">
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                    </tr>
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="text-end font-semibold">Total Credit Card Charge</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">51,668.00</td>
+                      <td class="text-end px-2">293,444.00</td>
+                    </tr>
+
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="text-end font-semibold">Credit Card Fee</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">1,334.18.00</td>
+                      <td class="text-end px-2">6,686.10</td>
+                    </tr>
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="text-end font-semibold">Credit Card Hotel Revenue</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">5,333.00</td>
+                      <td class="text-end px-2">286,876.00</td>
+                    </tr>
+
+                    <tr class="bg-[#2C7F7A]/90 text-white font-semibold border-2 border-teal-800/20">
+                      <td class="text-start pl-2 ">Agoda Revenue</td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                    </tr>
+
+                     <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Credit Card Agoda Charge</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+                     <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Total Agoda fee</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">4,034.00</td>
+                      <td class="text-end px-2">103,034.00</td>
+                    </tr>
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Credit Agoda Revenue Outstanding</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">4,034.00</td>
+                      <td class="text-end px-2">103,034.00</td>
+                    </tr>
+                    <tr class="bg-[#2C7F7A]/90 text-white font-semibold border-2 border-teal-800/20">
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                    </tr>
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize bg-orange-200">
+                      <td class="text-end font-semibold">Total Hotel Revenue</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">75,983.00</td>
+                      <td class="text-end px-2">814,765,876.00</td>
+                    </tr>
+                    <tr class="bg-[#2C7F7A]/90 text-white font-semibold border-2 border-teal-800/20">
+                      <td class="pl-2 ">Water Park Revenue</td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                    </tr>
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Cash</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+                     <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Bank Transfer</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">4,034.00</td>
+                      <td class="text-end px-2">103,034.00</td>
+                    </tr>
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="text-end font-semibold">Cash + Bnak Transfefr Water Park Revenue</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">75,983.00</td>
+                      <td class="text-end px-2">814,765,876.00</td>
+                    </tr>
+
+                    <tr class="bg-[#2C7F7A]/90 text-white font-semibold border-2 border-teal-800/20">
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                    </tr>
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="text-end pl-2 font-semibold">Credit Card water Park Charge</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+                     <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="text-end pl-2 font-semibold">credit card fee</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">4,034.00</td>
+                      <td class="text-end px-2">103,034.00</td>
+                    </tr>
+
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="text-end font-semibold">Credit Card Water Park REvenue</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">75,983.00</td>
+                      <td class="text-end px-2">814,765,876.00</td>
+                    </tr>
+
+                    <tr class="bg-[#2C7F7A]/90 text-white font-semibold border-2 border-teal-800/20">
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                    </tr>
+
+                     <tr class="border-b-2 border-teal-800/20 capitalize bg-orange-200">
+                      <td class="text-end font-semibold">Total water Park Revenue</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">75,983.00</td>
+                      <td class="text-end px-2">814,765,876.00</td>
+                    </tr>
+                    <tr class="bg-[#2C7F7A]/90 text-white font-semibold border-2 border-teal-800/20">
+                      <td class="pl-2 ">Elexa EGAT REvenue</td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                    </tr>
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">EV Chargeing Charge</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+                     <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Elexa Fee</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">4,034.00</td>
+                      <td class="text-end px-2">103,034.00</td>
+                    </tr>
+                    <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="pl-2 ">Elexa EGAT Revenue Outstanding</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+                     <tr class="border-b-2 border-teal-800/20 capitalize">
+                      <td class="text-end pl-2 ">Total EGAT Revenue</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">4,034.00</td>
+                      <td class="text-end px-2">103,034.00</td>
+                    </tr>
+                    <tr class="bg-[#2C7F7A]/90 text-white font-semibold border-2 border-teal-800/20">
+                      <td class="pl-2 "></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                      <td class="text-end"></td>
+                    </tr>
+
+                     <tr class="border-b-2 border-teal-800/20 capitalize bg-sky-200/60">
+                      <td class="pl-2 text-end font-semibold">total hotel, water park and elexa EGAT revenue</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+
+                     <tr class="border-b-2 border-teal-800/20 capitalize bg-sky-200/60">
+                      <td class="pl-2 text-end font-semibold">credit agoda revenue Outstanding</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+
+                     <tr class="border-b-2 border-teal-800/20 capitalize bg-sky-200/60">
+                      <td class="pl-2 text-end font-semibold">elexa EGAT revenue outstanding</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+                     <tr class="border-b-2 border-teal-800/20 capitalize bg-sky-200/60">
+                      <td class="pl-2 text-end font-semibold">agoda revenue</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+                     <tr class="border-b-2 border-teal-800/20 capitalize bg-sky-200/60">
+                      <td class="pl-2 text-end font-semibold">elexa EGAT revenue</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+                     <tr class="border-b-2 border-teal-800/20 capitalize bg-sky-200/60">
+                      <td class="pl-2 text-end font-semibold">total revenue</td>
+                      <td class="text-end">0.00</td>
+                      <td class="text-end">21,034.00</td>
+                      <td class="text-end px-2">184,034.00</td>
+                    </tr>
+
+                  </tbody>
+                </table>
+                            </div>
+           </div>
+        </div>
+        <!-- Modal เพิ่มข้อมูลเงินสด/เครดิต -->
+       <!-- Button trigger modal -->
+            <button type="button" class="active:bg-blue-700 px-3 bg-[#2C7F7A] rounded-b-lg border-b-teal-900 hover:translate-2 duration-200 border-b-4 border-r-6 rounded-lg p-2 text-white boder-[#21522f] text-center shadow-2xl" data-toggle="modal" data-target="#exampleModal">
+              เพิ่มข้อมูล <i class="fa fa-plus text-xl" ></i>
+            </button>
+
+              <!-- Modal modal fade -->
+              <div class="bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content rounded-lg">
+                    <div class="modal-header bg-[#2C7F7A]">
+                      <h5 class="modal-title text-white text-2xl !text-center" id="exampleModalLabel">เพิ่มข้อมูลเงินสด /เครดิต</h5>
+                      <button type="button" class="close text-white text-2xl" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+
+                      <script>
+                      let 
+                      function myFunction() {
+                        var x = document.getElementById("front-desk-revenue");
+                        if (x.style.display === "none") {
+                          x.style.display = "block";
+                        } else {
+                          x.style.display = "none";
+                        }
+                      }
+                    </script>
+
+                      <!-- <h2>เพิ่มข้อมูล</h2> -->
+                            <div class="flex items-center">
+                              <label for=""class="">วันที่ : &nbsp;&nbsp;</label><br>
+                              <input class="grow border-2 border-teal-700 border-solid rounded-md p-2" type="date" name="" id="">
+                            </div>
+
+                            <div class="accordion" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+        Accordion Item #1
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+      <div class="accordion-body">
+        <strong class="">This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+        Accordion Item #2
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+      <div class="accordion-body">
+        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+        Accordion Item #3
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
+      <div class="accordion-body">
+        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<p>
+  <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+    Link with href
+  </a>
+  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    Button with data-bs-target
+  </button>
+</p>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+  </div>
+</div>
+
+
+
+                            <div class="capitalize front-desk-revenue" onclick="myFunction()">front desk revenue</div>
+                            
+                            <div id="front-desk-revenue">
+                                <div class="grid grid-cols-2 gap-2">
+
+                                <div class="w-full py-2">
+                                    <label for="">Cash<sup class="text-red-600">*</sup></label><br>
+                                    <input class="w-full border-1 border-teal-700 border-solid rounded-md p-2" type="number" name="dat" id="">
+                                </div>
+
+                                <div class="w-full py-2">
+                                    <label for="">Bank Transfer<sup class="text-danger">*</sup></label><br>
+                                    <input class=" w-full border-1 border-teal-700 border-solid rounded-md p-2" type="number" name="tim" id="">
+                                </div>
+                              </div> <!--ครอบ column 2-->
+
+                                <div class="capitalize">credit card</div>
+                              <div class="grid grid-cols-3 gap-2"> 
+
+                                <div class="w-full py-2">
+                                    <label for="">Stand<sup class="text-red-600">*</sup></label><br>
+                                    <input class="w-full border-1 border-teal-700 border-solid rounded-md p-2" type="number" name="" id="">
+                                </div>
+
+                                <div class="w-full py-2">
+                                    <label for="">ประเภทรายได้<sup class="text-danger">*</sup></label><br>
+                                    <input class=" w-full border-1 border-teal-700 border-solid rounded-md p-2" type="number" name="" id="sms-time">
+                                </div>
+
+                                <div class="w-full py-2">
+                                    <label for="">Credit Card Room Charge<sup class="text-danger">*</sup></label><br>
+                                    <input class=" w-full border-1 border-teal-700 border-solid rounded-md p-2" type="number" name="" id="sms-time">
+                                </div>
+                              </div>
+
+                              <button type="submit" class="rounded-lg px-2 py-1 text-white bg-lime-600">เพิ่ม</button>
+                              <button type="submit" class="rounded-lg px-2 py-1 text-white bg-red-600">ลบข้อมูลทั้งหมด</button>
+                              <br>
+                              <br>
+
+                              <table class="w-full border-2">
+                                <thead>
+                                  <tr class="border-1">
+                                    <th class="w-[10%] text-center">Stan</th>
+                                    <th class="w-[30%] text-start">ประเภทรายได้</th>
+                                    <th class="w-[30%] text-center">Credit Desk Revenue</th>
+                                    <th class="w-[30%] text-end pr-10">Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr class="border-1">
+                                    <td class="text-center">1234</td>
+                                    <td class="capitalize">front dest revenue</td>
+                                    <td class="text-center"></td>
+                                    <td class="text-end pr-4"><div class="col-span-2">455.00<i class="fa fa-trash-o ml-2 text-red-800 "></i></div></td>
+                                  </tr>
+                                  <tr class="border-1">
+                                    <td class="text-center">1234</td>
+                                    <td class="capitalize">front dest revenue</td>
+                                    <td class="text-center"></td>
+                                    <td class="text-end pr-4"><div class="col-span-2">455.00<i class="fa fa-trash-o ml-2 text-red-800 "></i></div></td>
+                                  </tr>
+                                  <tr class="border-1">
+                                    <td class="text-center">1234</td>
+                                    <td class="capitalize">front dest revenue</td>
+                                    <td class="text-center"></td>
+                                    <td class="text-end pr-4"><div class="col-span-2">455.00<i class="fa fa-trash-o ml-2 text-red-800 "></i></div></td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                            <!-- จบ ซ่อน1 -->
+
+
+                            
+                          
+                        </div>
+
+                      <input type="hidden" name="id" id="id">
+                    
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+
+
+        <!-- กล่องใหญ่ -->
+      </div>
+      <!-- กล่องครองทั้งหมด -->
+
+
+      
+
+      <!-- Modal: Logout -->
+      <div class="modal fade" id="exampleModalLogout" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header bg-color-green">
+              <h5 class="modal-title text-white" id="exampleModalLogoutLabel">
+                Logout
+              </h5>
+              <button
+                type="button"
+                class="btn-close lift"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <p>Are You Sure to Logout!</p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary lift"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-color-green lift"
+                onclick="location.href='logout'"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <link rel="stylesheet" href="assets/css/calendar.css"> -->
+     <script src="./assets/js/calendar2.js"></script>
+     <link rel="stylesheet" href="./assets/css/calendar.css">
+
+    <!-- Jquery Core Js -->
+    <script src="assets/bundles/libscripts.bundle.js"></script>
+
+    <!-- Plugin Js -->
+    <!-- <script src="assets/bundles/dataTables.bundle.js"></script> -->
+    <script src="assets/bundles/select2.bundle.js"></script>
+    <script src="assets/plugin/select2-searchInputPlaceholder.js"></script>
+    <script src="assets/bundles/bootstraptagsinput.bundle.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.semanticui.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
+
+    <link rel="stylesheet" href="./assets/css/dataTables.dataTables.css" />
+
+    <!-- Jquery Page Js -->
+    <script src="assets/js/template.js"></script>
+    <script>
+      // for modal เพิ่มข้อมูล
+
+      $("#myModal").on("shown.bs.modal", function () {
+        $("#myInput").trigger("focus");
+      });
+
+      var myCollapsible = document.getElementById('myCollapsible')
+      myCollapsible.addEventListener('hidden.bs.collapse', function () {
+        // do something...
+      })
+
+    </script>
+  </body>
+</html>
