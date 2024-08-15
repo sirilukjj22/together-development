@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Masters;
 use App\Models\Revenues;
+use App\Models\Role_permission_revenue;
 use App\Models\SMS_alerts;
 use App\Models\SMS_forwards;
 use Carbon\Carbon;
@@ -158,10 +159,14 @@ class SMSController extends Controller
         $adate = date('Y-m-d 21:00:00');
         $from = date("Y-m-d 21:00:00", strtotime("-1 day", strtotime($adate)));
         $to = date('Y-m-d 21:00:00');
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
 
         $fromLast7 = date("Y-m-d 21:00:00", strtotime("-8 day", strtotime($adate)));
 
-        $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->orderBy('date', 'asc')->get();
+        // ตาราง 1
+        $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->orderBy('date', 'asc')->paginate($perPage);
+        $total_sms_amount = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->sum('amount');
+
         $data_sms_transfer = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('transfer_status', 1)
             ->orWhereDate('date', date('Y-m-d'))->where('transfer_status', 1)
             ->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', date('Y-m-d'))
@@ -208,7 +213,10 @@ class SMSController extends Controller
         return view(
             'sms-forward.index',
             compact(
+                // ตารางที่ 1
                 'data_sms',
+                'total_sms_amount',
+
                 'data_sms_transfer',
                 'data_sms_split',
                 'total_day',
@@ -231,6 +239,157 @@ class SMSController extends Controller
                 'data_bank'
             )
         );
+    }
+
+    public function search_table($value)
+    {
+        $role_revenue = Role_permission_revenue::where('user_id', Auth::user()->id)->first();
+
+        $adate = date('Y-m-d 21:00:00');
+        $from = date("Y-m-d 21:00:00", strtotime("-1 day", strtotime($adate)));
+        $to = date('Y-m-d 21:00:00');
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+
+        $data_sms = SMS_alerts::whereBetween('date', [$from, $to])
+                ->where('date', 'LIKE', '%'.$value.'%')->whereNull('date_into')
+                ->orWhere('transfer_from', 'LIKE', '%'.$value.'%')->whereBetween('date', [$from, $to])->whereNull('date_into')
+                ->orWhere('into_account', 'LIKE', '%'.$value.'%')->whereBetween('date', [$from, $to])->whereNull('date_into')
+                ->orWhere('remark', 'LIKE', '%'.$value.'%')->whereBetween('date', [$from, $to])->whereNull('date_into')
+                ->orWhere('amount', 'LIKE', '%'.$value.'%')->whereBetween('date', [$from, $to])->whereNull('date_into')
+                ->orWhere('date_into', 'LIKE', '%'.$value.'%')->whereBetween('date', [$from, $to])->whereNull('date_into')
+                ->orderBy('date', 'asc')->paginate($perPage);
+    
+        $data = [];
+
+        if (count($data_sms) > 0) {
+            foreach ($data_sms as $key => $value) {
+                $img_bank = '';
+                $transfer_bank = '';
+                $revenue_name = '';
+                $btn_action = '';
+
+                // โอนจากธนาคาร
+                $filename = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.jpg';
+                $filename2 = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.png';
+            
+                if (file_exists($filename)) {
+                    $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
+                } elseif (file_exists($filename2)) {
+                    $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
+                }
+
+                $transfer_bank = '<div class="flex-jc p-left-4 center">'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
+
+                // เข้าบัญชี
+                $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+
+                // ประเภทรายได้
+                if ($value->status == 0) { $revenue_name = '-'; } 
+                if ($value->status == 1) { $revenue_name = 'Guest Deposit Revenue'; } 
+                if($value->status == 2) { $revenue_name = 'All Outlet Revenue'; } 
+                if($value->status == 3) { $revenue_name = 'Water Park Revenue'; } 
+                if($value->status == 4) { $revenue_name = 'Credit Card Revenue'; } 
+                if($value->status == 5) { $revenue_name = 'Agoda Bank Transfer Revenue'; } 
+                if($value->status == 6) { $revenue_name = 'Front Desk Revenue'; } 
+                if($value->status == 7) { $revenue_name = 'Credit Card Water Park Revenue'; } 
+                if($value->status == 8) { $revenue_name = 'Elexa EGAT Revenue'; } 
+                if($value->status == 9) { $revenue_name = 'Other Revenue Bank Transfer'; }
+
+                $btn_action .='<div class="dropdown">';
+                                $btn_action .='<button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
+                                    ทำรายการ <span class="caret"></span>
+                                </button>';
+                                $btn_action .='<ul class="dropdown-menu">';
+                                    if (@$role_revenue->front_desk == 1) {
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Front Desk Revenue".')">
+                                                            Front Desk Bank <br>Transfer Revenue 
+                                                        </li>';
+                                    }
+                                    if (@$role_revenue->guest_deposit == 1) {
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Guest Deposit Revenue".')">
+                                                            Guest Deposit Bank <br> Transfer Revenue 
+                                                        </li>';
+                                    }
+                                    if (@$role_revenue->all_outlet == 1) {
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."All Outlet Revenue".')">
+                                                            All Outlet Bank <br> Transfer Revenue 
+                                                        </li>';
+                                    }
+                                    if (@$role_revenue->agoda == 1) {
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Credit Agoda Revenue".')">
+                                                            Agoda Bank <br>Transfer Revenue 
+                                                        </li>';
+                                    }
+                                    if (@$role_revenue->credit_card_hotel == 1) {
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Credit Card Revenue".')">
+                                                            Credit Card Hotel <br> Revenue 
+                                                        </li>';
+                                    }
+                                    if (@$role_revenue->elexa == 1) {
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Elexa EGAT Revenue".')">
+                                                            Elexa EGAT Bank Transfer <br> Transfer Revenue
+                                                        </li>';
+                                    }
+                                    if (@$role_revenue->no_category == 1) {
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."No Category".')">
+                                                            No Category
+                                                        </li>';
+                                    }
+                                    if (@$role_revenue->water_park == 1) {
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Water Park Revenue".')">
+                                                            Water Park Bank <br> Transfer Revenue 
+                                                        </li>';
+                                    }
+                                    if (@$role_revenue->credit_water_park == 1) {
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Credit Water Park Revenue".')">
+                                                            Credit Card Water <br>Park Revenue 
+                                                        </li>';
+                                    }
+                                    if (@$role_revenue->other_revenue == 1) {
+                                        $btn_action .='<li class="button-li" onclick="other_revenue_data('.$value->id.')">
+                                                            Other Revenue <br> Bank Transfer
+                                                        </li>';
+                                    }
+                                    if (@$role_revenue->transfer == 1) {
+                                        $btn_action .='<li class="button-li" onclick="transfer_data('.$value->id.')">
+                                                            Transfer
+                                                        </li>';
+                                    }
+                                    if (@$role_revenue->time == 1) {
+                                        $btn_action .='<li class="button-li" onclick="update_time_data('.$value->id.')">
+                                                            Update Time
+                                                        </li>';
+                                    }
+                                    if (@$role_revenue->split == 1) {
+                                        $btn_action .='<li class="button-li" onclick="split_data('.$value->id.', {{ $item->amount }})">
+                                                            Split Revenue
+                                                        </li>';
+                                    }
+                                    if (@$role_revenue->edit == 1) {
+                                        $btn_action .='<li class="button-li" onclick="edit('.$value->id.')">Edit</li>
+                                                       <li class="button-li" onclick="deleted('.$value->id.')">Delete</li>';
+                                    }
+                                $btn_action .='</ul>';
+                $btn_action .='</div>';
+
+                $data[] = [
+                    'id' => $key + 1,
+                    'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                    'time' => Carbon::parse($value->date)->format('H:i:s'),
+                    'transfer_bank' => $transfer_bank,
+                    'into_account' => $into_account,
+                    'amount' => number_format($value->amount, 2),
+                    'remark' => $value->remark ?? 'Auto',
+                    'revenue_name' => $revenue_name,
+                    'date_into' => Carbon::parse($value->date_into)->format('d/m/Y'),
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+
+        return response()->json([
+            'data' => $data,
+            ]);
     }
 
     public function graph30days($to_date, $type, $account)

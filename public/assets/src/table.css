@@ -11,6 +11,16 @@
   color: rgb(44 127 122 / var(--tw-text-opacity));
 }
 
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+tr td.td-content-center {
+  align-content:center;
+}
+
 @media (min-width: 768px) {
   .sms-header span {
     font-size: 1.5rem;

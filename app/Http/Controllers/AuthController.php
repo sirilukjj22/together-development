@@ -198,6 +198,7 @@ class AuthController extends Controller
             'no_category' => $data['no_category'] ?? 0,
             'water_park' => $data['water_park'] ?? 0,
             'credit_water_park' => $data['credit_water_park'] ?? 0,
+            'other_revenue' => $data['other_revenue'] ?? 0,
             'transfer' => $data['transfer'] ?? 0,
             'time' => $data['time'] ?? 0,
             'split' => $data['split'] ?? 0,

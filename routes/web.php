@@ -75,6 +75,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('sms-graph30days/{date}/{type}/{account}', 'graph30days')->name('sms-graph30days');
         Route::get('sms-graphToday/{to_date}', 'graphToday')->name('sms-graphToday');
         Route::get('sms-graphForcast/{to_date}', 'graphForcast')->name('sms-graphForcast');
+
+        // Table Search
+        Route::get('sms-search-table/{value}', 'search_table')->name('sms-search-table');
     });
 
     # Revenue

@@ -21,6 +21,7 @@ class Role_permission_revenue extends Model
         'no_category',
         'water_park',
         'credit_water_park',
+        'other_revenue',
         'transfer',
         'time',
         'split',

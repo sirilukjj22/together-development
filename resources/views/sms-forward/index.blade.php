@@ -721,8 +721,6 @@
                                         </div>
                                     </div>
 
-
-
                                     <script type="text/javascript">
                                         function dayPickup() {
                                             let x1 = document.getElementById("myDate").value;
@@ -732,148 +730,6 @@
                                     </script>
                                 </div>
                             </div>
-                            <script>
-                                Chart.defaults.font.family = "Sarabun";
-                                const revenueData = [
-                                    201600, 201600, 147700, 172900, 99800, 211400, 98200, 136200, 166200,
-                                    121000, 101300, 126600, 128600, 99300, 111220, 130500, 76300, 122900,
-                                    170800, 73600, 93300, 92000, 60500, 69600, 118000, 110700, 107500, 47100,
-                                    86400, 4000,
-                                ];
-                                const today = new Date();
-                                const labels = [];
-                                for (let i = 29; i >= 0; i--) {
-                                    const date = new Date(today);
-                                    date.setDate(today.getDate() - i);
-                                    const month = date.getMonth() + 1;
-                                    const day = date.getDate();
-                                    labels.push(`${month}/${day}`);
-                                }
-                                console.log(today)
-
-                                function formatNumber(num) {
-                                    if (num >= 1e6) {
-                                        return (num / 1e6).toFixed(1) + "M";
-                                    } else if (num >= 1e3) {
-                                        return (num / 1e3).toFixed(1) + "K";
-                                    }
-                                    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                }
-
-                                function formatFullNumber(num) {
-                                    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                }
-
-                                function drawRotatedText(ctx, bar, displayData, fontSize) {
-                                    ctx.font = "normal " + (fontSize - 4) + "px Sarabun"; // Adjust font size for longer labels
-                                    ctx.save();
-                                    // Check media width and adjust translation offset accordingly
-                                    var translateOffset = window.innerWidth < 768 ? -10 : -20;
-                                    ctx.translate(bar.x, bar.y + translateOffset);
-                                }
-                                const valueOnTopPlugin = {
-                                    afterDatasetsDraw: function(chart) {
-                                        const ctx = chart.ctx;
-                                        const fontSize = Math.min(16, Math.max(10, Math.round(chart.width / 50)));
-                                        ctx.font = "normal " + fontSize + "px Sarabun"; // Set font size dynamically
-                                        chart.data.datasets.forEach((dataset, i) => {
-                                            const meta = chart.getDatasetMeta(i);
-                                            meta.data.forEach((bar, index) => {
-                                                const data = dataset.data[index];
-                                                let displayData = formatNumber(data);
-                                                if (chart.data.labels.length === 7) {
-                                                    displayData = formatNumber(data);
-                                                    ctx.save();
-                                                    ctx.translate(bar.x, bar.y - 10);
-                                                    ctx.fillStyle = "#000";
-                                                    ctx.textAlign = "center";
-                                                    ctx.textBaseline = "middle";
-                                                    ctx.fillText(displayData, 0, 0);
-                                                    ctx.restore();
-                                                } else if (chart.data.labels.length === 15) {
-                                                    ctx.font = "normal " + (fontSize - 4) +
-                                                        "px Sarabun"; // Adjust font size for longer labels
-                                                    ctx.fillStyle = "#000";
-                                                    ctx.textAlign = "center";
-                                                    ctx.textBaseline = "middle";
-                                                    ctx.save();
-                                                    ctx.fillText(displayData, bar.x, bar.y - 10);
-                                                    ctx.restore();
-                                                } else if (chart.data.labels.length === 30) {
-                                                    ctx.font = "normal " + (fontSize - 4) +
-                                                        "px Sarabun"; // Adjust font size for longer labels
-                                                    ctx.save();
-                                                    drawRotatedText(ctx, bar, displayData);
-                                                    ctx.rotate(-Math.PI / 2);
-                                                    ctx.fillStyle = "#000";
-                                                    ctx.textAlign = "center";
-                                                    ctx.textBaseline = "middle";
-                                                    ctx.fillText(displayData, 0, 0);
-                                                    ctx.restore();
-                                                    return;
-                                                }
-                                            });
-                                        });
-                                    },
-                                };
-                                const ctx = document.getElementById("revenueChart").getContext("2d");
-                                const maxRevenueValue = Math.max(...revenueData);
-                                const buffer = 20000; // Adding a buffer value
-                                let yAxisMax = maxRevenueValue + buffer;
-                                const roundingFactor = 20000;
-                                yAxisMax = Math.ceil(yAxisMax / roundingFactor) * roundingFactor;
-                                const revenueChart = new Chart(ctx, {
-                                    type: "bar",
-                                    data: {
-                                        labels: labels,
-                                        datasets: [{
-                                            label: "Last 30 Days Revenue",
-                                            data: revenueData,
-                                            backgroundColor: "#2C7F7A",
-                                            borderWidth: 0,
-                                            barPercentage: 0.7,
-                                        }, ],
-                                    },
-                                    options: {
-                                        scales: {
-                                            x: {},
-                                            y: {
-                                                beginAtZero: true,
-                                                max: yAxisMax,
-                                                ticks: {
-                                                    stepSize: 20000,
-                                                    callback: function(value) {
-                                                        return formatNumber(value);
-                                                    },
-                                                },
-                                            },
-                                        },
-                                    },
-                                    plugins: [valueOnTopPlugin],
-                                });
-
-                                function updateChart(days) {
-                                    const newData = [];
-                                    const newLabels = [];
-                                    const today = new Date();
-                                    for (let i = days - 1; i >= 0; i--) {
-                                        const date = new Date(today);
-                                        date.setDate(today.getDate() - i);
-                                        const month = date.getMonth() + 1;
-                                        const day = date.getDate();
-                                        newLabels.push(`${month}/${day}`);
-                                    }
-                                    const startIndex = revenueData.length - days;
-                                    for (let i = startIndex; i < revenueData.length; i++) {
-                                        newData.push(revenueData[i]);
-                                    }
-                                    revenueChart.data.labels = newLabels;
-                                    revenueChart.data.datasets[0].data = newData;
-                                    revenueChart.data.datasets[0].label = `Last ${days} Days Revenue`;
-                                    revenueChart.update();
-                                }
-                                updateChart(7);
-                            </script>
                             <div>
                                 <!-- กราฟที่ 2 -->
                                 <div class="container-graph">
@@ -885,290 +741,214 @@
                                         </button>
                                     </div>
                                 </div>
-                                <script>
-                                    var combinedChart = document.getElementById("combinedChart").getContext("2d");
-                                    var graph1Visible = true;
-                                    var data1 = {
-                                        labels: ["Yesterday", "Today", "Average"],
-                                        datasets: [{
-                                            label: "Forecast Revenue",
-                                            backgroundColor: "#2C7F7A",
-                                            borderWidth: 1,
-                                            barPercentage: 0.33, // Adjust bar width
-                                            data: [2000000, 2200000, 2100000], // Adjusted for more realistic numbers
-                                        }, ],
-                                    };
-                                    var options1 = {
-                                        scales: {
-                                            yAxes: [{
-                                                ticks: {
-                                                    beginAtZero: true,
-                                                    callback: function(value) {
-                                                        return formatNumber(value);
-                                                    },
-                                                },
-                                            }, ],
-                                        },
-                                    };
-                                    var data2 = {
-                                        labels: ["21:00-23:59", "00:00-02:59", "03:00-05:59", "06:00-08:59", "09:00-11:59", "12:00-14:59",
-                                            "15:00-17:59", "18:00-20:59",
-                                        ],
-                                        datasets: [{
-                                            label: "Revenue",
-                                            data: [
-                                                1000000, 1500000, 2000000, 1800000, 2200000, 1300000, 1100000,
-                                                900000,
-                                            ],
-                                            backgroundColor: "#2C7F7A",
-                                            borderWidth: 1,
-                                            barPercentage: 0.8, // Adjust bar width
-                                        }, ],
-                                    };
-                                    var options2 = {
-                                        scales: {
-                                            yAxes: [{
-                                                ticks: {
-                                                    beginAtZero: true,
-                                                    callback: function(value) {
-                                                        return formatNumber(value);
-                                                    },
-                                                },
-                                            }, ],
-                                        },
-                                    };
-                                    var data3 = {
-                                        labels: ["จันทร์", "อังคาร", "พุธ", "พฤกหัส", "ศุกร์", "เสาร์", "อาทิตย์", ],
-                                        datasets: [{
-                                            label: "Revenue",
-                                            data: [2000000, 2200000, 4100000, 3000000, 3200000, 2100000, 4100000],
-                                            backgroundColor: "#2C7F7A",
-                                            borderWidth: 1,
-                                            barPercentage: 0.8, // Adjust bar width
-                                        }, ],
-                                    };
-                                    var options3 = {
-                                        scales: {
-                                            yAxes: [{
-                                                ticks: {
-                                                    beginAtZero: true,
-                                                    callback: function(value) {
-                                                        return formatNumber(value);
-                                                    },
-                                                },
-                                            }, ],
-                                        },
-                                    };
-                                    // Function to format numbers as 100K, 2M, etc.
-                                    function formatNumber(value) {
-                                        if (value >= 1000000) {
-                                            return (value / 1000000).toFixed(1) + "M";
-                                        } else if (value >= 1000) {
-                                            return (value / 1000).toFixed(1) + "K";
-                                        }
-                                        return value;
-                                    }
-                                    // Function to calculate dynamic font size based on canvas width
-                                    function calculateFontSize(canvas) {
-                                        var canvasWidth = canvas.width;
-                                        if (canvasWidth < 400) {
-                                            return Math.max(8, Math.floor(canvasWidth / 150)); // Smaller font for mobile
-                                        } else if (canvasWidth < 800) {
-                                            return Math.max(10, Math.floor(canvasWidth / 50)); // Medium font for tablets
-                                        } else {
-                                            return Math.max(12, Math.floor(canvasWidth / 100)); // Larger font for desktops
-                                        }
-                                    }
-                                    var valueOnTopPlugin2 = {
-                                        afterDatasetsDraw: function(chart) {
-                                            var ctx = chart.ctx;
-                                            var fontSize = calculateFontSize(chart.canvas);
-                                            chart.data.datasets.forEach(function(dataset, i) {
-                                                var meta = chart.getDatasetMeta(i);
-                                                if (!meta.hidden) {
-                                                    meta.data.forEach(function(element, index) {
-                                                        ctx.fillStyle = "#000"; // Black text color
-                                                        var fontStyle = "normal";
-                                                        var fontFamily = "Sarabun";
-                                                        ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
-                                                        var dataString = formatNumber(dataset.data[index]);
-                                                        ctx.textAlign = "center";
-                                                        ctx.textBaseline = "middle";
-                                                        var padding = 5;
-                                                        var position = element.tooltipPosition();
-                                                        ctx.fillText(dataString, position.x, position.y - fontSize / 4 -
-                                                            padding);
-                                                    });
-                                                }
-                                            });
-                                        },
-                                    };
-                                    var currentData = data1;
-                                    var currentOptions = options1;
-                                    var forecastChart = new Chart(combinedChart, {
-                                        type: "bar",
-                                        data: currentData,
-                                        options: currentOptions,
-                                        plugins: [valueOnTopPlugin2],
-                                    });
-
-                                    function toggleGraph() {
-                                        if (graph1Visible) {
-                                            currentData = data2;
-                                            currentOptions = options2;
-                                        } else {
-                                            currentData = data1;
-                                            currentOptions = options1;
-                                        }
-                                        forecastChart.destroy(); // Destroy the current chart
-                                        forecastChart = new Chart(combinedChart, {
-                                            type: "bar",
-                                            data: currentData,
-                                            options: currentOptions,
-                                            plugins: [valueOnTopPlugin2],
-                                        });
-                                        graph1Visible = !graph1Visible;
-                                        var toggleButton = document.getElementById("toggleButton");
-                                        var icon = document.createElement("i");
-                                        if (graph1Visible) {
-                                            toggleButton.textContent = "Switch to Time ";
-                                            icon.className = "icon-repeat";
-                                        } else {
-                                            toggleButton.textContent = "Switch to Forecast ";
-                                            icon.className = "icon-repeat2";
-                                        }
-                                        // Append the icon to the toggleButton content
-                                        toggleButton.appendChild(icon);
-                                    }
-                                </script>
                             </div>
                         </div>
                     </div>
+                    <a name="sms"></a>
                     <!-- ตารางที่ 1-->
-                    <div class="container-xl">
+                    @php
+                        $role_revenue = App\Models\Role_permission_revenue::where('user_id', Auth::user()->id)->first();
+                        $page = !empty(@$_GET['page']) ? $_GET['page'] : 1;
+                    @endphp
+                    <div class="container-xl mt-4">
                         <div class="row clearfix">
                             <div class="col-md-12 col-12">
                                 <div class="table-d p-4 mb-4">
-                                    <table id="" class="example ui striped table nowrap unstackable hover">
-                                        <caption class="caption-top">
-                                            <div>
-                                                <div class="flex-end-g2">
-                                                    <label class="entriespage-label">entries per page :
-                                                    </label>
-                                                    <select class="entriespage-button">
-                                                        <option value="7" class="bg-[#f7fffc] text-[#2C7F7A]">10
-                                                        </option>
-                                                        <option value="15" class="bg-[#f7fffc] text-[#2C7F7A]">25
-                                                        </option>
-                                                        <option value="30" class="bg-[#f7fffc] text-[#2C7F7A]">50
-                                                        </option>
-                                                        <option value="30" class="bg-[#f7fffc] text-[#2C7F7A]">100
-                                                        </option>
-                                                    </select>
-                                                    <input class="search-button" placeholder="Search" />
-                                                    </i>
-                                                </div>
-                                        </caption>
-                                        <thead>
-                                            <tr>
-                                                <th class="t-center" data-priority="1">#</th>
-                                                <th class="t-center" data-priority="1">วันที่</th>
-                                                <th class="t-center" data-priority="1">เวลา</th>
-                                                <th class="t-center">โอนจากบัญชี</th>
-                                                <th class="t-center">เข้าบัญชี</th>
-                                                <th class="t-center" data-priority="1">จำนวนเงิน</th>
-                                                <th class="t-center">ผู้ทำรายการ</th>
-                                                <th class="t-center">ประเภทรายได้</th>
-                                                <th class="t-center">วันที่โอนย้าย</th>
-                                                <th class="t-center" data-priority="1">คำสั่ง</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- row 1 -->
-                                            <tr>
-                                                <td>data</td>
-                                                <td>
-                                                    <div class="flex-jc p-left-4">
-                                                        <img src="./image/bank/KBNK.jpg" alt=""
-                                                            class="img-bank" /> KBNK
-                                                    </div>
-                                                </td>
-                                                <td>data</td>
-                                                <td>data</td>
-                                                <td>data</td>
-                                                <td>data</td>
-                                                <td>data</td>
-                                                <td>data</td>
-                                                <td>data</td>
-                                                <td class="t-center">
-                                                    <div class="dropdown">
-                                                        <button class="btn btn-primary" type="button"
-                                                            data-toggle="dropdown" type="button"
-                                                            data-toggle="dropdown">ทำรายการ <span class="caret"></span>
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li class="button-li" data-toggle="modal"
-                                                                data-target="#exampleModalCenter1">
-                                                                Front
-                                                                Desk Bank <br>Transfer Revenue </li>
-                                                            <li class="button-li" data-toggle="modal"
-                                                                data-target="#exampleModalCenter2">
-                                                                Guest
-                                                                Deposit Bank <br> Transfer Revenue </li>
-                                                            <li class="button-li" data-toggle="modal"
-                                                                data-target="#exampleModalCenter4">All
-                                                                Outlet Bank <br> Transfer Revenue </li>
-                                                            <li class="button-li" data-toggle="modal"
-                                                                data-target="#exampleModalCenter1">
-                                                                Agoda
-                                                                Bank <br>Transfer Revenue </li>
-                                                            <li class="button-li" data-toggle="modal"
-                                                                data-target="#exampleModalCenter2">
-                                                                Credit
-                                                                Card Hotel <br> Revenue </li>
-                                                            <li class="button-li" data-toggle="modal"
-                                                                data-target="#exampleModalCenter4">
-                                                                Elexa
-                                                                EGAT Bank Transfer <br> Transfer Revenue
-                                                            </li>
-                                                            <li class="button-li" data-toggle="modal"
-                                                                data-target="#exampleModalCenter1">No
-                                                                Category</li>
-                                                            <li class="button-li" data-toggle="modal"
-                                                                data-target="#exampleModalCenter2">
-                                                                Water
-                                                                Park Bank <br> Transfer Revenue </li>
-                                                            <li class="button-li" data-toggle="modal"
-                                                                data-target="#exampleModalCenter4">
-                                                                Credit
-                                                                Card Water <br>Park Revenue </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2 ">Showing 1 to 7 of 7 entries</p>
-                                                <div class="font-bold ">ยอดรวมทั้งหมด 00.00 บาท</div>
+                                        <table id="smsTable" class="example ui striped table nowrap unstackable hover">
+                                            <caption class="caption-top">
                                                 <div>
-                                                    <div class="pagination" style="white-space: nowrap;">
-                                                        <a href="#" class="r-l-md">&laquo;</a>
-                                                        <a href="#">1</a>
-                                                        <a href="#" class="active">2</a>
-                                                        <a href="#">3</a>
-                                                        <a href="#" class="r-r-md">&raquo;</a>
+                                                    <div class="flex-end-g2">
+                                                        <label class="entriespage-label">entries per page :</label>
+                                                        <select class="entriespage-button" id="search-per-page" onchange="search_per_page({{$page}}, 'sms', 'sms-alert')"> <!-- เลขที่หน้า, ชือนำหน้าตาราง, ชื่อ Route -->
+                                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 ? 'selected' : '' }}>10</option>
+                                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 ? 'selected' : '' }}>25</option>
+                                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 ? 'selected' : '' }}>50</option>
+                                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 ? 'selected' : '' }}>100</option>
+                                                        </select>
+                                                        <input class="search-button" id="search-sms" style="text-align:left;" placeholder="Search" />
                                                     </div>
+                                            </caption>
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: center;" data-priority="1">#</th>
+                                                    <th style="text-align: center;" data-priority="1">Date</th>
+                                                    <th style="text-align: center;">Time</th>
+                                                    <th style="text-align: center;">Bank</th>
+                                                    <th style="text-align: center;">Bank Account</th>
+                                                    <th style="text-align: center;" data-priority="1">Amount</th>
+                                                    <th style="text-align: center;">Creatd By</th>
+                                                    <th style="text-align: center;">Income Type</th>
+                                                    <th style="text-align: center;">Transfer Date</th>
+                                                    <th style="text-align: center;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($data_sms as $key => $item)
+                                                    @if ($item->split_status == 3)
+                                                        <tr style="text-align: center;" class="table-secondary">
+                                                        @else
+                                                        <tr style="text-align: center;" class="test">
+                                                    @endif
+    
+                                                    <td class="td-content-center">{{ $key + 1 }}</td>
+                                                    <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                                    <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
+                                                    <td class="td-content-center">
+                                                        <?php
+                                                            $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
+                                                            $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
+                                                        ?>
+                                                        <div class="flex-jc p-left-4 center">
+                                                            @if (file_exists($filename))
+                                                                <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
+                                                            @elseif (file_exists($filename2))
+                                                                <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
+                                                            @endif
+                                                            {{ @$item->transfer_bank->name_en }}
+                                                        </div>
+                                                    </td>
+                                                    <td class="td-content-center">
+                                                        <div class="flex-jc p-left-4 center">
+                                                            <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                        </div>
+                                                    </td>
+                                                    <td class="td-content-center">
+                                                        {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
+                                                    </td>
+                                                    <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
+                                                    <td class="td-content-center">
+                                                        @if ($item->status == 0)
+                                                            -
+                                                        @elseif ($item->status == 1)
+                                                            Guest Deposit Revenue
+                                                        @elseif($item->status == 2)
+                                                            All Outlet Revenue
+                                                        @elseif($item->status == 3)
+                                                            Water Park Revenue
+                                                        @elseif($item->status == 4)
+                                                            Credit Card Revenue
+                                                        @elseif($item->status == 5)
+                                                            Agoda Bank Transfer Revenue
+                                                        @elseif($item->status == 6)
+                                                            Front Desk Revenue
+                                                        @elseif($item->status == 7)
+                                                            Credit Card Water Park Revenue
+                                                        @elseif($item->status == 8)
+                                                            Elexa EGAT Revenue
+                                                        @elseif($item->status == 9)
+                                                            Other Revenue Bank Transfer
+                                                        @endif
+    
+                                                        @if ($item->split_status == 1)
+                                                            <br>
+                                                            <span class="text-danger">(Split Credit Card From
+                                                                {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
+                                                        @endif
+    
+                                                    </td>
+                                                    <td class="td-content-center">
+                                                        {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
+                                                    </td>
+                                                    <td class="td-content-center" style="text-align: center;">
+                                                        <div class="dropdown">
+                                                            <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
+                                                                ทำรายการ <span class="caret"></span>
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                @if (@$role_revenue->front_desk == 1)
+                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Front Desk Revenue')">
+                                                                        Front Desk Bank <br>Transfer Revenue 
+                                                                    </li>
+                                                                @endif
+                                                                @if (@$role_revenue->guest_deposit == 1)
+                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Guest Deposit Revenue')">
+                                                                        Guest Deposit Bank <br> Transfer Revenue 
+                                                                    </li>
+                                                                @endif
+                                                                @if (@$role_revenue->all_outlet == 1)
+                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'All Outlet Revenue')">
+                                                                        All Outlet Bank <br> Transfer Revenue 
+                                                                    </li>
+                                                                @endif
+                                                                @if (@$role_revenue->agoda == 1)
+                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Agoda Revenue')">
+                                                                        Agoda Bank <br>Transfer Revenue 
+                                                                    </li>
+                                                                @endif
+                                                                @if (@$role_revenue->credit_card_hotel == 1)
+                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Card Revenue')">
+                                                                        Credit Card Hotel <br> Revenue 
+                                                                    </li>
+                                                                @endif
+                                                                @if (@$role_revenue->elexa == 1)
+                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
+                                                                        Elexa EGAT Bank Transfer <br> Transfer Revenue
+                                                                    </li>
+                                                                @endif
+                                                                @if (@$role_revenue->no_category == 1)
+                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
+                                                                        No Category
+                                                                    </li>
+                                                                @endif
+                                                                @if (@$role_revenue->water_park == 1)
+                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
+                                                                        Water Park Bank <br> Transfer Revenue 
+                                                                    </li>
+                                                                @endif
+                                                                @if (@$role_revenue->credit_water_park == 1)
+                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
+                                                                        Credit Card Water <br>Park Revenue 
+                                                                    </li>
+                                                                @endif
+                                                                @if (@@$role_revenue->other_revenue == 1)
+                                                                    <li class="button-li" onclick="other_revenue_data({{ $item->id }})">
+                                                                        Other Revenue <br> Bank Transfer
+                                                                    </li>
+                                                                @endif
+                                                                @if (@$role_revenue->transfer == 1)
+                                                                    <li class="button-li" onclick="transfer_data({{ $item->id }})">
+                                                                        Transfer
+                                                                    </li>
+                                                                @endif
+                                                                @if (@$role_revenue->time == 1)
+                                                                    <li class="button-li" onclick="update_time_data({{ $item->id }})">
+                                                                        Update Time
+                                                                    </li>
+                                                                @endif
+                                                                @if (@$role_revenue->split == 1)
+                                                                    <li class="button-li" onclick="split_data({{ $item->id }}, {{ $item->amount }})">
+                                                                        Split Revenue
+                                                                    </li>
+                                                                @endif
+                                                                @if (@$role_revenue->edit == 1)
+                                                                    <li class="button-li" onclick="edit({{ $item->id }})">Edit</li>
+                                                                    <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
+                                                                @endif
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                            <caption class="caption-bottom">
+                                                <div class="md-flex-bt-i-c">
+                                                    <p class="py2" id="sms-showingEntries">{{ showingEntriesTable($data_sms) }}</p>
+                                                    <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total_sms_amount, 2) }} บาท</div>
+                                                    @if ($total_sms_amount > 0)
+                                                        <div id="sms-paginate">
+                                                            {!! paginateTable($data_sms) !!}
+                                                        </div>
+                                                    @endif
                                                 </div>
-                                            </div>
-                                        </caption>
-                                    </table>
+                                            </caption>
+                                        </table>
                                 </div>
                                 <!-- .card end -->
                             </div>
                         </div>
                         <!-- .row end -->
                     </div>
+
                     <!-- ตารางที่ 2-->
                     <div class="container-xl">
                         <div class="row clearfix">
@@ -1191,22 +971,22 @@
                                                         <option value="30" class="bg-[#f7fffc] text-[#2C7F7A]">100
                                                         </option>
                                                     </select>
-                                                    <input class="search-button" placeholder="Search" />
+                                                    <input class="search-button" style="text-align:left;" placeholder="Search" />
                                                     </i>
                                                 </div>
                                         </caption>
                                         <thead>
                                             <tr>
-                                                <th class="t-center" data-priority="1">#</th>
-                                                <th class="t-center" data-priority="1">วันที่</th>
-                                                <th class="t-center" data-priority="1">เวลา</th>
-                                                <th class="t-center">โอนจากบัญชี</th>
-                                                <th class="t-center">เข้าบัญชี</th>
-                                                <th class="t-center" data-priority="1">จำนวนเงิน</th>
-                                                <th class="t-center">ผู้ทำรายการ</th>
-                                                <th class="t-center">ประเภทรายได้</th>
-                                                <th class="t-center">วันที่โอนย้าย</th>
-                                                <th class="t-center" data-priority="1">คำสั่ง</th>
+                                                <th style="text-align: center;" data-priority="1">#</th>
+                                                <th style="text-align: center;" data-priority="1">วันที่</th>
+                                                <th style="text-align: center;" data-priority="1">เวลา</th>
+                                                <th style="text-align: center;">โอนจากบัญชี</th>
+                                                <th style="text-align: center;">เข้าบัญชี</th>
+                                                <th style="text-align: center;" data-priority="1">จำนวนเงิน</th>
+                                                <th style="text-align: center;">ผู้ทำรายการ</th>
+                                                <th style="text-align: center;">ประเภทรายได้</th>
+                                                <th style="text-align: center;">วันที่โอนย้าย</th>
+                                                <th style="text-align: center;" data-priority="1">คำสั่ง</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1226,7 +1006,7 @@
                                                 <td>data</td>
                                                 <td>data</td>
                                                 <td>data</td>
-                                                <td class="t-center">
+                                                <td style="text-align: center;">
                                                     <div class="dropdown">
                                                         <button class="btn btn-primary" type="button"
                                                             data-toggle="dropdown" type="button"
@@ -1317,22 +1097,22 @@
                                                         <option value="30" class="bg-[#f7fffc] text-[#2C7F7A]">100
                                                         </option>
                                                     </select>
-                                                    <input class="search-button" placeholder="Search" />
+                                                    <input class="search-button" style="text-align:left;" placeholder="Search" />
                                                     </i>
                                                 </div>
                                         </caption>
                                         <thead>
                                             <tr>
-                                                <th class="t-center" data-priority="1">#</th>
-                                                <th class="t-center" data-priority="1">วันที่</th>
-                                                <th class="t-center" data-priority="1">เวลา</th>
-                                                <th class="t-center">โอนจากบัญชี</th>
-                                                <th class="t-center">เข้าบัญชี</th>
-                                                <th class="t-center" data-priority="1">จำนวนเงิน</th>
-                                                <th class="t-center">ผู้ทำรายการ</th>
-                                                <th class="t-center">ประเภทรายได้</th>
-                                                <th class="t-center">วันที่โอนย้าย</th>
-                                                <th class="t-center" data-priority="1">คำสั่ง</th>
+                                                <th style="text-align: center;" data-priority="1">#</th>
+                                                <th style="text-align: center;" data-priority="1">วันที่</th>
+                                                <th style="text-align: center;" data-priority="1">เวลา</th>
+                                                <th style="text-align: center;">โอนจากบัญชี</th>
+                                                <th style="text-align: center;">เข้าบัญชี</th>
+                                                <th style="text-align: center;" data-priority="1">จำนวนเงิน</th>
+                                                <th style="text-align: center;">ผู้ทำรายการ</th>
+                                                <th style="text-align: center;">ประเภทรายได้</th>
+                                                <th style="text-align: center;">วันที่โอนย้าย</th>
+                                                <th style="text-align: center;" data-priority="1">คำสั่ง</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1352,7 +1132,7 @@
                                                 <td>data</td>
                                                 <td>data</td>
                                                 <td>data</td>
-                                                <td class="t-center">
+                                                <td style="text-align: center;">
                                                     <div class="dropdown">
                                                         <button class="btn btn-primary" type="button"
                                                             data-toggle="dropdown" type="button"
@@ -1470,6 +1250,9 @@
         </div>
     </div>
 
+    <input type="hidden" id="get-page" value="{{ !empty(@$_GET['page']) ? @$_GET['page'] : 1 }}">
+    <input type="hidden" id="get-perPage" value="{{ !empty(@$_GET['perPage']) ? @$_GET['perPage'] : 10 }}">
+
     <!-- dataTable -->
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
@@ -1477,6 +1260,16 @@
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
     <script src="./assets/js/searh-calendar.js"></script>
     <!-- style สำหรับเปิดปิด custom date -->
+
+    <!-- Moment Date -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+    <!-- สำหรับค้นหาในส่วนของตาราง -->
+    <script type="text/javascript" src="{{ asset('assets/helper/search.js')}}"></script>
+
     <style>
         .content-col {
             display: none;
@@ -1487,10 +1280,6 @@
         }
     </style>
     <script>
-        // for modal เพิ่มข้อมูล
-        $('#myModal').on('shown.bs.modal', function() {
-            $('#myInput').trigger('focus')
-        })
         $(document).ready(function() {
             new DataTable('.example', {
                 searching: false,
@@ -1500,15 +1289,6 @@
                     className: 'dtr-control',
                     orderable: true,
                     target: null,
-                }, {
-                    width: '7%',
-                    targets: 0
-                }, {
-                    width: '10%',
-                    targets: 3
-                }, {
-                    width: '15%',
-                    targets: 4
                 }],
                 order: [0, 'asc'],
                 responsive: {
@@ -1519,6 +1299,61 @@
                 }
             });
         });
+
+        // Search 
+        $(document).on('keyup', '#search-sms', function () {
+            var search_value = $(this).val();
+
+            $('#sms-paginate').children().remove().end();
+
+            if (search_value != '') {
+                $('#smsTable').DataTable().destroy();
+                var table = $('#smsTable').dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    "ajax": "sms-search-table/"+search_value+"",
+                    "initComplete": function (settings, json) {//here is the tricky part 
+                        console.log($('#smsTable tr').length - 1);
+                        
+                        var count = $('#smsTable tr').length - 1;
+                        $("#sms-showingEntries").text(showingEntriesSearch(count));
+                        $('#sms-paginate').append(paginateSearch(count, 'sms-alert'));
+                    },
+                    columnDefs: [
+                                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'date' },
+                        { data: 'time' },
+                        { data: 'transfer_bank' },
+                        { data: 'into_account' },
+                        { data: 'amount' },
+                        { data: 'remark' },
+                        { data: 'revenue_name' },
+                        { data: 'date_into' },
+                        { data: 'btn_action' },
+                    ],
+                        
+                });   
+            } else {
+                $('#sms-paginate').append(paginateSearch(20, 'sms-alert'));
+            }
+
+            document.getElementById('search-sms').focus();
+        });
+        // for modal เพิ่มข้อมูล
+        $('#myModal').on('shown.bs.modal', function() {
+            $('#myInput').trigger('focus')
+        })
 
         //เปิดปิด coustome date range
         $(document).on("click", function(event) {
@@ -1558,5 +1393,305 @@
                 }
             }
         });
+    </script>
+
+<script>
+    Chart.defaults.font.family = "Sarabun";
+    const revenueData = [
+        201600, 201600, 147700, 172900, 99800, 211400, 98200, 136200, 166200,
+        121000, 101300, 126600, 128600, 99300, 111220, 130500, 76300, 122900,
+        170800, 73600, 93300, 92000, 60500, 69600, 118000, 110700, 107500, 47100,
+        86400, 4000,
+    ];
+    const today = new Date();
+    const labels = [];
+    for (let i = 29; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        labels.push(`${month}/${day}`);
+    }
+
+    function formatNumber(num) {
+        if (num >= 1e6) {
+            return (num / 1e6).toFixed(1) + "M";
+        } else if (num >= 1e3) {
+            return (num / 1e3).toFixed(1) + "K";
+        }
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function formatFullNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function drawRotatedText(ctx, bar, displayData, fontSize) {
+        ctx.font = "normal " + (fontSize - 4) + "px Sarabun"; // Adjust font size for longer labels
+        ctx.save();
+        // Check media width and adjust translation offset accordingly
+        var translateOffset = window.innerWidth < 768 ? -10 : -20;
+        ctx.translate(bar.x, bar.y + translateOffset);
+    }
+    const valueOnTopPlugin = {
+        afterDatasetsDraw: function(chart) {
+            const ctx = chart.ctx;
+            const fontSize = Math.min(16, Math.max(10, Math.round(chart.width / 50)));
+            ctx.font = "normal " + fontSize + "px Sarabun"; // Set font size dynamically
+            chart.data.datasets.forEach((dataset, i) => {
+                const meta = chart.getDatasetMeta(i);
+                meta.data.forEach((bar, index) => {
+                    const data = dataset.data[index];
+                    let displayData = formatNumber(data);
+                    if (chart.data.labels.length === 7) {
+                        displayData = formatNumber(data);
+                        ctx.save();
+                        ctx.translate(bar.x, bar.y - 10);
+                        ctx.fillStyle = "#000";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText(displayData, 0, 0);
+                        ctx.restore();
+                    } else if (chart.data.labels.length === 15) {
+                        ctx.font = "normal " + (fontSize - 4) +
+                            "px Sarabun"; // Adjust font size for longer labels
+                        ctx.fillStyle = "#000";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.save();
+                        ctx.fillText(displayData, bar.x, bar.y - 10);
+                        ctx.restore();
+                    } else if (chart.data.labels.length === 30) {
+                        ctx.font = "normal " + (fontSize - 4) +
+                            "px Sarabun"; // Adjust font size for longer labels
+                        ctx.save();
+                        drawRotatedText(ctx, bar, displayData);
+                        ctx.rotate(-Math.PI / 2);
+                        ctx.fillStyle = "#000";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText(displayData, 0, 0);
+                        ctx.restore();
+                        return;
+                    }
+                });
+            });
+        },
+    };
+    const ctx = document.getElementById("revenueChart").getContext("2d");
+    const maxRevenueValue = Math.max(...revenueData);
+    const buffer = 20000; // Adding a buffer value
+    let yAxisMax = maxRevenueValue + buffer;
+    const roundingFactor = 20000;
+    yAxisMax = Math.ceil(yAxisMax / roundingFactor) * roundingFactor;
+    const revenueChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Last 30 Days Revenue",
+                data: revenueData,
+                backgroundColor: "#2C7F7A",
+                borderWidth: 0,
+                barPercentage: 0.7,
+            }, ],
+        },
+        options: {
+            scales: {
+                x: {},
+                y: {
+                    beginAtZero: true,
+                    max: yAxisMax,
+                    ticks: {
+                        stepSize: 20000,
+                        callback: function(value) {
+                            return formatNumber(value);
+                        },
+                    },
+                },
+            },
+        },
+        plugins: [valueOnTopPlugin],
+    });
+
+    function updateChart(days) { 
+        const newData = [];
+        const newLabels = [];
+        const today = new Date();
+        for (let i = days - 1; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(today.getDate() - i);
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            newLabels.push(`${month}/${day}`);
+        }
+        const startIndex = revenueData.length - days;
+        for (let i = startIndex; i < revenueData.length; i++) {
+            newData.push(revenueData[i]);
+        }
+        revenueChart.data.labels = newLabels;
+        revenueChart.data.datasets[0].data = newData;
+        revenueChart.data.datasets[0].label = `Last ${days} Days Revenue`;
+        revenueChart.update();
+    }
+    updateChart(7);
+</script>
+
+    {{-- กราฟ 2 --}}
+    <script>
+        var combinedChart = document.getElementById("combinedChart").getContext("2d");
+        var graph1Visible = true;
+        var data1 = {
+            labels: ["Yesterday", "Today", "Average"],
+            datasets: [{
+                label: "Forecast Revenue",
+                backgroundColor: "#2C7F7A",
+                borderWidth: 1,
+                barPercentage: 0.33, // Adjust bar width
+                data: [2000000, 2200000, 2100000], // Adjusted for more realistic numbers
+            }, ],
+        };
+        var options1 = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        callback: function(value) {
+                            return formatNumber(value);
+                        },
+                    },
+                }, ],
+            },
+        };
+        var data2 = {
+            labels: ["21:00-23:59", "00:00-02:59", "03:00-05:59", "06:00-08:59", "09:00-11:59", "12:00-14:59",
+                "15:00-17:59", "18:00-20:59",
+            ],
+            datasets: [{
+                label: "Revenue",
+                data: [
+                    1000000, 1500000, 2000000, 1800000, 2200000, 1300000, 1100000,
+                    900000,
+                ],
+                backgroundColor: "#2C7F7A",
+                borderWidth: 1,
+                barPercentage: 0.8, // Adjust bar width
+            }, ],
+        };
+        var options2 = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        callback: function(value) {
+                            return formatNumber(value);
+                        },
+                    },
+                }, ],
+            },
+        };
+        var data3 = {
+            labels: ["จันทร์", "อังคาร", "พุธ", "พฤกหัส", "ศุกร์", "เสาร์", "อาทิตย์", ],
+            datasets: [{
+                label: "Revenue",
+                data: [2000000, 2200000, 4100000, 3000000, 3200000, 2100000, 4100000],
+                backgroundColor: "#2C7F7A",
+                borderWidth: 1,
+                barPercentage: 0.8, // Adjust bar width
+            }, ],
+        };
+        var options3 = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        callback: function(value) {
+                            return formatNumber(value);
+                        },
+                    },
+                }, ],
+            },
+        };
+        // Function to format numbers as 100K, 2M, etc.
+        function formatNumber(value) {
+            if (value >= 1000000) {
+                return (value / 1000000).toFixed(1) + "M";
+            } else if (value >= 1000) {
+                return (value / 1000).toFixed(1) + "K";
+            }
+            return value;
+        }
+        // Function to calculate dynamic font size based on canvas width
+        function calculateFontSize(canvas) {
+            var canvasWidth = canvas.width;
+            if (canvasWidth < 400) {
+                return Math.max(8, Math.floor(canvasWidth / 150)); // Smaller font for mobile
+            } else if (canvasWidth < 800) {
+                return Math.max(10, Math.floor(canvasWidth / 50)); // Medium font for tablets
+            } else {
+                return Math.max(12, Math.floor(canvasWidth / 100)); // Larger font for desktops
+            }
+        }
+        var valueOnTopPlugin2 = {
+            afterDatasetsDraw: function(chart) {
+                var ctx = chart.ctx;
+                var fontSize = calculateFontSize(chart.canvas);
+                chart.data.datasets.forEach(function(dataset, i) {
+                    var meta = chart.getDatasetMeta(i);
+                    if (!meta.hidden) {
+                        meta.data.forEach(function(element, index) {
+                            ctx.fillStyle = "#000"; // Black text color
+                            var fontStyle = "normal";
+                            var fontFamily = "Sarabun";
+                            ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+                            var dataString = formatNumber(dataset.data[index]);
+                            ctx.textAlign = "center";
+                            ctx.textBaseline = "middle";
+                            var padding = 5;
+                            var position = element.tooltipPosition();
+                            ctx.fillText(dataString, position.x, position.y - fontSize / 4 -
+                                padding);
+                        });
+                    }
+                });
+            },
+        };
+        var currentData = data1;
+        var currentOptions = options1;
+        var forecastChart = new Chart(combinedChart, {
+            type: "bar",
+            data: currentData,
+            options: currentOptions,
+            plugins: [valueOnTopPlugin2],
+        });
+
+        function toggleGraph() {
+            if (graph1Visible) {
+                currentData = data2;
+                currentOptions = options2;
+            } else {
+                currentData = data1;
+                currentOptions = options1;
+            }
+            forecastChart.destroy(); // Destroy the current chart
+            forecastChart = new Chart(combinedChart, {
+                type: "bar",
+                data: currentData,
+                options: currentOptions,
+                plugins: [valueOnTopPlugin2],
+            });
+            graph1Visible = !graph1Visible;
+            var toggleButton = document.getElementById("toggleButton");
+            var icon = document.createElement("i");
+            if (graph1Visible) {
+                toggleButton.textContent = "Switch to Time ";
+                icon.className = "icon-repeat";
+            } else {
+                toggleButton.textContent = "Switch to Forecast ";
+                icon.className = "icon-repeat2";
+            }
+            // Append the icon to the toggleButton content
+            toggleButton.appendChild(icon);
+        }
     </script>
 @endsection
