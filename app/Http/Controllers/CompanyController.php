@@ -14,7 +14,7 @@ use App\Models\representative_phone;
 use App\Models\company_fax;
 use App\Models\company_phone;
 use App\Models\representative;
-
+use App\Models\Quotation;
 class CompanyController extends Controller
 {
     public function index()
@@ -22,9 +22,10 @@ class CompanyController extends Controller
         $Company = companys::query()
             ->leftJoin('company_phones', 'companys.Profile_ID', '=', 'company_phones.Profile_ID')
             ->where('companys.status', 1)
-            ->select('companys.*', 'company_phones.*')
+            ->select('companys.*', 'company_phones.Phone_number as Phone_number')
             ->orderBy('companys.id', 'asc')
             ->get();
+
         return view('company.index',compact('Company'));
     }
     public function contact($id)
@@ -561,6 +562,7 @@ class CompanyController extends Controller
     }
     public function Company_edit($id)
     {
+
         try {
             $Company = companys::where('id',$id)->first();
 
@@ -590,11 +592,16 @@ class CompanyController extends Controller
             $representative = representative::where('Company_ID', 'like', "%{$Company_ID}%")->get();
             $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
             $provinceNames = province::select('name_th','id')->get();
+
+            $Quotation = Quotation::where('Company_ID',$Company_ID)->get();
+
             return view('company.edit',compact('Company','booking_channel','provinceNames','Tambon','amphures',
             'Zip_code','Other_City','faxArray','phoneDataArray','Company_Contact','Mmarket',
-            'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID','representative','Mprefix','provinceNames'));
+            'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID','representative','Mprefix','provinceNames','Quotation'));
         } catch (\Throwable $e) {
-            return redirect()->route('Company.index')->with('error', 'เกิดข้อผิดพลาด');
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
 
     }
@@ -676,7 +683,9 @@ class CompanyController extends Controller
                 $Company = Companys::find($id);
                 return redirect()->to(url('/Company/edit/'.$Company->id))->with('success', 'บันทึกข้อมูลเรียบร้อย');
             } catch (\Throwable $e) {
-                return redirect()->back()->with('error', 'เกิดข้อผิดพลาด');
+                 return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
             }
     }
 }

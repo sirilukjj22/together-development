@@ -51,8 +51,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col">
-                <small class="text-muted">Welcome to Check before creating a receipt.</small>
-                <h1 class="h4 mt-1">Check before creating a receipt (ตรวจสอบก่อนสร้างใบเสร็จรับเงิน)</h1>
+                <small class="text-muted">Welcome to Receipt / Tax Invoice.</small>
+                <h1 class="h4 mt-1">Receipt / Tax Invoice</h1>
             </div>
         </div>
     </div>
@@ -101,7 +101,7 @@
                                     <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:15%;">Price Before Tax</th>
                                     <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:15%;">Value Added Tax</th>
                                     <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%;">Total Amount</th>
-                                    <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;"></th>
+                                    <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">VIEW</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -113,7 +113,11 @@
                                     <th style="text-align:center;">{{ number_format($beforeTax, 2, '.', ',') }}</th>
                                     <th style="text-align:center;">{{ number_format($AddTax, 2, '.', ',') }}</th>
                                     <th style="text-align:center;">{{ number_format($Nettotal, 2, '.', ',') }}</th>
-                                    <th style="text-align:left;">Baht</th>
+                                    <th style="text-align:left;">
+                                        <button type="button" class="btn btn-light-info" onclick="window.location.href='{{ url('/Receipt/Quotation/view/quotation/view/'.$ProposalID) }}'">
+                                           View
+                                        </button>
+                                    </th>
                                 </tr>
                                 <thead >
                                     <tr>
@@ -124,7 +128,7 @@
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:15%;">Price Before Tax</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:15%;">Value Added Tax</th>
                                         <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%;">Total Amount</th>
-                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;"></th>
+                                        <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">VIEW</th>
                                     </tr>
                                 </thead>
                                 @if(!empty($receipt))
@@ -149,12 +153,16 @@
                                                 <th style="text-align:center;">{{ number_format($item->deposit *7/100  , 2, '.', ',') }}</th>
                                                 <th style="text-align:center;"> - {{ number_format($item->deposit, 2, '.', ',') }}</th>
                                             @endif
-                                            <th style="text-align:left;">Baht</th>
+                                            <th style="text-align:left;">
+                                                <button type="button" class="btn btn-light-info" onclick="window.location.href='{{ url('/Document/receipt/Proposal/invoice/view/'.$item->id) }}'">
+                                                    View
+                                                </button>
+                                            </th>
                                         </tr>
                                     @endforeach
                                 @endif
                                 <tr>
-                                    <th style="text-align:left;"></th>
+                                    <th style="text-align:left;">ToTal balance</th>
                                     <th></th>
                                     <th></th>
                                     <th></th>
@@ -178,7 +186,7 @@
                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:15%;">Receipt / Tax Invoice ID</th>
                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">Status</th>
                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%;">Total Amount</th>
-                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;"></th>
+                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">VIEW</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -196,7 +204,11 @@
                                                 @endif
                                             </th>
                                             <th style="text-align:center;">{{ number_format($item2->sumpayment, 2, '.', ',') }}</th>
-                                            <th style="text-align:left;">Baht</th>
+                                            <th style="text-align:left;">
+                                                <button type="button" class="btn btn-light-info" onclick="window.location.href='{{ url('/Receipt/Invice/view/'.$item2->id) }}'">
+                                                    View
+                                                </button>
+                                            </th>
                                         </tr>
                                 @endforeach
                             @endif

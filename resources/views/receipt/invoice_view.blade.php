@@ -350,7 +350,7 @@
                             <input type="hidden" name="Deposit"  id="Deposit" value="{{$Deposit}}">
                         </div>
                         <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
-                            <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('invoice.index') }}'">
+                            <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ url('/Document/receipt/Proposal/invoice/CheckPI/'.$ProposalID) }}'">
                                 Back
                             </button>
                         </div>

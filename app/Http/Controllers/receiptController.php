@@ -98,6 +98,7 @@ class receiptController extends Controller
     {
         $userid = Auth::user()->id;
         $Proposal = Quotation::where('id',$id)->where('Operated_by',$userid)->first();
+        $ProposalID = $Proposal->id;
         $Proposal_ID = $Proposal->Quotation_ID;
         $totalAmount = $Proposal->Nettotal;
         $SpecialDiscountBath = $Proposal->SpecialDiscountBath;
@@ -129,20 +130,160 @@ class receiptController extends Controller
         } else {
             $status = 1;
         }
-        return view('receipt.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','receipt','totalreceipt','invoices','status','Proposal'));
+        return view('receipt.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','receipt','totalreceipt','invoices','status','Proposal','ProposalID'));
     }
-    public function CheckPD($quotationid,$id){
-        $userid = Auth::user()->id;
-        $Proposal = Quotation::where('id',$quotationid)->where('Operated_by',$userid)->first();
-        $Proposal_ID = $Proposal->Quotation_ID;
+    public function QuotationView($id){
+        $ProposalID = $id;
+        $Quotation = Quotation::where('id', $id)->first();
+        $QuotationID= $Quotation->Quotation_ID;
+        $Quotation_ID= $Quotation->Quotation_ID;
+        $Company_ID = $Quotation->Company_ID;
+        $contact = $Quotation->company_contact;
+        $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
+        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
+        $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
+        $Company = companys::select('Company_Name','id','Profile_ID')->get();
+        $CompanyID = companys::where('Profile_ID',$Company_ID)->first();
+        $Company_typeID=$CompanyID->Company_type;
+        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+        if ($comtype->name_th =="บริษัทจำกัด") {
+            $comtypefullname = "บริษัท ". $CompanyID->Company_Name . " จำกัด";
+        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+            $comtypefullname = "บริษัท ". $CompanyID->Company_Name . " จำกัด (มหาชน)";
+        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+            $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $CompanyID->Company_Name ;
+        }else {
+            $comtypefullname = $CompanyID->Company_Name;
+        }
+        $CityID=$CompanyID->City;
+        $amphuresID = $CompanyID->Amphures;
+        $TambonID = $CompanyID->Tambon;
+        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+        $company_fax = company_fax::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
+        if (!$company_fax) {
+            $company_fax = '-';
+        }
+        $company_phone = company_phone::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
+        $Contact_name = representative::where('Company_ID',$Company_ID)->where('id',$contact)->where('status',1)->first();
+        $profilecontact = $Contact_name->Profile_ID;
+        $Contact_phone = representative_phone::where('Company_ID',$Company_ID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
+        $selectproduct = document_quotation::where('Quotation_ID', $QuotationID)->get();
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
-        $Room = document_quotation::where('Quotation_ID', $Proposal_ID)->where('Product_ID', 'LIKE', 'R' . '%')->get();
-        $FB = document_quotation::where('Quotation_ID', $Proposal_ID)->where('Product_ID', 'LIKE', 'M' . '%')->get();
-        $Banquet  = document_quotation::where('Quotation_ID', $Proposal_ID)->where('Product_ID', 'LIKE', 'B' . '%')->get();
-        $Entertainment   = document_quotation::where('Quotation_ID', $Proposal_ID)->where('Product_ID', 'LIKE', 'E' . '%')->get();
-        dd($Room,$FB,$Banquet,$Entertainment);
-        return view('receipt.check_pd');
+        return view('receipt.quotation_view',compact('Quotation','Freelancer_member','Company','Mevent','Mvat','Quotation_ID','Contact_name','comtypefullname','CompanyID'
+        ,'TambonID','amphuresID','CityID','provinceNames','company_fax','company_phone','Contact_phone','selectproduct','unit','quantity','QuotationID','ProposalID'));
+    }
+    public function InvoiceView($id){
+        $invoices =document_invoices::where('id',$id)->first();
+        $QuotationID = $invoices->Quotation_ID;
+        $Quotation_ID = $invoices->Quotation_ID;
+        $QuotationIDindex = Quotation::where('Quotation_ID', $Quotation_ID)->first();
+        $ProposalID = $QuotationIDindex->id;
+
+
+        $Refler_ID = $invoices->Refler_ID;
+        $InvoiceID =  $invoices->Invoice_ID;
+        $IssueDate=$invoices->IssueDate;
+        $Expiration=$invoices->Expiration;
+        $CompanyID = $invoices->company;
+        $Deposit  =$invoices->deposit;
+        $status = $invoices->document_status;
+        $valid = $invoices->valid;
+        $sequence = $invoices->sequence;
+        $Operated_by=$invoices->Operated_by;
+        $payment = $invoices->payment;
+        $paymentPercent = $invoices->paymentPercent;
+
+
+        if ($sequence == 1&&$status == 1) {
+            $Quotation = Quotation::where('Quotation_ID', $QuotationID)->latest()->first();
+            $Nettotal = $Quotation->Nettotal;
+
+        }else{
+            $Quotation = Quotation::where('Quotation_ID', $QuotationID)->latest()->first();
+            $Nettotal = $invoices->Nettotal;
+        }
+        if ($status == 0) {
+            $Quotation = Quotation::where('Refler_ID', $Refler_ID)->latest()->first();
+            $Nettotal = $invoices->Nettotal;
+        }
+
+
+        $day =$Quotation->day;
+        $night =$Quotation->night;
+        $adult = $Quotation->adult;
+        $children = $Quotation->children;
+        $contact = $Quotation->company_contact;
+        $Company = companys::where('Profile_ID',$CompanyID)->first();
+        $Company_typeID=$Company->Company_type;
+        $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+        if ($comtype->name_th =="บริษัทจำกัด") {
+            $comtypefullname = "บริษัท ". $Company->Company_Name . " จำกัด";
+        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+            $comtypefullname = "บริษัท ". $Company->Company_Name . " จำกัด (มหาชน)";
+        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+            $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company->Company_Name ;
+        }else {
+            $comtypefullname = $Company->Company_Name;
+        }
+        $CityID=$Company->City;
+        $amphuresID = $Company->Amphures;
+        $TambonID = $Company->Tambon;
+        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+        $company_fax = company_fax::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
+        $company_phone = company_phone::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
+        $Contact_name = representative::where('Company_ID',$CompanyID)->where('id',$contact)->where('status',1)->first();
+        $Checkin = $Quotation->checkin;
+        $Checkout = $Quotation->checkout;
+        $profilecontact = $Contact_name->Profile_ID;
+        if ($Checkin) {
+            $checkin = Carbon::parse($Checkin)->format('d/m/Y');
+            $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+        }else{
+            $checkin = '-';
+            $checkout = '-';
+        }
+        $Contact_phone = representative_phone::where('Company_ID',$CompanyID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
+        if ($payment) {
+
+            $payment0 = $payment;
+            $Subtotal =0;
+            $total =0;
+            $addtax = 0;
+            $before = 0;
+            $balance = 0;
+
+            $Subtotal = $payment;
+            $total = $payment;
+            $addtax = 0;
+            $before = $payment;
+            $balance = $Subtotal;
+        }
+        if ($paymentPercent) {
+            $payment0 = $paymentPercent.'%';
+            $Subtotal =0;
+            $total =0;
+            $addtax = 0;
+            $before = 0;
+            $balance = 0;
+            $Nettotal = floatval(str_replace(',', '', $Nettotal));
+            $paymentPercent = floatval($paymentPercent);
+            $Subtotal = ($Nettotal*$paymentPercent)/100;
+            $total = $Subtotal/1.07;
+            $addtax = $Subtotal-$total;
+            $before = $Subtotal-$addtax;
+            $balance = $Nettotal-$Subtotal;
+
+        }
+        $formattedNumber = number_format($balance, 2, '.', ',');
+
+        return view('receipt.invoice_view',compact('Quotation_ID','InvoiceID','comtypefullname','Company','TambonID','amphuresID','provinceNames','company_phone','company_fax','Contact_name'
+        ,'Contact_phone','checkin','checkout','Quotation','QuotationID','Deposit','CompanyID','IssueDate','Expiration','day','night','adult','children','valid','Nettotal','payment'
+        ,'paymentPercent','Subtotal','before','formattedNumber','addtax','ProposalID'));
     }
 
 

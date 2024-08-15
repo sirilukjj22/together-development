@@ -42,6 +42,9 @@ class Document_invoice extends Controller
         ->where('quotation.status_guest', 1)
         ->select(
             'quotation.*',
+            'document_invoice.Quotation_ID as QID',
+            'document_invoice.document_status',  // Separate this field for clarity
+            DB::raw('1 as status'),
             DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (1, 2) THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
             DB::raw('MIN(CASE WHEN document_invoice.document_status IN (1, 2) THEN CAST(REPLACE(document_invoice.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
         )
@@ -52,6 +55,7 @@ class Document_invoice extends Controller
         $Approvedcount = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->count();
 
         $invoice = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->get();
+        $invoicecheck = document_invoices::query()->where('Operated_by',$userid)->get();
        // ดึงข้อมูลจาก document_invoices รวมถึง Quotation_ID, total และ sumpayment
         $invoicecount = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->count();
         $Complete = document_invoices::query()->where('Operated_by',$userid)->where('document_status',2)->where('status_receive',1)->get();
@@ -59,7 +63,7 @@ class Document_invoice extends Controller
         $Completecount = document_invoices::query()->where('Operated_by',$userid)->where('document_status',2)->where('status_receive',1)->count();
         $Cancel = document_invoices::query()->where('Operated_by',$userid)->where('document_status',0)->get();
         $Cancelcount =document_invoices::query()->where('Operated_by',$userid)->where('document_status',0)->count();
-        return view('document_invoice.index',compact('Approved','Approvedcount','invoice','invoicecount','Complete','Completecount','Cancel','Cancelcount'));
+        return view('document_invoice.index',compact('Approved','Approvedcount','invoice','invoicecount','Complete','Completecount','Cancel','Cancelcount','invoicecheck'));
     }
     public function Generate($id){
 

@@ -169,15 +169,28 @@
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                            @if($invoicecount)
-                                                                @foreach ($invoice as $key2 => $item2)
-                                                                    @if ($item->Quotation_ID == $item2->Quotation_ID)
-                                                                        <!-- ลิงก์สำหรับไฟล์ที่มีชื่อเริ่มต้นเหมือนกัน -->
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/path/to/invoice/'.$item2->filename) }}">{{ $item2->filename }}</a></li>
+                                                            @if(!empty($invoice) && $invoice->count() == 0)
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                            @else
+                                                                @php
+                                                                    $hasStatusReceiveZero = false;
+                                                                @endphp
+
+                                                                @foreach ($invoicecheck as $key2 => $item2)
+                                                                    @if ($item->QID == $item2->Quotation_ID && $item2->status_receive == 0)
+                                                                        @php
+                                                                            $hasStatusReceiveZero = true;
+                                                                            break; // หยุดการลูปทันทีเมื่อพบเงื่อนไขที่ต้องการ
+                                                                        @endphp
                                                                     @endif
                                                                 @endforeach
-                                                            @else
-                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+
+                                                                @if ($hasStatusReceiveZero)
+
+                                                                @else
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                @endif
+
                                                             @endif
                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                         </ul>
@@ -187,6 +200,13 @@
                                         @endforeach
                                         @endif
                                     </tbody>
+                                    {{-- @if ($item2->document_status == 1)
+                                    {{$item2->Quotation_ID }}
+                                    @endif
+                                    @if ($item2->document_status == 2)
+                                        <!-- Add the logic or HTML to execute when document_status is 1 -->
+                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                    @endif --}}
                                     <caption class="caption-bottom ">
                                         <div class="md-flex-bt-i-c">
                                             <p class="py2">Showing 1 to 7 of 7 entries</p>

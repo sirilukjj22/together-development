@@ -295,7 +295,7 @@
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label  for="">Discount Amount</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="DiscountAmount"   placeholder="ส่วนลดคิดเป็นบาท" disabled>
+                                    <input type="text" class="form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท" value="{{$Quotation->SpecialDiscountBath}}" disabled>
                                     <span class="input-group-text">Bath</span>
                                 </div>
                             </div>
@@ -335,7 +335,12 @@
                                             <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
                                             <td>
                                                 <span id="Company_Number">{{$company_phone->Phone_number}}</span>
-                                                <b style="margin-left: 10px;color:#000;">Company Fax : </b><span id="Company_Fax">{{$company_fax->Fax_number}}</span>
+                                                <b style="margin-left: 10px;color:#000;">Company Fax : </b>
+                                                @if (is_object($company_fax) && property_exists($company_fax, 'Fax_number'))
+                                                        <span id="Company_Fax">{{ $company_fax->Fax_number }}</span>
+                                                    @else
+                                                        <span id="Company_Fax">-</span>
+                                                    @endif
                                             </td>
                                         </tr>
                                         <tr>
@@ -533,7 +538,7 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
+                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control"  value="{{ number_format($Quotation->SpecialDiscountBath, 2, '.', ',') }}" disabled>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -559,7 +564,7 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
+                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control"  value="{{ number_format($Quotation->SpecialDiscountBath, 2, '.', ',') }}" disabled>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -577,7 +582,7 @@
                                             <tr>
                                                 <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
                                                 <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control" value="0" disabled>
+                                                    <input type="text" id="SpecialDis" name="SpecialDis" class="form-control"  value="{{ number_format($Quotation->SpecialDiscountBath, 2, '.', ',') }}" disabled>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -740,7 +745,7 @@
         let totalperson=0;
         let priceArray = [];
         let pricedistotal = [];// เริ่มต้นตัวแปร allprice และ allpricedis ที่นอกลูป
-        var specialDisValue = parseFloat(document.getElementById('SpecialDis').value);
+        var specialDisValue = parseFloat(document.getElementById('DiscountAmount').value);
         $('#display-selected-items tr').each(function() {
             var adultValue = parseFloat(document.getElementById('Adult').value);
             var childrenValue = parseFloat(document.getElementById('Children').value);

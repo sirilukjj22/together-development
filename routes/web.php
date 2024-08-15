@@ -159,7 +159,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Company/Tambon/{id}', 'Tambon')->name('Company.Tambon');
         Route::get('/Company/ac', 'ac')->name('Company.ac');
         Route::get('/Company/no', 'no')->name('Company.no');
-        Route::get('/Company/edit/{id}', 'Company_edit')->name('Company_edit');
+        Route::get('/Company/edit/view/{id}', 'Company_edit')->name('Company_edit');
         Route::post('/Company/save', 'save')->name('Company.save');
         Route::get('/Company/change-status/{id}', 'changeStatus')->name('Company.changeStatus');
         Route::post('/Company/Company_edit/Company_update/{id}', 'Company_update')->name('Company_update');
@@ -469,6 +469,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Document/receipt/Proposal/invoice/Generate/save', 'save')->name('receipt.save');
         //-------------------------------------view------------------------------------
         Route::get('/Document/receipt/Proposal/invoice/view/{id}','view')->name('receipt.view');
+        Route::get('/Receipt/Quotation/view/quotation/view/{id}','QuotationView')->name('receipt.QuotationView');
+        Route::get('/Receipt/Invice/view/{id}','InvoiceView')->name('receipt.InvoiceView');
     });
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');
