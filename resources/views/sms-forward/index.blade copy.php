@@ -1121,7 +1121,7 @@
 
                         <span class="split-todo-error text-danger" style="display: none;">กรุณาระบุข้อมูลให้ครบ
                             !</span>
-                        <span class="split-error text-danger" style=""></span>
+                        <span class="split-error text-danger"></span>
 
                         <table id="example" class="display3">
                             <thead>

@@ -7,12 +7,15 @@ function Choice(elem) {
   if (elem.id == "showD") {
     box.innerHTML = aa;
     $("#calendar-day").prop("hidden", true);
+    $("#filter-by").val('date');
   } else if (elem.id == "showM") {
     box.innerHTML = ab;
     $("#calendar-day").prop("hidden", true);
+    $("#filter-by").val('month');
   } else {
     box.innerHTML = ac;
     $("#calendar-day").prop("hidden", true);
+    $("#filter-by").val('year');
   }
 
   $("#choice-date").val(elem.id);
@@ -25,7 +28,7 @@ function btn_date_confirm() {
   var year = $("#myYear").text(); // ดึงค่าจาก Tag <p>
   var choice = $("#choice-date").val();
 
-  // console.log(choice);
+  $("#input-search-date").val('day');
 
   if (choice == "showD" || choice == "") {
     $("#select-date").val(days);
@@ -41,7 +44,7 @@ function btn_date_confirm() {
 function getYearValue(myYear) {
   let aa = myYear;
   document.getElementById("myYear").innerHTML = aa + "&nbsp;";
-  // $('#text-days').val(ac);
+  $('#input-search-year').val(aa);
 }
 
 function myFunction2(myMonth) {
@@ -81,23 +84,29 @@ function myFunction2(myMonth) {
       $("#myMonth1").text(monthName[myMonth1]);
       $("#month-number1").val(myMonth1);
       $("#month-click-num").val(num);
+
+      $('#input-search-month').val(myMonth1 + 1);
     } else {
       num -= 1;
       $("#myMonth2").text(monthName[myMonth1]);
       $("#month-number2").val(myMonth1);
       $("#month-click-num").val(num);
+
+      $('#input-search-month-to').val(myMonth1 + 1);
     }
   }
 }
 
 const date = new Date();
 
-function myDaysFunction(myDay) {
-  let myDay1 = myDay;
+function myDaysFunction(myDay, month) {
+  var myDay1 = myDay;
   var thisMont = $("#mymonth").text();
   document.getElementById("myDay").innerHTML =
     myDay1 + " " + thisMont + " " + date.getFullYear();
-  // $('#text-days').val(ac);
+
+    $('#input-search-day').val(myDay);
+    $('#input-search-month').val(month + 1);
 }
 
 const renderCalendar = () => {
@@ -165,13 +174,11 @@ const renderCalendar = () => {
   }
 
   for (let i = 1; i <= lastDay; i++) {
-    if (
-      i === new Date().getDate() &&
-      date.getMonth() === new Date().getMonth()
-    ) {
+    if (i === new Date().getDate() && date.getMonth() === new Date().getMonth()) 
+    {
       days += `<div class="today">${i}</div>`;
     } else {
-      days += `<div onclick="myDaysFunction(${i})">${i}</div>`;
+      days += `<div onclick="myDaysFunction(${i}, ${date.getMonth()})">${i}</div>`;
     }
   }
 
@@ -184,11 +191,17 @@ const renderCalendar = () => {
 document.querySelector(".prev").addEventListener("click", () => {
   date.setMonth(date.getMonth() - 1);
   renderCalendar();
+  
+  // $('#input-search-day').val(new Date().getDate());
+  // $('#input-search-month').val(date.getMonth() + 1);
 });
 
 document.querySelector(".next").addEventListener("click", () => {
   date.setMonth(date.getMonth() + 1);
   renderCalendar();
+
+  // $('#input-search-day').val(new Date().getDate());
+  // $('#input-search-month').val(date.getMonth() + 1);
 });
 
 renderCalendar();

@@ -79,13 +79,14 @@ function myDaysFunction(myDay) {
   // $('#text-days').val(ac);
 }
 
-$(document).on("click", "#btn-save-date", function () {
-  var days = $("#myDay").text(); // ดึงค่าจาก Tag <p>
-  var month1 = $("#myMonth1").text(); // ดึงค่าจาก Tag <p>
-  var month2 = $("#myMonth2").text();
-  var year = $("#myYear").text(); // ดึงค่าจาก Tag <p>
-  $("#select-date").val(days + "/" + month1 + "/" + month2 + "/" + year);
-});
+// $(document).on("click", "#btn-save-date", function () {
+//   var days = $("#myDay").text(); // ดึงค่าจาก Tag <p>
+//   var month1 = $("#myMonth1").text(); // ดึงค่าจาก Tag <p>
+//   var month2 = $("#myMonth2").text();
+//   var year = $("#myYear").text(); // ดึงค่าจาก Tag <p>
+//   $("#select-date").val(days + "/" + month1 + "/" + month2 + "/" + year);
+//   $("#input-search-date").val(12345);
+// });
 
 // funtion ใช้เรียก วันเดือนปี ให้แสดง
 function Choice(elem) {
