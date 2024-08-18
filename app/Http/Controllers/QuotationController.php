@@ -483,6 +483,7 @@ class QuotationController extends Controller
             $save->Expirationdate = $request->Expiration;
             $save->Operated_by = $userid;
             $save->Refler_ID=$Quotation_ID;
+            $save->comment = $request->comment;
             if ($SpecialDiscount == 0 && $SpecialDiscountBath == 0) {
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
@@ -1204,6 +1205,7 @@ class QuotationController extends Controller
             $save->status_guest = 0;
             $save->Refler_ID=$Quotation_ID;
             $save->correct =$correctup;
+            $save->comment = $request->comment;
             if ($SpecialDiscount == 0 && $SpecialDiscountBath == 0) {
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
@@ -1897,6 +1899,7 @@ class QuotationController extends Controller
             }
             $day = $Quotation->day;
             $night = $Quotation->night;
+            $comment = $Quotation->comment;
         $data = [
             'day'=>$day,
             'night'=>$night,
@@ -1938,6 +1941,7 @@ class QuotationController extends Controller
             'page_item'=>$page_item,
             'qrCodeBase64'=>$qrCodeBase64,
             'Mvat'=>$Mvat,
+            'comment'=>$comment,
         ];
 
         $view= $template->name;

@@ -480,7 +480,7 @@
                                 <div class="col-12 row ">
                                     <div class="col-lg-8 col-md-8 col-sm-12 mt-2" >
                                         <span >Notes or Special Comment</span>
-                                        <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+                                        <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea">{{$Quotation->comment}}</textarea>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-12 " >
                                         <table class="table table-borderless" id="PRICE_INCLUDE_VAT" style="display: none;">

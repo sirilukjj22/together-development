@@ -66,6 +66,263 @@
         border: none; /* เอาขอบออก */
         border: 1px solid #2D7F7B; /* กำหนดระยะห่างด้านล่าง */
     }
+    li {
+    list-style: none;
+    }
+
+    .bg-tegether-full {
+    background-image: linear-gradient(to right, rgb(10, 87, 83), rgb(4, 8, 8));
+    }
+
+    .bg-tegether {
+    background-image: linear-gradient(to right, rgb(4, 8, 8), rgb(12, 73, 70));
+    }
+
+    .bg-tegether:hover {
+    background: linear-gradient(rgba(17, 17, 16, 0.3), rgba(0, 0, 0, 0.7)),
+        url(img/together-view.jpg) center no-repeat;
+    }
+
+    .bg-tegether-inside {
+    background-image: linear-gradient(to right, rgb(9, 55, 55), rgb(2, 26, 24));
+    }
+
+    .bg-tegether-inside:hover {
+    background-image: linear-gradient(to right, rgb(6, 94, 56), rgb(2, 26, 16));
+    }
+
+    .a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: 0.3s;
+    }
+
+    .border-rd-7px {
+    border-radius: 7px;
+    }
+
+    .a:hover {
+    overflow: visible;
+    white-space: wrap;
+    font-weight: 600;
+    color: #093835;
+    text-align: start;
+    /* background-color: #d9f7fa; */
+    }
+
+    .center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+
+    .flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    }
+
+    .box {
+    height: 1fr;
+    background-color: #2c7f7a;
+    height: 2rem;
+    }
+
+    /* Table */
+    .table-revenue-detail {
+    display: none;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: aliceblue;
+    border-radius: 7px;
+    color: white;
+    position: relative;
+    }
+
+    #table-revenue td {
+    text-align: center;
+    }
+
+    #table-revenue th {
+    text-transform: uppercase;
+    text-align: center;
+    }
+
+    #table-revenue td.total {
+    font-weight: 600;
+    }
+
+    /* Card */
+
+    .wrap-card-revenue-inside {
+    display: grid;
+    gap: 4px;
+    }
+
+    @media (min-width: 600px) {
+    .wrap-card-revenue-inside {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+    }
+    }
+
+    @media (min-width: 600px) and (max-width: 900px) {
+    .col-span-2 {
+        grid-column: 1 / 3;
+    }
+    }
+
+    @media (min-width: 900px) {
+    .wrap-card-revenue-inside {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 4px;
+    }
+    }
+
+    .card-revenue-inside-sum {
+    display: block;
+    color: white;
+    text-align: center;
+    align-content: center;
+    border: 1px solid white;
+    border-radius: 50%;
+    width: 15rem;
+    height: 15rem;
+    font-size: 1.8rem;
+    margin: 01rem;
+    }
+
+    .card-revenue-inside-sum :nth-child(2) {
+    font-size: 1rem;
+    }
+
+    .card-revenue-inside {
+    flex-grow: 1;
+    min-height: 100%;
+    padding: 1rem;
+    display: grid;
+    border-radius: 7px;
+    grid-template-rows: auto 1fr auto;
+    }
+
+    .card-revenue-inside div {
+    background-color: rgba(249, 247, 247, 0.6);
+    font-weight: 400;
+    }
+
+    .card-revenue-inside h1 {
+    color: white;
+    font-size: 1.2rem;
+    text-align: center;
+    }
+
+    .card-revenue-inside div p {
+    /* display: flex;
+    justify-content: space-between; */
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+    padding: 0.3rem 0.5rem;
+    margin: 0.5rem;
+    border-bottom: 1px solid rgb(207, 215, 215);
+    }
+
+    .card-revenue-inside div p :nth-child(2) {
+    text-align: right;
+    }
+
+    .card-revenue-inside .total {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0.5rem;
+    font-weight: 700;
+    }
+
+    /* card 1 */
+
+    .wrap-show-income {
+    display: grid;
+    width: 100%;
+    margin: 1rem 0;
+    text-align: center;
+    }
+
+    @media (min-width: 1000px) {
+    .wrap-show-income {
+        display: grid;
+        grid-template-columns: 20rem auto;
+    }
+    }
+
+    .show-income-left {
+    display: grid;
+    color: white;
+    text-align: center;
+    align-content: center;
+    border: 1px solid white;
+    border-radius: 50%;
+    width: 15rem;
+    height: 15rem;
+    font-size: 1.8rem;
+    margin: 1rem;
+    }
+
+    .show-income-left :nth-child(2) {
+    font-size: 1rem;
+    }
+
+    .show-income-right {
+    width: 100%;
+    display: grid;
+    gap: 0.5rem;
+    color: white;
+    }
+
+    @media (min-width: 600px) {
+    .show-income-right {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    }
+
+    .show-income-right div {
+    display: grid;
+    grid-template-columns: auto auto;
+    border: rgba(227, 224, 224, 0.389) 1px solid;
+    padding: 1rem;
+    border-radius: 7px;
+    font-size: 1.3rem;
+    align-items: center;
+    min-height: 6rem;
+    }
+
+    .show-income-right div :nth-child(1) {
+    text-align: left;
+    }
+
+    .show-income-right div :nth-child(2) {
+    text-align: right;
+    }
+
+    .back-button {
+    position: absolute;
+    right: 1rem;
+    top: 0;
+    border: white 1px solid;
+    padding: 0.5rem 2rem;
+    border-radius: 7px;
+    margin: 0.5rem;
+    background-color: rgba(243, 248, 248, 0.4);
+    }
+
+    .back-button:before {
+    content: "\00AB";
+    font-size: 1.4rem;
+    margin-right: 0.5rem;
+}
+
 </style>
 @section('content')
 <div class="container">
@@ -85,7 +342,312 @@
             </ol>
         </div>
     </div> <!-- Row end  -->
+<!-- main body area -->
+<div class="main px-xl-5 px-lg-4 px-md-3">
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
+      <div class="container">
+        <div id="box"></div>
 
+        <script>
+          function openCity(evt, cityName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName(
+              "table-revenue-detail"
+            );
+            for (i = 0; i < tabcontent.length; i++) {
+              tabcontent[i].style.display = "none";
+            }
+            tablinks =
+              document.getElementsByClassName("box-revenue-detail");
+            for (i = 0; i < tablinks.length; i++) {
+              tablinks[i].className = tablinks[i].className.replace(
+                " active",
+                ""
+              );
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " active";
+          }
+        </script>
+
+        <!-- Table1 Room -->
+
+        <div>
+            <div
+                id="total"
+                class="table-revenue-detail bg-tegether-full"
+                style="display: block"
+            >
+                <div id="total" class="center">
+                <div class="wrap-show-income">
+                    <div class="center" style="margin: 1rem">
+                    <div>
+                        <h1 class="show-income-left">
+                        <span>{{ number_format($totalreceipt, 2, '.', ',') }}</span>
+                        <span>Total Revenue</span>
+                        </h1>
+                    </div>
+                    </div>
+
+                    <div class="show-income-right">
+                    <div
+                        class="bg-tegether-inside"
+                        onclick="openCity(event, 'room')"
+                    >
+                        <span>Room Revenue</span><span>{{ number_format($totalnetpriceproduct, 2, '.', ',') }}</span>
+                    </div>
+                    <div
+                        class="bg-tegether-inside"
+                        onclick="openCity(event, 'fb')"
+                    >
+                        <span>F&B Revenue</span><span>{{ number_format($totalnetMeals, 2, '.', ',') }}</span>
+                    </div>
+                    <div
+                        class="bg-tegether-inside"
+                        onclick="openCity(event, 'banquet')"
+                    >
+                        <span>Banquet Revenue</span><span>{{ number_format($totalnetBanquet, 2, '.', ',') }}</span>
+                    </div>
+                    <div
+                        class="bg-tegether-inside"
+                        onclick="openCity(event, 'entertainment')"
+                    >
+                        <span>Entertainment Revenue</span><span>{{ number_format($totalentertainment, 2, '.', ',') }}</span>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div id="room" class="table-revenue-detail bg-tegether-full">
+                <span
+                    id="total" style="float: right"
+                    onclick="openCity(event, 'total')"
+                    type="button" class="btn btn-secondary lift btn_modal"
+                    >back</span
+                >
+                <h3>Room Revenue</h3>
+                <div>
+                    <table id="table-revenue" class="example ui striped table nowrap unstackable hover">
+                        <thead>
+                            <tr>
+                                <th data-priority="1">Description</th>
+                                <th>Quantity</th>
+                                <th>unit</th>
+                                <th>price/unit</th>
+                                <th>discount</th>
+                                <th>net price / unit</th>
+                                <th data-priority="1">amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(!empty($room))
+                                @foreach ($room as $key => $item)
+                                    @foreach ($unit as $singleUnit)
+                                        @if($singleUnit->id == @$item->product->unit)
+                                            <tr>
+                                                <th>{{@$item->product->name_th}}</th>
+                                                <td>{{$item->Quantity}}</td>
+                                                <td>{{ $singleUnit->name_th }}</td>
+                                                <td>{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
+                                                <td>{{$item->discount}}%</td>
+                                                <td>{{ number_format($item->priceproduct * $item->discount /100, 2, '.', ',') }}</td>
+                                                <td>{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                @endforeach
+                            @endif
+                        <tr>
+                            <th>Total <span></span></th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="total">{{ number_format($totalnetpriceproduct, 2, '.', ',')}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Table2 F&B Revenue -->
+            <div id="fb" class="table-revenue-detail bg-tegether-full">
+                <span
+                    id="total" style="float: right"
+                    onclick="openCity(event, 'total')"
+                    type="button" class="btn btn-secondary lift btn_modal"
+                    >back</span
+                >
+                <h3>F&B Revenue</h3>
+                <div>
+                    <table
+                    id="table-revenue"
+                    class="example ui striped table nowrap unstackable hover"
+                    >
+                        <thead>
+                            <tr>
+                            <th data-priority="1">Description</th>
+                            <th>Quantity</th>
+                            <th>unit</th>
+                            <th>price/unit</th>
+                            <th>discount</th>
+                            <th>net price / unit</th>
+                            <th data-priority="1">amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(!empty($Meals))
+                                @foreach ($Meals as $key => $item)
+                                    @foreach ($unit as $singleUnit)
+                                        @if($singleUnit->id == @$item->product->unit)
+                                            <tr>
+                                                <th>{{@$item->product->name_th}}</th>
+                                                <td>{{$item->Quantity}}</td>
+                                                <td>{{ $singleUnit->name_th }}</td>
+                                                <td>{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
+                                                <td>{{$item->discount}}%</td>
+                                                <td>{{ number_format($item->priceproduct * $item->discount /100, 2, '.', ',') }}</td>
+                                                <td>{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                @endforeach
+                            @endif
+                            <tr>
+                                <th>Total <span></span></th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="total">{{ number_format($totalnetMeals, 2, '.', ',')}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Table3 Banquet Revenue-->
+            <div id="banquet" class="table-revenue-detail bg-tegether-full">
+                <span
+                    id="total" style="float: right"
+                    onclick="openCity(event, 'total')"
+                    type="button" class="btn btn-secondary lift btn_modal"
+                    >back</span
+                >
+                <h3>Banquet Revenue</h3>
+                <div>
+                    <table
+                    id="table-revenue"
+                    class="example ui striped table nowrap unstackable hover"
+                    >
+                    <thead>
+                        <tr>
+                        <th data-priority="1">Description</th>
+                        <th>Quantity</th>
+                        <th>unit</th>
+                        <th>price/unit</th>
+                        <th>discount</th>
+                        <th>net price / unit</th>
+                        <th data-priority="1">amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(!empty($Banquet))
+                            @foreach ($Banquet as $key => $item)
+                                @foreach ($unit as $singleUnit)
+                                    @if($singleUnit->id == @$item->product->unit)
+                                        <tr>
+                                            <th>{{@$item->product->name_th}}</th>
+                                            <td>{{$item->Quantity}}</td>
+                                            <td>{{ $singleUnit->name_th }}</td>
+                                            <td>{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
+                                            <td>{{$item->discount}}%</td>
+                                            <td>{{ number_format($item->priceproduct * $item->discount /100, 2, '.', ',') }}</td>
+                                            <td>{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            @endforeach
+                        @endif
+                        <tr>
+                            <th>Total <span></span></th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="total">{{ number_format($totalnetBanquet, 2, '.', ',') }}</td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Table4 Entertainment Revenue -->
+            <div
+                id="entertainment"
+                class="table-revenue-detail bg-tegether-full"
+            >
+                <span
+                    id="total" style="float: right"
+                    onclick="openCity(event, 'total')"
+                    type="button" class="btn btn-secondary lift btn_modal"
+                    >back</span
+                >
+                <h3>Entertainment Revenue</h3>
+                <div>
+                <table
+                    id="table-revenue"
+                    class="example ui striped table nowrap unstackable hover"
+                >
+                    <thead>
+                    <tr>
+                        <th data-priority="1">Description</th>
+                        <th>Quantity</th>
+                        <th>unit</th>
+                        <th>price/unit</th>
+                        <th>discount</th>
+                        <th>net price / unit</th>
+                        <th data-priority="1">amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @if(!empty($entertainment))
+                        @foreach ($entertainment as $key => $item)
+                            @foreach ($unit as $singleUnit)
+                                @if($singleUnit->id == @$item->product->unit)
+                                    <tr>
+                                        <th>{{@$item->product->name_th}}</th>
+                                        <td>{{$item->Quantity}}</td>
+                                        <td>{{ $singleUnit->name_th }}</td>
+                                        <td>{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
+                                        <td>{{$item->discount}}%</td>
+                                        <td>{{ number_format($item->priceproduct * $item->discount /100, 2, '.', ',') }}</td>
+                                        <td>{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        @endforeach
+                    @endif
+                    <tr>
+                        <th>Total <span></span></th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="total">{{ number_format($totalentertainment, 2, '.', ',') }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
     <div class="row clearfix">
         <div class="col-sm-12 col-12">
             <div class="card mb-3">

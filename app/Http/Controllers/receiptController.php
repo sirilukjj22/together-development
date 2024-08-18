@@ -130,7 +130,31 @@ class receiptController extends Controller
         } else {
             $status = 1;
         }
-        return view('receipt.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','receipt','totalreceipt','invoices','status','Proposal','ProposalID'));
+        //-----------------------------------------------
+        $room = document_quotation::where('Quotation_ID',$Proposal_ID)->where('Product_ID', 'LIKE', 'R' . '%')->get();
+        $Meals = document_quotation::where('Quotation_ID',$Proposal_ID)->where('Product_ID', 'LIKE', 'M' . '%')->get();
+        $Banquet = document_quotation::where('Quotation_ID',$Proposal_ID)->where('Product_ID', 'LIKE', 'B' . '%')->get();
+        $entertainment = document_quotation::where('Quotation_ID',$Proposal_ID)->where('Product_ID', 'LIKE', 'E' . '%')->get();
+        $unit = master_unit::where('status',1)->get();
+        $quantity = master_quantity::where('status',1)->get();
+        $totalnetpriceproduct = 0;
+        foreach ($room as $item) {
+            $totalnetpriceproduct +=  $item->netpriceproduct;
+        }
+        $totalnetMeals = 0;
+        foreach ($Meals as $item) {
+            $totalnetMeals +=  $item->netpriceproduct;
+        }
+        $totalnetBanquet = 0;
+        foreach ($Banquet as $item) {
+            $totalnetBanquet +=  $item->netpriceproduct;
+        }
+        $totalentertainment = 0;
+        foreach ($entertainment as $item) {
+            $totalentertainment +=  $item->netpriceproduct;
+        }
+        return view('receipt.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','receipt','totalreceipt','invoices','status','Proposal','ProposalID',
+                    'totalnetpriceproduct','room','unit','quantity','totalnetMeals','Meals','Banquet','totalnetBanquet','totalentertainment','entertainment'));
     }
     public function QuotationView($id){
         $ProposalID = $id;
