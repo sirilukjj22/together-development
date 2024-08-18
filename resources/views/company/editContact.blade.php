@@ -83,7 +83,7 @@
                         <div class="row mt-2">
                             <div class="col-lg-2 col-md-6 col-sm-12">
                                 <label class="labelcontact" for="">คำนำหน้า / Title</label>
-                                <select name="Mprefix" id="Mprefix" class="form-select">
+                                <select name="prefix" id="Mprefix" class="form-select">
                                     <option value=""></option>
                                     @foreach($Mprefix as $item)
                                     <option value="{{ $item->id }}" {{$representative->prefix == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
@@ -92,113 +92,68 @@
                             </div>
                             <div class="col-lg-5 col-md-6 col-sm-12">
                                 <label for="first_name">First Name</label>
-                                <input type="text" id="first_nameAgent" class="form-control" name="first_nameAgent" maxlength="70" required value="{{$representative->First_name}}">
+                                <input type="text" id="first_nameAgent" class="form-control" name="First_name" maxlength="70" required value="{{$representative->First_name}}">
                             </div>
                             <div class="col-lg-5 col-md-6 col-sm-12">
                                 <label for="last_name">Last Name</label>
-                                <input type="text" id="last_nameAgent" class="form-control" name="last_nameAgent" maxlength="70" required value="{{$representative->Last_name}}">
+                                <input type="text" id="last_nameAgent" class="form-control" name="Last_name" maxlength="70" required value="{{$representative->Last_name}}">
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="Country">Country</label><br>
-                                <select name="countrydataA" id="countrySelectA" class="form-select" onchange="showcityAInput()">
+                                <select name="Country" id="countrySelectA" class="form-select" onchange="showcityAInput()">
                                     <option value="Thailand" {{$representative->Country == "Thailand" ? 'selected' : ''}}>ประเทศไทย</option>
                                     <option value="Other_countries" {{$representative->Country == "Other_countries" ? 'selected' : ''}}>ประเทศอื่นๆ</option>
                                 </select>
                             </div>
-                            @if ($representative->Country === 'Other_countries')
-                                <div class="col-lg-4 col-md-6 col-sm-12" id="cityInput">
-                                    <label for="city">City</label><br>
-                                    <input type="text" id="city" name="city" value="{{$Other_City}}">
-                                </div>
-                            @else
-                                <div class="col-lg-4 col-md-6 col-sm-12" id="cityInput" style="display:none;">
-                                    <label for="city">City</label><br>
-                                    <input type="text" id="city" name="city">
-                                </div>
-                            @endif
-                            @if (($representative->Country === 'Thailand'))
-                                <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:block;">
-                                    <label for="city">City</label><br>
-                                    <select name="province" id="province" class="select2" onchange="select_province()">
-                                        @foreach($provinceNames as $item)
-                                        <option value="{{ $item->id }}" {{$representative->City == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            @else
-                                <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:none;">
-                                    <label for="city">City</label><br>
-                                    <select name="province" id="province" class="select2" onchange="select_province()">
-                                        <option value=""></option>
-                                        @foreach($provinceNames as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            @endif
-                            @if ($representative->Country === 'Thailand')
-                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <label for="Amphures">Amphures</label><br>
-                                    <select name="amphures" id="amphures" class="select2" onchange="select_amphures()">
-                                        @foreach($amphures as $item)
-                                        <option value="{{ $item->id }}" {{ $representative->Amphures == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            @else
-                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <label for="Amphures">Amphures</label><br>
-                                    <select name="amphures" id="amphures" class="select2" onchange="select_amphures()" disabled>
-                                        <option value=""></option>
-                                    </select>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="row mt-2">
-                            @if ($representative->Country === 'Thailand')
-                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <label for="Tambon">Tambon </label><br>
-                                    <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()">
-                                    @foreach($Tambon as $item)
-                                    <option value="{{ $item->id }}" {{ $representative->Tambon == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
+                            <div class="col-sm-4 col-4" id="cityInput" style="display:none;">
+                                <span for="City">City</span>
+                                <input type="text" id="City" class="form-control" name="City" value="{{$Other_City}}" >
+                            </div>
+                            <div class="col-sm-4 col-4" id="citythai" style="display:block;">
+                                <span for="City">City</span>
+                                <select name="City" id="province" class="form-select" onchange="select_province()" style="width: 100%;" >
+                                    <option value=""></option>
+                                    @foreach($provinceNames as $item)
+                                        <option value="{{ $item->id }}"{{$representative->City == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
                                     @endforeach
                                 </select>
-                                </div>
-                            @else
-                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <label for="Tambon">Tambon </label><br>
-                                    <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()" disabled>
-                                        <option value=""></option>
-                                    </select>
-                                </div>
-                            @endif
-                            @if ($representative->Country === 'Thailand')
-                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <label for="zip_code">Zip Code</label><br>
-                                    <select name="zip_code" id="zip_code" class="select2">
-                                        @foreach($Zip_code as $item)
-                                        <option value="{{ $item->id }}" {{ $representative->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            @else
-                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                    <label for="zip_code">Zip Code</label><br>
-                                    <select name="zip_code" id="zip_code" class="select2" disabled>
-                                        <option value=""></option>
-                                    </select>
-                                </div>
-                            @endif
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label for="Amphures">Amphures</label><br>
+                                <select name="Amphures" id="amphures" class="select2" onchange="select_amphures()">
+                                    @foreach($amphures as $item)
+                                    <option value="{{ $item->id }}" {{ $representative->Amphures == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label for="Tambon">Tambon </label><br>
+                                <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()">
+                                @foreach($Tambon as $item)
+                                <option value="{{ $item->id }}" {{ $representative->Tambon == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
+                                @endforeach
+                            </select>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <label for="zip_code">Zip Code</label><br>
+                                <select name="Zip_Code" id="zip_code" class="select2">
+                                    @foreach($Zip_code as $item)
+                                    <option value="{{ $item->zip_code }}" {{ $representative->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="Email">Email</label><br>
-                                <input type="text" id="EmailAgent" class="form-control" name="EmailAgent" maxlength="70" required value="{{$representative->Email}}">
+                                <input type="text" id="EmailAgent" class="form-control" name="Email" maxlength="70" required value="{{$representative->Email}}">
                             </div>
                         </div>
                         <div class="mt-2">
                             <label for="Address">Address</label><br>
-                            <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required>{{$representative->Address}}</textarea>
+                            <textarea type="text" id="addressAgent" name="Address" rows="3" cols="25" class="form-control" aria-label="With textarea" required>{{$representative->Address}}</textarea>
                         </div>
                         <div class="mt-2">
                             <label for="Phone_number">หมายเลขโทรศัพท์ / Phone Number</label>
@@ -240,13 +195,50 @@
 </script>
 {{-- ส่วนที่อยู่ --}}
 <script>
+    $(document).ready(function() {
+        var TaxSelectA = $('#countrySelectA');
+        var TaxSelectA = TaxSelectA.val(); // ใช้ jQuery เพื่อเลือก element
+        var cityInputA = document.getElementById("cityInput");
+        var citythaiA = document.getElementById("citythai");
+        var amphuresSelect = document.getElementById("amphures");
+        var tambonSelect = document.getElementById("Tambon");
+        var zipCodeSelect = document.getElementById("zip_code");
+        var province = document.getElementById("province");
+        var City = document.getElementById("City");
+        if (TaxSelectA == "Other_countries") {
+            Com.style.display = "block";
+            Title.style.display = "none";
+            // citythaiA.style.display = "none";
+            // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+            cityInputA.style.display = "block";
+            citythaiA.style.display = "none";
+            // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+            amphuresSelect.disabled = true;
+            tambonSelect.disabled = true;
+            zipCodeSelect.disabled = true;
+            province.disabled = true;
+            City.disabled = false;
+        } else if (TaxSelectA == "Thailand"){
+            cityInputA.style.display = "none";
+            citythaiA.style.display = "block";
+            // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+            amphuresSelect.disabled = false;
+            tambonSelect.disabled = false;
+            zipCodeSelect.disabled = false;
+            province.disabled = false;
+            City.disabled = true;
+        }
+    });
     function showcityAInput() {
         var countrySelectA = document.getElementById("countrySelectA");
-        var cityInputA = document.getElementById("cityInputA");
-        var citythaiA = document.getElementById("citythaiA");
-        var amphuresSelect = document.getElementById("amphuresA");
-        var tambonSelect = document.getElementById("TambonA");
-        var zipCodeSelect = document.getElementById("zip_codeA");
+        var cityInputA = document.getElementById("cityInput");
+        var citythaiA = document.getElementById("citythai");
+        var amphuresSelect = document.getElementById("amphures");
+        var tambonSelect = document.getElementById("Tambon");
+        var zipCodeSelect = document.getElementById("zip_code");
+        var province = document.getElementById("province");
+        var City = document.getElementById("City");
+
         // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
         if (countrySelectA.value === "Other_countries") {
             // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
@@ -256,6 +248,8 @@
             amphuresSelect.disabled = true;
             tambonSelect.disabled = true;
             zipCodeSelect.disabled = true;
+            province.disabled = true;
+            City.disabled = false;
         } else if (countrySelectA.value === "Thailand") {
             // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
 
@@ -266,6 +260,8 @@
             amphuresSelect.disabled = false;
             tambonSelect.disabled = false;
             zipCodeSelect.disabled = false;
+            province.disabled = false;
+            City.disabled = true;
 
             // เรียกใช้ฟังก์ชัน select_amphures() เพื่อเปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
             amphuresAgent();

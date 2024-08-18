@@ -107,7 +107,7 @@
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="Company_type">ประเภทบริษัท / Company Type</label>
                                 <select name="Company_type" id="Company_type" class="select2" required>
-                                    {{-- <option value="" selected disabled>Company Type</option> --}}
+                                    <option value="" selected disabled>Company Type</option>
                                     @foreach($MCompany_type as $item)
                                     <option value="{{ $item->id }}">{{ $item->name_th }}</option>
                                     @endforeach
@@ -164,7 +164,7 @@
                             </div>
                             <div class="col-lg-3 col-md-6 col-sm-12" id="citythai" style="display:block;">
                                 <label for="city">จังหวัด / Province</label><br>
-                                <select name="province" id="province" class="select2" onchange="select_province()" required>
+                                <select name="city" id="province" class="select2" onchange="select_province()" required>
                                     <option value="" selected disabled>เลือกจังหวัด</option>
                                     @foreach($provinceNames as $item)
                                     <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -315,7 +315,7 @@
                                             </div>
                                             <div class="col-lg-4 col-md-6 col-sm-12" id="citythaiA" style="display:block;">
                                                 <span class="labelcontact" for="">City</span>
-                                                <select name="provinceAgent" id="provinceAgent" class="select2" onchange="provinceA()" style="width: 100%;" required>
+                                                <select name="cityA" id="provinceAgent" class="select2" onchange="provinceA()" style="width: 100%;" required>
                                                     <option value=""></option>
                                                     @foreach($provinceNames as $item)
                                                     <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -612,6 +612,9 @@
         var amphuresSelect = document.getElementById("amphures");
         var tambonSelect = document.getElementById("Tambon");
         var zipCodeSelect = document.getElementById("zip_code");
+        var province = document.getElementById("province");
+        var city = document.getElementById("city");
+
 
         // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
         if (countrySelect.value === "Other_countries") {
@@ -622,6 +625,8 @@
             amphuresSelect.disabled = true;
             tambonSelect.disabled = true;
             zipCodeSelect.disabled = true;
+            province.disabled= true;
+            city.disabled= false;
         } else if (countrySelect.value === "Thailand") {
             // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
 
@@ -632,7 +637,8 @@
             amphuresSelect.disabled = false;
             tambonSelect.disabled = false;
             zipCodeSelect.disabled = false;
-
+            province.disabled= false;
+            city.disabled= true;
             // เรียกใช้ฟังก์ชัน select_amphures() เพื่อเปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
             select_amphures();
         }
@@ -644,6 +650,8 @@
         var amphuresSelect = document.getElementById("amphuresA");
         var tambonSelect = document.getElementById("TambonA");
         var zipCodeSelect = document.getElementById("zip_codeA");
+        var province = document.getElementById("provinceAgent");
+        var city = document.getElementById("cityA");
         // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
         if (countrySelectA.value === "Other_countries") {
             // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
@@ -653,6 +661,8 @@
             amphuresSelect.disabled = true;
             tambonSelect.disabled = true;
             zipCodeSelect.disabled = true;
+            province.disabled= true;
+            city.disabled= false;
         } else if (countrySelectA.value === "Thailand") {
             // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
 
@@ -663,7 +673,8 @@
             amphuresSelect.disabled = false;
             tambonSelect.disabled = false;
             zipCodeSelect.disabled = false;
-
+            province.disabled= false;
+            city.disabled= true;
             // เรียกใช้ฟังก์ชัน select_amphures() เพื่อเปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
             amphuresAgent();
         }

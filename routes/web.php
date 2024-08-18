@@ -167,12 +167,21 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Company/amphuresA/{id}', 'amphuresAgent')->name('Company.amphuresAgent');
         Route::get('/Company/TambonA/{id}', 'TambonAgent')->name('Company.TambonAgent');
         Route::get('/Company/districtsA/{id}', 'districtAgent')->name('Company.districtAgent');
+        Route::get('/Company/amphuresT/{id}', 'amphuresT')->name('Company.amphuresT');
+        Route::get('/Company/TambonT/{id}', 'TambonT')->name('Company.TambonT');
+        Route::get('/Company/districtT/{id}', 'districtT')->name('Company.districtT');
         Route::post('/Company/check/company', 'representative');
         Route::post('/Company/edit/contact/create/{id}', 'contactcreate')->name('contact.update');
         Route::get('/Company/edit/contact/editcontact/{companyId}/{itemId}', 'contactedit')->name('Company.contact.edit');
         Route::post('/Company/edit/contact/editcontact/update/{companyId}/{itemId}', 'contactupdate')->name('Company.contact.update');
         Route::get('/Company/edit/contact/detail/{id}', 'detail')->name('Company.detail');
         Route::get('/Company/contact/change-status/{id}', 'changeStatuscontact')->name('Company.contact.changeStatus');
+        Route::post('/Company/save/Tax/{id}', 'Tax')->name('Company.Tax');
+
+        Route::get('/Company/viewTax/{id}', 'viewTax')->name('Company.viewTax');
+        Route::get('/Company/editTax/{id}', 'editTax')->name('Company.viewTax');
+        Route::post('/Company/editTax/update/{Comid}/{id}', 'updatetax')->name('Company.updatetax');
+
     });
 
     Route::controller(GuestController::class)->group(function () {

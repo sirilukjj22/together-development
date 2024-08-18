@@ -125,7 +125,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <label for="Market">กลุ่มตลาด / Market</label>
-                                <select name="Mmarket" id="Mmarket" class="form-select">
+                                <select name="Market" id="Mmarket" class="form-select">
                                     <option value=""></option>
                                     @foreach($Mmarket as $item)
                                         <option value="{{ $item->id }}" {{$Company->Market == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
@@ -136,7 +136,8 @@
                         <div class="row mt-2">
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <label for="booking_channel">ช่องทางการจอง / Booking Channel</label>
-                                <select name="booking_channel" id="booking_channel" class="select2">
+                                <select name="Booking_Channel" id="booking_channel" class="select2">
+                                    <option value=""></option>
                                     @foreach($booking_channel as $item)
                                         <option value="{{ $item->id }}" {{$Company->Booking_Channel == $item->id ? 'selected' : ''}}>{{ $item->name_en }}</option>
                                     @endforeach
@@ -144,7 +145,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <label for="country">ประเทศ / Country</label>
-                                <select name="countrydata" id="countrySelect" class="form-select" onchange="showcityInput()">
+                                <select name="Country" id="countrySelect" class="form-select" onchange="showcityInput()">
                                     <option value="Thailand" {{$Company->Country == "Thailand" ? 'selected' : ''}}>ประเทศไทย</option>
                                     <option value="Other_countries" {{$Company->Country == "Other_countries" ? 'selected' : ''}}>ประเทศอื่นๆ</option>
                                 </select>
@@ -153,45 +154,26 @@
                         <div class="row mt-2">
                             <div class="col-12">
                                 <label for="address">ที่อยู่ / Address</label>
-                                <textarea type="text" id="address" name="address" rows="5" cols="25" class="form-control" aria-label="With textarea" required>{{$Company->Address}}</textarea>
+                                <textarea type="text" id="address" name="Address" rows="5" cols="25" class="form-control" aria-label="With textarea" required>{{$Company->Address}}</textarea>
                             </div>
                         </div>
                         <div class="row mt-2">
-                            @if ($Company->Country === 'Other_countries')
-                                <div class="col-lg-3 col-md-6 col-sm-12" id="cityInput">
-                                    <label for="city">จังหวัด / Province</label>
-                                    <input type="text" id="city" name="city" value="{{$Other_City}}">
-                                </div>
-                            @else
-                                <div class="col-lg-3 col-md-6 col-sm-12" id="cityInput" style="display:none;">
-                                    <label for="city">จังหวัด / Province</label>
-                                    <input type="text" id="city" name="city">
-                                </div>
-                            @endif
-                            @if (($Company->Country === 'Thailand'))
-                                <div class="col-lg-3 col-md-6 col-sm-12" id="citythai" style="display:block;">
-                                    <label for="city">จังหวัด / Province</label>
-                                    <select name="province" id="province" class="select2" onchange="select_province()">
-                                        @foreach($provinceNames as $item)
-                                        <option value="{{ $item->id }}" {{$Company->City == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            @else
-                                <div class="col-lg-3 col-md-6 col-sm-12" id="citythai" style="display:none;">
-                                    <label for="city">จังหวัด / Province</label>
-                                    <select name="province" id="province" class="select2" onchange="select_province()">
-                                        <option value=""></option>
-                                        @foreach($provinceNames as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            @endif
+                            <div class="col-lg-3 col-md-6 col-sm-12" id="cityInput">
+                                <label for="city">จังหวัด / Province</label>
+                                <input type="text" id="city1" name="City" class="form-control" value="{{$Other_City}}">
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-12" id="citythai" style="display:block;">
+                                <label for="city">จังหวัด / Province</label>
+                                <select name="City" id="province" class="select2" onchange="select_province()">
+                                    @foreach($provinceNames as $item)
+                                    <option value="{{ $item->id }}" {{$Company->City == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             @if ($Company->Country === 'Thailand')
                                 <div class="col-lg-3 col-md-6 col-sm-12">
                                     <label for="Amphures">อำเภอ / District</label>
-                                    <select name="amphures" id="amphures" class="select2" onchange="select_amphures()">
+                                    <select name="Amphures" id="amphures" class="select2" onchange="select_amphures()">
                                         @foreach($amphures as $item)
                                         <option value="{{ $item->id }}" {{ $Company->Amphures == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
                                         @endforeach
@@ -200,7 +182,7 @@
                             @else
                                 <div class="col-lg-3 col-md-6 col-sm-12">
                                     <label for="Amphures">อำเภอ / District</label>
-                                    <select name="amphures" id="amphures" class="select2" onchange="select_amphures()" disabled>
+                                    <select name="Amphures" id="amphures" class="select2" onchange="select_amphures()" disabled>
                                         <option value=""></option>
                                     </select>
                                 </div>
@@ -225,7 +207,7 @@
                             @if ($Company->Country === 'Thailand')
                                 <div class="col-lg-3 col-md-6 col-sm-12">
                                     <label for="zip_code">รหัสไปรษณีย์ / Postal Code</label><br>
-                                    <select name="zip_code" id="zip_code" class="select2">
+                                    <select name="Zip_Code" id="zip_code" class="select2">
                                         @foreach($Zip_code as $item)
                                         <option value="{{ $item->id }}" {{ $Company->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
                                         @endforeach
@@ -331,32 +313,370 @@
                     <div class="card-body">
                         <div class="tab-content">
                             <div class="tab-pane fade  show active" id="nav-Tax" role="tabpanel" rel="0">
+                                <div class="row my-3">
+                                    <div class="col-lg-10"></div>
+                                    <div class="col-lg-2  d-flex justify-content-end align-items-end">
+                                        <button type="button" class="btn btn-color-green lift btn_modal"  data-bs-toggle="modal" data-bs-target="#CreateCompany"><i class="fa fa-plus"></i> Add tax invoice</button>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="CreateCompany" tabindex="-1" aria-labelledby="PrenameModalCenterTitle" style="display: none;" aria-hidden="true">
+                                    <div class="modal-dialog  modal-lg modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-color-green">
+                                                <h5 class="modal-title text-white" id="PrenameModalCenterTitle">Add tax invoice</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="col-12">
+                                                        <div class="card-body">
+                                                            <form action="{{url('/Company/save/Tax/'.$Company->id)}}" method="POST" enctype="multipart/form-data" class="row g-3 basic-form" id="form-id">
+                                                                @csrf
+                                                                <div class="col-sm-12 col-12">
+                                                                    <div class="col-sm-4 col-4">
+                                                                        <span for="Country">Add Tax</span>
+                                                                        <select name="TaxSelectA" id="TaxSelectA" class="form-select" onchange="showTaxInput()">
+                                                                            <option value="Company">Company</option>
+                                                                            <option value="Individual">Individual</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="row" id="Com" style="display: block">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-6 col-6">
+                                                                                <label for="Company_type_tax">ประเภทบริษัท / Company Type</label>
+                                                                                <select name="Company_type_tax" id="Company_type_tax" class="form-select">
+                                                                                    <option value=""></option>
+                                                                                    @foreach($MCompany_type as $item)
+                                                                                        <option value="{{ $item->id }}" {{$Company->Company_type == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="col-sm-6 col-6">
+                                                                                <label for="Company_Name">ชื่อบริษัท / Company Name</label>
+                                                                                <input type="text" id="Company_Name_tax" class="form-control" name="Company_Name_tax" maxlength="70" value="{{$Company->Company_Name}}">
+                                                                            </div>
+                                                                            <div class="col-sm-6 col-6 mt-2">
+                                                                                <label for="Branch">สาขา / Company Branch <input class="form-check-input" type="radio" name="flexRadioDefaultBranchTax" id="flexRadioDefaultBranchTax"> สำนักงานใหญ่</label>
+                                                                                <input type="text" id="BranchTax" name="BranchTax" class="form-control" maxlength="70" required value="{{$Company->Branch}}">
+                                                                            </div>
+                                                                            <div class="col-sm-6 col-6 mt-2">
+                                                                                <label for="Taxpayer_Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</label><br>
+                                                                                <input type="text" id="Taxpayer_Identification" class="form-control" name="Taxpayer_Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required value="{{$Company->Taxpayer_Identification}}">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <input type="hidden" id="Company_id" class="form-control" name="Company_id" maxlength="70"  value="{{$Company->Profile_ID}}">
+                                                                    <div class="row mt-2" id="Title" style="display: none;">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-6 col-6" >
+                                                                                <span for="prefix">คำนำหน้า / Title</span>
+                                                                                <select name="prefix" id="PrefaceSelectCom" class="form-select" disabled>
+                                                                                        <option value=""></option>
+                                                                                        @foreach($Mprefix as $item)
+                                                                                            <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                                                        @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="col-sm-6 col-6">
+                                                                                <span for="first_name">First Name</span>
+                                                                                <input type="text" id="first_nameCom" class="form-control" name="first_nameCom"maxlength="70" disabled >
+                                                                            </div>
+                                                                            <div class="col-sm-6 col-6 mt-2">
+                                                                                <span for="last_name" >Last Name</span>
+                                                                                <input type="text" id="last_nameCom" class="form-control" name="last_nameCom"maxlength="70" disabled>
+                                                                            </div>
+                                                                            <div class="col-sm-6 col-6 mt-2">
+                                                                                <label for="Taxpayer_Identification">เลขบัตรประจำตัวประชาชน / Identification number</label><br>
+                                                                                <input type="text" id="Taxpayer_Identification" class="form-control" name="Taxpayer_Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required value="{{$Company->Taxpayer_Identification}}">
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <div class="row mt-2">
+                                                                        <div class="col-sm-4 col-4">
+                                                                            <span for="Country">Country</span>
+                                                                            <select name="countrydataA" id="countrySelectA" class="form-select" onchange="showcityAInputTax()">
+                                                                                <option value="Thailand">ประเทศไทย</option>
+                                                                                <option value="Other_countries">ประเทศอื่นๆ</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-sm-4 col-4" id="cityInputA" style="display:none;">
+                                                                            <span for="City">City</span>
+                                                                            <input type="text" id="cityA" class="form-control" name="cityA">
+                                                                        </div>
+                                                                        <div class="col-sm-4 col-4" id="citythaiA" style="display:block;">
+                                                                            <span for="City">City</span>
+                                                                            <select name="cityA" id="provincetax" class="form-select" onchange="provinceTax()" style="width: 100%;">
+                                                                                <option value=""></option>
+                                                                                @foreach($provinceNames as $item)
+                                                                                    <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-sm-4 col-4">
+                                                                            <span for="Amphures">Amphures</span>
+                                                                            <select name="amphuresA" id="amphuresT" class="form-select" onchange="amphuresTax()" >
+                                                                                <option value=""></option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row mt-2">
+                                                                        <div class="col-sm-4 col-4">
+                                                                            <span for="Tambon">Tambon</span>
+                                                                            <select name="TambonA" id ="TambonT" class="form-select" onchange="TambonTax()" style="width: 100%;">
+                                                                                <option value=""></option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-sm-4 col-4">
+                                                                            <span for="zip_code">zip_code</span>
+                                                                            <select name="zip_codeA" id ="zip_codeT" class="form-select"  style="width: 100%;">
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-sm-4 col-4">
+                                                                            <span for="Email">Email</span>
+                                                                            <input type="text" id="EmailAgent" class="form-control" name="EmailAgent"maxlength="70" required>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span for="Address">Address</span>
+                                                                        <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
+                                                                    </div>
+                                                                    <div class="row mt-2">
+                                                                        <div class="col-sm-8 col-8">
+                                                                            <label for="Phone_number">หมายเลขโทรศัพท์ / Phone number</label>
+                                                                            <button type="button" class="add-phoneCom btn btn-color-green my-2" id="add-phoneCom" data-target="phone-container">เพิ่มเบอร์โทรศัพท์</button>
+                                                                        </div>
+                                                                        <div class="col-sm-6 col-6">
+                                                                            <div class="row">
+                                                                                <div id="phone-container">
+                                                                                    <div class="input-group mb-3">
+                                                                                        <input type="text" class="form-control" id="phone-main" name="phoneCom[]" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
+                                                                                        <button class="btn btn-outline-danger remove-phone" type="button" id="remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <script>
+                                                                            document.getElementById('add-phoneCom').addEventListener('click', function() {
+                                                                                var phoneContainer = document.getElementById('phone-container');
+                                                                                var newPhoneGroup = phoneContainer.firstElementChild.cloneNode(true);
+                                                                                newPhoneGroup.querySelector('input').value = '';
+                                                                                phoneContainer.appendChild(newPhoneGroup);
+                                                                                attachRemoveEvent(newPhoneGroup.querySelector('.remove-phone'));
+                                                                            });
+
+                                                                            function attachRemoveEvent(button) {
+                                                                                button.addEventListener('click', function() {
+                                                                                    var phoneContainer = document.getElementById('phone-container');
+                                                                                    if (phoneContainer.childElementCount > 1) {
+                                                                                        phoneContainer.removeChild(button.parentElement);
+                                                                                    }
+                                                                                });
+                                                                            }
+
+                                                                            // Attach the remove event to the initial remove button
+                                                                            attachRemoveEvent(document.querySelector('.remove-phone'));
+                                                                        </script>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
+                                                                    <button type="submit" class="btn btn-color-green lift" id="btn-save">สร้าง</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <script>
+                                                            document.addEventListener('DOMContentLoaded', function() {
+                                                                // Get the radio buttons
+                                                                const Branch = document.getElementById('flexRadioDefaultBranchTax');
+
+                                                                Branch.addEventListener('change', function() {
+                                                                    if (Branch.checked) {
+                                                                        $('#BranchTax').val('สำนักงานใหญ่');
+                                                                    }
+                                                                });
+                                                            });
+                                                        </script>
+                                                        <script>
+
+                                                            function showTaxInput() {
+                                                                var TaxSelectA = document.getElementById("TaxSelectA");
+                                                                var Company_type_tax = document.getElementById("Company_type_tax");
+                                                                var Company_Name_tax = document.getElementById("Company_Name_tax");
+                                                                var BranchTax = document.getElementById("BranchTax");
+                                                                var Title = document.getElementById("Title");
+                                                                var Com = document.getElementById("Com");
+                                                                var PrefaceSelectCom = document.getElementById("PrefaceSelectCom");
+                                                                var first_nameCom = document.getElementById("first_nameCom");
+                                                                var last_nameCom = document.getElementById("last_nameCom");
+
+
+                                                                if (TaxSelectA.value === "Company") {
+                                                                    // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+                                                                    Com.style.display = "block";
+                                                                    Title.style.display = "none";
+                                                                    // citythaiA.style.display = "none";
+                                                                    // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                    Company_Name_tax.disabled = false;
+                                                                    Company_type_tax.disabled = false;
+                                                                    BranchTax.disabled = false;
+                                                                    PrefaceSelectCom.disabled = true;
+                                                                    first_nameCom.disabled = true;
+                                                                    last_nameCom.disabled = true;
+
+                                                                } else if (TaxSelectA.value === "Individual"){
+                                                                    Title.style.display = "block";
+                                                                    // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
+                                                                    // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+                                                                    Com.style.display = "none";
+                                                                    // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                    Company_Name_tax.disabled = true;
+                                                                    Company_type_tax.disabled = true;
+                                                                    BranchTax.disabled = true;
+                                                                    PrefaceSelectCom.disabled = false;
+                                                                    first_nameCom.disabled = false;
+                                                                    last_nameCom.disabled = false;
+                                                                }
+                                                            }
+                                                            function showcityAInputTax() {
+                                                                var countrySelectA = document.getElementById("countrySelectA");
+                                                                var cityInputA = document.getElementById("cityInputA");
+                                                                var citythaiA = document.getElementById("citythaiA");
+                                                                var amphuresSelect = document.getElementById("amphuresA");
+                                                                var tambonSelect = document.getElementById("TambonA");
+                                                                var zipCodeSelect = document.getElementById("zip_codeA");
+                                                                // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
+                                                                if (countrySelectA.value === "Other_countries") {
+                                                                    // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+                                                                    cityInputA.style.display = "block";
+                                                                    citythaiA.style.display = "none";
+                                                                    // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                    amphuresSelect.disabled = true;
+                                                                    tambonSelect.disabled = true;
+                                                                    zipCodeSelect.disabled = true;
+                                                                } else if (countrySelectA.value === "Thailand"){
+                                                                    // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
+                                                                    // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+                                                                    cityInputA.style.display = "none";
+                                                                    citythaiA.style.display = "block";
+                                                                    // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                    amphuresSelect.disabled = false;
+                                                                    tambonSelect.disabled = false;
+                                                                    zipCodeSelect.disabled = false;
+
+                                                                    // เรียกใช้ฟังก์ชัน select_amphures() เพื่อเปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                    amphuresT();
+                                                                }
+                                                            }
+                                                            function provinceTax(){
+                                                                var provinceAgentT = $('#provincetax').val();
+                                                                console.log(1);
+
+                                                                jQuery.ajax({
+                                                                    type:   "GET",
+                                                                    url:    "{!! url('/Company/amphuresT/"+provinceAgentT+"') !!}",
+                                                                    datatype:   "JSON",
+                                                                    async:  false,
+                                                                    success: function(result) {
+                                                                        jQuery('#amphuresT').children().remove().end();
+                                                                        console.log(result);
+                                                                        $('#amphuresT').append(new Option('', ''));
+                                                                        jQuery.each(result.data, function(key, value) {
+                                                                            var amphuresA = new Option(value.name_th,value.id);
+                                                                            //console.log(amphuresA);
+                                                                            $('#amphuresT').append(amphuresA);
+                                                                        });
+                                                                    },
+                                                                })
+
+                                                            }
+                                                            function amphuresTax(){
+                                                                var amphuresAgent  = $('#amphuresT').val();
+                                                                console.log(amphuresAgent);
+                                                                $.ajax({
+                                                                    type:   "GET",
+                                                                    url:    "{!! url('/Company/TambonT/"+amphuresAgent+"') !!}",
+                                                                    datatype:   "JSON",
+                                                                    async:  false,
+                                                                    success: function(result) {
+                                                                    // console.log(result);
+                                                                        jQuery('#TambonT').children().remove().end();
+                                                                        $('#TambonT').append(new Option('', ''));
+                                                                        jQuery.each(result.data, function(key, value) {
+                                                                            var TambonA  = new Option(value.name_th,value.id);
+                                                                            $('#TambonT').append(TambonA );
+                                                                        // console.log(TambonA);
+                                                                        });
+                                                                    },
+                                                                })
+                                                            }
+                                                            function TambonTax(){
+                                                                var TambonAgent  = $('#TambonT').val();
+                                                                console.log(TambonAgent);
+                                                                $.ajax({
+                                                                    type:   "GET",
+                                                                    url:    "{!! url('/Company/districtT/"+TambonAgent+"') !!}",
+                                                                    datatype:   "JSON",
+                                                                    async:  false,
+                                                                    success: function(result) {
+                                                                        console.log(result);
+                                                                        jQuery('#zip_codeT').children().remove().end();
+                                                                        //console.log(result);
+                                                                        $('#zip_codeT').append(new Option('', ''));
+                                                                        jQuery.each(result.data, function(key, value) {
+                                                                            var zip_codeA  = new Option(value.zip_code,value.zip_code);
+                                                                            $('#zip_codeT').append(zip_codeA);
+                                                                            //console.log(zip_codeA);
+                                                                        });
+                                                                    },
+                                                                })
+                                                            }
+                                                        </script>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
                                     @csrf
                                     <table class="myTableProposalRequest1 table table-hover align-middle mb-0" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Dummy</th>
-                                                <th>ID</th>
-                                                <th>Company</th>
-                                                <th>Issue Date</th>
-                                                <th>Expiration Date</th>
-                                                <th>Check In</th>
-                                                <th>Check Out</th>
-                                                <th class="text-center">Discount (%)</th>
-                                                <th class="text-center">Discount (Bath)</th>
-                                                <th class="text-center">Approve  By</th>
-                                                <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document status</th>
+                                                <th>Company name</th>
+                                                <th>หมายเลขทะเบียนนิติบุคคล</th>
+                                                <th>Branch</th>
                                                 <th class="text-center">Order</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-
+                                            @if(!empty($company_tax))
+                                                @foreach ($company_tax as $key => $item)
+                                                        <tr>
+                                                            <td>{{ $key + 1 }}</td>
+                                                            @if ($item->Companny_name)
+                                                                <td>{{ $item->Companny_name }}</td>
+                                                            @else
+                                                                <td>{{ $item->first_name }} {{ $item->last_name }}</td>
+                                                            @endif
+                                                            <td>{{ $item->Taxpayer_Identification }}</td>
+                                                            <td>{{ $item->BranchTax }}</td>
+                                                            <td style="text-align: center;">
+                                                                <div class="btn-group">
+                                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
+                                                                    <ul class="dropdown-menu border-0 shadow p-3">
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/viewTax/'.$item->id) }}">view</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/editTax/'.$item->id) }}">Edit</a></li>
+                                                                    </ul>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                @endforeach
+                                            @endif
                                         </tbody>
                                     </table>
                                 </form>
+
                             </div>
                             <div class="tab-pane fade" id="nav-Visit" role="tabpanel" rel="0">
                                 <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
@@ -550,18 +870,18 @@
                                                                         <div class="row mt-2">
                                                                             <div class="col-sm-4 col-4">
                                                                                 <span for="Country">Country</span>
-                                                                                <select name="countrydataA" id="countrySelectA" class="form-select" onchange="showcityAInput()">
+                                                                                <select name="countrydataA" id="countrySelectAA" class="form-select" onchange="showcityAInputContact()">
                                                                                     <option value="Thailand">ประเทศไทย</option>
                                                                                     <option value="Other_countries">ประเทศอื่นๆ</option>
                                                                                 </select>
                                                                             </div>
-                                                                            <div class="col-sm-4 col-4" id="cityInputA" style="display:none;">
+                                                                            <div class="col-sm-4 col-4" id="cityInputAA" style="display:none;">
                                                                                 <span for="City">City</span>
-                                                                                <input type="text" id="cityA" class="form-control" name="cityA">
+                                                                                <input type="text" id="cityA" class="form-control" name="cityAA">
                                                                             </div>
-                                                                            <div class="col-sm-4 col-4" id="citythaiA" style="display:block;">
+                                                                            <div class="col-sm-4 col-4" id="citythaiAA" style="display:block;">
                                                                                 <span for="City">City</span>
-                                                                                <select name="provinceAgent" id="provinceAgent" class="form-select" onchange="provinceA()" style="width: 100%;">
+                                                                                <select name="cityAA" id="provinceAgentA" class="form-select" onchange="provinceA()" style="width: 100%;">
                                                                                     <option value=""></option>
                                                                                     @foreach($provinceNames as $item)
                                                                                         <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -570,7 +890,7 @@
                                                                             </div>
                                                                             <div class="col-sm-4 col-4">
                                                                                 <span for="Amphures">Amphures</span>
-                                                                                <select name="amphuresA" id="amphuresA" class="form-select" onchange="amphuresAgent()" >
+                                                                                <select name="amphuresA" id="amphuresAA" class="form-select" onchange="amphuresAgent()" >
                                                                                     <option value=""></option>
                                                                                 </select>
                                                                             </div>
@@ -578,13 +898,13 @@
                                                                         <div class="row mt-2">
                                                                             <div class="col-sm-4 col-4">
                                                                                 <span for="Tambon">Tambon</span>
-                                                                                <select name="TambonA" id ="TambonA" class="form-select" onchange="TambonAgent()" style="width: 100%;">
+                                                                                <select name="TambonA" id ="TambonAA" class="form-select" onchange="TambonAgent()" style="width: 100%;">
                                                                                     <option value=""></option>
                                                                                 </select>
                                                                             </div>
                                                                             <div class="col-sm-4 col-4">
                                                                                 <span for="zip_code">zip_code</span>
-                                                                                <select name="zip_codeA" id ="zip_codeA" class="form-select"  style="width: 100%;">
+                                                                                <select name="zip_codeA" id ="zip_codeAA" class="form-select"  style="width: 100%;">
                                                                                 </select>
                                                                             </div>
                                                                             <div class="col-sm-4 col-4">
@@ -658,7 +978,7 @@
                                                                                                         if (value.id == province) {
                                                                                                             provinceA.selected = true;
                                                                                                         }
-                                                                                                        $('#provinceAgent').append(provinceA);
+                                                                                                        $('#provinceAgentA').append(provinceA);
                                                                                                     });
                                                                                                 },
                                                                                             })
@@ -674,7 +994,7 @@
                                                                                                             amphuresA.selected = true;
                                                                                                         }
                                                                                                         console.log(amphuresA);
-                                                                                                        $('#amphuresA').append(amphuresA);
+                                                                                                        $('#amphuresAA').append(amphuresA);
                                                                                                     });
                                                                                                 },
                                                                                             })
@@ -689,7 +1009,7 @@
                                                                                                         if (value.id == Tambon) {
                                                                                                             TambonA.selected = true;
                                                                                                         }
-                                                                                                        $('#TambonA').append(TambonA);
+                                                                                                        $('#TambonAA').append(TambonA);
                                                                                                         // console.log(TambonA);
                                                                                                     });
                                                                                                 },
@@ -706,7 +1026,7 @@
                                                                                                         if (value.zip_code == zip_code) {
                                                                                                             zip_codeA.selected = true;
                                                                                                         }
-                                                                                                        $('#zip_codeA').append(zip_codeA);
+                                                                                                        $('#zip_codeAA').append(zip_codeA);
                                                                                                         console.log(zip_codeA);
                                                                                                     });
                                                                                                 },
@@ -724,13 +1044,15 @@
                                                                 </form>
                                                             </div>
                                                             <script>
-                                                                function showcityAInput() {
-                                                                    var countrySelectA = document.getElementById("countrySelectA");
-                                                                    var cityInputA = document.getElementById("cityInputA");
-                                                                    var citythaiA = document.getElementById("citythaiA");
-                                                                    var amphuresSelect = document.getElementById("amphuresA");
-                                                                    var tambonSelect = document.getElementById("TambonA");
-                                                                    var zipCodeSelect = document.getElementById("zip_codeA");
+                                                                function showcityAInputContact() {
+                                                                    var countrySelectA = document.getElementById("countrySelectAA");
+                                                                    var cityInputA = document.getElementById("cityInputAA");
+                                                                    var citythaiA = document.getElementById("citythaiAA");
+                                                                    var amphuresSelect = document.getElementById("amphuresAA");
+                                                                    var tambonSelect = document.getElementById("TambonAA");
+                                                                    var zipCodeSelect = document.getElementById("zip_codeAA");
+                                                                    var province = document.getElementById("provinceAgentA");
+                                                                    var city = document.getElementById("cityAA");
                                                                     // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
                                                                     if (countrySelectA.value === "Other_countries") {
                                                                         // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
@@ -740,6 +1062,8 @@
                                                                         amphuresSelect.disabled = true;
                                                                         tambonSelect.disabled = true;
                                                                         zipCodeSelect.disabled = true;
+                                                                        province.disabled= true;
+                                                                        city.disabled= false;
                                                                     } else if (countrySelectA.value === "Thailand"){
                                                                         // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
                                                                         // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
@@ -749,33 +1073,35 @@
                                                                         amphuresSelect.disabled = false;
                                                                         tambonSelect.disabled = false;
                                                                         zipCodeSelect.disabled = false;
+                                                                        province.disabled= false;
+                                                                        city.disabled= true;
 
                                                                         // เรียกใช้ฟังก์ชัน select_amphures() เพื่อเปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
                                                                         amphuresAgent();
                                                                     }
                                                                 }
                                                                 function provinceA(){
-                                                                    var provinceAgent = $('#provinceAgent').val();
+                                                                    var provinceAgent = $('#provinceAgentA').val();
                                                                     jQuery.ajax({
                                                                         type:   "GET",
                                                                         url:    "{!! url('/Company/amphuresA/"+provinceAgent+"') !!}",
                                                                         datatype:   "JSON",
                                                                         async:  false,
                                                                         success: function(result) {
-                                                                            jQuery('#amphuresA').children().remove().end();
+                                                                            jQuery('#amphuresAA').children().remove().end();
                                                                             console.log(result);
-                                                                            $('#amphuresA').append(new Option('', ''));
+                                                                            $('#amphuresAA').append(new Option('', ''));
                                                                             jQuery.each(result.data, function(key, value) {
                                                                                 var amphuresA = new Option(value.name_th,value.id);
                                                                                 //console.log(amphuresA);
-                                                                                $('#amphuresA').append(amphuresA);
+                                                                                $('#amphuresAA').append(amphuresA);
                                                                             });
                                                                         },
                                                                     })
 
                                                                 }
                                                                 function amphuresAgent(){
-                                                                    var amphuresAgent  = $('#amphuresA').val();
+                                                                    var amphuresAgent  = $('#amphuresAA').val();
                                                                     console.log(amphuresAgent);
                                                                     $.ajax({
                                                                         type:   "GET",
@@ -784,18 +1110,18 @@
                                                                         async:  false,
                                                                         success: function(result) {
                                                                         // console.log(result);
-                                                                            jQuery('#TambonA').children().remove().end();
-                                                                            $('#TambonA').append(new Option('', ''));
+                                                                            jQuery('#TambonAA').children().remove().end();
+                                                                            $('#TambonAA').append(new Option('', ''));
                                                                             jQuery.each(result.data, function(key, value) {
                                                                                 var TambonA  = new Option(value.name_th,value.id);
-                                                                                $('#TambonA').append(TambonA );
+                                                                                $('#TambonAA').append(TambonA );
                                                                             // console.log(TambonA);
                                                                             });
                                                                         },
                                                                     })
                                                                 }
                                                                 function TambonAgent(){
-                                                                    var TambonAgent  = $('#TambonA').val();
+                                                                    var TambonAgent  = $('#TambonAA').val();
                                                                     console.log(TambonAgent);
                                                                     $.ajax({
                                                                         type:   "GET",
@@ -804,12 +1130,12 @@
                                                                         async:  false,
                                                                         success: function(result) {
                                                                             console.log(result);
-                                                                            jQuery('#zip_codeA').children().remove().end();
+                                                                            jQuery('#zip_codeAA').children().remove().end();
                                                                             //console.log(result);
-                                                                            $('#zip_codeA').append(new Option('', ''));
+                                                                            $('#zip_codeAA').append(new Option('', ''));
                                                                             jQuery.each(result.data, function(key, value) {
                                                                                 var zip_codeA  = new Option(value.zip_code,value.zip_code);
-                                                                                $('#zip_codeA').append(zip_codeA);
+                                                                                $('#zip_codeAA').append(zip_codeA);
                                                                                 //console.log(zip_codeA);
                                                                             });
                                                                         },
@@ -874,24 +1200,60 @@
                                     <table class="myTableProposalRequest7 table table-hover align-middle mb-0" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th>No</th>
-                                                <th>Dummy</th>
-                                                <th>ID</th>
-                                                <th>Company</th>
-                                                <th>Issue Date</th>
-                                                <th>Expiration Date</th>
-                                                <th>Check In</th>
-                                                <th>Check Out</th>
-                                                <th class="text-center">Discount (%)</th>
-                                                <th class="text-center">Discount (Bath)</th>
-                                                <th class="text-center">Approve  By</th>
-                                                <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document status</th>
-                                                <th class="text-center">Order</th>
+                                                <th  class="text-center">No</th>
+                                                <th  >Category</th>
+                                                <th  class="text-center">Type</th>
+                                                <th  class="text-center">Created_by</th>
+                                                <th  class="text-center">content</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @if(!empty($log))
+                                                @foreach($log as $key => $item)
+                                                <tr>
+                                                    <td style="text-align: center;">{{$key +1 }}</td>
+                                                    <td style="text-align: left;">{{$item->Category}}</td>
+                                                    <td style="text-align: center;">{{$item->type}}</td>
+                                                    <td style="text-align: center;">{{@$item->userOperated->name}}</td>
+                                                    @if ($item->type == 'Update')
+                                                        @php
+                                                            // แยกข้อมูล content ออกเป็น array
+                                                            $contentArray = explode('+', $item->content);
+                                                        @endphp
+                                                        <td style="text-align: left;">
+                                                            @if ($item->Category == 'Additional Company Tax Invoice')
+                                                            <b style="color:#0000FF ">Edit :: Additional Company Tax Invoice</b>
+                                                            @elseif ($item->Category == 'Company / Agent')
+                                                            <b style="color:#0000FF ">Edit :: Company / Agent</b>
+                                                            @elseif ($item->Category == 'Contact')
+                                                            <b style="color:#0000FF ">Edit :: Contact</b>
+                                                            @endif
+                                                            @foreach($contentArray as $contentItem)
+                                                                <div>{{ $contentItem }}</div>
+                                                            @endforeach
+                                                        </td>
+                                                    @else
+                                                        @php
+                                                            // แยกข้อมูล content ออกเป็น array
+                                                            $contentArray = explode('+', $item->content);
+                                                        @endphp
+                                                        <td style="text-align: left;">
+                                                            @if ($item->Category == 'Additional Company Tax Invoice')
+                                                            <b style="color:#0000FF ">Create :: Additional Company Tax Invoice</b>
+                                                            @elseif ($item->Category == 'Company / Agent')
+                                                            <b style="color:#0000FF ">Create :: Company / Agent</b>
+                                                            @elseif ($item->Category == 'Contact')
+                                                            <b style="color:#0000FF ">Create :: Contact</b>
+                                                            @endif
+                                                            @foreach($contentArray as $contentItem)
+                                                                <div>{{ $contentItem }}</div>
+                                                            @endforeach
+                                                        </td>
+                                                    @endif
 
+                                                </tr>
+                                                @endforeach
+                                            @endif
                                         </tbody>
                                     </table>
                                 </form>
@@ -1111,6 +1473,37 @@
 </script>
 {{-- ส่วนของที่อยู่ --}}
 <script>
+    $(document).ready(function() {
+        var countrySelect = $('#countrySelect');
+        var TaxSelectA = countrySelect.val(); // ใช้ jQuery เพื่อเลือก element
+        var cityInput = document.getElementById("cityInput");
+        var citythai = document.getElementById("citythai");
+        var amphuresSelect = document.getElementById("amphures");
+        var tambonSelect = document.getElementById("Tambon");
+        var zipCodeSelect = document.getElementById("zip_code");
+        var province = document.getElementById("province");
+
+        if (TaxSelectA == "Other_countries") {
+            cityInput.style.display = "block";
+            citythai.style.display = "none";
+            // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+            amphuresSelect.disabled = true;
+            tambonSelect.disabled = true;
+            zipCodeSelect.disabled = true;
+            city1.disabled = false;
+            province.disabled = true;
+
+        } else if (TaxSelectA == "Thailand"){
+            cityInput.style.display = "none";
+            citythai.style.display = "block";
+            // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+            amphuresSelect.disabled = false;
+            tambonSelect.disabled = false;
+            zipCodeSelect.disabled = false;
+            city1.disabled = true;
+            province.disabled = false;
+        }
+    });
     function showcityInput() {
         var countrySelect = document.getElementById("countrySelect");
         var cityInput = document.getElementById("cityInput");
@@ -1118,6 +1511,7 @@
         var amphuresSelect = document.getElementById("amphures");
         var tambonSelect = document.getElementById("Tambon");
         var zipCodeSelect = document.getElementById("zip_code");
+        var province = document.getElementById("province");
 
         // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
         if (countrySelect.value === "Other_countries") {
@@ -1128,6 +1522,8 @@
             amphuresSelect.disabled = true;
             tambonSelect.disabled = true;
             zipCodeSelect.disabled = true;
+            city1.disabled = false;
+            province.disabled = true;
         } else if (countrySelect.value === "Thailand") {
             // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
 
@@ -1138,7 +1534,8 @@
             amphuresSelect.disabled = false;
             tambonSelect.disabled = false;
             zipCodeSelect.disabled = false;
-
+            city1.disabled = true;
+            province.disabled = false;
             // เรียกใช้ฟังก์ชัน select_amphures() เพื่อเปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
             select_amphures();
         }
