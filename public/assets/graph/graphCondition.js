@@ -175,7 +175,7 @@ var valueOnTopPluginThisMonthByDay = {
             meta.data.forEach((bar, index) => {
                 var data_thismonth = dataset.data[index];
                 let displayData_thisMonth = formatNumberThisMonth(data_thismonth);
-                    ctx.font = "normal " + fontSize + "px Sarabun"; // Adjust font size for longer labelsThisMonth
+                    ctx.font = "normal " + (fontSize - 2) + "px Sarabun"; // Adjust font size for longer labelsThisMonth
                     ctx.save();
                     ctx.translate(bar.x, bar.y - 10);
                     ctx.fillStyle = "#000";

@@ -2209,7 +2209,7 @@
             } else if (canvasWidth < 800) {
                 return Math.max(10, Math.floor(canvasWidth / 50)); // Medium font for tablets
             } else {
-                return Math.max(12, Math.floor(canvasWidth / 100)); // Larger font for desktops
+                return Math.max(10, Math.floor(canvasWidth / 100)); // Larger font for desktops
             }
         }
         var valueOnTopPlugin2 = {
@@ -2224,7 +2224,9 @@
                             ctx.fillStyle = "#000"; // Black text color
                             var fontStyle = "normal";
                             var fontFamily = "Sarabun";
-                            ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+                            // ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+                            ctx.font = "normal 11px Sarabun";
+                            ctx.save();
                             var dataString = formatNumber(dataset.data[index]);
                             ctx.textAlign = "center";
                             ctx.textBaseline = "middle";
