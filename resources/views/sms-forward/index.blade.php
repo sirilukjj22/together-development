@@ -350,11 +350,11 @@
                         <!-- กราฟที่ 1 -->
                         <div class="box-graph">
                             <div class="container-graph">
-                                <canvas id="revenueChart"></canvas>
+                                <canvas id="revenueChart" hidden></canvas>
+                                <canvas id="revenueChartThisMonth" ></canvas>
+                                <canvas id="revenueChartCustom" hidden></canvas>
                                 <div class="menu-graph">
-                                    <button type="button" class="ac-style" data-toggle="modal"
-                                        data-target="#myModalGraph" style="min-width: 25%;cursor: pointer;"> 7
-                                        Days</button>
+                                    <button type="button" class="ac-style" id="button-graph-revenue" data-toggle="modal" data-target="#myModalGraph" style="min-width: 25%;cursor: pointer;"> 7 Days</button>
                                 </div>
                                 <div>
                                     <!-- The Modal modal-->
@@ -363,11 +363,8 @@
                                             <div class="modal-content">
                                                 <!-- Modal Header -->
                                                 <div class="modal-header">
-                                                    <h4 class="modal-title" style="width: 100%;color: #2C7F7A ;">Filter
-                                                        Date
-                                                    </h4>
-                                                    <button type="button" class="close"
-                                                        data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title" style="width: 100%;color: #2C7F7A ;">Filter Date</h4>
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                                                 </div>
                                                 <!-- Modal body -->
                                                 <div class="modal-body">
@@ -375,62 +372,41 @@
                                                         style="position:relative;top:0; flex-direction:column; justify-content: start; background-color:white">
                                                         <button type="button" value="7" onclick="updateChart(this.value)" class="modal-graph">
                                                             <div>
-                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 7 days
+                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 7 days ({{ date('d M', strtotime("-6 day")) }} ~ {{ date('d M') }})
                                                             </div>
                                                             <div class="d-flex" style="font-size: 12px;"></div>
                                                         </button>
                                                         <button type="button" value="15" onclick="updateChart(this.value)" class="modal-graph">
-                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 15 days 
+                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 15 days ({{ date('d M', strtotime("-14 day")) }} ~ {{ date('d M') }})
                                                         </button>
                                                         <button type="button" value="30" onclick="updateChart(this.value)" class="modal-graph">
-                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 30 days 
+                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 30 days ({{ date('d M', strtotime("-29 day")) }} ~  {{ date('d M') }})
                                                         </button>
-                                                        <button type="button" value="5" onclick="updateChart(this.value)" class="modal-graph">
-                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>This Week 
+                                                        <button type="button" value="week" onclick="updateChartThisWeek(this.value)" class="modal-graph">
+                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>This Week ({{ date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))) }} ~ {{ date('d M', strtotime("+6 day")) }})
                                                         </button>
-                                                        <button type="button" value="30" onclick="updateChart(this.value)" class="modal-graph">
+                                                        <button type="button" value="month" onclick="updateChartThisMonth(this.value)" class="modal-graph">
                                                             <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>This Month 
                                                         </button>
-                                                        <div>
-                                                            <button type="button" data-starter="starter-active" class="target-2 target modal-graph" style="width: 100%;">
-                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Custom date range
-                                                            </button>
-                                                        </div>
-                                                        <div class="button-row row" style="margin:0px;">
-                                                            <div class="button-col content-col">
-                                                                <div class="custom-date-graph">
-                                                                    <div style="display: block;">
-                                                                        <label for="">Date start :
-                                                                        </label>
-                                                                        <input type="date" id="myDate"
-                                                                            value="">
-                                                                    </div>
-                                                                    <div style="display: block;">
-                                                                        <label for="">Date end
-                                                                            :</label>
-                                                                        <input type="date" id="myDate2"
-                                                                            value="">
-                                                                    </div>
-                                                                    <p id="demo-date">แสดงวันที่เลือก</p>
-                                                                    <div>
-                                                                        <button onclick="dayPickup()">Done</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                        <button type="button" value="monthByDay" onclick="updateChartThisMonth(this.value)" class="modal-graph">
+                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Monthly Average By Days
+                                                        </button>
+                                                        <label for="" class="label-grath-inside" style="padding: 0 0.5rem; text-align:left;">
+                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Custom Year Range
+                                                        </label>
+                                                        <div class="select-graph">
+                                                            <select onchange="updateChartYearRange(this.value)">
+                                                                <option value="0">Select</option>
+                                                                @for ($i = 2024; $i <= date('Y') + 1; $i++)
+                                                                    <option value="{{ $i }}" {{ isset($year) && $year == $i ? 'selected' : '' }}><i class="fa fa-square"></i>{{ $i }}</option>
+                                                                @endfor
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <script type="text/javascript">
-                                        function dayPickup() {
-                                            let x1 = document.getElementById("myDate").value;
-                                            let x2 = document.getElementById("myDate2").value;
-                                            document.getElementById("demo-date").innerHTML = x1 + " - " + x2;
-                                        }
-                                    </script>
                                 </div>
                             </div>
                             <div>
@@ -438,7 +414,7 @@
                                 <div class="container-graph">
                                     <canvas id="combinedChart" style="width: 100%"></canvas>
                                     <div>
-                                        <button class="graph-select " style="width: 200px;" id="toggleButton" onclick="toggleGraph()">
+                                        <button class="graph-select " style="width: 200px;" id="toggleButton" value="to_time" onclick="toggleGraph()">
                                             Switch to Time <i class="icon-repeat"></i>
                                         </button>
                                     </div>
@@ -460,7 +436,7 @@
                                                 <div>
                                                     <div class="flex-end-g2">
                                                         <label class="entriespage-label">entries per page :</label>
-                                                        <select class="entriespage-button" id="search-per-page-sms" onchange="searchPerPage('sms', 'sms-alert')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                        <select class="entriespage-button" id="search-per-page-sms" onchange="getPage(1, this.value, 'sms')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
                                                             <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "sms" ? 'selected' : '' }}>10</option>
                                                             <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "sms" ? 'selected' : '' }}>25</option>
                                                             <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "sms" ? 'selected' : '' }}>50</option>
@@ -660,7 +636,7 @@
                                             <div>
                                                 <div class="flex-end-g2">
                                                     <label class="entriespage-label">entries per page :</label>
-                                                    <select class="entriespage-button" id="search-per-page-transfer" onchange="searchPerPage('transfer', 'sms-alert')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                    <select class="entriespage-button" id="search-per-page-transfer" onchange="getPage(1, this.value, 'transfer')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
                                                         <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>10</option>
                                                         <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>25</option>
                                                         <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>50</option>
@@ -861,7 +837,7 @@
                                             <div>
                                                 <div class="flex-end-g2">
                                                     <label class="entriespage-label">entries per page :</label>
-                                                    <select class="entriespage-button" id="search-per-page-split" onchange="searchPerPage('split', 'sms-alert')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                    <select class="entriespage-button" id="search-per-page-split" onchange="getPage(1, this.value, 'split')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
                                                         <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "split" ? 'selected' : '' }}>10</option>
                                                         <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "split" ? 'selected' : '' }}>25</option>
                                                         <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "split" ? 'selected' : '' }}>50</option>
@@ -1382,13 +1358,6 @@
                                                                 </p>
                                                                 <!-- <p id="" class="date-current border-2"> วันที่เลือก</p> -->
                                                             </div>
-                                                            <div
-                                                                style="display: flex; gap:20px;justify-content: center;align-items: center; width: 100%;max-height: 18px;">
-                                                                <i class="fa fa-angle-left t5-month"></i>
-                                                                <p id="select-month-year">2024
-                                                                </p>
-                                                                <i class="fa fa-angle-right t6-month"></i>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div id="allMonth" class="show-all-month"></div>
@@ -1448,6 +1417,9 @@
     <input type="hidden" id="get-total-sms" value="{{ !empty($total_sms_amount) ? $total_sms_amount->total_sms : 0 }}">
     <input type="hidden" id="get-total-transfer" value="{{ !empty($total_transfer_amount) ? $total_transfer_amount->total_transfer : 0 }}">
     <input type="hidden" id="get-total-split" value="{{ !empty($total_split_amount) ? $total_split_amount->total_split : 0 }}">
+    <input type="hidden" id="currentPage-sms" value="1">
+    <input type="hidden" id="currentPage-transfer" value="1">
+    <input type="hidden" id="currentPage-split" value="1">
 
     <!-- dataTable -->
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
@@ -1471,6 +1443,8 @@
 
     <!-- card graph -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="{{ asset('assets/graph/graphUpdateDay.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/graph/graphCondition.js')}}"></script>
 
     <style>
         .content-col {
@@ -1480,8 +1454,62 @@
         .active-customdate {
             display: block;
         }
+
+        .select-graph select {
+            appearance: none;
+            outline: 10px red;
+            border: 0;
+            box-shadow: none;
+            background-color: #2C7F7A;
+            color:white;
+            flex: 1;
+            padding: 0 1em;
+            background-image: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .select-graph select option {
+            background-color: aliceblue;
+            color:#2c7f7a;
+        }
+
+        .select-graph {
+            position: relative;
+            display: flex;
+            height: 3em;
+            border-radius: .25em;
+            overflow: hidden;
+        }
+        .select-graph:after {
+            content: '\25BC';
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 1em;
+            transition: .25s all ease;
+            pointer-events: none;
+        }
+
+        .select-graph:hover:after {
+            color: #f39c12;
+        }
+
+        .label-grath-inside {
+            text-align:left;
+            color: black;
+        }
     </style>
-    <script>
+
+    <script type="text/javascript">
+        function dayPickup() {
+            let x1 = document.getElementById("myDate").value;
+            let x2 = document.getElementById("myDate2").value;
+            document.getElementById("demo-date").innerHTML = x1 + " - " + x2;
+        }
+    </script>
+
+    <script type="text/javascript">
         $(document).ready(function() {
             new DataTable('.example', {
                 searching: false,
@@ -1509,6 +1537,15 @@
             var total = parseInt($('#get-total-'+id).val());
             var table_name = id+'Table';
 
+            var filter_by = $('#filter-by').val();
+            var day = $('#input-search-day').val();
+            var month = $('#input-search-month').val();
+            var year = $('#input-search-year').val();
+            var month_to = $('#input-search-month-to').val();
+            var type = $('#status').val();
+            var account = $('#into_account').val();
+            var getUrl = window.location.pathname;
+
             if (search_value != '') {
                 
                 $('#'+table_name).DataTable().destroy();
@@ -1516,7 +1553,25 @@
                     searching: false,
                     paging: false,
                     info: false,
-                    "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
+                    // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
+                    ajax: {
+                    url: 'sms-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        day: day,
+                        month: month,
+                        year: year,
+                        month_to: month_to,
+                        status: type,
+                        into_account: account
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
                     "initComplete": function (settings, json) {
 
                         if ($('#'+id+'Table .dataTables_empty').length == 0) {
@@ -1558,7 +1613,7 @@
             } else {
                 $('#'+id+'-paginate').children().remove().end();
                 $('#'+id+'-showingEntries').text(showingEntriesSearch(total, id));
-                $('#'+id+'-paginate').append(paginateSearch(total, id, 'sms-alert'));
+                $('#'+id+'-paginate').append(paginateSearch(total, id, getUrl));
             }
 
             document.getElementById(id).focus();
@@ -1603,27 +1658,6 @@
             $('#input-search-month').val(month);
             $('#input-search-year').val(year);
             $('#form-calendar').submit();
-
-            
-            // jQuery.ajax({
-            //     type: "POST",
-            //     url: "{!! url('sms-search-calendar') !!}",
-            //     datatype: "JSON",
-            //     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            //     data: { 
-            //         'filter_by': $search, 
-            //         'into_account': '',
-            //         'status': '',
-            //         'day': day,
-            //         'month': month,
-            //         'year': year,
-            //         'time': '20:59:59'
-            //     },
-            //     async: false,
-            //     // success: function(result) {
-            //     //     location.reload();
-            //     // },
-            // });
         }
 
         function currencyFormat(num) {
@@ -2047,206 +2081,71 @@
 
 <!-- กราฟ -->
 <script>
-    let date_now = $('#input-search-year').val() + '-' + $('#input-search-month').val() + '-' + $('#input-search-day').val() + ' ' + $('#time').val();
-    let type = $('#status').val();
-    let account = $('#into_account').val();
-
-    function get_graph() {
-        if (type == '') {
-            type = 0;
-        }
-
-        if (account == '') {
-            account = 0;
-        }
-
-        var revenueData = "";
-
-        $.ajax({
-            type: "GET",
-            url: "{!! url('sms-graph30days/"+date_now+"/"+type+"/"+account+"') !!}",
-            datatype: "JSON",
-            async: false,
-            success: function(response) {
-                // Sample data for watch revenue over 30 days
-                revenueData = response.amount;
-                
-                
-            }
-        });
-        return revenueData;
-    }
-
-    function get_graph_this_month() {
-        if (type == '') {
-            type = 0;
-        }
-
-        if (account == '') {
-            account = 0;
-        }
-
-        var revenueData = "";
-
-        $.ajax({
-            type: "GET",
-            url: "{!! url('sms-graph-this-week/"+date_now+"/"+type+"/"+account+"') !!}",
-            datatype: "JSON",
-            async: false,
-            success: function(response) {
-                // Sample data for watch revenue over 30 days
-                revenueData = response.amount;
-                console.log(revenueData);
-                
-                
-            }
-        });
-        return revenueData;
-    }
-
-    Chart.defaults.font.family = "Sarabun";
-    const revenueData = get_graph();
-    const today = new Date();
-    const labels = [];
-    for (let i = 29; i >= 0; i--) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        labels.push(`${month}/${day}`);
-    }
-
-    function formatNumber(num) {
-        if (num >= 1e6) {
-            return (num / 1e6).toFixed(1) + "M";
-        } else if (num >= 1e3) {
-            return (num / 1e3).toFixed(1) + "K";
-        }
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
-    function formatFullNumber(num) {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
-    function drawRotatedText(ctx, bar, displayData, fontSize) {
-        ctx.font = "normal " + (fontSize - 4) + "px Sarabun"; // Adjust font size for longer labels
-        ctx.save();
-        // Check media width and adjust translation offset accordingly
-        var translateOffset = window.innerWidth < 768 ? -10 : -20;
-        ctx.translate(bar.x, bar.y + translateOffset);
-    }
-    const valueOnTopPlugin = {
-        afterDatasetsDraw: function(chart) {
-            const ctx = chart.ctx;
-            const fontSize = Math.min(16, Math.max(10, Math.round(chart.width / 50)));
-            ctx.font = "normal " + fontSize + "px Sarabun"; // Set font size dynamically
-            chart.data.datasets.forEach((dataset, i) => {
-                const meta = chart.getDatasetMeta(i);
-                meta.data.forEach((bar, index) => {
-                    const data = dataset.data[index];
-                    let displayData = formatNumber(data);
-                    if (chart.data.labels.length === 7) {
-                        displayData = formatNumber(data);
-                        ctx.save();
-                        ctx.translate(bar.x, bar.y - 10);
-                        ctx.fillStyle = "#000";
-                        ctx.textAlign = "center";
-                        ctx.textBaseline = "middle";
-                        ctx.fillText(displayData, 0, 0);
-                        ctx.restore();
-                    } else if (chart.data.labels.length === 15) {
-                        ctx.font = "normal " + (fontSize - 4) +
-                            "px Sarabun"; // Adjust font size for longer labels
-                        ctx.fillStyle = "#000";
-                        ctx.textAlign = "center";
-                        ctx.textBaseline = "middle";
-                        ctx.save();
-                        ctx.fillText(displayData, bar.x, bar.y - 10);
-                        ctx.restore();
-                    } else if (chart.data.labels.length === 30) {
-                        ctx.font = "normal " + (fontSize - 4) +
-                            "px Sarabun"; // Adjust font size for longer labels
-                        ctx.save();
-                        drawRotatedText(ctx, bar, displayData);
-                        ctx.rotate(-Math.PI / 2);
-                        ctx.fillStyle = "#000";
-                        ctx.textAlign = "center";
-                        ctx.textBaseline = "middle";
-                        ctx.fillText(displayData, 0, 0);
-                        ctx.restore();
-                        return;
-                    }
-                });
-            });
-        },
-    };
-
-    const ctx = document.getElementById("revenueChart").getContext("2d");
-    const maxRevenueValue = Math.max(...revenueData);
-    const buffer = 20000; // Adding a buffer value
-    let yAxisMax = maxRevenueValue + buffer;
-    const roundingFactor = 20000;
-    yAxisMax = Math.ceil(yAxisMax / roundingFactor) * roundingFactor;
-    const revenueChart = new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: labels,
-            datasets: [{
-                label: "Last 30 Days Revenue",
-                data: revenueData,
-                backgroundColor: "#2C7F7A",
-                borderWidth: 0,
-                barPercentage: 0.7,
-            }, ],
-        },
-        options: {
-            scales: {
-                x: {},
-                y: {
-                    beginAtZero: true,
-                    max: yAxisMax,
-                    ticks: {
-                        stepSize: 20000,
-                        callback: function(value) {
-                            return formatNumber(value);
-                        },
-                    },
-                },
-            },
-        },
-        plugins: [valueOnTopPlugin],
-    });
-    console.log(revenueData);
-    
-    function updateChart(days) { 
-        const newData = [];
-        const newLabels = [];
-        const today = new Date();
-        for (let i = days - 1; i >= 0; i--) {
-            const date = new Date(today);
-            date.setDate(today.getDate() - i);
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            newLabels.push(`${month}/${day}`);
-        }
-        const startIndex = revenueData.length - days;
-        for (let i = startIndex; i < revenueData.length; i++) {
-            newData.push(revenueData[i]);
-        }
-        revenueChart.data.labels = newLabels;
-        revenueChart.data.datasets[0].data = newData;
-        revenueChart.data.datasets[0].label = `Last ${days} Days Revenue`;
-        revenueChart.update();
-    }
-
     updateChart(7);
+
+    function updateChartThisWeek(params) {
+        chartThisWeek();
+        $('#button-graph-revenue').text('This Week');
+    }
+
+    function updateChartThisMonth(params) {
+        
+        if (params == "month") {
+            chartThisMonth();
+            $('#button-graph-revenue').text('This Month');
+        } else {
+            chartThisMonthByDay();
+            $('#button-graph-revenue').text('Monthly Average By Days');
+        }
+    }
+
+    function updateChartYearRange(params) {
+        chartYearRange(params);
+        $('#button-graph-revenue').text('Custom Year Range ('+ params +')');
+    }
 </script>
 
     {{-- กราฟ 2 --}}
     <script>
+        var date_now = $('#input-search-year').val() + '-' + $('#input-search-month').val() + '-' + $('#input-search-day').val();
+        var type = $('#status').val();
+        var account = $('#into_account').val();
+
+        function get_graphForecast() {
+            var result_amount = "";
+
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('sms-graphForcast/"+date_now+"') !!}",
+                datatype: "JSON",
+                async: false,
+                success: function(response) {
+                    result_amount = [response.yesterday, response.today, response.forcast];
+                }
+            });
+
+            return result_amount;
+        }
+
+        function get_graphToday() {
+            var result_amount = "";
+
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('sms-graphToday/"+date_now+"') !!}",
+                datatype: "JSON",
+                async: false,
+                success: function(response) {
+                    result_amount = [response.data_1, response.data_2, response.data_3, response.data_4,
+                        response.data_5, response.data_6, response.data_7, response.data_8
+                    ];
+                }
+            });
+
+            return result_amount;
+        }
+
         var combinedChart = document.getElementById("combinedChart").getContext("2d");
-        var graph1Visible = true;
         var data1 = {
             labels: ["Yesterday", "Today", "Average"],
             datasets: [{
@@ -2254,7 +2153,7 @@
                 backgroundColor: "#2C7F7A",
                 borderWidth: 1,
                 barPercentage: 0.33, // Adjust bar width
-                data: [2000000, 2200000, 2100000], // Adjusted for more realistic numbers
+                data: get_graphForecast(), // Adjusted for more realistic numbers
             }, ],
         };
         var options1 = {
@@ -2275,38 +2174,13 @@
             ],
             datasets: [{
                 label: "Revenue",
-                data: [
-                    1000000, 1500000, 2000000, 1800000, 2200000, 1300000, 1100000,
-                    900000,
-                ],
+                data: get_graphToday(),
                 backgroundColor: "#2C7F7A",
                 borderWidth: 1,
                 barPercentage: 0.8, // Adjust bar width
             }, ],
         };
         var options2 = {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        callback: function(value) {
-                            return formatNumber(value);
-                        },
-                    },
-                }, ],
-            },
-        };
-        var data3 = {
-            labels: ["จันทร์", "อังคาร", "พุธ", "พฤกหัส", "ศุกร์", "เสาร์", "อาทิตย์", ],
-            datasets: [{
-                label: "Revenue",
-                data: [2000000, 2200000, 4100000, 3000000, 3200000, 2100000, 4100000],
-                backgroundColor: "#2C7F7A",
-                borderWidth: 1,
-                barPercentage: 0.8, // Adjust bar width
-            }, ],
-        };
-        var options3 = {
             scales: {
                 yAxes: [{
                     ticks: {
@@ -2346,6 +2220,7 @@
                     var meta = chart.getDatasetMeta(i);
                     if (!meta.hidden) {
                         meta.data.forEach(function(element, index) {
+                            // ctx.rotate(-Math.PI / 2);
                             ctx.fillStyle = "#000"; // Black text color
                             var fontStyle = "normal";
                             var fontFamily = "Sarabun";
@@ -2355,8 +2230,7 @@
                             ctx.textBaseline = "middle";
                             var padding = 5;
                             var position = element.tooltipPosition();
-                            ctx.fillText(dataString, position.x, position.y - fontSize / 4 -
-                                padding);
+                            ctx.fillText(dataString, position.x, position.y - fontSize / 4 - padding);
                         });
                     }
                 });
@@ -2372,10 +2246,13 @@
         });
 
         function toggleGraph() {
-            if (graph1Visible) {
+            var switch_name = $('#toggleButton').val();
+
+            if (switch_name == "to_time") {
                 currentData = data2;
                 currentOptions = options2;
-            } else {
+
+            } if (switch_name == "to_forecast") {
                 currentData = data1;
                 currentOptions = options1;
             }
@@ -2386,16 +2263,21 @@
                 options: currentOptions,
                 plugins: [valueOnTopPlugin2],
             });
-            graph1Visible = !graph1Visible;
+
             var toggleButton = document.getElementById("toggleButton");
             var icon = document.createElement("i");
-            if (graph1Visible) {
+
+            if (switch_name == "to_time") {
+                toggleButton.textContent = "Switch to Forecast ";
+                icon.className = "icon-repeat";
+                $('#toggleButton').val("to_forecast");
+
+            } if (switch_name == "to_forecast") {
                 toggleButton.textContent = "Switch to Time ";
                 icon.className = "icon-repeat";
-            } else {
-                toggleButton.textContent = "Switch to Forecast ";
-                icon.className = "icon-repeat2";
+                $('#toggleButton').val("to_time");
             }
+
             // Append the icon to the toggleButton content
             toggleButton.appendChild(icon);
         }

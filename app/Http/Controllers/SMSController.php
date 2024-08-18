@@ -8,6 +8,7 @@ use App\Models\Role_permission_revenue;
 use App\Models\SMS_alerts;
 use App\Models\SMS_forwards;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -260,38 +261,53 @@ class SMSController extends Controller
         );
     }
 
-    public function search_table($search, $table_name)
+    public function search_table(Request $request)
     {
         $role_revenue = Role_permission_revenue::where('user_id', Auth::user()->id)->first();
 
-        $adate = date('Y-m-d 21:00:00');
-        $from = date("Y-m-d 21:00:00", strtotime("-1 day", strtotime($adate)));
-        $to = date('Y-m-d 21:00:00');
+        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+            $adate = date($request->year . '-' . $request->month . '-' . $request->day);
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date($adate . ' 20:59:59');
+
+        } elseif ($request->filter_by == "month") {
+            $adate = date($request->year . '-' . $request->month . '-01');
+            $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
+
+        } elseif ($request->filter_by == "year") {
+            $adate = date($request->year . '-01' . '-01');
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-12-31' . ' 20:59:59');
+        }
+
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
 
-        if ($table_name == "smsTable") {
+        if ($request->table_name == "smsTable") {
             $data_query = SMS_alerts::whereBetween('date', [$from, $to])
-                ->where('date', 'LIKE', '%'.$search.'%')->whereNull('date_into')
-                ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereBetween('date', [$from, $to])->whereNull('date_into')
+                ->where('date', 'LIKE', '%'.$request->search_value.'%')->whereNull('date_into')
+                ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereBetween('date', [$from, $to])->whereNull('date_into')
                 ->orderBy('date', 'asc')->paginate($perPage);
 
-        } elseif ($table_name == "transferTable") {
+        } elseif ($request->table_name == "transferTable") {
             $data_query = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('transfer_status', 1)
-                ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereDate('date_into', date('Y-m-d'))->where('transfer_status', 1)
-                ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereDate('date', date('Y-m-d'))->where('transfer_status', 1)
-                ->orWhere('amount', 'LIKE', '%'.$search.'%')->where('status', 4)->where('split_status', 0)->whereDate('date_into', date('Y-m-d'))
-                ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereDate('date', date('Y-m-d'))->where('status', 4)->where('split_status', 0)
+                ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', date('Y-m-d'))->where('transfer_status', 1)
+                ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', date('Y-m-d'))->where('transfer_status', 1)
+                ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->where('status', 4)->where('split_status', 0)->whereDate('date_into', date('Y-m-d'))
+                ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', date('Y-m-d'))->where('status', 4)->where('split_status', 0)
                 
-                ->orWhere('date_into', 'LIKE', '%'.$search.'%')->whereDate('date_into', date('Y-m-d'))->where('transfer_status', 1)
-                ->orWhere('date_into', 'LIKE', '%'.$search.'%')->whereDate('date', date('Y-m-d'))->where('transfer_status', 1)
-                ->orWhere('date_into', 'LIKE', '%'.$search.'%')->where('status', 4)->where('split_status', 0)->whereDate('date_into', date('Y-m-d'))
-                ->orWhere('date_into', 'LIKE', '%'.$search.'%')->whereDate('date', date('Y-m-d'))->where('status', 4)->where('split_status', 0)
+                ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', date('Y-m-d'))->where('transfer_status', 1)
+                ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', date('Y-m-d'))->where('transfer_status', 1)
+                ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->where('status', 4)->where('split_status', 0)->whereDate('date_into', date('Y-m-d'))
+                ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', date('Y-m-d'))->where('status', 4)->where('split_status', 0)
                 ->orderBy('date', 'asc')->paginate($perPage);
 
-        } elseif ($table_name == "splitTable") {
+        } elseif ($request->table_name == "splitTable") {
             $data_query = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('split_status', 1)
-                ->where('date', 'LIKE', '%'.$search.'%')
-                ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereDate('date_into', date('Y-m-d'))->where('split_status', 1)
+                ->where('date', 'LIKE', '%'.$request->search_value.'%')
+                ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', date('Y-m-d'))->where('split_status', 1)
                 ->orderBy('date', 'asc')->paginate($perPage);
         }
     
@@ -428,6 +444,242 @@ class SMSController extends Controller
             ]);
     }
 
+    public function paginate_table(Request $request)
+    {
+        // dd($request);
+        $role_revenue = Role_permission_revenue::where('user_id', Auth::user()->id)->first();
+
+        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+            $adate = date($request->year . '-' . $request->month . '-' . $request->day);
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date($adate . ' 20:59:59');
+
+        } elseif ($request->filter_by == "month") {
+            $adate = date($request->year . '-' . $request->month . '-01');
+            $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
+
+        } elseif ($request->filter_by == "year") {
+            $adate = date($request->year . '-01' . '-01');
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-12-31' . ' 20:59:59');
+        }
+
+        $perPage = $request->perPage;
+
+        if ($request->table_name == "smsTable") {
+            $query_sms = DB::table('sms_alert')->whereBetween('date', [$from, $to])->whereNull('date_into');
+
+                if ($request->into_account != '') { 
+                    $query_sms->where('into_account', $request->into_account);
+                }
+                if ($request->status != 0) { 
+                    $query_sms->where('status', $request->status); 
+                }
+
+            $query_sms->orderBy('date', 'asc');
+
+            if ($perPage == 10) {
+                $data_query = $query_sms->limit($request->page.'0')->get();
+            } else {
+                $data_query = $query_sms->paginate($perPage);
+            }
+
+        } elseif ($request->table_name == "transferTable") {
+            $query_transfer = DB::table('sms_alert');
+
+                if ($request->into_account != '') { 
+                    if ($request->status != 0) { 
+                        $query_transfer->whereDate('date_into', $adate)->where('transfer_status', 1)->where('into_account', $request->into_account)->where('status', $request->status);
+                        $query_transfer->orWhereDate('date', $adate)->where('transfer_status', 1)->where('into_account', $request->into_account)->where('status', $request->status);
+                        $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', $request->status);
+                    } else {
+                        $query_transfer->whereDate('date_into', $adate)->where('transfer_status', 1)->where('into_account', $request->into_account);
+                        $query_transfer->orWhereDate('date', $adate)->where('transfer_status', 1)->where('into_account', $request->into_account);
+                        $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', $adate)->where('into_account', $request->into_account);
+                    }
+                } else {
+                    if ($request->status != 0) { 
+                        $query_transfer->whereDate('date_into', $adate)->where('transfer_status', 1)->where('status', $request->status);
+                        $query_transfer->orWhereDate('date', $adate)->where('transfer_status', 1)->where('status', $request->status);
+                        $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', $adate)->where('status', $request->status);
+                    } else {
+                        $query_transfer->whereDate('date_into', $adate)->where('transfer_status', 1);
+                        $query_transfer->orWhereDate('date', $adate)->where('transfer_status', 1);
+                        $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', $adate);
+                    }
+                }
+
+            $query_transfer->orWhereDate('date', $adate)->where('status', 4)->where('split_status', 0);
+            $query_transfer->orderBy('date', 'asc');
+
+            if ($perPage == 10) {
+                $data_query = $query_transfer->limit($request->page.'0')->get();
+            } else {
+                $data_query = $query_transfer->paginate($perPage);
+            }
+
+        } elseif ($request->table_name == "splitTable") {
+            $query_split = DB::table('sms_alert')->whereDate('date_into', $adate)->where('split_status', 1);
+
+                if ($request->into_account != '') { 
+                    $query_split->where('into_account', $request->into_account);
+                }
+                if ($request->status != 0) { 
+                    $query_split->where('status', $request->status); 
+                }
+
+            $query_split->orderBy('date', 'asc');
+
+            if ($perPage == 10) {
+                $data_query = $query_split->limit($request->page.'0')->get();
+            } else {
+                $data_query = $query_split->paginate($perPage);
+            }
+        }
+    
+        $data = [];
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    $img_bank = '';
+                    $transfer_bank = '';
+                    $revenue_name = '';
+                    $btn_action = '';
+    
+                    // โอนจากธนาคาร
+                    $filename = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.jpg';
+                    $filename2 = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.png';
+                
+                    if (file_exists($filename)) {
+                        $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
+                    } elseif (file_exists($filename2)) {
+                        $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
+                    }
+    
+                    $transfer_bank = '<div class="flex-jc p-left-4 center">'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
+    
+                    // เข้าบัญชี
+                    $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+    
+                    // ประเภทรายได้
+                    if ($value->status == 0) { $revenue_name = '-'; } 
+                    if ($value->status == 1) { $revenue_name = 'Guest Deposit Revenue'; } 
+                    if($value->status == 2) { $revenue_name = 'All Outlet Revenue'; } 
+                    if($value->status == 3) { $revenue_name = 'Water Park Revenue'; } 
+                    if($value->status == 4) { $revenue_name = 'Credit Card Revenue'; } 
+                    if($value->status == 5) { $revenue_name = 'Agoda Bank Transfer Revenue'; } 
+                    if($value->status == 6) { $revenue_name = 'Front Desk Revenue'; } 
+                    if($value->status == 7) { $revenue_name = 'Credit Card Water Park Revenue'; } 
+                    if($value->status == 8) { $revenue_name = 'Elexa EGAT Revenue'; } 
+                    if($value->status == 9) { $revenue_name = 'Other Revenue Bank Transfer'; }
+    
+                    $btn_action .='<div class="dropdown">';
+                        $btn_action .='<button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
+                            ทำรายการ <span class="caret"></span>
+                        </button>';
+                        $btn_action .='<ul class="dropdown-menu">';
+                            if (@$role_revenue->front_desk == 1) {
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Front Desk Revenue".')">
+                                                    Front Desk Bank <br>Transfer Revenue 
+                                                </li>';
+                            }
+                            if (@$role_revenue->guest_deposit == 1) {
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Guest Deposit Revenue".')">
+                                                    Guest Deposit Bank <br> Transfer Revenue 
+                                                </li>';
+                            }
+                            if (@$role_revenue->all_outlet == 1) {
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."All Outlet Revenue".')">
+                                                    All Outlet Bank <br> Transfer Revenue 
+                                                </li>';
+                            }
+                            if (@$role_revenue->agoda == 1) {
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Credit Agoda Revenue".')">
+                                                    Agoda Bank <br>Transfer Revenue 
+                                                </li>';
+                            }
+                            if (@$role_revenue->credit_card_hotel == 1) {
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Credit Card Revenue".')">
+                                                    Credit Card Hotel <br> Revenue 
+                                                </li>';
+                            }
+                            if (@$role_revenue->elexa == 1) {
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Elexa EGAT Revenue".')">
+                                                    Elexa EGAT Bank Transfer <br> Transfer Revenue
+                                                </li>';
+                            }
+                            if (@$role_revenue->no_category == 1) {
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."No Category".')">
+                                                    No Category
+                                                </li>';
+                            }
+                            if (@$role_revenue->water_park == 1) {
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Water Park Revenue".')">
+                                                    Water Park Bank <br> Transfer Revenue 
+                                                </li>';
+                            }
+                            if (@$role_revenue->credit_water_park == 1) {
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Credit Water Park Revenue".')">
+                                                    Credit Card Water <br>Park Revenue 
+                                                </li>';
+                            }
+                            if (@$role_revenue->other_revenue == 1) {
+                                $btn_action .='<li class="button-li" onclick="other_revenue_data('.$value->id.')">
+                                                    Other Revenue <br> Bank Transfer
+                                                </li>';
+                            }
+                            if (@$role_revenue->transfer == 1) {
+                                $btn_action .='<li class="button-li" onclick="transfer_data('.$value->id.')">
+                                                    Transfer
+                                                </li>';
+                            }
+                            if (@$role_revenue->time == 1) {
+                                $btn_action .='<li class="button-li" onclick="update_time_data('.$value->id.')">
+                                                    Update Time
+                                                </li>';
+                            }
+                            if (@$role_revenue->split == 1) {
+                                $btn_action .='<li class="button-li" onclick="split_data('.$value->id.', {{ $item->amount }})">
+                                                    Split Revenue
+                                                </li>';
+                            }
+                            if (@$role_revenue->edit == 1) {
+                                $btn_action .='<li class="button-li" onclick="edit('.$value->id.')">Edit</li>
+                                                <li class="button-li" onclick="deleted('.$value->id.')">Delete</li>';
+                            }
+                        $btn_action .='</ul>';
+                    $btn_action .='</div>';
+    
+                    $data[] = [
+                        'number' => $key + 1,
+                        'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                        'time' => Carbon::parse($value->date)->format('H:i:s'),
+                        'transfer_bank' => $transfer_bank,
+                        'into_account' => $into_account,
+                        'amount' => number_format($value->amount, 2),
+                        'remark' => $value->remark ?? 'Auto',
+                        'revenue_name' => $revenue_name,
+                        'date_into' => Carbon::parse($value->date_into)->format('d/m/Y'),
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+                'data' => $data,
+            ]);
+    }
+
     public function graph30days($to_date, $type, $account)
     {
 
@@ -478,6 +730,208 @@ class SMSController extends Controller
         return response()->json([
             'amount' => $amount,
             'date' => $date,
+        ]);
+    }
+
+    public function graphThisWeek($to_date, $type, $account)
+    {
+        $days_value = [];
+
+        $sundayOfWeek = date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime(date($to_date)))));
+
+        // dd($sundayOfWeek);
+
+        $weeks = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+        $amount = [];
+        $date = [];
+
+        for ($i=0; $i < 7; $i++) {
+
+            $from_start = date("Y-m-d 21:00:00", strtotime("-1 day", strtotime($sundayOfWeek)));
+            $to_end = date($sundayOfWeek." 20:59:59");
+            $adate2 = Carbon::parse($to_end)->format('Y-m-d');
+
+            if (!empty($type)) {
+                if (!empty($account)) {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->where('status', $type)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                } else {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->where('status', $type)->orderBy('date', 'asc')->sum('amount');
+                }
+            } else {
+                if (!empty($account)) {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                } else {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->orderBy('date', 'asc')->sum('amount');
+                }
+            }
+
+            $sundayOfWeek = date("Y-m-d", strtotime("+1 day", strtotime($sundayOfWeek)));
+
+            // $average = $sum_amount / count($days_value['sunday']);
+
+            $amount[] = number_format($sum_amount, 2, '.', '');
+        }
+
+        return response()->json([
+            'amount' => $amount,
+            // 'date' => $date,
+        ]);
+    }
+
+    public function graphThisMonth($to_date, $type, $account)
+    {
+        $day = date('d', strtotime($to_date));
+        $month = date('m', strtotime($to_date));
+        $year = date('Y', strtotime($to_date));
+
+        $lastday = date('d', strtotime('last day of this month', strtotime(date($to_date))));
+
+        $amount = [];
+        $date = [];
+
+        for ($i = 1; $i <= $lastday; $i++) {
+            $from_start = date("Y-m-d 21:00:00", strtotime("-1 day", strtotime($year."-".$month."-".$i)));
+            $to_end = date("Y-m-".($i == $lastday || $i == 1 ? $i : $i)." 20:59:59");
+            $adate2 = Carbon::parse($to_end)->format('Y-m-d');
+
+            if (!empty($type)) {
+                if (!empty($account)) {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->where('status', $type)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                } else {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->where('status', $type)->orderBy('date', 'asc')->sum('amount');
+                }
+            } else {
+                if (!empty($account)) {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                } else {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->orderBy('date', 'asc')->sum('amount');
+                }
+            }
+
+            $amount[] = number_format($sum_amount, 2, '.', '');
+            $date[] = Carbon::parse($to_end)->format('d/m');
+
+            $start = date("Y-m-d 21:00:00", strtotime("+2 day", strtotime($from_start)));
+        }
+
+        return response()->json([
+            'amount' => $amount,
+            'date' => $date,
+        ]);
+    }
+
+    public function graphThisMonthByDay($to_date, $type, $account)
+    {
+        $day = date('d', strtotime($to_date));
+        $month = date('m', strtotime($to_date));
+        $year = date('Y', strtotime($to_date));
+
+        $thisMonth = $month;
+        $days_value = [];
+
+        $weeks = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+        foreach ($weeks as $key => $value) {
+            $week_day = "date_".$value;
+
+            $week_day = date('Y-m-d', strtotime('first '.$value.' of this month', strtotime(date($to_date))));
+            while (date('m', strtotime($week_day)) === $thisMonth) {
+                $days_value[$value][] = date('Y-m-d', strtotime($week_day));
+                $week_day = date('Y-m-d', strtotime('next '.$value, strtotime(date($week_day))));
+            }
+        }
+
+        $amount = [];
+        $date = [];
+
+        if (!empty($days_value)) {
+            foreach ($weeks as $key => $item) {
+                
+                // $count_key = count($item);
+                $from_start = date("Y-m-d 21:00:00", strtotime("-1 day", strtotime($days_value[$item][0])));
+                $to_end = date($days_value[$item][count($days_value['sunday']) - 1]." 20:59:59");
+                $adate2 = Carbon::parse($to_end)->format('Y-m-d');
+
+                if (!empty($type)) {
+                    if (!empty($account)) {
+                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
+                            ->orWhereDate('date_into', $adate2)->where('status', $type)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                    } else {
+                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->WhereNull('transfer_remark')->where('split_status', 0)
+                            ->orWhereDate('date_into', $adate2)->where('status', $type)->orderBy('date', 'asc')->sum('amount');
+                    }
+                } else {
+                    if (!empty($account)) {
+                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
+                            ->orWhereDate('date_into', $adate2)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                    } else {
+                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->WhereNull('transfer_remark')->where('split_status', 0)
+                            ->orWhereDate('date_into', $adate2)->orderBy('date', 'asc')->sum('amount');
+                    }
+                }
+
+                $average = $sum_amount / count($days_value['sunday']);
+    
+                $amount[] = number_format($average, 2, '.', '');
+            }
+        }
+
+        return response()->json([
+            'amount' => $amount,
+            // 'date' => $date,
+        ]);
+    }
+
+    public function graphYearRange($year, $type, $account)
+    {
+        $thisYear = $year;
+        $months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+
+        $amount = [];
+        $date = [];
+
+        foreach ($months as $key => $item) {
+
+            $date_from = date($year.'-'.$item.'-01');
+            $lastday = date('d', strtotime('last day of this month', strtotime(date($date_from))));
+
+            $from_start = date("Y-m-d 21:00:00", strtotime("-1 day", strtotime($thisYear.'-'.$item.'-01')));
+            $to_end = date($thisYear.'-'.$item.'-'.$lastday.' 20:59:59');
+            $adate2 = Carbon::parse($to_end)->format('Y-m-d');
+
+            if (!empty($type)) {
+                if (!empty($account)) {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->where('status', $type)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                } else {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->where('status', $type)->orderBy('date', 'asc')->sum('amount');
+                }
+            } else {
+                if (!empty($account)) {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                } else {
+                    $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->WhereNull('transfer_remark')->where('split_status', 0)
+                        ->orWhereDate('date_into', $adate2)->orderBy('date', 'asc')->sum('amount');
+                }
+            }
+
+            $amount[] = number_format($sum_amount, 2, '.', '');
+        }
+
+        return response()->json([
+            'amount' => $amount,
+            // 'date' => $date,
         ]);
     }
 

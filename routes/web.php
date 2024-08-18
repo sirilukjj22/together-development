@@ -72,12 +72,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('sms-update-time/{id}/{time}', 'update_time')->name('sms-update-time');
         Route::post('sms-update-split', 'update_split')->name('sms-update-split');
         Route::get('sms-agoda-receive-payment/{id}', 'receive_payment')->name('sms-agoda-receive-payment');
+
+        // Graph
+        Route::get('sms-graph-thisWeek/{date}/{type}/{account}', 'graphThisWeek')->name('sms-thisWeek');
+        Route::get('sms-graph-thisMonth/{date}/{type}/{account}', 'graphThisMonth')->name('sms-thisMonth');
+        Route::get('sms-graph-thisMonthByDay/{date}/{type}/{account}', 'graphThisMonthByDay')->name('sms-thisMonthByDay');
+        Route::get('sms-graph-yearRange/{year}/{type}/{account}', 'graphYearRange')->name('sms-yearRange');
         Route::get('sms-graph30days/{date}/{type}/{account}', 'graph30days')->name('sms-graph30days');
         Route::get('sms-graphToday/{to_date}', 'graphToday')->name('sms-graphToday');
         Route::get('sms-graphForcast/{to_date}', 'graphForcast')->name('sms-graphForcast');
 
-        // Table Search
-        Route::get('sms-search-table/{value}/{table}', 'search_table')->name('sms-search-table');
+        // Table Search / Paginate
+        Route::post('sms-search-table', 'search_table')->name('sms-search-table');
+        Route::post('sms-paginate-table', 'paginate_table')->name('sms-paginate-table');
     });
 
     # Revenue
