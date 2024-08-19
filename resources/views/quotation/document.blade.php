@@ -32,10 +32,10 @@
                 <table class="myDataTableQuotation table table-hover align-middle mb-0" style="width:100%">
                     <thead>
                         <tr>
-                            <th>No</th>
+                            <th class="text-center">No</th>
                             <th>Quotation ID</th>
-                            <th>Quotation Type</th>
-                            <th>Correct No</th>
+                            <th class="text-center">Quotation Type</th>
+                            <th class="text-center">Correct No</th>
                             <th class="text-center">Export</th>
                         </tr>
                     </thead>
@@ -45,8 +45,8 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $item->Quotation_ID }}</td>
-                                <td>{{ $item->QuotationType }}</td>
-                                <td>{{ $item->correct  }}</td>
+                                <td class="text-center">{{ $item->QuotationType }}</td>
+                                <td class="text-center">{{ $item->correct}}</td>
                                 <td class="text-center">
                                     @if ($item->correct == $correct)
                                         @if ($correct == 0)
@@ -72,7 +72,49 @@
                 </form>
             </div> <!-- .card end -->
         </div>
-        <div class="col-12 row">
+        <div class="col-sm-12 col-12">
+            <div class="card p-4 mb-4">
+                <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
+                    @csrf
+                    <input type="hidden" name="category" value="prename">
+                <table class="myDataTableQuotation table table-hover align-middle mb-0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th  class="text-center">No</th>
+                            <th  >Category</th>
+                            <th  class="text-center">Type</th>
+                            <th  class="text-center">Created_by</th>
+                            <th  class="text-center">content</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(!empty($logproposal))
+                            @foreach($logproposal as $key => $item)
+                            <tr>
+                                <td style="text-align: center;">{{$key +1 }}</td>
+                                <td style="text-align: left;">{{$item->Category}}</td>
+                                <td style="text-align: center;">{{$item->type}}</td>
+                                <td style="text-align: center;">{{@$item->userOperated->name}}</td>
+                                @php
+                                    // แยกข้อมูล content ออกเป็น array
+                                    $contentArray = explode('+', $item->content);
+                                @endphp
+                                <td style="text-align: left;">
+
+                                    <b style="color:#0000FF ">{{$item->Category}}</b>
+                                    @foreach($contentArray as $contentItem)
+                                        <div>{{ $contentItem }}</div>
+                                    @endforeach
+                                </td>
+                            </tr>
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
+                </form>
+            </div> <!-- .card end -->
+        </div>
+        <div class="col-12 row mt-3">
             <div class="col-4"></div>
             <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
                 <button type="button" class="btn btn-secondary lift btn_modal btn-space"  onclick="window.location.href='{{ route('Quotation.index') }}'">

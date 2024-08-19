@@ -1215,42 +1215,17 @@
                                                     <td style="text-align: left;">{{$item->Category}}</td>
                                                     <td style="text-align: center;">{{$item->type}}</td>
                                                     <td style="text-align: center;">{{@$item->userOperated->name}}</td>
-                                                    @if ($item->type == 'Update')
-                                                        @php
-                                                            // แยกข้อมูล content ออกเป็น array
-                                                            $contentArray = explode('+', $item->content);
-                                                        @endphp
-                                                        <td style="text-align: left;">
-                                                            @if ($item->Category == 'Additional Company Tax Invoice')
-                                                            <b style="color:#0000FF ">Edit :: Additional Company Tax Invoice</b>
-                                                            @elseif ($item->Category == 'Company / Agent')
-                                                            <b style="color:#0000FF ">Edit :: Company / Agent</b>
-                                                            @elseif ($item->Category == 'Contact')
-                                                            <b style="color:#0000FF ">Edit :: Contact</b>
-                                                            @endif
-                                                            @foreach($contentArray as $contentItem)
-                                                                <div>{{ $contentItem }}</div>
-                                                            @endforeach
-                                                        </td>
-                                                    @else
-                                                        @php
-                                                            // แยกข้อมูล content ออกเป็น array
-                                                            $contentArray = explode('+', $item->content);
-                                                        @endphp
-                                                        <td style="text-align: left;">
-                                                            @if ($item->Category == 'Additional Company Tax Invoice')
-                                                            <b style="color:#0000FF ">Create :: Additional Company Tax Invoice</b>
-                                                            @elseif ($item->Category == 'Company / Agent')
-                                                            <b style="color:#0000FF ">Create :: Company / Agent</b>
-                                                            @elseif ($item->Category == 'Contact')
-                                                            <b style="color:#0000FF ">Create :: Contact</b>
-                                                            @endif
-                                                            @foreach($contentArray as $contentItem)
-                                                                <div>{{ $contentItem }}</div>
-                                                            @endforeach
-                                                        </td>
-                                                    @endif
+                                                    @php
+                                                        // แยกข้อมูล content ออกเป็น array
+                                                        $contentArray = explode('+', $item->content);
+                                                    @endphp
+                                                    <td style="text-align: left;">
 
+                                                        <b style="color:#0000FF ">{{$item->Category}}</b>
+                                                        @foreach($contentArray as $contentItem)
+                                                            <div>{{ $contentItem }}</div>
+                                                        @endforeach
+                                                    </td>
                                                 </tr>
                                                 @endforeach
                                             @endif

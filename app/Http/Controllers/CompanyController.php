@@ -153,7 +153,7 @@ class CompanyController extends Controller
                 $save->Created_by = $userid;
                 $save->Company_ID = $N_Profile;
                 $save->type = 'Create';
-                $save->Category = 'Contact';
+                $save->Category = 'Create :: Contact';
                 $save->content =$datacompanycontact;
                 $save->save();
             }
@@ -368,7 +368,7 @@ class CompanyController extends Controller
                 $save->Created_by = $userid;
                 $save->Company_ID = $Company_ID;
                 $save->type = 'Update';
-                $save->Category = 'Contact';
+                $save->Category = 'Edit :: Contact';
                 $save->content =$datacompany;
                 $save->save();
 
@@ -746,7 +746,7 @@ class CompanyController extends Controller
                     $save->Created_by = $userid;
                     $save->Company_ID = $N_Profile;
                     $save->type = 'Create';
-                    $save->Category = 'Company / Agent';
+                    $save->Category = 'Create :: Company / Agent';
                     $save->content =$datacompany;
                     $save->save();
                 }
@@ -904,7 +904,7 @@ class CompanyController extends Controller
                     $save->Created_by = $userid;
                     $save->Company_ID = $N_Profile;
                     $save->type = 'Create';
-                    $save->Category = 'Contact';
+                    $save->Category = 'Create :: Contact';
                     $save->content =$datacompanycontact;
                     $save->save();
                 }
@@ -1202,7 +1202,7 @@ class CompanyController extends Controller
                     $save->Created_by = $userid;
                     $save->Company_ID = $company_id;
                     $save->type = 'Update';
-                    $save->Category = 'Company / Agent ';
+                    $save->Category = 'Edit :: Company / Agent ';
                     $save->content =$datacompany;
                     $save->save();
                 }
@@ -1386,7 +1386,7 @@ class CompanyController extends Controller
                 $save->Created_by = $userid;
                 $save->Company_ID = $Company_id;
                 $save->type = 'Create';
-                $save->Category = 'Additional Company Tax Invoice';
+                $save->Category = 'Create :: Additional Company Tax Invoice';
                 $save->content =$datacompany;
                 $save->save();
             }
@@ -1673,7 +1673,7 @@ class CompanyController extends Controller
                 $save->Created_by = $userid;
                 $save->Company_ID = $Company_ID;
                 $save->type = 'Update';
-                $save->Category = 'Additional Company Tax Invoice';
+                $save->Category = 'Edit :: Additional Company Tax Invoice';
                 $save->content =$datacompany;
                 $save->save();
             }
