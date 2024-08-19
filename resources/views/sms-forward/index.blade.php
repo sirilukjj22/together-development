@@ -464,7 +464,7 @@
                                                     @if ($item->split_status == 3)
                                                         <tr style="text-align: center;" class="table-secondary">
                                                         @else
-                                                        <tr style="text-align: center;" class="test">
+                                                        <tr style="text-align: center;">
                                                     @endif
     
                                                     <td class="td-content-center">{{ $key + 1 }}</td>
