@@ -1,76 +1,72 @@
 @extends('layouts.masterLayout')
-
-@section('pretitle')
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col sms-header">
-                <div class=""><span class="span1">Daily Bank Transaction Revenue</span><span class="span2"> / {{ $title ?? '' }}</span></div>
-                <div class="span3">{{ $title ?? '' }}</div>
-            </div>
-            <div class="col-auto">
-                <a href="javascript:history.back(1)" class="btn btn-color-green text-white lift">ย้อนกลับ</a>
-            </div>
-        </div> <!-- .row end -->
-    </div>
-@endsection
-
 @section('content')
-        @php
-            $role_revenue = App\Models\Role_permission_revenue::where('user_id', Auth::user()->id)->first();
-        @endphp
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
+        <div class="container-xl">
+            <div class="row align-items-center">
+                <div class="col sms-header">
+                    <div class=""><span class="span1">SMS Alert</span><span class="span2"> / {{ $title }}</span></div>
+                    <div class="span3">{{ $title }}</div>
+                </div>
+                <div class="col-auto">
+                    <a href="javascript:history.back(1)" type="button" class="btn btn-color-green text-white lift">ย้อนกลับ</a>
+                </div>
+            </div> <!-- .row end -->
+        </div>
+    </div>
+    @php
+        $role_revenue = App\Models\Role_permission_revenue::where('user_id', Auth::user()->id)->first();
+    @endphp
     <div id="content-index" class="body d-flex py-lg-4 py-3">
-        <div class="container">
+
+        <div class="container-xl">
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
                     <div class="card p-4 mb-4">
-                        <table id=""
-                            class="example ui striped table nowrap unstackable hover" style="width:60%">
+                        <table id="smsTable" class="example ui striped table nowrap unstackable hover">
                             <caption class="caption-top">
                                 <div>
                                     <div class="flex-end-g2">
-                                        <label class="entriespage-label" >entries per page : </label>
-                                        <select class="enteriespage-button">
-                                            <option value="7" class="bg-[#f7fffc] text-[#2C7F7A]">10</option>
-                                            <option value="15" class="bg-[#f7fffc] text-[#2C7F7A]">25</option>
-                                            <option value="30" class="bg-[#f7fffc] text-[#2C7F7A]">50</option>
-                                            <option value="30" class="bg-[#f7fffc] text-[#2C7F7A]">100</option>
+                                        <label class="entriespage-label">entries per page :</label>
+                                        <select class="entriespage-button" id="search-per-page-sms" onchange="getPage(1, this.value, 'sms')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "sms" ? 'selected' : '' }}>10</option>
+                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "sms" ? 'selected' : '' }}>25</option>
+                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "sms" ? 'selected' : '' }}>50</option>
+                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "sms" ? 'selected' : '' }}>100</option>
                                         </select>
-                                        <input class="search-button" placeholder="Search" /><i
-                                            class="fa fa-search fa-searh-middle"></i>
+                                        <input class="search-button search-data" id="sms" style="text-align:left;" placeholder="Search" />
                                     </div>
                             </caption>
-
                             <thead>
                                 <tr>
-                                    <th class="t-center" data-priority="1">#</th>
-                                    <th class="t-center" data-priority="1">วันที่</th>
-                                    <th class="t-center" data-priority="1">เวลา</th>
-                                    <th class="t-center">โอนจากบัญชี</th>
-                                    <th class="t-center">เข้าบัญชี</th>
-                                    <th class="t-center" data-priority="1">จำนวนเงิน</th>
-                                    <th class="t-center">ผู้ทำรายการ</th>
-                                    <th class="t-center">ประเภทรายได้</th>
-                                    <th class="t-center">วันที่โอนย้าย</th>
-                                    <th class="t-center" data-priority="1">คำสั่ง</th>
+                                    <th style="text-align: center;" data-priority="1">#</th>
+                                    <th style="text-align: center;" data-priority="1">Date</th>
+                                    <th style="text-align: center;">Time</th>
+                                    <th style="text-align: center;">Bank</th>
+                                    <th style="text-align: center;">Bank Account</th>
+                                    <th style="text-align: center;" data-priority="1">Amount</th>
+                                    <th style="text-align: center;">Creatd By</th>
+                                    <th style="text-align: center;">Income Type</th>
+                                    <th style="text-align: center;">Transfer Date</th>
+                                    <th style="text-align: center;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $total = 0; ?>
+                                <?php $total = 0; $total_list = 0; ?>
                                 @foreach ($data_sms as $key => $item)
-                                    @if ($item->split_status == 3)
-                                    <tr class="my-row table-secondary">
+                                @if ($item->split_status == 3)
+                                    <tr style="text-align: center;" class="table-secondary">
                                     @else
-                                    <tr>
-                                    @endif
-                                        <td data-label="#">{{ $key + 1 }}</td>
-                                        <td data-label="วันที่">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                        <td data-label="เวลา">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                                        <td data-label="โอนจากบัญชี">
+                                    <tr style="text-align: center;">
+                                @endif
+                                        <td class="td-content-center">{{ $key + 1 }}</td>
+                                        <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                        <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
+                                        <td class="td-content-center">
                                             <?php
                                             $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                                             $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
                                             ?>
-                                            <div class="flex-jc p-left-4">
+                                            <div class="flex-jc p-left-4 center">
                                                 @if (file_exists($filename))
                                                     <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.jpg" alt="" class="img-bank" />
                                                 @elseif (file_exists($filename2))
@@ -79,35 +75,21 @@
                                                 {{ @$item->transfer_bank->name_en }}
                                             </div>
                                         </td>
-                                        <td data-label="เข้าบัญชี">
-                                            <div class="flex-jc p-left-4">
+                                        <td class="td-content-center">
+                                            <div class="flex-jc p-left-4 center">
                                                 <img  src="../../../image/bank/SCB.jpg" alt="" class="img-bank" />{{ 'SCB ' . $item->into_account }}
                                             </div>
                                         </td>
-                                        <td data-label="จำนวนเงิน">
+                                        <td class="td-content-center">
                                             {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
                                         </td>
-                                        <td data-label="ผู้ทำรายการ">{{ $item->remark ?? 'Auto' }}</td>
-                                        <td data-label="ประเภทรายได้">
-                                            @if ($item->status == 1) Guest Deposit Revenue
-                                            @elseif($item->status == 2) All Outlet
-                                            @elseif($item->status == 3) Water Park Revenue
-                                            @elseif($item->status == 4) Credit Card Hotel Revenue
-                                            @elseif($item->status == 5) Credit Card Agoda Revenue
-                                            @elseif($item->status == 6) Front Desk Revenue
-                                            @elseif($item->status == 7) Credit Card Water Park Revenue
-                                            @endif
+                                        <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
+                                        <td class="td-content-center">Front Desk Revenue</td>
 
-                                            @if ($item->split_status == 1)
-                                                <br>
-                                                <span class="text-danger">(Split Credit Card From {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
-                                            @endif
-                                        </td>
-
-                                        <td data-label="วันที่โอนย้าย">
+                                        <td class="td-content-center">
                                             {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '' }}
                                         </td>
-                                        <td>
+                                        <td class="td-content-center">
                                             @if ($item->split_status < 3)
                                                 <div class="dropdown">
                                                     <button class="btn btn-primary" type="button" data-bs-toggle="dropdown" type="button" data-toggle="dropdown" >ทำรายการ
@@ -178,23 +160,16 @@
                                             @endif
                                         </td>
                                     </tr>
-                                    <?php $total += $item->amount; ?>
+                                    <?php $total += $item->amount; $total_list += 1; ?>
                                 @endforeach
                             </tbody>
-                            <caption class="caption-bottom ">
+                            <caption class="caption-bottom">
                                 <div class="md-flex-bt-i-c">
-                                    <p class="py2">Showing 1 to 7 of 7 entries</p>
-                                    <div class="font-bold">ยอดรวมทั้งหมด 00.00 บาท</div>
-                                    <div class="dp-flex js-center">
-                                        <div class="pagination">
-                                            <a href="{{ $data_sms->previousPageUrl() }}" class="r-l-md">&laquo;</a>
-                                            @for($i=1;$i<=$data_sms->lastPage();$i++)
-                                                <!-- a Tag for another page -->
-                                                <a class="{{ @$_GET['page'] == $i || empty(@$_GET['page']) && $i == 1 ? 'active' : '' }}" href="{{$data_sms->url($i)}}">{{$i}}</a>
-                                            @endfor
-                                            <a href="{{ $data_sms->nextPageUrl() }}" class="r-r-md">&raquo;</a>
+                                    <p class="py2" id="sms-showingEntries">{{ showingEntriesTable($data_sms, 'sms') }}</p>
+                                    <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total, 2) }} บาท</div>
+                                        <div id="sms-paginate">
+                                            {!! paginateTable($data_sms, 'sms') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                         </div>
-                                    </div>
                                 </div>
                             </caption>
                         </table>
@@ -202,6 +177,7 @@
                 </div>
             </div> <!-- .row end -->
         </div>
+
     </div>
 
     <!-- Modal -->
@@ -217,13 +193,15 @@
                 </div>
                 <div class="modal-body">
                     <label for="">เวลา</label>
-                    <input type="time" name="update_time" id="update_time" value="<?php echo date('H:i:s'); ?>" step="any">
+                    <input type="time" name="update_time" id="update_time" value="<?php echo date('H:i:s'); ?>"
+                        step="any">
                 </div>
                 <input type="hidden" name="timeID" id="timeID">
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" style="color: black;"
                         data-dismiss="modal">Close</button>
-                    <button type="button" class="button-10" style="background-color: #109699;" onclick="change_time()">Save
+                    <button type="button" class="button-10" style="background-color: #109699;"
+                        onclick="change_time()">Save
                         changes</button>
                 </div>
             </div>
@@ -279,7 +257,7 @@
                     <div class="modal-body-split">
                         <h2>เพิ่มข้อมูล</h2>
                         <label for="">ประเภทรายได้</label><br>
-                        <select class="select2" id="status" name="status" onChange="select_type()">
+                        <select class="select2" id="status-type" name="status" onchange="select_type()">
                             <option value="0">เลือกข้อมูล</option>
                             <option value="1">Room Revenue</option>
                             <option value="2">F&B Revenue</option>
@@ -414,6 +392,17 @@
     </div>
     <!-- END MODAL -->
 
+    <input type="hidden" id="filter-by" name="filter_by" value="{{ !empty($_GET['filterBy']) ? $_GET['filterBy'] : 'date' }}">
+    <input type="hidden" id="input-search-day" name="day" value="{{ !empty($_GET['day']) ? $_GET['day'] : date('d') }}">
+    <input type="hidden" id="input-search-month" name="month" value="{{ !empty($_GET['month']) ? $_GET['month'] : date('m') }}">
+    <input type="hidden" id="input-search-month-to" name="month_to" value="{{ !empty($_GET['monthTo']) ? $_GET['monthTo'] : date('m') }}">
+    <input type="hidden" id="input-search-year" name="year" value="{{ !empty($_GET['year']) ? $_GET['year'] : date('Y') }}">
+    <input type="hidden" id="status" value="{{ $status }}">
+    <input type="hidden" id="account" value="{{ !empty($_GET['account']) ? $_GET['account'] : '' }}">
+    <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
+    <input type="hidden" id="get-total-sms" value="{{ $data_sms->total() }}">
+    <input type="hidden" id="currentPage-sms" value="1">
+
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
@@ -423,16 +412,19 @@
     @endif
 
     <!-- table design css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css') }}">
 
     <!-- table design js -->
-    <script src="{{ asset('assets/js/semantic.min.js')}}"></script>
-    <script src="{{ asset('assets/js/dataTables.js')}}"></script>
-    <script src="{{ asset('assets/js/dataTables.semanticui.js')}}"></script>
-    <script src="{{ asset('assets/js/dataTables.responsive.js')}}"></script>
-    <script src="{{ asset('assets/js/responsive.semanticui.js')}}"></script>
+    <script src="{{ asset('assets/js/semantic.min.js') }}"></script>
+    <script src="{{ asset('assets/js/dataTables.js') }}"></script>
+    <script src="{{ asset('assets/js/dataTables.semanticui.js') }}"></script>
+    <script src="{{ asset('assets/js/dataTables.responsive.js') }}"></script>
+    <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
+
+    <!-- สำหรับค้นหาในส่วนของตาราง -->
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTable.js')}}"></script>
 
     <script>
         $(document).ready(function() {
@@ -469,6 +461,95 @@
                     }
                 }
             });
+        });
+
+        // Search 
+        $(document).on('keyup', '.search-data', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var total = parseInt($('#get-total-'+id).val());
+            var table_name = id+'Table';
+
+            var filter_by = $('#filter-by').val();
+            var day = $('#input-search-day').val();
+            var month = $('#input-search-month').val();
+            var year = $('#input-search-year').val();
+            var month_to = $('#input-search-month-to').val();
+            var type_status = $('#status').val();
+            var account = $('#account').val();
+            var getUrl = window.location.pathname;            
+
+            if (search_value != '') {
+                
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
+                    ajax: {
+                    url: '/sms-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        day: day,
+                        month: month,
+                        year: year,
+                        month_to: month_to,
+                        status: type_status,
+                        into_account: account
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                    "initComplete": function (settings, json) {
+
+                        if ($('#'+id+'Table .dataTables_empty').length == 0) {
+                            var count = $('#'+id+'Table tr').length - 1;
+                        } else {
+                            var count = 0;
+                            $('.dataTables_empty').addClass('dt-center');
+                        }
+                        
+                        $('#'+id+'-paginate').children().remove().end();
+                        $('#'+id+'-showingEntries').text(showingEntriesSearch(count, id));
+                        $('#'+id+'-paginate').append(paginateSearch(count, id, getUrl));
+                    },
+                    columnDefs: [
+                                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'date' },
+                        { data: 'time' },
+                        { data: 'transfer_bank' },
+                        { data: 'into_account' },
+                        { data: 'amount' },
+                        { data: 'remark' },
+                        { data: 'revenue_name' },
+                        { data: 'date_into' },
+                        { data: 'btn_action' },
+                    ],
+                        
+                });   
+
+            } else {
+                $('#'+id+'-paginate').children().remove().end();
+                $('#'+id+'-showingEntries').text(showingEntriesSearch(total, id));
+                $('#'+id+'-paginate').append(paginateSearch(total, id, getUrl));
+            }
+
+            document.getElementById(id).focus();
         });
 
         function transfer_data(id) {

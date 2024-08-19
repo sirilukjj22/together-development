@@ -67,7 +67,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('sms-get-remark-other-revenue/{id}', 'get_other_revenue')->name('sms-get-remark-other-revenue');
         Route::post('sms-other-revenue', 'other_revenue')->name('sms-other-revenue');
         Route::post('sms-transfer', 'transfer')->name('sms-transfer');
-        Route::get('sms-detail/{topic}/{date_from}', 'detail')->name('sms-detail');
+        Route::get('sms-detail/{name}', 'detail')->name('sms-detail');
         Route::get('sms-agoda_detail/{date_from}', 'agoda_detail')->name('sms-agoda_detail');
         Route::get('sms-update-time/{id}/{time}', 'update_time')->name('sms-update-time');
         Route::post('sms-update-split', 'update_split')->name('sms-update-split');

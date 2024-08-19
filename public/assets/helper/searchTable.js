@@ -36,20 +36,40 @@ function paginateSearch($total, $table, $link) {
         nextPageUrl = currentPage + 1;
     }
 
-    html += '<div class="pagination" style="white-space: nowrap;">' +
-        '<a href="#" class="r-l-md" onclick="getPage(' + previousPageUrl + ', ' + perPage + ', ' + "'" + table + "'" + ')">&laquo;</a>';
+    html += '<div class="pagination" style="white-space: nowrap;">';
+    html += '<a href="#" class="r-l-md" onclick="getPage(' + previousPageUrl + ', ' + perPage + ', ' + "'" + table + "'" + ')">&laquo;</a>';
     if (total > 0) {
-        for ($i = 1; $i <= Math.ceil(total / perPage); $i++) {
-            if (currentPage == $i) {
+        if (currentPage > 3)
+        {
+            html += '<a class="" href="#" onclick="getPage(1, ' + perPage + ', ' + "'" + table + "'" + ')">1</a>';
+
+            // if (currentPage > 3)
+            // {
+                html += '<a class="" href="#">...</a>';
+            // }
+        }
+
+        for ($i = Math.max(1, currentPage - 1); $i <= Math.min(Math.ceil(total / perPage), currentPage + 1); $i++)
+        {
+            if ($i == currentPage)
+            {
                 html += '<a class="active" href="#" onclick="getPage(' + $i + ', ' + perPage + ', ' + "'" + table + "'" + ')">' + $i + '</a>';
             } else {
                 html += '<a class="" href="#" onclick="getPage(' + $i + ', ' + perPage + ', ' + "'" + table + "'" + ')">' + $i + '</a>';
             }
         }
-    }
 
-    html += '<a href="#" class="r-r-md" onclick="getPage(' + nextPageUrl + ', ' + perPage + ', ' + "'" + table + "'" + ')">&raquo;</a>' +
-        '</div>';
+        if (currentPage < Math.ceil(total / perPage) - 2) 
+        {
+            if (currentPage < Math.ceil(total / perPage) - 3)
+            {
+                html += '<a class="" href="#">...</a>';
+            }
+            html += '<a href="#" onclick="getPage(' + Math.ceil(total / perPage) + ', ' + perPage + ', ' + "'" + table + "'" + ')">'+ Math.ceil(total / perPage) +'</a>';
+        }
+    }
+    html += '<a href="#" class="r-r-md" onclick="getPage(' + nextPageUrl + ', ' + perPage + ', ' + "'" + table + "'" + ')">&raquo;</a>';
+    html += '</div>';
 
     return html;
 }
@@ -66,6 +86,7 @@ function getPage(page, perPage, table_n) {
     var total = parseInt($('#get-total-' + table_n).val());
     var getUrl = window.location.pathname;
 
+
     $('#currentPage-' + table_n).val(page);
 
     $('#' + table_name).DataTable().destroy();
@@ -74,7 +95,7 @@ function getPage(page, perPage, table_n) {
         paging: false,
         info: false,
         ajax: {
-            url: 'sms-paginate-table',
+            url: '/sms-paginate-table',
             type: 'POST',
             dataType: "json",
             cache: false,
