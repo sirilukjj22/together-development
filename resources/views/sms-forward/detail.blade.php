@@ -4,9 +4,8 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class=""><span class="span1">SMS Alert</span><span class="span2"> / Front Dest Bank Transfer
-                            Revenue</span></div>
-                    <div class="span3">Front Dest Bank Transfer Revenue</div>
+                    <div class=""><span class="span1">SMS Alert</span><span class="span2"> / {{ $title }}</span></div>
+                    <div class="span3">{{ $title }}</div>
                 </div>
                 <div class="col-auto">
                     <a href="javascript:history.back(1)" type="button" class="btn btn-color-green text-white lift">ย้อนกลับ</a>
@@ -23,7 +22,7 @@
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
                     <div class="card p-4 mb-4">
-                        <table id="" class="example ui striped table nowrap unstackable hover">
+                        <table id="smsTable" class="example ui striped table nowrap unstackable hover">
                             <caption class="caption-top">
                                 <div>
                                     <div class="flex-end-g2">
@@ -52,7 +51,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $total = 0; ?>
+                                <?php $total = 0; $total_list = 0; ?>
                                 @foreach ($data_sms as $key => $item)
                                 @if ($item->split_status == 3)
                                     <tr style="text-align: center;" class="table-secondary">
@@ -161,15 +160,15 @@
                                             @endif
                                         </td>
                                     </tr>
-                                    <?php $total += $item->amount; ?>
+                                    <?php $total += $item->amount; $total_list += 1; ?>
                                 @endforeach
                             </tbody>
                             <caption class="caption-bottom">
                                 <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="transfer-showingEntries">{{ showingEntriesTable($data_sms, 'transfer') }}</p>
-                                    <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format(!empty($total_sms_amount) ? $total_sms_amount->amount : 0 , 2) }} บาท</div>
-                                        <div id="transfer-paginate">
-                                            {!! paginateTable($data_sms, 'transfer') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                    <p class="py2" id="sms-showingEntries">{{ showingEntriesTable($data_sms, 'sms') }}</p>
+                                    <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total, 2) }} บาท</div>
+                                        <div id="sms-paginate">
+                                            {!! paginateTable($data_sms, 'sms') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                         </div>
                                 </div>
                             </caption>
@@ -258,7 +257,7 @@
                     <div class="modal-body-split">
                         <h2>เพิ่มข้อมูล</h2>
                         <label for="">ประเภทรายได้</label><br>
-                        <select class="select2" id="status" name="status" onChange="select_type()">
+                        <select class="select2" id="status-type" name="status" onchange="select_type()">
                             <option value="0">เลือกข้อมูล</option>
                             <option value="1">Room Revenue</option>
                             <option value="2">F&B Revenue</option>
@@ -393,6 +392,17 @@
     </div>
     <!-- END MODAL -->
 
+    <input type="hidden" id="filter-by" name="filter_by" value="{{ !empty($_GET['filterBy']) ? $_GET['filterBy'] : 'date' }}">
+    <input type="hidden" id="input-search-day" name="day" value="{{ !empty($_GET['day']) ? $_GET['day'] : date('d') }}">
+    <input type="hidden" id="input-search-month" name="month" value="{{ !empty($_GET['month']) ? $_GET['month'] : date('m') }}">
+    <input type="hidden" id="input-search-month-to" name="month_to" value="{{ !empty($_GET['monthTo']) ? $_GET['monthTo'] : date('m') }}">
+    <input type="hidden" id="input-search-year" name="year" value="{{ !empty($_GET['year']) ? $_GET['year'] : date('Y') }}">
+    <input type="hidden" id="status" value="{{ $status }}">
+    <input type="hidden" id="account" value="{{ !empty($_GET['account']) ? $_GET['account'] : '' }}">
+    <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
+    <input type="hidden" id="get-total-sms" value="{{ $data_sms->total() }}">
+    <input type="hidden" id="currentPage-sms" value="1">
+
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
@@ -465,9 +475,9 @@
             var month = $('#input-search-month').val();
             var year = $('#input-search-year').val();
             var month_to = $('#input-search-month-to').val();
-            var type = $('#status').val();
-            var account = $('#into_account').val();
-            var getUrl = window.location.pathname;
+            var type_status = $('#status').val();
+            var account = $('#account').val();
+            var getUrl = window.location.pathname;            
 
             if (search_value != '') {
                 
@@ -478,7 +488,7 @@
                     info: false,
                     // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
                     ajax: {
-                    url: 'sms-search-table',
+                    url: '/sms-search-table',
                     type: 'POST',
                     dataType: "json",
                     cache: false,
@@ -490,7 +500,7 @@
                         month: month,
                         year: year,
                         month_to: month_to,
-                        status: type,
+                        status: type_status,
                         into_account: account
                     },
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -506,7 +516,7 @@
                         
                         $('#'+id+'-paginate').children().remove().end();
                         $('#'+id+'-showingEntries').text(showingEntriesSearch(count, id));
-                        $('#'+id+'-paginate').append(paginateSearch(count, id, 'sms-alert'));
+                        $('#'+id+'-paginate').append(paginateSearch(count, id, getUrl));
                     },
                     columnDefs: [
                                 { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },

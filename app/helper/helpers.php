@@ -15,30 +15,6 @@
         return $html;
     }
 
-    // function paginateTable($data, $table) 
-    // {
-    //     $currentPage = $data->currentPage();
-    //     $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-    //     $html = '';
-
-    //     $html .= '<div class="pagination" style="white-space: nowrap;">
-    //                 <a href="'.$data->previousPageUrl().'&perPage='.$perPage.'&table='.$table.'#'.$table.'" class="r-l-md">&laquo;</a>';
-    //                     if ($data->total() > 0) {
-    //                         for($i = 1; $i <= $data->lastPage(); $i++)
-    //                         {
-    //                             if ($currentPage == $i) {
-    //                                 $html .= '<a class="active" href="'.$data->url($i).'&perPage='.$perPage.'&table='.$table.'#'.$table.'">'.$i.'</a>';
-    //                             } else {
-    //                                 $html .= '<a class="" href="'.$data->url($i).'&perPage='.$perPage.'&table='.$table.'#'.$table.'">'.$i.'</a>';
-    //                             }
-    //                         }
-    //                     }
-    //       $html .= '<a href="'.$data->nextPageUrl().'&perPage='.$perPage.'&table='.$table.'#'.$table.'" class="r-r-md">&raquo;</a>
-    //               </div>';
-                  
-    //     return $html;
-    // }
-
     function paginateTable($data, $table) 
     {
         $currentPage = 1;
@@ -47,20 +23,37 @@
         $html = '';
 
         $html .= '<div class="pagination" style="white-space: nowrap;">
-                    <a href="#" onclick="getPage('.($currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
-                        if ($data->total() > 0) {
-                            for($i = 1; $i <= $data->lastPage(); $i++)
-                            {
-                                $num += 1;
+                    <a href="#" onclick="getPage('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
+                    if ($data->total() > 0) {
+                        if ($currentPage > 3)
+                        {
+                            $html .= '<a class="" href="#" onclick="getPage(1, '.$perPage.', '."'$table'".')">1</a>';
 
-                                if ($currentPage == $i) {
-                                    $html .= '<a class="active" href="#" onclick="getPage('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
-                                } else {
-                                    $html .= '<a class="" href="#" onclick="getPage('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
-                                }
+                            if ($currentPage > 4)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
                             }
                         }
-          $html .= '<a href="#" onclick="getPage('.($num+1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>
+
+                        for ($i = max(1, $currentPage - 2); $i <= min($data->lastPage(), $currentPage + 2); $i++)
+                        {
+                            if ($currentPage == $i) {
+                                $html .= '<a class="active" href="#" onclick="getPage('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            } else {
+                                $html .= '<a class="" href="#" onclick="getPage('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            }
+                        }
+
+                        if ($currentPage < $data->lastPage() - 2) 
+                        {
+                            if ($currentPage < $data->lastPage() - 3)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                            $html .= '<a href="#" onclick="getPage(' .$data->lastPage(). ', ' . $perPage . ', '."'$table'".')">'.$data->lastPage().'</a>';
+                        }
+                    }
+          $html .= '<a href="#" onclick="getPage('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>
                   </div>';
                   
         return $html;

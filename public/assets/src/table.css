@@ -244,7 +244,7 @@ tr td.td-content-center {
 .pagination a {
   color: black;
   float: left;
-  padding: 6px 13px;
+  padding: 4px 8px;
   text-decoration: none;
   transition: background-color 0.3s;
   border: 0.1px solid #2c7f7a;

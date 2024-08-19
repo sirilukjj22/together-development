@@ -66,7 +66,7 @@
                             <div class="box-revenue-card-sub">
                                 <!-- ข้อความรายการ ลำดับที่ 1-->
                                 <div class="box-sub-revenue">
-                                    <a href="{{ route('sms-detail', ['front', $date_from]) }}">
+                                    <a href="#" onclick="sms_detail('front')">
                                         <div>
                                             <div class="box-sub-revenue-content text-white">
                                                 <div>
@@ -82,7 +82,7 @@
                                 </div>
                                 <!-- ข้อความรายการ ลำดับที่ 2-->
                                 <div class="box-sub-revenue">
-                                    <a href="{{ route('sms-detail', ['room', $date_from]) }}">
+                                    <a href="#" onclick="sms_detail('room')">
                                         <div>
                                             <div class="box-sub-revenue-content text-white">
                                                 <div>
@@ -98,7 +98,7 @@
                                 </div>
                                 <!-- ข้อความรายการ ลำดับที่ 3-->
                                 <div class="box-sub-revenue">
-                                    <a href="{{ route('sms-detail', ['all_outlet', $date_from]) }}">
+                                    <a href="#" onclick="sms_detail('all_outlet')">
                                         <div>
                                             <div class="box-sub-revenue-content text-white">
                                                 <div>
@@ -114,7 +114,7 @@
                                 </div>
                                 <!-- ข้อความรายการ ลำดับที่ 4-->
                                 <div class="box-sub-revenue">
-                                    <a href="{{ route('sms-detail', ['water', $date_from]) }}">
+                                    <a href="#" onclick="sms_detail('water')">
                                         <div>
                                             <div class="box-sub-revenue-content text-white">
                                                 <div>
@@ -130,7 +130,7 @@
                                 </div>
                                 <!-- ข้อความรายการ ลำดับที่ 5-->
                                 <div class="box-sub-revenue">
-                                    <a href="{{ route('sms-detail', ['credit_transaction', $date_from]) }}">
+                                    <a href="#" onclick="sms_detail('credit_transaction')">
                                         <div>
                                             <div class="box-sub-revenue-content text-white">
                                                 <div>
@@ -146,7 +146,7 @@
                                 </div>
                                 <!-- ข้อความรายการ ลำดับที่ 6-->
                                 <div class="box-sub-revenue">
-                                    <a href="{{ route('sms-detail', ['credit_water', $date_from]) }}">
+                                    <a href="#" onclick="sms_detail('credit_water')">
                                         <div>
                                             <div class="box-sub-revenue-content text-white">
                                                 <div>
@@ -178,7 +178,7 @@
                                 </div>
                                 <!-- ข้อความรายการ ลำดับที่ 8-->
                                 <div class="box-sub-revenue">
-                                    <a href="{{ route('sms-detail', ['other', $date_from]) }}">
+                                    <a href="#" onclick="sms_detail('other_revenue')">
                                         <div>
                                             <div class="box-sub-revenue-content text-white">
                                                 <div>
@@ -194,7 +194,7 @@
                                 </div>
                                 <!-- ข้อความรายการ ลำดับที่ 9-->
                                 <div class="box-sub-revenue sp-2">
-                                    <a href="{{ route('sms-detail', ['elexa_revenue', $date_from]) }}">
+                                    <a href="#" onclick="sms_detail('elexa_revenue')">
                                         <div>
                                             <div class="box-sub-revenue-content text-white">
                                                 <div>
@@ -216,7 +216,7 @@
                         <div class="box-detail-g-4">
                             <!-- ข้อความรายการ ลำดับที่ 1-->
                             <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
-                                <a href="{{ route('sms-detail', ['transfer_revenue', $date_from]) }}">
+                                <a href="#" onclick="sms_detail('transfer_revenue')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
                                             <div class="w-60p">
@@ -231,7 +231,7 @@
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 2-->
                             <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
-                                <a href="{{ route('sms-detail', ['split_revenue', $date_from]) }}">
+                                <a href="#" onclick="sms_detail('split_revenue')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
                                             <div class="w-60p">
@@ -247,7 +247,7 @@
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 3-->
                             <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
-                                <a href="{{ route('sms-detail', ['transfer_transaction', $date_from]) }}">
+                                <a href="#" onclick="sms_detail('transfer_transaction')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
                                             <div class="w-60p">
@@ -263,7 +263,7 @@
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 4-->
                             <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
-                                <a href="{{ route('sms-detail', ['credit_transaction', $date_from]) }}">
+                                <a href="#" onclick="sms_detail('credit_transaction')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
                                             <div class="w-60p">
@@ -279,7 +279,7 @@
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 5-->
                             <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
-                                <a href="{{ route('sms-detail', ['split_transaction', $date_from]) }}">
+                                <a href="#" onclick="sms_detail('split_transaction')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
                                             <div class="w-60p">
@@ -295,7 +295,7 @@
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 6-->
                             <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
-                                <a href="{{ route('sms-detail', ['total_transaction', $date_from]) }}">
+                                <a href="#" onclick="sms_detail('total_transaction')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
                                             <div class="w-60p">
@@ -311,7 +311,7 @@
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 7-->
                             <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
-                                <a href="{{ route('sms-detail', ['status', $date_from]) }}">
+                                <a href="#" onclick="sms_detail('status')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
                                             <div class="w-60p">
@@ -327,7 +327,7 @@
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 8-->
                             <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
-                                <a href="{{ route('sms-detail', ['no_income_revenue', $date_from]) }}">
+                                <a href="#" onclick="sms_detail('no_income_revenue')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
                                             <div class="w-60p">
@@ -1618,6 +1618,23 @@
 
             document.getElementById(id).focus();
         });
+
+        function sms_detail(revenue_name) 
+        {
+            var filter_by = $('#filter-by').val();
+            var day = $('#input-search-day').val();
+            var month = $('#input-search-month').val();
+            var year = $('#input-search-year').val();
+            var month_to = $('#input-search-month-to').val();
+            var type = $('#status').val();
+            var account = $('#into_account').val();
+
+            if (account == '') {
+                account = 0;
+            }
+
+            window.location.href = "{!! url('sms-detail/"+revenue_name+"?filterBy="+filter_by+"&day="+day+"&month="+month+"&year="+year+"&monthTo="+month_to+"&type="+type+"&account="+account+"') !!}";
+        }
 
         function AddOrSubractDays(startingDate, number, add) 
         {
