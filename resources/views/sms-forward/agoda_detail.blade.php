@@ -20,19 +20,20 @@
 
         <div class="container-xl">
             <div class="row clearfix">
-                <div class="col-md-6 col-6">
+                <div class="col-md-12">
                     <div class="card p-4 mb-4">
+                        <h4 class="" style="color:rgba(44,127,122,.95);">Revenue</h4>
                         <table id="revenueTable" class="example ui striped table nowrap unstackable hover">
                             <caption class="caption-top">
                                     <div class="flex-end-g2">
                                         <label class="entriespage-label">entries per page :</label>
-                                        <select class="entriespage-button" id="search-per-page-sms" onchange="getPage(1, this.value, 'sms')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "sms" ? 'selected' : '' }}>10</option>
-                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "sms" ? 'selected' : '' }}>25</option>
-                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "sms" ? 'selected' : '' }}>50</option>
-                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "sms" ? 'selected' : '' }}>100</option>
+                                        <select class="entriespage-button" id="search-per-page-revenue" onchange="getPage(1, this.value, 'revenue')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>10</option>
+                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>25</option>
+                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>50</option>
+                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>100</option>
                                         </select>
-                                        <input class="search-button search-data" id="sms" style="text-align:left;" placeholder="Search" />
+                                        <input class="search-button search-data" id="revenue" style="text-align:left;" placeholder="Search" />
                                     </div>
                             </caption>
                             <thead>
@@ -45,40 +46,41 @@
                             <tbody>
                                 <?php $total = 0; ?>
                                 @foreach ($sum_revenue as $key => $item)
-                                    <tr class="my-row">
+                                    <tr style="text-align: center;">
                                         <td class="td-content-center">{{ $key + 1 }}</td>
                                         <td class="td-content-center">{{ $item->date == '' ? '' : Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                        <td class="td-content-center">{{ number_format($item->agoda_outstanding, 2) }}</td>
+                                        <td style="text-align: right;">{{ number_format($item->agoda_outstanding, 2) }}</td>
                                     </tr>
                                     <?php $total += $item->agoda_outstanding; ?>
                                 @endforeach
                             </tbody>
                             <caption class="caption-bottom">
                                 <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="sms-showingEntries">{{ showingEntriesTable($data_sms, 'sms') }}</p>
+                                    <p class="py2" id="revenue-showingEntries">{{ showingEntriesTable($sum_revenue, 'revenue') }}</p>
                                     <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total, 2) }} บาท</div>
-                                        <div id="sms-paginate">
-                                            {!! paginateTable($data_sms, 'sms') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                        <div id="revenue-paginate">
+                                            {!! paginateTable($sum_revenue, 'revenue') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                         </div>
                                 </div>
                             </caption>
                         </table>
                     </div> <!-- .card end -->
                 </div>
-                <div class="col-md-6 col-6">
+                <div class="col-md-12">
                     <div class="card p-4 mb-4">
-                        <table id="smsTable" class="example ui striped table nowrap unstackable hover">
+                        <h4 class="" style="color:rgba(44,127,122,.95);">SMS</h4>
+                        <table id="smsTable" class="example2 ui striped table nowrap unstackable hover">
                             <caption class="caption-top mt-2">
                                 <div>
                                     <div class="flex-end-g2">
                                         <label class="entriespage-label">entries per page :</label>
-                                        <select class="entriespage-button" id="search-per-page-sms" onchange="getPage(1, this.value, 'sms')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "sms" ? 'selected' : '' }}>10</option>
-                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "sms" ? 'selected' : '' }}>25</option>
-                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "sms" ? 'selected' : '' }}>50</option>
-                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "sms" ? 'selected' : '' }}>100</option>
+                                        <select class="entriespage-button" id="search-per-page-smsAgoda" onchange="getPage(1, this.value, 'smsAgoda')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "smsAgoda" ? 'selected' : '' }}>10</option>
+                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "smsAgoda" ? 'selected' : '' }}>25</option>
+                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "smsAgoda" ? 'selected' : '' }}>50</option>
+                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "smsAgoda" ? 'selected' : '' }}>100</option>
                                         </select>
-                                        <input class="search-button search-data" id="sms" style="text-align:left;" placeholder="Search" />
+                                        <input class="search-button search-data" id="smsAgoda" style="text-align:left;" placeholder="Search" />
                                     </div>
                             </caption>
                             <thead>
@@ -129,10 +131,10 @@
                             </tbody>
                             <caption class="caption-bottom">
                                 <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="sms-showingEntries">{{ showingEntriesTable($data_sms, 'sms') }}</p>
-                                    <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total, 2) }} บาท</div>
-                                        <div id="sms-paginate">
-                                            {!! paginateTable($data_sms, 'sms') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                    <p class="py2" id="smsAgoda-showingEntries">{{ showingEntriesTable($data_sms, 'smsAgoda') }}</p>
+                                    <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total_sms, 2) }} บาท</div>
+                                        <div id="smsAgoda-paginate">
+                                            {!! paginateTable($data_sms, 'smsAgoda') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                         </div>
                                 </div>
                             </caption>
@@ -151,8 +153,10 @@
     <input type="hidden" id="status" value="5">
     <input type="hidden" id="account" value="{{ !empty($_GET['account']) ? $_GET['account'] : '' }}">
     <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
-    <input type="hidden" id="get-total-sms" value="{{ $data_sms->total() }}">
-    <input type="hidden" id="currentPage-sms" value="1">
+    <input type="hidden" id="get-total-revenue" value="{{ $sum_revenue->total() }}">
+    <input type="hidden" id="get-total-smsAgoda" value="{{ $data_sms->total() }}">
+    <input type="hidden" id="currentPage-smsAgoda" value="1">
+    <input type="hidden" id="currentPage-revenue" value="1">
 
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
@@ -162,17 +166,7 @@
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
     @endif
 
-    <!-- table design css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css') }}">
-
-    <!-- table design js -->
-    <script src="{{ asset('assets/js/semantic.min.js') }}"></script>
-    <script src="{{ asset('assets/js/dataTables.js') }}"></script>
-    <script src="{{ asset('assets/js/dataTables.semanticui.js') }}"></script>
-    <script src="{{ asset('assets/js/dataTables.responsive.js') }}"></script>
-    <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
+    
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
     <script type="text/javascript" src="{{ asset('assets/helper/searchTable.js')}}"></script>
@@ -181,6 +175,39 @@
         $(document).ready(function() {
 
             new DataTable('.example', {
+                responsive: true,
+                searching: false,
+                paging: false,
+                info: false,
+                columnDefs: [{
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null,
+                    },
+                    {
+                        width: '7%',
+                        targets: 0
+                    },
+                    {
+                        width: '10%',
+                        targets: 1
+                    },
+                    {
+                        width: '15%',
+                        targets: 2
+                    }
+
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                }
+            });
+
+            new DataTable('.example2', {
                 responsive: true,
                 searching: false,
                 paging: false,
@@ -233,66 +260,119 @@
             if (search_value != '') {
                 
                 $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
-                    ajax: {
-                    url: '/sms-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        day: day,
-                        month: month,
-                        year: year,
-                        month_to: month_to,
-                        status: type_status,
-                        into_account: account
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                    "initComplete": function (settings, json) {
+                if (id != "revenue") {
+                    var table = $('#'+table_name).dataTable({
+                        searching: false,
+                        paging: false,
+                        info: false,
+                        // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
+                        ajax: {
+                            url: '/sms-search-table',
+                            type: 'POST',
+                            dataType: "json",
+                            cache: false,
+                            data: {
+                                search_value: search_value,
+                                table_name: table_name,
+                                filter_by: filter_by,
+                                day: day,
+                                month: month,
+                                year: year,
+                                month_to: month_to,
+                                status: type_status,
+                                into_account: account
+                            },
+                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        },
+                        "initComplete": function (settings, json) {
+    
+                            if ($('#'+id+'Table .dataTables_empty').length == 0) {
+                                var count = $('#'+id+'Table tr').length - 1;
+                            } else {
+                                var count = 0;
+                                $('.dataTables_empty').addClass('dt-center');
+                            }
+                            
+                            $('#'+id+'-paginate').children().remove().end();
+                            $('#'+id+'-showingEntries').text(showingEntriesSearch(count, id));
+                            $('#'+id+'-paginate').append(paginateSearch(count, id, getUrl));
+                        },
+                        columnDefs: [
+                                    { targets: [0, 1, 2, 3, 4, 5, 6], className: 'dt-center td-content-center' },
+                        ],
+                        order: [0, 'asc'],
+                        responsive: {
+                            details: {
+                                type: 'column',
+                                target: 'tr'
+                            }
+                        },
+                        columns: [
+                            { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                            { data: 'date' },
+                            { data: 'time' },
+                            { data: 'transfer_bank' },
+                            { data: 'into_account' },
+                            { data: 'amount' },
+                            { data: 'btn_action' },
+                        ],
+                            
+                    });   
+                } else {
+                    var table = $('#'+table_name).dataTable({
+                        searching: false,
+                        paging: false,
+                        info: false,
+                        // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
+                        ajax: {
+                            url: '/sms-search-table',
+                            type: 'POST',
+                            dataType: "json",
+                            cache: false,
+                            data: {
+                                search_value: search_value,
+                                table_name: table_name,
+                                filter_by: filter_by,
+                                day: day,
+                                month: month,
+                                year: year,
+                                month_to: month_to,
+                                status: type_status,
+                                into_account: account
+                            },
+                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        },
+                        "initComplete": function (settings, json) {
 
-                        if ($('#'+id+'Table .dataTables_empty').length == 0) {
-                            var count = $('#'+id+'Table tr').length - 1;
-                        } else {
-                            var count = 0;
-                            $('.dataTables_empty').addClass('dt-center');
-                        }
-                        
-                        $('#'+id+'-paginate').children().remove().end();
-                        $('#'+id+'-showingEntries').text(showingEntriesSearch(count, id));
-                        $('#'+id+'-paginate').append(paginateSearch(count, id, getUrl));
-                    },
-                    columnDefs: [
-                                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'date' },
-                        { data: 'time' },
-                        { data: 'transfer_bank' },
-                        { data: 'into_account' },
-                        { data: 'amount' },
-                        { data: 'remark' },
-                        { data: 'revenue_name' },
-                        { data: 'date_into' },
-                        { data: 'btn_action' },
-                    ],
-                        
-                });   
+                            if ($('#'+id+'Table .dataTables_empty').length == 0) {
+                                var count = $('#'+id+'Table tr').length - 1;
+                            } else {
+                                var count = 0;
+                                $('.dataTables_empty').addClass('dt-center');
+                            }
+                            
+                            $('#'+id+'-paginate').children().remove().end();
+                            $('#'+id+'-showingEntries').text(showingEntriesSearch(count, id));
+                            $('#'+id+'-paginate').append(paginateSearch(count, id, getUrl));
+                        },
+                        columnDefs: [
+                                    { targets: [0, 1, 2], className: 'dt-center td-content-center' },
+                        ],
+                        order: [0, 'asc'],
+                        responsive: {
+                            details: {
+                                type: 'column',
+                                target: 'tr'
+                            }
+                        },
+                        columns: [
+                            { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                            { data: 'date' },
+                            { data: 'agoda_outstanding' },
+                        ],
+                            
+                    }); 
+                }
 
             } else {
                 $('#'+id+'-paginate').children().remove().end();
@@ -477,6 +557,11 @@
             });
         }
 
+        function currencyFormat(num) {
+            return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        }
+
+        // ประเภทรายได้
         function change_status($id, $status) {
             jQuery.ajax({
                 type: "GET",
@@ -485,6 +570,27 @@
                 async: false,
                 success: function(result) {
                     location.reload();
+                },
+            });
+        }
+
+        // ประเภทรายได้ Other Revenue
+        function other_revenue_data(id) {
+            $('#otherDataID').val(id);
+            $('#modalOtherRevenue').modal('show');
+
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('sms-get-remark-other-revenue/"+id+"') !!}",
+                datatype: "JSON",
+                cache: false,
+                async: false,
+                success: function(response) {
+                    if (response.data !== null) {
+                        $('#other_revenue_remark').val(response.data.other_remark);
+                    } else {
+                        $('#other_revenue_remark').val('');
+                    }
                 },
             });
         }
@@ -519,83 +625,83 @@
         }
 
         // Sweetalert2 #กรอกข้อมูลไม่ครบ
-        document.querySelector(".sa-button-submit").addEventListener('click', function() {
-            var date = $('#sms-date').val();
-            var time = $('#sms-time').val();
-            var transfer = $('#error-transfer').val();
-            var into = $('#error-into').val();
-            var amount = $('#amount').val();
-            var type = $('#status').val();
+        // document.querySelector(".sa-button-submit").addEventListener('click', function() {
+        //     var date = $('#sms-date').val();
+        //     var time = $('#sms-time').val();
+        //     var transfer = $('#error-transfer').val();
+        //     var into = $('#error-into').val();
+        //     var amount = $('#amount').val();
+        //     var type = $('#status').val();
 
-            $('#sms-date').css('border-color', '#f0f0f0');
-            $('#sms-time').css('border-color', '#f0f0f0');
-            $('#error-transfer').css('border-color', '#f0f0f0');
-            $('#error-into').css('border-color', '#f0f0f0');
-            $('#amount').css('border-color', '#f0f0f0');
+        //     $('#sms-date').css('border-color', '#f0f0f0');
+        //     $('#sms-time').css('border-color', '#f0f0f0');
+        //     $('#error-transfer').css('border-color', '#f0f0f0');
+        //     $('#error-into').css('border-color', '#f0f0f0');
+        //     $('#amount').css('border-color', '#f0f0f0');
 
-            if (date == '') {
-                $('#sms-date').css('border-color', 'red');
+        //     if (date == '') {
+        //         $('#sms-date').css('border-color', 'red');
 
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'กรุณาระบุข้อมูลให้ครบ!',
-                });
-            }
+        //         return Swal.fire({
+        //             icon: 'error',
+        //             title: 'ไม่สามารถบันทึกข้อมูลได้',
+        //             text: 'กรุณาระบุข้อมูลให้ครบ!',
+        //         });
+        //     }
 
-            if (type != 5 && time == '') {
-                $('#sms-time').css('border-color', 'red');
+        //     if (type != 5 && time == '') {
+        //         $('#sms-time').css('border-color', 'red');
 
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'กรุณาระบุข้อมูลให้ครบ!',
-                });
-            }
+        //         return Swal.fire({
+        //             icon: 'error',
+        //             title: 'ไม่สามารถบันทึกข้อมูลได้',
+        //             text: 'กรุณาระบุข้อมูลให้ครบ!',
+        //         });
+        //     }
 
-            if (transfer == 0) {
-                $('#error-transfer').css('border', '1px solid red').css("border-radius", 5);
+        //     if (transfer == 0) {
+        //         $('#error-transfer').css('border', '1px solid red').css("border-radius", 5);
 
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'กรุณาระบุข้อมูลให้ครบ!',
-                });
-            }
+        //         return Swal.fire({
+        //             icon: 'error',
+        //             title: 'ไม่สามารถบันทึกข้อมูลได้',
+        //             text: 'กรุณาระบุข้อมูลให้ครบ!',
+        //         });
+        //     }
 
-            if (into == 0) {
-                $('#error-transfer').css('border', '1px solid red').css("border-radius", 5);
+        //     if (into == 0) {
+        //         $('#error-transfer').css('border', '1px solid red').css("border-radius", 5);
 
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'กรุณาระบุข้อมูลให้ครบ!',
-                });
-            }
+        //         return Swal.fire({
+        //             icon: 'error',
+        //             title: 'ไม่สามารถบันทึกข้อมูลได้',
+        //             text: 'กรุณาระบุข้อมูลให้ครบ!',
+        //         });
+        //     }
 
-            if (amount == '') {
-                $('#amount').css('border-color', 'red');
+        //     if (amount == '') {
+        //         $('#amount').css('border-color', 'red');
 
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'กรุณาระบุข้อมูลให้ครบ!',
-                });
+        //         return Swal.fire({
+        //             icon: 'error',
+        //             title: 'ไม่สามารถบันทึกข้อมูลได้',
+        //             text: 'กรุณาระบุข้อมูลให้ครบ!',
+        //         });
 
-            } else {
+        //     } else {
 
-                jQuery.ajax({
-                    type: "POST",
-                    url: "{!! route('sms-store') !!}",
-                    datatype: "JSON",
-                    data: $('#form-id').serialize(),
-                    async: false,
-                    success: function(result) {
-                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
-                        location.reload();
-                    },
-                });
-            }
-        });
+        //         jQuery.ajax({
+        //             type: "POST",
+        //             url: "{!! route('sms-store') !!}",
+        //             datatype: "JSON",
+        //             data: $('#form-id').serialize(),
+        //             async: false,
+        //             success: function(result) {
+        //                 Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+        //                 location.reload();
+        //             },
+        //         });
+        //     }
+        // });
     </script>
 @endsection

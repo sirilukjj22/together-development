@@ -1,8 +1,8 @@
 
 // Showing Entries
-function showingEntriesSearch($total, $table_name) {
+function showingEntriesSearch($page, $total, $table_name) {
     var total = $total;
-    var currentPage = 1;
+    var currentPage = parseInt($page);
     var perPage = parseInt($('#search-per-page-' + $table_name).val());
     var html = '';
 
@@ -26,7 +26,7 @@ function paginateSearch($total, $table, $link) {
     var previousPageUrl = currentPage;
     var nextPageUrl = currentPage;
     var table = $table;
-    var html = '';
+    var html = '';    
 
     if (currentPage > 1) {
         previousPageUrl = currentPage - 1;
@@ -49,7 +49,7 @@ function paginateSearch($total, $table, $link) {
             // }
         }
 
-        for ($i = Math.max(1, currentPage - 1); $i <= Math.min(Math.ceil(total / perPage), currentPage + 1); $i++)
+        for ($i = Math.max(1, currentPage - 2); $i <= Math.min(Math.ceil(total / perPage), currentPage + 2); $i++)
         {
             if ($i == currentPage)
             {
@@ -90,56 +90,99 @@ function getPage(page, perPage, table_n) {
     $('#currentPage-' + table_n).val(page);
 
     $('#' + table_name).DataTable().destroy();
-    var table = $('#' + table_name).dataTable({
-        searching: false,
-        paging: false,
-        info: false,
-        ajax: {
-            url: '/sms-paginate-table',
-            type: 'POST',
-            dataType: "json",
-            cache: false,
-            data: {
-                page: page,
-                perPage: perPage,
-                table_name: table_name,
-                filter_by: filter_by,
-                day: day,
-                month: month,
-                year: year,
-                month_to: month_to,
-                status: type,
-                into_account: account
+    if (table_n != "revenue") {
+        var table = $('#' + table_name).dataTable({
+            searching: false,
+            paging: false,
+            info: false,
+            ajax: {
+                url: '/sms-paginate-table',
+                type: 'POST',
+                dataType: "json",
+                cache: false,
+                data: {
+                    page: page,
+                    perPage: perPage,
+                    table_name: table_name,
+                    filter_by: filter_by,
+                    day: day,
+                    month: month,
+                    year: year,
+                    month_to: month_to,
+                    status: type,
+                    into_account: account
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        },
-        columnDefs: [
-            { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
-        ],
-        order: [0, 'asc'],
-        responsive: {
-            details: {
-                type: 'column',
-                target: 'tr'
-            }
-        },
-        columns: [
-            { data: 'number' },
-            { data: 'date' },
-            { data: 'time' },
-            { data: 'transfer_bank' },
-            { data: 'into_account' },
-            { data: 'amount' },
-            { data: 'remark' },
-            { data: 'revenue_name' },
-            { data: 'date_into' },
-            { data: 'btn_action' },
-        ],
-
-    });
+            columnDefs: [
+                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
+            ],
+            order: [0, 'asc'],
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            },
+            columns: [
+                { data: 'number' },
+                { data: 'date' },
+                { data: 'time' },
+                { data: 'transfer_bank' },
+                { data: 'into_account' },
+                { data: 'amount' },
+                { data: 'remark' },
+                { data: 'revenue_name' },
+                { data: 'date_into' },
+                { data: 'btn_action' },
+            ],
+    
+        });
+    } else {
+        var table = $('#' + table_name).dataTable({
+            searching: false,
+            paging: false,
+            info: false,
+            ajax: {
+                url: '/sms-paginate-table',
+                type: 'POST',
+                dataType: "json",
+                cache: false,
+                data: {
+                    page: page,
+                    perPage: perPage,
+                    table_name: table_name,
+                    filter_by: filter_by,
+                    day: day,
+                    month: month,
+                    year: year,
+                    month_to: month_to,
+                    status: type,
+                    into_account: account
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            },
+            columnDefs: [
+                { targets: [0, 1, 2], className: 'dt-center td-content-center' },
+            ],
+            order: [0, 'asc'],
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            },
+            columns: [
+                { data: 'number' },
+                { data: 'date' },
+                { data: 'agoda_outstanding' },
+            ],
+    
+        });
+    }
 
     $('#' + table_n + '-paginate').children().remove().end();
-    $('#' + table_n + '-showingEntries').text(showingEntriesSearch(total, table_n));
+    $('#' + table_n + '-showingEntries').text(showingEntriesSearch(page, total, table_n));
     $('#' + table_n + '-paginate').append(paginateSearch(total, table_n, getUrl));
 
 }

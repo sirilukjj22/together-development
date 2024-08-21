@@ -181,212 +181,221 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalCenter1Title" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <!-- Modal: Other Revenue -->
+    <div class="modal fade" id="modalOtherRevenue" tabindex="-1">
+        <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">แก้ไขเวลาการโอน</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="modal-header bg-color-green">
+                    <h5 class="modal-title text-white" id="modalOtherRevenueLabel">Other Revenue Bank Transfer</h5>
+                    <button type="button" class="btn-close lift" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <label for="">เวลา</label>
-                    <input type="time" name="update_time" id="update_time" value="<?php echo date('H:i:s'); ?>"
-                        step="any">
-                </div>
-                <input type="hidden" name="timeID" id="timeID">
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" style="color: black;"
-                        data-dismiss="modal">Close</button>
-                    <button type="button" class="button-10" style="background-color: #109699;"
-                        onclick="change_time()">Save
-                        changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalCenter2Title" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">โอนย้าย</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="{{ route('sms-transfer') }}" method="POST" enctype="multipart/form-data"
-                    class="basic-form">
+                <form method="POST" enctype="multipart/form-data" class="basic-form" id="form-other">
                     @csrf
                     <div class="modal-body">
-                        <div class="revenue_type_modal">
-                            <label for="">วันที่โอนย้ายไป</label>
-                            <input type="date" name="date_transfer" id="date_transfer">
-                        </div>
-                        <div class="box_modal">
-                            <label>หมายเหตุ</label>
-                            <textarea name="transfer_remark" id="transfer_remark" rows="7" cols="50" required>ปิดยอดช้ากว่ากำหนด</textarea>
-                        </div>
-                        <input type="hidden" name="dataID" id="dataID">
+                        <label>หมายเหตุ</label>
+                        <textarea class="form-control" name="other_revenue_remark" id="other_revenue_remark" rows="7" cols="50" placeholder="กรุณาระบุหมายเหตุ..." required></textarea>
+                        <input type="hidden" name="dataID" id="otherDataID">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" style="color: black;"
-                            data-dismiss="modal">Close</button>
-                        <button type="submit" class="button-10" style="background-color: #109699;">Save changes</button>
+                        <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-color-green lift" id="btn-save-other-revenue">Save changes</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="exampleModalCenter5" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalCenter2Title" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+    <!-- Modal: Transfer -->
+    <div class="modal fade" id="exampleModalCenter2" tabindex="-1">
+        <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">เพิ่มข้อมูล</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-color-green">
+                    <h5 class="modal-title text-white" id="exampleModalCenter2Label">โอนย้าย</h5>
+                    <button type="button" class="btn-close lift" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('sms-transfer') }}" method="POST" enctype="multipart/form-data" class="basic-form">
+                    @csrf
+                    <div class="modal-body row">
+                        <div class="col-md-12 col-12">
+                            <label>วันที่โอนย้ายไป</label>
+                            <input type="date" class="form-control" name="date_transfer" id="date_transfer">
+                        </div>
+                        <div class="col-md-12 col-12 mt-3">
+                            <label>หมายเหตุ</label>
+                            <textarea class="form-control" name="transfer_remark" id="transfer_remark" rows="5" cols="10" required>ปิดยอดช้ากว่ากำหนด</textarea>
+                        </div>
+                        <input type="hidden" name="dataID" id="dataID">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-color-green lift">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Time -->
+    <div class="modal fade" id="exampleModalCenter1" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-color-green">
+                    <h5 class="modal-title text-white" id="exampleModalCenter1Label">แก้ไขเวลาการโอน</h5>
+                    <button type="button" class="btn-close lift" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body row">
+                    <div class="col-md-12 col-12">
+                        <label>เวลา</label>
+                        <input type="time" class="form-control" name="update_time" id="update_time" value="<?php echo date('H:i:s'); ?>" step="any">
+                    </div>
+                    <input type="hidden" name="timeID" id="timeID">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-color-green lift" onclick="change_time()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Split -->
+    <div class="modal fade" id="SplitModalCenter" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-color-green">
+                    <h5 class="modal-title text-white" id="SplitModalCenterLabel">Split Revenue</h5>
+                    <button type="button" class="btn-close lift" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="#" method="POST" enctype="multipart/form-data" class="form-split">
+                    @csrf
+                    <div class="modal-body row">
+                        <div class="col-md-6">
+                            <label>วันที่</label>
+                            <input type="date" class="form-control" name="date-split" id="date-split">
+                            <span class="text-danger fw-bold" id="text-split-alert"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label>จำนวนเงิน <span class="text-danger fw-bold" id="text-split-amount"></span></label>
+                            <input type="hidden" name="balance_amount" id="balance_amount">
+                            <input type="text" class="form-control" name="split-amount" id="split-amount" placeholder="0.00">
+                            <span class="text-danger fw-bold" id="text-split-alert"></span>
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <button type="button" class="btn btn-color-green lift btn-split-add">Add</button>
+                            <button type="button" class="btn btn-secondary lift btn-split-add" onclick="toggleHide()">Delete All</button>
+
+                            <span class="split-todo-error text-danger" style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
+                            <span class="split-error text-danger"></span>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <div class="print_invoice">
+                                <table class="items">
+                                    <thead>
+                                        <tr>
+                                            <th>วันที่</th>
+                                            <th>จำนวนเงิน</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="split-todo-list">
+    
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <input type="hidden" id="split_total_number" value="0">
+                        <input type="hidden" id="split_number" value="0">
+                        <input type="hidden" id="split_list_num" name="split_list_num" value="0">
+                        <input type="hidden" name="splitID" id="splitID">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-color-green lift btn-save-split" onclick="change_split()">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal เพิ่มข้อมูล modal fade -->
+    <div class="modal fade bd-example-modal-lg" id="exampleModalCenter5" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter5Label" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content rounded-lg">
+                <div class="modal-header md-header">
+                    <h5 class="modal-title text-white" id="exampleModalCenter5Label">เพิ่มข้อมูล
+                    </h5>
+                    <button type="button" class="close text-white text-2xl" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <form action="{{ route('sms-store') }}" method="POST" class="" id="form-id">
                     @csrf
-                    <div class="modal-body-split">
-                        <h2>เพิ่มข้อมูล</h2>
-                        <label for="">ประเภทรายได้</label><br>
-                        <select class="select2" id="status-type" name="status" onchange="select_type()">
+                    <div class="modal-body">
+                        <label for="">ประเภทรายได้</label>
+                        <br>
+                        <select class="form-control form-select" id="status" name="status" onchange="select_type()">
                             <option value="0">เลือกข้อมูล</option>
                             <option value="1">Room Revenue</option>
-                            <option value="2">F&B Revenue</option>
+                            <option value="2">All Outlet Revenue</option>
                             <option value="3">Water Park Revenue</option>
                             <option value="4">Credit Revenue</option>
                             <option value="5">Agoda Revenue</option>
                             <option value="6">Front Desk Revenue</option>
                             <option value="8">Elexa EGAT Revenue</option>
+                            <option value="9">Other Revenue Bank Transfer</option>
                         </select>
-
-                        <div class="transfer_date">
-                            <label for="">วันที่โอน <sup class="text-danger">*</sup></label><br>
-                            <input type="date" name="date" id="sms-date" required>
-                        </div>
-
-                        <div class="transfer_time">
-                            <label for="">เวลาที่โอน <sup class="text-danger">*</sup></label><br>
-                            <input type="time" name="time" id="sms-time">
-                        </div>
-
-                        <div class="Amount agoda" hidden>
-                            <label for="">Booking ID <sup class="text-danger">*</sup></label><br>
-                            <input type="text" name="booking_id" id="booking_id" required>
-                        </div>
-
-                        <div class="transfer_from">
-                            <label for="">โอนจากบัญชี <sup class="text-danger">*</sup></label><br>
-                            <select class="select2" id="transfer_from" name="transfer_from" data-placeholder="Select">
-                                <option value="0">เลือกข้อมูล</option>
-                                @foreach ($data_bank as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name_th }} ({{ $item->name_en }})
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="transfer_to">
-                            <label for="">เข้าบัญชี <sup class="text-danger">*</sup></label><br>
-                            <select class="select2" id="add_into_account" name="into_account" data-placeholder="Select">
-                                <option value="0">เลือกข้อมูล</option>
-                                <option value="708-226791-3">ธนาคารไทยพาณิชย์ (SCB) 708-226791-3</option>
-                                <option value="708-226792-1">ธนาคารไทยพาณิชย์ (SCB) 708-226792-1</option>
-                                <option value="708-227357-4">ธนาคารไทยพาณิชย์ (SCB) 708-227357-4</option>
-                                <option value="076355900016902">ชำระผ่าน QR 076355900016902</option>
-                            </select>
-
-                        </div>
-                        <label for="">จำนวนเงิน (บาท) <sup class="text-danger">*</sup></label><br>
-                        <div class="Amount">
-                            <input type="text" id="amount" name="amount" placeholder="0.00" required>
+                        <div class="dg-gc2-g2">
+                            <div class="wf-py2 ">
+                                <label for="">วันที่โอน <sup class="t-red600">*</sup></label>
+                                <br>
+                                <input class="form-control" type="date" name="date" id="sms-date" required>
+                            </div>
+                            <div class="wf-py2 ">
+                                <label for="">เวลาที่โอน <sup class="text-danger">*</sup></label>
+                                <br>
+                                <input class="form-control" type="time" name="time" id="sms-time">
+                            </div>
+                            <div class="wf-py2 Amount agoda" hidden>
+                                <label for="">Booking ID <sup class="text-danger">*</sup></label>
+                                <br>
+                                <input type="text" class="form-control" name="booking_id" id="booking_id" required>
+                            </div>
+                            <div class="wf-py2 ">
+                                <label for="">โอนจากบัญชี <sup class="text-danger">*</sup></label>
+                                <br>
+                                <select class="form-control select2" id="transfer_from" name="transfer_from" data-placeholder="Select">
+                                    <option value="0">เลือกข้อมูล</option>
+                                    @foreach ($data_bank as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name_th }}
+                                            ({{ $item->name_en }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="wf-py2 ">
+                                <label for="">เข้าบัญชี <sup class="text-danger">*</sup></label>
+                                <br>
+                                <select class="form-control select2" id="add_into_account" name="into_account" data-placeholder="Select">
+                                    <option value="0">เลือกข้อมูล</option>
+                                    <option value="708-226791-3">ธนาคารไทยพาณิชย์ (SCB) 708-226791-3</option>
+                                    <option value="708-226792-1">ธนาคารไทยพาณิชย์ (SCB) 708-226792-1</option>
+                                    <option value="708-227357-4">ธนาคารไทยพาณิชย์ (SCB) 708-227357-4</option>
+                                    <option value="076355900016902">ชำระผ่าน QR 076355900016902</option>
+                                </select>
+                            </div>
+                            <div class="wf-py2 ">
+                                <label for="">จำนวนเงิน (บาท) <sup class="text-danger">*</sup></label>
+                                <br>
+                                <input class="form-control" type="text" id="amount" name="amount" placeholder="0.00" required>
+                            </div>
                         </div>
                     </div>
                     <input type="hidden" name="id" id="id">
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" style="color: black;"
-                            data-dismiss="modal">Close</button>
-                        <button type="button" class="button-10 sa-button-submit" style="background-color: #109699;">Save
-                            changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size: 15px;">Close</button>
+                        <button type="button" class="btn btn-color-green sa-button-submit">Save changes</button>
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="SplitModalCenter" tabindex="-1" role="dialog" aria-labelledby="SplitModalCenter"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="SplitModalCenter">Split Revenue</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="#" method="POST" enctype="multipart/form-data" class="form-split">
-                    @csrf
-                    <div class="modal-body-split">
-                        <div class="split_date">
-                            <label for="">วันที่</label>
-                            <input type="date" class="" name="date-split" id="date-split">
-                            <span class="text-danger fw-bold" id="text-split-alert"></span>
-                        </div>
-
-                        <div class="split_price">
-                            <label for="">จำนวนเงิน <span class="text-danger fw-bold"
-                                    id="text-split-amount"></span></label>
-                            <input type="hidden" class="" name="balance_amount" id="balance_amount">
-                            <input type="text" class="" name="split-amount" id="split-amount"
-                                placeholder="0.00">
-                            <span class="text-danger fw-bold" id="text-split-alert"></span>
-                        </div>
-                        <div class="button-7">
-                            <button type="button" class="btn-split-add" style="margin-top: 10px;">เพิ่ม</button>
-                        </div>
-
-                        <button type="button" class="button-10" style="background-color: #555555!important; "
-                            onmouseover="this.style.backgroundColor='#555555';"
-                            onmouseout="this.style.backgroundColor='#555555'" onclick="toggleHide()">ลบทั้งหมด</button>
-
-                        <span class="split-todo-error text-danger" style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
-                        <span class="split-error text-danger" style=""></span>
-
-                        <table id="example" class="display3">
-                            <thead>
-                                <tr>
-                                    <th>วันที่</th>
-                                    <th>จำนวนเงิน</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody class="split-todo-list">
-
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <input type="hidden" id="split_total_number" value="0">
-                    <input type="hidden" id="split_number" value="0">
-                    <input type="hidden" id="split_list_num" name="split_list_num" value="0">
-                    <input type="hidden" name="splitID" id="splitID">
-                </form>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" style="color: black;"
-                        data-dismiss="modal">Close</button>
-
-                    <button type="button" class="button-10 btn-save-split" onclick="change_split()"
-                        style="background-color: #109699;" disabled>Save changes</button>
-                </div>
             </div>
         </div>
     </div>
@@ -569,26 +578,6 @@
             $('#SplitModalCenter').modal('show');
         }
 
-        $('#add-data').on('click', function() {
-            $('#sms-date').css('border-color', '#f0f0f0');
-            $('#sms-time').css('border-color', '#f0f0f0');
-            $('#error-transfer').css('border-color', '#f0f0f0');
-            $('#error-into').css('border-color', '#f0f0f0');
-            $('#amount').css('border-color', '#f0f0f0');
-
-            $('#id').val('');
-            $('#status').val(0).trigger('change');
-            $('#sms-date').val('');
-            $('#sms-time').val('');
-            $('#booking_id').val('');
-            $('#transfer_from').val(0).trigger('change');
-            $('#add_into_account').val(0).trigger('change');
-            $('#amount').val('');
-
-            $('#exampleModalCenter5').modal('show');
-
-        });
-
         function change_time() {
             var time = $('#update_time').val();
             var id = $('#timeID').val();
@@ -690,7 +679,18 @@
             $('.split-todo-list tr').remove();
         }
 
+        function select_type() {
+            var type = $('#status').val();
+
+            if (type == 5) {
+                $('.agoda').prop('hidden', false);
+            } else {
+                $('.agoda').prop('hidden', true);
+            }
+        }
+
         function edit($id) {
+            
             $('#exampleModalCenter5').modal('show');
             $('#id').val($id);
             $('#sms-date').css('border-color', '#f0f0f0');
@@ -726,6 +726,11 @@
             });
         }
 
+        function currencyFormat(num) {
+            return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        }
+
+        // ประเภทรายได้
         function change_status($id, $status) {
             jQuery.ajax({
                 type: "GET",
@@ -734,6 +739,27 @@
                 async: false,
                 success: function(result) {
                     location.reload();
+                },
+            });
+        }
+
+        // ประเภทรายได้ Other Revenue
+        function other_revenue_data(id) {
+            $('#otherDataID').val(id);
+            $('#modalOtherRevenue').modal('show');
+
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('sms-get-remark-other-revenue/"+id+"') !!}",
+                datatype: "JSON",
+                cache: false,
+                async: false,
+                success: function(response) {
+                    if (response.data !== null) {
+                        $('#other_revenue_remark').val(response.data.other_remark);
+                    } else {
+                        $('#other_revenue_remark').val('');
+                    }
                 },
             });
         }

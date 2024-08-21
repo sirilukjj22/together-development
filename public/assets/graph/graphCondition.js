@@ -230,6 +230,7 @@ function chartThisWeek() {
     $('#revenueChart').prop('hidden', true);
     $('#revenueChartThisMonth').prop('hidden', false);
     $('#revenueChartCustom').prop('hidden', true);
+    $('#btn-close-myModalGraph').click();
     
     revenueChart_thisMonth.destroy(); // Destroy the current chart
     revenueChart_thisMonth = new Chart(ctx_thisMonth, {
@@ -268,6 +269,7 @@ function chartThisMonth() {
     $('#revenueChart').prop('hidden', true);
     $('#revenueChartThisMonth').prop('hidden', false);
     $('#revenueChartCustom').prop('hidden', true);
+    $('#btn-close-myModalGraph').click();
     
     revenueChart_thisMonth.destroy(); // Destroy the current chart
     revenueChart_thisMonth = new Chart(ctx_thisMonth, {
@@ -306,6 +308,7 @@ function chartThisMonthByDay($year) {
     $('#revenueChart').prop('hidden', true);
     $('#revenueChartThisMonth').prop('hidden', false);
     $('#revenueChartCustom').prop('hidden', true);
+    $('#btn-close-myModalGraph').click();
 
     var maxRevenueValue_thisByDay = Math.max(...get_graphThisMonthByDay(1));
     var buffer_thisByDay = 50000; // Adding a buffer value
@@ -346,10 +349,11 @@ function chartThisMonthByDay($year) {
 }
 
 function chartYearRange($v_year) {
-
+    
     $('#revenueChart').prop('hidden', true);
     $('#revenueChartThisMonth').prop('hidden', false);
     $('#revenueChartCustom').prop('hidden', true);
+    $('#btn-close-myModalGraph').click();
 
     // var revenueDataThisMonth = get_graphThisMonthByDay(1);
 
@@ -389,4 +393,5 @@ function chartYearRange($v_year) {
         },
         plugins: [valueOnTopPluginThisMonthByDay],
     });
+
 }

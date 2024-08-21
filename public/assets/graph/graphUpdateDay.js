@@ -153,6 +153,8 @@ function updateChart(days) {
     $('#revenueChartCustom').prop('hidden', true);
     $('#button-graph-revenue').text('Last '+ days +' days');
 
+    $('#btn-close-myModalGraph').click();
+
     for (var i = days - 1; i >= 0; i--) {
         var date_days = new Date(today);
         date_days.setDate(today.getDate() - i);

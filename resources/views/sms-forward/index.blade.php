@@ -162,7 +162,7 @@
                                 </div>
                                 <!-- ข้อความรายการ ลำดับที่ 7-->
                                 <div class="box-sub-revenue">
-                                    <a href="{{ route('sms-agoda_detail', [$date_from]) }}">
+                                    <a href="#" onclick="agoda_detail('agoda_detail')">
                                         <div>
                                             <div class="box-sub-revenue-content text-white">
                                                 <div>
@@ -364,7 +364,7 @@
                                                 <!-- Modal Header -->
                                                 <div class="modal-header">
                                                     <h4 class="modal-title" style="width: 100%;color: #2C7F7A ;">Filter Date</h4>
-                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <button type="button" id="btn-close-myModalGraph" class="close" data-dismiss="modal">&times;</button>
                                                 </div>
                                                 <!-- Modal body -->
                                                 <div class="modal-body">
@@ -1634,6 +1634,23 @@
             }
 
             window.location.href = "{!! url('sms-detail/"+revenue_name+"?filterBy="+filter_by+"&day="+day+"&month="+month+"&year="+year+"&monthTo="+month_to+"&type="+type+"&account="+account+"') !!}";
+        }
+
+        function agoda_detail(revenue_name) 
+        {
+            var filter_by = $('#filter-by').val();
+            var day = $('#input-search-day').val();
+            var month = $('#input-search-month').val();
+            var year = $('#input-search-year').val();
+            var month_to = $('#input-search-month-to').val();
+            var type = $('#status').val();
+            var account = $('#into_account').val();
+
+            if (account == '') {
+                account = 0;
+            }
+
+            window.location.href = "{!! url('sms-agoda_detail/"+revenue_name+"?filterBy="+filter_by+"&day="+day+"&month="+month+"&year="+year+"&monthTo="+month_to+"&type="+type+"&account="+account+"') !!}";
         }
 
         function AddOrSubractDays(startingDate, number, add) 
