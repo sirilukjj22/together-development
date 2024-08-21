@@ -1055,13 +1055,11 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="flush-headingOne">
                                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseOne" aria-expanded="true"
-                                            aria-controls="collapseOne">
+                                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                             Front Desk Revenue
                                         </button>
                                     </h2>
-                                    <div id="collapseOne" class="accordion-collapse collapse"
-                                        aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                         <div class="accordion-body">
                                             <div class="row">
                                                 <div class="col-lg-6 col-md-6 col-sm-12">

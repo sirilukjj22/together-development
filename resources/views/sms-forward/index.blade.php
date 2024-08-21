@@ -26,12 +26,12 @@
                     <!-- หัวข้างบน -->
                     <div class="f-jb-p2-mb3">
                         <div>
-                            <h1 class="h-daily" style="white-space: nowrap;">Daily Bank Transaction Revenue</h1>
+                            <h1 class="h-daily" style="white-space: nowrap;">Bank Transaction Revenue</h1>
                         </div>
                         <!-- Button เพิ่มข้อมูล -->
                         <div class="searh-box-bg">
                             <div>
-                                <input type="text" id="select-date" class="showdate-button" style="width: 100%;" placeholder="{{ !empty($pickup_time) ? $pickup_time : 'Pickup Time' }}" readonly>
+                                <input type="text" id="select-date" class="showdate-button" style="width: 100%;" placeholder="{{ !empty($pickup_time) ? $pickup_time : date('d F Y') }}" readonly>
                             </div>
                             <button type="submit" class="ch-button" data-toggle="modal" data-target="#ModalShowCalendar" style="white-space: nowrap;">
                                 <span class="d-sm-none d-none d-md-inline-block">Search</span>
