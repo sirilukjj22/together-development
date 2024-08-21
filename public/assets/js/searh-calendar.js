@@ -45,6 +45,7 @@ function getYearValue(myYear) {
   let aa = myYear;
   document.getElementById("myYear").innerHTML = aa + "&nbsp;";
   $('#input-search-year').val(aa);
+  $("#filter-by").val('year');
 }
 
 function myFunction2(myMonth) {
@@ -95,6 +96,7 @@ function myFunction2(myMonth) {
       $('#input-search-month-to').val(myMonth1 + 1);
     }
   }
+  $("#filter-by").val('month');
 }
 
 const date = new Date();
@@ -107,6 +109,7 @@ function myDaysFunction(myDay, month) {
 
     $('#input-search-day').val(myDay);
     $('#input-search-month').val(month + 1);
+    $("#filter-by").val('date');
 }
 
 const renderCalendar = () => {

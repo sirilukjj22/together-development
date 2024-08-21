@@ -1883,12 +1883,14 @@ class SMSController extends Controller
 
         $sum_revenue = Revenues::rightjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
             ->where('revenue_credit.status', 5)->where('revenue_credit.revenue_type', 5)
-            ->select('revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding', 'revenue.date')->get();
+            ->select('revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding', 'revenue.date')->paginate(10);
 
         $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 5)
             ->whereNull('date_into')->orWhereDate('date_into', $adate)
-            ->where('status', 5)->get();
+            ->where('status', 5)->paginate(10);
+        
+        $title = "Agoda bank Transfer Revenue";
 
-        return view('sms-forward.agoda_detail', compact('sum_revenue', 'data_sms'));
+        return view('sms-forward.agoda_detail', compact('sum_revenue', 'data_sms', 'title'));
     }
 }
