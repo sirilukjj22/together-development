@@ -529,7 +529,7 @@
                                                     <td class="td-content-center" style="text-align: center;">
                                                         <div class="dropdown">
                                                             <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
-                                                                ทำรายการ <span class="caret"></span>
+                                                                Select <span class="caret"></span>
                                                             </button>
                                                             <ul class="dropdown-menu">
                                                                 @if (@$role_revenue->front_desk == 1)
@@ -730,7 +730,7 @@
                                                         @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
                                                             <div class="dropdown">
                                                                 <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
-                                                                    ทำรายการ <span class="caret"></span>
+                                                                    Select <span class="caret"></span>
                                                                 </button>
                                                                 <ul class="dropdown-menu">
                                                                     @if (@$role_revenue->front_desk == 1)
@@ -925,7 +925,7 @@
                                                         @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
                                                             <div class="dropdown">
                                                                 <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
-                                                                    ทำรายการ <span class="caret"></span>
+                                                                    Select <span class="caret"></span>
                                                                 </button>
                                                                 <ul class="dropdown-menu">
                                                                     @if (@$role_revenue->front_desk == 1)
@@ -1700,6 +1700,8 @@
 
         // ประเภทรายได้
         function change_status($id, $status) {
+            console.log($status);
+            
             jQuery.ajax({
                 type: "GET",
                 url: "{!! url('sms-change-status/"+$id+"/"+$status+"') !!}",

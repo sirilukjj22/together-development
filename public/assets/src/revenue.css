@@ -844,7 +844,7 @@ td {
   margin-left: 5px;
 }
 
-.active:after {
+.active-accordion:after {
   content: "\2212";
 }
 

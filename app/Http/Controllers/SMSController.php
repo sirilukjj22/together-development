@@ -313,7 +313,7 @@ class SMSController extends Controller
                 ->orderBy('date', 'asc')->paginate($perPage);
 
         } elseif ($request->table_name == "smsAgodaTable") {
-            $query_agoda = DB::table('sms_alert');
+            $query_agoda = SMS_alerts::query();
 
                 if ($request->into_account != '') { 
                     if ($request->status != '') { 
@@ -379,51 +379,51 @@ class SMSController extends Controller
 
                 $btn_action .='<div class="dropdown">';
                                 $btn_action .='<button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
-                                    ทำรายการ <span class="caret"></span>
+                                    Select <span class="caret"></span>
                                 </button>';
                                 $btn_action .='<ul class="dropdown-menu">';
                                     if (@$role_revenue->front_desk == 1) {
-                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Front Desk Revenue".')">
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Front Desk Revenue'".')">
                                                             Front Desk Bank <br>Transfer Revenue 
                                                         </li>';
                                     }
                                     if (@$role_revenue->guest_deposit == 1) {
-                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Guest Deposit Revenue".')">
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Guest Deposit Revenue'".')">
                                                             Guest Deposit Bank <br> Transfer Revenue 
                                                         </li>';
                                     }
                                     if (@$role_revenue->all_outlet == 1) {
-                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."All Outlet Revenue".')">
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'All Outlet Revenue'".')">
                                                             All Outlet Bank <br> Transfer Revenue 
                                                         </li>';
                                     }
                                     if (@$role_revenue->agoda == 1) {
-                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Credit Agoda Revenue".')">
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Credit Agoda Revenue'".')">
                                                             Agoda Bank <br>Transfer Revenue 
                                                         </li>';
                                     }
                                     if (@$role_revenue->credit_card_hotel == 1) {
-                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Credit Card Revenue".')">
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Credit Card Revenue'".')">
                                                             Credit Card Hotel <br> Revenue 
                                                         </li>';
                                     }
                                     if (@$role_revenue->elexa == 1) {
-                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Elexa EGAT Revenue".')">
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Elexa EGAT Revenue'".')">
                                                             Elexa EGAT Bank Transfer <br> Transfer Revenue
                                                         </li>';
                                     }
                                     if (@$role_revenue->no_category == 1) {
-                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."No Category".')">
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'No Category'".')">
                                                             No Category
                                                         </li>';
                                     }
                                     if (@$role_revenue->water_park == 1) {
-                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Water Park Revenue".')">
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Water Park Revenue'".')">
                                                             Water Park Bank <br> Transfer Revenue 
                                                         </li>';
                                     }
                                     if (@$role_revenue->credit_water_park == 1) {
-                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Credit Water Park Revenue".')">
+                                        $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Credit Water Park Revenue'".')">
                                                             Credit Card Water <br>Park Revenue 
                                                         </li>';
                                     }
@@ -508,7 +508,7 @@ class SMSController extends Controller
         $perPage = (int)$request->perPage;
 
         if ($request->table_name == "smsTable") {
-            $query_sms = DB::table('sms_alert')->whereBetween('date', [$from, $to])->whereNull('date_into');
+            $query_sms = SMS_alerts::query()->whereBetween('date', [$from, $to])->whereNull('date_into');
 
                 if ($request->into_account != '') { 
                     $query_sms->where('into_account', $request->into_account);
@@ -526,7 +526,7 @@ class SMSController extends Controller
             }
 
         } elseif ($request->table_name == "transferTable") {
-            $query_transfer = DB::table('sms_alert');
+            $query_transfer = SMS_alerts::query();
 
                 if ($request->into_account != '') { 
                     if ($request->status != 0) { 
@@ -560,7 +560,7 @@ class SMSController extends Controller
             }
 
         } elseif ($request->table_name == "splitTable") {
-            $query_split = DB::table('sms_alert')->whereDate('date_into', $adate)->where('split_status', 1);
+            $query_split = SMS_alerts::query()->whereDate('date_into', $adate)->where('split_status', 1);
 
                 if ($request->into_account != '') { 
                     $query_split->where('into_account', $request->into_account);
@@ -632,51 +632,51 @@ class SMSController extends Controller
     
                     $btn_action .='<div class="dropdown">';
                         $btn_action .='<button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
-                            ทำรายการ <span class="caret"></span>
+                            Select <span class="caret"></span>
                         </button>';
                         $btn_action .='<ul class="dropdown-menu">';
                             if (@$role_revenue->front_desk == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Front Desk Revenue".')">
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Front Desk Revenue'".')">
                                                     Front Desk Bank <br>Transfer Revenue 
                                                 </li>';
                             }
                             if (@$role_revenue->guest_deposit == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Guest Deposit Revenue".')">
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Guest Deposit Revenue'".')">
                                                     Guest Deposit Bank <br> Transfer Revenue 
                                                 </li>';
                             }
                             if (@$role_revenue->all_outlet == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."All Outlet Revenue".')">
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'All Outlet Revenue'".')">
                                                     All Outlet Bank <br> Transfer Revenue 
                                                 </li>';
                             }
                             if (@$role_revenue->agoda == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Credit Agoda Revenue".')">
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Credit Agoda Revenue'".')">
                                                     Agoda Bank <br>Transfer Revenue 
                                                 </li>';
                             }
                             if (@$role_revenue->credit_card_hotel == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Credit Card Revenue".')">
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Credit Card Revenue'".')">
                                                     Credit Card Hotel <br> Revenue 
                                                 </li>';
                             }
                             if (@$role_revenue->elexa == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Elexa EGAT Revenue".')">
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Elexa EGAT Revenue'".')">
                                                     Elexa EGAT Bank Transfer <br> Transfer Revenue
                                                 </li>';
                             }
                             if (@$role_revenue->no_category == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."No Category".')">
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'No Category'".')">
                                                     No Category
                                                 </li>';
                             }
                             if (@$role_revenue->water_park == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Water Park Revenue".')">
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Water Park Revenue'".')">
                                                     Water Park Bank <br> Transfer Revenue 
                                                 </li>';
                             }
                             if (@$role_revenue->credit_water_park == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."Credit Water Park Revenue".')">
+                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Credit Water Park Revenue'".')">
                                                     Credit Card Water <br>Park Revenue 
                                                 </li>';
                             }
@@ -696,7 +696,7 @@ class SMSController extends Controller
                                                 </li>';
                             }
                             if (@$role_revenue->split == 1) {
-                                $btn_action .='<li class="button-li" onclick="split_data('.$value->id.', {{ $item->amount }})">
+                                $btn_action .='<li class="button-li" onclick="split_data('.$value->id.', '.$value->amount.')">
                                                     Split Revenue
                                                 </li>';
                             }
@@ -1362,7 +1362,7 @@ class SMSController extends Controller
         }
 
         // ตาราง 1
-        $query_sms = DB::table('sms_alert')->whereBetween('date', [$from, $to])->whereNull('date_into');
+        $query_sms = SMS_alerts::query()->whereBetween('date', [$from, $to])->whereNull('date_into');
 
             if ($request->into_account != '') { 
                 $query_sms->where('into_account', $request->into_account);
@@ -1380,7 +1380,7 @@ class SMSController extends Controller
         $total_sms_amount = $query_sms_amount->first();
 
         // ตาราง 2
-        $query_transfer = DB::table('sms_alert');
+        $query_transfer = SMS_alerts::query();
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
@@ -1414,7 +1414,7 @@ class SMSController extends Controller
         $total_transfer_amount = $query_transfer_amount->first();
 
         // ตาราง 3
-        $query_split = DB::table('sms_alert')->whereDate('date_into', $adate)->where('split_status', 1);
+        $query_split = SMS_alerts::query()->whereDate('date_into', $adate)->where('split_status', 1);
 
             if ($request->into_account != '') { 
                 $query_split->where('into_account', $request->into_account);
@@ -1433,7 +1433,7 @@ class SMSController extends Controller
 
         // Dashboard
         ## Total Today
-        $query_day = DB::table('sms_alert');
+        $query_day = SMS_alerts::query();
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
@@ -1456,7 +1456,7 @@ class SMSController extends Controller
         $total_day = $query_day->sum('amount');
 
         ## Total Front
-        $query_front = DB::table('sms_alert');
+        $query_front = SMS_alerts::query();
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
@@ -1479,7 +1479,7 @@ class SMSController extends Controller
         $total_front = $query_front->sum('amount');
 
         ## Total Room
-        $query_room = DB::table('sms_alert');
+        $query_room = SMS_alerts::query();
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
@@ -1502,7 +1502,7 @@ class SMSController extends Controller
         $total_room = $query_room->sum('amount');
 
         ## Total All Outlet
-        $query_fb = DB::table('sms_alert');
+        $query_fb = SMS_alerts::query();
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
@@ -1525,7 +1525,7 @@ class SMSController extends Controller
         $total_fb = $query_fb->sum('amount');
 
         ## Total All Outlet
-        $query_credit = DB::table('sms_alert');
+        $query_credit = SMS_alerts::query();
 
             if ($request->status != '') { 
                 $query_credit->whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->whereNull('date_into')->where('status', $request->status)->where('status', 4);
@@ -1538,7 +1538,7 @@ class SMSController extends Controller
         $total_credit = $query_credit->sum('amount');
         
         ## Agoda
-        $query_agoda = DB::table('sms_alert');
+        $query_agoda = SMS_alerts::query();
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
@@ -1561,7 +1561,7 @@ class SMSController extends Controller
         $total_agoda = $query_agoda->sum('amount');
 
         ## Water Park
-        $query_wp = DB::table('sms_alert');
+        $query_wp = SMS_alerts::query();
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
@@ -1584,7 +1584,7 @@ class SMSController extends Controller
         $total_wp = $query_wp->sum('amount');
 
         ## Credit Card Water Park
-        $query_wp_credit = DB::table('sms_alert');
+        $query_wp_credit = SMS_alerts::query();
 
             if ($request->status != '') { 
                 $query_wp_credit->whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->whereNull('date_into')->where('status', $request->status)->where('status', 7);
@@ -1597,7 +1597,7 @@ class SMSController extends Controller
         $total_wp_credit = $query_wp_credit->sum('amount');
 
         ## Elexa EGAT
-        $query_ev = DB::table('sms_alert');
+        $query_ev = SMS_alerts::query();
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
@@ -1620,7 +1620,7 @@ class SMSController extends Controller
         $total_ev = $query_ev->sum('amount');
 
         ## Transfer Revenue
-        $query_transfer_revenue = DB::table('sms_alert');
+        $query_transfer_revenue = SMS_alerts::query();
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
@@ -1643,11 +1643,11 @@ class SMSController extends Controller
         $total_transfer = $query_transfer_revenue->sum('amount');
 
         ## Credit Transaction
-        $query_credit_transaction = DB::table('sms_alert')->whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->where('status', 4);
+        $query_credit_transaction = SMS_alerts::query()->whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->where('status', 4);
         $total_credit_transaction = $query_credit_transaction->count();
 
         ## Transfer Revenue2
-        $query_transfer_revenue2 = DB::table('sms_alert')->whereBetween('date', [$from, $to]);
+        $query_transfer_revenue2 = SMS_alerts::query()->whereBetween('date', [$from, $to]);
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
@@ -1665,7 +1665,7 @@ class SMSController extends Controller
         $total_transfer2 = $query_transfer_revenue2->count();
 
         ## Split Revenue
-        $query_split_revenue = DB::table('sms_alert')->whereDate('date_into', $adate)->where('split_status', 1);
+        $query_split_revenue = SMS_alerts::query()->whereDate('date_into', $adate)->where('split_status', 1);
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
@@ -1682,7 +1682,7 @@ class SMSController extends Controller
         $total_split = $query_split_revenue->sum('amount');
 
         ## Split Transaction
-        $query_split_transaction = DB::table('sms_alert')->whereBetween('date', [$from, $to])->where('split_status', 1);
+        $query_split_transaction = SMS_alerts::query()->whereBetween('date', [$from, $to])->where('split_status', 1);
 
             if ($request->into_account != '') { 
                 $query_split_transaction->where('into_account', $request->into_account);
@@ -1695,7 +1695,7 @@ class SMSController extends Controller
         $total_split_transaction = $query_split_transaction->first();
 
         ## No Income Type
-        $query_not_type = DB::table('sms_alert')->whereBetween('date', [$from, $to])->where('status', 0)
+        $query_not_type = SMS_alerts::query()->whereBetween('date', [$from, $to])->where('status', 0)
         
         ;
 
@@ -1709,7 +1709,7 @@ class SMSController extends Controller
         $total_not_type = $query_split_transaction->count();
 
         ## No Income Type Revenue
-        $query_not_type_revenue = DB::table('sms_alert')->whereBetween('date', [$from, $to])->where('status', 0);
+        $query_not_type_revenue = SMS_alerts::query()->whereBetween('date', [$from, $to])->where('status', 0);
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
@@ -1726,7 +1726,7 @@ class SMSController extends Controller
         $total_not_type_revenue = $query_not_type_revenue->sum('amount');
 
         ## Total Transaction
-        $query_transaction = DB::table('sms_alert');
+        $query_transaction = SMS_alerts::query();
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 

@@ -46,6 +46,7 @@
     <!-- สำหรับ style css -->
     <link rel="stylesheet" href="{{ asset('assets/src/table.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/src/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/src/revenue.css') }}" />
     <!-- สำหรับ tooltip info -->
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
     <!-- icon font -->
@@ -357,6 +358,7 @@
     <script src="{{ asset('assets/bundles/select2.bundle.js') }}"></script>
     <script src="{{ asset('assets/plugin/select2-searchInputPlaceholder.js') }}"></script>
     <script src="{{ asset('assets/bundles/bootstraptagsinput.bundle.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
     <!-- Jquery Page Js -->
     <script src="{{ asset('assets/js/template.js') }}"></script>
