@@ -31,8 +31,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/page.css')}}">
-    <script src="{{ asset('assets/js/page.js')}}"></script>
     <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script>
 
     <!-- ลิงค์ใส่ใหม่ -->
@@ -240,12 +238,10 @@
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-General-ledger">
                                         @if (Auth::user()->roleMenu->sms_alert == 1)
-                                            <li><a class="ms-link" href="{{ route('sms-alert') }}">Daily Bank
-                                                    Transaction Revenue</a></li>
+                                            <li><a class="ms-link" href="{{ route('sms-alert') }}">Bank Transaction Revenue</a></li>
                                         @endif
                                         @if (Auth::user()->roleMenu->revenue == 1)
-                                            <li><a class="ms-link" href="{{ route('revenue') }}">Hotel & Water Park
-                                                    Revenue</a></li>
+                                            <li><a class="ms-link" href="{{ route('revenue') }}">Hotel & Water Park Revenue</a></li>
                                         @endif
                                     </ul>
                                 </li>
@@ -358,7 +354,7 @@
     <script src="{{ asset('assets/bundles/select2.bundle.js') }}"></script>
     <script src="{{ asset('assets/plugin/select2-searchInputPlaceholder.js') }}"></script>
     <script src="{{ asset('assets/bundles/bootstraptagsinput.bundle.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> --}}
 
     <!-- Jquery Page Js -->
     <script src="{{ asset('assets/js/template.js') }}"></script>

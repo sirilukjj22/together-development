@@ -37,9 +37,18 @@
                                 <span class="d-sm-none d-none d-md-inline-block">Search</span>
                                 <i class="fa fa-search" style="font-size: 15px;"></i>
                             </button>
-                            <button class="ch-button dropdown-toggle" type="button" id="dropdownMenuDaily"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-top: 0px; border-left: 0px">
-                                Today
+                            <button class="ch-button dropdown-toggle" type="button" id="dropdownMenuDaily" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-top: 0px; border-left: 0px">
+                                <span id="txt-daily">
+                                    @if (isset($filter_by) && $filter_by == 'today')
+                                        Today
+                                    @elseif (isset($filter_by) && $filter_by == 'yesterday')
+                                        Yesterday
+                                    @elseif (isset($filter_by) && $filter_by == 'tomorrow')
+                                        Tomorrow
+                                    @else
+                                        Today
+                                    @endif
+                                </span>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuDaily">
                                 <a class="dropdown-item" href="#" onclick="search_daily('today')">Today</a>
@@ -1671,6 +1680,7 @@
                 var day = date.getDate();
                 var month = date.getMonth() + 1;
                 var year = date.getFullYear();
+                $('#txt-daily').text("Today");
             } 
 
             if ($search == 'yesterday') {
@@ -1678,6 +1688,7 @@
                 var day = date.getDate();
                 var month = date.getMonth() + 1;
                 var year = date.getFullYear();
+                $('#txt-daily').text("Yesterday");
             } 
 
             if ($search == 'tomorrow') {
@@ -1685,6 +1696,7 @@
                 var day = date.getDate();
                 var month = date.getMonth() + 1;
                 var year = date.getFullYear();
+                $('#txt-daily').text("Tomorrow");
             } 
 
             $('#filter-by').val($search);

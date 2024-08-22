@@ -1171,8 +1171,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <button type="button" class="btn btn-primary btn-guest-add border-0"
-                                                        style="background-color: #109699;">เพิ่ม</button>
+                                                    <button type="button" class="btn btn-primary btn-guest-add border-0" style="background-color: #109699;">เพิ่ม</button>
                                                     <button class="btn btn-danger btn-guest-hide">ลบทั้งหมด</button>
                                                     <span class="guest-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
                                                 </div>
@@ -1242,7 +1241,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label for="">Credit Card Room Charge</label>
+                                                    <label for="">Credit Card All Outlet Charge</label>
                                                     <input type="text" id="fb_credit_amount" placeholder="0.00" style="border: 1px solid #ccc;">
                                                 </div>
                                             </div>
@@ -1261,7 +1260,7 @@
                                                         <tr>
                                                             <th scope="col">Stan</th>
                                                             <th scope="col">ประเภทรายได้</th>
-                                                            <th scope="col">Credit Card Room Charge</th>
+                                                            <th scope="col">Credit Card All Outlet Charge</th>
                                                             <th scope="col">Action</th>
                                                         </tr>
                                                     </thead>
@@ -2695,7 +2694,7 @@
     }
 
     function toggleHide8() {
-        $('.wp-todo-list tr').remove();
+        $('.ev-todo-list tr').remove();
     }
 
     $('.btn-submit-search').on('click', function () {
@@ -2813,9 +2812,5 @@
             },
         });
     }
-
-    $('.btn-revenue-reload').on('click', function () {
-        location.reload();
-    });
 </script>
 @endsection

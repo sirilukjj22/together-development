@@ -353,15 +353,15 @@ class RevenuesController extends Controller
             }
         }
 
-        // $daily_revenue = Revenues::whereMonth('date', date('m'))->whereYear('date', date('Y'))->select(
-        //     DB::raw("SUM(front_cash) + SUM(front_transfer) + SUM(front_credit) as front_amount, 
-        //     SUM(room_cash) + SUM(room_transfer) + SUM(room_credit) as room_amount, 
-        //     SUM(fb_cash) + SUM(fb_transfer) + SUM(fb_credit) as fb_amount,
-        //     SUM(wp_cash) + SUM(wp_transfer) + SUM(wp_credit) as wp_amount,
-        //     SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount"),
-        //     DB::raw("SUM(other_revenue) as other_revenue"), 'total_credit')->first();
+        $daily_revenue = Revenues::whereMonth('date', date('m'))->whereYear('date', date('Y'))->select(
+            DB::raw("SUM(front_cash) + SUM(front_transfer) + SUM(front_credit) as front_amount, 
+            SUM(room_cash) + SUM(room_transfer) + SUM(room_credit) as room_amount, 
+            SUM(fb_cash) + SUM(fb_transfer) + SUM(fb_credit) as fb_amount,
+            SUM(wp_cash) + SUM(wp_transfer) + SUM(wp_credit) as wp_amount,
+            SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount"),
+            DB::raw("SUM(other_revenue) as other_revenue"), 'total_credit')->first();
 
-        // $total_daily_revenue = $daily_revenue->front_amount + $daily_revenue->room_amount + $daily_revenue->fb_amount + $daily_revenue->wp_amount + $daily_revenue->credit_amount + $daily_revenue->other_revenue + $daily_revenue->total_credit;
+        $total_daily_revenue = $daily_revenue->front_amount + $daily_revenue->room_amount + $daily_revenue->fb_amount + $daily_revenue->wp_amount + $daily_revenue->credit_amount + $daily_revenue->other_revenue + $daily_revenue->total_credit;
 
         $total_verified = Revenues::whereMonth('date', date('m'))->whereYear('date', date('Y'))->where('status', 1)->count();
         $total_unverified = Revenues::whereMonth('date', date('m'))->whereYear('date', date('Y'))->where('status', 0)->count();
@@ -483,7 +483,7 @@ class RevenuesController extends Controller
             // 'data_revenue',
             // 'data_bill',
             'total_revenue_today', 
-            // 'total_daily_revenue',
+            'total_daily_revenue',
             'total_day', 
             'total_verified',
             'total_unverified',
@@ -949,24 +949,6 @@ class RevenuesController extends Controller
         $from = date("Y-m-d 21:00:00", strtotime("-1 day",strtotime($adate)));
         $to = date("Y-".$request->month."-".$request->day." 20:59:59");
 
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
-            $adate = date($request->year . '-' . $request->month . '-' . $request->day.' 21:00:00');
-            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date($adate . ' 20:59:59');
-
-        } elseif ($request->filter_by == "month") {
-            $adate = date($request->year . '-' . $request->month . '-01');
-            $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
-
-            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
-
-        } elseif ($request->filter_by == "year") {
-            $adate = date($request->year . '-01' . '-01');
-            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-12-31' . ' 20:59:59');
-        }
-
         $datetime = date("Y-".$request->month."-d");
         $last_day = $this->EOM($request->month, $request->year);
         $last_day2 = $this->EOM(date("m", strtotime("-1 months", strtotime($datetime))), $request->year);
@@ -1307,14 +1289,14 @@ class RevenuesController extends Controller
         $day_now = $request->day;
         $symbol = $day_now == "01" ? "=" : "<=";
 
-        // $daily_revenue = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(
-        //     DB::raw("SUM(front_cash) + SUM(front_transfer) + SUM(front_credit) as front_amount, 
-        //     SUM(room_cash) + SUM(room_transfer) + SUM(room_credit) as room_amount, 
-        //     SUM(fb_cash) + SUM(fb_transfer) + SUM(fb_credit) as fb_amount,
-        //     SUM(wp_cash) + SUM(wp_transfer) + SUM(wp_credit) as wp_amount,
-        //     SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount"), DB::raw("SUM(other_revenue) as other_revenue"), 'total_credit')->first();
+        $daily_revenue = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(
+            DB::raw("SUM(front_cash) + SUM(front_transfer) + SUM(front_credit) as front_amount, 
+            SUM(room_cash) + SUM(room_transfer) + SUM(room_credit) as room_amount, 
+            SUM(fb_cash) + SUM(fb_transfer) + SUM(fb_credit) as fb_amount,
+            SUM(wp_cash) + SUM(wp_transfer) + SUM(wp_credit) as wp_amount,
+            SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount"), DB::raw("SUM(other_revenue) as other_revenue"), 'total_credit')->first();
 
-        // $total_daily_revenue = $daily_revenue->front_amount + $daily_revenue->room_amount + $daily_revenue->fb_amount + $daily_revenue->wp_amount + $daily_revenue->credit_amount + $daily_revenue->total_credit + $daily_revenue->other_revenue;
+        $total_daily_revenue = $daily_revenue->front_amount + $daily_revenue->room_amount + $daily_revenue->fb_amount + $daily_revenue->wp_amount + $daily_revenue->credit_amount + $daily_revenue->total_credit + $daily_revenue->other_revenue;
 
         $total_verified = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->where('status', 1)->count();
         $total_unverified = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->where('status', 0)->count();
@@ -1437,8 +1419,7 @@ class RevenuesController extends Controller
             if ($request->export_pdf == 1) {
                 $pdf = FacadePdf::loadView('pdf.revenue.'.$by_page_pdf, 
                     compact(
-                        // 'total_daily_revenue', 
-                        'total_revenue_today', 'total_day', 
+                        'total_daily_revenue', 'total_revenue_today', 'total_day', 
                         'total_verified', 'total_unverified', 'total_agoda_outstanding',
                         'total_ev_outstanding', 'total_transfer', 
 
@@ -1502,7 +1483,7 @@ class RevenuesController extends Controller
                 return view('revenue.'.$by_page, compact(
                     // 'data_revenue',
                     // 'data_bill',
-                    // 'total_daily_revenue',
+                    'total_daily_revenue',
                     'total_revenue_today', 
                     'total_day', 
                     'total_verified', 
@@ -1593,6 +1574,227 @@ class RevenuesController extends Controller
                     'day', 'month', 'year'));
             }
         }
+    }
+
+    public function search_calendar_all(Request $request) {
+
+        // $adate= date('Y-m 21:00:00');
+        $from = date("Y-m-d 21:00:00", strtotime("-1 day"));
+        $to = date('Y-m-d 21:00:00');
+
+        $daily_revenue = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(
+            DB::raw("
+            SUM(front_cash) + SUM(front_transfer) + SUM(front_credit) as front_amount, 
+            SUM(room_cash) + SUM(room_transfer) + SUM(room_credit) as room_amount, 
+            SUM(fb_cash) + SUM(fb_transfer) + SUM(fb_credit) as fb_amount,
+            SUM(wp_cash) + SUM(wp_transfer) + SUM(wp_credit) as wp_amount,
+            SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount"), DB::raw("SUM(other_revenue) as other_revenue"),  'total_credit')->first();
+
+        $total_daily_revenue = $daily_revenue->front_amount + $daily_revenue->room_amount + $daily_revenue->fb_amount + $daily_revenue->wp_amount + $daily_revenue->credit_amount + $daily_revenue->total_credit + $daily_revenue->other_revenue;
+
+        $total_verified = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->where('status', 1)->count();
+        $total_unverified = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->where('status', 0)->count();
+
+        $total_revenue_today = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(
+            DB::raw("
+            SUM(front_cash) + SUM(front_transfer) + SUM(front_credit) as front_amount, 
+            SUM(room_cash) + SUM(room_transfer) + SUM(room_credit) as room_amount, 
+            SUM(fb_cash) + SUM(fb_transfer) + SUM(fb_credit) as fb_amount,
+            SUM(wp_cash) + SUM(wp_transfer) + SUM(wp_credit) as wp_amount,
+            SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount,
+            SUM(total_transaction) as total_transaction
+            "), 'total_credit_agoda', 'other_revenue', 'total_no_type', 'status')->first();
+        $total_transfer = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->sum('amount');
+        $total_transfer2 = SMS_alerts::whereBetween('date_into', [$from, $to])->where('transfer_status', 1)->count();
+        $total_split = SMS_alerts::where('date_into', [$from, $to])->where('split_status', 1)->sum('amount');
+        $total_split_transaction = SMS_alerts::whereBetween('date', [$from, $to])->where('split_status', 1)->count();
+        $total_not_type = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 0)->whereNull('date_into')->count();
+        $total_not_type_revenue = SMS_alerts::whereMonth('date', $request->month)->whereYear('date', $request->year)->where('status', 0)->whereNull('date_into')->sum('amount');
+
+        $total_agoda_outstanding = Revenues::getManualTotalAgoda();
+        $total_ev_outstanding = Revenues::getManualTotalEv();
+
+        $total_day = $total_revenue_today->front_amount + $total_revenue_today->room_amount + $total_revenue_today->fb_amount + $total_revenue_today->wp_amount + $total_revenue_today->credit_amount + $total_revenue_today->total_credit_agoda;
+
+        ## ข้อมูลในตาราง
+        $day_now = $request->day;
+        $symbol = $day_now == "01" ? "=" : "<=";
+
+        $credit_revenue = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_credit')->first();
+        $credit_revenue_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(total_credit) as total_credit"))->first();
+        $credit_revenue_year = Revenues::whereYear('date', $request->year)->select(DB::raw("SUM(total_credit) as total_credit"))->first();
+
+        $total_front_revenue = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('front_cash', 'front_transfer', 'front_credit')->first();
+        $total_front_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"))->first();
+        $total_front_year = Revenues::whereYear('date', $request->year)->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"))->first();
+        $front_charge = Revenues::getManualCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 6, 6);
+
+        $total_guest_deposit = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('room_cash', 'room_transfer', 'room_credit')->first();
+        $total_guest_deposit_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"))->first();
+        $total_guest_deposit_year = Revenues::whereYear('date', $request->year)->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"))->first();
+        $guest_deposit_charge = Revenues::getManualCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 1, 1);
+
+        $total_fb_revenue = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('fb_cash', 'fb_transfer', 'fb_credit')->first();
+        $total_fb_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"))->first();
+        $total_fb_year = Revenues::whereYear('date', $request->year)->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"))->first();
+        $fb_charge = Revenues::getManualCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 2, 2);
+
+        $total_agoda_revenue = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->sum('total_credit_agoda');
+        $total_agoda_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->sum('total_credit_agoda');
+        $total_agoda_year = Revenues::whereYear('date', $request->year)->sum('total_credit_agoda');
+        $agoda_charge = Revenues::getManualAgodaCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 1, 5);
+
+        $total_credit_transaction = SMS_alerts::whereMonth('date', $request->month)->whereYear('date', $request->year)->where('into_account', "708-226792-1")->where('status', 4)->count();
+        $total_credit_transaction_month = SMS_alerts::whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('into_account', "708-226792-1")->where('status', 4)->count();
+        $total_credit_transaction_year = SMS_alerts::whereYear('date_into', $request->year)->where('into_account', "708-226792-1")->where('status', 4)->count();
+
+        $total_wp_revenue = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('wp_cash', 'wp_transfer', 'wp_credit')->first();
+        $total_wp_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
+        $total_wp_year = Revenues::whereYear('date', $request->year)->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
+        $wp_charge = Revenues::getManualCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 3, 3);
+
+        $total_transfer_month = SMS_alerts::whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('transfer_status', 1)->sum('amount');
+        $total_transfer_year = SMS_alerts::whereYear('date', $request->year)->where('transfer_status', 1)->sum('amount');
+
+        $total_transfer2_month = SMS_alerts::whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('transfer_status', 1)->count();
+        $total_transfer2_year = SMS_alerts::whereYear('date', $request->year)->where('transfer_status', 1)->count();
+
+        $total_split_transaction_month = SMS_alerts::whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('split_status', 1)->count();
+        $total_split_transaction_year = SMS_alerts::whereYear('date', $request->year)->where('split_status', 1)->count();
+
+        $total_split_month = SMS_alerts::whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('split_status', 1)->sum('amount');
+        $total_split_year = SMS_alerts::whereYear('date', $request->year)->where('split_status', 1)->sum('amount');
+        
+        $total_transfer_transaction = SMS_alerts::whereDate('date_into', date($request->year.'-'.$request->month.'-d'))->where('transfer_status', 1)->select(DB::raw("COUNT(id) as transfer_amount"))->first();
+        $total_transfer_transaction_month = SMS_alerts::whereMonth('date_into', $request->month)->whereYear('date_into', $request->year)->where('transfer_status', 1)->select(DB::raw("COUNT(id) as transfer_amount"))->first();
+        $total_transfer_transaction_year = SMS_alerts::whereYear('date', $request->year)->where('transfer_status', 1)->select(DB::raw("COUNT(id) as transfer_amount"))->first();
+
+        $total_transaction = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_transaction')->first();
+        $total_transaction_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(total_transaction) as total_transaction"))->first();
+        $total_transaction_year = Revenues::whereYear('date', $request->year)->select(DB::raw("SUM(total_transaction) as total_transaction"))->first();
+
+        $total_not_type_revenue_month = SMS_alerts::whereMonth('date', $request->month)->whereYear('date', $request->year)->where('status', 0)->whereNull('date_into')->sum('amount');
+        $total_not_type_revenue_year = SMS_alerts::whereYear('date', $request->year)->where('status', 0)->whereNull('date_into')->sum('amount');
+
+        $total_no_type = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_no_type')->first();
+        $total_no_type_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
+        $total_no_type_year = Revenues::whereYear('date', $request->year)->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
+
+        $total_ev_revenue = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_elexa')->sum('total_elexa');
+        $total_ev_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select('total_elexa')->sum('total_elexa');
+        $total_ev_year = Revenues::whereYear('date', $request->year)->sum('total_elexa');
+        $ev_charge = Revenues::getManualEvCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 8, 8);
+
+        $total_other_revenue = Revenues::whereDay('date', date('d'))->whereMonth('date', $request->month)->whereYear('date', $request->year)->select('other_revenue')->sum('other_revenue');
+        $total_other_month = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select('other_revenue')->sum('other_revenue');
+        $total_other_year = Revenues::whereYear('date', $request->year)->select('other_revenue')->sum('other_revenue');
+
+        $day = $request->day;
+        $month = $request->month;
+        $year = $request->year;
+
+        $by_page = 'index';
+
+        if (isset($_GET['byPage']) && @$_GET['byPage'] == 'department') {
+            $by_page = 'index_department';
+        } else {
+            $by_page = 'index';
+        }
+
+        if (isset($_GET['dailyPage']) && @$_GET['dailyPage'] != 'daily') {
+            $by_page = 'index_'.@$_GET['dailyPage'];
+        }
+
+        return view('revenue.'.$by_page, compact(
+            // 'data_revenue',
+            // 'data_bill',
+            'total_daily_revenue',
+            'total_revenue_today', 
+            'total_day', 
+            'total_verified', 
+            'total_unverified', 
+            'total_agoda_outstanding',
+            'total_ev_outstanding',
+            // 'total_wp', 
+            // 'total_credit', 
+            'total_transfer', 
+
+            'total_transfer2',
+            'total_transfer2_month',
+            'total_transfer2_year',
+
+            'total_split',
+            'total_split_month',
+            'total_split_year',
+            
+            'total_split_transaction',
+            'total_split_transaction_month',
+            'total_split_transaction_year',
+
+            'credit_revenue',
+            'credit_revenue_month',
+            'credit_revenue_year',
+
+            'total_front_revenue',
+            'total_front_month',
+            'total_front_year',
+            'front_charge',
+
+            'total_guest_deposit',
+            'total_guest_deposit_month',
+            'total_guest_deposit_year',
+            'guest_deposit_charge',
+
+            'total_fb_revenue',
+            'total_fb_month',
+            'total_fb_year',
+            'fb_charge',
+
+            'total_agoda_revenue',
+            'total_agoda_month',
+            'total_agoda_year',
+            'agoda_charge',
+
+            'total_transfer_month',
+            'total_transfer_year',
+
+            'total_transfer_transaction',
+            'total_transfer_transaction_month',
+            'total_transfer_transaction_year',
+
+            'total_wp_revenue',
+            'total_wp_month',
+            'total_wp_year',
+            'wp_charge',
+
+            'total_credit_transaction',
+            'total_credit_transaction_month',
+            'total_credit_transaction_year',
+
+            'total_not_type',
+
+            'total_transaction',
+            'total_transaction_month',
+            'total_transaction_year',
+
+            'total_no_type',
+            'total_no_type_month',
+            'total_no_type_year',
+
+            'total_not_type_revenue',
+            'total_not_type_revenue_month',
+            'total_not_type_revenue_year',
+
+            'total_ev_revenue',
+            'total_ev_month',
+            'total_ev_year',
+            'ev_charge',
+
+            'total_other_revenue',
+            'total_other_month',
+            'total_other_year',
+
+            'day', 'month', 'year'));
     }
 
     /**

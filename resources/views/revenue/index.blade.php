@@ -2,13 +2,21 @@
 
 @section('content')
     <?php
-    if (isset($day)) {
-        $date_current = $year . '-' . $month . '-' . $day;
-    } else {
-        $date_current = date('Y-m-d');
-    }
-    
-    $day_sum = isset($day) ? date('j', strtotime(date('2024-' . $month . '-' . $day))) : date('j');
+        if (isset($day)) {
+            $date_current = $year . '-' . $month . '-' . $day;
+        } else {
+            $date_current = date('Y-m-d');
+        }
+        
+        $day_sum = isset($day) ? date('j', strtotime(date('2024-' . $month . '-' . $day))) : date('j');
+
+        if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow') {
+            $pickup_time = $day . ' ' . formatMonthName($month) . ' ' . $year;
+        } elseif (isset($filter_by) && $filter_by == 'month') {
+            $pickup_time = formatMonthName($month) . ' - ' . formatMonthName($month_to);
+        } elseif (isset($filter_by) && $filter_by == 'year') {
+            $pickup_time = $year;
+        }
     ?>
 
     <?php
@@ -55,8 +63,7 @@
                 <div class="nav-content">
                     <div>
                         <div class="">
-                            <input type="text" id="select-date" name="" class="input-showdatepick mw-130"
-                                value="" placeholder="Pickup Time" style="">
+                            <input type="text" id="select-date" name="" class="input-showdatepick mw-130" placeholder="{{ !empty($pickup_time) ? $pickup_time : date('d F Y') }}" readonly>
                         </div>
                     </div>
                     <div class="" style="display: flex; gap:2px">
@@ -73,9 +80,9 @@
                                 style="border-top: 0px; border-left: 0px"> Today
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuDaily">
-                                <a class="dropdown-item" href="#">This Week</a>
-                                <a class="dropdown-item" href="#">This Month</a>
-                                <a class="dropdown-item" href="#">This Year</a>
+                                <a class="dropdown-item" href="#" onclick="btn_search_daily('week')">This Week</a>
+                                <a class="dropdown-item" href="#" onclick="btn_search_daily('mtd')">This Month</a>
+                                <a class="dropdown-item" href="#" onclick="btn_search_daily('ytd')">This Year</a>
                                 <a class="dropdown-item" href="#">Custom Date Range</a>
                             </div>
                         </div>
@@ -86,16 +93,22 @@
                                 Action
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuOperation">
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addIncome">
+                                <a class="dropdown-item" href="#" onclick="Add_data('{{$date_current}}')" data-toggle="modal" data-target="#addIncome" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
                                     <i class="fa-solid fa-sack-dollar" style="font-size:15px; margin-right:5px;"></i>Add
                                 </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fa fa-info-circle fa-solid"
-                                        style="font-size:15px; margin-right:6px;"></i>Details </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fa fa-print" style="font-size:15px; margin-right:6px;"></i>Print </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fa fa-lock" style="font-size:15px; margin-right:9px;"></i>Lock </a>
+                                <a class="dropdown-item" href="#" onclick="view_data('{{$date_current}}')" data-toggle="modal" data-target="#ViewDataModalCenter">
+                                    <i class="fa fa-info-circle fa-solid" style="font-size:15px; margin-right:6px;"></i>Details 
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="export_data(1)"><i class="fa fa-print" style="font-size:15px; margin-right:6px;"></i>Print </a>
+
+                                @if (Auth::user()->permission > 0)
+                                    @if ($total_revenue_today->status == 0)
+                                        <button class="dropdown-item btn-close-daily" value="1"><i class="fa fa-lock" style="font-size:15px; margin-right:9px;"></i>Lock </button>
+                                    @else
+                                        <button class="dropdown-item btn-open-daily" value="0"><i class="fa fa-unlock" style="font-size:15px; margin-right:9px;"></i>UNLOCK </button>
+                                    @endif
+                                @endif
+                                
                             </div>
                         </div>
                     </div>
@@ -508,9 +521,6 @@
                 </div>
             @endif
 
-            <input type="hidden" name="daily_page" id="daily_page"> <!-- เอาไว้ใน Form -->
-            <input type="hidden" name="export_pdf" id="export_pdf" value="0">
-
             <div class="table-2" style="overflow-x:auto;">
                 @if ($total_revenue_today->status == 1)
                     <div class="row mt-3 mb-2">
@@ -900,17 +910,146 @@
         </div>
     </div>
 
-    <!-- Modal เพิ่มข้อมูลเงินสด modal fade -->
+    <!-- Modal: เลือกวันที่ modal fade -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width: 350px;">
+          <div class="modal-content rounded-xl">
+            <div class="modal-header md-header text-white">
+              <div class="w-full">
+                <h5 class=".modal-hd">ค้นหารายการ</h5>
+              </div>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form action="{{ route('revenue-search-calendar') }}" method="POST" enctype="multipart/form-data" class="" id="form-revenue">
+                @csrf
+            <div class="modal-body ">
+              <div class="">
+                <div class="box-ch-button">
+                  <button id="showD" onclick="Choice(this);" class="ch-pick"> filter by date</button>
+                  <button id="showM" onclick="Choice(this);" class="ch-pick"> filter by month</button>
+                  <button id="showY" onclick="Choice(this);" class="ch-pick"> filter by year</button>
+                  <input type="hidden" id="choice-date">
+                </div>
+                <div style="width: 100%; display: flex; justify-content: center;">
+                  <div style="width: 100%; align-self:center;align-items: center;">
+                    <!-- box แสดงวันที่ เดือน ปี -->
+                    <div id="box"></div>
+                    <!-- วันเดือนปีซ่อนไว้  display: none-->
+                    <div id="calendar-day">
+                      <div class="ch-day" style=" border: none;" style="display: none;">
+                        <!-- เลือกจากวันที่ -->
+                        <div id="ch-day">
+                          <p class="t-month"> filter by date</p>
+                          <div class="calendar">
+                            <div class="month">
+                              <i class="fa fa-angle-left prev"></i>
+                              <div class="date">
+                                <h1 id="mymonth" class="thisMont"></h1>
+                                <p id="myDay" class="dateShose"> วันที่เลือก</p>
+                              </div>
+                              <i class="fa fa-angle-right next"></i>
+                            </div>
+                            <div class="">
+                              <div class="weekdays">
+                                <div>Sun</div>
+                                <div>Mon</div>
+                                <div>Tue</div>
+                                <div>Wed</div>
+                                <div>Thu</div>
+                                <div>Fri</div>
+                                <div>Sat</div>
+                              </div>
+                              <div class="days"></div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- เลือกจากวัเดือน -->
+                        <div id="ch-month" style="display: none;">
+                          <p class="t-month"> filter by month</p>
+                          <div class="calendar">
+                            <div class="month">
+                              <div style="display: flex; flex-direction:column;width: 100%;">
+                                <div class="month-date">
+                                  <p id="myMonth1" class="thisMont"> เดือนเริ่มต้น</p>
+                                  <p>&nbsp; - &nbsp;</p>
+                                  <p id="myMonth2"> สิ้นสุดเดือน </p>
+                                  <!-- <p id="" class="date-current border-2"> วันที่เลือก</p> -->
+                                </div>
+                              </div>
+                            </div>
+                            <div id="allMonth" class="show-all-month"></div>
+                          </div>
+                        </div>
+                        <!-- เลือกจากปี -->
+                        <div id="ch-year" style="display: none;">
+                          <p class="t-month"> filter by Year</p>
+                          <div class="calendar">
+                            <div class="month">
+                              <div style="display: flex; gap:20px;justify-content: center; width: 100%;">
+                                <p id="myYear" style="font-size: 20px;"> 2024 </p>
+                              </div>
+                            </div>
+                            <div class="show-all-years">
+                              <div class="ch-years" onclick="getYearValue(2020)" value="">2020</div>
+                              <div class="ch-years" onclick="getYearValue(2021)" value="">2021</div>
+                              <div class="ch-years" onclick="getYearValue(2022)" value="">2022</div>
+                              <div class="ch-years" onclick="getYearValue(2023)" value="">2023</div>
+                              <div class="ch-years" onclick="getYearValue(2024)" value="">2024</div>
+                              <div class="ch-years" onclick="getYearValue(2025)" value="">2025</div>
+                              <div class="ch-years" onclick="getYearValue(2026)" value="">2026</div>
+                              <div class="ch-years" onclick="getYearValue(2027)" value="">2027</div>
+                              <div class="ch-years" onclick="getYearValue(2028)" value="">2028</div>
+                              <div class="ch-years" onclick="getYearValue(2029)" value="">2029</div>
+                              <div class="ch-years" onclick="getYearValue(2030)" value="">2030</div>
+                              <div class="ch-years" onclick="getYearValue(2031)" value="">2032</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <input type="hidden" id="month-click-num" value="0">
+                  <input type="hidden" id="month-number1" value="0">
+                  <input type="hidden" id="month-number2" value="0">
+                  <input type="hidden" id="by-month-year">
+
+                  <!-- Input ส่งค่าไป Controller -->
+                  <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'date' }}">
+                  <input type="hidden" id="input-search-day" name="day" value="{{ isset($day) ? $day : date('d') }}">
+                  <input type="hidden" id="input-search-month" name="month" value="{{ isset($month) ? $month : date('m') }}">
+                  <input type="hidden" id="input-search-month-to" name="month_to" value="{{ isset($month_to) ? $month_to : date('m') }}">
+                  <input type="hidden" id="input-search-year" name="year" value="{{ isset($year) ? $year : date('Y') }}">
+
+                  <input type="hidden" name="daily_page" id="daily_page">
+                    <input type="hidden" name="export_pdf" id="export_pdf" value="0">
+                </div>
+              </div>
+              <!-- ล่าง modal -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="btn-search-date" class="btn btn-success btn-submit-search" style="background-color: #2C7F7A;">Save changes</button>
+              </div>
+            </div>
+            </form>
+          </div>
+        </div>
+    </div>
+
+    <!-- Modal Addข้อมูลเงินสด modal fade -->
     <div class="modal fade bd-example-modal-lg" id="addIncome" tabindex="-1" role="dialog"
         aria-labelledby="addIncomeLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content rounded-lg">
                 <div class="modal-header bg-teal-green">
-                    <h5 class="modal-title text-white" id="addIncomeLabel"> เพิ่มข้อมูลเงินสด /เครดิต </h5>
+                    <h5 class="modal-title text-white" id="addIncomeLabel"> Add</h5>
                     <button type="button" class="close text-white text-2xl" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+            <form action="#" method="POST" enctype="multipart/form-data" class="form-store">
+                @csrf
                 <div class="modal-body bg-green500">
                     <div class="df-jc-ic">
                         <label for="" class="text2xl">วันที่ : &nbsp;&nbsp;</label>
@@ -918,7 +1057,7 @@
                     </div>
                     <br />
                     <div class="box-accordion">
-                        <button class="accordion">
+                        <button type="button" class="accordion">
                             <div>front desk revenue</div>
                         </button>
                         <div class="panel">
@@ -930,7 +1069,7 @@
                                     </div>
                                     <div class="accordion-card">
                                         <label for="" class="max-sm:text-sm">Bank Transfer <sup class="text-danger">*</sup></label>
-                                        <input type="text" class="accordion-input" id="front_transfer" name="front_transfer" placeholder="0.00" disabled>
+                                        <input type="text" class="accordion-input" id="front_transfer" placeholder="0.00" disabled>
                                     </div>
                                 </div>
                                 <!--ครอบ column 2-->
@@ -941,19 +1080,19 @@
                                         <input type="text" class="accordion-input" id="front_batch" name="">
                                     </div>
                                     <div class="accordion-card">
-                                        <label for="" class="max-sm:text-sm">ประเภทรายได้ <sup class="text-danger">*</sup></label>
+                                        <label for="" class="max-sm:text-sm">Income type <sup class="text-danger">*</sup></label>
                                         <select class="accordion-input" id="front_revenue_type">
                                             <option value="6" selected>Front Desk Revenue</option>
                                         </select>
                                     </div>
                                     <div class="accordion-card">
-                                        <label for="" class="max-sm:text-sm">Credit Card Room Charge <sup class="text-danger">*</sup></label>
+                                        <label for="" class="max-sm:text-sm">Credit Card Front Desk Charge <sup class="text-danger">*</sup></label>
                                         <input type="text" class="accordion-input" id="front_credit_amount" name="" placeholder="0.00">
                                     </div>
                                 </div>
                                 <br />
-                                <button type="submit" class="add-button btn-front-add"> เพิ่ม </button>
-                                <button type="submit" class="delete-all-button btn-front-hide" onclick="toggleHide3()"> ลบข้อมูลทั้งหมด </button>
+                                <button type="submit" class="add-button btn-front-add"> Add </button>
+                                <button type="submit" class="delete-all-button btn-front-hide" onclick="toggleHide3()"> Delete All </button>
                                 <span class="front-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
                                 <br />
                                 <br />
@@ -962,262 +1101,562 @@
                                         <thead>
                                             <tr class="" style="background-color: #2C7F7A;color: white; ">
                                                 <th class="t-center" style="width:15%;">Stan</th>
-                                                <th class="t-center padding-l-2em" style="width:35%;border-left:white 1px solid">ประเภทรายได้</th>
-                                                <th class="t-center" style="width:30%;border-left:white 1px solid"> Credit Desk Revenue </th>
+                                                <th class="t-center padding-l-2em" style="width:35%;border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="width:30%;border-left:white 1px solid">Credit Card Front Desk Charge</th>
                                                 <th class="t-center" style="width:20%;border-left:white 1px solid"> Action</th>
                                             </tr>
                                         </thead>
                                         <tbody class="front-todo-list">
-                                            <tr class="border-1">
-                                                <td class="t-center">1234</td>
-                                                <td class="capitalize padding-r-2em t-center">front dest</td>
-                                                <td class="t-end padding-r-2em"> 455.00</td>
-                                                <td class="t-center pr-4">
-                                                    <i class="fa fa-trash-o ml-2 t-red"></i>
-                                                </td>
-                                            </tr>
-                                            <tr class="border-1">
-                                                <td class="t-center">1234</td>
-                                                <td class="capitalize padding-r-2em t-center">front dest</td>
-                                                <td class="t-end padding-r-2em"> 455.00</td>
-                                                <td class="t-center pr-4">
-                                                    <i class="fa fa-trash-o ml-2 t-red"></i>
-                                                </td>
-                                            </tr>
-                                            <tr class="border-1">
-                                                <td class="t-center">1234</td>
-                                                <td class="capitalize padding-r-2em t-center">front dest</td>
-                                                <td class="t-end padding-r-2em"> 455.00</td>
-                                                <td class="t-center pr-4">
-                                                    <i class="fa fa-trash-o ml-2 t-red"></i>
-                                                </td>
-                                            </tr>
+
                                         </tbody>
+                                        <input type="hidden" id="front_number" value="0">
+                                        <input type="hidden" id="front_list_num" name="front_list_num" value="0">
                                     </table>
                                 </div>
                             </div>
                         </div>
-                        <button class="accordion">
-                            <div>Guest Deposit</div>
+                        <button type="button" class="accordion">
+                            <div>Guest Deposit Revenue</div>
                         </button>
                         <div class="panel">
                             <div id="front-desk-revenue">
                                 <div class="dg-gc2-g2">
                                     <div class="accordion-card">
-                                        <label for="" class="max-sm:text-sm">Cash <sup
-                                                class="text-red-600">*</sup>
-                                        </label>
-                                        <input class="accordion-input" type="number" name="dat" id="" />
+                                        <label for="" class="max-sm:text-sm">Cash <sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="cash" placeholder="0.00">
                                     </div>
                                     <div class="accordion-card">
-                                        <label for="" class="max-sm:text-sm">Bank Transfer <sup
-                                                class="text-danger">*</sup>
-                                        </label>
-                                        <input class="accordion-input" type="number" name="tim" id="" />
+                                        <label for="" class="max-sm:text-sm">Bank Transfer <sup class="text-danger">*</sup></label>
+                                        <input type="text" class="accordion-input" id="room_transfer" placeholder="0.00" disabled>
                                     </div>
                                 </div>
                                 <!--ครอบ column 2-->
-                                <div class="capitalize">credit card</div>
+                                <div class="credit-card">credit card</div>
                                 <div class="dg-gc3-g2">
                                     <div class="accordion-card">
-                                        <label for="" class="max-sm:text-sm">Stand <sup
-                                                class="text-red-600">*</sup>
-                                        </label>
-                                        <input class="accordion-input" type="number" name="" id="" />
+                                        <label for="" class="max-sm:text-sm">Stand <sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="guest_batch">
                                     </div>
                                     <div class="accordion-card">
-                                        <label for="" class="max-sm:text-sm">ประเภทรายได้ <sup
-                                                class="text-danger">*</sup>
-                                        </label>
-                                        <select class="accordion-input">
-                                            <option value="">Front Desk</option>
-                                            <option value="">Guest Deposit</option>
-                                            <option value="">All Outlet</option>
-                                            <option value=""> Agoda And Elexa Revenue </option>
+                                        <label for="" class="max-sm:text-sm">Income type <sup class="text-danger">*</sup></label>
+                                        <select class="accordion-input" id="guest_revenue_type">
+                                            <option value="1" selected>Guest Deposit Revenue</option>
                                         </select>
                                     </div>
                                     <div class="accordion-card">
-                                        <label for="" class="max-sm:text-sm">Credit Card Room Charge <sup
-                                                class="text-danger">*</sup>
-                                        </label>
-                                        <input class="accordion-input" type="number" name="" id="sms-time" />
+                                        <label for="" class="max-sm:text-sm">Credit Card Room Charge <sup class="text-danger">*</sup></label>
+                                        <input type="text" class="accordion-input" id="guest_credit_amount" name="" placeholder="0.00">
                                     </div>
                                 </div>
                                 <br />
-                                <button type="submit" class="add-button"> เพิ่ม </button>
-                                <button type="submit" class="delete-all-button"> ลบข้อมูลทั้งหมด </button>
+                                <button type="button" class="add-button btn-guest-add"> Add </button>
+                                <button type="button" class="delete-all-button btn-guest-hide" onclick="toggleHide4()"> Delete All </button>
+                                <span class="guest-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
                                 <br />
                                 <br />
                                 <div style="overflow-x:auto;">
-                                    <table class="add-income-table">
+                                    <table id="myTableguestCredit" class="add-income-table">
                                         <thead>
                                             <tr class="" style="background-color: #2C7F7A;color: white; ">
                                                 <th class="t-center" style="width:15%;">Stan</th>
-                                                <th class="t-center padding-l-2em"
-                                                    style="width:35%;border-left:white 1px solid">ประเภทรายได้</th>
-                                                <th class="t-center" style="width:30%;border-left:white 1px solid"> Credit
-                                                    Desk Revenue </th>
-                                                <th class="t-center" style="width:20%;border-left:white 1px solid"> Action
-                                                </th>
+                                                <th class="t-center padding-l-2em" style="width:35%;border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="width:30%;border-left:white 1px solid">Credit Card Room Charge</th>
+                                                <th class="t-center" style="width:20%;border-left:white 1px solid"> Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr class="">
-                                            <tr class="">
-                                                <td class="t-center">1234</td>
-                                                <td class="capitalize padding-r-2em t-center">front dest</td>
-                                                <td class="t-end padding-r-2em"> 455.00</td>
-                                                <td class="t-center pr-4">
-                                                    <i class="fa fa-trash-o ml-2 t-red"></i>
-                                                </td>
-                                            </tr>
-                                            </tr>
-                                            <tr class="border-1">
-                                            <tr class="border-1">
-                                                <td class="t-center">1234</td>
-                                                <td class="capitalize padding-r-2em t-center">front dest</td>
-                                                <td class="t-end padding-r-2em"> 455.00</td>
-                                                <td class="t-center pr-4">
-                                                    <i class="fa fa-trash-o ml-2 t-red"></i>
-                                                </td>
-                                            </tr>
-                                            </tr>
-                                            <tr class="border-1">
-                                            <tr class="border-1">
-                                                <td class="t-center">1234</td>
-                                                <td class="capitalize padding-r-2em t-center">front dest</td>
-                                                <td class="t-end padding-r-2em"> 455.00</td>
-                                                <td class="t-center pr-4">
-                                                    <i class="fa fa-trash-o ml-2 t-red"></i>
-                                                </td>
-                                            </tr>
-                                            </tr>
+                                        <tbody class="guest-todo-list">
+
                                         </tbody>
                                     </table>
+                                    <input type="hidden" id="guest_number" value="0">
+                                    <input type="hidden" id="guest_list_num" name="guest_list_num" value="0">
                                 </div>
                             </div>
                         </div>
-                        <button class="accordion">
-                            <div>All Outlet</div>
+                        <button type="button" class="accordion">
+                            <div>All Outlet Revenue</div>
                         </button>
                         <div class="panel">
                             <div id="front-desk-revenue">
                                 <div class="dg-gc2-g2">
                                     <div class="accordion-card">
-                                        <label for="" class="max-sm:text-sm">Cash <sup
-                                                class="text-red-600">*</sup>
-                                        </label>
-                                        <input class="accordion-input" type="number" name="" id="" />
+                                        <label for="" class="max-sm:text-sm">Cash <sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="fb_cash" placeholder="0.00">
                                     </div>
                                     <div class="accordion-card">
-                                        <label for="" class="max-sm:text-sm">Bank Transfer <sup
-                                                class="text-danger">*</sup>
-                                        </label>
-                                        <input class="accordion-input" type="number" name="" id="" />
+                                        <label for="" class="max-sm:text-sm">Bank Transfer <sup class="text-danger">*</sup></label>
+                                        <input type="text" class="accordion-input" id="fb_transfer" placeholder="0.00" disabled>
                                     </div>
                                 </div>
                                 <!--ครอบ column 2-->
-                                <div class="capitalize">credit card</div>
+                                <div class="credit-card">credit card</div>
                                 <div class="dg-gc3-g2">
                                     <div class="accordion-card">
-                                        <label for="" class="max-sm:text-sm">Stand <sup
-                                                class="text-red-600">*</sup>
-                                        </label>
-                                        <input class="accordion-input" type="number" name="" id="" />
+                                        <label for="" class="max-sm:text-sm">Stand <sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="fb_batch"/>
                                     </div>
                                     <div class="accordion-card">
-                                        <label for="" class="max-sm:text-sm">ประเภทรายได้ <sup
-                                                class="text-danger">*</sup>
-                                        </label>
-                                        <select class="accordion-input">
-                                            <option value="">Front Desk</option>
-                                            <option value="">Guest Deposit</option>
-                                            <option value="">All Outlet</option>
-                                            <option value=""> Agoda And Elexa Revenue </option>
+                                        <label for="" class="max-sm:text-sm">Income type <sup class="text-danger">*</sup></label>
+                                        <select class="accordion-input" id="fb_revenue_type">
+                                            <option value="2" selected>All Outlet Revenue</option>
                                         </select>
                                     </div>
                                     <div class="accordion-card">
-                                        <label for="" class="max-sm:text-sm">Credit Card Room Charge <sup
-                                                class="text-danger">*</sup>
-                                        </label>
-                                        <input class="accordion-input" type="number" name="" id="sms-time" />
+                                        <label for="" class="max-sm:text-sm">Credit Card All Outlet Charge <sup class="text-danger">*</sup></label>
+                                        <input type="text" class="accordion-input" id="fb_credit_amount" placeholder="0.00">
                                     </div>
                                 </div>
                                 <br />
-                                <button type="submit" class="add-button"> เพิ่ม </button>
-                                <button type="submit" class="delete-all-button"> ลบข้อมูลทั้งหมด </button>
+                                <button type="button" class="add-button btn-fb-add"> Add </button>
+                                <button type="button" class="delete-all-button btn-fb-hide" onclick="toggleHide5()"> Delete All </button>
+                                <span class="fb-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
                                 <br />
                                 <br />
                                 <div style="overflow-x:auto;">
-                                    <table class="add-income-table">
+                                    <table id="myTablefbCredit" class="add-income-table">
                                         <thead>
                                             <tr class="" style="background-color: #2C7F7A;color: white; ">
                                                 <th class="t-center" style="width:15%;">Stan</th>
-                                                <th class="t-center padding-l-2em"
-                                                    style="width:35%;border-left:white 1px solid">ประเภทรายได้</th>
-                                                <th class="t-center" style="width:30%;border-left:white 1px solid"> Credit
-                                                    Desk Revenue </th>
-                                                <th class="t-center" style="width:20%;border-left:white 1px solid"> Action
-                                                </th>
+                                                <th class="t-center padding-l-2em" style="width:35%;border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="width:30%;border-left:white 1px solid">Credit Card All Outlet Charge</th>
+                                                <th class="t-center" style="width:20%;border-left:white 1px solid"> Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr class="border-1">
-                                            <tr class="border-1">
-                                                <td class="t-center">1234</td>
-                                                <td class="capitalize padding-r-2em t-center">front dest</td>
-                                                <td class="t-end padding-r-2em"> 455.00</td>
-                                                <td class="t-center pr-4">
-                                                    <i class="fa fa-trash-o ml-2 t-red"></i>
-                                                </td>
+                                        <tbody class="fb-todo-list">
+                                            
+                                        </tbody>
+                                    </table>
+                                    <input type="hidden" id="fb_number" value="0">
+                                    <input type="hidden" id="fb_list_num" name="fb_list_num" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="accordion">
+                            <div>Agoda Revenue</div>
+                        </button>
+                        <div class="panel">
+                            <div id="front-desk-revenue">
+                                <div class="dg-gc2-g2">
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Booking Number <sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="agoda_batch">
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Income type <sup class="text-danger">*</sup></label>
+                                        <select class="accordion-input" id="agoda_revenue_type">
+                                            <option value="1" selected>Guest Deposit Revenue</option>
+                                        </select>
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Check in date <sup class="text-danger">*</sup></label>
+                                        <input type="date" class="accordion-input" id="check_in">
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Check out date<sup class="text-danger">*</sup></label>
+                                        <input type="date" class="accordion-input" id="check_out">
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Credit Card Agoda Charge<sup class="text-danger">*</sup></label>
+                                        <input type="text" class="accordion-input" id="agoda_credit_amount" placeholder="0.00">
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Revenue Outstanding<sup class="text-danger">*</sup></label>
+                                        <input type="text" class="accordion-input" id="agoda_credit_outstanding" placeholder="0.00">
+                                    </div>
+                                </div>
+                                <br />
+                                <button type="button" class="add-button btn-agoda-add"> Add </button>
+                                <button type="button" class="delete-all-button btn-agoda-hide" onclick="toggleHide2()"> Delete All </button>
+                                <span class="agoda-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
+                                <br />
+                                <br />
+                                <div style="overflow-x:auto;">
+                                    <table id="myTableAgodaCredit" class="add-income-table">
+                                        <thead>
+                                            <tr class="" style="background-color: #2C7F7A;color: white; ">
+                                                <th class="t-center" style="width:20%;">Booking No</th>
+                                                <th class="t-center padding-l-2em" style="width:25%;border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="width:10%;border-left:white 1px solid">Check in date</th>
+                                                <th class="t-center" style="width:10%;border-left:white 1px solid">Check out date</th>
+                                                <th style="width:15%;border-left:white 1px solid">Credit Card Agoda Charge</th>
+                                                <th style="width:15%;border-left:white 1px solid">Credit Agoda Revenue Outstanding</th>
+                                                <th class="t-center" style="width:10%;border-left:white 1px solid">Action</th>
                                             </tr>
+                                        </thead>
+                                        <tbody class="agoda-todo-list">
+                                            
+                                        </tbody>
+                                    </table>
+                                    <input type="hidden" id="agoda_number" value="0">
+                                    <input type="hidden" id="agoda_list_num" name="agoda_list_num" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="accordion">
+                            <div>Water Park Revenue</div>
+                        </button>
+                        <div class="panel">
+                            <div id="front-desk-revenue">
+                                <div class="dg-gc2-g2">
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Cash <sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="wp_cash" placeholder="0.00">
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Bank Transfer <sup class="text-danger">*</sup></label>
+                                        <input type="text" class="accordion-input" id="wp_transfer" placeholder="0.00" disabled>
+                                    </div>
+                                </div>
+                                <!--ครอบ column 2-->
+                                <div class="credit-card">credit card</div>
+                                <div class="dg-gc3-g2">
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Stand <sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="wp_batch"/>
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Income type <sup class="text-danger">*</sup></label>
+                                        <select class="accordion-input" id="wp_revenue_type">
+                                            <option value="3" selected>Water Park Revenue</option>
+                                            <option value="7">Credit Card Water Park Revenue</option>
+                                        </select>
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Credit Card Water Park Charge<sup class="text-danger">*</sup></label>
+                                        <input type="text" class="accordion-input" id="wp_credit_amount" placeholder="0.00">
+                                    </div>
+                                </div>
+                                <br />
+                                <button type="button" class="add-button btn-wp-add"> Add </button>
+                                <button type="button" class="delete-all-button btn-wp-hide" onclick="toggleHide6()"> Delete All </button>
+                                <span class="wp-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
+                                <br />
+                                <br />
+                                <div style="overflow-x:auto;">
+                                    <table id="myTablewpCredit" class="add-income-table">
+                                        <thead>
+                                            <tr class="" style="background-color: #2C7F7A;color: white; ">
+                                                <th class="t-center" style="width:15%;">Stan</th>
+                                                <th class="t-center padding-l-2em" style="width:35%;border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="width:30%;border-left:white 1px solid">Credit Card Water Park Charge</th>
+                                                <th class="t-center" style="width:20%;border-left:white 1px solid"> Action</th>
                                             </tr>
-                                            <tr class="border-1">
-                                            <tr class="border-1">
-                                                <td class="t-center">1234</td>
-                                                <td class="capitalize padding-r-2em t-center">front dest</td>
-                                                <td class="t-end padding-r-2em"> 455.00</td>
-                                                <td class="t-center pr-4">
-                                                    <i class="fa fa-trash-o ml-2 t-red"></i>
-                                                </td>
+                                        </thead>
+                                        <tbody class="wp-todo-list">
+                                            
+                                        </tbody>
+                                    </table>
+                                    <input type="hidden" id="wp_number" value="0">
+                                    <input type="hidden" id="wp_list_num" name="wp_list_num" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="accordion">
+                            <div>Elexa EGAT Revenue</div>
+                        </button>
+                        <div class="panel">
+                            <div id="front-desk-revenue">
+                                <div class="dg-gc2-g2">
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Order ID <sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="ev_batch">
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Income type<sup class="text-danger">*</sup></label>
+                                        <select class="accordion-input" aria-label="example" name="" id="ev_revenue_type">
+                                            <option value="8" selected>Elexa EGAT Revenue</option>
+                                        </select>
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">EV Charging Charge<sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="ev_credit_amount" name="" placeholder="0.00">
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Transaction Fee 10%<sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="ev_transaction_fee" name="" placeholder="0.00" readonly>
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">VAT 7%<sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="ev_vat" name="" placeholder="0.00" readonly>
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Total Revenue<sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="ev_total_revenue" name="" placeholder="0.00" readonly>
+                                    </div>
+                                </div>
+                                <br />
+                                <button type="button" class="add-button btn-ev-add"> Add </button>
+                                <button type="button" class="delete-all-button btn-ev-hide" onclick="toggleHide8()"> Delete All </button>
+                                <span class="ev-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
+                                <br />
+                                <br />
+                                <div style="overflow-x:auto;">
+                                    <table id="myTableEvCredit" class="add-income-table">
+                                        <thead>
+                                            <tr class="" style="background-color: #2C7F7A;color: white; ">
+                                                <th class="t-center">Stan</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="border-left:white 1px solid">EV Charging Charge</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Transaction Fee</th>
+                                                <th class="t-center" style="border-left:white 1px solid">VAT</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Total Revenue</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Action</th>
                                             </tr>
+                                        </thead>
+                                        <tbody class="ev-todo-list">
+                                            
+                                        </tbody>
+                                    </table>
+                                    <input type="hidden" id="ev_number" value="0">
+                                    <input type="hidden" id="ev_list_num" name="ev_list_num" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="accordion">
+                            <div>Credit Revenue <span class="text-white" id="credit_card">&nbsp;(ยอดเครดิต 0.00)</span></div>
+                        </button>
+                        <div class="panel">
+                            <div id="front-desk-revenue">
+                                <div class="dg-gc2-g2">
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Stan<sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="batch">
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Income type<sup class="text-danger">*</sup></label>
+                                        <select class="accordion-input" aria-label="example" name="" id="revenue_type">
+                                            <option value="">เลือกประเภทรายได้</option>
+                                            <option value="6">Front Desk Revenue</option>
+                                            <option value="1">Guest Deposit Revenue</option>
+                                            <option value="2">All Outlet Revenue</option>
+                                            <option value="4">Credit Card Revenue</option>
+                                            <option value="5">Credit Card Agoda Revenue</option>
+                                            <option value="3">Water Park Revenue</option>
+                                            <option value="7">Credit Card Water Park Revenue</option>
+                                            <option value="8">Elexa EGAT Revenue</option>
+                                        </select>
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Amount<sup class="text-red-600">*</sup></label>
+                                        <input type="text" class="accordion-input" id="credit_amount" name="" placeholder="0.00">
+                                    </div>
+                                </div>
+                                <br />
+                                <button type="button" class="add-button btn-todo-add"> Add </button>
+                                <button type="button" class="delete-all-button btn-todo-hide" onclick="toggleHide8()"> Delete All </button>
+                                <span class="todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
+                                <br />
+                                <br />
+                                <div style="overflow-x:auto;">
+                                    <table id="myTableCredit" class="add-income-table">
+                                        <thead>
+                                            <tr class="" style="background-color: #2C7F7A;color: white; ">
+                                                <th class="t-center">Stan</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Amount</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Action</th>
                                             </tr>
-                                            <tr class="border-1">
-                                            <tr class="border-1">
-                                                <td class="t-center">1234</td>
-                                                <td class="capitalize padding-r-2em t-center">front dest</td>
-                                                <td class="t-end padding-r-2em"> 455.00</td>
-                                                <td class="t-center pr-4">
-                                                    <i class="fa fa-trash-o ml-2 t-red"></i>
-                                                </td>
+                                        </thead>
+                                        <tbody class="todo-list">
+                                            
+                                        </tbody>
+                                    </table>
+                                    <input type="hidden" id="number" value="0">
+                                    <input type="hidden" id="list_num" name="list_num" value="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn button" data-dismiss="modal" style="background-color: rgb(104, 100, 100)"> Close </button>
+                        <button type="button" class="btn button" onclick="revenue_store()" style="background-color: rgb(5, 122, 108)"> Save changes </button>
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bd-example-modal-lg" id="ViewDataModalCenter" tabindex="-1" role="dialog" aria-labelledby="ViewDataModalCenterLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content rounded-lg">
+                <div class="modal-header bg-teal-green">
+                    <h5 class="modal-title text-white" id="ViewDataModalCenterLabel">Detail</h5>
+                    <button type="button" class="close text-white text-2xl" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body bg-green500">
+                    <div class="df-jc-ic">
+                        <label for="" class="text2xl">วันที่ : &nbsp;&nbsp;</label>
+                        <input type="date" class="input-date" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>">
+                    </div>
+                    <br />
+                    <div class="box-accordion">
+                        <button type="button" class="accordion">
+                            <div>front desk revenue</div>
+                        </button>
+                        <div class="panel">
+                            <div id="front-desk-revenue">
+                                <div style="overflow-x:auto;">
+                                    <table id="" class="add-income-table">
+                                        <thead>
+                                            <tr class="" style="background-color: #2C7F7A;color: white; ">
+                                                <th class="t-center" style="width:15%;">Stan</th>
+                                                <th class="t-center padding-l-2em" style="width:35%;border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="width:30%;border-left:white 1px solid">Credit Card Front Desk Charge</th>
+                                                <th class="t-center" style="width:20%;border-left:white 1px solid"> Action</th>
                                             </tr>
+                                        </thead>
+                                        <tbody class="front-todo-list">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="accordion">
+                            <div>Guest Deposit Revenue</div>
+                        </button>
+                        <div class="panel">
+                            <div id="front-desk-revenue">
+                                <div style="overflow-x:auto;">
+                                    <table id="" class="add-income-table">
+                                        <thead>
+                                            <tr class="" style="background-color: #2C7F7A;color: white; ">
+                                                <th class="t-center" style="width:15%;">Stan</th>
+                                                <th class="t-center padding-l-2em" style="width:35%;border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="width:30%;border-left:white 1px solid">Credit Card Room Charge</th>
+                                                <th class="t-center" style="width:20%;border-left:white 1px solid"> Action</th>
                                             </tr>
+                                        </thead>
+                                        <tbody class="guest-todo-list">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="accordion">
+                            <div>All Outlet Revenue</div>
+                        </button>
+                        <div class="panel">
+                            <div id="front-desk-revenue">
+                                <div style="overflow-x:auto;">
+                                    <table id="" class="add-income-table">
+                                        <thead>
+                                            <tr class="" style="background-color: #2C7F7A;color: white; ">
+                                                <th class="t-center" style="width:15%;">Stan</th>
+                                                <th class="t-center padding-l-2em" style="width:35%;border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="width:30%;border-left:white 1px solid">Credit Card All Outlet Charge</th>
+                                                <th class="t-center" style="width:20%;border-left:white 1px solid"> Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="fb-todo-list">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="accordion">
+                            <div>Agoda Revenue</div>
+                        </button>
+                        <div class="panel">
+                            <div id="front-desk-revenue">
+                                <div style="overflow-x:auto;">
+                                    <table id="" class="add-income-table">
+                                        <thead>
+                                            <tr class="" style="background-color: #2C7F7A;color: white; ">
+                                                <th class="t-center" style="width:20%;">Booking No</th>
+                                                <th class="t-center padding-l-2em" style="width:25%;border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="width:10%;border-left:white 1px solid">Check in date</th>
+                                                <th class="t-center" style="width:10%;border-left:white 1px solid">Check out date</th>
+                                                <th style="width:15%;border-left:white 1px solid">Credit Card Agoda Charge</th>
+                                                <th style="width:15%;border-left:white 1px solid">Credit Agoda Revenue Outstanding</th>
+                                                <th class="t-center" style="width:10%;border-left:white 1px solid">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="agoda-todo-list">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="accordion">
+                            <div>Water Park Revenue</div>
+                        </button>
+                        <div class="panel">
+                            <div id="front-desk-revenue">
+                                <div style="overflow-x:auto;">
+                                    <table id="" class="add-income-table">
+                                        <thead>
+                                            <tr class="" style="background-color: #2C7F7A;color: white; ">
+                                                <th class="t-center" style="width:15%;">Stan</th>
+                                                <th class="t-center padding-l-2em" style="width:35%;border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="width:30%;border-left:white 1px solid">Credit Card Water Park Charge</th>
+                                                <th class="t-center" style="width:20%;border-left:white 1px solid"> Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="wp-todo-list">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="accordion">
+                            <div>Elexa EGAT Revenue</div>
+                        </button>
+                        <div class="panel">
+                            <div id="front-desk-revenue">
+                                <div style="overflow-x:auto;">
+                                    <table id="" class="add-income-table">
+                                        <thead>
+                                            <tr class="" style="background-color: #2C7F7A;color: white; ">
+                                                <th class="t-center">Stan</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="border-left:white 1px solid">EV Charging Charge</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Transaction Fee</th>
+                                                <th class="t-center" style="border-left:white 1px solid">VAT</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Total Revenue</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="ev-todo-list">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="accordion">
+                            <div>Credit Revenue <span class="text-white" id="credit_card2">&nbsp;(ยอดเครดิต 0.00)</span></div>
+                        </button>
+                        <div class="panel">
+                            <div id="front-desk-revenue">
+                                <div style="overflow-x:auto;">
+                                    <table id="myTableCredit" class="add-income-table">
+                                        <thead>
+                                            <tr class="" style="background-color: #2C7F7A;color: white; ">
+                                                <th class="t-center">Stan</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Income type</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Amount</th>
+                                                <th class="t-center" style="border-left:white 1px solid">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="todo-list">
+                                            
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <script>
-                        var acc = document.getElementsByClassName("accordion");
-                        var i;
-                        for (i = 0; i < acc.length; i++) {
-                            acc[i].addEventListener("click", function() {
-                                this.classList.toggle("active");
-                                var panel = this.nextElementSibling;
-                                if (panel.style.display === "block") {
-                                    panel.style.display = "none";
-                                } else {
-                                    panel.style.display = "block";
-                                }
-                            });
-                        }
-                    </script>
                     <div class="modal-footer">
-                        <button type="button" class="btn button" data-dismiss="modal"
-                            style="background-color: rgb(104, 100, 100)"> Close </button>
-                        <button type="button" id="btn-save-date" class="btn button"
-                            style="background-color: rgb(5, 122, 108)"> Save changes </button>
+                        <button type="button" class="btn button" data-dismiss="modal" style="background-color: rgb(104, 100, 100)"> Close </button>
+                        <button type="button" class="btn button" onclick="revenue_store()" style="background-color: rgb(5, 122, 108)"> Save changes </button>
                     </div>
                 </div>
             </div>
@@ -1228,58 +1667,955 @@
         integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <!-- Sweet Alert 2 -->
+    <script src="{{ asset('assets/bundles/sweetalert2.bundle.js')}}"></script>
+    <script src="{{ asset('assets/js/searh-calendar.js') }}"></script>
 
-    <script>
-        const barColors = ["#2C7F7A ", "#008996", "#3cc3b1"];
-        const ctx = document.getElementById("myChart").getContext("2d");
-        // Plugin to add text in the center of the doughnut chart
-        const centerTextPlugin = {
-            id: "centerText",
-            beforeDraw: function(chart) {
-                if (chart.config.type === "doughnut") {
-                    const width = chart.width,
-                        height = chart.height,
-                        ctx = chart.ctx;
-                    ctx.restore();
-                    const fontSize = (height / 145).toFixed(2); // Font size
-                    ctx.font = fontSize + "em 'Sarabun', sans-serif";
-                    ctx.textBaseline = "middle";
-                    // Check if data is empty
-                    const dataValues = chart.data.datasets[0].data;
-                    const isEmptyData = dataValues.every(
-                        (value) => value === 0);
-                    const text = isEmptyData ? "00.00" : "123,456";
-                    const textX = Math.round(
-                        (width - ctx.measureText(text).width) / 2);
-                    const textY = height / 2 + 30;
-                    // Draw circle
-                    const circleRadius = fontSize * 60; // Adjust the multiplier as needed
-                    ctx.beginPath();
-                    ctx.arc(width / 2, textY - 5, circleRadius, 0, 2 * Math
-                        .PI); // Adjust the vertical offset as needed
-                    ctx.strokeStyle = "transparent"; // Circle color
-                    ctx.lineWidth = 2; // Circle line width
-                    ctx.stroke();
-                    ctx.fillText(text, textX, textY);
-                    ctx.save();
-                }
-            },
-        };
-        Chart.register(centerTextPlugin);
-        new Chart(ctx, {
-            type: "doughnut",
-            data: {
-                labels: ["Cash", "Bank Transfer", "Credit Card Revenue", ],
-                datasets: [{
-                    data: [4987.00, 68987.00, 50000.00], // Example of empty data
-                    backgroundColor: barColors,
-                }, ],
-            },
-            options: {
-                cutout: "90%",
-                // other options if any
-            },
-            plugins: [centerTextPlugin],
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
         });
-    </script>
+    }
+</script>
+
+<script>
+    const barColors = ["#2C7F7A ", "#008996", "#3cc3b1"];
+    const ctx = document.getElementById("myChart").getContext("2d");
+    // Plugin to add text in the center of the doughnut chart
+    const centerTextPlugin = {
+        id: "centerText",
+        beforeDraw: function(chart) {
+            if (chart.config.type === "doughnut") {
+                const width = chart.width,
+                    height = chart.height,
+                    ctx = chart.ctx;
+                ctx.restore();
+                const fontSize = (height / 145).toFixed(2); // Font size
+                ctx.font = fontSize + "em 'Sarabun', sans-serif";
+                ctx.textBaseline = "middle";
+                // Check if data is empty
+                const dataValues = chart.data.datasets[0].data;
+                const isEmptyData = dataValues.every(
+                    (value) => value === 0);
+                const text = isEmptyData ? "00.00" : "123,456";
+                const textX = Math.round(
+                    (width - ctx.measureText(text).width) / 2);
+                const textY = height / 2 + 30;
+                // Draw circle
+                const circleRadius = fontSize * 60; // Adjust the multiplier as needed
+                ctx.beginPath();
+                ctx.arc(width / 2, textY - 5, circleRadius, 0, 2 * Math
+                    .PI); // Adjust the vertical offset as needed
+                ctx.strokeStyle = "transparent"; // Circle color
+                ctx.lineWidth = 2; // Circle line width
+                ctx.stroke();
+                ctx.fillText(text, textX, textY);
+                ctx.save();
+            }
+        },
+    };
+    Chart.register(centerTextPlugin);
+    new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: ["Cash", "Bank Transfer", "Credit Card Revenue", ],
+            datasets: [{
+                data: [4987.00, 68987.00, 50000.00], // Example of empty data
+                backgroundColor: barColors,
+            }, ],
+        },
+        options: {
+            cutout: "90%",
+            // other options if any
+        },
+        plugins: [centerTextPlugin],
+    });
+
+    // Number Format
+    function currencyFormat(num) {
+        return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    }
+
+    function currencyFormat3(num) {
+        return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    }
+
+    // เลือกวันที่ใน Modal เพิ่มเงินสด/เครดิต
+    $('#date').on('change', function () {
+        Add_data($(this).val());
+    });
+
+    // Add ข้อมูลเงินสด/เครดิต
+    function Add_data($date) {
+        var date = $('#date').val();
+        jQuery.ajax({
+            type:   "GET",
+            url:    "{!! url('revenue-edit/"+date+"') !!}",
+            datatype:   "JSON",
+            async:  false,
+            success: function(response) {
+                $('#front_cash').val(response.data.front_cash);
+                $('#front_transfer').val(currencyFormat(response.data.front_transfer));
+                $('#front_credit').val(response.data.front_credit);
+                $('#cash').val(response.data.room_cash);
+                $('#room_transfer').val(currencyFormat(response.data.room_transfer));
+                $('#credit').val(response.data.room_credit);
+                $('#fb_cash').val(response.data.fb_cash);
+                $('#fb_transfer').val(currencyFormat(response.data.fb_transfer));
+                $('#fb_credit').val(response.data.fb_credit);
+                $('#wp_cash').val(response.data.wp_cash);
+                $('#wp_transfer').val(currencyFormat(response.data.wp_transfer));
+                $('#wp_credit').val(response.data.wp_credit);
+                // $('#ev_cash').val(response.data.ev_cash);
+                // $('#ev_transfer').val(currencyFormat(response.data.ev_transfer));
+                // $('#ev_credit').val(response.data.ev_credit);
+
+                $('#credit_card').text(" (ยอดเครดิต "+currencyFormat(response.data.total_credit)+")");
+                $('.todo-list tr').remove();
+                $('.guest-todo-list tr').remove();
+                $('.fb-todo-list tr').remove();
+                $('.wp-todo-list tr').remove();
+                $('.agoda-todo-list tr').remove();
+                $('.front-todo-list tr').remove();
+                $('.ev-todo-list tr').remove();
+
+                jQuery.each(response.data_credit, function(key, value) {
+                    var type_name = "";
+                    switch (value.revenue_type) {
+                        case 1: type_name = "Guest Deposit Revenue"; break;
+                        case 2: type_name = "All Outlet Revenue"; break;
+                        case 3: type_name = "Water Park Revenue"; break;
+                        case 4: type_name = "Credit Card Revenue"; break;
+                        case 5: type_name = "Credit Card Agoda Revenue"; break;
+                        case 6: type_name = "Front Desk Revenue"; break;
+                        case 7: type_name = "Credit Card Water Park Revenue"; break;
+                        case 8: type_name = "Elexa EGAT Revenue"; break;
+                    }
+
+                    var date_check_in = "";
+                    var date_check_out = "";
+
+                    if (value.agoda_check_in) {
+                        var agoda_check_in = new Date(value.agoda_check_in);
+                        var year = agoda_check_in.getFullYear();
+                        var month = (1 + agoda_check_in.getMonth()).toString().padStart(2, '0');
+                        var day = agoda_check_in.getDate().toString().padStart(2, '0');
+
+                        date_check_in = day+'/'+month+'/'+year;
+
+                        var agoda_check_out = new Date(value.agoda_check_out);
+                        var year_out = agoda_check_out.getFullYear();
+                        var month_out = (1 + agoda_check_out.getMonth()).toString().padStart(2, '0');
+                        var day_out = agoda_check_out.getDate().toString().padStart(2, '0');
+
+                        date_check_out = day_out+'/'+month_out+'/'+year_out;
+
+                    }
+
+                    if (value.status == 1) {
+                        $('.guest-todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="capitalize padding-r-2em t-center">' + type_name + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td class="t-center pr-4"><i class="fa fa-trash-o ml-2 t-red close p-1" onClick="toggleClose4(this)"></i></td>' +
+                                '<input type="hidden" name="guest_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="guest_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="guest_credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 2) {
+                        $('.fb-todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="capitalize padding-r-2em t-center">' + type_name + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td class="t-center pr-4"><i class="fa fa-trash-o ml-2 t-red close p-1" onClick="toggleClose5(this)"></i></td>' +
+                                '<input type="hidden" name="fb_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="fb_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="fb_credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 3) {
+                        $('.wp-todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="capitalize padding-r-2em t-center">' + type_name + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td class="t-center pr-4"><i class="fa fa-trash-o ml-2 t-red close p-1" onClick="toggleClose6(this)"></i></td>' +
+                                '<input type="hidden" name="wp_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="wp_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="wp_credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 4) {
+                        $('.todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="capitalize padding-r-2em t-center">' + type_name + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td class="t-center pr-4"><i class="fa fa-trash-o ml-2 t-red close p-1" onClick="toggleClose(this)"></i></td>' +
+                                '<input type="hidden" name="batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 5) {
+                        $('.agoda-todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="capitalize padding-r-2em t-center">' + type_name + '</td>' +
+                                '<td class="t-center">' + date_check_in + '</td>' +
+                                '<td class="t-center">' + date_check_out + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.agoda_charge)) + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.agoda_outstanding)) + '</td>' +
+                                '<td class="t-center pr-4"><i class="fa fa-trash-o ml-2 t-red close p-1" onClick="toggleClose2(this)"></i></td>' +
+                                '<input type="hidden" name="agoda_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="agoda_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="agoda_check_in[]" value="' + value.agoda_check_in + '">' +
+                                '<input type="hidden" name="agoda_check_out[]" value="' + value.agoda_check_out + '">' +
+                                '<input type="hidden" name="agoda_credit_amount[]" value="' + value.agoda_charge + '">' +
+                                '<input type="hidden" name="agoda_credit_outstanding[]" value="' + value.agoda_outstanding + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 6) {
+                        $('.front-todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="capitalize padding-r-2em t-center">' + type_name + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td class="t-center pr-4"><i class="fa fa-trash-o ml-2 t-red close p-1" onClick="toggleClose3(this)"></i></td>' +
+                                '<input type="hidden" name="front_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="front_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="front_credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 8) {
+                        $('.ev-todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="capitalize padding-r-2em t-center">' + type_name + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.ev_charge)) + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.ev_fee)) + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.ev_vat)) + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.ev_revenue)) + '</td>' +
+                                '<td class="t-center pr-4"><i class="fa fa-trash-o ml-2 t-red close p-1" onClick="toggleClose8(this)"></i></td>' +
+                                '<input type="hidden" name="ev_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="ev_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="ev_credit_amount[]" value="' + value.ev_charge + '">' +
+                                '<input type="hidden" name="ev_transaction_fee[]" value="' + value.ev_fee + '">' +
+                                '<input type="hidden" name="ev_vat[]" value="' + value.ev_vat + '">' +
+                                '<input type="hidden" name="ev_total_revenue[]" value="' + value.ev_revenue + '">' +
+                            '</tr>'
+                        );
+                    }
+                });
+            },
+
+        });
+    }
+
+    function view_data($date) {
+        var date = $('#date').val();
+        jQuery.ajax({
+            type:   "GET",
+            url:    "{!! url('revenue-edit/"+date+"') !!}",
+            datatype:   "JSON",
+            async:  false,
+            success: function(response) {
+                $('#front_cash').val(response.data.front_cash);
+                $('#front_transfer').val(currencyFormat(response.data.front_transfer));
+                $('#front_credit').val(response.data.front_credit);
+                $('#cash').val(response.data.room_cash);
+                $('#room_transfer').val(currencyFormat(response.data.room_transfer));
+                $('#credit').val(response.data.room_credit);
+                $('#fb_cash').val(response.data.fb_cash);
+                $('#fb_transfer').val(currencyFormat(response.data.fb_transfer));
+                $('#fb_credit').val(response.data.fb_credit);
+                $('#wp_cash').val(response.data.wp_cash);
+                $('#wp_transfer').val(currencyFormat(response.data.wp_transfer));
+                $('#wp_credit').val(response.data.wp_credit);
+                // $('#ev_cash').val(response.data.ev_cash);
+                // $('#ev_transfer').val(currencyFormat(response.data.ev_transfer));
+                // $('#ev_credit').val(response.data.ev_credit);
+
+                $('#credit_card2').text(" (ยอดเครดิต "+currencyFormat(response.data.total_credit)+")");
+                $('.todo-list tr').remove();
+                $('.guest-todo-list tr').remove();
+                $('.fb-todo-list tr').remove();
+                $('.wp-todo-list tr').remove();
+                $('.agoda-todo-list tr').remove();
+                $('.front-todo-list tr').remove();
+                $('.ev-todo-list tr').remove();
+
+                jQuery.each(response.data_credit, function(key, value) {
+                    var type_name = "";
+                    switch (value.revenue_type) {
+                        case 1: type_name = "Guest Deposit Revenue"; break;
+                        case 2: type_name = "All Outlet Revenue"; break;
+                        case 3: type_name = "Water Park Revenue"; break;
+                        case 4: type_name = "Credit Card Revenue"; break;
+                        case 5: type_name = "Credit Card Agoda Revenue"; break;
+                        case 6: type_name = "Front Desk Revenue"; break;
+                        case 7: type_name = "Credit Card Water Park Revenue"; break;
+                        case 8: type_name = "Elexa EGAT Revenue"; break;
+                    }
+
+                    var date_check_in = "";
+                    var date_check_out = "";
+
+                    if (value.agoda_check_in) {
+                        var agoda_check_in = new Date(value.agoda_check_in);
+                        var year = agoda_check_in.getFullYear();
+                        var month = (1 + agoda_check_in.getMonth()).toString().padStart(2, '0');
+                        var day = agoda_check_in.getDate().toString().padStart(2, '0');
+
+                        date_check_in = day+'/'+month+'/'+year;
+
+                        var agoda_check_out = new Date(value.agoda_check_out);
+                        var year_out = agoda_check_out.getFullYear();
+                        var month_out = (1 + agoda_check_out.getMonth()).toString().padStart(2, '0');
+                        var day_out = agoda_check_out.getDate().toString().padStart(2, '0');
+
+                        date_check_out = day_out+'/'+month_out+'/'+year_out;
+
+                    }
+
+                    if (value.status == 1) {
+                        $('.guest-todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="t-center">' + type_name + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
+                                '<input type="hidden" name="guest_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="guest_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="guest_credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 2) {
+                        $('.fb-todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="t-center">' + type_name + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
+                                '<input type="hidden" name="fb_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="fb_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="fb_credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 3) {
+                        $('.wp-todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="t-center">' + type_name + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
+                                '<input type="hidden" name="wp_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="wp_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="wp_credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 4) {
+                        $('.todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="t-center">' + type_name + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
+                                '<input type="hidden" name="batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 5) {
+                        $('.agoda-todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="t-center">' + type_name + '</td>' +
+                                '<td class="t-center">' + date_check_in + '</td>' +
+                                '<td class="t-center">' + date_check_out + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.agoda_charge)) + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.agoda_outstanding)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
+                                '<input type="hidden" name="agoda_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="agoda_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="agoda_check_in[]" value="' + value.agoda_check_in + '">' +
+                                '<input type="hidden" name="agoda_check_out[]" value="' + value.agoda_check_out + '">' +
+                                '<input type="hidden" name="agoda_credit_amount[]" value="' + value.agoda_charge + '">' +
+                                '<input type="hidden" name="agoda_credit_outstanding[]" value="' + value.agoda_outstanding + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 6) {
+                        $('.front-todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="t-center">' + type_name + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.credit_amount)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
+                                '<input type="hidden" name="front_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="front_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="front_credit_amount[]" value="' + value.credit_amount + '">' +
+                            '</tr>'
+                        );
+
+                    } if (value.status == 8) {
+                        $('.ev-todo-list').append(
+                            '<tr class="border-1">' +
+                                '<td class="t-center">' + value.batch +'</td>' +
+                                '<td class="t-center">' + type_name + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.ev_charge)) + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.ev_fee)) + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.ev_vat)) + '</td>' +
+                                '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(value.ev_revenue)) + '</td>' +
+                                '<td style="text-align: center;"></td>' +
+                                '<input type="hidden" name="ev_batch[]" value="' + value.batch + '">' +
+                                '<input type="hidden" name="ev_revenue_type[]" value="' + value.revenue_type + '">' +
+                                '<input type="hidden" name="ev_credit_amount[]" value="' + value.ev_charge + '">' +
+                                '<input type="hidden" name="ev_transaction_fee[]" value="' + value.ev_fee + '">' +
+                                '<input type="hidden" name="ev_vat[]" value="' + value.ev_vat + '">' +
+                                '<input type="hidden" name="ev_total_revenue[]" value="' + value.ev_revenue + '">' +
+                            '</tr>'
+                        );
+                    }
+                });
+            },
+
+        });
+    }
+
+    // ปุ่มAddข้อมูลแต่ละหมวด
+    $('.btn-todo-add').on('click', function() {
+        var batch = $('#batch').val();
+        var type = $('#revenue_type').val();
+        var amount = $('#credit_amount').val();
+        var list = parseInt($('#list_num').val());
+        var number = parseInt($('#number').val()) + 1;
+        $('#number').val(number);
+
+        if (batch && type && amount) {
+            var type_name = "";
+            switch (type) {
+                case "1": type_name = "Guest Deposit Revenue"; break;
+                case "2": type_name = "All Outlet Revenue"; break;
+                case "3": type_name = "Water Park Revenue"; break;
+                case "4": type_name = "Credit Card Revenue"; break;
+                case "5": type_name = "Credit Card Agoda Revenue"; break;
+                case "6": type_name = "Front Desk Revenue"; break;
+                case "7": type_name = "Credit Card Water Park Revenue"; break;
+                case "8": type_name = "Elexa EGAT Revenue"; break;
+            }
+
+            $('.todo-list').append(
+                '<tr class="border-1">' +
+                    '<td class="t-center">' + batch +'</td>' +
+                    '<td class="t-center">' + type_name + '</td>' +
+                    '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(amount)) + '</td>' +
+                    '<td style="text-align: center;"><i class="fa fa-trash-o t-red close p-1" onClick="toggleClose(this)"></i></td>' +
+                    '<input type="hidden" name="batch[]" value="' + batch + '">' +
+                    '<input type="hidden" name="revenue_type[]" value="' + type + '">' +
+                    '<input type="hidden" name="credit_amount[]" value="' + amount + '">' +
+                '</tr>'
+            );
+
+            var batch = $('#batch').val('');
+            var type = $('#revenue_type').val('');
+            var amount = $('#credit_amount').val('');
+
+            $('.todo-error').hide();
+
+        } else {
+            $('.todo-error').show();
+        }
+    });
+
+    $('.btn-front-add').on('click', function() {
+        var batch = $('#front_batch').val();
+        var type = $('#front_revenue_type').val();
+        var amount = $('#front_credit_amount').val();
+        var list = parseInt($('#front_list_num').val());
+        var number = parseInt($('#front_number').val()) + 1;
+        $('#front_number').val(number);
+
+        if (batch && type && amount) {
+
+            var type_name = "";
+            switch (type) {
+                case "6": type_name = "Front Desk Revenue"; break;
+            }
+
+            $('.front-todo-list').append(
+                '<tr class="border-1">' +
+                    '<td class="t-center">' + batch +'</td>' +
+                    '<td class="t-center">' + type_name + '</td>' +
+                    '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(amount)) + '</td>' +
+                    '<td style="text-align:center;"><i class="fa fa-trash-o t-red close p-1" onClick="toggleClose3(this)"></i></td>' +
+                    '<input type="hidden" name="front_batch[]" value="' + batch + '">' +
+                    '<input type="hidden" name="front_revenue_type[]" value="' + type + '">' +
+                    '<input type="hidden" name="front_credit_amount[]" value="' + amount + '">' +
+                '</tr>'
+            );
+
+            var batch = $('#front_batch').val('');
+            var type = $('#front_revenue_type').val('');
+            var amount = $('#front_credit_amount').val('');
+
+            $('.front-todo-error').hide();
+        } else {
+            $('.front-todo-error').show();
+        }
+    });
+
+    $('.btn-guest-add').on('click', function() {
+        var batch = $('#guest_batch').val();
+        var type = $('#guest_revenue_type').val();
+        var amount = $('#guest_credit_amount').val();
+        var list = parseInt($('#guest_list_num').val());
+        var number = parseInt($('#guest_number').val()) + 1;
+        $('#guest_number').val(number);
+
+        if (batch && type && amount) {
+
+            var type_name = "";
+            switch (type) {
+                case "1": type_name = "Guest Deposit Revenue"; break;
+            }
+
+            $('.guest-todo-list').append(
+                '<tr class="border-1">' +
+                    '<td class="t-center">' + batch +'</td>' +
+                    '<td class="t-center">' + type_name + '</td>' +
+                    '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(amount)) + '</td>' +
+                    '<td style="text-align: center;"><i class="fa fa-trash-o t-red close p-1" onClick="toggleClose4(this)"></i></td>' +
+                    '<input type="hidden" name="guest_batch[]" value="' + batch + '">' +
+                    '<input type="hidden" name="guest_revenue_type[]" value="' + type + '">' +
+                    '<input type="hidden" name="guest_credit_amount[]" value="' + amount + '">' +
+                '</tr>'
+            );
+
+            var batch = $('#guest_batch').val('');
+            var type = $('#guest_revenue_type').val(1);
+            var amount = $('#guest_credit_amount').val('');
+
+            $('.guest-todo-error').hide();
+        } else {
+            $('.guest-todo-error').show();
+        }
+
+    });
+
+    $('.btn-fb-add').on('click', function() {
+        var batch = $('#fb_batch').val();
+        var type = $('#fb_revenue_type').val();
+        var amount = $('#fb_credit_amount').val();
+        var list = parseInt($('#fb_list_num').val());
+        var number = parseInt($('#fb_number').val()) + 1;
+        $('#fb_number').val(number);
+
+        if (batch && type && amount) {
+
+            var type_name = "";
+            switch (type) {
+                case "2": type_name = "All Outlet Revenue"; break;
+            }
+
+            $('.fb-todo-list').append(
+                '<tr class="border-1">' +
+                    '<td class="t-center">' + batch +'</td>' +
+                    '<td class="t-center">' + type_name + '</td>' +
+                    '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(amount)) + '</td>' +
+                    '<td style="text-align: center;"><i class="fa fa-trash-o t-red close p-1" onClick="toggleClose5(this)"></i></td>' +
+                    '<input type="hidden" name="fb_batch[]" value="' + batch + '">' +
+                    '<input type="hidden" name="fb_revenue_type[]" value="' + type + '">' +
+                    '<input type="hidden" name="fb_credit_amount[]" value="' + amount + '">' +
+                '</tr>'
+            );
+
+            var batch = $('#fb_batch').val('');
+            var type = $('#fb_revenue_type').val('');
+            var amount = $('#fb_credit_amount').val('');
+
+            $('.fb-todo-error').hide();
+        } else {
+            $('.fb-todo-error').show();
+        }
+    });
+
+    $('.btn-agoda-add').on('click', function() {
+        var batch = $('#agoda_batch').val();
+        var type = $('#agoda_revenue_type').val();
+        var check_in = $('#check_in').val();
+        var check_out = $('#check_out').val();
+        var amount = $('#agoda_credit_amount').val();
+        var outstanding = $('#agoda_credit_outstanding').val();
+        var list = parseInt($('#agoda_list_num').val());
+        var number = parseInt($('#agoda_number').val()) + 1;
+        $('#agoda_number').val(number);
+
+        if (batch && type && amount && outstanding && check_in && check_out) {
+
+            var type_name = "";
+
+            switch (type) {
+                case "1": type_name = "Guest Deposit Revenue"; break;
+            }
+
+            var date_check_in = "";
+            var date_check_out = "";
+
+            if (check_in) {
+                var agoda_check_in = new Date(check_in);
+                var year = agoda_check_in.getFullYear();
+                var month = (1 + agoda_check_in.getMonth()).toString().padStart(2, '0');
+                var day = agoda_check_in.getDate().toString().padStart(2, '0');
+                date_check_in = day+'/'+month+'/'+year;
+
+                var agoda_check_out = new Date(check_out);
+                var year_out = agoda_check_out.getFullYear();
+                var month_out = (1 + agoda_check_out.getMonth()).toString().padStart(2, '0');
+                var day_out = agoda_check_out.getDate().toString().padStart(2, '0');
+                date_check_out = day_out+'/'+month_out+'/'+year_out;
+            }
+
+            $('.agoda-todo-list').append(
+                '<tr class="border-1">' +
+                    '<td class="t-center">' + batch +'</td>' +
+                    '<td class="t-center">' + type_name + '</td>' +
+                    '<td class="t-center">' + date_check_in + '</td>' +
+                    '<td class="t-center">' + date_check_out + '</td>' +
+                    '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(amount)) + '</td>' +
+                    '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(outstanding)) + '</td>' +
+                    '<td style="text-align: center;"><i class="fa fa-trash-o t-red close p-1" onClick="toggleClose2(this)"></i></td>' +
+                    '<input type="hidden" name="agoda_batch[]" value="' + batch + '">' +
+                    '<input type="hidden" name="agoda_revenue_type[]" value="' + type + '">' +
+                    '<input type="hidden" name="agoda_check_in[]" value="' + check_in + '">' +
+                    '<input type="hidden" name="agoda_check_out[]" value="' + check_out + '">' +
+                    '<input type="hidden" name="agoda_credit_amount[]" value="' + amount + '">' +
+                    '<input type="hidden" name="agoda_credit_outstanding[]" value="' + outstanding + '">' +
+                '</tr>'
+            );
+
+            var batch = $('#agoda_batch').val('');
+            var type = $('#agoda_revenue_type').val('');
+            var check_in = $('#check_in').val('');
+            var check_out = $('#check_out').val('');
+            var amount = $('#agoda_credit_amount').val('');
+            var outstanding = $('#agoda_credit_outstanding').val('');
+
+            $('.agoda-todo-error').hide();
+
+        } else {
+            $('.agoda-todo-error').show();
+        }
+    });
+
+    $('.btn-wp-add').on('click', function() {
+        var batch = $('#wp_batch').val();
+        var type = $('#wp_revenue_type').val();
+        var amount = $('#wp_credit_amount').val();
+        var list = parseInt($('#wp_list_num').val());
+        var number = parseInt($('#wp_number').val()) + 1;
+        $('#wp_number').val(number);
+
+        if (batch && type && amount) {
+
+            var type_name = "";
+            switch (type) {
+                case "3": type_name = "Water Park Revenue"; break;
+                case "7": type_name = "Credit Card Water Park Revenue"; break;
+            }
+
+            $('.wp-todo-list').append(
+                '<tr class="border-1">' +
+                    '<td class="t-center">' + batch +'</td>' +
+                    '<td class="t-center">' + type_name + '</td>' +
+                    '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(amount)) + '</td>' +
+                    '<td style="text-align: center;"><i class="fa fa-trash-o t-red close p-1" onClick="toggleClose6(this)"></i></td>' +
+                    '<input type="hidden" name="wp_batch[]" value="' + batch + '">' +
+                    '<input type="hidden" name="wp_revenue_type[]" value="' + type + '">' +
+                    '<input type="hidden" name="wp_credit_amount[]" value="' + amount + '">' +
+                '</tr>'
+            );
+
+            var batch = $('#wp_batch').val('');
+            var type = $('#wp_revenue_type').val('');
+            var amount = $('#wp_credit_amount').val('');
+            $('.wp-todo-error').hide();
+        } else {
+            $('.wp-todo-error').show();
+        }
+    });
+
+    $('.btn-ev-add').on('click', function() {
+        var batch = $('#ev_batch').val();
+        var type = $('#ev_revenue_type').val();
+        var fee = $('#ev_transaction_fee').val();
+        var vat = $('#ev_vat').val();
+        var ev_revenue = $('#ev_total_revenue').val();
+        var amount = $('#ev_credit_amount').val();
+        // var outstanding = $('#ev_credit_outstanding').val();
+        var list = parseInt($('#ev_list_num').val());
+        var number = parseInt($('#ev_number').val()) + 1;
+        $('#ev_number').val(number);
+
+        if (batch && type && amount) {
+
+            var type_name = "";
+            switch (type) {
+                case "8": type_name = "Elexa EGAT Revenue"; break;
+            }
+
+            $('.ev-todo-list').append(
+                '<tr class="border-1">' +
+                    '<td class="t-center">' + batch +'</td>' +
+                    '<td class="t-center">' + type_name + '</td>' +
+                    '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(amount)) + '</td>' +
+                    '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(fee)) + '</td>' +
+                    '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(vat)) + '</td>' +
+                    '<td class="t-end padding-r-2em">' + currencyFormat(parseFloat(ev_revenue)) + '</td>' +
+                    '<td style="text-align: center;"><i class="fa fa-trash-o t-red close p-1" onClick="toggleClose8(this)"></i></td>' +
+                    '<input type="hidden" name="ev_batch[]" value="' + batch + '">' +
+                    '<input type="hidden" name="ev_revenue_type[]" value="' + type + '">' +
+                    '<input type="hidden" name="ev_credit_amount[]" value="' + amount + '">' +
+                    '<input type="hidden" name="ev_transaction_fee[]" value="' + fee + '">' +
+                    '<input type="hidden" name="ev_vat[]" value="' + vat + '">' +
+                    '<input type="hidden" name="ev_total_revenue[]" value="' + ev_revenue + '">' +
+                '</tr>'
+            );
+
+            var batch = $('#ev_batch').val('');
+            var type = $('#ev_revenue_type').val('');
+            var amount = $('#ev_credit_amount').val('');
+            var fee = $('#ev_transaction_fee').val('');
+            var vat = $('#ev_vat').val('');
+            var ev_revenue = $('#ev_total_revenue').val('');
+            $('.ev-todo-error').hide();
+        } else {
+            $('.ev-todo-error').show();
+        }
+    });
+
+    // คำนวณ Elexa
+    $('#ev_credit_amount').on('keyup', function () {
+        var charge = Number($(this).val());
+        var fee = (charge * 10) / 100;
+        var vat7 = fee * 0.07;
+
+        var revenue = (charge - (fee + vat7)).toFixed(3);
+
+        $('#ev_transaction_fee').val(fee.toFixed(3));
+        $('#ev_vat').val(vat7.toFixed(3));
+        $('#ev_total_revenue').val(revenue);
+    });
+
+    // ปุ่มลบข้อมูลเงิน/บัตรเครดิต
+    $('.todo-list .close').on('click', function() { toggleClose(this); });
+
+    $('.agoda-todo-list .close').on('click', function() { toggleClose2(this); });
+
+    $('.front-todo-list .close').on('click', function() { toggleClose3(this); });
+
+    $('.guest-todo-list .close').on('click', function() { toggleClose4(this); });
+
+    $('.fb-todo-list .close').on('click', function() { toggleClose5(this); });
+
+    $('.wp-todo-list .close').on('click', function() { toggleClose6(this); });
+
+    $('.ev-todo-list .close').on('click', function() { toggleClose8(this); });
+
+    function toggleClose(ele) {
+        // $(ele).parent().parent().toggle();
+        $(ele).parent().parent().remove();
+    }
+
+    function toggleClose2(ele) {
+        $(ele).parent().parent().remove();
+    }
+
+    function toggleClose3(ele) {
+        $(ele).parent().parent().remove();
+    }
+
+    function toggleClose4(ele) {
+        $(ele).parent().parent().remove();
+    }
+
+    function toggleClose5(ele) {
+        $(ele).parent().parent().remove();
+    }
+
+    function toggleClose6(ele) {
+        $(ele).parent().parent().remove();
+    }
+
+    function toggleClose8(ele) {
+        $(ele).parent().parent().remove();
+    }
+
+    function toggleHide() {
+        $('.todo-list tr').remove();
+    }
+
+    function toggleHide2() {
+        $('.agoda-todo-list tr').remove();
+    }
+
+    function toggleHide3() {
+        $('.front-todo-list tr').remove();
+    }
+
+    function toggleHide4() {
+        $('.guest-todo-list tr').remove();
+    }
+
+    function toggleHide5() {
+        $('.fb-todo-list tr').remove();
+    }
+
+    function toggleHide6() {
+        $('.wp-todo-list tr').remove();
+    }
+
+    function toggleHide8() {
+        $('.ev-todo-list tr').remove();
+    }
+
+    $('.btn-submit-search').on('click', function () {
+        document.getElementById("form-revenue").removeAttribute('target');
+        $('#export_pdf').val(0);
+        $('#form-revenue').submit();
+    });
+
+    function btn_search_daily(params) {
+        document.getElementById("form-revenue").removeAttribute('target');
+        $('#export_pdf').val(0);
+        $('#daily_page').val(params);
+        $('#form-revenue').submit();
+    }
+
+    function export_data(params) {
+        document.getElementById("form-revenue").setAttribute("target", "_blank");
+        $('#export_pdf').val(params);
+        $('#form-revenue').submit();
+    }
+
+    $('.btn-close-daily').on('click', function () {
+        var filter_by = $('#filter-by').val();
+        var date = $('#input-search-year').val()+"-"+$('#input-search-month').val()+"-"+$('#input-search-day').val();
+        var format_date = $('#input-search-day').val()+"/"+$('#input-search-month').val()+"/"+$('#input-search-year').val();
+
+        Swal.fire({
+        icon: "info",
+        title: 'คุณต้องการปิดยอดวันที่ '+ format_date +' ใช่หรือไม่?',
+        text: 'หากปิดยอดแล้ว ไม่สามารถเพิ่มข้อมูลได้ !',
+        showCancelButton: true,
+        confirmButtonText: 'ตกลง',
+        cancelButtonText: 'ยกเลิก',
+        }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) { 
+            $.ajax({
+                url: "{!! url('revenue-daily-close') !!}",
+                type: 'POST',
+                dataType: "json",
+                cache: false,
+                data: {
+                    filter_by: filter_by,
+                    date: date
+                },
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success(response) {
+                    Swal.fire('เรียบร้อย!', '', 'success');
+                    location.reload();
+                },
+                error(response) {
+                    Swal.fire('ไม่สำเร็จ', '', 'info');
+                    // location.reload();
+                }
+            });
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info');
+                location.reload();
+            }
+        })
+    });
+
+    $('.btn-open-daily').on('click', function () {
+        var filter_by = $('#filter-by').val();
+        var date = $('#input-search-year').val()+"-"+$('#input-search-month').val()+"-"+$('#input-search-day').val();
+        var format_date = $('#input-search-day').val()+"/"+$('#input-search-month').val()+"/"+$('#input-search-year').val();
+
+        Swal.fire({
+        icon: "info",
+        title: 'คุณต้องการแก้ไขยอดวันที่ '+ format_date +' ใช่หรือไม่?',
+        // text: 'หากปิดยอดแล้ว ไม่สามารถเพิ่มข้อมูลได้ !',
+        showCancelButton: true,
+        confirmButtonText: 'ตกลง',
+        cancelButtonText: 'ยกเลิก',
+        }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+
+            $.ajax({
+                url: "{!! url('revenue-daily-open') !!}",
+                type: 'POST',
+                dataType: "json",
+                cache: false,
+                data: {
+                    filter_by: filter_by,
+                    date: date
+                },
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success(response) {
+                    Swal.fire('เรียบร้อย!', '', 'success');
+                    location.reload();
+                },
+                error(response) {
+                    Swal.fire('ไม่สำเร็จ', '', 'info');
+                    location.reload();
+                }
+            });
+
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info');
+                location.reload();
+            }
+        })
+    });
+
+    function revenue_store() {
+        jQuery.ajax({
+            url:    "{!! route('revenue-store') !!}",
+            type: 'POST',
+            dataType: "json",
+            cache: false,
+            data: $('.form-store').serialize(),
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            success: function(response) {
+                location.reload();
+            },
+        });
+    }
+</script>
 @endsection
