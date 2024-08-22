@@ -781,7 +781,7 @@ class SMSController extends Controller
             }
 
             $amount[] = number_format($sum_amount, 2, '.', '');
-            $date[] = Carbon::parse($to_end)->format('d/m');
+            $date[] = Carbon::parse($adate2)->format('d/m');
 
             $start = date("Y-m-d 21:00:00", strtotime("+2 day", strtotime($from_start)));
         }
@@ -1343,8 +1343,14 @@ class SMSController extends Controller
 
     public function search_filter_date(Request $request)
     {
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "tomorrow") {
             $adate = date($request->year . '-' . $request->month . '-' . $request->day);
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date($adate . ' ' . $request->time);
+
+        } elseif ($request->filter_by == "yesterday") {
+            $yesterday = date($request->year . '-' . $request->month . '-' . $request->day);
+            $adate = date('Y-m-d', strtotime($yesterday));
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date($adate . ' ' . $request->time);
 

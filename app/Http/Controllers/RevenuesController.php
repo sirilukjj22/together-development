@@ -945,27 +945,9 @@ class RevenuesController extends Controller
 
         } else {
 
-        $adate= date("Y-".$request->month."-".$request->day." 21:00:00");
+        $adate= date($request->year."-".$request->month."-".$request->day." 21:00:00");
         $from = date("Y-m-d 21:00:00", strtotime("-1 day",strtotime($adate)));
-        $to = date("Y-".$request->month."-".$request->day." 20:59:59");
-
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
-            $adate = date($request->year . '-' . $request->month . '-' . $request->day.' 21:00:00');
-            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date($adate . ' 20:59:59');
-
-        } elseif ($request->filter_by == "month") {
-            $adate = date($request->year . '-' . $request->month . '-01');
-            $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
-
-            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
-
-        } elseif ($request->filter_by == "year") {
-            $adate = date($request->year . '-01' . '-01');
-            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-12-31' . ' 20:59:59');
-        }
+        $to = date($request->year."-".$request->month."-".$request->day." 20:59:59");
 
         $datetime = date("Y-".$request->month."-d");
         $last_day = $this->EOM($request->month, $request->year);
@@ -1306,6 +1288,24 @@ class RevenuesController extends Controller
 
         $day_now = $request->day;
         $symbol = $day_now == "01" ? "=" : "<=";
+
+        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+            $adate = date($request->year . '-' . $request->month . '-' . $request->day.' 21:00:00');
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date($adate . ' 20:59:59');
+
+        } elseif ($request->filter_by == "month") {
+            $adate = date($request->year . '-' . $request->month . '-01');
+            $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
+
+        } elseif ($request->filter_by == "year") {
+            $adate = date($request->year . '-01' . '-01');
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-12-31' . ' 20:59:59');
+        }
 
         // $daily_revenue = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->select(
         //     DB::raw("SUM(front_cash) + SUM(front_transfer) + SUM(front_credit) as front_amount, 

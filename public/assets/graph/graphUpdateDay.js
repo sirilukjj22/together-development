@@ -146,7 +146,9 @@ var revenueChart = new Chart(ctx, {
 function updateChart(days) {
     var newData = [];
     var newLabels = [];
-    var today = new Date();
+    var date_now = $('#input-search-year').val() + '-' + $('#input-search-month').val() + '-' + $('#input-search-day').val();
+    var adate = new Date(date_now);
+    var today = new Date(adate.setDate(adate.getDate() - 1));
 
     $('#revenueChart').prop('hidden', false);
     $('#revenueChartThisMonth').prop('hidden', true);
@@ -160,9 +162,11 @@ function updateChart(days) {
         date_days.setDate(today.getDate() - i);
         var month = date_days.getMonth() + 1;
         var day = date_days.getDate();
-        newLabels.push(`${month}/${day}`);
+        newLabels.push(`${day}/${month.toString().padStart(2, "0")}`);
     }
-    var startIndex = revenueData.length - days;
+    var num_days = parseInt(days) + 1;
+    var startIndex = revenueData.length - parseInt(num_days);
+    
     for (var i = startIndex; i < revenueData.length; i++) {
         newData.push(revenueData[i]);
     }
