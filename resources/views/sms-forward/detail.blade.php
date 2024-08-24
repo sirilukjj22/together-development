@@ -51,7 +51,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $total = 0; $total_list = 0; ?>
                                 @foreach ($data_sms as $key => $item)
                                 @if ($item->split_status == 3)
                                     <tr style="text-align: center;" class="table-secondary">
@@ -70,7 +69,7 @@
                                                 @if (file_exists($filename))
                                                     <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.jpg" alt="" class="img-bank" />
                                                 @elseif (file_exists($filename2))
-                                                    <img  src="../../../image/bank/SCB.jpg" alt="" class="img-bank" />
+                                                    <img  src="../../../image/bank/{{ @$item->transfer_bank->name_en }}.png" alt="" class="img-bank" />
                                                 @endif
                                                 {{ @$item->transfer_bank->name_en }}
                                             </div>
@@ -84,7 +83,29 @@
                                             {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
                                         </td>
                                         <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
-                                        <td class="td-content-center">Front Desk Revenue</td>
+                                        <td class="td-content-center">
+                                            @if ($item->status == 0)
+                                                            -
+                                            @elseif ($item->status == 1)
+                                                Guest Deposit Revenue
+                                            @elseif($item->status == 2)
+                                                All Outlet Revenue
+                                            @elseif($item->status == 3)
+                                                Water Park Revenue
+                                            @elseif($item->status == 4)
+                                                Credit Card Revenue
+                                            @elseif($item->status == 5)
+                                                Agoda Bank Transfer Revenue
+                                            @elseif($item->status == 6)
+                                                Front Desk Revenue
+                                            @elseif($item->status == 7)
+                                                Credit Card Water Park Revenue
+                                            @elseif($item->status == 8)
+                                                Elexa EGAT Revenue
+                                            @elseif($item->status == 9)
+                                                Other Revenue Bank Transfer
+                                            @endif
+                                        </td>
 
                                         <td class="td-content-center">
                                             {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '' }}
@@ -160,13 +181,12 @@
                                             @endif
                                         </td>
                                     </tr>
-                                    <?php $total += $item->amount; $total_list += 1; ?>
                                 @endforeach
                             </tbody>
                             <caption class="caption-bottom">
                                 <div class="md-flex-bt-i-c">
                                     <p class="py2" id="sms-showingEntries">{{ showingEntriesTable($data_sms, 'sms') }}</p>
-                                    <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total, 2) }} บาท</div>
+                                    <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total_sms, 2) }} บาท</div>
                                         <div id="sms-paginate">
                                             {!! paginateTable($data_sms, 'sms') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                         </div>
@@ -333,7 +353,7 @@
                     <div class="modal-body">
                         <label for="">ประเภทรายได้</label>
                         <br>
-                        <select class="form-control form-select" id="status" name="status" onchange="select_type()">
+                        <select class="form-control form-select" id="status_type" name="status" onchange="select_type()">
                             <option value="0">เลือกข้อมูล</option>
                             <option value="1">Room Revenue</option>
                             <option value="2">All Outlet Revenue</option>
@@ -407,7 +427,7 @@
     <input type="hidden" id="input-search-month-to" name="month_to" value="{{ !empty($_GET['monthTo']) ? $_GET['monthTo'] : date('m') }}">
     <input type="hidden" id="input-search-year" name="year" value="{{ !empty($_GET['year']) ? $_GET['year'] : date('Y') }}">
     <input type="hidden" id="status" value="{{ $status }}">
-    <input type="hidden" id="account" value="{{ !empty($_GET['account']) ? $_GET['account'] : '' }}">
+    <input type="hidden" id="into_account" value="{{ !empty($_GET['account']) ? $_GET['account'] : '' }}">
     <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
     <input type="hidden" id="get-total-sms" value="{{ $data_sms->total() }}">
     <input type="hidden" id="currentPage-sms" value="1">
@@ -485,7 +505,7 @@
             var year = $('#input-search-year').val();
             var month_to = $('#input-search-month-to').val();
             var type_status = $('#status').val();
-            var account = $('#account').val();
+            var account = $('#into_account').val();
             var getUrl = window.location.pathname;            
 
             if (search_value != '') {
@@ -680,7 +700,7 @@
         }
 
         function select_type() {
-            var type = $('#status').val();
+            var type = $('#status_type').val();
 
             if (type == 5) {
                 $('.agoda').prop('hidden', false);
@@ -698,7 +718,7 @@
             $('#error-transfer').css('border-color', '#f0f0f0');
             $('#error-into').css('border-color', '#f0f0f0');
             $('#amount').css('border-color', '#f0f0f0');
-            $('#status').val(0).trigger('change');
+            $('#status_type').val(0).trigger('change');
             $('#sms-date').val('');
             $('#sms-time').val('');
             $('#booking_id').val('');
@@ -714,7 +734,7 @@
                 success: function(response) {
                     if (response.data) {
                         var myArray = response.data.date.split(" ");
-                        $('#status').val(response.data.status).trigger('change');
+                        $('#status_type').val(response.data.status).trigger('change');
                         $('#sms-date').val(myArray[0]);
                         $('#sms-time').val(myArray[1]);
                         $('#booking_id').val(response.data.booking_id);
@@ -800,7 +820,7 @@
             var transfer = $('#error-transfer').val();
             var into = $('#error-into').val();
             var amount = $('#amount').val();
-            var type = $('#status').val();
+            var type = $('#status_type').val();
 
             $('#sms-date').css('border-color', '#f0f0f0');
             $('#sms-time').css('border-color', '#f0f0f0');

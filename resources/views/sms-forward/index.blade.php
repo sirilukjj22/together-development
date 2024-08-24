@@ -139,7 +139,7 @@
                                 </div>
                                 <!-- ข้อความรายการ ลำดับที่ 5-->
                                 <div class="box-sub-revenue">
-                                    <a href="#" onclick="sms_detail('credit_transaction')">
+                                    <a href="#" onclick="sms_detail('credit')">
                                         <div>
                                             <div class="box-sub-revenue-content text-white">
                                                 <div>
