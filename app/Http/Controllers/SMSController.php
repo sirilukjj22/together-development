@@ -1343,28 +1343,22 @@ class SMSController extends Controller
 
     public function search_filter_date(Request $request)
     {
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "tomorrow") {
+        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
             $adate = date($request->year . '-' . $request->month . '-' . $request->day);
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date($adate . ' ' . $request->time);
-
-        } elseif ($request->filter_by == "yesterday") {
-            $yesterday = date($request->year . '-' . $request->month . '-' . $request->day);
-            $adate = date('Y-m-d', strtotime($yesterday));
-            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date($adate . ' ' . $request->time);
+            $to = date($adate . ' 20:59:59');
 
         } elseif ($request->filter_by == "month") {
             $adate = date($request->year . '-' . $request->month . '-01');
             $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' ' . $request->time);
+            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
 
         } elseif ($request->filter_by == "year") {
             $adate = date($request->year . '-01' . '-01');
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-12-31' . ' ' . $request->time);
+            $to = date('Y-12-31' . ' 20:59:59');
         }
 
         // ตาราง 1
