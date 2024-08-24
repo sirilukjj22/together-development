@@ -118,6 +118,35 @@ function get_graphYearRange($amount, $year) {
     return revenueDataThisMonth;
 }
 
+function get_graphMonthRange($month, $to_month) {
+
+    var date_now = $('#input-search-year').val() + '-' + $('#input-search-month').val() + '-' + $('#input-search-day').val();
+    var type = $('#status').val();
+    var account = $('#into_account').val();
+
+    if (type == '') {
+        type = 0;
+    }
+
+    if (account == '') {
+        account = 0;
+    }
+
+    var revenueDataByMonth = "";
+
+    $.ajax({
+        type: "GET",
+        url: "sms-graph-monthRange/"+$month+"/"+$to_month+"/"+type+"/"+account+"",
+        datatype: "JSON",
+        async: false,
+        success: function(response) {
+            // Sample data for watch revenue over 7 days
+                revenueDataByMonth = response.amount;
+        }
+    });
+    return revenueDataByMonth;
+}
+
 Chart.defaults.font.family = "Sarabun";
 var revenueDataThisMonth = get_graphThisMonth(1);
 
@@ -175,7 +204,7 @@ var valueOnTopPluginThisMonthByDay = {
             meta.data.forEach((bar, index) => {
                 var data_thismonth = dataset.data[index];
                 let displayData_thisMonth = formatNumberThisMonth(data_thismonth);
-                    ctx.font = "normal " + (fontSize - 2) + "px Sarabun"; // Adjust font size for longer labelsThisMonth
+                    ctx.font = "normal " + (fontSize - 4) + "px Sarabun"; // Adjust font size for longer labelsThisMonth
                     ctx.save();
                     ctx.translate(bar.x, bar.y - 10);
                     ctx.fillStyle = "#000";
@@ -382,6 +411,90 @@ function chartYearRange($v_year) {
                 y: {
                     beginAtZero: true,
                     max: yAxisMax_yearRange,
+                    ticks: {
+                        stepSize: 200000,
+                        callback: function (value) {
+                            return formatNumberThisMonth(value);
+                        },
+                    },
+                },
+            },
+        },
+        plugins: [valueOnTopPluginThisMonthByDay],
+    });
+
+}
+
+function chartFilterByYear($v_year) {
+
+    var ctx_monthRange = document.getElementById("revenueChartByMonthOrYear").getContext("2d");
+    var maxRevenueValue_yearRange = Math.max(...get_graphYearRange(1, $v_year));
+    var buffer_yearRange = 200000; // Adding a buffer value
+    var yAxisMax_yearRange = maxRevenueValue_yearRange + buffer_yearRange;
+    var roundingFactor_yearRange = 200000;
+    yAxisMax_yearRange = Math.ceil(yAxisMax_yearRange / roundingFactor_yearRange) * roundingFactor_yearRange;
+    
+    revenueChart_thisMonth.destroy(); // Destroy the current chart
+    revenueChart_thisMonth = new Chart(ctx_monthRange, {
+        type: "bar",
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            datasets: [{
+                label: "Custom Year Range",
+                data: get_graphYearRange(1, $v_year),
+                backgroundColor: "#2C7F7A",
+                borderWidth: 0,
+                barPercentage: 0.7,
+            },],
+        },
+        options: {
+            scales: {
+                x: {},
+                y: {
+                    beginAtZero: true,
+                    max: yAxisMax_yearRange,
+                    ticks: {
+                        stepSize: 200000,
+                        callback: function (value) {
+                            return formatNumberThisMonth(value);
+                        },
+                    },
+                },
+            },
+        },
+        plugins: [valueOnTopPluginThisMonthByDay],
+    });
+
+}
+
+function chartMonthToMonth($month, $to_month) {
+
+    var ctx_monthRange = document.getElementById("revenueChartByMonthOrYear").getContext("2d");
+    var maxRevenueValue_monthRange = Math.max(...get_graphMonthRange($month, $to_month));
+    var buffer_monthRange = 200000; // Adding a buffer value
+    var yAxisMax_monthRange = maxRevenueValue_monthRange + buffer_monthRange;
+    var roundingFactor_monthRange = 200000;
+    yAxisMax_monthRange = Math.ceil(yAxisMax_monthRange / roundingFactor_monthRange) * roundingFactor_monthRange;
+    
+    revenueChart_thisMonth.destroy(); // Destroy the current chart
+    revenueChart_monthRange = new Chart(ctx_monthRange, {
+        type: "bar",
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            datasets: [{
+                label: "Custom Month Range",
+                data: get_graphMonthRange($month, $to_month),
+                backgroundColor: "#2C7F7A",
+                borderWidth: 0,
+                barPercentage: 0.7,
+            },],
+        },
+        options: {
+            scales: {
+                x: {},
+                y: {
+                    beginAtZero: true,
+                    max: yAxisMax_monthRange,
                     ticks: {
                         stepSize: 200000,
                         callback: function (value) {

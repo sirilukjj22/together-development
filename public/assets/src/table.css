@@ -11,16 +11,6 @@
   color: rgb(44 127 122 / var(--tw-text-opacity));
 }
 
-.center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-tr td.td-content-center {
-  align-content:center;
-}
-
 @media (min-width: 768px) {
   .sms-header span {
     font-size: 1.5rem;
@@ -126,6 +116,26 @@ tr td.td-content-center {
   }
 }
 
+.button-graph {
+  border-radius: 0.5rem;
+  background-color: rgb(44 127 122 / var(--tw-bg-opacity));
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+  --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
+  box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset,
+    rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset,
+    rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px,
+    rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
+    rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  transition-duration: 100ms;
+  border: 0px white solid;
+  border-bottom: 2px solid rgb(29, 62, 59);
+  border-right: 1px solid rgb(43, 91, 86);
+}
+
 .entriespage-button {
   position: relative;
   border-radius: 0.375rem;
@@ -194,6 +204,16 @@ tr td.td-content-center {
   text-align: center;
 }
 
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input {
+  text-align: right;
+}
+
 .py2 {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -244,7 +264,7 @@ tr td.td-content-center {
 .pagination a {
   color: black;
   float: left;
-  padding: 4px 8px;
+  padding: 6px 13px;
   text-decoration: none;
   transition: background-color 0.3s;
   border: 0.1px solid #2c7f7a;
@@ -286,24 +306,6 @@ tr td.td-content-center {
   border-radius: 0.375rem;
 }
 
-.button-li {
-  border-bottom-width: 2px;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  --tw-text-opacity: 1;
-  color: rgb(44 127 122 / var(--tw-text-opacity));
-  transition-duration: 200ms;
-}
-
-.button-li:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(44 127 122 / var(--tw-bg-opacity));
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
 .br2 {
   border-width: 2px;
   --tw-border-opacity: 1;
@@ -313,4 +315,37 @@ tr td.td-content-center {
 .f-jc-ic {
   height: 100%;
   align-items: center;
+}
+
+#table-revenue td {
+  text-align: center;
+}
+
+#table-revenue th {
+  text-transform: uppercase;
+  text-align: center;
+}
+
+#table-revenue td.total {
+  font-weight: 600;
+}
+
+/* แก้ตาราง */
+
+.dropdown-menu {
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.button-li {
+  padding: 10px 0;
+  border-bottom: 1px solid #27686338;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  color: #276863;
+}
+
+.button-li:hover {
+  background-color: #276863;
+  color: white;
 }

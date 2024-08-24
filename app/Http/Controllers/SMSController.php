@@ -999,6 +999,57 @@ class SMSController extends Controller
         ]);
     }
 
+    public function graphMonthRange($month, $to_month, $type, $account)
+    {
+        // $thisYear = $year;
+        $months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+        $month = date('m', strtotime(date('Y-'.$month.'-d')));
+        $to_month = date('m', strtotime(date('Y-'.$to_month.'-d')));
+
+        $amount = [];
+        $date = [];
+
+        // dd([(int)$month, $to_month]);
+
+        foreach ($months as $key => $item) {
+
+            if (($key + 1) >= (int)$month && ($key + 1) <= (int)$to_month) {
+                $date_from = date('Y-'.$item.'-01');
+                $lastday = date('d', strtotime('last day of this month', strtotime(date($date_from))));
+
+                $from_start = date("Y-m-d 21:00:00", strtotime("-1 day", strtotime('Y-'.$item.'-01')));
+                $to_end = date('Y-'.$item.'-'.$lastday.' 20:59:59');
+                $adate2 = Carbon::parse($to_end)->format('Y-m-d');
+
+                if (!empty($type)) {
+                    if (!empty($account)) {
+                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
+                            ->orWhereDate('date_into', $adate2)->where('status', $type)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                    } else {
+                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->WhereNull('transfer_remark')->where('split_status', 0)
+                            ->orWhereDate('date_into', $adate2)->where('status', $type)->orderBy('date', 'asc')->sum('amount');
+                    }
+                } else {
+                    if (!empty($account)) {
+                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
+                            ->orWhereDate('date_into', $adate2)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                    } else {
+                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->WhereNull('transfer_remark')->where('split_status', 0)
+                            ->orWhereDate('date_into', $adate2)->orderBy('date', 'asc')->sum('amount');
+                    }
+                }
+                $amount[] = number_format($sum_amount, 2, '.', '');
+            } else {
+                $amount[] = number_format(0, 2, '.', '');
+            }
+        }
+
+        return response()->json([
+            'amount' => $amount,
+            // 'date' => $date,
+        ]);
+    }
+
     public function graphToday($date)
     {
 

@@ -78,6 +78,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('sms-graph-thisMonth/{date}/{type}/{account}', 'graphThisMonth')->name('sms-thisMonth');
         Route::get('sms-graph-thisMonthByDay/{date}/{type}/{account}', 'graphThisMonthByDay')->name('sms-thisMonthByDay');
         Route::get('sms-graph-yearRange/{year}/{type}/{account}', 'graphYearRange')->name('sms-yearRange');
+        Route::get('sms-graph-monthRange/{month}/{to_month}/{type}/{account}', 'graphMonthRange')->name('sms-monthRange');
         Route::get('sms-graph30days/{date}/{type}/{account}', 'graph30days')->name('sms-graph30days');
         Route::get('sms-graphToday/{to_date}', 'graphToday')->name('sms-graphToday');
         Route::get('sms-graphForcast/{to_date}', 'graphForcast')->name('sms-graphForcast');

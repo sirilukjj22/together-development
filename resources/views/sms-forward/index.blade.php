@@ -46,7 +46,7 @@
                                     @elseif (isset($filter_by) && $filter_by == 'tomorrow')
                                         Tomorrow
                                     @else
-                                        Today
+                                        Custom
                                     @endif
                                 </span>
                             </button>
@@ -358,58 +358,66 @@
                     <div class="box-a-graph gy-5">
                         <!-- กราฟที่ 1 -->
                         <div class="box-graph">
-                            <div class="container-graph">
-                                <canvas id="revenueChart" hidden></canvas>
-                                <canvas id="revenueChartThisMonth" ></canvas>
-                                <canvas id="revenueChartCustom" hidden></canvas>
-                                <div class="menu-graph">
-                                    <button type="button" class="ac-style" id="button-graph-revenue" data-toggle="modal" data-target="#myModalGraph" style="min-width: 25%;cursor: pointer;"> 7 Days</button>
+                            {{-- @if (isset($filter_by) && $filter_by == "month") --}}
+                                <div class="container-graph" id="graphChartByMonthOrYear" style="grid-column: 1/3;">
+                                    <canvas id="revenueChartByMonthOrYear" style="max-height: 40vh;"></canvas>
                                 </div>
-                                <div>
-                                    <!-- The Modal modal-->
-                                    <div class="modal" id="myModalGraph">
-                                        <div class="modal-dialog modal-bottom modal-sm">
-                                            <div class="modal-content">
-                                                <!-- Modal Header -->
-                                                <div class="modal-header">
-                                                    <h4 class="modal-title" style="width: 100%;color: #2C7F7A ;">Filter Date</h4>
-                                                    <button type="button" id="btn-close-myModalGraph" class="close" data-dismiss="modal">&times;</button>
-                                                </div>
-                                                <!-- Modal body -->
-                                                <div class="modal-body">
-                                                    <div class="sub-ch-graph"
-                                                        style="position:relative;top:0; flex-direction:column; justify-content: start; background-color:white">
-                                                        <button type="button" value="7" onclick="updateChart(this.value)" class="modal-graph">
-                                                            <div>
-                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 7 days ({{ date('d M', strtotime("-6 day")) }} ~ {{ date('d M') }})
+                            {{-- @endif --}}
+
+                            {{-- @if (isset($filter_by) && $filter_by == "date" || !isset($filter_by)) --}}
+                                <div class="container-graph graph-date" hidden>
+                                    <canvas id="revenueChart" hidden></canvas>
+                                    <canvas id="revenueChartThisMonth" ></canvas>
+                                    <canvas id="revenueChartCustom" hidden></canvas>
+                                    <div class="menu-graph">
+                                        <button type="button" class="ac-style" id="button-graph-revenue" data-toggle="modal" data-target="#myModalGraph" style="min-width: 25%;cursor: pointer;"> 7 Days</button>
+                                    </div>
+                                    <div>
+                                        <!-- The Modal modal-->
+                                        <div class="modal" id="myModalGraph">
+                                            <div class="modal-dialog modal-bottom modal-sm">
+                                                <div class="modal-content">
+                                                    <!-- Modal Header -->
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title" style="width: 100%;color: #2C7F7A ;">Filter Date</h4>
+                                                        <button type="button" id="btn-close-myModalGraph" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    <!-- Modal body -->
+                                                    <div class="modal-body">
+                                                        <div class="sub-ch-graph"
+                                                            style="position:relative;top:0; flex-direction:column; justify-content: start; background-color:white">
+                                                            <button type="button" value="7" onclick="updateChart(this.value)" class="modal-graph">
+                                                                <div>
+                                                                    <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 7 days ({{ date('d M', strtotime("-6 day")) }} ~ {{ date('d M') }})
+                                                                </div>
+                                                                <div class="d-flex" style="font-size: 12px;"></div>
+                                                            </button>
+                                                            <button type="button" value="15" onclick="updateChart(this.value)" class="modal-graph">
+                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 15 days ({{ date('d M', strtotime("-14 day")) }} ~ {{ date('d M') }})
+                                                            </button>
+                                                            <button type="button" value="30" onclick="updateChart(this.value)" class="modal-graph">
+                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 30 days ({{ date('d M', strtotime("-29 day")) }} ~  {{ date('d M') }})
+                                                            </button>
+                                                            <button type="button" value="week" onclick="updateChartThisWeek(this.value)" class="modal-graph">
+                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>This Week ({{ date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))) }} ~ {{ date('d M', strtotime("+6 day")) }})
+                                                            </button>
+                                                            <button type="button" value="month" onclick="updateChartThisMonth(this.value)" class="modal-graph">
+                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>This Month 
+                                                            </button>
+                                                            <button type="button" value="monthByDay" onclick="updateChartThisMonth(this.value)" class="modal-graph">
+                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Monthly Average By Days
+                                                            </button>
+                                                            <label for="" class="label-grath-inside" style="padding: 0 0.5rem; text-align:left;">
+                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Custom Year Range
+                                                            </label>
+                                                            <div class="select-graph">
+                                                                <select onchange="updateChartYearRange(this.value)">
+                                                                    <option value="0">Select</option>
+                                                                    @for ($i = 2024; $i <= date('Y') + 1; $i++)
+                                                                        <option value="{{ $i }}" {{ isset($year) && $year == $i ? 'selected' : '' }}><i class="fa fa-square"></i>{{ $i }}</option>
+                                                                    @endfor
+                                                                </select>
                                                             </div>
-                                                            <div class="d-flex" style="font-size: 12px;"></div>
-                                                        </button>
-                                                        <button type="button" value="15" onclick="updateChart(this.value)" class="modal-graph">
-                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 15 days ({{ date('d M', strtotime("-14 day")) }} ~ {{ date('d M') }})
-                                                        </button>
-                                                        <button type="button" value="30" onclick="updateChart(this.value)" class="modal-graph">
-                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 30 days ({{ date('d M', strtotime("-29 day")) }} ~  {{ date('d M') }})
-                                                        </button>
-                                                        <button type="button" value="week" onclick="updateChartThisWeek(this.value)" class="modal-graph">
-                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>This Week ({{ date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))) }} ~ {{ date('d M', strtotime("+6 day")) }})
-                                                        </button>
-                                                        <button type="button" value="month" onclick="updateChartThisMonth(this.value)" class="modal-graph">
-                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>This Month 
-                                                        </button>
-                                                        <button type="button" value="monthByDay" onclick="updateChartThisMonth(this.value)" class="modal-graph">
-                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Monthly Average By Days
-                                                        </button>
-                                                        <label for="" class="label-grath-inside" style="padding: 0 0.5rem; text-align:left;">
-                                                            <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Custom Year Range
-                                                        </label>
-                                                        <div class="select-graph">
-                                                            <select onchange="updateChartYearRange(this.value)">
-                                                                <option value="0">Select</option>
-                                                                @for ($i = 2024; $i <= date('Y') + 1; $i++)
-                                                                    <option value="{{ $i }}" {{ isset($year) && $year == $i ? 'selected' : '' }}><i class="fa fa-square"></i>{{ $i }}</option>
-                                                                @endfor
-                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -417,10 +425,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div>
                                 <!-- กราฟที่ 2 -->
-                                <div class="container-graph">
+                                <div class="container-graph graph-date" hidden>
                                     <canvas id="combinedChart" style="width: 100%"></canvas>
                                     <div>
                                         <button class="graph-select " style="width: 200px;" id="toggleButton" value="to_time" onclick="toggleGraph()">
@@ -428,7 +434,7 @@
                                         </button>
                                     </div>
                                 </div>
-                            </div>
+                            {{-- @endif --}}
                         </div>
                     </div>
                     <a name="sms"></a>
@@ -440,20 +446,20 @@
                         <div class="row clearfix">
                             <div class="col-md-12 col-12">
                                 <div class="table-d p-4 mb-4">
+                                    <caption class="caption-top">
+                                        <div class="flex-end-g2">
+                                            <label class="entriespage-label">entries per page :</label>
+                                            <select class="entriespage-button" id="search-per-page-sms" onchange="getPage(1, this.value, 'sms')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "sms" ? 'selected' : '' }}>10</option>
+                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "sms" ? 'selected' : '' }}>25</option>
+                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "sms" ? 'selected' : '' }}>50</option>
+                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "sms" ? 'selected' : '' }}>100</option>
+                                            </select>
+                                            <input class="search-button search-data" id="sms" style="text-align:left;" placeholder="Search" />
+                                        </div>
+                                    </caption>
+                                    <div style="min-height: 70vh;">
                                         <table id="smsTable" class="example ui striped table nowrap unstackable hover">
-                                            <caption class="caption-top">
-                                                <div>
-                                                    <div class="flex-end-g2">
-                                                        <label class="entriespage-label">entries per page :</label>
-                                                        <select class="entriespage-button" id="search-per-page-sms" onchange="getPage(1, this.value, 'sms')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "sms" ? 'selected' : '' }}>10</option>
-                                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "sms" ? 'selected' : '' }}>25</option>
-                                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "sms" ? 'selected' : '' }}>50</option>
-                                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "sms" ? 'selected' : '' }}>100</option>
-                                                        </select>
-                                                        <input class="search-button search-data" id="sms" style="text-align:left;" placeholder="Search" />
-                                                    </div>
-                                            </caption>
                                             <thead>
                                                 <tr>
                                                     <th style="text-align: center;" data-priority="1">#</th>
@@ -616,16 +622,17 @@
                                                 </tr>
                                                 @endforeach
                                             </tbody>
-                                            <caption class="caption-bottom">
-                                                <div class="md-flex-bt-i-c">
-                                                    <p class="py2" id="sms-showingEntries">{{ showingEntriesTable($data_sms, 'sms') }}</p>
-                                                    <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format(!empty($total_sms_amount) ? $total_sms_amount->amount : 0 , 2) }} บาท</div>
-                                                        <div id="sms-paginate">
-                                                            {!! paginateTable($data_sms, 'sms') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                        </div>
-                                                </div>
-                                            </caption>
                                         </table>
+                                    </div>
+                                    <caption class="caption-bottom">
+                                        <div class="md-flex-bt-i-c">
+                                            <div class="py2" id="sms-showingEntries">{{ showingEntriesTable($data_sms, 'sms') }}</div>
+                                            <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format(!empty($total_sms_amount) ? $total_sms_amount->amount : 0 , 2) }} บาท</div>
+                                                <div id="sms-paginate">
+                                                    {!! paginateTable($data_sms, 'sms') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                </div>
+                                        </div>
+                                    </caption>
                                 </div>
                                 <!-- .card end -->
                             </div>
@@ -640,194 +647,195 @@
                             <div class="col-md-12 col-12">
                                 <div class="table-d p-4 mb-4">
                                     <h1 class="table-label">Transfer Revenue</h1>
-                                    <table id="transferTable" class="example ui striped table nowrap unstackable hover">
-                                        <caption class="caption-top">
-                                            <div>
-                                                <div class="flex-end-g2">
-                                                    <label class="entriespage-label">entries per page :</label>
-                                                    <select class="entriespage-button" id="search-per-page-transfer" onchange="getPage(1, this.value, 'transfer')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>10</option>
-                                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>25</option>
-                                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>50</option>
-                                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>100</option>
-                                                    </select>
-                                                    <input class="search-button search-data" id="transfer" style="text-align:left;" placeholder="Search" />
-                                                </div>
-                                        </caption>
-                                        <thead>
-                                            <tr>
-                                                <th style="text-align: center;" data-priority="1">#</th>
-                                                <th style="text-align: center;" data-priority="1">Date</th>
-                                                <th style="text-align: center;">Time</th>
-                                                <th style="text-align: center;">Bank</th>
-                                                <th style="text-align: center;">Bank Account</th>
-                                                <th style="text-align: center;" data-priority="1">Amount</th>
-                                                <th style="text-align: center;">Creatd By</th>
-                                                <th style="text-align: center;">Income Type</th>
-                                                <th style="text-align: center;">Transfer Date</th>
-                                                <th style="text-align: center;">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($data_sms_transfer as $key => $item)
-                                                    @if ($item->split_status == 3)
-                                                        <tr style="text-align: center;" class="table-secondary">
-                                                        @else
-                                                        <tr style="text-align: center;" class="test">
-                                                    @endif
-    
-                                                    <td class="td-content-center">{{ $key + 1 }}</td>
-                                                    <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                                    <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                                                    <td class="td-content-center">
-                                                        <?php
-                                                            $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
-                                                            $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
-                                                        ?>
-                                                        <div class="flex-jc p-left-4 center">
-                                                            @if (file_exists($filename))
-                                                                <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
-                                                            @elseif (file_exists($filename2))
-                                                                <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
-                                                            @endif
-                                                            {{ @$item->transfer_bank->name_en }}
-                                                        </div>
-                                                    </td>
-                                                    <td class="td-content-center">
-                                                        <div class="flex-jc p-left-4 center">
-                                                            <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
-                                                        </div>
-                                                    </td>
-                                                    <td class="td-content-center">
-                                                        {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
-                                                    </td>
-                                                    <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
-                                                    <td class="td-content-center">
-                                                        @if ($item->status == 0)
-                                                            -
-                                                        @elseif ($item->status == 1)
-                                                            Guest Deposit Revenue
-                                                        @elseif($item->status == 2)
-                                                            All Outlet Revenue
-                                                        @elseif($item->status == 3)
-                                                            Water Park Revenue
-                                                        @elseif($item->status == 4)
-                                                            Credit Card Revenue
-                                                        @elseif($item->status == 5)
-                                                            Agoda Bank Transfer Revenue
-                                                        @elseif($item->status == 6)
-                                                            Front Desk Revenue
-                                                        @elseif($item->status == 7)
-                                                            Credit Card Water Park Revenue
-                                                        @elseif($item->status == 8)
-                                                            Elexa EGAT Revenue
-                                                        @elseif($item->status == 9)
-                                                            Other Revenue Bank Transfer
-                                                        @endif
-    
-                                                        @if ($item->split_status == 1)
-                                                            <br>
-                                                            <span class="text-danger">(Split Credit Card From
-                                                                {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
-                                                        @endif
-    
-                                                    </td>
-                                                    <td class="td-content-center">
-                                                        {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
-                                                    </td>
-                                                    <td class="td-content-center" style="text-align: center;">
-                                                        @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
-                                                            <div class="dropdown">
-                                                                <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
-                                                                    Select <span class="caret"></span>
-                                                                </button>
-                                                                <ul class="dropdown-menu">
-                                                                    @if (@$role_revenue->front_desk == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Front Desk Revenue')">
-                                                                            Front Desk Bank <br>Transfer Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->guest_deposit == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Guest Deposit Revenue')">
-                                                                            Guest Deposit Bank <br> Transfer Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->all_outlet == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'All Outlet Revenue')">
-                                                                            All Outlet Bank <br> Transfer Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->agoda == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Agoda Revenue')">
-                                                                            Agoda Bank <br>Transfer Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->credit_card_hotel == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Card Revenue')">
-                                                                            Credit Card Hotel <br> Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->elexa == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
-                                                                            Elexa EGAT Bank Transfer <br> Transfer Revenue
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->no_category == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
-                                                                            No Category
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->water_park == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
-                                                                            Water Park Bank <br> Transfer Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->credit_water_park == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
-                                                                            Credit Card Water <br>Park Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@@$role_revenue->other_revenue == 1)
-                                                                        <li class="button-li" onclick="other_revenue_data({{ $item->id }})">
-                                                                            Other Revenue <br> Bank Transfer
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->transfer == 1)
-                                                                        <li class="button-li" onclick="transfer_data({{ $item->id }})">
-                                                                            Transfer
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->time == 1)
-                                                                        <li class="button-li" onclick="update_time_data({{ $item->id }})">
-                                                                            Update Time
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->split == 1)
-                                                                        <li class="button-li" onclick="split_data({{ $item->id }}, {{ $item->amount }})">
-                                                                            Split Revenue
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->edit == 1)
-                                                                        <li class="button-li" onclick="edit({{ $item->id }})">Edit</li>
-                                                                        <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
-                                                                    @endif
-                                                                </ul>
-                                                            </div>
-                                                        @endif
-                                                    </td>
+                                    <caption class="caption-top">
+                                        <div class="flex-end-g2">
+                                            <label class="entriespage-label">entries per page :</label>
+                                            <select class="entriespage-button" id="search-per-page-transfer" onchange="getPage(1, this.value, 'transfer')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>10</option>
+                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>25</option>
+                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>50</option>
+                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>100</option>
+                                            </select>
+                                            <input class="search-button search-data" id="transfer" style="text-align:left;" placeholder="Search" />
+                                        </div>
+                                    </caption>
+                                    <div style="min-height: 70vh;">
+                                        <table id="transferTable" class="example ui striped table nowrap unstackable hover">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: center;" data-priority="1">#</th>
+                                                    <th style="text-align: center;" data-priority="1">Date</th>
+                                                    <th style="text-align: center;">Time</th>
+                                                    <th style="text-align: center;">Bank</th>
+                                                    <th style="text-align: center;">Bank Account</th>
+                                                    <th style="text-align: center;" data-priority="1">Amount</th>
+                                                    <th style="text-align: center;">Creatd By</th>
+                                                    <th style="text-align: center;">Income Type</th>
+                                                    <th style="text-align: center;">Transfer Date</th>
+                                                    <th style="text-align: center;">Action</th>
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="transfer-showingEntries">{{ showingEntriesTable($data_sms_transfer, 'transfer') }}</p>
-                                                <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format(!empty($total_transfer_amount) ? $total_transfer_amount->amount : 0 , 2) }} บาท</div>
-                                                    <div id="transfer-paginate">
-                                                        {!! paginateTable($data_sms_transfer, 'transfer') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                    </div>
-                                            </div>
-                                        </caption>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($data_sms_transfer as $key => $item)
+                                                        @if ($item->split_status == 3)
+                                                            <tr style="text-align: center;" class="table-secondary">
+                                                            @else
+                                                            <tr style="text-align: center;" class="test">
+                                                        @endif
+        
+                                                        <td class="td-content-center">{{ $key + 1 }}</td>
+                                                        <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                                        <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
+                                                        <td class="td-content-center">
+                                                            <?php
+                                                                $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
+                                                                $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
+                                                            ?>
+                                                            <div class="flex-jc p-left-4 center">
+                                                                @if (file_exists($filename))
+                                                                    <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
+                                                                @elseif (file_exists($filename2))
+                                                                    <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
+                                                                @endif
+                                                                {{ @$item->transfer_bank->name_en }}
+                                                            </div>
+                                                        </td>
+                                                        <td class="td-content-center">
+                                                            <div class="flex-jc p-left-4 center">
+                                                                <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                            </div>
+                                                        </td>
+                                                        <td class="td-content-center">
+                                                            {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
+                                                        </td>
+                                                        <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
+                                                        <td class="td-content-center">
+                                                            @if ($item->status == 0)
+                                                                -
+                                                            @elseif ($item->status == 1)
+                                                                Guest Deposit Revenue
+                                                            @elseif($item->status == 2)
+                                                                All Outlet Revenue
+                                                            @elseif($item->status == 3)
+                                                                Water Park Revenue
+                                                            @elseif($item->status == 4)
+                                                                Credit Card Revenue
+                                                            @elseif($item->status == 5)
+                                                                Agoda Bank Transfer Revenue
+                                                            @elseif($item->status == 6)
+                                                                Front Desk Revenue
+                                                            @elseif($item->status == 7)
+                                                                Credit Card Water Park Revenue
+                                                            @elseif($item->status == 8)
+                                                                Elexa EGAT Revenue
+                                                            @elseif($item->status == 9)
+                                                                Other Revenue Bank Transfer
+                                                            @endif
+        
+                                                            @if ($item->split_status == 1)
+                                                                <br>
+                                                                <span class="text-danger">(Split Credit Card From
+                                                                    {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
+                                                            @endif
+        
+                                                        </td>
+                                                        <td class="td-content-center">
+                                                            {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
+                                                        </td>
+                                                        <td class="td-content-center" style="text-align: center;">
+                                                            @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
+                                                                <div class="dropdown">
+                                                                    <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
+                                                                        Select <span class="caret"></span>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu">
+                                                                        @if (@$role_revenue->front_desk == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Front Desk Revenue')">
+                                                                                Front Desk Bank <br>Transfer Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->guest_deposit == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Guest Deposit Revenue')">
+                                                                                Guest Deposit Bank <br> Transfer Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->all_outlet == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'All Outlet Revenue')">
+                                                                                All Outlet Bank <br> Transfer Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->agoda == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Agoda Revenue')">
+                                                                                Agoda Bank <br>Transfer Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->credit_card_hotel == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Card Revenue')">
+                                                                                Credit Card Hotel <br> Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->elexa == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
+                                                                                Elexa EGAT Bank Transfer <br> Transfer Revenue
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->no_category == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
+                                                                                No Category
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->water_park == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
+                                                                                Water Park Bank <br> Transfer Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->credit_water_park == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
+                                                                                Credit Card Water <br>Park Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@@$role_revenue->other_revenue == 1)
+                                                                            <li class="button-li" onclick="other_revenue_data({{ $item->id }})">
+                                                                                Other Revenue <br> Bank Transfer
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->transfer == 1)
+                                                                            <li class="button-li" onclick="transfer_data({{ $item->id }})">
+                                                                                Transfer
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->time == 1)
+                                                                            <li class="button-li" onclick="update_time_data({{ $item->id }})">
+                                                                                Update Time
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->split == 1)
+                                                                            <li class="button-li" onclick="split_data({{ $item->id }}, {{ $item->amount }})">
+                                                                                Split Revenue
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->edit == 1)
+                                                                            <li class="button-li" onclick="edit({{ $item->id }})">Edit</li>
+                                                                            <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
+                                                                        @endif
+                                                                    </ul>
+                                                                </div>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <caption class="caption-bottom">
+                                        <div class="md-flex-bt-i-c">
+                                            <p class="py2" id="transfer-showingEntries">{{ showingEntriesTable($data_sms_transfer, 'transfer') }}</p>
+                                            <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format(!empty($total_transfer_amount) ? $total_transfer_amount->amount : 0 , 2) }} บาท</div>
+                                                <div id="transfer-paginate">
+                                                    {!! paginateTable($data_sms_transfer, 'transfer') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                </div>
+                                        </div>
+                                    </caption>
                                 </div>
                                 <!-- .card end -->
                             </div>
@@ -841,188 +849,189 @@
                             <div class="col-md-12 col-12">
                                 <div class="table-d p-4 mb-4">
                                     <h1 class="table-label">Split Credit Card Hotel Revenue</h1>
-                                    <table id="" class="example ui striped table nowrap unstackable hover">
-                                        <caption class="caption-top">
-                                            <div>
-                                                <div class="flex-end-g2">
-                                                    <label class="entriespage-label">entries per page :</label>
-                                                    <select class="entriespage-button" id="search-per-page-split" onchange="getPage(1, this.value, 'split')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "split" ? 'selected' : '' }}>10</option>
-                                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "split" ? 'selected' : '' }}>25</option>
-                                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "split" ? 'selected' : '' }}>50</option>
-                                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "split" ? 'selected' : '' }}>100</option>
-                                                    </select>
-                                                    <input class="search-button search-data" id="split" style="text-align:left;" placeholder="Search" />
-                                                </div>
-                                        </caption>
-                                        <thead>
-                                            <tr>
-                                                <th style="text-align: center;" data-priority="1">#</th>
-                                                <th style="text-align: center;" data-priority="1">Date</th>
-                                                <th style="text-align: center;">Time</th>
-                                                <th style="text-align: center;">Bank</th>
-                                                <th style="text-align: center;">Bank Account</th>
-                                                <th style="text-align: center;" data-priority="1">Amount</th>
-                                                <th style="text-align: center;">Creatd By</th>
-                                                <th style="text-align: center;">Income Type</th>
-                                                <th style="text-align: center;">Transfer Date</th>
-                                                <th style="text-align: center;">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($data_sms_split as $key => $item)
-                                                <tr style="text-align: center;" class="test">
-                                                    <td class="td-content-center">{{ $key + 1 }}</td>
-                                                    <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                                    <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
-                                                    <td class="td-content-center">
-                                                        <?php
-                                                            $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
-                                                            $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
-                                                        ?>
-                                                        <div class="flex-jc p-left-4 center">
-                                                            @if (file_exists($filename))
-                                                                <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
-                                                            @elseif (file_exists($filename2))
-                                                                <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
-                                                            @endif
-                                                            {{ @$item->transfer_bank->name_en }}
-                                                        </div>
-                                                    </td>
-                                                    <td class="td-content-center">
-                                                        <div class="flex-jc p-left-4 center">
-                                                            <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
-                                                        </div>
-                                                    </td>
-                                                    <td class="td-content-center">
-                                                        {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
-                                                    </td>
-                                                    <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
-                                                    <td class="td-content-center">
-                                                        @if ($item->status == 0)
-                                                            -
-                                                        @elseif ($item->status == 1)
-                                                            Guest Deposit Revenue
-                                                        @elseif($item->status == 2)
-                                                            All Outlet Revenue
-                                                        @elseif($item->status == 3)
-                                                            Water Park Revenue
-                                                        @elseif($item->status == 4)
-                                                            Credit Card Revenue
-                                                        @elseif($item->status == 5)
-                                                            Agoda Bank Transfer Revenue
-                                                        @elseif($item->status == 6)
-                                                            Front Desk Revenue
-                                                        @elseif($item->status == 7)
-                                                            Credit Card Water Park Revenue
-                                                        @elseif($item->status == 8)
-                                                            Elexa EGAT Revenue
-                                                        @elseif($item->status == 9)
-                                                            Other Revenue Bank Transfer
-                                                        @endif
-    
-                                                        @if ($item->split_status == 1)
-                                                            <br>
-                                                            <span class="text-danger">(Split Credit Card From {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
-                                                        @endif
-    
-                                                    </td>
-                                                    <td class="td-content-center">
-                                                        {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
-                                                    </td>
-                                                    <td class="td-content-center" style="text-align: center;">
-                                                        @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
-                                                            <div class="dropdown">
-                                                                <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
-                                                                    Select <span class="caret"></span>
-                                                                </button>
-                                                                <ul class="dropdown-menu">
-                                                                    @if (@$role_revenue->front_desk == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Front Desk Revenue')">
-                                                                            Front Desk Bank <br>Transfer Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->guest_deposit == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Guest Deposit Revenue')">
-                                                                            Guest Deposit Bank <br> Transfer Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->all_outlet == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'All Outlet Revenue')">
-                                                                            All Outlet Bank <br> Transfer Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->agoda == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Agoda Revenue')">
-                                                                            Agoda Bank <br>Transfer Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->credit_card_hotel == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Card Revenue')">
-                                                                            Credit Card Hotel <br> Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->elexa == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
-                                                                            Elexa EGAT Bank Transfer <br> Transfer Revenue
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->no_category == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
-                                                                            No Category
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->water_park == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
-                                                                            Water Park Bank <br> Transfer Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->credit_water_park == 1)
-                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
-                                                                            Credit Card Water <br>Park Revenue 
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@@$role_revenue->other_revenue == 1)
-                                                                        <li class="button-li" onclick="other_revenue_data({{ $item->id }})">
-                                                                            Other Revenue <br> Bank Transfer
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->transfer == 1)
-                                                                        <li class="button-li" onclick="transfer_data({{ $item->id }})">
-                                                                            Transfer
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->time == 1)
-                                                                        <li class="button-li" onclick="update_time_data({{ $item->id }})">
-                                                                            Update Time
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->split == 1)
-                                                                        <li class="button-li" onclick="split_data({{ $item->id }}, {{ $item->amount }})">
-                                                                            Split Revenue
-                                                                        </li>
-                                                                    @endif
-                                                                    @if (@$role_revenue->edit == 1)
-                                                                        <li class="button-li" onclick="edit({{ $item->id }})">Edit</li>
-                                                                        <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
-                                                                    @endif
-                                                                </ul>
-                                                            </div>
-                                                        @endif
-                                                    </td>
+                                    <caption class="caption-top">
+                                        <div class="flex-end-g2">
+                                            <label class="entriespage-label">entries per page :</label>
+                                            <select class="entriespage-button" id="search-per-page-split" onchange="getPage(1, this.value, 'split')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "split" ? 'selected' : '' }}>10</option>
+                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "split" ? 'selected' : '' }}>25</option>
+                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "split" ? 'selected' : '' }}>50</option>
+                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "split" ? 'selected' : '' }}>100</option>
+                                            </select>
+                                            <input class="search-button search-data" id="split" style="text-align:left;" placeholder="Search" />
+                                        </div>
+                                    </caption>
+                                    <div style="min-height: 70vh;">
+                                        <table id="" class="example ui striped table nowrap unstackable hover">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: center;" data-priority="1">#</th>
+                                                    <th style="text-align: center;" data-priority="1">Date</th>
+                                                    <th style="text-align: center;">Time</th>
+                                                    <th style="text-align: center;">Bank</th>
+                                                    <th style="text-align: center;">Bank Account</th>
+                                                    <th style="text-align: center;" data-priority="1">Amount</th>
+                                                    <th style="text-align: center;">Creatd By</th>
+                                                    <th style="text-align: center;">Income Type</th>
+                                                    <th style="text-align: center;">Transfer Date</th>
+                                                    <th style="text-align: center;">Action</th>
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="split-showingEntries">{{ showingEntriesTable($data_sms_split, 'split') }}</p>
-                                                <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format(!empty($total_split_amount) ? $total_split_amount->amount : 0 , 2) }} บาท</div>
-                                                    <div id="split-paginate">
-                                                        {!! paginateTable($data_sms_split, 'split') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                    </div>
-                                            </div>
-                                        </caption>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($data_sms_split as $key => $item)
+                                                    <tr style="text-align: center;" class="test">
+                                                        <td class="td-content-center">{{ $key + 1 }}</td>
+                                                        <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                                        <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('H:i:s') }}</td>
+                                                        <td class="td-content-center">
+                                                            <?php
+                                                                $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
+                                                                $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
+                                                            ?>
+                                                            <div class="flex-jc p-left-4 center">
+                                                                @if (file_exists($filename))
+                                                                    <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
+                                                                @elseif (file_exists($filename2))
+                                                                    <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.png">
+                                                                @endif
+                                                                {{ @$item->transfer_bank->name_en }}
+                                                            </div>
+                                                        </td>
+                                                        <td class="td-content-center">
+                                                            <div class="flex-jc p-left-4 center">
+                                                                <img class="img-bank" src="../image/bank/SCB.jpg"> {{ 'SCB ' . $item->into_account }}
+                                                            </div>
+                                                        </td>
+                                                        <td class="td-content-center">
+                                                            {{ number_format($item->amount_before_split > 0 ? $item->amount_before_split : $item->amount, 2) }}
+                                                        </td>
+                                                        <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
+                                                        <td class="td-content-center">
+                                                            @if ($item->status == 0)
+                                                                -
+                                                            @elseif ($item->status == 1)
+                                                                Guest Deposit Revenue
+                                                            @elseif($item->status == 2)
+                                                                All Outlet Revenue
+                                                            @elseif($item->status == 3)
+                                                                Water Park Revenue
+                                                            @elseif($item->status == 4)
+                                                                Credit Card Revenue
+                                                            @elseif($item->status == 5)
+                                                                Agoda Bank Transfer Revenue
+                                                            @elseif($item->status == 6)
+                                                                Front Desk Revenue
+                                                            @elseif($item->status == 7)
+                                                                Credit Card Water Park Revenue
+                                                            @elseif($item->status == 8)
+                                                                Elexa EGAT Revenue
+                                                            @elseif($item->status == 9)
+                                                                Other Revenue Bank Transfer
+                                                            @endif
+        
+                                                            @if ($item->split_status == 1)
+                                                                <br>
+                                                                <span class="text-danger">(Split Credit Card From {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
+                                                            @endif
+        
+                                                        </td>
+                                                        <td class="td-content-center">
+                                                            {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
+                                                        </td>
+                                                        <td class="td-content-center" style="text-align: center;">
+                                                            @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
+                                                                <div class="dropdown">
+                                                                    <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
+                                                                        Select <span class="caret"></span>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu">
+                                                                        @if (@$role_revenue->front_desk == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Front Desk Revenue')">
+                                                                                Front Desk Bank <br>Transfer Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->guest_deposit == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Guest Deposit Revenue')">
+                                                                                Guest Deposit Bank <br> Transfer Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->all_outlet == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'All Outlet Revenue')">
+                                                                                All Outlet Bank <br> Transfer Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->agoda == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Agoda Revenue')">
+                                                                                Agoda Bank <br>Transfer Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->credit_card_hotel == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Card Revenue')">
+                                                                                Credit Card Hotel <br> Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->elexa == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
+                                                                                Elexa EGAT Bank Transfer <br> Transfer Revenue
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->no_category == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
+                                                                                No Category
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->water_park == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
+                                                                                Water Park Bank <br> Transfer Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->credit_water_park == 1)
+                                                                            <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
+                                                                                Credit Card Water <br>Park Revenue 
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@@$role_revenue->other_revenue == 1)
+                                                                            <li class="button-li" onclick="other_revenue_data({{ $item->id }})">
+                                                                                Other Revenue <br> Bank Transfer
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->transfer == 1)
+                                                                            <li class="button-li" onclick="transfer_data({{ $item->id }})">
+                                                                                Transfer
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->time == 1)
+                                                                            <li class="button-li" onclick="update_time_data({{ $item->id }})">
+                                                                                Update Time
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->split == 1)
+                                                                            <li class="button-li" onclick="split_data({{ $item->id }}, {{ $item->amount }})">
+                                                                                Split Revenue
+                                                                            </li>
+                                                                        @endif
+                                                                        @if (@$role_revenue->edit == 1)
+                                                                            <li class="button-li" onclick="edit({{ $item->id }})">Edit</li>
+                                                                            <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
+                                                                        @endif
+                                                                    </ul>
+                                                                </div>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <caption class="caption-bottom">
+                                        <div class="md-flex-bt-i-c">
+                                            <p class="py2" id="split-showingEntries">{{ showingEntriesTable($data_sms_split, 'split') }}</p>
+                                            <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format(!empty($total_split_amount) ? $total_split_amount->amount : 0 , 2) }} บาท</div>
+                                                <div id="split-paginate">
+                                                    {!! paginateTable($data_sms_split, 'split') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                </div>
+                                        </div>
+                                    </caption>
                                 </div>
                                 <!-- .card end -->
                             </div>
@@ -1537,6 +1546,27 @@
                     }
                 }
             });
+
+            var filter_by = $('#filter-by').val();
+            var month = $('#input-search-month').val();
+            var month_to = $('#input-search-month-to').val();
+            var year = $('#input-search-year').val();
+
+            if (filter_by == "month") {
+                chartMonthToMonth(month, month_to);
+                $('.graph-date').prop('hidden', true);
+                $('#graphChartByMonthOrYear').prop('hidden', false);
+
+            } if (filter_by == "year") {
+                chartFilterByYear(year);
+                $('.graph-date').prop('hidden', true);
+                $('#graphChartByMonthOrYear').prop('hidden', false);
+
+            } if (filter_by == "date" || filter_by == "today" || filter_by == "tomorrow" || filter_by == "yesterday") {
+                updateChart(7);
+                $('.graph-date').prop('hidden', false);
+                $('#graphChartByMonthOrYear').prop('hidden', true);
+            }
         });
 
         // Search 
@@ -2129,8 +2159,6 @@
 
 <!-- กราฟ -->
 <script>
-    updateChart(7);
-
     function updateChartThisWeek(params) {
         chartThisWeek();
         $('#button-graph-revenue').text('This Week');
