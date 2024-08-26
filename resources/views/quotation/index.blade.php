@@ -904,6 +904,7 @@
                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                 @endif
                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" onclick="Revice()"><input type="hidden" name="id" id="id" value="{{$item->id}}">Revice</a></li>
                                                                 <li><a class="dropdown-item py-2 rounded" onclick="Cancel()"><input type="hidden" name="id" id="id" value="{{$item->id}}">Cancel</a></li>
                                                             @endif
                                                         </ul>

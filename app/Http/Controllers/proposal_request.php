@@ -429,6 +429,14 @@ class proposal_request extends Controller
                     $item->status_document = 4;
                     // $item->Confirm_by = $userid;
                     $item->save();
+                    $userid = Auth::user()->id;
+                    $save = new log_company();
+                    $save->Created_by = $userid;
+                    $save->Company_ID = $dummyNos;
+                    $save->type = 'Revice';
+                    $save->Category = 'Reject :: Dummy Proposal';
+                    $save->content = 'Reject Document Dummy Proposal ID : '.$dummyNos;
+                    $save->save();
                 }
             }
             if ($Type =='Proposal') {
@@ -439,6 +447,15 @@ class proposal_request extends Controller
                     $item->status_document = 4;
                     // $item->Confirm_by = $userid;
                     $item->save();
+
+                    $userid = Auth::user()->id;
+                    $save = new log_company();
+                    $save->Created_by = $userid;
+                    $save->Company_ID = $dummyNos;
+                    $save->type = 'Revice';
+                    $save->Category = 'Reject :: Proposal';
+                    $save->content = 'Reject Document Proposal ID : '.$dummyNos;
+                    $save->save();
                 }
             }
             return redirect()->route('ProposalReq.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');

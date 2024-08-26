@@ -70,12 +70,8 @@
                                     <option value="Other_countries" {{$Guest->Country == "Other_countries" ? 'selected' : ''}}>ประเทศอื่นๆ</option>
                                 </select>
                             </div>
-                            <div class="col-lg-6 col-md-6 col-sm-12" id="cityInput" style="display:none;">
-                                <label for="city">จังหวัด / Province</label><br>
-                                <input type="text" id="city" name="city"  class="form-select" value="{{$Other_City}}">
-                            </div>
                             @if (($Guest->Country === 'Thailand'))
-                            <div class="col-lg-6 col-md-6 col-sm-12" id="citythai" style="display:block;">
+                            <div class="col-lg-6 col-md-6 col-sm-12" >
                                 <label for="city">จังหวัด / Province</label>
                                 <select name="province" id="province" class="select2" onchange="select_province()">
                                     @foreach($provinceNames as $item)
@@ -84,9 +80,9 @@
                                 </select>
                             </div>
                             @else
-                            <div class="col-lg-6 col-md-6 col-sm-12" id="citythai" style="display:none;">
+                            <div class="col-lg-6 col-md-6 col-sm-12" >
                                 <label for="city">จังหวัด / Province</label>
-                                <select name="province" id="province" class="select2" onchange="select_province()">
+                                <select name="province" id="province" class="select2" onchange="select_province()"disabled>
                                     <option value=""></option>
                                     @foreach($provinceNames as $item)
                                     <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -269,8 +265,7 @@
     }
     function showcityInput() {
         var countrySelect = document.getElementById("countrySelect");
-        var cityInput = document.getElementById("cityInput");
-        var citythai = document.getElementById("citythai");
+        var province = document.getElementById("province");
         var amphuresSelect = document.getElementById("amphures");
         var tambonSelect = document.getElementById("Tambon");
         var zipCodeSelect = document.getElementById("zip_code");
@@ -278,16 +273,14 @@
         // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
         if (countrySelect.value === "Other_countries") {
             // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
-            cityInput.style.display = "block";
-            citythai.style.display = "none";
             // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+            province.disabled = true;
             amphuresSelect.disabled = true;
             tambonSelect.disabled = true;
             zipCodeSelect.disabled = true;
         } else {
             // ถ้าไม่เลือก "Other_countries" ซ่อน input field สำหรับเมืองอื่นๆ และแสดง input field สำหรับเมืองไทย
-            cityInput.style.display = "none";
-            citythai.style.display = "block";
+            province.disabled = false;
             amphuresSelect.disabled = false;
             tambonSelect.disabled = false;
             zipCodeSelect.disabled = false;

@@ -10,6 +10,8 @@ use App\Models\phone_guest;
 use App\Models\amphures;
 use App\Models\districts;
 use App\Models\master_document;
+use App\Models\log_company;
+use Auth;
 class GuestController extends Controller
 {
     public function index()
@@ -77,6 +79,7 @@ class GuestController extends Controller
         $Tambon = $request->Tambon;
         $zip_code = $request->zip_code;
         $Booking_Channel =  implode(',',$request->booking_channel);
+        $booking_channel = $request->booking_channel;
         $First_name = $request->first_name;
         $Last_name = $request->last_name;
         $CountryOther = $request->countrydata;
@@ -90,11 +93,101 @@ class GuestController extends Controller
         $Lastest_Introduce_By = $request->latest_introduced_by;
         $phones = $request->input('phone');
 
+        {
+            if ($Preface && $First_name && $Last_name) {
+                $Mprefix = master_document::where('id', $Preface)->where('Category', 'Mprename')->first();
+                if ($Mprefix) {
+                    if ($Mprefix->name_th == "นาย") {
+                        $comtypefullname = "นาย " . $First_name . ' ' . $Last_name;
+                    } elseif ($Mprefix->name_th == "นาง") {
+                        $comtypefullname = "นาง " . $First_name . ' ' . $Last_name;
+                    } elseif ($Mprefix->name_th == "นางสาว") {
+                        $comtypefullname = "นางสาว " . $First_name . ' ' . $Last_name;
+                    }
+                }
+            } elseif ($Preface > 30) {
+                $Mprefix = master_document::where('id', $Preface)->where('Category', 'Mprename')->first();
+                if ($Mprefix) {
+                    $prename = $Mprefix->name_th;
+                    $comtypefullname = 'คำนำหน้า : ' . $prename;
+                }
+            } elseif ($First_name && $Last_name) {
+                $comtypefullname = 'ชื่อ : ' . $First_name . ' ' . $Last_name;
+            } elseif ($First_name) {
+                $comtypefullname = 'ชื่อ : ' . $First_name;
+            } elseif ($Last_name) {
+                $comtypefullname = 'นามสกุล : ' . $Last_name;
+            }
+            if ($CountryOther == 'Thailand') {
+                $provinceNames = province::where('id', $city)->first();
+                $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
+                $amphuresID = amphures::where('id',$amphures)->select('name_th','id')->first();
+                $provinceNames = $provinceNames->name_th;
+                $Tambon = $TambonID->name_th;
+                $amphures = $amphuresID->name_th;
+                $Zip_code = $TambonID->zip_code;
+                $AddressIndividual = 'ที่อยู่ : '.$Address.' ตำบล : '.$Tambon.' อำเภอ : '.$amphures.' จังหวัด : '.$provinceNames.' '.$Zip_code;
+            }else{
+                $AddressIndividual = 'ที่อยู่ : '.$Address;
+            }
 
-    //     dd($N_Profile,$province,$Preface,$amphures,$Tambon,$zip_code
-    //     ,$Booking_Channel,$CountryOther,$city,$Address,$Email,$identificationnumber,
-    //     $Contract_Rate_Start_Date,$Contract_Rate_End_Date,$Discount_Contract_Rate
-    // ,$Lastest_Introduce_By,$phones);
+            if ($booking_channel) {
+                $booking_names = [];
+
+                foreach ($booking_channel as $value) {
+                    $bc = master_document::find($value);
+                    if ($bc) {
+                        $booking_names[] = $bc->name_en;
+                    }
+                }
+                $booking = 'ช่องทางการจอง : '.implode(',', $booking_names);
+            }
+            $email = null;
+            if ($Email) {
+                $email = 'อีเมล์ : '.$Email;
+            }
+            $identification = null;
+            if ($identificationnumber) {
+                $identification = 'เลขที่บัตรประจำตัว : '.$identificationnumber;
+            }
+
+            $Date = null;
+            if ($Contract_Rate_Start_Date) {
+                $Date = 'วันที่เริ่มต้น : '.$Contract_Rate_Start_Date.' '.'วันที่สิ้นสุด : '.$Contract_Rate_End_Date;
+            }
+            $Discount = null;
+            if ($Discount_Contract_Rate) {
+                $Discount = 'ส่วนลด(เปอร์เซ็น) : '.$Discount_Contract_Rate;
+            }
+            $Introduce = null;
+            if ($Lastest_Introduce_By) {
+                $Introduce = 'ผู้แนะนำ : '.$Lastest_Introduce_By;
+            }
+            $phone = null;
+            if ($phones) {
+                $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phones);
+            }
+            $datacompany = '';
+            $Profile = 'รหัสลูกค้า : '.$N_Profile;
+            $variables = [$Profile,$comtypefullname , $AddressIndividual, $email,$booking, $identification,$Date,$Discount,$Introduce,$phone];
+
+            foreach ($variables as $variable) {
+                if (!empty($variable)) {
+                    if (!empty($datacompany)) {
+                        $datacompany .= ' + ';
+                    }
+                    $datacompany .= $variable;
+                }
+            }
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $N_Profile;
+            $save->type = 'Create';
+            $save->Category = 'Create :: Guest';
+            $save->content =$datacompany;
+            $save->save();
+        }
         $save = new Guest();
         $save->Profile_ID = $N_Profile;
         $save->preface =$Preface;
@@ -102,11 +195,8 @@ class GuestController extends Controller
         $save->Last_name =$Last_name;
         $save->Booking_Channel =$Booking_Channel;
         if ($CountryOther == "Other_countries") {
-            if ($city === null) {
-                return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
-            }else {
-                $save->City = $city;
-            }
+            $save->Address = $Address;
+            $save->Country = $CountryOther;
         }else {
             $save->Country = $CountryOther;
             $save->City = $province;

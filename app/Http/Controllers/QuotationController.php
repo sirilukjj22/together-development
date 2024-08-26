@@ -617,7 +617,7 @@ class QuotationController extends Controller
                 $save->Created_by = $userid;
                 $save->Company_ID = $Quotation_ID;
                 $save->type = 'Create';
-                $save->Category = 'Proposal';
+                $save->Category = 'Create :: Proposal';
                 $save->content =$datacompany;
                 $save->save();
             }
@@ -1047,7 +1047,7 @@ class QuotationController extends Controller
     public function update(Request $request,$id)
     {
         $data = $request->all();
-        // try {
+        try {
             $preview = $request->preview;
             $Quotation_ID=$request->Quotation_ID;
             $adult=$request->Adult;
@@ -2050,16 +2050,26 @@ class QuotationController extends Controller
             }else{
                 return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
             }
-        // } catch (\Exception $e) {
-        //     return response()->json([
-        //         'error' => $e->getMessage()
-        //     ], 500);
-        // }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
     public function Approve($id){
         $quotation = Quotation::find($id);
         $quotation->status_guest = 1;
         $quotation->save();
+        $data = Quotation::where('id',$id)->first();
+        $Quotation_ID = $data->Quotation_ID;
+        $userid = Auth::user()->id;
+        $save = new log_company();
+        $save->Created_by = $userid;
+        $save->Company_ID = $Quotation_ID;
+        $save->type = 'Approve';
+        $save->Category = 'Approve :: Proposal';
+        $save->content = 'Approve of guest '.'+'.'Document Proposal ID : '.$Quotation_ID;
+        $save->save();
         return response()->json(['success' => true]);
     }
     public function LOG($id)
@@ -2088,15 +2098,35 @@ class QuotationController extends Controller
     }
 
     public function cancel($id){
-        $Quotation = Quotation::where('id', $id)->first();
+        $Quotation = Quotation::find($id);
         $Quotation->status_document = 0;
         $Quotation->save();
+        $data = Quotation::where('id',$id)->first();
+        $Quotation_ID = $data->Quotation_ID;
+        $userid = Auth::user()->id;
+        $save = new log_company();
+        $save->Created_by = $userid;
+        $save->Company_ID = $Quotation_ID;
+        $save->type = 'Cancel';
+        $save->Category = 'Cancel :: Proposal';
+        $save->content = 'Cancel Document Proposal ID : '.$Quotation_ID;
+        $save->save();
         return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
     public function Revice($id){
-        $Quotation = Quotation::where('id', $id)->first();
+        $Quotation = Quotation::find($id);
         $Quotation->status_document = 1;
         $Quotation->save();
+        $data = Quotation::where('id',$id)->first();
+        $Quotation_ID = $data->Quotation_ID;
+        $userid = Auth::user()->id;
+        $save = new log_company();
+        $save->Created_by = $userid;
+        $save->Company_ID = $Quotation_ID;
+        $save->type = 'Revice';
+        $save->Category = 'Revice :: Proposal';
+        $save->content = 'Revice Document Proposal ID : '.$Quotation_ID;
+        $save->save();
         return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
 
@@ -2209,8 +2239,6 @@ class QuotationController extends Controller
 
         ]);
     }
-
-
     public function sheetpdf(Request $request ,$id) {
         $Quotation = Quotation::where('id', $id)->first();
         $Company = $Quotation->Company_ID;
@@ -2570,6 +2598,14 @@ class QuotationController extends Controller
 
             $customEmail = new QuotationEmail($Data,$Title,$pdfPath,$filePaths,$promotions);
             Mail::to($emailCon)->send($customEmail);
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $Quotation_ID;
+            $save->type = 'Send Email';
+            $save->Category = 'Send Email :: Proposal';
+            $save->content = 'Send Email Document Proposal ID : '.$Quotation_ID;
+            $save->save();
             return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลและส่งอีเมลเรียบร้อยแล้ว');
         } catch (\Throwable $th) {
             return redirect()->route('Quotation.index')->with('error', 'เกิดข้อผิดพลาดในการส่งอีเมล์');

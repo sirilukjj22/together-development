@@ -439,7 +439,11 @@ Route::middleware(['auth'])->group(function () {
         //-----------------------------------ส่งเอกสาร-----------------------------------------------------------------------
         Route::get('/Dummy/Quotation/send/documents', 'senddocuments')->name('DummyQuotation.senddocuments');
 
-        Route::get('/Dummy/Quotation/view/{id}','view')->name('Quotation.view');
+        Route::get('/Dummy/Quotation/view/{id}','view')->name('DummyQuotation.view');
+
+        Route::get('/Dummy/Quotation/view/quotation/LOG/{id}','LOG')->name('DummyQuotation.LOG');
+
+        Route::get('/Dummy/Quotation/Revice/{id}','Revice')->name('Quotation.Revice');
     });
 
     #Proposal Request
