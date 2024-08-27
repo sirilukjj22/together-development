@@ -939,7 +939,7 @@ class RevenuesController extends Controller
 
     public function search_calendar(Request $request)
     {
-        dd($request);
+        // dd($request);
         if ($request->day == 0) {
             return $this->search_calendar_all($request);
 
@@ -1288,6 +1288,10 @@ class RevenuesController extends Controller
 
         $day_now = $request->day;
         $symbol = $day_now == "01" ? "=" : "<=";
+
+        // $adate= date($request->year."-".$request->month."-".$request->day." 21:00:00");
+        // $from = date("Y-m-d 21:00:00", strtotime("-1 day",strtotime($adate)));
+        // $to = date($request->year."-".$request->month."-".$request->day." 20:59:59");
 
         if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
             $adate = date($request->year . '-' . $request->month . '-' . $request->day.' 21:00:00');

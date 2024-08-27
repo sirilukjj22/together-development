@@ -164,8 +164,7 @@
                             <h6 style=" float: left; width: 60%;"><i style="color: deepskyblue; margin-right: 10px;"
                                     class="fa-solid fa-square"></i>CASH</h6>
                             <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_cash + $total_wp_revenue->wp_cash) / $total_today_revenue_graph * 100), 2) }}%</h6>
-                            <h6 style="float: left;width: 60%;"><i style="color: hotpink; margin-right: 10px;"
-                                    class="fa-solid fa-square"></i>Bank Transfer</h6>
+                            <h6 style="float: left;width: 60%;"><i style="color: hotpink; margin-right: 10px;" class="fa-solid fa-square"></i>Bank Transfer</h6>
                             <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_bank_transfer + $total_wp_revenue->wp_transfer) / $total_today_revenue_graph * 100), 2) }}%</h6>
                             <h6 style="float: left;width: 60%;"><i style="color: orange; margin-right: 10px;"
                                     class="fa-solid fa-square"></i>Credit Card</h6>

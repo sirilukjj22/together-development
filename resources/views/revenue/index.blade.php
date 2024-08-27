@@ -118,6 +118,9 @@
                 <div class="section1">
                     <div class="">
                         <div class="box-chart">
+                            @php
+                                $total_credit_hotel_wp = ($credit_revenue->total_credit ?? 0) + ($total_wp_revenue->wp_credit ?? 0);
+                            @endphp
                             <div>
                                 <div>
                                     <canvas id="myChart" class="sm-m-40px"></canvas>
@@ -127,15 +130,14 @@
                                                 <i style="color: #2C7F7A ;" class="m-right-5 fa fa-solid fa-square"></i>Cash
                                             </h6>
                                             <h6 class="w-5p">:</h6>
-                                            <h6> 33.33%</h6>
+                                            <h6>{{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_cash + $total_wp_revenue->wp_cash) / $total_today_revenue_graph * 100), 2) }}%</h6>
                                         </div>
                                         <div>
                                             <h6 class="w-40p">
-                                                <i style="color: #008996;" class="m-right-5 fa fa-solid fa-square"></i>Bank
-                                                Transfer
+                                                <i style="color: #008996;" class="m-right-5 fa fa-solid fa-square"></i>Bank Transfer
                                             </h6>
                                             <h6 class="w-5p">:</h6>
-                                            <h6> 33.33%</h6>
+                                            <h6>{{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_bank_transfer + $total_wp_revenue->wp_transfer) / $total_today_revenue_graph * 100), 2) }}%</h6>
                                         </div>
                                         <div>
                                             <h6 class="w-40p">
@@ -143,7 +145,11 @@
                                                     class="m-right-5 fa fa-solid fa-square"></i>Credit Card
                                             </h6>
                                             <h6 class="w-5p">:</h6>
-                                            <h6> 33.33%</h6>
+                                            @if ($total_credit_hotel_wp == 0)
+                                                <h6>: {{ number_format(0, 2) }}%</h6>
+                                            @else
+                                                <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_credit_hotel_wp) / $total_today_revenue_graph * 100), 2) }}%</h6>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -158,8 +164,7 @@
                         <div class="header">
                             <div>Cash</div>
                             <div>{{ number_format($total_cash + $total_wp_revenue->wp_cash, 2) }}</div>
-                            <input type="hidden" id="total_cash_dashboard"
-                                value="{{ $total_cash + $total_wp_revenue->wp_cash }}">
+                            <input type="hidden" id="total_cash_dashboard" value="{{ $total_cash + $total_wp_revenue->wp_cash }}">
                         </div>
                         <div class="sub d-grid-r1">
                             <div class="box-card bg-box">
@@ -1688,6 +1693,10 @@
 </script>
 
 <script>
+    var cash = Number($('#total_cash_dashboard').val());
+    var bank = Number($('#total_bank_dashboard').val());
+    var credit = Number($('#total_credit_dashboard').val());
+
     const barColors = ["#2C7F7A ", "#008996", "#3cc3b1"];
     const ctx = document.getElementById("myChart").getContext("2d");
     // Plugin to add text in the center of the doughnut chart
@@ -1706,7 +1715,7 @@
                 const dataValues = chart.data.datasets[0].data;
                 const isEmptyData = dataValues.every(
                     (value) => value === 0);
-                const text = isEmptyData ? "00.00" : "123,456";
+                const text = isEmptyData ? "00.00" : $('#total_revenue_dashboard').val();
                 const textX = Math.round(
                     (width - ctx.measureText(text).width) / 2);
                 const textY = height / 2 + 30;
@@ -1729,7 +1738,7 @@
         data: {
             labels: ["Cash", "Bank Transfer", "Credit Card Revenue", ],
             datasets: [{
-                data: [4987.00, 68987.00, 50000.00], // Example of empty data
+                data: [cash, bank, credit], // Example of empty data
                 backgroundColor: barColors,
             }, ],
         },
