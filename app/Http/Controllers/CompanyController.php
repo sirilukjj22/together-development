@@ -1196,7 +1196,6 @@ class CompanyController extends Controller
                             $datacompany .= $variable;
                         }
                     }
-
                     $userid = Auth::user()->id;
                     $save = new log_company();
                     $save->Created_by = $userid;

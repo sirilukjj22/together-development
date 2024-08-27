@@ -207,6 +207,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/guest/save', 'guestsave')->name('saveguest');
         Route::get('/guest/change-status/{id}', 'guestStatus')->name('guestStatus');
         Route::post('/guest/edit/update/{id}', 'guest_update')->name('guest_edit_update');
+
+        Route::post('guest-search-table', 'search_table')->name('guest-search-table');
+        Route::post('guest-paginate-table', 'paginate_table')->name('guest-paginate-table');
     });
 });
 #master product

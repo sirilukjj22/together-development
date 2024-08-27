@@ -20,6 +20,47 @@ class GuestController extends Controller
         $Mbooking = master_document::select('name_en','id')->get();
         return view('guest.index',compact('Guest','Mbooking'));
     }
+    public function paginate_table(Request $request)
+    {
+
+
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $data_query = Guest::query()->get();
+        $data = [];
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    $btn_action .='<div class="dropdown">';
+                    $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;
+                    </button>';
+                    $btn_action .='<ul dropdown-menu border-0 shadow p-3>';
+                    $btn_action .=' <li class="dropdown-item py-2 rounded">ดูรายละเอียด</li>
+                                    <li class="dropdown-item py-2 rounded"  href="{{ url('/guest/edit/'.$item->id) }}">แก้ไขรายการ</li>';
+                    $btn_action .='</ul>';
+                    $btn_action .='</div>';
+                    $data[] = [
+                        'id' => $key + 1,
+                        'Profile_ID'=>$value->Profile_ID,
+                        'name'=>$value->First_name.$value->Last_name,
+                        'Booking_Channel'=>$value->Booking_Channel,
+                        'status'=>$value->status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        dd(123);
+        return response()->json([
+            'data' => $data,
+        ]);
+
+    }
     public function create()
     {
         $latestGuest = Guest::latest('id')->first();
@@ -284,56 +325,55 @@ class GuestController extends Controller
         ,'booking_channel','prefix','phonecount','phoneDataArray'));
     }
 
-    public function guest_update(Request $request, $id) {
+    public function guest_update(Request $request, $id)
+    {
         $data = $request->all();
-         $province = $request->province;
-         $Preface = $request->Preface;
-         $amphures = $request->amphures;
-         $Tambon = $request->Tambon;
-         $zip_code = $request->zip_code;
-         $Booking_Channel =  implode(',',$request->booking_channel);
-         $First_name = $request->first_name;
-         $Last_name = $request->last_name;
-         $CountryOther = $request->countrydata;
-         $city = $request->city;
-         $Address = $request->address;
-         $Email = $request->email;
-         $identificationnumber = $request->identification_number;
-         $Contract_Rate_Start_Date = $request->contract_rate_start_date;
-         $Contract_Rate_End_Date = $request->contract_rate_end_date;
-         $Discount_Contract_Rate = $request->discount_contract_rate;
-         $Lastest_Introduce_By = $request->latest_introduced_by;
-         $phones = $request->input('phone');
+        $province = $request->province;
+        $Preface = $request->Preface;
+        $amphures = $request->amphures;
+        $Tambon = $request->Tambon;
+        $zip_code = $request->zip_code;
+        $Booking_Channel =  implode(',',$request->booking_channel);
+        $First_name = $request->first_name;
+        $Last_name = $request->last_name;
+        $CountryOther = $request->countrydata;
+        $city = $request->city;
+        $Address = $request->address;
+        $Email = $request->email;
+        $identificationnumber = $request->identification_number;
+        $Contract_Rate_Start_Date = $request->contract_rate_start_date;
+        $Contract_Rate_End_Date = $request->contract_rate_end_date;
+        $Discount_Contract_Rate = $request->discount_contract_rate;
+        $Lastest_Introduce_By = $request->latest_introduced_by;
+        $phones = $request->input('phone');
+        $save = Guest::find($id);
+        $save->preface =$Preface;
+        $save->First_name =$First_name;
+        $save->Last_name =$Last_name;
+        $save->Booking_Channel =$Booking_Channel;
+        if ($CountryOther == "Other_countries") {
+            if ($city === null) {
+                return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
+            }else {
+                $save->City = $city;
+            }
+        }else {
+            $save->Country = $CountryOther;
+            $save->City = $province;
+            $save->Amphures = $amphures;
+            $save->Address = $Address;
+            $save->Tambon = $Tambon;
+            $save->Zip_Code = $zip_code;
+        }
+        $save->Email = $Email;
+        $save->Identification_Number = $identificationnumber;
+        $save->Contract_Rate_Start_Date = $Contract_Rate_Start_Date;
+        $save->Contract_Rate_End_Date = $Contract_Rate_End_Date;
+        $save->Discount_Contract_Rate =$Discount_Contract_Rate;
+        $save->Lastest_Introduce_By = $Lastest_Introduce_By;
 
-
-         $save = Guest::find($id);
-         $save->preface =$Preface;
-         $save->First_name =$First_name;
-         $save->Last_name =$Last_name;
-         $save->Booking_Channel =$Booking_Channel;
-         if ($CountryOther == "Other_countries") {
-             if ($city === null) {
-                 return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
-             }else {
-                 $save->City = $city;
-             }
-         }else {
-             $save->Country = $CountryOther;
-             $save->City = $province;
-             $save->Amphures = $amphures;
-             $save->Address = $Address;
-             $save->Tambon = $Tambon;
-             $save->Zip_Code = $zip_code;
-         }
-         $save->Email = $Email;
-         $save->Identification_Number = $identificationnumber;
-         $save->Contract_Rate_Start_Date = $Contract_Rate_Start_Date;
-         $save->Contract_Rate_End_Date = $Contract_Rate_End_Date;
-         $save->Discount_Contract_Rate =$Discount_Contract_Rate;
-         $save->Lastest_Introduce_By = $Lastest_Introduce_By;
-
-         $Guest = Guest::find($id);
-         $Profile_ID = $Guest->Profile_ID;// กำหนดค่า Profile_ID ที่ต้องการใช้งาน
+        $Guest = Guest::find($id);
+        $Profile_ID = $Guest->Profile_ID;// กำหนดค่า Profile_ID ที่ต้องการใช้งาน
         if ($Profile_ID) {
             $profilePhones = phone_guest::where('Profile_ID', $Profile_ID)->get();
             foreach ($profilePhones as $phone) {

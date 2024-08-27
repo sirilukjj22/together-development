@@ -107,7 +107,7 @@
                                                     Other Revenue Bank Transfer
                                                 @endif
                                             </td>
-    
+
                                             <td class="td-content-center">
                                                 {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '' }}
                                             </td>
@@ -320,7 +320,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="split-todo-list">
-    
+
                                     </tbody>
                                 </table>
                             </div>
@@ -494,7 +494,7 @@
             });
         });
 
-        // Search 
+        // Search
         $(document).on('keyup', '.search-data', function () {
             var id = $(this).attr('id');
             var search_value = $(this).val();
@@ -508,10 +508,10 @@
             var month_to = $('#input-search-month-to').val();
             var type_status = $('#status').val();
             var account = $('#into_account').val();
-            var getUrl = window.location.pathname;            
+            var getUrl = window.location.pathname;
 
             if (search_value != '') {
-                
+
                 $('#'+table_name).DataTable().destroy();
                 var table = $('#'+table_name).dataTable({
                     searching: false,
@@ -544,7 +544,7 @@
                             var count = 0;
                             $('.dataTables_empty').addClass('dt-center');
                         }
-                        
+
                         $('#'+id+'-paginate').children().remove().end();
                         $('#'+id+'-showingEntries').text(showingEntriesSearch(count, id));
                         $('#'+id+'-paginate').append(paginateSearch(count, id, getUrl));
@@ -571,8 +571,8 @@
                         { data: 'date_into' },
                         { data: 'btn_action' },
                     ],
-                        
-                });   
+
+                });
 
             } else {
                 $('#'+id+'-paginate').children().remove().end();
@@ -712,7 +712,7 @@
         }
 
         function edit($id) {
-            
+
             $('#exampleModalCenter5').modal('show');
             $('#id').val($id);
             $('#sms-date').css('border-color', '#f0f0f0');
