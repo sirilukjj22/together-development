@@ -16,43 +16,110 @@ class GuestController extends Controller
 {
     public function index()
     {
-        $Guest = Guest::query()->get();
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $Guest = Guest::query()->paginate($perPage);
         $Mbooking = master_document::select('name_en','id')->get();
         return view('guest.index',compact('Guest','Mbooking'));
     }
-    public function paginate_table(Request $request)
+    public function search_table(Request $request)
     {
 
-
-        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-        $data_query = Guest::query()->get();
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        if ($search_value) {
+            $data_query = Guest::where('Profile_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('First_name', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('Last_name', 'LIKE', '%'.$search_value.'%')
+                ->paginate($perPage);
+        }
         $data = [];
+        $path = "/guest/edit/";
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $exportbook = explode(',', $value->Booking_Channel);
+                $booking_names = [];
 
+                $booking_names = array_filter(array_map(function($exportbook) {
+                    $bc = master_document::find($exportbook);
+                    return $bc ? $bc->name_en : null;
+                }, $exportbook));
+                $booking = implode('</br>', $booking_names);
+                $btn_action .='<div class="dropdown">';
+                $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;
+                </button>';
+                $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .='<li class="dropdown-item py-2 rounded">ดูรายละเอียด</li>';
+                $btn_action .= '<li class="dropdown-item py-2 rounded" onclick="window.location.href=\'' . url('/guest/edit/' . $value->id) . '\'">แก้ไขรายการ</li>';
+                $btn_action .='</ul>';
+                $btn_action .='</div>';
+                if ($value->status == 1) {
+                    $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                } else {
+                    $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                }
+                $data[] = [
+                    'number' => $key + 1,
+                    'Profile_ID'=>$value->Profile_ID,
+                    'name'=>$value->First_name.' '.$value->Last_name,
+                    'Booking_Channel'=> $booking,
+                    'status'=>$btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function paginate_table(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+
+        $data = [];
+        if ($perPage == 10) {
+            $data_query = Guest::query()->limit($request->page.'0')->get();
+        } else {
+            $data_query = Guest::query()->paginate($perPage);
+        }
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';
 
         $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
         $path = "/guest/edit/";
-
         if (isset($data_query) && count($data_query) > 0) {
             foreach ($data_query as $key => $value) {
                 $btn_action = "";
+                $btn_status = "";
+                $exportbook = explode(',', $value->Booking_Channel);
+                $booking_names = [];
+
+                $booking_names = array_filter(array_map(function($exportbook) {
+                    $bc = master_document::find($exportbook);
+                    return $bc ? $bc->name_en : null;
+                }, $exportbook));
+                $booking = implode('</br>', $booking_names);
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
                     $btn_action .='<div class="dropdown">';
                     $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;
                     </button>';
-                    $btn_action .='<ul dropdown-menu border-0 shadow p-3>';
-                    $btn_action .=' <li class="dropdown-item py-2 rounded">ดูรายละเอียด</li>
-                                    <li class="dropdown-item py-2 rounded"  href="{{ url('.$path.''.$value->id.') }}">แก้ไขรายการ</li>';
+                    $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .='<li class="dropdown-item py-2 rounded">ดูรายละเอียด</li>';
+                    $btn_action .= '<li class="dropdown-item py-2 rounded" onclick="window.location.href=\'' . url('/guest/edit/' . $value->id) . '\'">แก้ไขรายการ</li>';
                     $btn_action .='</ul>';
                     $btn_action .='</div>';
-
+                    if ($value->status == 1) {
+                        $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                    } else {
+                        $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                    }
                     $data[] = [
-                        'id' => $key + 1,
+                        'number' => $key + 1,
                         'Profile_ID'=>$value->Profile_ID,
-                        'name'=>$value->First_name.$value->Last_name,
-                        'Booking_Channel'=>$value->Booking_Channel,
-                        'status'=>$value->status,
+                        'name'=>$value->First_name.' '.$value->Last_name,
+                        'Booking_Channel'=> $booking,
+                        'status'=>$btn_status,
                         'btn_action' => $btn_action,
                     ];
                 }
@@ -163,7 +230,7 @@ class GuestController extends Controller
                 $comtypefullname = 'นามสกุล : ' . $Last_name;
             }
             if ($CountryOther == 'Thailand') {
-                $provinceNames = province::where('id', $city)->first();
+                $provinceNames = province::where('id', $province)->first();
                 $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
                 $amphuresID = amphures::where('id',$amphures)->select('name_th','id')->first();
                 $provinceNames = $provinceNames->name_th;
@@ -232,9 +299,10 @@ class GuestController extends Controller
             $save->content =$datacompany;
             $save->save();
         }
+
         $save = new Guest();
         $save->Profile_ID = $N_Profile;
-        $save->preface =$Preface;
+        $save->preface =$request->Preface;
         $save->First_name =$First_name;
         $save->Last_name =$Last_name;
         $save->Booking_Channel =$Booking_Channel;
@@ -277,8 +345,8 @@ class GuestController extends Controller
     {
         $ac = $request->value;
         if ($ac == 1 ) {
-            $query = Guest::query();
-            $Guest = $query->where('status', '1')->get();
+            $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $Guest = Guest::where('status', '1')->paginate($perPage);
         }
         return view('guest.index',compact('Guest'));
     }
@@ -286,8 +354,8 @@ class GuestController extends Controller
     {
         $no = $request->value;
         if ($no == 0 ) {
-            $query = Guest::query();
-            $Guest = $query->where('status', '0')->get();
+            $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $Guest = Guest::where('status', '0')->paginate($perPage);
         }
         return view('guest.index',compact('Guest'));
     }

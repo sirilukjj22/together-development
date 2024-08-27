@@ -48,7 +48,7 @@
                         <div class="row mt-3">
                             <div class="col-lg-2 col-md-2 col-sm-12">
                                 <label for="Preface" >คำนำหน้า / Title</label><br>
-                                <select name="Preface" id="PrefaceSelect" class="form-select">
+                                <select name="Preface" id="PrefaceSelect" class="form-select" required>
                                     <option value="" selected disabled>Title</option>
                                     @foreach($prefix as $item)
                                     <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -139,7 +139,7 @@
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-12">
                                 <label for="identification_number">หมายเลขประจำตัว / Identification Number</label><br>
-                                <input type="text" class="form-control" id="identification_number" name="identification_number" required>
+                                <input type="text" class="form-control" id="identification_number" name="identification_number"maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required>
                             </div>
                         </div>
                         <div class="row mt-2">

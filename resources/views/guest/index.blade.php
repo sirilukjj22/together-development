@@ -34,6 +34,20 @@
                         <li></li>
                     </ol>
                 </div>
+                <div class="col-auto">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            สถานะการใช้งาน
+                        </button>
+                        {{-- <button type="button" class="btn btn-danger lift sa-buttons"><i class="fa fa-trash-o"></i> ลบหลายรายการ</button> --}}
+
+                        <ul class="dropdown-menu border-0 shadow p-3">
+                            <li><a class="dropdown-item py-2 rounded" href="{{ route('guest.index') }}">ทั้งหมด</a></li>
+                            <li><a class="dropdown-item py-2 rounded" href="{{ route('guest.ac', ['value' => 1]) }}">ใช้งาน</a></li>
+                            <li><a class="dropdown-item py-2 rounded" href="{{ route('guest.no', ['value' => 0]) }}">ปิดใช้งาน</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
         <div class="container-xl">
@@ -58,9 +72,9 @@
                                 <table id="guestTable" class="example ui striped table nowrap unstackable hover">
                                     <thead>
                                         <tr>
-                                            <th style="text-align: center;">เรียงลำดับ</th>
-                                            <th style="text-align: center;">รหัสลูกค้า</th>
-                                            <th>ชื่อและนามสกุลผู้ใช้งาน</th>
+                                            <th style="text-align: center;"data-priority="1">เรียงลำดับ</th>
+                                            <th style="text-align: center;"data-priority="1">รหัสลูกค้า</th>
+                                            <th data-priority="1">ชื่อและนามสกุลผู้ใช้งาน</th>
                                             <th>Booking Channel</th>
                                             <th class="text-center">สถานะการใช้งาน</th>
                                             <th class="text-center">คำสั่ง</th>
@@ -85,6 +99,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     <input type="hidden" id="status" value="{{ $item->status }}">
+
                                                     @if ($item->status == 1)
                                                         <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
                                                     @else
@@ -106,14 +121,15 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <input type="hidden" id="get-total-guest" value="{{ $Guest->total() }}">
+                            <input type="hidden" id="currentPage-guest" value="1">
                             <caption class="caption-bottom">
-                                {{-- <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="sms-showingEntries">{{ showingEntriesTable($data_sms, 'sms') }}</p>
-                                    <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total_sms, 2) }} บาท</div>
-                                        <div id="sms-paginate">
-                                            {!! paginateTable($data_sms, 'sms') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                <div class="md-flex-bt-i-c">
+                                    <p class="py2" id="guest-showingEntries">{{ showingEntriesTable($Guest, 'guest') }}</p>
+                                        <div id="guest-paginate">
+                                            {!! paginateTable($Guest, 'guest') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                         </div>
-                                </div> --}}
+                                </div>
                             </caption>
                         </div>
                     </div>
@@ -128,6 +144,7 @@
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
     <script type="text/javascript" src="{{ asset('assets/helper/searchTableGuest.js')}}"></script>
+
     <script>
         // Search
         $(document).on('keyup', '.search-data', function () {
@@ -136,15 +153,13 @@
             var table_name = id+'Table';
             var filter_by = $('#filter-by').val();
             var type_status = $('#status').val();
-            console.log(id,table_name,type_status);
-
+            var total = parseInt($('#get-total-'+id).val());
             if (search_value != '') {
                 $('#'+table_name).DataTable().destroy();
                 var table = $('#'+table_name).dataTable({
                     searching: false,
                     paging: false,
                     info: false,
-                    // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
                     ajax: {
                     url: '/guest-search-table',
                     type: 'POST',
@@ -158,19 +173,6 @@
                     },
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 },
-                    // "initComplete": function (settings, json) {
-
-                    //     if ($('#'+id+'Table .dataTables_empty').length == 0) {
-                    //         var count = $('#'+id+'Table tr').length - 1;
-                    //     } else {
-                    //         var count = 0;
-                    //         $('.dataTables_empty').addClass('dt-center');
-                    //     }
-
-                    //     $('#'+id+'-paginate').children().remove().end();
-                    //     $('#'+id+'-showingEntries').text(showingEntriesSearch(count, id));
-                    //     $('#'+id+'-paginate').append(paginateSearch(count, id, getUrl));
-                    // },
                     columnDefs: [
                                 { targets: [0, 1, 2, 3, 4, 5], className: 'dt-center td-content-center' },
                     ],
@@ -192,11 +194,11 @@
 
                 });
             }
-            // } else {
-            //     $('#'+id+'-paginate').children().remove().end();
-            //     $('#'+id+'-showingEntries').text(showingEntriesSearch(total, id));
-            //     $('#'+id+'-paginate').append(paginateSearch(total, id, getUrl));
-            // }
+            else {
+                $('#'+id+'-paginate').children().remove().end();
+                $('#'+id+'-showingEntries').text(showingEntriesSearch(total, id));
+                $('#'+id+'-paginate').append(paginateSearch(total, id, getUrl));
+            }
 
             document.getElementById(id).focus();
         });
@@ -219,5 +221,23 @@
                 }
             });
         });
+
+    </script>
+    @include('script.script')
+
+    <script>
+
+        function btnstatus(id) {
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('/guest/change-status/" + id + "') !!}",
+                datatype: "JSON",
+                async: false,
+                success: function(result) {
+                    Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                    location.reload();
+                },
+            });
+        }
     </script>
 @endsection
