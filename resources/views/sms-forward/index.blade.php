@@ -10,6 +10,7 @@
                 $time_from = isset($time) ? $time : '21:00:00'; // เวลาเริ่มนับตั้งแต่ 21:00:00
                 
                 $date_from = $year_from . '-' . $month_from . '-' . $day_from . ' ' . $time_from;
+                $date_from2 = $year_from . '-' . $month_from . '-' . $day_from;
 
                 if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow') {
                     $pickup_time = $day_from . ' ' . formatMonthName($month_from) . ' ' . $year_from;
@@ -39,11 +40,11 @@
                             </button>
                             <button class="ch-button dropdown-toggle" type="button" id="dropdownMenuDaily" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-top: 0px; border-left: 0px">
                                 <span id="txt-daily">
-                                    @if (isset($filter_by) && $filter_by == 'today')
+                                    @if (isset($filter_by) && $filter_by == 'today' || $date_from2 == date('Y-m-d'))
                                         Today
-                                    @elseif (isset($filter_by) && $filter_by == 'yesterday')
+                                    @elseif (isset($filter_by) && $filter_by == 'yesterday' || date('Y-m-d', strtotime(date($date_from2))) == date('Y-m-d', strtotime('-1 day')))
                                         Yesterday
-                                    @elseif (isset($filter_by) && $filter_by == 'tomorrow')
+                                    @elseif (isset($filter_by) && $filter_by == 'tomorrow' || date('Y-m-d', strtotime(date($date_from2))) == date('Y-m-d', strtotime('+1 day')))
                                         Tomorrow
                                     @else
                                         Custom
