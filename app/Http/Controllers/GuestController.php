@@ -32,18 +32,21 @@ class GuestController extends Controller
         $page_2 = $request->page.'0';
 
         $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+        $path = "/guest/edit/";
 
         if (isset($data_query) && count($data_query) > 0) {
             foreach ($data_query as $key => $value) {
+                $btn_action = "";
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
                     $btn_action .='<div class="dropdown">';
                     $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;
                     </button>';
                     $btn_action .='<ul dropdown-menu border-0 shadow p-3>';
                     $btn_action .=' <li class="dropdown-item py-2 rounded">ดูรายละเอียด</li>
-                                    <li class="dropdown-item py-2 rounded"  href="{{ url('/guest/edit/'.$item->id) }}">แก้ไขรายการ</li>';
+                                    <li class="dropdown-item py-2 rounded"  href="{{ url('.$path.''.$value->id.') }}">แก้ไขรายการ</li>';
                     $btn_action .='</ul>';
                     $btn_action .='</div>';
+
                     $data[] = [
                         'id' => $key + 1,
                         'Profile_ID'=>$value->Profile_ID,
@@ -55,7 +58,7 @@ class GuestController extends Controller
                 }
             }
         }
-        dd(123);
+        // dd($data);
         return response()->json([
             'data' => $data,
         ]);

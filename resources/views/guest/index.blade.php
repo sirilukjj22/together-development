@@ -158,19 +158,19 @@
                     },
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 },
-                    "initComplete": function (settings, json) {
+                    // "initComplete": function (settings, json) {
 
-                        if ($('#'+id+'Table .dataTables_empty').length == 0) {
-                            var count = $('#'+id+'Table tr').length - 1;
-                        } else {
-                            var count = 0;
-                            $('.dataTables_empty').addClass('dt-center');
-                        }
+                    //     if ($('#'+id+'Table .dataTables_empty').length == 0) {
+                    //         var count = $('#'+id+'Table tr').length - 1;
+                    //     } else {
+                    //         var count = 0;
+                    //         $('.dataTables_empty').addClass('dt-center');
+                    //     }
 
-                        $('#'+id+'-paginate').children().remove().end();
-                        $('#'+id+'-showingEntries').text(showingEntriesSearch(count, id));
-                        $('#'+id+'-paginate').append(paginateSearch(count, id, getUrl));
-                    },
+                    //     $('#'+id+'-paginate').children().remove().end();
+                    //     $('#'+id+'-showingEntries').text(showingEntriesSearch(count, id));
+                    //     $('#'+id+'-paginate').append(paginateSearch(count, id, getUrl));
+                    // },
                     columnDefs: [
                                 { targets: [0, 1, 2, 3, 4, 5], className: 'dt-center td-content-center' },
                     ],

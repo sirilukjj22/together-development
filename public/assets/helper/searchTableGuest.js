@@ -7,7 +7,7 @@ function getPage(page, perPage, table_n) {
 
     $('#currentPage-' + table_n).val(page);
 
-    // $('#' + table_name).DataTable().destroy();
+    $('#' + table_name).DataTable().destroy();
     if (table_n == "guest") {
         console.log(table_name);
         var table = $('#' + table_name).dataTable({
