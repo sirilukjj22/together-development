@@ -40,49 +40,15 @@ class Revenues extends Model
         'updated_by',
     ];
 
-    public static function getManualCharge($filter_by, $date_from, $date_to, $date, $month, $year, $type, $status) {
+    public static function getManualCharge($date, $month, $year, $type, $status) {
         $day_now = date_create($date)->format('d');
         $symbol = $day_now == "01" ? "=" : "<=";
 
-        ## Date
-        $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)
-            ->where('revenue_credit.revenue_type', $type)->whereBetween('date', [$date_from, $date_to])
-            ->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit as total')->first();
+        $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)->where('revenue_credit.revenue_type', $type)->whereDate('revenue.date', $date)->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit as total')->first();
+        $sum_revenue_month = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)->where('revenue_credit.revenue_type', $type)->whereDay('date', $symbol, $day_now)->whereMonth('revenue.date', $month)->whereYear('revenue.date', $year)->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit  as total')->first();
+        $sum_revenue_year = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)->where('revenue_credit.revenue_type', $type)->whereDate('revenue.date', '<=', $date)->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit  as total')->first();
 
-        ## Month
-        $revenue_month_query = Revenues::query();
-        $revenue_month_query->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)->where('revenue_credit.revenue_type', $type);
-        
-        if ($filter_by == "date") {
-            $revenue_month_query->whereDay('revenue.date', $symbol, $day_now)->whereMonth('revenue.date', $month)->whereYear('revenue.date', $year);
-
-        } elseif ($filter_by == "month") {
-            $revenue_month_query->whereBetween('date', [$date_from, $date_to]);
-
-        } elseif ($filter_by == "year") {
-            $revenue_month_query->whereBetween('date', [$date_from, $date_to]);
-        }
-
-        $revenue_month_query->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit  as total');
-        $sum_revenue_month = $revenue_month_query->first();
-
-        ## Year
-        $revenue_year_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)->where('revenue_credit.revenue_type', $type);
-
-            if ($filter_by == "date") {
-                $revenue_year_query->whereDate('revenue.date', '<=', $date);
-
-            } elseif ($filter_by == "month") {
-                $revenue_year_query->whereBetween('date', [$date_from, $date_to]);
-
-            } elseif ($filter_by == "year") {
-                $revenue_year_query->whereBetween('date', [$date_from, $date_to]);
-            }
-
-        $revenue_year_query->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit  as total');
-        $sum_revenue_year = $revenue_year_query->first();
-
-        // dd($sum_revenue_month);
+        // dd($sum_revenue);
         $data[] = [
             'revenue_credit_date' => isset($sum_revenue) ? $sum_revenue->credit_amount : 0,
             'revenue_credit_month' => isset($sum_revenue_month) ? $sum_revenue_month->credit_amount : 0,

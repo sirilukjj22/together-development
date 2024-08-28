@@ -945,10 +945,6 @@ class RevenuesController extends Controller
 
         } else {
 
-        // $adate= date($request->year."-".$request->month."-".$request->day." 21:00:00");
-        // $from = date("Y-m-d 21:00:00", strtotime("-1 day",strtotime($adate)));
-        // $to = date($request->year."-".$request->month."-".$request->day." 20:59:59");
-
         if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
             $adate = date('Y-m-d 21:00:00', strtotime($request->year . '-' . $request->month . '-' . $request->day.' 21:00:00'));
             $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
@@ -957,6 +953,7 @@ class RevenuesController extends Controller
             // Revenue
             $month_from = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
             $month_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($request->year . '-' . $request->month . '-' . $request->day))));
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime(date($request->year . '-' . $request->month . '-' . $request->day))));
 
         } elseif ($request->filter_by == "month") {
             $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
@@ -967,14 +964,16 @@ class RevenuesController extends Controller
 
             $month_from = date('Y-m-d', strtotime($adate));
             $month_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($to))));
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime(date($request->year . '-' . $request->month . '-' . $request->day))));
 
         } elseif ($request->filter_by == "year") {
             $adate = date($request->year . '-01' . '-01');
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-12-31' . ' 20:59:59');
+            $to = date($request->year . '-12-31' . ' 20:59:59');
 
             $month_from = date('Y-m-d', strtotime($adate));
             $month_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($to))));
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime(date($request->year . '-' . $request->month . '-' . $request->day))));
         }
 
         $datetime = date("Y-".$request->month."-d");
@@ -1314,13 +1313,13 @@ class RevenuesController extends Controller
             }
         }
 
+        $date_now = date('Y-m-d', strtotime(date($request->year.'-'.$request->month.'-'.$request->day)));
         $day_now = $request->day;
         $symbol = $day_now == "01" ? "=" : "<=";
 
-
         // verified
-        $total_verified = Revenues::whereBetween('date', [$month_from, $month_to])->where('status', 1)->count();
-        $total_unverified = Revenues::whereBetween('date', [$month_from, $month_to])->where('status', 0)->count();
+        $total_verified = Revenues::whereBetween('date', [$date_first_day, $month_to])->where('status', 1)->count();
+        $total_unverified = Revenues::whereBetween('date', [$date_first_day, $month_to])->where('status', 0)->count();
 
         $total_revenue_today = Revenues::whereBetween('date', [$month_from, $month_to])->select(
             DB::raw("
@@ -1345,31 +1344,157 @@ class RevenuesController extends Controller
          + $total_revenue_today->wp_amount + $total_revenue_today->credit_amount + $total_revenue_today->total_credit_agoda + $total_revenue_today->other_revenue;
 
         ## ข้อมูลในตาราง
+
+        ### Credit Card Hotel ###
+        // Date
         $credit_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select(DB::raw("SUM(total_credit) as total_credit"))->first();
 
-        $credit_revenue_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(total_credit) as total_credit"))->first();
-        $credit_revenue_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select(DB::raw("SUM(total_credit) as total_credit"))->first();
+        // Month
+        $credit_month_query = Revenues::query();
+
+            if ($request->filter_by == "date") {
+                $credit_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year);
+
+            } elseif ($request->filter_by == "month") {
+                $credit_month_query->whereBetween('date', [$month_from, $month_to]);
+
+            } elseif ($request->filter_by == "year") {
+                $credit_month_query->whereBetween('date', [$month_from, $month_to]);
+            }
+
+        $credit_month_query->select(DB::raw("SUM(total_credit) as total_credit"));
+        $credit_revenue_month = $credit_month_query->first();
+
+        // Year
+        $credit_year_query = Revenues::query();
         
-        // Front
+            if ($request->filter_by == "date") {
+                $credit_year_query->whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day));
+
+            } elseif ($request->filter_by == "month") {
+                $credit_month_query->whereBetween('date', [$month_from, $month_to]);
+
+            } elseif ($request->filter_by == "year") {
+                $credit_year_query->whereBetween('date', [$month_from, $month_to]);
+            }
+
+        $credit_year_query->select(DB::raw("SUM(total_credit) as total_credit"));
+        $credit_revenue_year = $credit_year_query->first();
+
+        ### Front Desk ###
+        // Date
         $total_front_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"))->first();
 
-        $total_front_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"))->first();
-        $total_front_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"))->first();
-        $front_charge = Revenues::getManualCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 6, 6);
-        
-        // Guest
+        // Month
+        $total_front_month_query = Revenues::query();
+
+            if ($request->filter_by == "date") {
+                $total_front_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year);
+
+            } elseif ($request->filter_by == "month") {
+                $total_front_month_query->whereBetween('date', [$month_from, $month_to]);
+
+            } elseif ($request->filter_by == "year") {
+                $total_front_month_query->whereBetween('date', [$month_from, $month_to]);
+            }
+
+        $total_front_month_query->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"));
+        $total_front_month = $total_front_month_query->first();
+
+        // Year
+        $total_front_year_query = Revenues::query();
+
+            if ($request->filter_by == "date") {
+                $total_front_year_query->whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day));
+
+            } elseif ($request->filter_by == "month") {
+                $total_front_year_query->whereBetween('date', [$month_from, $month_to]);
+
+            } elseif ($request->filter_by == "year") {
+                $total_front_year_query->whereBetween('date', [$month_from, $month_to]);
+            }
+
+        $total_front_year_query->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"));
+        $total_front_year = $total_front_year_query->first();
+
+        $front_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $request->month, $request->year, 6, 6);
+
+        ### Guest Deposit ###
         $total_guest_deposit = Revenues::whereBetween('date', [$month_from, $month_to])->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"))->first();
 
-        $total_guest_deposit_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"))->first();
-        $total_guest_deposit_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"))->first();
-        $guest_deposit_charge = Revenues::getManualCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 1, 1);
+        // Month
+        $total_guest_deposit_month_query = Revenues::query();
 
-        // All Outlet
+        if ($request->filter_by == "date") {
+            $total_guest_deposit_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year);
+
+        } elseif ($request->filter_by == "month") {
+            $total_guest_deposit_month_query->whereBetween('date', [$month_from, $month_to]);
+
+        } elseif ($request->filter_by == "year") {
+            $total_guest_deposit_month_query->whereBetween('date', [$month_from, $month_to]);
+        }
+
+        $total_guest_deposit_month_query->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"));
+        $total_guest_deposit_month = $total_guest_deposit_month_query->first();
+
+        // Year
+        $guest_deposit_year_query = Revenues::query();
+
+            if ($request->filter_by == "date") {
+                $guest_deposit_year_query->whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day));
+
+            } elseif ($request->filter_by == "month") {
+                $guest_deposit_year_query->whereBetween('date', [$month_from, $month_to]);
+
+            } elseif ($request->filter_by == "year") {
+                $guest_deposit_year_query->whereBetween('date', [$month_from, $month_to]);
+            }
+
+        $guest_deposit_year_query->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"));
+        $total_guest_deposit_year = $guest_deposit_year_query->first();
+
+        // Charge
+        $guest_deposit_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $request->month, $request->year, 1, 1);
+ 
+        ### All Outlet ###
+        // Date
         $total_fb_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"))->first();
 
-        $total_fb_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"))->first();
-        $total_fb_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"))->first();
-        $fb_charge = Revenues::getManualCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 2, 2);
+        // Month
+        $fb_month_query = Revenues::query();
+        
+            if ($request->filter_by == "date") {
+                $fb_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year);
+
+            } elseif ($request->filter_by == "month") {
+                $fb_month_query->whereBetween('date', [$month_from, $month_to]);
+
+            } elseif ($request->filter_by == "year") {
+                $fb_month_query->whereBetween('date', [$month_from, $month_to]);
+            }
+
+        $fb_month_query->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"));
+        $total_fb_month = $fb_month_query->first();
+
+        // Year
+        $fb_year_query = Revenues::query();
+
+            if ($request->filter_by == "date") {
+                $fb_year_query->whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day));
+
+            } elseif ($request->filter_by == "month") {
+                $fb_year_query->whereBetween('date', [$month_from, $month_to]);
+
+            } elseif ($request->filter_by == "year") {
+                $fb_year_query->whereBetween('date', [$month_from, $month_to]);
+            }
+
+        $fb_year_query->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"));
+        $total_fb_year = $fb_year_query->first();
+
+        // Charge
+        $fb_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $request->month, $request->year, 2, 2);
 
         // Agoda
         $total_agoda_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->sum('total_credit_agoda');
@@ -1383,7 +1508,7 @@ class RevenuesController extends Controller
 
         $total_wp_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
         $total_wp_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
-        $wp_charge = Revenues::getManualCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 3, 3);
+        $wp_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $request->month, $request->year, 3, 3);
 
         // 
         $total_credit_transaction = SMS_alerts::whereDate('date_into', date($request->year.'-'.$request->month.'-'.$request->day))->where('into_account', "708-226792-1")->where('status', 4)->count();

@@ -560,7 +560,7 @@
                         <tr class="table-row-n">
                             <td class="padding-l-2">Cash</td>
                             <td class="t-end">
-                                {{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_cash : 0, 2) }}
+                                {{ number_format(isset($total_front_revenue) && isset($filter_by) && $filter_by == "date" ? $total_front_revenue->front_cash : 0, 2) }}
                             </td>
                             <td class="t-end">
                                 {{ number_format(isset($total_front_month) ? $total_front_month->front_cash : 0, 2) }}
@@ -571,7 +571,7 @@
                         <tr class="table-row-n">
                             <td class="padding-l-2">Bank Transfer</td>
                             <td class="t-end">
-                                {{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_transfer : 0, 2) }}
+                                {{ number_format(isset($total_front_revenue) && isset($filter_by) && $filter_by == "date" ? $total_front_revenue->front_transfer : 0, 2) }}
                             </td>
                             <td class="t-end">
                                 {{ number_format(isset($total_front_month) ? $total_front_month->front_transfer : 0, 2) }}
@@ -582,7 +582,7 @@
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Credit Card Front Desk Charge</td>
-                            <td class="t-end">{{ number_format($front_charge[0]['revenue_credit_date'], 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" ? $front_charge[0]['revenue_credit_date'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($front_charge[0]['revenue_credit_month'], 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($front_charge[0]['revenue_credit_year'], 2) }}
                             </td>
@@ -596,7 +596,7 @@
                         <tr class="table-row-n">
                             <td class="padding-l-2">Cash</td>
                             <td class="t-end">
-                                {{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_cash : 0, 2) }}
+                                {{ number_format(isset($total_guest_deposit) && isset($filter_by) && $filter_by == "date" ? $total_guest_deposit->room_cash : 0, 2) }}
                             </td>
                             <td class="t-end">
                                 {{ number_format(isset($total_guest_deposit_month) ? $total_guest_deposit_month->room_cash : 0, 2) }}
@@ -608,7 +608,7 @@
                         <tr class="table-row-n">
                             <td class="padding-l-2">Bank Transfer</td>
                             <td class="t-end">
-                                {{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_transfer : 0, 2) }}
+                                {{ number_format(isset($total_guest_deposit) && isset($filter_by) && $filter_by == "date" ? $total_guest_deposit->room_transfer : 0, 2) }}
                             </td>
                             <td class="t-end">
                                 {{ number_format(isset($total_guest_deposit_month) ? $total_guest_deposit_month->room_transfer : 0, 2) }}
@@ -619,12 +619,11 @@
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Credit Card Front Desk Charge</td>
-                            <td class="t-end">{{ number_format($guest_deposit_charge[0]['revenue_credit_date'], 2) }}
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" ? $guest_deposit_charge[0]['revenue_credit_date'] : 0, 2) }}
                             </td>
                             <td class="t-end">{{ number_format($guest_deposit_charge[0]['revenue_credit_month'], 2) }}
                             </td>
-                            <td class="t-end padding-x-2">
-                                {{ number_format($guest_deposit_charge[0]['revenue_credit_year'], 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format($guest_deposit_charge[0]['revenue_credit_year'], 2) }}</td>
                         </tr>
                         <tr class="table-row-bg">
                             <td class="padding-l-2">All Outlet Revenue</td>
@@ -634,19 +633,19 @@
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Cash</td>
-                            <td class="t-end">{{ number_format($total_fb_revenue->fb_cash, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($total_fb_revenue) && isset($filter_by) && $filter_by == "date" ? $total_fb_revenue->fb_cash : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_fb_month->fb_cash, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_fb_year->fb_cash, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Bank Transfer</td>
-                            <td class="t-end">{{ number_format($total_fb_revenue->fb_transfer, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($total_fb_revenue) && isset($filter_by) && $filter_by == "date" ? $total_fb_revenue->fb_transfer : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_fb_month->fb_transfer, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_fb_year->fb_transfer, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Credit Card All Outlet Charge</td>
-                            <td class="t-end">{{ number_format($fb_charge[0]['revenue_credit_date'], 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" ? $fb_charge[0]['revenue_credit_date'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($fb_charge[0]['revenue_credit_month'], 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($fb_charge[0]['revenue_credit_year'], 2) }}
                             </td>

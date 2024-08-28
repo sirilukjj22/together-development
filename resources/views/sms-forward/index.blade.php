@@ -55,6 +55,8 @@
                                 <a class="dropdown-item" href="#" onclick="search_daily('today')">Today</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('yesterday')">Yesterday</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('tomorrow')">Tomorrow</a>
+                                <a class="dropdown-item" href="#" onclick="search_daily('week')">This Week</a>
+                                <a class="dropdown-item" href="#" onclick="search_daily('month')">This Month</a>
                             </div>
                             <button type="button" class="ch-button" data-toggle="modal" data-target="#exampleModalCenter5" style="white-space: nowrap;"> 
                                 Add
