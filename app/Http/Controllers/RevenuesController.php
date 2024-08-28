@@ -1496,7 +1496,42 @@ class RevenuesController extends Controller
         // Charge
         $fb_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $request->month, $request->year, 2, 2);
 
-        // Agoda
+        ## Other Revenue ###
+        // Date
+        $total_other_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select('other_revenue')->sum('other_revenue');
+
+        $other_month_query = Revenues::query();
+
+        if ($request->filter_by == "date") {
+            $other_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', date('m'))->whereYear('date', date('Y'));
+
+        } elseif ($request->filter_by == "month") {
+            $other_month_query->whereBetween('date', [$month_from, $month_to]);
+
+        } elseif ($request->filter_by == "year") {
+            $other_month_query->whereBetween('date', [$month_from, $month_to]);
+        }
+
+        $other_month_query->select('other_revenue');
+        $total_other_month = $other_month_query->sum('other_revenue');
+
+        // Year
+        $other_year_query = Revenues::query();
+
+            if ($request->filter_by == "date") {
+                $other_year_query->whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day));
+
+            } elseif ($request->filter_by == "month") {
+                $other_year_query->whereBetween('date', [$month_from, $month_to]);
+
+            } elseif ($request->filter_by == "year") {
+                $other_year_query->whereBetween('date', [$month_from, $month_to]);
+            }
+
+        $other_year_query->select('other_revenue');
+        $total_other_year = $other_year_query->sum('other_revenue');
+
+        ### Agoda ###
         $total_agoda_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->sum('total_credit_agoda');
 
         $total_agoda_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', date('Y'))->sum('total_credit_agoda');
@@ -1538,24 +1573,12 @@ class RevenuesController extends Controller
         $total_not_type_revenue_month = SMS_alerts::whereDay('date', $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->where('status', 0)->whereNull('date_into')->sum('amount');
         $total_not_type_revenue_year = SMS_alerts::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->where('status', 0)->whereNull('date_into')->sum('amount');
 
-        // No Income Type 
-        // $total_no_type = Revenues::whereBetween('date', [$month_from, $month_to])->select('total_no_type')->first();
-
-        // $total_no_type_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year)->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
-        // $total_no_type_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select(DB::raw("SUM(total_no_type) as total_no_type"))->first();
-
         // Elexa
         $total_ev_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select('total_elexa')->sum('total_elexa');
 
         $total_ev_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select('total_elexa')->sum('total_elexa');
         $total_ev_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select('total_elexa')->sum('total_elexa');
         $ev_charge = Revenues::getManualEvCharge(date($request->year.'-'.$request->month.'-'.$request->day), $request->month, $request->year, 8, 8);
-
-        // Other
-        $total_other_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select('other_revenue')->sum('other_revenue');
-
-        $total_other_month = Revenues::whereDay('date', $symbol, $day_now)->whereMonth('date', date('m'))->whereYear('date', date('Y'))->select('other_revenue')->sum('other_revenue');
-        $total_other_year = Revenues::whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day))->select('other_revenue')->sum('other_revenue');
 
         $filter_by = $request->filter_by;
         $day = $request->day;

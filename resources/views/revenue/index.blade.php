@@ -182,7 +182,7 @@
                                 </div>
                                 <div>All Outlet</div>
                                 <div class="font-semibold">
-                                    {{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_cash : 0, 2) }}
+                                    {{ number_format($total_fb_revenue->fb_cash, 2) }}
                                 </div>
                             </div>
                             <div class="box-card bg-box">
@@ -190,7 +190,7 @@
                                     <img src="./image/front/quest-deposit.png" alt="" class="img" />
                                 </div>
                                 <div>Guest Deposit</div>
-                                <div class="font-semibold">{{ number_format($total_fb_revenue->fb_cash, 2) }}</div>
+                                <div class="font-semibold">{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_cash : 0, 2) }}</div>
                             </div>
                             <div class="box-card bg-box">
                                 <div class="">
@@ -658,30 +658,27 @@
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Bank Transfer</td>
-                            <td class="t-end">{{ number_format($total_other_revenue, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" ? $total_other_revenue : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_other_month, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_other_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Total Cash</td>
-                            <td class="t-end">{{ number_format($total_cash, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" ? $total_cash : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_cash_month, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_cash_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Total Bank Transfer</td>
-                            <td class="t-end">{{ number_format($total_bank_transfer + $total_other_revenue, 2) }}</td>
-                            <td class="t-end">{{ number_format($total_bank_transfer_month + $total_other_month, 2) }}
-                            </td>
-                            <td class="t-end padding-x-2">
-                                {{ number_format($total_bank_transfer_year + $total_other_year, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" ? $total_bank_transfer + $total_other_revenue : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format($total_bank_transfer_month + $total_other_month, 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format($total_bank_transfer_year + $total_other_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="t-end f-semi"> Cash And Bank Transfer Hotel Revenue </td>
-                            <td class="t-end">{{ number_format($total_cash_bank + $total_other_revenue, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" ? $total_cash_bank + $total_other_revenue : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_cash_bank_month + $total_other_month, 2) }}</td>
-                            <td class="t-end padding-x-2">
-                                {{ number_format($total_cash_bank_year + $total_other_year, 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format($total_cash_bank_year + $total_other_year, 2) }}</td>
                         </tr>
                         <?php
                         
@@ -692,14 +689,18 @@
                         ?>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Total Credit Card Charge</td>
-                            <td class="t-end">{{ number_format($total_credit_card_revenue, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" ? $total_credit_card_revenue : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_credit_card_revenue_month, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_credit_card_revenue_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Credit Card Fee</td>
                             <td class="t-end">
-                                {{ number_format($total_credit_card_revenue == 0 || $credit_revenue->total_credit == 0 ? 0 : $total_credit_card_revenue - $credit_revenue->total_credit ?? 0, 2) }}
+                                @if (isset($filter_by) && $filter_by == "date")
+                                    {{ number_format($total_credit_card_revenue == 0 || $credit_revenue->total_credit == 0 ? 0 : $total_credit_card_revenue - $credit_revenue->total_credit ?? 0, 2) }}
+                                @else
+                                    0.00
+                                @endif
                             </td>
                             <td class="t-end">
                                 {{ number_format($total_credit_card_revenue_month - $credit_revenue_month->total_credit ?? 0, 2) }}
@@ -717,7 +718,7 @@
                         ?>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Credit Card Hotel Revenue</td>
-                            <td class="t-end">{{ number_format($credit_revenue->total_credit ?? 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" ? $credit_revenue->total_credit ?? 0 : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($credit_revenue_month->total_credit ?? 0, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($credit_revenue_year->total_credit ?? 0, 2) }}
                             </td>
