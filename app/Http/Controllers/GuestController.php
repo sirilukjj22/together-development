@@ -376,9 +376,7 @@ class GuestController extends Controller
     }
     public function guest_edit($id)
     {
-
         $Guest = Guest::find($id);
-        // dd();
         $number =  preg_replace("/[^0-9]/", "", $Guest->City);
         $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Guest->City);
         $provinceNames = province::select('name_th','id')->get();

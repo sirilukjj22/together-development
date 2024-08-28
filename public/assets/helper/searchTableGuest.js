@@ -1,5 +1,6 @@
 // Showing Entries
-function showingEntriesSearch($page, $total, $table_name) {
+function showingEntriesSearch($page, $total, $table_name)
+{
     var total = $total;
     var currentPage = parseInt($page);
     var perPage = parseInt($('#search-per-page-' + $table_name).val());
@@ -18,7 +19,8 @@ function showingEntriesSearch($page, $total, $table_name) {
 }
 
 // Paginate
-function paginateSearch($total, $table, $link) {
+function paginateSearch($total, $table, $link)
+{
     var total = $total;
     var currentPage = parseInt($('#currentPage-' + $table).val());
     var perPage = parseInt($('#search-per-page-' + $table).val());
@@ -76,7 +78,8 @@ console.log(perPage);
     return html;
 }
 
-function getPage(page, perPage, table_n) {
+function getPage(page, perPage, table_n)
+{
     var table_name = table_n + 'Table';
     var getUrl = window.location.pathname;
     var type = $('#status').val();
