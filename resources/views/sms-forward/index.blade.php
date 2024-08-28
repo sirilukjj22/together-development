@@ -4,6 +4,7 @@
     <div id="content-index" class="body-header d-flex py-3">
         <div class="container-xl">
             @php
+                $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))); // อาทิตย์ - เสาร์
                 $day_from = isset($day) ? $day : date('d');
                 $month_from = isset($month) ? $month : date('m');
                 $year_from = isset($year) ? $year : date('Y');
@@ -18,9 +19,11 @@
                     $pickup_time = formatMonthName($month) . ' - ' . formatMonthName($month_to);
                 } elseif (isset($filter_by) && $filter_by == 'year') {
                     $pickup_time = $year;
+                } elseif (isset($filter_by) && $filter_by == 'week') {
+                    $pickup_time = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d')))))." ~ ".date('d M', strtotime("+6 day", strtotime($this_week)));
+                } elseif (isset($filter_by) && $filter_by == 'thisMonth') {
+                    $pickup_time = "01 " . date('M') . " ~ " . date('t M');
                 }
-
-                $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d')))));
             @endphp
             <!-- กล่อง เมนูข้างบน -->
             <div>
@@ -48,6 +51,10 @@
                                         Yesterday
                                     @elseif (isset($filter_by) && $filter_by == 'tomorrow' || date('Y-m-d', strtotime(date($date_from2))) == date('Y-m-d', strtotime('+1 day')))
                                         Tomorrow
+                                    @elseif (isset($filter_by) && $filter_by == 'week')
+                                        This Week
+                                    @elseif (isset($filter_by) && $filter_by == 'thisMonth')
+                                        This Month
                                     @else
                                         Custom
                                     @endif
@@ -57,7 +64,7 @@
                                 <a class="dropdown-item" href="#" onclick="search_daily('today')">Today</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('yesterday')">Yesterday</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('tomorrow')">Tomorrow</a>
-                                <a class="dropdown-item" href="#" onclick="search_daily('week')">This Week ({{ date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))) }} ~ {{ date('d M', strtotime("+6 day", strtotime($this_week))) }})</a>
+                                <a class="dropdown-item" href="#" onclick="search_daily('week')">This Week</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('thisMonth')">This Month</a>
 
                                 <input type="hidden" name="" id="week-from" value="{{ date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))) }}">
@@ -1760,7 +1767,7 @@
                 $('#txt-daily').text("This Week");
             }
             
-            if ($search == 'week') {
+            if ($search == 'thisMonth') {
                 var date = new Date();
                 var day = date.getDate();
                 var month = date.getMonth() + 1;
