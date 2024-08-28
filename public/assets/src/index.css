@@ -1328,3 +1328,20 @@ a:visited {
 .fz-15px {
   font-size: 16px;
 }
+
+button.grey {
+  box-shadow: 0px 0px 0px red;
+  background-image: linear-gradient(rgb(83, 81, 81), rgba(26, 16, 16, 0.623));
+  color: white;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.modal-footer {
+  padding: 0.5rem 0;
+  border: none;
+}

@@ -19,6 +19,8 @@
                 } elseif (isset($filter_by) && $filter_by == 'year') {
                     $pickup_time = $year;
                 }
+
+                $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d')))));
             @endphp
             <!-- กล่อง เมนูข้างบน -->
             <div>
@@ -55,8 +57,11 @@
                                 <a class="dropdown-item" href="#" onclick="search_daily('today')">Today</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('yesterday')">Yesterday</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('tomorrow')">Tomorrow</a>
-                                <a class="dropdown-item" href="#" onclick="search_daily('week')">This Week</a>
-                                <a class="dropdown-item" href="#" onclick="search_daily('month')">This Month</a>
+                                <a class="dropdown-item" href="#" onclick="search_daily('week')">This Week ({{ date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))) }} ~ {{ date('d M', strtotime("+6 day", strtotime($this_week))) }})</a>
+                                <a class="dropdown-item" href="#" onclick="search_daily('thisMonth')">This Month</a>
+
+                                <input type="hidden" name="" id="week-from" value="{{ date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))) }}">
+                                <input type="hidden" name="" id="week-to" value="{{ date('d M', strtotime("+6 day", strtotime($this_week))) }}">
                             </div>
                             <button type="button" class="ch-button" data-toggle="modal" data-target="#exampleModalCenter5" style="white-space: nowrap;"> 
                                 Add
@@ -402,7 +407,7 @@
                                                                 <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 30 days ({{ date('d M', strtotime("-29 day")) }} ~  {{ date('d M') }})
                                                             </button>
                                                             <button type="button" value="week" onclick="updateChartThisWeek(this.value)" class="modal-graph">
-                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>This Week ({{ date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))) }} ~ {{ date('d M', strtotime("+6 day")) }})
+                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>This Week ({{ date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))) }} ~ {{ date('d M', strtotime("+6 day", strtotime($this_week))) }})
                                                             </button>
                                                             <button type="button" value="month" onclick="updateChartThisMonth(this.value)" class="modal-graph">
                                                                 <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>This Month 
@@ -1425,9 +1430,14 @@
                             </div>
                         </div>
                         <!-- ล่าง modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" id="btn-search-date" class="btn btn-success" style="background-color: #2C7F7A;">Search</button>
+                        <div class="modal-footer flex-between">
+                            <div class="" >
+                                <button type="button" class="ch-pick" >Today</button>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" id="btn-search-date" class="btn btn-success" style="background-color: #2C7F7A;">Search</button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -1560,6 +1570,11 @@
                 $('.graph-date').prop('hidden', true);
                 $('#graphChartByMonthOrYear').prop('hidden', false);
 
+            } if (filter_by == "thisMonth") {
+                chartThisMonth2(month, month_to);
+                $('.graph-date').prop('hidden', true);
+                $('#graphChartByMonthOrYear').prop('hidden', false);
+
             } if (filter_by == "year") {
                 chartFilterByYear(year);
                 $('.graph-date').prop('hidden', true);
@@ -1569,6 +1584,11 @@
                 updateChart(7);
                 $('.graph-date').prop('hidden', false);
                 $('#graphChartByMonthOrYear').prop('hidden', true);
+
+            } if (filter_by == "week") {
+                chartWeek(7);
+                $('.graph-date').prop('hidden', true);
+                $('#graphChartByMonthOrYear').prop('hidden', false);
             }
         });
 
@@ -1731,6 +1751,22 @@
                 var year = date.getFullYear();
                 $('#txt-daily').text("Tomorrow");
             } 
+
+            if ($search == 'week') {
+                var date = new Date($('#week-from').val());
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
+                $('#txt-daily').text("This Week");
+            }
+            
+            if ($search == 'week') {
+                var date = new Date();
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
+                $('#txt-daily').text("This Month");
+            }
 
             $('#filter-by').val($search);
             $('#input-search-day').val(day);

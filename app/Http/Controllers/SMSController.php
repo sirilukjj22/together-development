@@ -1394,21 +1394,41 @@ class SMSController extends Controller
     public function search_filter_date(Request $request)
     {
         if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
-            $adate = date($request->year . '-' . $request->month . '-' . $request->day);
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $adate2 = date('Y-m-d', strtotime(date($adate)));
+
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date($adate . ' 20:59:59');
 
         } elseif ($request->filter_by == "month") {
-            $adate = date($request->year . '-' . $request->month . '-01');
             $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
+            $adate2 = date('Y-m-d', strtotime($request->year . '-' . $request->month_to . '-' . $lastday));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
 
-        } elseif ($request->filter_by == "year") {
-            $adate = date($request->year . '-01' . '-01');
+        } elseif ($request->filter_by == "thisMonth") {
+            $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-01');
+            $adate2 = date('Y-m-' . $lastday);
+
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-12-31' . ' 20:59:59');
+            $to = date('Y-m-d 20:59:59', strtotime($adate2));
+
+        } elseif ($request->filter_by == "year") {
+            $adate = date('Y-m-d', strtotime($request->year . '-01' . '-01'));
+            $adate2 = date('Y-m-d', strtotime(date($request->year . '-12-31')));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime($request->year . '-12-31'));
+
+        } elseif ($request->filter_by == "week") {
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
         }
 
         // ตาราง 1
@@ -1434,27 +1454,27 @@ class SMSController extends Controller
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
-                    $query_transfer->whereDate('date_into', $adate)->where('transfer_status', 1)->where('into_account', $request->into_account)->where('status', $request->status);
-                    $query_transfer->orWhereDate('date', $adate)->where('transfer_status', 1)->where('into_account', $request->into_account)->where('status', $request->status);
-                    $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', $request->status);
+                    $query_transfer->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account)->where('status', $request->status);
+                    $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account)->where('status', $request->status);
+                    $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status);
                 } else {
-                    $query_transfer->whereDate('date_into', $adate)->where('transfer_status', 1)->where('into_account', $request->into_account);
-                    $query_transfer->orWhereDate('date', $adate)->where('transfer_status', 1)->where('into_account', $request->into_account);
-                    $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', $adate)->where('into_account', $request->into_account);
+                    $query_transfer->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account);
+                    $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account);
+                    $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account);
                 }
             } else {
                 if ($request->status != '') { 
-                    $query_transfer->whereDate('date_into', $adate)->where('transfer_status', 1)->where('status', $request->status);
-                    $query_transfer->orWhereDate('date', $adate)->where('transfer_status', 1)->where('status', $request->status);
-                    $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', $adate)->where('status', $request->status);
+                    $query_transfer->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)->where('status', $request->status);
+                    $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1)->where('status', $request->status);
+                    $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status);
                 } else {
-                    $query_transfer->whereDate('date_into', $adate)->where('transfer_status', 1);
-                    $query_transfer->orWhereDate('date', $adate)->where('transfer_status', 1);
-                    $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', $adate);
+                    $query_transfer->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1);
+                    $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1);
+                    $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2);
                 }
             }
 
-        $query_transfer->orWhereDate('date', $adate)->where('status', 4)->where('split_status', 0);
+        $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('status', 4)->where('split_status', 0);
         $query_transfer->orderBy('date', 'asc');
 
         $query_transfer_amount = $query_transfer;
@@ -1463,8 +1483,10 @@ class SMSController extends Controller
         $query_transfer_amount->select(DB::raw("SUM(amount) as amount, COUNT(id) as total_transfer"));
         $total_transfer_amount = $query_transfer_amount->first();
 
+        // dd($data_sms_transfer);
+
         // ตาราง 3
-        $query_split = SMS_alerts::query()->whereDate('date_into', $adate)->where('split_status', 1);
+        $query_split = SMS_alerts::query()->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('split_status', 1);
 
             if ($request->into_account != '') { 
                 $query_split->where('into_account', $request->into_account);
@@ -1488,18 +1510,18 @@ class SMSController extends Controller
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
                     $query_day->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', $request->status);
-                    $query_day->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', $request->status);
+                    $query_day->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status);
                 } else {
                     $query_day->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account);
-                    $query_day->orWhereDate('date_into', $adate)->where('into_account', $request->into_account);
+                    $query_day->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account);
                 }
             } else {
                 if ($request->status != '') { 
                     $query_day->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status);
-                    $query_day->orWhereDate('date_into', $adate)->where('status', $request->status);
+                    $query_day->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status);
                 } else {
                     $query_day->whereBetween('date', [$from, $to])->whereNull('date_into');
-                    $query_day->orWhereDate('date_into', $adate);
+                    $query_day->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2);
                 }
             }
 
@@ -1511,18 +1533,18 @@ class SMSController extends Controller
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
                     $query_front->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 6);
-                    $query_front->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 6);
+                    $query_front->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 6);
                 } else {
                     $query_front->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', 6);
-                    $query_front->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', 6);
+                    $query_front->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', 6);
                 }
             } else {
                 if ($request->status != '') { 
                     $query_front->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)->where('status', 6);
-                    $query_front->orWhereDate('date_into', $adate)->where('status', $request->status)->where('status', 6);
+                    $query_front->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status)->where('status', 6);
                 } else {
                     $query_front->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', 6);
-                    $query_front->orWhereDate('date_into', $adate)->where('status', 6);
+                    $query_front->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 6);
                 }
             }
 
@@ -1534,18 +1556,18 @@ class SMSController extends Controller
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
                     $query_room->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 1);
-                    $query_room->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 1);
+                    $query_room->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 1);
                 } else {
                     $query_room->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', 1);
-                    $query_room->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', 1);
+                    $query_room->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', 1);
                 }
             } else {
                 if ($request->status != '') { 
                     $query_room->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)->where('status', 1);
-                    $query_room->orWhereDate('date_into', $adate)->where('status', $request->status)->where('status', 1);
+                    $query_room->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status)->where('status', 1);
                 } else {
                     $query_room->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', 1);
-                    $query_room->orWhereDate('date_into', $adate)->where('status', 1);
+                    $query_room->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 1);
                 }
             }
 
@@ -1557,18 +1579,18 @@ class SMSController extends Controller
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
                     $query_fb->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 2);
-                    $query_fb->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 2);
+                    $query_fb->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 2);
                 } else {
                     $query_fb->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', 2);
-                    $query_fb->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', 2);
+                    $query_fb->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', 2);
                 }
             } else {
                 if ($request->status != '') { 
                     $query_fb->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)->where('status', 2);
-                    $query_fb->orWhereDate('date_into', $adate)->where('status', $request->status)->where('status', 2);
+                    $query_fb->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status)->where('status', 2);
                 } else {
                     $query_fb->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', 2);
-                    $query_fb->orWhereDate('date_into', $adate)->where('status', 2);
+                    $query_fb->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 2);
                 }
             }
 
@@ -1579,10 +1601,10 @@ class SMSController extends Controller
 
             if ($request->status != '') { 
                 $query_credit->whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->whereNull('date_into')->where('status', $request->status)->where('status', 4);
-                $query_credit->orWhereDate('date_into', $adate)->where('into_account', "708-226792-1")->where('status', $request->status)->where('status', 4);
+                $query_credit->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', "708-226792-1")->where('status', $request->status)->where('status', 4);
             } else {
                 $query_credit->whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->whereNull('date_into')->where('status', 4);
-                $query_credit->orWhereDate('date_into', $adate)->where('into_account', "708-226792-1")->where('status', 4);
+                $query_credit->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', "708-226792-1")->where('status', 4);
             }
 
         $total_credit = $query_credit->sum('amount');
@@ -1593,18 +1615,18 @@ class SMSController extends Controller
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
                     $query_agoda->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 5);
-                    $query_agoda->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 5);
+                    $query_agoda->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 5);
                 } else {
                     $query_agoda->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', 5);
-                    $query_agoda->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', 5);
+                    $query_agoda->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', 5);
                 }
             } else {
                 if ($request->status != '') { 
                     $query_agoda->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)->where('status', 5);
-                    $query_agoda->orWhereDate('date_into', $adate)->where('status', $request->status)->where('status', 5);
+                    $query_agoda->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status)->where('status', 5);
                 } else {
                     $query_agoda->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', 5);
-                    $query_agoda->orWhereDate('date_into', $adate)->where('status', 5);
+                    $query_agoda->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 5);
                 }
             }
 
@@ -1616,18 +1638,18 @@ class SMSController extends Controller
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
                     $query_wp->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 3);
-                    $query_wp->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 3);
+                    $query_wp->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 3);
                 } else {
                     $query_wp->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', 3);
-                    $query_wp->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', 3);
+                    $query_wp->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', 3);
                 }
             } else {
                 if ($request->status != '') { 
                     $query_wp->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)->where('status', 3);
-                    $query_wp->orWhereDate('date_into', $adate)->where('status', $request->status)->where('status', 3);
+                    $query_wp->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status)->where('status', 3);
                 } else {
                     $query_wp->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', 3);
-                    $query_wp->orWhereDate('date_into', $adate)->where('status', 3);
+                    $query_wp->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 3);
                 }
             }
 
@@ -1638,10 +1660,10 @@ class SMSController extends Controller
 
             if ($request->status != '') { 
                 $query_wp_credit->whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->whereNull('date_into')->where('status', $request->status)->where('status', 7);
-                $query_wp_credit->orWhereDate('date_into', $adate)->where('into_account', "708-226792-1")->where('status', $request->status)->where('status', 7);
+                $query_wp_credit->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', "708-226792-1")->where('status', $request->status)->where('status', 7);
             } else {
                 $query_wp_credit->whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->whereNull('date_into')->where('status', 7);
-                $query_wp_credit->orWhereDate('date_into', $adate)->where('into_account', "708-226792-1")->where('status', 7);
+                $query_wp_credit->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', "708-226792-1")->where('status', 7);
             }
 
         $total_wp_credit = $query_wp_credit->sum('amount');
@@ -1652,18 +1674,18 @@ class SMSController extends Controller
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
                     $query_ev->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 8);
-                    $query_ev->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 8);
+                    $query_ev->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 8);
                 } else {
                     $query_ev->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', 8);
-                    $query_ev->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', 8);
+                    $query_ev->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', 8);
                 }
             } else {
                 if ($request->status != '') { 
                     $query_ev->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)->where('status', 8);
-                    $query_ev->orWhereDate('date_into', $adate)->where('status', $request->status)->where('status', 8);
+                    $query_ev->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status)->where('status', 8);
                 } else {
                     $query_ev->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', 8);
-                    $query_ev->orWhereDate('date_into', $adate)->where('status', 8);
+                    $query_ev->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 8);
                 }
             }
 
@@ -1675,18 +1697,18 @@ class SMSController extends Controller
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
                     $query_transfer_revenue->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', $request->status)->where('transfer_status', 1);
-                    $query_transfer_revenue->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', $request->status)->where('transfer_status', 1);
+                    $query_transfer_revenue->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status)->where('transfer_status', 1);
                 } else {
                     $query_transfer_revenue->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('transfer_status', 1);
-                    $query_transfer_revenue->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('transfer_status', 1);
+                    $query_transfer_revenue->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('transfer_status', 1);
                 }
             } else {
                 if ($request->status != '') { 
                     $query_transfer_revenue->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)->where('transfer_status', 1);
-                    $query_transfer_revenue->orWhereDate('date_into', $adate)->where('status', $request->status)->where('transfer_status', 1);
+                    $query_transfer_revenue->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status)->where('transfer_status', 1);
                 } else {
                     $query_transfer_revenue->whereBetween('date', [$from, $to])->whereNull('date_into')->where('transfer_status', 1);
-                    $query_transfer_revenue->orWhereDate('date_into', $adate)->where('transfer_status', 1);
+                    $query_transfer_revenue->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1);
                 }
             }
 
@@ -1715,7 +1737,7 @@ class SMSController extends Controller
         $total_transfer2 = $query_transfer_revenue2->count();
 
         ## Split Revenue
-        $query_split_revenue = SMS_alerts::query()->whereDate('date_into', $adate)->where('split_status', 1);
+        $query_split_revenue = SMS_alerts::query()->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('split_status', 1);
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
@@ -1781,18 +1803,18 @@ class SMSController extends Controller
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
                     $query_transaction->whereBetween('date', [$from, $to])->where('into_account', $request->into_account)->where('status', $request->status);
-                    $query_transaction->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', $request->status);
+                    $query_transaction->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status);
                 } else {
                     $query_transaction->whereBetween('date', [$from, $to])->where('into_account', $request->into_account);
-                    $query_transaction->orWhereDate('date_into', $adate)->where('into_account', $request->into_account);
+                    $query_transaction->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account);
                 }
             } else {
                 if ($request->status != '') { 
                     $query_transaction->whereBetween('date', [$from, $to])->where('status', $request->status);
-                    $query_transaction->orWhereDate('date_into', $adate)->where('status', $request->status);
+                    $query_transaction->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status);
                 } else {
                     $query_transaction->whereBetween('date', [$from, $to]);
-                    $query_transaction->orWhereDate('date_into', $adate);
+                    $query_transaction->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2);
                 }
             }
         

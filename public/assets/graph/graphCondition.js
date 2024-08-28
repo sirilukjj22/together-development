@@ -506,5 +506,85 @@ function chartMonthToMonth($month, $to_month) {
         },
         plugins: [valueOnTopPluginThisMonthByDay],
     });
-
 }
+
+function chartWeek() {
+
+    $('#revenueChart').prop('hidden', true);
+    $('#revenueChartThisMonth').prop('hidden', false);
+    $('#revenueChartCustom').prop('hidden', true);
+    $('#btn-close-myModalGraph').click();
+    
+    var ctx_monthRange = document.getElementById("revenueChartByMonthOrYear").getContext("2d");
+    revenueChart_thisMonth.destroy(); // Destroy the current chart
+    revenueChart_thisWeek = new Chart(ctx_monthRange, {
+        type: "bar",
+        data: {
+            labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            datasets: [{
+                label: "This Week",
+                data: get_graphThisWeek(1),
+                backgroundColor: "#2C7F7A",
+                borderWidth: 0,
+                barPercentage: 0.7,
+            },],
+        },
+        options: {
+            scales: {
+                x: {},
+                y: {
+                    beginAtZero: true,
+                    max: yAxisMax_thisMonth,
+                    ticks: {
+                        stepSize: 20000,
+                        callback: function (value) {
+                            return formatNumberThisMonth(value);
+                        },
+                    },
+                },
+            },
+        },
+        plugins: [valueOnTopPluginThisMonthByDay],
+    });
+}
+
+function chartThisMonth2() {
+
+    $('#revenueChart').prop('hidden', true);
+    $('#revenueChartThisMonth').prop('hidden', false);
+    $('#revenueChartCustom').prop('hidden', true);
+    $('#btn-close-myModalGraph').click();
+    
+    var ctx_monthRange = document.getElementById("revenueChartByMonthOrYear").getContext("2d");
+    revenueChart_thisMonth.destroy(); // Destroy the current chart
+    revenueChart_thisMonth = new Chart(ctx_monthRange, {
+        type: "bar",
+        data: {
+            labels: get_graphThisMonth(0),
+            datasets: [{
+                label: "This Month",
+                data: revenueDataThisMonth,
+                backgroundColor: "#2C7F7A",
+                borderWidth: 0,
+                barPercentage: 0.7,
+            },],
+        },
+        options: {
+            scales: {
+                x: {},
+                y: {
+                    beginAtZero: true,
+                    max: yAxisMax_thisMonth,
+                    ticks: {
+                        stepSize: 20000,
+                        callback: function (value) {
+                            return formatNumberThisMonth(value);
+                        },
+                    },
+                },
+            },
+        },
+        plugins: [valueOnTopPluginThisMonth],
+    });
+}
+
