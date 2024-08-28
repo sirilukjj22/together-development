@@ -932,9 +932,9 @@
             <div class="modal-body ">
               <div class="">
                 <div class="box-ch-button">
-                  <button id="showD" onclick="Choice(this);" class="ch-pick"> filter by date</button>
-                  <button id="showM" onclick="Choice(this);" class="ch-pick"> filter by month</button>
-                  <button id="showY" onclick="Choice(this);" class="ch-pick"> filter by year</button>
+                  <button type="button" id="showD" onclick="Choice(this);" class="ch-pick"> filter by date</button>
+                  <button type="button" id="showM" onclick="Choice(this);" class="ch-pick"> filter by month</button>
+                  <button type="button" id="showY" onclick="Choice(this);" class="ch-pick"> filter by year</button>
                   <input type="hidden" id="choice-date">
                 </div>
                 <div style="width: 100%; display: flex; justify-content: center;">
