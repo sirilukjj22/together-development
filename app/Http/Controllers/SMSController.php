@@ -463,7 +463,7 @@ class SMSController extends Controller
                     'amount' => number_format($value->amount, 2),
                     'remark' => $value->remark ?? 'Auto',
                     'revenue_name' => $revenue_name,
-                    'date_into' => Carbon::parse($value->date_into)->format('d/m/Y'),
+                    'date_into' => !empty($value->date_into) ? Carbon::parse($value->date_into)->format('d/m/Y') : '-',
                     'btn_action' => $btn_action,
                 ];
             }
@@ -715,7 +715,7 @@ class SMSController extends Controller
                         'amount' => number_format($value->amount, 2),
                         'remark' => $value->remark ?? 'Auto',
                         'revenue_name' => $revenue_name,
-                        'date_into' => Carbon::parse($value->date_into)->format('d/m/Y'),
+                        'date_into' => !empty($value->date_into) ? Carbon::parse($value->date_into)->format('d/m/Y') : '-',
                         'btn_action' => $btn_action,
                     ];
                 }
@@ -1767,9 +1767,8 @@ class SMSController extends Controller
         $total_split_transaction = $query_split_transaction->first();
 
         ## No Income Type
-        $query_not_type = SMS_alerts::query()->whereBetween('date', [$from, $to])->where('status', 0)
-        
-        ;
+        $query_not_type = SMS_alerts::query();
+        $query_not_type->whereBetween('date', [$from, $to])->where('status', 0);
 
             if ($request->into_account != '') { 
                 $query_not_type->where('into_account', $request->into_account);
@@ -1778,7 +1777,7 @@ class SMSController extends Controller
                 $query_not_type->where('status', $request->status); 
             }
 
-        $total_not_type = $query_split_transaction->count();
+        $total_not_type = $query_not_type->count();
 
         ## No Income Type Revenue
         $query_not_type_revenue = SMS_alerts::query()->whereBetween('date', [$from, $to])->where('status', 0);
