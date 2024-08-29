@@ -104,12 +104,19 @@ const date = new Date();
 function myDaysFunction(myDay, month) {
   var myDay1 = myDay;
   var thisMont = $("#mymonth").text();
-  document.getElementById("myDay").innerHTML =
-    myDay1 + " " + thisMont + " " + date.getFullYear();
+  document.getElementById("myDay").innerHTML = myDay1 + " " + thisMont + " " + date.getFullYear();
 
     $('#input-search-day').val(myDay);
     $('#input-search-month').val(month + 1);
     $("#filter-by").val('date');
+
+    // Delete class
+    $('#day-'+myDay).removeClass('select-day');
+    $('.select-day').removeClass('today');
+
+    // Add class
+    $('#day-'+myDay).addClass('today');
+    $('#day-'+myDay).addClass('select-day');
 }
 
 const renderCalendar = () => {
@@ -179,9 +186,9 @@ const renderCalendar = () => {
   for (let i = 1; i <= lastDay; i++) {
     if (i === new Date().getDate() && date.getMonth() === new Date().getMonth()) 
     {
-      days += `<div class="today">${i}</div>`;
+      days += `<div id="day-${i}" class="today select-day">${i}</div>`;
     } else {
-      days += `<div onclick="myDaysFunction(${i}, ${date.getMonth()})">${i}</div>`;
+      days += `<div id="day-${i}" class="select-day" onclick="myDaysFunction(${i}, ${date.getMonth()})">${i}</div>`;
     }
   }
 

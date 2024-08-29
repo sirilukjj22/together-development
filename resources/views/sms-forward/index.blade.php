@@ -5,6 +5,8 @@
         <div class="container-xl">
             @php
                 $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))); // อาทิตย์ - เสาร์
+                $date_current = date('Y-m-d'); // วันปัจจุบัน
+
                 $day_from = isset($day) ? $day : date('d');
                 $month_from = isset($month) ? $month : date('m');
                 $year_from = isset($year) ? $year : date('Y');
@@ -1439,7 +1441,7 @@
                         <!-- ล่าง modal -->
                         <div class="modal-footer flex-between">
                             <div class="" >
-                                <button type="button" class="ch-pick" >Today</button>
+                                <button type="button" class="ch-pick" onclick="btn_reset_date()">Today</button>
                             </div>
                             <div>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -1548,6 +1550,22 @@
     </script>
 
     <script type="text/javascript">
+
+        const monthName = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ]; // ชื่อเดือน
+
         $(document).ready(function() {
             new DataTable('.example', {
                 searching: false,
@@ -1597,7 +1615,36 @@
                 $('.graph-date').prop('hidden', true);
                 $('#graphChartByMonthOrYear').prop('hidden', false);
             }
+
+            // Calendar
+            if (filter_by == "date" || filter_by == "today" || filter_by == "tomorrow" || filter_by == "yesterday") {
+                var day_now = $('#input-search-day').val();
+                var date_now = new Date($('#input-search-year').val()+"-"+$('#input-search-month').val()+"-"+$('#input-search-day').val());
+                document.getElementById("myDay").innerHTML = day_now + " " + monthName[date_now.getMonth()] + " " + date_now.getFullYear();
+                
+                // Delete class
+                $('#day-'+day_now).removeClass('select-day');
+                $('.select-day').removeClass('today');
+
+                // Add class
+                $('#day-'+day_now).addClass('today');
+                $('#day-'+day_now).addClass('select-day');
+            }
         });
+
+        function btn_reset_date() {
+            var date = new Date();
+            var day = date.getDate();
+            document.getElementById("myDay").innerHTML = date.getDate() + " " + monthName[date.getMonth()] + " " + date.getFullYear();
+            
+            // Delete class
+            $('#day-'+day).removeClass('select-day');
+            $('.select-day').removeClass('today');
+
+            // Add class
+            $('#day-'+day).addClass('today');
+            $('#day-'+day).addClass('select-day');
+        }
 
         // Search 
         $(document).on('keyup', '.search-data', function () {
