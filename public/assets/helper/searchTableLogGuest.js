@@ -28,7 +28,7 @@ function paginateSearch($total, $table, $link)
     var nextPageUrl = currentPage;
     var table = $table;
     var html = '';
-console.log(table);
+console.log(perPage);
 
     if (currentPage > 1) {
         previousPageUrl = currentPage - 1;
@@ -84,6 +84,7 @@ function getPage(page, perPage, table_n)
     var getUrl = window.location.pathname;
     var type = $('#status').val();
     var total = parseInt($('#get-total-' + table_n).val());
+    var guest_profile = $('#profile-'+ table_n).val();
 
     $('#currentPage-' + table_n).val(page);
 
@@ -94,7 +95,7 @@ function getPage(page, perPage, table_n)
             paging: false,
             info: false,
             ajax: {
-                url: '/guest-paginate-table',
+                url: '/logguest-paginate-table',
                 type: 'POST',
                 dataType: "json",
                 cache: false,
@@ -103,11 +104,12 @@ function getPage(page, perPage, table_n)
                     perPage: perPage,
                     table_name: table_name,
                     status: type,
+                    guest_profile:guest_profile,
                 },
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0, 1, 3, 4, 5], className: 'dt-center td-content-center' },
+                { targets: [0, 1, 2, 3, 4], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -118,11 +120,11 @@ function getPage(page, perPage, table_n)
             },
             columns: [
                 { data: 'number' },
-                { data: 'Profile_ID' },
-                { data: 'name' },
-                { data: 'Booking_Channel' },
-                { data: 'status' },
-                { data: 'btn_action' },
+                { data: 'Category' },
+                { data: 'type' },
+                { data: 'Created_by' },
+                { data: 'created_at' },
+                { data: 'Content' },
             ],
 
         });

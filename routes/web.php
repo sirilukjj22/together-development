@@ -210,6 +210,11 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('guest-search-table', 'search_table')->name('guest-search-table');
         Route::post('guest-paginate-table', 'paginate_table')->name('guest-paginate-table');
+
+        Route::post('logguest-search-table', 'search_table_log')->name('guest-search-table_log');
+        Route::post('logguest-paginate-table', 'paginate_table_log')->name('guest-paginate-table_log');
+        //--------------------------------เพิ่ม ซับ ------------------------
+        Route::post('/guest/save/cover/{id}', 'guest_cover')->name('guest_cover');
     });
 });
 #master product

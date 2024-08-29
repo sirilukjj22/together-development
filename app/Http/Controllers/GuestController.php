@@ -11,6 +11,8 @@ use App\Models\amphures;
 use App\Models\districts;
 use App\Models\master_document;
 use App\Models\log_company;
+use App\Models\guest_tax;
+use App\Models\guest_tax_phone;
 use Auth;
 class GuestController extends Controller
 {
@@ -31,6 +33,8 @@ class GuestController extends Controller
                 ->orWhere('First_name', 'LIKE', '%'.$search_value.'%')
                 ->orWhere('Last_name', 'LIKE', '%'.$search_value.'%')
                 ->paginate($perPage);
+        }else{
+            $data_query = Guest::query()->paginate($perPage);
         }
         $data = [];
         $path = "/guest/edit/";
@@ -311,11 +315,11 @@ class GuestController extends Controller
             $save->Country = $CountryOther;
         }else {
             $save->Country = $CountryOther;
-            $save->City = $province;
-            $save->Amphures = $amphures;
+            $save->City = $request->province;
+            $save->Amphures = $request->amphures;
             $save->Address = $Address;
-            $save->Tambon = $Tambon;
-            $save->Zip_Code = $zip_code;
+            $save->Tambon = $request->Tambon;
+            $save->Zip_Code = $request->zip_code;
         }
         $save->Email = $Email;
         $save->Identification_Number = $identificationnumber;
@@ -387,22 +391,287 @@ class GuestController extends Controller
         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
         $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         $Profile_ID = $Guest->Profile_ID;
-        $phone = phone_guest::where('Profile_ID', 'like', "%{$Profile_ID}%")->get();
-        $phonecount = phone_guest::where('Profile_ID', 'like', "%{$Profile_ID}%")->count();
+        $phone = phone_guest::where('Profile_ID',$Profile_ID)->get();
+        $phonecount = phone_guest::where('Profile_ID',$Profile_ID)->count();
         $phoneDataArray = $phone->toArray();
-        return view('guest.edit',compact('Guest','Other_City','provinceNames','amphures','Tambon','Zip_code'
-        ,'booking_channel','prefix','phonecount','phoneDataArray'));
-    }
 
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $log = log_company::where('Company_ID', $Profile_ID)
+        ->orderBy('created_at', 'desc')
+        ->paginate($perPage);
+
+        $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
+        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
+
+        return view('guest.edit',compact('Guest','Other_City','provinceNames','amphures','Tambon','Zip_code'
+        ,'booking_channel','prefix','phonecount','phoneDataArray','log','MCompany_type','Mprefix'));
+    }
+    public function search_table_log(Request $request)
+    {
+
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+
+        if ($search_value) {
+            $data_query = log_company::where('created_at', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->paginate($perPage);
+        }
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $contentArray = explode('+', $value->content);
+                $content = implode('</br>', $contentArray);
+                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                $name = $Category.'</br>'.$content;
+                $data[] = [
+                    'number' => $key + 1,
+                    'Category'=>$value->Category,
+                    'type'=>$value->type,
+                    'Created_by'=>@$value->userOperated->name,
+                    'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                    'Content' => $name,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function paginate_table_log(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+        $data = [];
+        if ($perPage == 10) {
+            $data_query = log_company::where('Company_ID',$guest_profile)->limit($request->page.'0')->get();
+        } else {
+            $data_query = log_company::where('Company_ID',$guest_profile)->paginate($perPage);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $contentArray = explode('+', $value->content);
+                $content = implode('</br>', $contentArray);
+                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                $name = $Category.'</br>'.$content;
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    $data[] = [
+                        'number' => $key + 1,
+                        'Category'=>$value->Category,
+                        'type'=>$value->type,
+                        'Created_by'=>@$value->userOperated->name,
+                        'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                        'Content' => $name,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+
+    }
     public function guest_update(Request $request, $id)
     {
-        $data = $request->all();
+        {
+            $guest = Guest::where('id', $id)->first();
+            $guest_id = $guest->Profile_ID;
+            $ids = $guest->id;
+            $phone = phone_guest::where('Profile_ID', $guest_id)->get();
+            $dataArray = $guest->toArray(); // แปลงข้อมูลบริษัทเป็น array
+            $dataArray['phone'] = $phone->pluck('Phone_number')->toArray(); // เพิ่มค่า phone เข้าไปใน $dataArray
+            $data = $request->all(); // ดึงข้อมูลที่ส่งมาทั้งหมดจาก request
+            $Booking_Channel =  implode(',',$request->booking_channel);
+            $datarequest = [
+                'preface' => $data['Preface'] ?? null,
+                'First_name' => $data['first_name'] ?? null,
+                'Last_name' => $data['last_name'] ?? null,
+                'Booking_Channel' => $Booking_Channel ?? null,
+                'Country' => $data['countrydata'] ?? null,
+                'City' => $data['province'] ?? null,
+                'Amphures' => $data['amphures'] ?? null,
+                'Tambon' => $data['Tambon'] ?? null,
+                'Address' => $data['address'] ?? null,
+                'Zip_Code' => $data['zip_code'] ?? null,
+                'Email' => $data['email'] ?? null,
+                'Identification_Number' => $data['identification_number'] ?? null,
+                'Contract_Rate_Start_Date' => $data['contract_rate_start_date'] ?? null,
+                'Contract_Rate_End_Date' => $data['contract_rate_end_date'] ?? null,
+                'Discount_Contract_Rate' => $data['discount_contract_rate'] ?? null,
+                'Lastest_Introduce_By' => $data['latest_introduced_by'] ?? null,
+                'phone' => $data['phone'] ?? null,
+            ];
+            $keysToCompare = ['preface', 'First_name', 'Last_name','Booking_Channel','Country', 'City', 'Amphures', 'Tambon', 'phone',
+            'Address', 'Zip_Code', 'Email', 'Identification_Number', 'Contract_Rate_Start_Date', 'Contract_Rate_End_Date', 'Discount_Contract_Rate','Lastest_Introduce_By'];
+            $differences = [];
+                    foreach ($keysToCompare as $key) {
+                        if (isset($dataArray[$key]) && isset($datarequest[$key])) {
+                            // แปลงค่าของ $dataArray และ $data เป็นชุดข้อมูลเพื่อหาค่าที่แตกต่างกัน
+                            $dataArraySet = collect($dataArray[$key]);
+                            $dataSet = collect($datarequest[$key]);
+
+                            // หาค่าที่แตกต่างกัน
+                            $onlyInDataArray = $dataArraySet->diff($dataSet)->values()->all();
+                            $onlyInRequest = $dataSet->diff($dataArraySet)->values()->all();
+
+                            // ตรวจสอบว่ามีค่าที่แตกต่างหรือไม่
+                            if (!empty($onlyInDataArray) || !empty($onlyInRequest)) {
+                                $differences[$key] = [
+                                    'dataArray' => $onlyInDataArray,
+                                    'request' => $onlyInRequest
+                                ];
+                            }
+                        }
+                    }
+                    $extractedData = [];
+                    $extractedDataA = [];
+                    // วนลูปเพื่อดึงชื่อคีย์และค่าจาก request
+                    foreach ($differences as $key => $value) {
+                        if ($key === 'phone') {
+                            // ถ้าเป็น phoneCom ให้เก็บค่า request ทั้งหมดใน array
+                            $extractedData[$key] = $value['request'];
+                            $extractedDataA[$key] = $value['dataArray'];
+                        } elseif (isset($value['request'][0])) {
+                            // สำหรับคีย์อื่นๆ ให้เก็บค่าแรกจาก array
+                            $extractedData[$key] = $value['request'][0];
+                        }else{
+                            $extractedDataA[$key] = $value['dataArray'][0];
+                        }
+                    }
+                    $Preface = $extractedData['preface'] ?? null;
+                    $first_name = $extractedData['First_name'] ?? null;
+                    $last_name =  $extractedData['Last_name'] ?? null;
+                    $Booking_Channel =  $extractedData['Booking_Channel'] ?? null;
+                    $Address =  $extractedData['Address'] ?? null;
+                    $Country =  $extractedData['Country'] ?? null;
+                    $City =  $extractedData['City'] ?? null;
+                    $Amphures =  $extractedData['Amphures'] ?? null;
+                    $Tambon =  $extractedData['Tambon'] ?? null;
+                    $Zip_Code =  $extractedData['Zip_Code'] ?? null;
+                    $Email =  $extractedData['Email'] ?? null;
+                    $Identification_Number =  $extractedData['Identification_Number'] ?? null;
+                    $Contract_Rate_Start_Date =  $extractedData['Contract_Rate_Start_Date'] ?? null;
+                    $Contract_Rate_End_Date =  $extractedData['Contract_Rate_End_Date'] ?? null;
+                    $Discount_Contract_Rate =  $extractedData['Discount_Contract_Rate'] ?? null;
+                    $Lastest_Introduce_By =  $extractedData['Lastest_Introduce_By'] ?? null;
+                    $phoneCom =  $extractedData['phone'] ?? null;
+                    $phoneComA =  $extractedDataA['phone'] ?? null;
+
+                    $comtypefullname = null;
+                    if ($Preface && $first_name && $last_name) {
+                        $Mprefix = master_document::where('id', $Preface)->where('Category', 'Mprename')->first();
+                        if ($Mprefix) {
+                            if ($Mprefix->name_th == "นาย") {
+                                $comtypefullname = "นาย " . $first_name . ' ' . $last_name;
+                            } elseif ($Mprefix->name_th == "นาง") {
+                                $comtypefullname = "นาง " . $first_name . ' ' . $last_name;
+                            } elseif ($Mprefix->name_th == "นางสาว") {
+                                $comtypefullname = "นางสาว " . $first_name . ' ' . $last_name;
+                            }
+                        }
+                    } elseif ($Preface > 30) {
+                        $Mprefix = master_document::where('id', $Preface)->where('Category', 'Mprename')->first();
+                        if ($Mprefix) {
+                            $prename = $Mprefix->name_th;
+                            $comtypefullname = 'คำนำหน้า : ' . $prename;
+                        }
+                    } elseif ($first_name && $last_name) {
+                        $comtypefullname = 'ชื่อ : ' . $first_name . ' ' . $last_name;
+                    } elseif ($first_name) {
+                        $comtypefullname = 'ชื่อ : ' . $first_name;
+                    } elseif ($last_name) {
+                        $comtypefullname = 'นามสกุล : ' . $last_name;
+                    }
+                    $AddressIndividual =null;
+                    if ($Country == 'Thailand') {
+                        $provinceNames = province::where('id', $City)->first();
+                        $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
+                        $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
+                        $provinceNamesN = $provinceNames->name_th;
+                        $TambonN = $TambonID->name_th;
+                        $amphuresN = $amphuresID->name_th;
+                        $Zip_codeN = $TambonID->zip_code;
+                        $AddressIndividual = 'ที่อยู่ : '.$Address.' ตำบล : '.$TambonN.' อำเภอ : '.$amphuresN.' จังหวัด : '.$provinceNamesN.' '.$Zip_codeN;
+                    }elseif ($Country == 'Other_countries'){
+                        $AddressIndividual = 'ที่อยู่ : '.$Address;
+                    }
+                    $Email = null;
+                    if ($Email) {
+                        $Email = 'อีเมล์ผู้ติดต่อ : '.$Email;
+                    }
+                    $phone = null;
+                    if ($phoneCom) {
+                        $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phoneCom);
+                    }
+                    $phoneA = null;
+                    if ($phoneComA) {
+                        $phoneA = 'ลบเบอร์โทรศัพท์ : ' . implode(', ', $phoneComA);
+                    }
+                    $Identification = null;
+                    if ($Identification_Number) {
+                        $Identification = 'เลขบัตรประจำตัว : '.$Identification_Number;
+                    }
+                    $Date = null;
+                    if ($Contract_Rate_Start_Date && $Contract_Rate_End_Date) {
+                        $Date = 'วันที่เริ่มต้น : '.$Contract_Rate_Start_Date.' '.'วันที่สิ้นสุด : '.$Contract_Rate_End_Date;
+                    }elseif ($Contract_Rate_Start_Date) {
+                        $Date = 'วันที่เริ่มต้น : '.$Contract_Rate_Start_Date;
+                    }elseif ($Contract_Rate_End_Date) {
+                        $Date ='วันที่สิ้นสุด : '.$Contract_Rate_End_Date;
+                    }
+                    $Discount = null;
+                    if ($Discount_Contract_Rate) {
+                        $Discount = 'ส่วนลด(เปอร์เซ็น) : '.$Discount_Contract_Rate;
+                    }
+                    $Introduce = null;
+                    if ($Lastest_Introduce_By) {
+                        $Introduce = 'ผู้แนะนำ : '.$Lastest_Introduce_By;
+                    }
+                    $booking = null;
+                    if ($Booking_Channel) {
+                        $booking_names = [];
+                        $Mbooking = explode(',', $Booking_Channel);
+                        foreach ($Mbooking as $value) {
+                            $bc = master_document::find($value);
+                            if ($bc) {
+                                $booking_names[] = $bc->name_en;
+                            }
+                        }
+                        $booking = 'ช่องทางการจอง : '.implode(',', $booking_names);
+                    }
+                    $datacompany = '';
+                    $variables = [$comtypefullname , $AddressIndividual, $Email,$booking, $Identification,$Date,$Discount,$Introduce,$phone,$phoneA];
+
+                    foreach ($variables as $variable) {
+                        if (!empty($variable)) {
+                            if (!empty($datacompany)) {
+                                $datacompany .= ' + ';
+                            }
+                            $datacompany .= $variable;
+                        }
+                    }
+                    $userid = Auth::user()->id;
+                    $save = new log_company();
+                    $save->Created_by = $userid;
+                    $save->Company_ID = $guest_id;
+                    $save->type = 'Edit';
+                    $save->Category = 'Edit :: Guest';
+                    $save->content =$datacompany;
+                    $save->save();
+        }
+
         $province = $request->province;
         $Preface = $request->Preface;
         $amphures = $request->amphures;
         $Tambon = $request->Tambon;
         $zip_code = $request->zip_code;
-        $Booking_Channel =  implode(',',$request->booking_channel);
         $First_name = $request->first_name;
         $Last_name = $request->last_name;
         $CountryOther = $request->countrydata;
@@ -415,54 +684,266 @@ class GuestController extends Controller
         $Discount_Contract_Rate = $request->discount_contract_rate;
         $Lastest_Introduce_By = $request->latest_introduced_by;
         $phones = $request->input('phone');
-        $save = Guest::find($id);
-        $save->preface =$Preface;
-        $save->First_name =$First_name;
-        $save->Last_name =$Last_name;
-        $save->Booking_Channel =$Booking_Channel;
-        if ($CountryOther == "Other_countries") {
-            if ($city === null) {
-                return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
-            }else {
-                $save->City = $city;
-            }
-        }else {
-            $save->Country = $CountryOther;
-            $save->City = $province;
-            $save->Amphures = $amphures;
-            $save->Address = $Address;
-            $save->Tambon = $Tambon;
-            $save->Zip_Code = $zip_code;
-        }
-        $save->Email = $Email;
-        $save->Identification_Number = $identificationnumber;
-        $save->Contract_Rate_Start_Date = $Contract_Rate_Start_Date;
-        $save->Contract_Rate_End_Date = $Contract_Rate_End_Date;
-        $save->Discount_Contract_Rate =$Discount_Contract_Rate;
-        $save->Lastest_Introduce_By = $Lastest_Introduce_By;
+        try {
 
-        $Guest = Guest::find($id);
-        $Profile_ID = $Guest->Profile_ID;// กำหนดค่า Profile_ID ที่ต้องการใช้งาน
-        if ($Profile_ID) {
-            $profilePhones = phone_guest::where('Profile_ID', $Profile_ID)->get();
-            foreach ($profilePhones as $phone) {
-                $phone->delete();
+            $save = Guest::find($id);
+            $save->preface =$Preface;
+            $save->First_name =$First_name;
+            $save->Last_name =$Last_name;
+            $save->Booking_Channel =$Booking_Channel;
+            if ($CountryOther == "Other_countries") {
+                if ($city === null) {
+                    return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
+                }else {
+                    $save->City = $city;
+                    $save->Country = $CountryOther;
+                    $save->Address = $Address;
+                }
+            }else {
+                $save->Country = $CountryOther;
+                $save->City = $province;
+                $save->Amphures = $amphures;
+                $save->Address = $Address;
+                $save->Tambon = $Tambon;
+                $save->Zip_Code = $zip_code;
             }
-        }
-        foreach ($phones as $index => $phoneNumber) {
-            if ($phoneNumber !== null) {
-                $phoneGuest = new phone_guest();
-                $phoneGuest->Profile_ID = $Profile_ID;
-                $phoneGuest->Phone_number = $phoneNumber;
-                $phoneGuest->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                $phoneGuest->save();
+            $save->Email = $Email;
+            $save->Identification_Number = $identificationnumber;
+            $save->Contract_Rate_Start_Date = $Contract_Rate_Start_Date;
+            $save->Contract_Rate_End_Date = $Contract_Rate_End_Date;
+            $save->Discount_Contract_Rate =$Discount_Contract_Rate;
+            $save->Lastest_Introduce_By = $Lastest_Introduce_By;
+
+            $Guest = Guest::find($id);
+            $Profile_ID = $Guest->Profile_ID;// กำหนดค่า Profile_ID ที่ต้องการใช้งาน
+            if ($Profile_ID) {
+                $profilePhones = phone_guest::where('Profile_ID', $Profile_ID)->get();
+                foreach ($profilePhones as $phone) {
+                    $phone->delete();
+                }
             }
+            foreach ($phones as $index => $phoneNumber) {
+                if ($phoneNumber !== null) {
+                    $phoneGuest = new phone_guest();
+                    $phoneGuest->Profile_ID = $Profile_ID;
+                    $phoneGuest->Phone_number = $phoneNumber;
+                    $phoneGuest->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                    $phoneGuest->save();
+                }
+            }
+            $save->save();
+            return redirect()->route('guest.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
-         $save->save();
-         if ($save->save()) {
-             return redirect()->route('guest.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-         } else {
-             return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-         }
+    }
+    public function guest_cover(Request $request, $id)
+    {
+        $data = $request->all();
+
+        $latestGuest = guest_tax::latest('id')->first();
+        if ($latestGuest) {
+            $Profile_ID = $latestGuest->id + 1;
+        } else {
+            // ถ้าไม่มี Guest ในฐานข้อมูล เริ่มต้นด้วย 1
+            $Profile_ID = 1;
+        }
+        $Id_profile ="GT-";
+        $N_Profile = $Id_profile.$Profile_ID;
+        try {
+                $profileguest = Guest::where('id',$id)->first();
+                $Profile_IDGuest = $profileguest->Profile_ID;
+                $TaxSelect = $request->TaxSelectA;
+                $Company_type = $request->Company_type_tax;
+                $Company_Name = $request->Company_Name_tax;
+                $CountryOther = $request->countrydataA;
+                $Province = $request->cityA;
+                $Amphures = $request->amphuresA;
+                $Tambon = $request->TambonA;
+                $Zip_code = $request->zip_codeA;
+                $Email = $request->EmailAgent;
+                $Address = $request->addressAgent;
+                $BranchTax = $request->BranchTax;
+                //-----------------------------------
+                $phoneGuest = $request->phoneTax;
+                //-----------------------------------
+                $Taxpayer_Identification =$request->Identification;
+                //------------------------------------------------------------
+                $prefix =$request->prefix;
+                $first_name =$request->first_nameCom;
+                $last_name =$request->last_nameCom;
+
+                if ($TaxSelect == 'Company') {
+                    $comtype = master_document::where('id', $Company_type)->first();
+                    if ($comtype->name_th =="บริษัทจำกัด") {
+                        $comtypefullname = "บริษัท ". $Company_Name . " จำกัด";
+                    }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                        $comtypefullname = "บริษัท ". $Company_Name . " จำกัด (มหาชน)";
+                    }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                        $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company_Name ;
+                    }
+                }else{
+                    if ($prefix && $first_name && $last_name) {
+                        $Mprefix = master_document::where('id', $prefix)->where('Category', 'Mprename')->first();
+                        if ($Mprefix) {
+                            if ($Mprefix->name_th == "นาย") {
+                                $comtypefullname = 'ชื่อ : '."นาย " . $first_name . ' ' . $last_name;
+                            } elseif ($Mprefix->name_th == "นาง") {
+                                $comtypefullname = 'ชื่อ : '."นาง " . $first_name . ' ' . $last_name;
+                            } elseif ($Mprefix->name_th == "นางสาว") {
+                                $comtypefullname = 'ชื่อ : '."นางสาว " . $first_name . ' ' . $last_name;
+                            }
+                        }
+
+                    } elseif ($prefix > 30) {
+                        $Mprefix = master_document::where('id', $prefix)->where('Category', 'Mprename')->first();
+                        if ($Mprefix) {
+                            $prename = $Mprefix->name_th;
+                            $comtypefullname = 'คำนำหน้า : ' . $prename;
+                        }
+                    } elseif ($first_name && $last_name) {
+                        $comtypefullname = 'ชื่อ : ' . $first_name . ' ' . $last_name;
+                    } elseif ($first_name) {
+                        $comtypefullname = 'ชื่อ : ' . $first_name;
+                    } elseif ($last_name) {
+                        $comtypefullname = 'นามสกุล : ' . $last_name;
+                    }
+                }
+
+
+                if ($CountryOther == 'Thailand') {
+                    $provinceNames = province::where('id', $Province)->first();
+                    $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
+                    $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
+                    $provinceNames = $provinceNames->name_th;
+                    $Tambon = $TambonID->name_th;
+                    $amphures = $amphuresID->name_th;
+                    $Zip_code = $TambonID->zip_code;
+                    $AddressIndividual = 'ที่อยู่ : '.$Address.' ตำบล : '.$Tambon.' อำเภอ : '.$amphures.' จังหวัด : '.$provinceNames.' '.$Zip_code;
+                }
+                else{
+                    $AddressIndividual = 'ที่อยู่ : '.$Address;
+                }
+                $EmailN = null;
+                if ($Email) {
+                    $EmailN = 'อีเมล์ : '.$Email;
+                }
+                $Identification = null;
+                if ($Taxpayer_Identification) {
+                    $Identification = 'เลขบัตรประจำตัว : '.$Taxpayer_Identification;
+                }
+                $Branch = null;
+                if ($BranchTax) {
+                    $Branch = 'สาขา : '.$BranchTax;
+                }
+                $phone = null;
+                if ($phoneGuest) {
+                    $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phoneGuest);
+                }
+                $Profile = 'รหัส : '.$N_Profile;
+                $Company = null;
+                if ($Profile_IDGuest) {
+                    $Company = 'รหัสบริษัท : '.$Profile_IDGuest;
+                }
+
+                $datacompany = '';
+
+                $variables = [$Profile,$Company,$comtypefullname, $EmailN, $Identification, $Branch, $AddressIndividual, $phone];
+
+                foreach ($variables as $variable) {
+                    if (!empty($variable)) {
+                        if (!empty($datacompany)) {
+                            $datacompany .= ' + ';
+                        }
+                        $datacompany .= $variable;
+                    }
+                }
+                $userid = Auth::user()->id;
+                $save = new log_company();
+                $save->Created_by = $userid;
+                $save->Company_ID = $Profile_IDGuest;
+                $save->type = 'Create';
+                $save->Category = 'Create :: Additional Guest Tax Invoice';
+                $save->content =$datacompany;
+                $save->save();
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+
+        try {
+            if ($request->TaxSelectA == 'Company') {
+                $save = new guest_tax();
+                $save->GuestTax_ID =$N_Profile;
+                $save->Company_ID = $Profile_IDGuest;
+                $save->Company_type = $request->Company_type_tax;
+                $save->Company_name =$request->Company_Name_tax;
+                $save->Tax_Type = 'Company';
+                $save->BranchTax = $BranchTax;
+
+                if ($request->countrydataA == "Other_countries") {
+                    $save->Country =$request->countrydataA;
+                    $save->Address =$request->addressAgent;
+                }else {
+                    $save->Country =$request->countrydataA;
+                    $save->City =$request->cityA;
+                    $save->Amphures =$request->amphuresA;
+                    $save->Tambon =$request->TambonA;
+                    $save->Address =$request->addressAgent;
+                    $save->Zip_Code = $request->zip_codeA;
+                }
+                $save->Company_Email = $request->EmailAgent;
+                $save->Taxpayer_Identification = $request->Identification;
+                $save->save();
+
+                foreach ($request->phoneTax as $index => $phoneNumber) {
+                    if ($phoneNumber !== null) {
+                        $savephoneA = new guest_tax_phone();
+                        $savephoneA->GuestTax_ID = $N_Profile;
+                        $savephoneA->Phone_number = $phoneNumber;
+                        $savephoneA->sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                        $savephoneA->save();
+                    }
+                }
+            }else {
+                $save = new guest_tax();
+                $save->GuestTax_ID =$N_Profile;
+                $save->Company_ID = $Profile_IDGuest;
+                $save->Company_type = $request->prefix;
+                $save->first_name =$request->first_nameCom;
+                $save->last_name =$request->last_nameCom;
+                $save->Tax_Type = 'Individual';
+                if ($request->countrydataA == "Other_countries") {
+                    $save->Country =$request->countrydataA;
+                    $save->Address =$request->addressAgent;
+                }else {
+                    $save->Country =$request->countrydataA;
+                    $save->City =$request->cityA;
+                    $save->Amphures =$request->amphuresA;
+                    $save->Tambon =$request->TambonA;
+                    $save->Address =$request->addressAgent;
+                    $save->Zip_Code = $request->zip_codeA;
+                }
+                $save->Company_Email = $request->EmailAgent;
+                $save->Taxpayer_Identification = $request->Identification;
+                foreach ($request->phoneTax as $index => $phoneNumber) {
+                    if ($phoneNumber !== null) {
+                        $savephoneA = new guest_tax_phone();
+                        $savephoneA->GuestTax_ID = $N_Profile;
+                        $savephoneA->Phone_number = $phoneNumber;
+                        $savephoneA->sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                        $savephoneA->save();
+                    }
+                }
+                $save->save();
+            }
+            return redirect()->route('guest_edit', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -154,6 +154,9 @@
             var filter_by = $('#filter-by').val();
             var type_status = $('#status').val();
             var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
+            console.log(search_value);
+
             if (search_value != '') {
                 $('#'+table_name).DataTable().destroy();
                 var table = $('#'+table_name).dataTable({
@@ -173,8 +176,9 @@
                     },
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 },
+
                     columnDefs: [
-                                { targets: [0, 1, 2, 3, 4, 5], className: 'dt-center td-content-center' },
+                                { targets: [0, 1, 3, 4, 5], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {

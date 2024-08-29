@@ -1290,7 +1290,7 @@ class CompanyController extends Controller
                 $save->save();
                 return redirect()->route('Company_edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
             } catch (\Throwable $e) {
-                 return response()->json([
+                return response()->json([
                 'error' => $e->getMessage()
             ], 500);
             }
