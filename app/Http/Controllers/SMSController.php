@@ -266,21 +266,41 @@ class SMSController extends Controller
         $role_revenue = Role_permission_revenue::where('user_id', Auth::user()->id)->first();
 
         if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
-            $adate = date($request->year . '-' . $request->month . '-' . $request->day);
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $adate2 = date('Y-m-d', strtotime(date($adate)));
+
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date($adate . ' 20:59:59');
 
         } elseif ($request->filter_by == "month") {
-            $adate = date($request->year . '-' . $request->month . '-01');
             $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
+            $adate2 = date('Y-m-d', strtotime($request->year . '-' . $request->month_to . '-' . $lastday));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
 
-        } elseif ($request->filter_by == "year") {
-            $adate = date($request->year . '-01' . '-01');
+        } elseif ($request->filter_by == "thisMonth") {
+            $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-01');
+            $adate2 = date('Y-m-' . $lastday);
+
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-12-31' . ' 20:59:59');
+            $to = date('Y-m-d 20:59:59', strtotime($adate2));
+
+        } elseif ($request->filter_by == "year") {
+            $adate = date('Y-m-d', strtotime($request->year . '-01' . '-01'));
+            $adate2 = date('Y-m-d', strtotime(date($request->year . '-12-31')));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime($request->year . '-12-31'));
+
+        } elseif ($request->filter_by == "week") {
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
         }
 
         $data = [];
@@ -288,29 +308,47 @@ class SMSController extends Controller
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
 
         if ($request->table_name == "smsTable") {
-            $data_query = SMS_alerts::whereBetween('date', [$from, $to])
-                ->where('date', 'LIKE', '%'.$request->search_value.'%')->whereNull('date_into')
-                ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereBetween('date', [$from, $to])->whereNull('date_into')
-                ->orderBy('date', 'asc')->paginate($perPage);
+            if (!empty($request->search_value)) {
+                $data_query = SMS_alerts::whereBetween('date', [$from, $to])
+                    ->where('date', 'LIKE', '%'.$request->search_value.'%')->whereNull('date_into')
+                    ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereBetween('date', [$from, $to])->whereNull('date_into')
+                    ->orderBy('date', 'asc')->paginate($perPage);
+            } else {
+                $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->orderBy('date', 'asc')->paginate($perPage);
+            }
 
         } elseif ($request->table_name == "transferTable") {
-            $data_query = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('transfer_status', 1)
-                ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', date('Y-m-d'))->where('transfer_status', 1)
-                ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', date('Y-m-d'))->where('transfer_status', 1)
-                ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->where('status', 4)->where('split_status', 0)->whereDate('date_into', date('Y-m-d'))
-                ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', date('Y-m-d'))->where('status', 4)->where('split_status', 0)
-                
-                ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', date('Y-m-d'))->where('transfer_status', 1)
-                ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', date('Y-m-d'))->where('transfer_status', 1)
-                ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->where('status', 4)->where('split_status', 0)->whereDate('date_into', date('Y-m-d'))
-                ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', date('Y-m-d'))->where('status', 4)->where('split_status', 0)
-                ->orderBy('date', 'asc')->paginate($perPage);
+            if (!empty($request->search_value)) {
+                $data_query = SMS_alerts::whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)
+                    ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)
+                    ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', $adate)->where('transfer_status', 1)
+                    ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->where('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)
+                    ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', $adate)->where('status', 4)->where('split_status', 0)
+                    
+                    ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)
+                    ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', $adate)->where('transfer_status', 1)
+                    ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->where('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)
+                    ->orWhere('date_into', 'LIKE', '%'.$request->search_value.'%')->whereDate('date', $adate)->where('status', 4)->where('split_status', 0)
+                    ->orderBy('date', 'asc')->paginate($perPage);
+            } else {
+                $data_query = SMS_alerts::whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)
+                    ->orWhereDate('date', $adate)->where('transfer_status', 1)
+                    ->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)
+                    ->orWhereDate('date', $adate)->where('status', 4)->where('split_status', 0)
+                    ->orderBy('date', 'asc')->paginate($perPage);
+            }
+            
 
         } elseif ($request->table_name == "splitTable") {
-            $data_query = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('split_status', 1)
-                ->where('date', 'LIKE', '%'.$request->search_value.'%')
-                ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', date('Y-m-d'))->where('split_status', 1)
-                ->orderBy('date', 'asc')->paginate($perPage);
+            if (!empty($request->search_value)) {
+                $data_query = SMS_alerts::whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('split_status', 1)
+                    ->where('date', 'LIKE', '%'.$request->search_value.'%')
+                    ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('split_status', 1)
+                    ->orderBy('date', 'asc')->paginate($perPage);
+            } else {
+                $data_query = SMS_alerts::whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('split_status', 1)->orderBy('date', 'asc')->paginate($perPage);
+            }
+            
 
         } elseif ($request->table_name == "smsAgodaTable") {
             $query_agoda = SMS_alerts::query();

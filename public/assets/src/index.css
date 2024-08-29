@@ -127,16 +127,14 @@ a:visited {
 
 .box-revenue-card {
   border-radius: 0.75rem;
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-  --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-    0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --tw-shadow-colored: 0 3px 15px -10px var(--tw-shadow-color),
-    0 4px 6px -4px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-  --tw-shadow-color: #64748b;
-  --tw-shadow: var(--tw-shadow-colored);
+  background-color: white;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  height: 100%;
+  padding-bottom: 0.5rem;
+}
+
+.bg-box-sub-revenue {
+  background-image: linear-gradient(to right, rgb(12, 73, 70), rgb(4, 8, 8));
 }
 
 @media (min-width: 768px) {
@@ -279,24 +277,6 @@ a:visited {
   );
   box-shadow: inset 2px 2px 3px rgba(255, 255, 255, 0.6),
     inset -2px -2px 3px rgba(0, 0, 0, 0.6);
-}
-
-.box-sub-revenue::after {
-  content: "";
-  border-radius: 10px;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to right, #075a2c, #0e3626);
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.4s ease-in-out;
-}
-
-.box-sub-revenue:hover::after {
-  opacity: 1;
 }
 
 @media (min-width: 600px) and (max-width: 800px) {

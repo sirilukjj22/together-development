@@ -166,10 +166,11 @@ function updateChart(days) {
     }
     var num_days = parseInt(days) + 1;
     var startIndex = revenueData.length - parseInt(num_days);
-    
-    for (var i = startIndex; i < revenueData.length; i++) {
+
+    for (var i = startIndex; i < revenueData.length - 1; i++) {
         newData.push(revenueData[i]);
     }
+
     revenueChart.data.labels = newLabels;
     revenueChart.data.datasets[0].data = newData;
     revenueChart.data.datasets[0].label = `Last ${days} Days Revenue`;

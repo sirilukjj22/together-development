@@ -79,7 +79,7 @@
                     </div>
                     
                     <!-- กล่องสรุปรายได้ card ที่ 1 -->
-                    <div class="card box-revenue-card">
+                    <div class="box-revenue-card">
                         <div class="box-revenue-card-bg">
                             <!-- รายได้ที่แสดงในวงกลม -->
                             <div class="box-revenue-card-inside" >
@@ -241,7 +241,7 @@
                         <!-- card ที่แสดงที่มารายได้ -->
                         <div class="box-detail-g-4">
                             <!-- ข้อความรายการ ลำดับที่ 1-->
-                            <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
+                            <div class="box-sub-revenue bg-box-sub-revenue">
                                 <a href="#" onclick="sms_detail('transfer_revenue')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
@@ -256,7 +256,7 @@
                                 </a>
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 2-->
-                            <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
+                            <div class="box-sub-revenue bg-box-sub-revenue">
                                 <a href="#" onclick="sms_detail('split_revenue')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
@@ -272,7 +272,7 @@
                                 </a>
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 3-->
-                            <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
+                            <div class="box-sub-revenue bg-box-sub-revenue">
                                 <a href="#" onclick="sms_detail('transfer_transaction')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
@@ -288,7 +288,7 @@
                                 </a>
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 4-->
-                            <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
+                            <div class="box-sub-revenue bg-box-sub-revenue">
                                 <a href="#" onclick="sms_detail('credit_transaction')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
@@ -304,7 +304,7 @@
                                 </a>
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 5-->
-                            <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
+                            <div class="box-sub-revenue bg-box-sub-revenue">
                                 <a href="#" onclick="sms_detail('split_transaction')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
@@ -320,7 +320,7 @@
                                 </a>
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 6-->
-                            <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
+                            <div class="box-sub-revenue bg-box-sub-revenue">
                                 <a href="#" onclick="sms_detail('total_transaction')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
@@ -336,7 +336,7 @@
                                 </a>
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 7-->
-                            <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
+                            <div class="box-sub-revenue bg-box-sub-revenue">
                                 <a href="#" onclick="sms_detail('status')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
@@ -352,7 +352,7 @@
                                 </a>
                             </div>
                             <!-- ข้อความรายการ ลำดับที่ 8-->
-                            <div class="box-sub-revenue" style="background-image: linear-gradient(to right,  rgb(12, 73, 70) , rgb(4, 8, 8));">
+                            <div class="box-sub-revenue bg-box-sub-revenue">
                                 <a href="#" onclick="sms_detail('no_income_revenue')">
                                     <div>
                                         <div class="box-sub-revenue-content text-white">
@@ -1660,17 +1660,16 @@
             var month_to = $('#input-search-month-to').val();
             var type = $('#status').val();
             var account = $('#into_account').val();
+            var count_total = 0;
             var getUrl = window.location.pathname;
 
-            if (search_value != '') {
-                
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
-                    ajax: {
+            $('#'+table_name).DataTable().destroy();
+            var table = $('#'+table_name).dataTable({
+                searching: false,
+                paging: false,
+                info: false,
+                // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
+                ajax: {
                     url: 'sms-search-table',
                     type: 'POST',
                     dataType: "json",
@@ -1688,49 +1687,49 @@
                     },
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 },
-                    "initComplete": function (settings, json) {
+                "initComplete": function (settings, json) {
 
-                        if ($('#'+id+'Table .dataTables_empty').length == 0) {
-                            var count = $('#'+id+'Table tr').length - 1;
-                        } else {
-                            var count = 0;
-                            $('.dataTables_empty').addClass('dt-center');
-                        }
-                        
-                        $('#'+id+'-paginate').children().remove().end();
-                        $('#'+id+'-showingEntries').text(showingEntriesSearch(count, id));
-                        $('#'+id+'-paginate').append(paginateSearch(count, id, 'sms-alert'));
-                    },
-                    columnDefs: [
-                                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'date' },
-                        { data: 'time' },
-                        { data: 'transfer_bank' },
-                        { data: 'into_account' },
-                        { data: 'amount' },
-                        { data: 'remark' },
-                        { data: 'revenue_name' },
-                        { data: 'date_into' },
-                        { data: 'btn_action' },
-                    ],
-                        
-                });   
+                    if ($('#'+id+'Table .dataTables_empty').length == 0) {
+                        var count = $('#'+id+'Table tr').length - 1;
+                    } else {
+                        var count = 0;
+                        $('.dataTables_empty').addClass('dt-center');
+                    }
 
-            } else {
-                $('#'+id+'-paginate').children().remove().end();
-                $('#'+id+'-showingEntries').text(showingEntriesSearch(total, id));
-                $('#'+id+'-paginate').append(paginateSearch(total, id, getUrl));
-            }
+                    if (search_value == '') {
+                        count_total = total;
+                    } else {
+                        count_total = count;
+                    }
+                    
+                    $('#'+id+'-paginate').children().remove().end();
+                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1, count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
+                },
+                columnDefs: [
+                            { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                columns: [
+                    { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                    { data: 'date' },
+                    { data: 'time' },
+                    { data: 'transfer_bank' },
+                    { data: 'into_account' },
+                    { data: 'amount' },
+                    { data: 'remark' },
+                    { data: 'revenue_name' },
+                    { data: 'date_into' },
+                    { data: 'btn_action' },
+                ],
+                    
+            });  
 
             document.getElementById(id).focus();
         });
@@ -1835,7 +1834,6 @@
 
         // ประเภทรายได้
         function change_status($id, $status) {
-            console.log($status);
             
             jQuery.ajax({
                 type: "GET",
