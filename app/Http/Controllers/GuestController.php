@@ -92,6 +92,8 @@ class GuestController extends Controller
 
         $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
         $path = "/guest/edit/";
+
+        $path_view = "/guest/view/";
         if (isset($data_query) && count($data_query) > 0) {
             foreach ($data_query as $key => $value) {
                 $btn_action = "";
@@ -109,7 +111,7 @@ class GuestController extends Controller
                     $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;
                     </button>';
                     $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
-                    $btn_action .='<li class="dropdown-item py-2 rounded">ดูรายละเอียด</li>';
+                    $btn_action .='<li class="dropdown-item py-2 rounded " onclick="window.location.href=\'' . url('/guest/view/' . $value->id) . '\'">ดูรายละเอียด</li>';
                     $btn_action .= '<li class="dropdown-item py-2 rounded" onclick="window.location.href=\'' . url('/guest/edit/' . $value->id) . '\'">แก้ไขรายการ</li>';
                     $btn_action .='</ul>';
                     $btn_action .='</div>';
@@ -399,12 +401,31 @@ class GuestController extends Controller
         $log = log_company::where('Company_ID', $Profile_ID)
         ->orderBy('created_at', 'desc')
         ->paginate($perPage);
-
+        $guesttax = guest_tax::where('Company_ID', $Profile_ID)
+        ->paginate($perPage);
         $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
         $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
 
         return view('guest.edit',compact('Guest','Other_City','provinceNames','amphures','Tambon','Zip_code'
-        ,'booking_channel','prefix','phonecount','phoneDataArray','log','MCompany_type','Mprefix'));
+        ,'booking_channel','prefix','phonecount','phoneDataArray','log','MCompany_type','Mprefix','guesttax'));
+    }
+    public function view($id){
+        $Guest = Guest::find($id);
+        $number =  preg_replace("/[^0-9]/", "", $Guest->City);
+        $Other_City =  preg_replace("/[^a-zA-Z]/", "", $Guest->City);
+        $provinceNames = province::select('name_th','id')->get();
+        $Tambon = districts::where('amphure_id', $Guest->Amphures)->select('name_th','id')->get();
+        $amphures = amphures::where('province_id', $Guest->City)->select('name_th','id')->get();
+        $Zip_code = districts::where('amphure_id', $Guest->Amphures)->select('zip_code','id')->get();
+
+        $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
+        $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
+        $Profile_ID = $Guest->Profile_ID;
+        $phone = phone_guest::where('Profile_ID',$Profile_ID)->get();
+        $phonecount = phone_guest::where('Profile_ID',$Profile_ID)->count();
+        $phoneDataArray = $phone->toArray();
+        return view('guest.view',compact('Guest','Other_City','provinceNames','amphures','Tambon','Zip_code'
+        ,'booking_channel','prefix','phonecount','phoneDataArray'));
     }
     public function search_table_log(Request $request)
     {
@@ -946,4 +967,136 @@ class GuestController extends Controller
             ], 500);
         }
     }
+    public function guestStatustax($id)
+    {
+        $gueststatus = guest_tax::find($id);
+        if ($gueststatus->status == 1 ) {
+            $status = 0;
+            $gueststatus->status = $status;
+        }elseif (($gueststatus->status == 0 )) {
+            $status = 1;
+            $gueststatus->status = $status;
+        }
+        $gueststatus->save();
+    }
+    public function paginate_table_guest(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+        $data = [];
+        if ($perPage == 10) {
+            $data_query = guest_tax::where('Company_ID',$guest_profile)->limit($request->page.'0')->get();
+        } else {
+            $data_query = guest_tax::where('Company_ID',$guest_profile)->paginate($perPage);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_Company = "";
+                $btn_status = "";
+                $btn_action = "";
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    if ($value->status == 1) {
+                        $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                    } else {
+                        $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                    }
+                    if ($value->Tax_Type == 'Company') {
+                        $btn_Company = $value->Company_name;
+                    }else {
+                        $btn_Company = $value->first_name.' '.$value->last_name;
+                    }
+                    $btn_action .='<div class="btn-group">';
+                    $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
+                    $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .=' <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>';
+                    $btn_action .= ' <li><a class="dropdown-item py-2 rounded" >แก้ไขรายการ</a></li>';
+                    $btn_action .='</ul>';
+                    $btn_action .='</div>';
+
+                    $data[] = [
+                        'number' => $key + 1,
+                        'Company/Individual'=>$btn_Company,
+                        'Branch'=> $value->BranchTax,
+                        'Status'=>$btn_status,
+                        'Order' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+
+    }
+    public function search_table_guest(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        if ($search_value) {
+            $data_query = guest_tax::where('Company_name', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('BranchTax', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('first_name', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('last_name', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->paginate($perPage);
+        }
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_Company = "";
+                $btn_status = "";
+                $btn_action = "";
+                if ($value->status == 1) {
+                    $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                } else {
+                    $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                }
+                if ($value->Tax_Type == 'Company') {
+                    $btn_Company = $value->Company_name;
+                }else {
+                    $btn_Company = $value->first_name.' '.$value->last_name;
+                }
+                $btn_action .='<div class="btn-group">';
+                $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
+                $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .=' <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>';
+                $btn_action .= ' <li><a class="dropdown-item py-2 rounded" >แก้ไขรายการ</a></li>';
+                $btn_action .='</ul>';
+                $btn_action .='</div>';
+
+                $data[] = [
+                    'number' => $key + 1,
+                    'Company/Individual'=>$btn_Company,
+                    'Branch'=> $value->BranchTax,
+                    'Status'=>$btn_status,
+                    'Order' => $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function guest_edit_tax($id)
+    {
+        $Guest = guest_tax::find($id);
+        $guesttax = $Guest->id;
+        $Profile_ID = $Guest->GuestTax_ID;
+        $phone = guest_tax_phone::where('GuestTax_ID',$Profile_ID)->get();
+        $phonecount = guest_tax_phone::where('GuestTax_ID',$Profile_ID)->count();
+        $phoneDataArray = $phone->toArray();
+        $Tambon = districts::where('amphure_id', $Guest->Amphures)->select('name_th','id')->get();
+        $amphures = amphures::where('province_id', $Guest->City)->select('name_th','id')->get();
+        $Zip_code = districts::where('amphure_id', $Guest->Amphures)->select('zip_code','id')->get();
+        $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
+        $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
+        return view('guest.edittax',compact('MCompany_type','prefix','Zip_code','amphures','Tambon','phoneDataArray','phonecount','phone','Profile_ID','Guest'));
+    }
+
 }

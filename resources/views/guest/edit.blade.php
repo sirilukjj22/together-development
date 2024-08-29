@@ -261,7 +261,7 @@
         <div class="row clearfix">
             <div class="col-sm-12 col-12">
                 <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Tax" role="tab">Additional Company Tax Invoice</a></li>{{--ประวัติการแก้ไข--}}
+                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Tax" role="tab">Additional Guest Tax Invoice</a></li>{{--ประวัติการแก้ไข--}}
                     <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Visit" role="tab">Lastest Visit info</a></li>{{--QUOTAION--}}
                     <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Billing" role="tab">Billing Folio info </a></li>{{--เอกสารออกบิล--}}
                     <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Contract" role="tab">Contract Rate Document</a></li>{{--Doc. number--}}
@@ -562,9 +562,77 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div style="min-height: 70vh;" class="mt-2">
+                                        <table id="guest-TaxTable" class="example ui striped table nowrap unstackable hover">
+                                            <caption class="caption-top">
+                                                <div>
+                                                    <div class="flex-end-g2">
+                                                        <label class="entriespage-label">entries per page :</label>
+                                                        <select class="entriespage-button" id="search-per-page-guest-Tax" onchange="getPageTax(1, this.value, 'guest-Tax')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "guest-Tax" ? 'selected' : '' }}>10</option>
+                                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "guest-Tax" ? 'selected' : '' }}>25</option>
+                                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "guest-Tax" ? 'selected' : '' }}>50</option>
+                                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "guest-Tax" ? 'selected' : '' }}>100</option>
+                                                        </select>
+                                                        <input class="search-button search-data-guest-Tax" id="guest-Tax" style="text-align:left;" placeholder="Search" />
+                                                    </div>
+                                            </caption>
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" data-priority="1">No</th>
+                                                    <th class="text-center" data-priority="1">Company/Individual</th>
+                                                    <th class="text-center">Branch</th>
+                                                    <th class="text-center">Status</th>
+                                                    <th class="text-center">Order</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(!empty($guesttax))
+                                                    @foreach ($guesttax as $key => $item)
+                                                    <tr>
+                                                        <td style="text-align: center;">{{ $key + 1 }}</td>
+                                                        @if ($item->Tax_Type == 'Company')
+                                                            <td style="text-align: center;">{{ $item->Company_name }}</td>
+                                                        @else
+                                                            <td style="text-align: center;">{{ $item->first_name.' '.$item->last_name }} </td>
+                                                        @endif
+                                                        <td style="text-align: center;">{{ $item->BranchTax }}</td>
+                                                        <td style="text-align: center;">
+                                                            <input type="hidden" id="status" value="{{ $item->status }}">
+                                                            @if ($item->status == 1)
+                                                                <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
+                                                            @else
+                                                                <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ปิดใช้งาน</button>
+                                                            @endif
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
+                                                                <ul class="dropdown-menu border-0 shadow p-3">
+                                                                    <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/Tax/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                            <input type="hidden" id="profile-guest-Tax" name="profile-guest" value="{{$Guest->Profile_ID}}">
+                                            <input type="hidden" id="get-total-guest-Tax" value="{{ $guesttax->total() }}">
+                                            <input type="hidden" id="currentPage-guest-Tax" value="1">
+                                            <caption class="caption-bottom">
+                                                <div class="md-flex-bt-i-c">
+                                                    <p class="py2" id="guest-Tax-showingEntries">{{ showingEntriesTableTax($guesttax, 'guest-Tax') }}</p>
+                                                        <div id="guest-Tax-paginate">
+                                                            {!! paginateTableTax($guesttax, 'guest-Tax') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                        </div>
+                                                </div>
+                                            </caption>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-
                             <div class="tab-pane fade" id="nav-Visit" role="tabpanel" rel="0">
                                 <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
                                     @csrf
@@ -1096,7 +1164,7 @@
                                         </div>
                                 </caption>
                                 <div style="min-height: 70vh;" class="mt-2">
-                                    <table id="guestTable" class="example ui striped table nowrap unstackable hover">
+                                    <table id="guestTable" class="example2 ui striped table nowrap unstackable hover">
                                         <thead>
                                             <tr>
                                                 <th  class="text-center">No</th>
@@ -1427,7 +1495,7 @@
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 },
                     columnDefs: [
-                                { targets: [0, 1, 2, 3, 4], className: 'dt-center td-content-center' },
+                                { targets: [0, 1, 2, 3], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1438,11 +1506,10 @@
                     },
                     columns: [
                         { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Category' },
-                        { data: 'type' },
-                        { data: 'Created_by' },
-                        { data: 'created_at' },
-                        { data: 'Content' },
+                        { data: 'Company/Individual' },
+                        { data: 'Branch' },
+                        { data: 'Status' },
+                        { data: 'Order' },
                     ],
 
                 });
@@ -1457,4 +1524,74 @@
         });
     </script>
 
+<script>
+    $(document).on('keyup', '.search-data-guest-Tax', function () {
+        var id = $(this).attr('id');
+        var search_value = $(this).val();
+        var table_name = id+'Table';
+        var guest_profile = $('#profile-guest').val();
+        var type_status = $('#status').val();
+        var total = parseInt($('#get-total-'+id).val());
+        console.log(search_value);
+
+        if (search_value != '') {
+            $('#'+table_name).DataTable().destroy();
+            var table = $('#'+table_name).dataTable({
+                searching: false,
+                paging: false,
+                info: false,
+                ajax: {
+                url: '/tax-guest-search-table',
+                type: 'POST',
+                dataType: "json",
+                cache: false,
+                data: {
+                    search_value: search_value,
+                    table_name: table_name,
+                    guest_profile: guest_profile,
+                    status: type_status,
+                },
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            },
+                columnDefs: [
+                            { targets: [0, 2, 3,4], className: 'dt-center td-content-center' },
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                columns: [
+                    { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                    { data: 'Company/Individual' },
+                    { data: 'Branch' },
+                    { data: 'Status' },
+                    { data: 'Order' },
+                ],
+
+            });
+        }
+        else {
+            $('#'+id+'-paginate').children().remove().end();
+            $('#'+id+'-showingEntries').text(showingEntriesSearchTax(total, id));
+            $('#'+id+'-paginate').append(paginateSearchTax(total, id, getUrl));
+        }
+
+        document.getElementById(id).focus();
+    });
+    function btnstatus(id) {
+        jQuery.ajax({
+            type: "GET",
+            url: "{!! url('/guest/change-status/tax/" + id + "') !!}",
+            datatype: "JSON",
+            async: false,
+            success: function(result) {
+                Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                location.reload();
+            },
+        });
+    }
+</script>
 @endsection

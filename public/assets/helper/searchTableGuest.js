@@ -28,7 +28,7 @@ function paginateSearch($total, $table, $link)
     var nextPageUrl = currentPage;
     var table = $table;
     var html = '';
-console.log(table);
+console.log(perPage);
 
     if (currentPage > 1) {
         previousPageUrl = currentPage - 1;
@@ -107,7 +107,7 @@ function getPage(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0, 1, 3, 4, 5], className: 'dt-center td-content-center' },
+                { targets: [0, 1, 2, 3, 4, 5], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {

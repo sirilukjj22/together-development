@@ -215,6 +215,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('logguest-paginate-table', 'paginate_table_log')->name('guest-paginate-table_log');
         //--------------------------------เพิ่ม ซับ ------------------------
         Route::post('/guest/save/cover/{id}', 'guest_cover')->name('guest_cover');
+        Route::get('/guest/change-status/tax/{id}', 'guestStatustax')->name('guestStatustax');
+
+        Route::post('tax-guest-search-table', 'search_table_guest')->name('guest-search-table_guest');
+        Route::post('tax-guest-paginate-table', 'paginate_table_guest')->name('guest-paginate-table_guest');
+
+        Route::get('/guest/view/{id}', 'view')->name('guest_view');
+        Route::get('/guest/Tax/edit/{id}', 'guest_edit_tax')->name('guest_edit_tax');
+
     });
 });
 #master product
