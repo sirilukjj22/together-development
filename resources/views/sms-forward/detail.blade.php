@@ -510,32 +510,29 @@
             var account = $('#into_account').val();
             var getUrl = window.location.pathname;
 
-            if (search_value != '') {
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
+            $('#'+table_name).DataTable().destroy();
+            var table = $('#'+table_name).dataTable({
                     searching: false,
                     paging: false,
                     info: false,
-                    // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
                     ajax: {
-                    url: '/sms-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        filter_by: filter_by,
-                        day: day,
-                        month: month,
-                        year: year,
-                        month_to: month_to,
-                        status: type_status,
-                        into_account: account
+                        url: '/sms-search-table',
+                        type: 'POST',
+                        dataType: "json",
+                        cache: false,
+                        data: {
+                            search_value: search_value,
+                            table_name: table_name,
+                            filter_by: filter_by,
+                            day: day,
+                            month: month,
+                            year: year,
+                            month_to: month_to,
+                            status: type_status,
+                            into_account: account
+                        },
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                     },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
                     "initComplete": function (settings, json) {
 
                         if ($('#'+id+'Table .dataTables_empty').length == 0) {
@@ -545,9 +542,16 @@
                             $('.dataTables_empty').addClass('dt-center');
                         }
 
+                        if (search_value == '') {
+                            count_total = total;
+                        } else {
+                            count_total = count;
+                        }
+                    
                         $('#'+id+'-paginate').children().remove().end();
-                        $('#'+id+'-showingEntries').text(showingEntriesSearch(count, id));
-                        $('#'+id+'-paginate').append(paginateSearch(count, id, getUrl));
+                        $('#'+id+'-showingEntries').text(showingEntriesSearch(1, count_total, id));
+                        $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
+
                     },
                     columnDefs: [
                                 { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
@@ -573,12 +577,6 @@
                     ],
 
                 });
-
-            } else {
-                $('#'+id+'-paginate').children().remove().end();
-                $('#'+id+'-showingEntries').text(showingEntriesSearch(total, id));
-                $('#'+id+'-paginate').append(paginateSearch(total, id, getUrl));
-            }
 
             document.getElementById(id).focus();
         });

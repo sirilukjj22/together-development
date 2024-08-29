@@ -351,27 +351,34 @@ class SMSController extends Controller
             
 
         } elseif ($request->table_name == "smsAgodaTable") {
-            $query_agoda = SMS_alerts::query();
+            if (!empty($request->search_value)) {
+                $query_agoda = SMS_alerts::query();
 
                 if ($request->into_account != '') { 
                     if ($request->status != '') { 
-                        $query_agoda->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 5);
-                        $query_agoda->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 5);
+                        $query_agoda->whereBetween('date', [$from, $to])->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereNull('date_into')->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 5);
+                        $query_agoda->orWhereDate('date_into', '>=', $adate)->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 5);
                     } else {
-                        $query_agoda->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', 5);
-                        $query_agoda->orWhereDate('date_into', $adate)->where('into_account', $request->into_account)->where('status', 5);
+                        $query_agoda->whereBetween('date', [$from, $to])->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereNull('date_into')->where('into_account', $request->into_account)->where('status', 5);
+                        $query_agoda->orWhereDate('date_into', '>=', $adate)->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', 5);
                     }
                 } else {
                     if ($request->status != '') { 
-                        $query_agoda->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)->where('status', 5);
-                        $query_agoda->orWhereDate('date_into', $adate)->where('status', $request->status)->where('status', 5);
+                        $query_agoda->whereBetween('date', [$from, $to])->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereNull('date_into')->where('status', $request->status)->where('status', 5);
+                        $query_agoda->orWhereDate('date_into', '>=', $adate)->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '<=', $adate2)->where('status', $request->status)->where('status', 5);
                     } else {
-                        $query_agoda->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', 5);
-                        $query_agoda->orWhereDate('date_into', $adate)->where('status', 5);
+                        $query_agoda->whereBetween('date', [$from, $to])->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereNull('date_into')->where('status', 5);
+                        $query_agoda->orWhereDate('date_into', '>=', $adate)->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '<=', $adate2)->where('status', 5);
                     }
                 }
 
-            $data_query = $query_agoda->paginate($perPage);
+                $data_query = $query_agoda->paginate($perPage);
+
+            } else {
+                $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 5)->whereNull('date_into')
+                    ->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 5)
+                    ->paginate($perPage);
+            }
 
         } elseif ($request->table_name == "revenueTable") {
             $data_query_revenue = Revenues::rightjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
@@ -525,21 +532,41 @@ class SMSController extends Controller
         $role_revenue = Role_permission_revenue::where('user_id', Auth::user()->id)->first();
 
         if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
-            $adate = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-' . $request->day)));
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $adate2 = date('Y-m-d', strtotime(date($adate)));
+
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date($adate . ' 20:59:59');
 
         } elseif ($request->filter_by == "month") {
-            $adate = date($request->year . '-' . $request->month . '-01');
             $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
+            $adate2 = date('Y-m-d', strtotime($request->year . '-' . $request->month_to . '-' . $lastday));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
 
-        } elseif ($request->filter_by == "year") {
-            $adate = date($request->year . '-01' . '-01');
+        } elseif ($request->filter_by == "thisMonth") {
+            $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-01');
+            $adate2 = date('Y-m-' . $lastday);
+
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-12-31' . ' 20:59:59');
+            $to = date('Y-m-d 20:59:59', strtotime($adate2));
+
+        } elseif ($request->filter_by == "year") {
+            $adate = date('Y-m-d', strtotime($request->year . '-01' . '-01'));
+            $adate2 = date('Y-m-d', strtotime(date($request->year . '-12-31')));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime($request->year . '-12-31'));
+
+        } elseif ($request->filter_by == "week") {
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
         }
 
         $perPage = (int)$request->perPage;

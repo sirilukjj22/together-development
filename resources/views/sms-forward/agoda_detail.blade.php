@@ -255,129 +255,132 @@
             var month_to = $('#input-search-month-to').val();
             var type_status = $('#status').val();
             var account = $('#account').val();
-            var getUrl = window.location.pathname;            
-
-            if (search_value != '') {
+            var getUrl = window.location.pathname;         
                 
-                $('#'+table_name).DataTable().destroy();
-                if (id != "revenue") {
-                    var table = $('#'+table_name).dataTable({
-                        searching: false,
-                        paging: false,
-                        info: false,
-                        // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
-                        ajax: {
-                            url: '/sms-search-table',
-                            type: 'POST',
-                            dataType: "json",
-                            cache: false,
-                            data: {
-                                search_value: search_value,
-                                table_name: table_name,
-                                filter_by: filter_by,
-                                day: day,
-                                month: month,
-                                year: year,
-                                month_to: month_to,
-                                status: type_status,
-                                into_account: account
-                            },
-                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            $('#'+table_name).DataTable().destroy();
+            if (id != "revenue") {
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                        url: '/sms-search-table',
+                        type: 'POST',
+                        dataType: "json",
+                        cache: false,
+                        data: {
+                            search_value: search_value,
+                            table_name: table_name,
+                            filter_by: filter_by,
+                            day: day,
+                            month: month,
+                            year: year,
+                            month_to: month_to,
+                            status: type_status,
+                            into_account: account
                         },
-                        "initComplete": function (settings, json) {
-    
-                            if ($('#'+id+'Table .dataTables_empty').length == 0) {
-                                var count = $('#'+id+'Table tr').length - 1;
-                            } else {
-                                var count = 0;
-                                $('.dataTables_empty').addClass('dt-center');
-                            }
-                            
-                            $('#'+id+'-paginate').children().remove().end();
-                            $('#'+id+'-showingEntries').text(showingEntriesSearch(count, id));
-                            $('#'+id+'-paginate').append(paginateSearch(count, id, getUrl));
-                        },
-                        columnDefs: [
-                                    { targets: [0, 1, 2, 3, 4, 5, 6], className: 'dt-center td-content-center' },
-                        ],
-                        order: [0, 'asc'],
-                        responsive: {
-                            details: {
-                                type: 'column',
-                                target: 'tr'
-                            }
-                        },
-                        columns: [
-                            { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                            { data: 'date' },
-                            { data: 'time' },
-                            { data: 'transfer_bank' },
-                            { data: 'into_account' },
-                            { data: 'amount' },
-                            { data: 'btn_action' },
-                        ],
-                            
-                    });   
-                } else {
-                    var table = $('#'+table_name).dataTable({
-                        searching: false,
-                        paging: false,
-                        info: false,
-                        // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
-                        ajax: {
-                            url: '/sms-search-table',
-                            type: 'POST',
-                            dataType: "json",
-                            cache: false,
-                            data: {
-                                search_value: search_value,
-                                table_name: table_name,
-                                filter_by: filter_by,
-                                day: day,
-                                month: month,
-                                year: year,
-                                month_to: month_to,
-                                status: type_status,
-                                into_account: account
-                            },
-                            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                        },
-                        "initComplete": function (settings, json) {
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    },
+                    "initComplete": function (settings, json) {
 
-                            if ($('#'+id+'Table .dataTables_empty').length == 0) {
-                                var count = $('#'+id+'Table tr').length - 1;
-                            } else {
-                                var count = 0;
-                                $('.dataTables_empty').addClass('dt-center');
-                            }
-                            
-                            $('#'+id+'-paginate').children().remove().end();
-                            $('#'+id+'-showingEntries').text(showingEntriesSearch(count, id));
-                            $('#'+id+'-paginate').append(paginateSearch(count, id, getUrl));
-                        },
-                        columnDefs: [
-                                    { targets: [0, 1, 2], className: 'dt-center td-content-center' },
-                        ],
-                        order: [0, 'asc'],
-                        responsive: {
-                            details: {
-                                type: 'column',
-                                target: 'tr'
-                            }
-                        },
-                        columns: [
-                            { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                            { data: 'date' },
-                            { data: 'agoda_outstanding' },
-                        ],
-                            
-                    }); 
-                }
-
+                        if ($('#'+id+'Table .dataTables_empty').length == 0) {
+                            var count = $('#'+id+'Table tr').length - 1;
+                        } else {
+                            var count = 0;
+                            $('.dataTables_empty').addClass('dt-center');
+                        }
+                        
+                        if (search_value == '') {
+                            count_total = total;
+                        } else {
+                            count_total = count;
+                        }
+                    
+                        $('#'+id+'-paginate').children().remove().end();
+                        $('#'+id+'-showingEntries').text(showingEntriesSearch(1, count_total, id));
+                        $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
+                    },
+                    columnDefs: [
+                                { targets: [0, 1, 2, 3, 4, 5, 6], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'date' },
+                        { data: 'time' },
+                        { data: 'transfer_bank' },
+                        { data: 'into_account' },
+                        { data: 'amount' },
+                        { data: 'btn_action' },
+                    ],
+                        
+                });   
             } else {
-                $('#'+id+'-paginate').children().remove().end();
-                $('#'+id+'-showingEntries').text(showingEntriesSearch(total, id));
-                $('#'+id+'-paginate').append(paginateSearch(total, id, getUrl));
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    // "ajax": "sms-search-table/"+search_value+"/"+table_name+"",
+                    ajax: {
+                        url: '/sms-search-table',
+                        type: 'POST',
+                        dataType: "json",
+                        cache: false,
+                        data: {
+                            search_value: search_value,
+                            table_name: table_name,
+                            filter_by: filter_by,
+                            day: day,
+                            month: month,
+                            year: year,
+                            month_to: month_to,
+                            status: type_status,
+                            into_account: account
+                        },
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    },
+                    "initComplete": function (settings, json) {
+
+                        if ($('#'+id+'Table .dataTables_empty').length == 0) {
+                            var count = $('#'+id+'Table tr').length - 1;
+                        } else {
+                            var count = 0;
+                            $('.dataTables_empty').addClass('dt-center');
+                        }
+                        
+                        if (search_value == '') {
+                            count_total = total;
+                        } else {
+                            count_total = count;
+                        }
+                    
+                        $('#'+id+'-paginate').children().remove().end();
+                        $('#'+id+'-showingEntries').text(showingEntriesSearch(1, count_total, id));
+                        $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
+                    },
+                    columnDefs: [
+                                { targets: [0, 1, 2], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'date' },
+                        { data: 'agoda_outstanding' },
+                    ],
+                        
+                }); 
             }
 
             document.getElementById(id).focus();
