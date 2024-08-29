@@ -1085,18 +1085,101 @@ class GuestController extends Controller
     }
     public function guest_edit_tax($id)
     {
-        $Guest = guest_tax::find($id);
+        $Guest = guest_tax::where('id',$id)->first();
         $guesttax = $Guest->id;
         $Profile_ID = $Guest->GuestTax_ID;
         $phone = guest_tax_phone::where('GuestTax_ID',$Profile_ID)->get();
         $phonecount = guest_tax_phone::where('GuestTax_ID',$Profile_ID)->count();
         $phoneDataArray = $phone->toArray();
+        $provinceNames = province::select('name_th','id')->get();
         $Tambon = districts::where('amphure_id', $Guest->Amphures)->select('name_th','id')->get();
         $amphures = amphures::where('province_id', $Guest->City)->select('name_th','id')->get();
         $Zip_code = districts::where('amphure_id', $Guest->Amphures)->select('zip_code','id')->get();
         $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
-        return view('guest.edittax',compact('MCompany_type','prefix','Zip_code','amphures','Tambon','phoneDataArray','phonecount','phone','Profile_ID','Guest'));
+        return view('guest.edittax',compact('MCompany_type','prefix','Zip_code','amphures','Tambon','phoneDataArray','phonecount','phone','Profile_ID','Guest','provinceNames'));
+    }
+    public function guest_update_tax(Request $request ,$id)
+    {
+        $data = $request->all();
+        $guest = guest_tax::where('id', $id)->first();
+        $GuestTax_ID = $guest->GuestTax_ID;
+        $ids = $guest->id;
+        $phone = guest_tax_phone::where('GuestTax_ID', $GuestTax_ID)->get();
+        $dataArray = $guest->toArray(); // แปลงข้อมูลบริษัทเป็น array
+        $dataArray['phone'] = $phone->pluck('Phone_number')->toArray(); // เพิ่มค่า phone เข้าไปใน $dataArray
+        $datarequest = [
+            'Tax_Type' => $data['Tax_Type'] ?? null,
+            'Company_type' => $data['Company_type'] ?? null,
+            'Company_name' => $data['Company_name'] ?? null,
+            'BranchTax' => $data['Branch'] ?? null,
+            'first_name' => $data['first_name'] ?? null,
+            'last_name' => $data['last_name'] ?? null,
+            'Taxpayer_Identification' => $data['Taxpayer_Identification'] ?? null,
+            'Company_Email' => $data['Company_Email'] ?? null,
+            'Address' => $data['Address'] ?? null,
+            'Country' => $data['Country'] ?? null,
+            'City' => $data['City'] ?? null,
+            'Amphures' => $data['Amphures'] ?? null,
+            'Tambon' => $data['Tambon'] ?? null,
+            'Zip_Code' => $data['Zip_Code'] ?? null,
+            'phone' => $data['phoneCom'] ?? null,
+
+        ];
+        $keysToCompare = ['Tax_Type', 'Company_type', 'Company_name','BranchTax','first_name', 'last_name', 'Taxpayer_Identification', 'Company_Email', 'Address',
+            'Country', 'City', 'Amphures', 'Tambon', 'Zip_Code', 'phone'];
+        $differences = [];
+            foreach ($keysToCompare as $key) {
+                if (isset($dataArray[$key]) && isset($datarequest[$key])) {
+                    // แปลงค่าของ $dataArray และ $data เป็นชุดข้อมูลเพื่อหาค่าที่แตกต่างกัน
+                    $dataArraySet = collect($dataArray[$key]);
+                    $dataSet = collect($datarequest[$key]);
+
+                    // หาค่าที่แตกต่างกัน
+                    $onlyInDataArray = $dataArraySet->diff($dataSet)->values()->all();
+                    $onlyInRequest = $dataSet->diff($dataArraySet)->values()->all();
+
+                    // ตรวจสอบว่ามีค่าที่แตกต่างหรือไม่
+                    if (!empty($onlyInDataArray) || !empty($onlyInRequest)) {
+                        $differences[$key] = [
+                            'dataArray' => $onlyInDataArray,
+                            'request' => $onlyInRequest
+                        ];
+                    }
+                }
+            }
+            $extractedData = [];
+            $extractedDataA = [];
+            // วนลูปเพื่อดึงชื่อคีย์และค่าจาก request
+            foreach ($differences as $key => $value) {
+                if ($key === 'phone') {
+                    // ถ้าเป็น phoneCom ให้เก็บค่า request ทั้งหมดใน array
+                    $extractedData[$key] = $value['request'];
+                    $extractedDataA[$key] = $value['dataArray'];
+                } elseif (isset($value['request'][0])) {
+                    // สำหรับคีย์อื่นๆ ให้เก็บค่าแรกจาก array
+                    $extractedData[$key] = $value['request'][0];
+                }else{
+                    $extractedDataA[$key] = $value['dataArray'][0];
+                }
+            }
+            $Tax_Type = $extractedData['Tax_Type'] ?? null;
+            $Company_type = $extractedData['Company_type'] ?? null;
+            $Company_name = $extractedData['Company_name'] ?? null;
+            $BranchTax = $extractedData['BranchTax'] ?? null;
+            $first_name = $extractedData['first_name'] ?? null;
+            $last_name = $extractedData['last_name'] ?? null;
+            $Identification = $extractedData['Taxpayer_Identification'] ?? null;
+            $Email = $extractedData['Company_Email'] ?? null;
+            $Address = $extractedData['Address'] ?? null;
+            $Country = $extractedData['Country'] ?? null;
+            $City = $extractedData['City'] ?? null;
+            $Amphures = $extractedData['Amphures'] ?? null;
+            $Tambon = $extractedData['Tambon'] ?? null;
+            $Zip_Code = $extractedData['Zip_Code'] ?? null;
+            $phone = $extractedData['phone'] ?? null;
+            $phoneA = $extractedDataA['phone'] ?? null;
+        dd($datarequest,$dataArray,$extractedData,$extractedDataA);
     }
 
 }
