@@ -357,18 +357,18 @@ class SMSController extends Controller
                 if ($request->into_account != '') { 
                     if ($request->status != '') { 
                         $query_agoda->whereBetween('date', [$from, $to])->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereNull('date_into')->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 5);
-                        $query_agoda->orWhereDate('date_into', '>=', $adate)->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 5);
+                        $query_agoda->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('amount', 'LIKE', '%'.$request->search_value.'%')->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 5);
                     } else {
                         $query_agoda->whereBetween('date', [$from, $to])->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereNull('date_into')->where('into_account', $request->into_account)->where('status', 5);
-                        $query_agoda->orWhereDate('date_into', '>=', $adate)->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', 5);
+                        $query_agoda->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('amount', 'LIKE', '%'.$request->search_value.'%')->where('into_account', $request->into_account)->where('status', 5);
                     }
                 } else {
                     if ($request->status != '') { 
                         $query_agoda->whereBetween('date', [$from, $to])->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereNull('date_into')->where('status', $request->status)->where('status', 5);
-                        $query_agoda->orWhereDate('date_into', '>=', $adate)->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '<=', $adate2)->where('status', $request->status)->where('status', 5);
+                        $query_agoda->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('amount', 'LIKE', '%'.$request->search_value.'%')->where('status', $request->status)->where('status', 5);
                     } else {
                         $query_agoda->whereBetween('date', [$from, $to])->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereNull('date_into')->where('status', 5);
-                        $query_agoda->orWhereDate('date_into', '>=', $adate)->where('amount', 'LIKE', '%'.$request->search_value.'%')->whereDate('date_into', '<=', $adate2)->where('status', 5);
+                        $query_agoda->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('amount', 'LIKE', '%'.$request->search_value.'%')->where('status', 5);
                     }
                 }
 
