@@ -1012,8 +1012,8 @@ class GuestController extends Controller
                     $btn_action .='<div class="btn-group">';
                     $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                     $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
-                    $btn_action .=' <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>';
-                    $btn_action .= ' <li><a class="dropdown-item py-2 rounded" >แก้ไขรายการ</a></li>';
+                    $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                    $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/edit/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
                     $btn_action .='</ul>';
                     $btn_action .='</div>';
 
@@ -1065,8 +1065,8 @@ class GuestController extends Controller
                 $btn_action .='<div class="btn-group">';
                 $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                 $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
-                $btn_action .=' <li><a class="dropdown-item py-2 rounded" >ดูรายละเอียด</a></li>';
-                $btn_action .= ' <li><a class="dropdown-item py-2 rounded" >แก้ไขรายการ</a></li>';
+                $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/edit/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
                 $btn_action .='</ul>';
                 $btn_action .='</div>';
 
@@ -1088,6 +1088,9 @@ class GuestController extends Controller
         $Guest = guest_tax::where('id',$id)->first();
         $guesttax = $Guest->id;
         $Profile_ID = $Guest->GuestTax_ID;
+        $Company_ID = $Guest->Company_ID;
+        $GuestID = Guest::where('Profile_ID', $Company_ID)->first();
+        $ID = $GuestID->id;
         $phone = guest_tax_phone::where('GuestTax_ID',$Profile_ID)->get();
         $phonecount = guest_tax_phone::where('GuestTax_ID',$Profile_ID)->count();
         $phoneDataArray = $phone->toArray();
@@ -1097,7 +1100,7 @@ class GuestController extends Controller
         $Zip_code = districts::where('amphure_id', $Guest->Amphures)->select('zip_code','id')->get();
         $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
-        return view('guest.edittax',compact('MCompany_type','prefix','Zip_code','amphures','Tambon','phoneDataArray','phonecount','phone','Profile_ID','Guest','provinceNames'));
+        return view('guest.edittax',compact('MCompany_type','prefix','Zip_code','amphures','Tambon','phoneDataArray','phonecount','phone','Profile_ID','Guest','provinceNames','ID'));
     }
     public function guest_update_tax(Request $request ,$id)
     {
@@ -1437,6 +1440,25 @@ class GuestController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+    public function guest_view_tax($id)
+    {
+        $Guest = guest_tax::where('id',$id)->first();
+        $guesttax = $Guest->id;
+        $Profile_ID = $Guest->GuestTax_ID;
+        $Company_ID = $Guest->Company_ID;
+        $GuestID = Guest::where('Profile_ID', $Company_ID)->first();
+        $ID = $GuestID->id;
+        $phone = guest_tax_phone::where('GuestTax_ID',$Profile_ID)->get();
+        $phonecount = guest_tax_phone::where('GuestTax_ID',$Profile_ID)->count();
+        $phoneDataArray = $phone->toArray();
+        $provinceNames = province::select('name_th','id')->get();
+        $Tambon = districts::where('amphure_id', $Guest->Amphures)->select('name_th','id')->get();
+        $amphures = amphures::where('province_id', $Guest->City)->select('name_th','id')->get();
+        $Zip_code = districts::where('amphure_id', $Guest->Amphures)->select('zip_code','id')->get();
+        $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
+        $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
+        return view('guest.viewtax',compact('MCompany_type','prefix','Zip_code','amphures','Tambon','phoneDataArray','phonecount','phone','Profile_ID','Guest','provinceNames','ID'));
     }
 
 }

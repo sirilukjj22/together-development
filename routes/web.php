@@ -223,7 +223,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/guest/view/{id}', 'view')->name('guest_view');
         Route::get('/guest/Tax/edit/{id}', 'guest_edit_tax')->name('guest_edit_tax');
         Route::post('/guest/tax/edit/update/{id}', 'guest_update_tax')->name('guest_update_tax');
-
+        Route::get('/guest/Tax/view/{id}', 'guest_view_tax')->name('guest_view_tax');
     });
 });
 #master product
