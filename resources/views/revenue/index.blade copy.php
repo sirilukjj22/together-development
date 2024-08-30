@@ -1600,7 +1600,7 @@
                             <div class="row">
                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                     <label for="">วันที่</label>
-                                    <input type="date" id="" name="" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>" disabled>
+                                    <input type="date" id="date-view-detail" name="" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>" disabled>
                                 </div>
                             </div>
 

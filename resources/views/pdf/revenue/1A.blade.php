@@ -447,9 +447,9 @@
             $total_cash_month = $total_front_month->front_cash + $total_guest_deposit_month->room_cash + $total_fb_month->fb_cash;
             $total_cash_year = $total_front_year->front_cash + $total_guest_deposit_year->room_cash + $total_fb_year->fb_cash;
             
-            $total_bank_transfer = $total_front_revenue->front_transfer + $total_guest_deposit->room_transfer + $total_fb_revenue->fb_transfer;
-            $total_bank_transfer_month = $total_front_month->front_transfer + $total_guest_deposit_month->room_transfer + $total_fb_month->fb_transfer;
-            $total_bank_transfer_year = $total_front_year->front_transfer + $total_guest_deposit_year->room_transfer + $total_fb_year->fb_transfer;
+            $total_bank_transfer = $total_front_revenue->front_transfer + $total_guest_deposit->room_transfer + $total_fb_revenue->fb_transfer + $today_other_revenue;
+            $total_bank_transfer_month = $total_front_month->front_transfer + $total_guest_deposit_month->room_transfer + $total_fb_month->fb_transfer + $total_other_month;
+            $total_bank_transfer_year = $total_front_year->front_transfer + $total_guest_deposit_year->room_transfer + $total_fb_year->fb_transfer + $total_other_year;
             
             $total_wp_cash_bank = $total_wp_revenue->wp_cash + $total_wp_revenue->wp_transfer;
             $total_wp_cash_bank_month = $total_wp_month->wp_cash + $total_wp_month->wp_transfer;
@@ -547,6 +547,15 @@
                         <td>{{ number_format($fb_charge[0]['revenue_credit_date'], 2) }}</td>
                         <td>{{ number_format($fb_charge[0]['revenue_credit_month'], 2) }}</td>
                         <td>{{ number_format($fb_charge[0]['revenue_credit_year'], 2) }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="5" style="text-align: left;"><b>Other Revenue</b></th>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><b>Bank Transfer</b></td>
+                        <td>{{ number_format($today_other_revenue, 2) }}</td>
+                        <td>{{ number_format($total_other_month, 2) }}</td>
+                        <td>{{ number_format($total_other_year, 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align: right;"><b>Total Cash</b></td>
@@ -815,9 +824,9 @@
                     </tr>
                     <tr class="tr-color-blue">
                         <td colspan="2" style="text-align: right;"><b>Total Hotel, Water Park And Elexa EGAT Revenue</b></td>
-                        <td>{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $agoda_charge[0]['total'] + $ev_charge[0]['total'], 2) }}</td>
-                        <td>{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $agoda_charge[0]['total_month'] + $ev_charge[0]['total_month'], 2) }}</td>
-                        <td>{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $agoda_charge[0]['total_year'] + $ev_charge[0]['total_year'], 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $agoda_charge[0]['total'] + $ev_charge[0]['total'] + $today_other_revenue, 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $agoda_charge[0]['total_month'] + $ev_charge[0]['total_month'] + $total_other_month, 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $agoda_charge[0]['total_year'] + $ev_charge[0]['total_year'] + $total_other_year, 2) }}</td>
                     </tr>
                     <tr class="tr-color-blue">
                         <td colspan="2" style="text-align: right;"><b>Credit Agoda Revenue Outstanding</b></td>
@@ -845,9 +854,9 @@
                     </tr>
                     <tr class="tr-color-blue">
                         <td colspan="2" style="text-align: right;"><b>Total Revenue</b></td>
-                        <td>{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $total_ev_revenue + $total_agoda_revenue, 2) }}</td>
-                        <td>{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month + $total_agoda_month + $total_ev_month) - $agoda_charge[0]['total_month'], 2) }}</td>
-                        <td>{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year + $total_agoda_year + $total_ev_year) - $agoda_charge[0]['total_year'], 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank + $total_charge) + ($total_wp_cash_bank + $total_wp_charge) + $total_ev_revenue + $total_agoda_revenue + $today_other_revenue, 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank_month + $total_charge_month) + ($total_wp_cash_bank_month + $total_wp_charge_month + $total_agoda_month + $total_ev_month) - $agoda_charge[0]['total_month'] + $total_other_month, 2) }}</td>
+                        <td>{{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year + $total_agoda_year + $total_ev_year) - $agoda_charge[0]['total_year'] + $total_other_year, 2) }}</td>
                     </tr>
                 </tbody>
             </table>

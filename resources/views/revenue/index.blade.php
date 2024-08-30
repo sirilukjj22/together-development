@@ -7,6 +7,8 @@
         } else {
             $date_current = date('Y-m-d');
         }
+
+        $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))); // อาทิตย์ - เสาร์
         
         $day_sum = isset($day) ? date('j', strtotime(date('2024-' . $month . '-' . $day))) : date('j');
 
@@ -16,6 +18,12 @@
             $pickup_time = formatMonthName($month) . ' - ' . formatMonthName($month_to);
         } elseif (isset($filter_by) && $filter_by == 'year') {
             $pickup_time = $year;
+        } elseif (isset($filter_by) && $filter_by == 'week') {
+            $pickup_time = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d')))))." ~ ".date('d M', strtotime("+6 day", strtotime($this_week)));
+        } elseif (isset($filter_by) && $filter_by == 'thisMonth') {
+            $pickup_time = "01 " . date('M') . " ~ " . date('t M');
+        } elseif (isset($filter_by) && $filter_by == 'thisYear') {
+            $pickup_time = "01 " . "Jan" . " ~ " . $day ." ". date('M', strtotime(date('Y-'.$month.'-01')));
         }
     ?>
 
@@ -37,23 +45,27 @@
     ?>
 
     <?php
-    $total_cash = $total_front_revenue->front_cash + $total_guest_deposit->room_cash + $total_fb_revenue->fb_cash;
-    $total_cash_month = $total_front_month->front_cash + $total_guest_deposit_month->room_cash + $total_fb_month->fb_cash;
-    $total_cash_year = $total_front_year->front_cash + $total_guest_deposit_year->room_cash + $total_fb_year->fb_cash;
-    
-    $total_bank_transfer = $total_front_revenue->front_transfer + $total_guest_deposit->room_transfer + $total_fb_revenue->fb_transfer + $total_agoda_revenue + $total_ev_revenue + $total_other_revenue;
-    $total_bank_transfer_month = $total_front_month->front_transfer + $total_guest_deposit_month->room_transfer + $total_fb_month->fb_transfer + $total_agoda_month + $total_ev_month + $total_other_month;
-    $total_bank_transfer_year = $total_front_year->front_transfer + $total_guest_deposit_year->room_transfer + $total_fb_year->fb_transfer + $total_agoda_year + $total_ev_year + $total_other_year;
-    
-    $total_wp_cash_bank = $total_wp_revenue->wp_cash + $total_wp_revenue->wp_transfer;
-    $total_wp_cash_bank_month = $total_wp_month->wp_cash + $total_wp_month->wp_transfer;
-    $total_wp_cash_bank_year = $total_wp_year->wp_cash + $total_wp_year->wp_transfer;
-    
-    $total_cash_bank = $total_cash + $total_bank_transfer + $total_other_revenue;
-    $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month + $total_other_month;
-    $total_cash_bank_year = $total_cash_year + $total_bank_transfer_year + $total_other_year;
-    
-    $total_today_revenue_graph = $total_day + $total_agoda_revenue + $total_ev_revenue + $total_other_revenue + ($credit_revenue->total_credit ?? 0);
+        $today_cash = $today_front_revenue->front_cash + $today_guest_deposit->room_cash + $today_fb_revenue->fb_cash;
+        $total_cash = $total_front_revenue->front_cash + $total_guest_deposit->room_cash + $total_fb_revenue->fb_cash;
+        $total_cash_month = $total_front_month->front_cash + $total_guest_deposit_month->room_cash + $total_fb_month->fb_cash;
+        $total_cash_year = $total_front_year->front_cash + $total_guest_deposit_year->room_cash + $total_fb_year->fb_cash;
+        
+        $today_bank_transfer = $today_front_revenue->front_transfer + $today_guest_deposit->room_transfer + $today_fb_revenue->fb_transfer + $today_other_revenue;
+        $total_bank_transfer = $total_front_revenue->front_transfer + $total_guest_deposit->room_transfer + $total_fb_revenue->fb_transfer + $total_other_revenue;
+        $total_bank_transfer_month = $total_front_month->front_transfer + $total_guest_deposit_month->room_transfer + $total_fb_month->fb_transfer + $total_other_month;
+        $total_bank_transfer_year = $total_front_year->front_transfer + $total_guest_deposit_year->room_transfer + $total_fb_year->fb_transfer + $total_other_year;
+        
+        $today_wp_cash_bank = $today_wp_revenue->wp_cash + $today_wp_revenue->wp_transfer;
+        $total_wp_cash_bank = $total_wp_revenue->wp_cash + $total_wp_revenue->wp_transfer;
+        $total_wp_cash_bank_month = $total_wp_month->wp_cash + $total_wp_month->wp_transfer;
+        $total_wp_cash_bank_year = $total_wp_year->wp_cash + $total_wp_year->wp_transfer;
+        
+        $total_cash_bank = $total_cash + $total_bank_transfer;
+        $today_cash_bank = $today_cash + $today_bank_transfer;
+        $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month;
+        $total_cash_bank_year = $total_cash_year + $total_bank_transfer_year;
+        
+        $total_today_revenue_graph = $total_day + $total_agoda_revenue + $total_ev_revenue + $total_other_revenue + ($credit_revenue->total_credit ?? 0);
 
     ?>
 
@@ -77,14 +89,32 @@
                         </div>
                         <div class="dropdown">
                             <button class="button dropdown-toggle" type="button" id="dropdownMenuDaily" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-top: 0px; border-left: 0px"> 
-                                <span id="txt-daily">Today</span>
+                                <span id="txt-daily">
+                                    @if (isset($filter_by) && $filter_by == 'today' || $date_current == date('Y-m-d'))
+                                        Today
+                                    @elseif (isset($filter_by) && $filter_by == 'yesterday' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('-1 day')))
+                                        Yesterday
+                                    @elseif (isset($filter_by) && $filter_by == 'tomorrow' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('+1 day')))
+                                        Tomorrow
+                                    @elseif (isset($filter_by) && $filter_by == 'week')
+                                        This Week
+                                    @elseif (isset($filter_by) && $filter_by == 'thisMonth')
+                                        This Month
+                                    @elseif (isset($filter_by) && $filter_by == 'thisYear')
+                                        This Year
+                                    @else
+                                        Custom
+                                    @endif
+                                </span>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuDaily">
-                                <a class="dropdown-item" href="#" onclick="btn_search_daily('week')">This Week</a>
+                                <a class="dropdown-item" href="#" onclick="search_daily('today')">Today</a>
+                                <a class="dropdown-item" href="#" onclick="search_daily('week')">This Week</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('thisMonth')">This Month</a>
                                 <a class="dropdown-item" href="#" onclick="search_daily('thisYear')">This Year</a>
-                                <a class="dropdown-item" href="#">Custom Date Range</a>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modalChoseDateRange">Custom Date Range</a>
                             </div>
+                            <input type="hidden" name="" id="week-from" value="{{ date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime(isset($filter_by) ? date($date_current) : date('Y-m-d')))))  }}">
                         </div>
                         <div class="dropdown">
                             <button class="button dropdown-toggle" type="button" id="dropdownMenuOperation"
@@ -203,8 +233,8 @@
                     <div class="box-content">
                         <div class="header">
                             <div>Bank Transfer</div>
-                            <div>{{ number_format($total_bank_transfer + $total_wp_revenue->wp_transfer, 2) }}</div>
-                            <input type="hidden" id="total_bank_dashboard" value="{{ $total_bank_transfer + $total_wp_revenue->wp_transfer }}">
+                            <div>{{ number_format($total_bank_transfer + $total_wp_revenue->wp_transfer + $total_agoda_revenue + $total_ev_revenue, 2) }}</div>
+                            <input type="hidden" id="total_bank_dashboard" value="{{ $total_bank_transfer + $total_wp_revenue->wp_transfer + $total_agoda_revenue + $total_ev_revenue }}">
                         </div>
                         <div class="sub d-grid-c">
                             <div class="box-card1 bg-box">
@@ -511,6 +541,37 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Modal: เลือกวันที่ Daterange modal fade -->
+                    <div class="modal fade" id="modalChoseDateRange" tabindex="-1" role="dialog" aria-labelledby="modalChoseDateRange" aria-hidden="true">
+                        <div class="modal-dialog" role="document" style="max-width: 350px;">
+                            <div class="modal-content rounded-xl">
+                                <div class="modal-header md-header text-white">
+                                    <div class="w-full">
+                                    <h5 class=".modal-hd">Custom Date Range</h5>
+                                    </div>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="wrap-chose-dateRange">
+                                        <div class="input-group">
+                                            <label for="">Date Start :</label>
+                                            <input type="date" name="" id="customRang-start">
+                                        </div>
+                                        <div class="input-group">
+                                            <label for="">Date End : </label>
+                                            <input type="date" name="" id="customRang-end">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" id="btn-save-date" class="btn btn-success" style="background-color: #2C7F7A;" onclick="search_daily('customRang')">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <br />
@@ -553,15 +614,12 @@
                             <td class="t-end"></td>
                         </tr>
                         <tr class="table-row-bg">
-                            <td class="padding-l-2">Front Desk Revenue</td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
+                            <td colspan="4" class="padding-l-2">Front Desk Revenue</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Cash</td>
                             <td class="t-end">
-                                {{ number_format(isset($today_front_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $today_front_revenue->front_cash : 0, 2) }}
+                                {{ number_format(isset($today_front_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_front_revenue->front_cash : 0, 2) }}
                             </td>
                             <td class="t-end">
                                 {{ number_format(isset($total_front_month) ? $total_front_month->front_cash : 0, 2) }}
@@ -572,7 +630,7 @@
                         <tr class="table-row-n">
                             <td class="padding-l-2">Bank Transfer</td>
                             <td class="t-end">
-                                {{ number_format(isset($today_front_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $today_front_revenue->front_transfer : 0, 2) }}
+                                {{ number_format(isset($today_front_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_front_revenue->front_transfer : 0, 2) }}
                             </td>
                             <td class="t-end">
                                 {{ number_format(isset($total_front_month) ? $total_front_month->front_transfer : 0, 2) }}
@@ -583,21 +641,18 @@
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Credit Card Front Desk Charge</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $front_charge[0]['revenue_credit_today'] : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $front_charge[0]['revenue_credit_today'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($front_charge[0]['revenue_credit_month'], 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($front_charge[0]['revenue_credit_year'], 2) }}
                             </td>
                         </tr>
                         <tr class="table-row-bg">
-                            <td class="padding-l-2">Guest Deposit Revenue</td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
+                            <td colspan="4" class="padding-l-2">Guest Deposit Revenue</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Cash</td>
                             <td class="t-end">
-                                {{ number_format(isset($today_guest_deposit) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $today_guest_deposit->room_cash : 0, 2) }}
+                                {{ number_format(isset($today_guest_deposit) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_guest_deposit->room_cash : 0, 2) }}
                             </td>
                             <td class="t-end">
                                 {{ number_format(isset($total_guest_deposit_month) ? $total_guest_deposit_month->room_cash : 0, 2) }}
@@ -609,7 +664,7 @@
                         <tr class="table-row-n">
                             <td class="padding-l-2">Bank Transfer</td>
                             <td class="t-end">
-                                {{ number_format(isset($today_guest_deposit) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $today_guest_deposit->room_transfer : 0, 2) }}
+                                {{ number_format(isset($today_guest_deposit) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_guest_deposit->room_transfer : 0, 2) }}
                             </td>
                             <td class="t-end">
                                 {{ number_format(isset($total_guest_deposit_month) ? $total_guest_deposit_month->room_transfer : 0, 2) }}
@@ -620,59 +675,53 @@
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Credit Card Front Desk Charge</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $guest_deposit_charge[0]['revenue_credit_today'] : 0, 2) }}
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $guest_deposit_charge[0]['revenue_credit_today'] : 0, 2) }}
                             </td>
                             <td class="t-end">{{ number_format($guest_deposit_charge[0]['revenue_credit_month'], 2) }}
                             </td>
                             <td class="t-end padding-x-2">{{ number_format($guest_deposit_charge[0]['revenue_credit_year'], 2) }}</td>
                         </tr>
                         <tr class="table-row-bg">
-                            <td class="padding-l-2">All Outlet Revenue</td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
+                            <td colspan="4" class="padding-l-2">All Outlet Revenue</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Cash</td>
-                            <td class="t-end">{{ number_format(isset($today_fb_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $today_fb_revenue->fb_cash : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($today_fb_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_fb_revenue->fb_cash : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_fb_month->fb_cash, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_fb_year->fb_cash, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Bank Transfer</td>
-                            <td class="t-end">{{ number_format(isset($today_fb_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $today_fb_revenue->fb_transfer : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($today_fb_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_fb_revenue->fb_transfer : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_fb_month->fb_transfer, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_fb_year->fb_transfer, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Credit Card All Outlet Charge</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $fb_charge[0]['revenue_credit_today'] : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $fb_charge[0]['revenue_credit_today'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($fb_charge[0]['revenue_credit_month'], 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($fb_charge[0]['revenue_credit_year'], 2) }}</td>
                         </tr>
                         <tr class="table-row-bg">
-                            <td class="padding-l-2">Other Revenue</td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
+                            <td colspan="4" class="padding-l-2">Other Revenue</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Bank Transfer</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $today_other_revenue : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_other_revenue : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_other_month, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_other_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Total Cash</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $today_front_revenue->front_cash + $today_guest_deposit->room_cash + $today_fb_revenue->fb_cash + $today_other_revenue : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_front_revenue->front_cash + $today_guest_deposit->room_cash + $today_fb_revenue->fb_cash + $today_other_revenue : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_cash_month, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_cash_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Total Bank Transfer</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $today_front_revenue->front_transfer + $today_guest_deposit->room_transfer + $today_fb_revenue->fb_transfer + $today_agoda_revenue + $today_ev_revenue + $today_other_revenue : 0, 2) }}</td>
-                            <td class="t-end">{{ number_format($total_bank_transfer_month + $total_other_month, 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($total_bank_transfer_year + $total_other_year, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_front_revenue->front_transfer + $today_guest_deposit->room_transfer + $today_fb_revenue->fb_transfer + $today_agoda_revenue + $today_ev_revenue + $today_other_revenue : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format($total_bank_transfer_month, 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format($total_bank_transfer_year, 2) }}</td>
                         </tr>
 
                         @php
@@ -681,9 +730,9 @@
 
                         <tr class="table-row-n">
                             <td class="t-end f-semi"> Cash And Bank Transfer Hotel Revenue </td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $total_cash_bank_today + $today_other_revenue : 0, 2) }}</td>
-                            <td class="t-end">{{ number_format($total_cash_bank_month + $total_other_month, 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($total_cash_bank_year + $total_other_year, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $total_cash_bank_today + $today_other_revenue : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format($total_cash_bank_month, 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format($total_cash_bank_year, 2) }}</td>
                         </tr>
                         <?php
                         
@@ -694,14 +743,14 @@
                         ?>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Total Credit Card Charge</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $total_credit_card_revenue : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $total_credit_card_revenue : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_credit_card_revenue_month, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_credit_card_revenue_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Credit Card Fee</td>
                             <td class="t-end">
-                                @if (isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by))
+                                @if (isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by))
                                     {{ number_format($total_credit_card_revenue == 0 || $credit_revenue_today->total_credit == 0 ? 0 : $total_credit_card_revenue - $credit_revenue_today->total_credit ?? 0, 2) }}
                                 @else
                                     0.00
@@ -723,39 +772,36 @@
                         ?>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Credit Card Hotel Revenue</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $credit_revenue_today->total_credit ?? 0 : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $credit_revenue_today->total_credit ?? 0 : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($credit_revenue_month->total_credit ?? 0, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($credit_revenue_year->total_credit ?? 0, 2) }}</td>
                         </tr>
                         <tr class="table-row-bg">
-                            <td class="text-start pl-2">Agoda Revenue</td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
+                            <td colspan="4" class="text-start pl-2">Agoda Revenue</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Credit Card Agoda Charge</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ?  $agoda_charge[0]['revenue_credit_today'] : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ?  $agoda_charge[0]['revenue_credit_today'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($agoda_charge[0]['revenue_credit_month'], 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($agoda_charge[0]['revenue_credit_year'], 2) }}
                             </td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Total Agoda Fee</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $agoda_charge[0]['fee_today'] : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $agoda_charge[0]['fee_today'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($agoda_charge[0]['fee_month'], 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($agoda_charge[0]['fee_year'], 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2"> Credit Agoda Revenue Outstanding </td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $agoda_charge[0]['total_today'] : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $agoda_charge[0]['total_today'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($agoda_charge[0]['total_year'], 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-green-middle">
                             <td class="t-end f-semi">Total Hotel Revenue</td>
                             <td class="t-end">
-                                {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $total_cash_bank_today + $today_other_revenue + $total_charge + $agoda_charge[0]['total_today'] : 0, 2) }}</td>
+                                {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $total_cash_bank_today + $today_other_revenue + $total_charge + $agoda_charge[0]['total_today'] : 0, 2) }}</td>
                             <td class="t-end">
                                 {{ number_format($total_cash_bank_month + $total_charge_month + $agoda_charge[0]['total_month'], 2) }}
                             </td>
@@ -764,26 +810,23 @@
                             </td>
                         </tr>
                         <tr class="table-row-bg">
-                            <td class="padding-l-2">Water Park Revenue</td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
+                            <td colspan="4" class="padding-l-2">Water Park Revenue</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Cash</td>
-                            <td class="t-end">{{ number_format(isset($total_wp_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $today_wp_revenue->wp_cash : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($total_wp_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_wp_revenue->wp_cash : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_wp_month->wp_cash, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_wp_year->wp_cash, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Bank Transfer</td>
-                            <td class="t-end">{{ number_format(isset($total_wp_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $today_wp_revenue->wp_transfer : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($total_wp_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_wp_revenue->wp_transfer : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_wp_month->wp_transfer, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_wp_year->wp_transfer, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="t-end f-semi"> Cash + Bank Transfer Water Park Revenue </td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $total_wp_cash_bank : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_wp_revenue->wp_cash + $today_wp_revenue->wp_transfer : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_wp_cash_bank_month, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_wp_cash_bank_year, 2) }}</td>
                         </tr>
@@ -796,18 +839,19 @@
                         ?>
                         <tr class="table-row-n">
                             <td class="t-end pl-2 f-semi"> Credit Card Water Park Charge </td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $total_wp_credit_card_revenue : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $total_wp_credit_card_revenue : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_wp_credit_card_revenue_month, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_wp_credit_card_revenue_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="t-end pl-2 f-semi">Credit Card Fee</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $wp_charge[0]['fee_date'] : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $wp_charge[0]['fee_date'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($wp_charge[0]['fee_month'], 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($wp_charge[0]['fee_year'], 2) }}</td>
                         </tr>
                         <?php
                         
+                        $today_wp_charge = $wp_charge[0]['total_today'];
                         $total_wp_charge = $wp_charge[0]['total'];
                         $total_wp_charge_month = $wp_charge[0]['total_month'];
                         $total_wp_charge_year = $wp_charge[0]['total_year'];
@@ -815,59 +859,53 @@
                         ?>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Credit Card Water Park Revenue</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $total_wp_charge : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_wp_charge : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_wp_charge_month, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_wp_charge_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-green-middle">
                             <td class="t-end f-semi">Total Water Park Revenue</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $total_wp_cash_bank + $total_wp_charge : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_wp_revenue->wp_cash + $today_wp_revenue->wp_transfer + $today_wp_charge : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_wp_cash_bank_month + $total_wp_charge_month, 2) }}
                             </td>
                             <td class="t-end padding-x-2">
                                 {{ number_format($total_wp_cash_bank_year + $total_wp_charge_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-bg">
-                            <td class="padding-l-2">Elexa EGAT Revenue</td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
+                            <td colspan="4" class="padding-l-2">Elexa EGAT Revenue</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">EV Charging Charge</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $ev_charge[0]['revenue_credit_date'] : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $ev_charge[0]['revenue_credit_today'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($ev_charge[0]['revenue_credit_month'], 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($ev_charge[0]['revenue_credit_year'], 2) }}
                             </td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Elexa Fee</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $ev_charge[0]['fee_date'] : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $ev_charge[0]['fee_today'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($ev_charge[0]['fee_month'], 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($ev_charge[0]['fee_year'], 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Elexa EGAT Revenue Outstanding</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $ev_charge[0]['total'] : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $ev_charge[0]['total_today'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-green-middle">
                             <td class="t-end f-semi">Total Elexa EGAT Revenue</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $ev_charge[0]['total'] : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $ev_charge[0]['total_today'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
                         </tr>
                         <tr class="table-row-bg">
-                            <td class="padding-l-2"></td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
-                            <td class="t-end"></td>
+                            <td colspan="4" class="padding-l-2"></td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
                             <td class="pl-2 text-end f-semi"> Total Hotel, Water Park And Elexa EGAT Revenue </td>
                             <td class="t-end">
-                                {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $total_cash_bank + $total_charge + ($total_wp_cash_bank + $total_wp_charge) + $agoda_charge[0]['total'] + $ev_charge[0]['total'] : 0, 2) }}
+                                {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_cash_bank + $total_charge + ($today_wp_cash_bank + $today_wp_charge) + $agoda_charge[0]['total_today'] + $ev_charge[0]['total_today'] : 0, 2) }}
                             </td>
                             <td class="t-end">
                                 {{ number_format($total_cash_bank_month + $total_charge_month + ($total_wp_cash_bank_month + $total_wp_charge_month) + $agoda_charge[0]['total_month'] + $ev_charge[0]['total_month'], 2) }}
@@ -878,33 +916,33 @@
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
                             <td class="pl-2 text-end f-semi"> Credit Agoda Revenue Outstanding </td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $agoda_charge[0]['total'] : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $agoda_charge[0]['total_today'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
                             <td class="t-end padding-x-2">
                                 {{ number_format($agoda_charge[0]['total_year'] - $total_agoda_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
                             <td class="pl-2 text-end f-semi"> Elexa EGAT Revenue Outstanding </td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $ev_charge[0]['total'] : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $ev_charge[0]['total_today'] : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
                             <td class="pl-2 text-end f-semi">Agoda Revenue</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $total_agoda_revenue : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_agoda_revenue : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_agoda_month, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_agoda_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
                             <td class="pl-2 text-end f-semi">Elexa EGAT Revenue</td>
-                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $total_ev_revenue : 0, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_ev_revenue : 0, 2) }}</td>
                             <td class="t-end">{{ number_format($total_ev_month, 2) }}</td>
                             <td class="t-end padding-x-2">{{ number_format($total_ev_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
                             <td class="pl-2 text-end f-semi">Total Revenue</td>
                             <td class="t-end">
-                                {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || !isset($filter_by) ? $total_cash_bank + $total_charge + ($total_wp_cash_bank + $total_wp_charge) + $total_ev_revenue + $total_agoda_revenue : 0, 2) }}
+                                {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "week" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_cash_bank + $total_charge + ($today_wp_cash_bank + $today_wp_charge) + $today_ev_revenue + $today_agoda_revenue : 0, 2) }}
                             </td>
                             <td class="t-end">
                                 {{ number_format($total_cash_bank_month + $total_charge_month + ($total_wp_cash_bank_month + $total_wp_charge_month + $total_agoda_month + $total_ev_month) - $agoda_charge[0]['total_month'], 2) }}
@@ -1026,6 +1064,8 @@
                     <input type="hidden" id="input-search-month" name="month" value="{{ isset($month) ? $month : date('m') }}">
                     <input type="hidden" id="input-search-month-to" name="month_to" value="{{ isset($month_to) ? $month_to : date('m') }}">
                     <input type="hidden" id="input-search-year" name="year" value="{{ isset($year) ? $year : date('Y') }}">
+                    <input type="hidden" name="customRang_start" id="customRang-start2">
+                    <input type="hidden" name="customRang_end" id="customRang-end2">
 
                     <input type="hidden" name="daily_page" id="daily_page">
                         <input type="hidden" name="export_pdf" id="export_pdf" value="0">
@@ -1047,7 +1087,7 @@
         </div>
     </div>
 
-    <!-- Modal Addข้อมูลเงินสด modal fade -->
+    <!-- Modal Add ข้อมูลเงินสด modal fade -->
     <div class="modal fade bd-example-modal-lg" id="addIncome" tabindex="-1" role="dialog"
         aria-labelledby="addIncomeLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -1063,7 +1103,7 @@
                 <div class="modal-body bg-green500">
                     <div class="df-jc-ic">
                         <label for="" class="text2xl">วันที่ : &nbsp;&nbsp;</label>
-                        <input type="date" class="input-date" id="date" name="date" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>">
+                        <input type="date" class="input-date" id="date" name="date" value="{{ isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') }}">
                     </div>
                     <br />
                     <div class="box-accordion">
@@ -1101,8 +1141,8 @@
                                     </div>
                                 </div>
                                 <br />
-                                <button type="submit" class="add-button btn-front-add"> Add </button>
-                                <button type="submit" class="delete-all-button btn-front-hide" onclick="toggleHide3()"> Delete All </button>
+                                <button type="button" class="add-button btn-front-add"> Add </button>
+                                <button type="button" class="delete-all-button btn-front-hide" onclick="toggleHide3()"> Delete All </button>
                                 <span class="front-todo-error text-danger small ms-3"style="display: none;">กรุณาระบุข้อมูลให้ครบ !</span>
                                 <br />
                                 <br />
@@ -1487,6 +1527,7 @@
         </div>
     </div>
 
+    <!-- Modal ดูรายละเอียดข้อมูลเงินสด modal fade -->
     <div class="modal fade bd-example-modal-lg" id="ViewDataModalCenter" tabindex="-1" role="dialog" aria-labelledby="ViewDataModalCenterLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content rounded-lg">
@@ -1499,7 +1540,7 @@
                 <div class="modal-body bg-green500">
                     <div class="df-jc-ic">
                         <label for="" class="text2xl">วันที่ : &nbsp;&nbsp;</label>
-                        <input type="date" class="input-date" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>">
+                        <input type="date" class="input-date" id="date_view_detail" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>">
                     </div>
                     <br />
                     <div class="box-accordion">
@@ -1508,6 +1549,17 @@
                         </button>
                         <div class="panel">
                             <div id="front-desk-revenue">
+                                <div class="dg-gc2-g2">
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Cash</label>
+                                        <input type="text" class="accordion-input active:bg-gradient-to-r active:from-blue-500/20 active:to-green-500/40 focus:outline-none" id="front_cash2" placeholder="0.00" disabled>
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Bank Transfer</label>
+                                        <input type="text" class="accordion-input" id="front_transfer2" placeholder="0.00" disabled>
+                                    </div>
+                                </div>
+                                <div class="credit-card mt-3 mb-3">credit card</div>
                                 <div style="overflow-x:auto;">
                                     <table id="" class="add-income-table">
                                         <thead>
@@ -1530,6 +1582,17 @@
                         </button>
                         <div class="panel">
                             <div id="front-desk-revenue">
+                                <div class="dg-gc2-g2">
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Cash</label>
+                                        <input type="text" class="accordion-input active:bg-gradient-to-r active:from-blue-500/20 active:to-green-500/40 focus:outline-none" id="cash2" placeholder="0.00" disabled>
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Bank Transfer</label>
+                                        <input type="text" class="accordion-input" id="room_transfer2" placeholder="0.00" disabled>
+                                    </div>
+                                </div>
+                                <div class="credit-card mt-3 mb-3">credit card</div>
                                 <div style="overflow-x:auto;">
                                     <table id="" class="add-income-table">
                                         <thead>
@@ -1552,6 +1615,17 @@
                         </button>
                         <div class="panel">
                             <div id="front-desk-revenue">
+                                <div class="dg-gc2-g2">
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Cash</label>
+                                        <input type="text" class="accordion-input active:bg-gradient-to-r active:from-blue-500/20 active:to-green-500/40 focus:outline-none" id="fb_cash2" placeholder="0.00" disabled>
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Bank Transfer</label>
+                                        <input type="text" class="accordion-input" id="fb_transfer2" placeholder="0.00" disabled>
+                                    </div>
+                                </div>
+                                <div class="credit-card mt-3 mb-3">credit card</div>
                                 <div style="overflow-x:auto;">
                                     <table id="" class="add-income-table">
                                         <thead>
@@ -1599,6 +1673,17 @@
                         </button>
                         <div class="panel">
                             <div id="front-desk-revenue">
+                                <div class="dg-gc2-g2">
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Cash</label>
+                                        <input type="text" class="accordion-input active:bg-gradient-to-r active:from-blue-500/20 active:to-green-500/40 focus:outline-none" id="wp_cash2" placeholder="0.00" disabled>
+                                    </div>
+                                    <div class="accordion-card">
+                                        <label for="" class="max-sm:text-sm">Bank Transfer</label>
+                                        <input type="text" class="accordion-input" id="wp_transfer2" placeholder="0.00" disabled>
+                                    </div>
+                                </div>
+                                <div class="credit-card mt-3 mb-3">credit card</div>
                                 <div style="overflow-x:auto;">
                                     <table id="" class="add-income-table">
                                         <thead>
@@ -1818,6 +1903,11 @@
         Add_data($(this).val());
     });
 
+    // เลือกวันที่ใน Modal รายละเอียดเงินสด/เครดิต
+    $('#date_view_detail').on('change', function () {
+        view_data($(this).val());
+    });
+
     // Add ข้อมูลเงินสด/เครดิต
     function Add_data($date) {
         var date = $('#date').val();
@@ -1995,25 +2085,25 @@
     }
 
     function view_data($date) {
-        var date = $('#date').val();
+        var date = $('#date_view_detail').val();
         jQuery.ajax({
             type:   "GET",
             url:    "{!! url('revenue-edit/"+date+"') !!}",
             datatype:   "JSON",
             async:  false,
             success: function(response) {
-                $('#front_cash').val(response.data.front_cash);
-                $('#front_transfer').val(currencyFormat(response.data.front_transfer));
-                $('#front_credit').val(response.data.front_credit);
-                $('#cash').val(response.data.room_cash);
-                $('#room_transfer').val(currencyFormat(response.data.room_transfer));
-                $('#credit').val(response.data.room_credit);
-                $('#fb_cash').val(response.data.fb_cash);
-                $('#fb_transfer').val(currencyFormat(response.data.fb_transfer));
-                $('#fb_credit').val(response.data.fb_credit);
-                $('#wp_cash').val(response.data.wp_cash);
-                $('#wp_transfer').val(currencyFormat(response.data.wp_transfer));
-                $('#wp_credit').val(response.data.wp_credit);
+                $('#front_cash2').val(response.data.front_cash);
+                $('#front_transfer2').val(currencyFormat(response.data.front_transfer));
+                $('#front_credit2').val(response.data.front_credit);
+                $('#cash2').val(response.data.room_cash);
+                $('#room_transfer2').val(currencyFormat(response.data.room_transfer));
+                $('#credit2').val(response.data.room_credit);
+                $('#fb_cash2').val(response.data.fb_cash);
+                $('#fb_transfer2').val(currencyFormat(response.data.fb_transfer));
+                $('#fb_credit2').val(response.data.fb_credit);
+                $('#wp_cash2').val(response.data.wp_cash);
+                $('#wp_transfer2').val(currencyFormat(response.data.wp_transfer));
+                $('#wp_credit2').val(response.data.wp_credit);
                 // $('#ev_cash').val(response.data.ev_cash);
                 // $('#ev_transfer').val(currencyFormat(response.data.ev_transfer));
                 // $('#ev_credit').val(response.data.ev_credit);
@@ -2571,13 +2661,6 @@
         $('#form-revenue').submit();
     });
 
-    function btn_search_daily(params) {
-        document.getElementById("form-revenue").removeAttribute('target');
-        $('#export_pdf').val(0);
-        $('#daily_page').val(params);
-        $('#form-revenue').submit();
-    }
-
     // Search Daily (Today, Yesterday, Tomorrow)
     function search_daily($search) {
 
@@ -2621,10 +2704,28 @@
             $('#txt-daily').text("This Month");
         }
 
+        if ($search == 'thisYear') {
+            var date = new Date($('#input-search-year').val()+"-"+$('#input-search-month').val()+"-"+$('#input-search-day').val());
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+            $('#txt-daily').text("This Year");
+        }
+
+        if ($search == 'customRang') {
+            var date = new Date($('#customRang-start').val());
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+            $('#txt-daily').text("Custom Date Range");
+        }
+
         $('#filter-by').val($search);
         $('#input-search-day').val(day);
         $('#input-search-month').val(month);
         $('#input-search-year').val(year);
+        $('#customRang-start2').val($('#customRang-start').val());
+        $('#customRang-end2').val($('#customRang-end').val());
         $('#form-revenue').submit();
     }
 
