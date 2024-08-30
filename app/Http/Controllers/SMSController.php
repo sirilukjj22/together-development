@@ -390,6 +390,16 @@ class SMSController extends Controller
 
         if (isset($data_query) && count($data_query) > 0) {
             foreach ($data_query as $key => $value) {
+
+                ## Check Close Day
+                if ($value->date_into == '') {
+                    $f_date = $value->date;
+                } else {
+                    $f_date = $value->date_into;
+                }
+                
+                $close_day = SMS_alerts::checkCloseDay($f_date);
+
                 $img_bank = '';
                 $transfer_bank = '';
                 $revenue_name = '';
@@ -422,7 +432,8 @@ class SMSController extends Controller
                 if($value->status == 8) { $revenue_name = 'Elexa EGAT Revenue'; } 
                 if($value->status == 9) { $revenue_name = 'Other Revenue Bank Transfer'; }
 
-                $btn_action .='<div class="dropdown">';
+                if ($close_day == 0) {
+                    $btn_action .='<div class="dropdown">';
                                 $btn_action .='<button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
                                     Select <span class="caret"></span>
                                 </button>';
@@ -497,7 +508,8 @@ class SMSController extends Controller
                                                        <li class="button-li" onclick="deleted('.$value->id.')">Delete</li>';
                                     }
                                 $btn_action .='</ul>';
-                $btn_action .='</div>';
+                    $btn_action .='</div>';
+                }
 
                 $data[] = [
                     'id' => $key + 1,
@@ -662,6 +674,16 @@ class SMSController extends Controller
         if (isset($data_query) && count($data_query) > 0) {
             foreach ($data_query as $key => $value) {
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                ## Check Close Day
+                if ($value->date_into == '') {
+                    $f_date = $value->date;
+                } else {
+                    $f_date = $value->date_into;
+                }
+                
+                $close_day = SMS_alerts::checkCloseDay($f_date);
+
                     $img_bank = '';
                     $transfer_bank = '';
                     $revenue_name = '';
@@ -694,82 +716,84 @@ class SMSController extends Controller
                     if($value->status == 8) { $revenue_name = 'Elexa EGAT Revenue'; } 
                     if($value->status == 9) { $revenue_name = 'Other Revenue Bank Transfer'; }
     
-                    $btn_action .='<div class="dropdown">';
-                        $btn_action .='<button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
-                            Select <span class="caret"></span>
-                        </button>';
-                        $btn_action .='<ul class="dropdown-menu">';
-                            if (@$role_revenue->front_desk == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Front Desk Revenue'".')">
-                                                    Front Desk Bank <br>Transfer Revenue 
-                                                </li>';
-                            }
-                            if (@$role_revenue->guest_deposit == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Guest Deposit Revenue'".')">
-                                                    Guest Deposit Bank <br> Transfer Revenue 
-                                                </li>';
-                            }
-                            if (@$role_revenue->all_outlet == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'All Outlet Revenue'".')">
-                                                    All Outlet Bank <br> Transfer Revenue 
-                                                </li>';
-                            }
-                            if (@$role_revenue->agoda == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Credit Agoda Revenue'".')">
-                                                    Agoda Bank <br>Transfer Revenue 
-                                                </li>';
-                            }
-                            if (@$role_revenue->credit_card_hotel == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Credit Card Revenue'".')">
-                                                    Credit Card Hotel <br> Revenue 
-                                                </li>';
-                            }
-                            if (@$role_revenue->elexa == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Elexa EGAT Revenue'".')">
-                                                    Elexa EGAT Bank Transfer <br> Transfer Revenue
-                                                </li>';
-                            }
-                            if (@$role_revenue->no_category == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'No Category'".')">
-                                                    No Category
-                                                </li>';
-                            }
-                            if (@$role_revenue->water_park == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Water Park Revenue'".')">
-                                                    Water Park Bank <br> Transfer Revenue 
-                                                </li>';
-                            }
-                            if (@$role_revenue->credit_water_park == 1) {
-                                $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Credit Water Park Revenue'".')">
-                                                    Credit Card Water <br>Park Revenue 
-                                                </li>';
-                            }
-                            if (@$role_revenue->other_revenue == 1) {
-                                $btn_action .='<li class="button-li" onclick="other_revenue_data('.$value->id.')">
-                                                    Other Revenue <br> Bank Transfer
-                                                </li>';
-                            }
-                            if (@$role_revenue->transfer == 1) {
-                                $btn_action .='<li class="button-li" onclick="transfer_data('.$value->id.')">
-                                                    Transfer
-                                                </li>';
-                            }
-                            if (@$role_revenue->time == 1) {
-                                $btn_action .='<li class="button-li" onclick="update_time_data('.$value->id.')">
-                                                    Update Time
-                                                </li>';
-                            }
-                            if (@$role_revenue->split == 1) {
-                                $btn_action .='<li class="button-li" onclick="split_data('.$value->id.', '.$value->amount.')">
-                                                    Split Revenue
-                                                </li>';
-                            }
-                            if (@$role_revenue->edit == 1) {
-                                $btn_action .='<li class="button-li" onclick="edit('.$value->id.')">Edit</li>
-                                                <li class="button-li" onclick="deleted('.$value->id.')">Delete</li>';
-                            }
-                        $btn_action .='</ul>';
-                    $btn_action .='</div>';
+                    if ($close_day == 0) {
+                        $btn_action .='<div class="dropdown">';
+                            $btn_action .='<button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
+                                Select <span class="caret"></span>
+                            </button>';
+                            $btn_action .='<ul class="dropdown-menu">';
+                                if (@$role_revenue->front_desk == 1) {
+                                    $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Front Desk Revenue'".')">
+                                                        Front Desk Bank <br>Transfer Revenue 
+                                                    </li>';
+                                }
+                                if (@$role_revenue->guest_deposit == 1) {
+                                    $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Guest Deposit Revenue'".')">
+                                                        Guest Deposit Bank <br> Transfer Revenue 
+                                                    </li>';
+                                }
+                                if (@$role_revenue->all_outlet == 1) {
+                                    $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'All Outlet Revenue'".')">
+                                                        All Outlet Bank <br> Transfer Revenue 
+                                                    </li>';
+                                }
+                                if (@$role_revenue->agoda == 1) {
+                                    $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Credit Agoda Revenue'".')">
+                                                        Agoda Bank <br>Transfer Revenue 
+                                                    </li>';
+                                }
+                                if (@$role_revenue->credit_card_hotel == 1) {
+                                    $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Credit Card Revenue'".')">
+                                                        Credit Card Hotel <br> Revenue 
+                                                    </li>';
+                                }
+                                if (@$role_revenue->elexa == 1) {
+                                    $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Elexa EGAT Revenue'".')">
+                                                        Elexa EGAT Bank Transfer <br> Transfer Revenue
+                                                    </li>';
+                                }
+                                if (@$role_revenue->no_category == 1) {
+                                    $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'No Category'".')">
+                                                        No Category
+                                                    </li>';
+                                }
+                                if (@$role_revenue->water_park == 1) {
+                                    $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Water Park Revenue'".')">
+                                                        Water Park Bank <br> Transfer Revenue 
+                                                    </li>';
+                                }
+                                if (@$role_revenue->credit_water_park == 1) {
+                                    $btn_action .='<li class="button-li" onclick="change_status('.$value->id.', '."'Credit Water Park Revenue'".')">
+                                                        Credit Card Water <br>Park Revenue 
+                                                    </li>';
+                                }
+                                if (@$role_revenue->other_revenue == 1) {
+                                    $btn_action .='<li class="button-li" onclick="other_revenue_data('.$value->id.')">
+                                                        Other Revenue <br> Bank Transfer
+                                                    </li>';
+                                }
+                                if (@$role_revenue->transfer == 1) {
+                                    $btn_action .='<li class="button-li" onclick="transfer_data('.$value->id.')">
+                                                        Transfer
+                                                    </li>';
+                                }
+                                if (@$role_revenue->time == 1) {
+                                    $btn_action .='<li class="button-li" onclick="update_time_data('.$value->id.')">
+                                                        Update Time
+                                                    </li>';
+                                }
+                                if (@$role_revenue->split == 1) {
+                                    $btn_action .='<li class="button-li" onclick="split_data('.$value->id.', '.$value->amount.')">
+                                                        Split Revenue
+                                                    </li>';
+                                }
+                                if (@$role_revenue->edit == 1) {
+                                    $btn_action .='<li class="button-li" onclick="edit('.$value->id.')">Edit</li>
+                                                    <li class="button-li" onclick="deleted('.$value->id.')">Delete</li>';
+                                }
+                            $btn_action .='</ul>';
+                        $btn_action .='</div>';
+                    }
     
                     $data[] = [
                         'number' => $key + 1,

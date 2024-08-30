@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\SMS_alerts;
+use App\Models\TB_close_days;
 use Illuminate\Console\Command;
 
 class CloseDay extends Command
@@ -49,6 +50,12 @@ class CloseDay extends Command
         ## Split
         SMS_alerts::whereDate('date_into', $adate)->where('split_status', 1)->update([
             'close_day' => 1
+        ]);
+
+        ## Save Close Day
+        TB_close_days::create([
+            'date' => $adate,
+            'status' => 1
         ]);
 
         return Command::SUCCESS;

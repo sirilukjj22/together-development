@@ -80,4 +80,18 @@ class SMS_alerts extends Model
     {
         return $this->hasOne(Masters::class, 'id', 'transfer_from');
     }
+
+    ## Check Close Day
+    public static function checkCloseDay($date) {
+
+        $adate = date('Y-m-d', strtotime($date));
+
+        $check_data = TB_close_days::where('date', $adate)->first();
+
+        if (!empty($check_data)) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 }
