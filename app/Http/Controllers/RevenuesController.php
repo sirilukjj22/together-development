@@ -985,8 +985,6 @@ class RevenuesController extends Controller
 
         }
 
-        // dd([$month_from, $month_to]);
-
         $datetime = date("Y-".$request->month."-d");
         $last_day = $this->EOM($request->month, $request->year);
         $last_day2 = $this->EOM(date("m", strtotime("-1 months", strtotime($datetime))), $request->year);

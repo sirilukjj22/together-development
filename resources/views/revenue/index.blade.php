@@ -123,9 +123,11 @@
                                 Action
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuOperation">
-                                <a class="dropdown-item" href="#" onclick="Add_data('{{$date_current}}')" data-toggle="modal" data-target="#addIncome" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
-                                    <i class="fa-solid fa-sack-dollar" style="font-size:15px; margin-right:5px;"></i>Add
-                                </a>
+                                @if ($total_revenue_today->status == 0)
+                                    <a class="dropdown-item" href="#" onclick="Add_data('{{$date_current}}')" data-toggle="modal" data-target="#addIncome" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
+                                        <i class="fa-solid fa-sack-dollar" style="font-size:15px; margin-right:5px;"></i>Add
+                                    </a>
+                                @endif
                                 <a class="dropdown-item" href="#" onclick="view_data('{{$date_current}}')" data-toggle="modal" data-target="#ViewDataModalCenter">
                                     <i class="fa fa-info-circle fa-solid" style="font-size:15px; margin-right:6px;"></i>Details 
                                 </a>
@@ -135,7 +137,7 @@
                                     @if ($total_revenue_today->status == 0)
                                         <button class="dropdown-item btn-close-daily" value="1"><i class="fa fa-lock" style="font-size:15px; margin-right:9px;"></i>Lock </button>
                                     @else
-                                        <button class="dropdown-item btn-open-daily" value="0"><i class="fa fa-unlock" style="font-size:15px; margin-right:9px;"></i>UNLOCK </button>
+                                        <button class="dropdown-item btn-open-daily" value="0"><i class="fa fa-unlock" style="font-size:15px; margin-right:9px;"></i>Unlock </button>
                                     @endif
                                 @endif
                                 
@@ -557,15 +559,15 @@
                                     <div class="wrap-chose-dateRange">
                                         <div class="input-group">
                                             <label for="">Date Start :</label>
-                                            <input type="date" name="" id="customRang-start">
+                                            <input type="date" class="input-showdatepick mw-130" name="" id="customRang-start" style="text-align: left;">
                                         </div>
                                         <div class="input-group">
                                             <label for="">Date End : </label>
-                                            <input type="date" name="" id="customRang-end">
+                                            <input type="date" class="input-showdatepick mw-130" name="" id="customRang-end" style="text-align: left;">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
+                                <div class="modal-footer border-top">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <button type="button" id="btn-save-date" class="btn btn-success" style="background-color: #2C7F7A;" onclick="search_daily('customRang')">Search</button>
                                 </div>
@@ -1102,8 +1104,8 @@
                 @csrf
                 <div class="modal-body bg-green500">
                     <div class="df-jc-ic">
-                        <label for="" class="text2xl">วันที่ : &nbsp;&nbsp;</label>
-                        <input type="date" class="input-date" id="date" name="date" value="{{ isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') }}">
+                        <label for="" class="text2xl">Date : &nbsp;&nbsp;</label>
+                        <input type="date" class="input-date" id="date" name="date" value="{{ isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') }}" style="text-align: left;">
                     </div>
                     <br />
                     <div class="box-accordion">
@@ -1539,8 +1541,8 @@
                 </div>
                 <div class="modal-body bg-green500">
                     <div class="df-jc-ic">
-                        <label for="" class="text2xl">วันที่ : &nbsp;&nbsp;</label>
-                        <input type="date" class="input-date" id="date_view_detail" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>">
+                        <label for="" class="text2xl">Date : &nbsp;&nbsp;</label>
+                        <input type="date" class="input-date" id="date_view_detail" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>" style="text-align: left;">
                     </div>
                     <br />
                     <div class="box-accordion">
@@ -1751,7 +1753,6 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn button" data-dismiss="modal" style="background-color: rgb(104, 100, 100)"> Close </button>
-                        <button type="button" class="btn button" onclick="revenue_store()" style="background-color: rgb(5, 122, 108)"> Save changes </button>
                     </div>
                 </div>
             </div>
