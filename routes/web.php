@@ -170,28 +170,32 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Company/Tambon/{id}', 'Tambon')->name('Company.Tambon');
         Route::get('/Company/ac', 'ac')->name('Company.ac');
         Route::get('/Company/no', 'no')->name('Company.no');
-        Route::get('/Company/edit/view/{id}', 'Company_edit')->name('Company_edit');
+        Route::get('/Company/edit/{id}', 'edit')->name('Company.edit');
         Route::post('/Company/save', 'save')->name('Company.save');
         Route::get('/Company/change-status/{id}', 'changeStatus')->name('Company.changeStatus');
+        Route::get('/Company/view/{id}', 'view')->name('Company.view');
         Route::post('/Company/Company_edit/Company_update/{id}', 'Company_update')->name('Company_update');
         Route::get('/Company/provinces/{id}', 'provinces')->name('Company.provinces');
-        Route::get('/Company/amphuresA/{id}', 'amphuresAgent')->name('Company.amphuresAgent');
-        Route::get('/Company/TambonA/{id}', 'TambonAgent')->name('Company.TambonAgent');
-        Route::get('/Company/districtsA/{id}', 'districtAgent')->name('Company.districtAgent');
+        Route::get('/Company/amphuresA/{id}', 'amphuresA')->name('Company.amphuresAgent');
+        Route::get('/Company/TambonA/{id}', 'TambonA')->name('Company.TambonAgent');
+        Route::get('/Company/districtsA/{id}', 'districtA')->name('Company.districtAgent');
         Route::get('/Company/amphuresT/{id}', 'amphuresT')->name('Company.amphuresT');
         Route::get('/Company/TambonT/{id}', 'TambonT')->name('Company.TambonT');
         Route::get('/Company/districtT/{id}', 'districtT')->name('Company.districtT');
-        Route::post('/Company/check/company', 'representative');
+        Route::post('/Company/check/company', 'SearchContact');
         Route::post('/Company/edit/contact/create/{id}', 'contactcreate')->name('contact.update');
         Route::get('/Company/edit/contact/editcontact/{companyId}/{itemId}', 'contactedit')->name('Company.contact.edit');
         Route::post('/Company/edit/contact/editcontact/update/{companyId}/{itemId}', 'contactupdate')->name('Company.contact.update');
-        Route::get('/Company/edit/contact/detail/{id}', 'detail')->name('Company.detail');
+
         Route::get('/Company/contact/change-status/{id}', 'changeStatuscontact')->name('Company.contact.changeStatus');
         Route::post('/Company/save/Tax/{id}', 'Tax')->name('Company.Tax');
 
         Route::get('/Company/viewTax/{id}', 'viewTax')->name('Company.viewTax');
         Route::get('/Company/editTax/{id}', 'editTax')->name('Company.viewTax');
         Route::post('/Company/editTax/update/{Comid}/{id}', 'updatetax')->name('Company.updatetax');
+
+        Route::post('company-search-table', 'company_search_table')->name('company-search-table');
+        Route::post('company-paginate-table', 'company_paginate_table')->name('company-paginate-table');
 
     });
 

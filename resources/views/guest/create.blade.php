@@ -241,7 +241,7 @@
 
             // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
             if (countrySelect.value === "Other_countries") {
-                // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+
                 province.disabled = true;
                 // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
                 amphuresSelect.disabled = true;
