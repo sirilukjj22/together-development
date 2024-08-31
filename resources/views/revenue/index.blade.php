@@ -198,7 +198,7 @@
                             <input type="hidden" id="total_cash_dashboard" value="{{ $total_cash + $total_wp_revenue->wp_cash }}">
                         </div>
                         <div class="sub d-grid-r1">
-                            <div class="box-card bg-box">
+                            <div class="box-card bg-box" onclick="revenue_detail('front')">
                                 <div class="">
                                     <img src="./image/front/reception.png" alt="" class="img" />
                                 </div>
@@ -1830,6 +1830,15 @@
         // Add class
         $('#day-'+day).addClass('today');
         $('#day-'+day).addClass('select-day');
+    }
+
+    function revenue_detail(params) {
+        var filter_by = $('#filter-by').val();
+        var day = $('#input-search-day').val();
+        var month = $('#input-search-month').val();
+        var year = $('#input-search-year').val();
+        var month_to = $('#input-search-month-to').val();
+        // ยังไม่เสร็จ
     }
 </script>
 
