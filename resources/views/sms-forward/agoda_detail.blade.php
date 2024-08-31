@@ -123,7 +123,9 @@
                                     </td>
                                     <td>{{ number_format($item->amount, 2) }}</td>
                                     <td class="text-center">
-                                        <a href="{{ route('sms-agoda-receive-payment', $item->id) }}" class="btn btn-primary rounded-pill" type="button">รับชำระ</a>
+                                        @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
+                                            <a href="{{ route('sms-agoda-receive-payment', $item->id) }}" class="btn btn-primary rounded-pill" type="button">รับชำระ</a>
+                                        @endif
                                     </td>
                                 </tr>
                                 <?php $total_sms += $item->amount; ?>
@@ -145,13 +147,13 @@
         </div>
     </div>
 
-    <input type="hidden" id="filter-by" name="filter_by" value="{{ !empty($_GET['filterBy']) ? $_GET['filterBy'] : 'date' }}">
-    <input type="hidden" id="input-search-day" name="day" value="{{ !empty($_GET['day']) ? $_GET['day'] : date('d') }}">
-    <input type="hidden" id="input-search-month" name="month" value="{{ !empty($_GET['month']) ? $_GET['month'] : date('m') }}">
-    <input type="hidden" id="input-search-month-to" name="month_to" value="{{ !empty($_GET['monthTo']) ? $_GET['monthTo'] : date('m') }}">
-    <input type="hidden" id="input-search-year" name="year" value="{{ !empty($_GET['year']) ? $_GET['year'] : date('Y') }}">
+    <input type="hidden" id="filter-by" name="filter_by" value="{{ $filter_by }}">
+    <input type="hidden" id="input-search-day" name="day" value="{{ $day }}">
+    <input type="hidden" id="input-search-month" name="month" value="{{ $month }}">
+    <input type="hidden" id="input-search-month-to" name="month_to" value="{{ $month_to }}">
+    <input type="hidden" id="input-search-year" name="year" value="{{ $year }}">
     <input type="hidden" id="status" value="5">
-    <input type="hidden" id="account" value="{{ !empty($_GET['account']) ? $_GET['account'] : '' }}">
+    <input type="hidden" id="into_account" value="{{ $into_account }}">
     <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
     <input type="hidden" id="get-total-revenue" value="{{ $sum_revenue->total() }}">
     <input type="hidden" id="get-total-smsAgoda" value="{{ $data_sms->total() }}">
@@ -449,7 +451,12 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
-                    location.reload();
+                    if (response.status == 200) {
+                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                        location.reload();
+                    } else {
+                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
+                    }
                 },
             });
         }
