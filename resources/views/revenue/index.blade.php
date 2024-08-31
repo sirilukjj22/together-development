@@ -1853,6 +1853,12 @@
         // Add class
         $('#day-'+day).addClass('today');
         $('#day-'+day).addClass('select-day');
+
+        // Filter 
+        var filter_by = $('#filter-by').val('date');
+        var day = $('#input-search-day').val(day);
+        var month = $('#input-search-month').val(date.getMonth() + 1);
+        var year = $('#input-search-year').val(date.getFullYear());
     }
 
     function revenue_detail(params) {

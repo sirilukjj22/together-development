@@ -109,7 +109,7 @@
                                             </td>
 
                                             <td class="td-content-center">
-                                                {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '' }}
+                                                {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
                                             </td>
                                             <td class="td-content-center">
                                                 @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
@@ -237,7 +237,7 @@
                     <h5 class="modal-title text-white" id="exampleModalCenter2Label">โอนย้าย</h5>
                     <button type="button" class="btn-close lift" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('sms-transfer') }}" method="POST" enctype="multipart/form-data" class="basic-form">
+                <form action="#" method="POST" enctype="multipart/form-data" id="form-transfer" class="basic-form">
                     @csrf
                     <div class="modal-body row">
                         <div class="col-md-12 col-12">
@@ -252,7 +252,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-color-green lift">Save changes</button>
+                        <button type="button" class="btn btn-color-green lift" id="btn-save-transfer">Save changes</button>
                     </div>
                 </form>
             </div>
@@ -425,13 +425,13 @@
     </div>
     <!-- END MODAL -->
 
-    <input type="hidden" id="filter-by" name="filter_by" value="{{ !empty($_GET['filterBy']) ? $_GET['filterBy'] : 'date' }}">
-    <input type="hidden" id="input-search-day" name="day" value="{{ !empty($_GET['day']) ? $_GET['day'] : date('d') }}">
-    <input type="hidden" id="input-search-month" name="month" value="{{ !empty($_GET['month']) ? $_GET['month'] : date('m') }}">
-    <input type="hidden" id="input-search-month-to" name="month_to" value="{{ !empty($_GET['monthTo']) ? $_GET['monthTo'] : date('m') }}">
-    <input type="hidden" id="input-search-year" name="year" value="{{ !empty($_GET['year']) ? $_GET['year'] : date('Y') }}">
+    <input type="hidden" id="filter-by" name="filter_by" value="{{ $filter_by }}">
+    <input type="hidden" id="input-search-day" name="day" value="{{ $day }}">
+    <input type="hidden" id="input-search-month" name="month" value="{{ $month }}">
+    <input type="hidden" id="input-search-month-to" name="month_to" value="{{ $month_to }}">
+    <input type="hidden" id="input-search-year" name="year" value="{{ $year }}">
     <input type="hidden" id="status" value="{{ $status }}">
-    <input type="hidden" id="into_account" value="{{ !empty($_GET['account']) ? $_GET['account'] : '' }}">
+    <input type="hidden" id="into_account" value="{{ $into_account }}">
     <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
     <input type="hidden" id="get-total-sms" value="{{ $data_sms->total() }}">
     <input type="hidden" id="currentPage-sms" value="1">
@@ -610,7 +610,12 @@
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
-                    location.reload();
+                    if (response.status == 200) {
+                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                        location.reload();
+                    } else {
+                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
+                    }
                 },
             });
         }
@@ -626,10 +631,62 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
-                    location.reload();
+                    if (response.status == 200) {
+                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                        location.reload();
+                    } else {
+                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
+                    }
                 },
             });
         }
+
+        $(document).on('click', '#btn-save-other-revenue', function () {
+            var id = $('#otherDataID').val();
+            var remark = $('#other_revenue_remark').val();
+
+            jQuery.ajax({
+                type: "POST",
+                url: "{!! url('sms-other-revenue') !!}",
+                datatype: "JSON",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {dataID: id, other_revenue_remark: remark},
+                cache: false,
+                async: false,
+                success: function(response) {
+                    if (response.status == 200) {
+                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                        location.reload();
+                    } else {
+                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
+                    }
+                },
+            });
+        });
+
+        $(document).on('click', '#btn-save-transfer', function () {
+            jQuery.ajax({
+                type: "POST",
+                url: "{!! url('sms-transfer') !!}",
+                datatype: "JSON",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: $('#form-transfer').serialize(),
+                cache: false,
+                async: false,
+                success: function(response) {
+                    if (response.status == 200) {
+                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                        location.reload();
+                    } else {
+                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
+                    }
+                },
+            });
+        });
 
         $('.btn-split-add').on('click', function() {
             var date_split = $('#date-split').val();
@@ -759,8 +816,13 @@
                 url: "{!! url('sms-change-status/"+$id+"/"+$status+"') !!}",
                 datatype: "JSON",
                 async: false,
-                success: function(result) {
-                    location.reload();
+                success: function(response) {
+                    if (response.status == 200) {
+                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                        location.reload();
+                    } else {
+                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
+                    }
                 },
             });
         }

@@ -195,7 +195,7 @@
                                 </div>
                                 <!-- ข้อความรายการ ลำดับที่ 7-->
                                 <div class="box-sub-revenue">
-                                    <a href="#" onclick="agoda_detail('agoda_detail')">
+                                    <a href="#" onclick="sms_detail('agoda_detail')">
                                         <div>
                                             <div class="box-sub-revenue-content text-white">
                                                 <div>
@@ -1448,6 +1448,9 @@
                                 <input type="hidden" id="input-search-month-to" name="month_to" value="{{ isset($month_to) ? $month_to : date('m') }}">
                                 <input type="hidden" id="input-search-year" name="year" value="{{ isset($year) ? $year : date('Y') }}">
                                 <input type="time" id="time" name="time" value="<?php echo isset($time) && $time != $time ?: date('20:59:59'); ?>" hidden>
+
+                                <!-- ประเภทรายได้ -->
+                                <input type="hidden" id="revenue-type" name="revenue_type" value="">
                             </div>
                         </div>
                         <!-- ล่าง modal -->
@@ -1656,6 +1659,12 @@
             // Add class
             $('#day-'+day).addClass('today');
             $('#day-'+day).addClass('select-day');
+
+            // Filter 
+            var filter_by = $('#filter-by').val('date');
+            var day = $('#input-search-day').val(day);
+            var month = $('#input-search-month').val(date.getMonth() + 1);
+            var year = $('#input-search-year').val(date.getFullYear());
         }
 
         // Search 
@@ -1748,36 +1757,8 @@
 
         function sms_detail(revenue_name) 
         {
-            var filter_by = $('#filter-by').val();
-            var day = $('#input-search-day').val();
-            var month = $('#input-search-month').val();
-            var year = $('#input-search-year').val();
-            var month_to = $('#input-search-month-to').val();
-            var type = $('#status').val();
-            var account = $('#into_account').val();
-
-            if (account == '') {
-                account = 0;
-            }
-
-            window.location.href = "{!! url('sms-detail/"+revenue_name+"?filterBy="+filter_by+"&day="+day+"&month="+month+"&year="+year+"&monthTo="+month_to+"&type="+type+"&account="+account+"') !!}";
-        }
-
-        function agoda_detail(revenue_name) 
-        {
-            var filter_by = $('#filter-by').val();
-            var day = $('#input-search-day').val();
-            var month = $('#input-search-month').val();
-            var year = $('#input-search-year').val();
-            var month_to = $('#input-search-month-to').val();
-            var type = $('#status').val();
-            var account = $('#into_account').val();
-
-            if (account == '') {
-                account = 0;
-            }
-
-            window.location.href = "{!! url('sms-agoda_detail/"+revenue_name+"?filterBy="+filter_by+"&day="+day+"&month="+month+"&year="+year+"&monthTo="+month_to+"&type="+type+"&account="+account+"') !!}";
+            $('#revenue-type').val(revenue_name);
+            $('#form-calendar').submit();
         }
 
         function AddOrSubractDays(startingDate, number, add) 
@@ -1788,7 +1769,6 @@
                 return new Date(new Date().setDate(startingDate.getDate() - number));
             }
         }
-
 
         // Search Daily (Today, Yesterday, Tomorrow)
         function search_daily($search) {
@@ -1837,6 +1817,7 @@
             $('#input-search-day').val(day);
             $('#input-search-month').val(month);
             $('#input-search-year').val(year);
+            $('#revenue-type').val('');
             $('#form-calendar').submit();
         }
 
