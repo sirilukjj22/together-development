@@ -1105,7 +1105,7 @@
                 <div class="modal-body bg-green500">
                     <div class="df-jc-ic">
                         <label for="" class="text2xl">Date : &nbsp;&nbsp;</label>
-                        <input type="date" class="input-date" id="date" name="date" value="{{ isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') }}" style="text-align: left;">
+                        <input type="date" class="input-date" id="date" name="date" value="{{ isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') }}">
                     </div>
                     <br />
                     <div class="box-accordion">
@@ -1542,7 +1542,7 @@
                 <div class="modal-body bg-green500">
                     <div class="df-jc-ic">
                         <label for="" class="text2xl">Date : &nbsp;&nbsp;</label>
-                        <input type="date" class="input-date" id="date_view_detail" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>" style="text-align: left;">
+                        <input type="date" class="input-date" id="date_view_detail" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>">
                     </div>
                     <br />
                     <div class="box-accordion">
