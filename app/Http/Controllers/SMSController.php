@@ -1329,10 +1329,10 @@ class SMSController extends Controller
             $f_date = $check_date->date_into;
         }
 
-        $close_day = SMS_alerts::checkCloseDay($f_date);
-        ## End Check Close Day
+        // $close_day = SMS_alerts::checkCloseDay($f_date);
+        // ## End Check Close Day
 
-        if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
+        if ($check_date->close_day == 0 || Auth::user()->edit_close_day == 1) {
             if ($status == "No Category") {
                 SMS_alerts::where('id', $id)->update([
                     'status' => 0,
@@ -1394,10 +1394,10 @@ class SMSController extends Controller
             $f_date = $check_date->date_into;
         }
 
-        $close_day = SMS_alerts::checkCloseDay($f_date);
+        // $close_day = SMS_alerts::checkCloseDay($f_date);
         ## End Check Close Day
 
-        if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
+        if ($check_date->close_day == 0 || Auth::user()->edit_close_day == 1) {
             SMS_alerts::where('id', $id)->update([
                 'date' => Carbon::parse($check_date->date)->format('Y-m-d').' '.Carbon::parse($time)->format('H:i:s'),
             ]);
@@ -1425,10 +1425,10 @@ class SMSController extends Controller
             $f_date = $check_date->date_into;
         }
 
-        $close_day = SMS_alerts::checkCloseDay($f_date);
+        // $close_day = SMS_alerts::checkCloseDay($f_date);
         ## End Check Close Day
 
-        if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
+        if ($check_date->close_day == 0 || Auth::user()->edit_close_day == 1) {
             $data = SMS_alerts::find($request->splitID);
             $time = Carbon::parse($data->date)->format('H:i:s');
             foreach ($request->date_split as $key => $value) {
@@ -1463,8 +1463,6 @@ class SMSController extends Controller
                 'message' => date('d/m/Y', strtotime(date($f_date))),
             ]);
         }
-
-        // return back();
     }
 
     public function receive_payment($id)
@@ -1496,10 +1494,10 @@ class SMSController extends Controller
             $f_date = $check_date->date_into;
         }
 
-        $close_day = SMS_alerts::checkCloseDay($f_date);
+        // $close_day = SMS_alerts::checkCloseDay($f_date);
         ## End Check Close Day
 
-        if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
+        if ($check_date->close_day == 0 || Auth::user()->edit_close_day == 1) {
             try {
                 SMS_alerts::where('id', $request->dataID)->update([
                     'other_remark' => $request->other_revenue_remark,
@@ -1534,10 +1532,10 @@ class SMSController extends Controller
             $f_date = $check_date->date_into;
         }
 
-        $close_day = SMS_alerts::checkCloseDay($f_date);
+        // $close_day = SMS_alerts::checkCloseDay($f_date);
         ## End Check Close Day
 
-        if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
+        if ($check_date->close_day == 0 || Auth::user()->edit_close_day == 1) {
             SMS_alerts::where('id', $request->dataID)->update([
                 'date_into' => date($request->date_transfer . ' 21:59:59'),
                 'transfer_remark' => $request->transfer_remark,
@@ -2074,10 +2072,10 @@ class SMSController extends Controller
             $f_date = $check_date->date_into;
         }
 
-        $close_day = SMS_alerts::checkCloseDay($f_date);
+        // $close_day = SMS_alerts::checkCloseDay($f_date);
         ## End Check Close Day
 
-        if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
+        if ($check_date->close_day == 0 || Auth::user()->edit_close_day == 1) {
             SMS_alerts::where('id', $id)->delete();
 
             return response()->json([
