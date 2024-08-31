@@ -2102,22 +2102,42 @@ class SMSController extends Controller
 
     public function detail($revenue_name)
     {
-        if (@$_GET['filterBy'] == "date" || @$_GET['filterBy'] == "today" || @$_GET['filterBy'] == "yesterday" || @$_GET['filterBy'] == "tomorrow") {
-            $adate = date('Y-m-d', strtotime(date(@$_GET['year'] . '-' . @$_GET['month'] . '-' . @$_GET['day'])));
+        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $adate2 = date('Y-m-d', strtotime(date($adate)));
+
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date($adate . ' 20:59:59');
 
-        } elseif (@$_GET['filterBy'] == "month") {
-            $adate = date(@$_GET['year'] . '-' . @$_GET['month'] . '-01');
-            $lastday = dayLast(@$_GET['monthTo'], @$_GET['year']); // หาวันสุดท้ายของเดือน
+        } elseif ($request->filter_by == "month") {
+            $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
+            $adate2 = date('Y-m-d', strtotime($request->year . '-' . $request->month_to . '-' . $lastday));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-' . str_pad(@$_GET['monthTo'], 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
+            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
 
-        } elseif (@$_GET['filterBy'] == "year") {
-            $adate = date(@$_GET['year'] . '-01' . '-01');
+        } elseif ($request->filter_by == "thisMonth") {
+            $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-01');
+            $adate2 = date('Y-m-' . $lastday);
+
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-12-31' . ' 20:59:59');
+            $to = date('Y-m-d 20:59:59', strtotime($adate2));
+
+        } elseif ($request->filter_by == "year") {
+            $adate = date('Y-m-d', strtotime($request->year . '-01' . '-01'));
+            $adate2 = date('Y-m-d', strtotime(date($request->year . '-12-31')));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime($request->year . '-12-31'));
+
+        } elseif ($request->filter_by == "week") {
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
         }
 
         $title = "";

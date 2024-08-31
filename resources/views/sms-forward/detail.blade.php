@@ -112,73 +112,75 @@
                                                 {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '' }}
                                             </td>
                                             <td class="td-content-center">
-                                                @if ($item->split_status < 3)
-                                                    <div class="dropdown">
-                                                        <button class="btn btn-primary" type="button" data-bs-toggle="dropdown" type="button" data-toggle="dropdown" >ทำรายการ
-                                                            <span class="caret"></span></button>
-                                                            <ul class="dropdown-menu">
-                                                                @if ($role_revenue->front_desk == 1)
-                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Front Desk Revenue')">
-                                                                        Front Desk Bank Transfer Revenue
-                                                                    </li>
-                                                                @endif
-                                                                @if ($role_revenue->guest_deposit == 1)
-                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Guest Deposit Revenue')">
-                                                                        Guest Deposit Bank Transfer Revenue
-                                                                    </li>
-                                                                @endif
-                                                                @if ($role_revenue->all_outlet == 1)
-                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'All Outlet Revenue')">
-                                                                        All Outlet Bank Transfer Revenue
-                                                                    </li>
-                                                                @endif
-                                                                @if ($role_revenue->agoda == 1)
-                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Agoda Revenue')">
-                                                                        Agoda Bank Transfer Revenue
-                                                                    </li>
-                                                                @endif
-                                                                @if ($role_revenue->credit_card_hotel == 1)
-                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Card Revenue')">
-                                                                        Credit Card Hotel Revenue
-                                                                    </li>
-                                                                @endif
-                                                                @if ($role_revenue->elexa == 1)
-                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
-                                                                        Elexa EGAT Bank Transfer Revenue
-                                                                    </li>
-                                                                @endif
-                                                                @if ($role_revenue->no_category == 1)
-                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
-                                                                        No Category
-                                                                    </li>
-                                                                @endif
-                                                                @if ($role_revenue->water_park == 1)
-                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
-                                                                        Water Park Bank Transfer Revenue
-                                                                    </li>
-                                                                @endif
-                                                                @if ($role_revenue->credit_water_park == 1)
-                                                                    <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
-                                                                        Credit Card Water Park Revenue
-                                                                    </li>
-                                                                @endif
-                                                                @if ($role_revenue->transfer == 1)
-                                                                    <li class="button-li" onclick="transfer_data({{ $item->id }})">Transfer</li>
-                                                                @endif
-                                                                @if ($role_revenue->time == 1)
-                                                                    <li class="button-li" onclick="update_time_data({{ $item->id }})">Update Time</li>
-                                                                @endif
-                                                                @if ($role_revenue->split == 1)
-                                                                    <li class="button-li" onclick="split_data({{ $item->id }}, {{ $item->amount }})">
-                                                                        Split Revenue
-                                                                    </li>
-                                                                @endif
-                                                                @if ($role_revenue->edit == 1)
-                                                                    <li class="button-li" onclick="edit({{ $item->id }})">Edit</li>
-                                                                    <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
-                                                                @endif
-                                                            </ul>
-                                                    </div>
+                                                @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
+                                                    @if ($item->split_status < 3)
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-primary" type="button" data-bs-toggle="dropdown" type="button" data-toggle="dropdown" >ทำรายการ
+                                                                <span class="caret"></span></button>
+                                                                <ul class="dropdown-menu">
+                                                                    @if ($role_revenue->front_desk == 1)
+                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Front Desk Revenue')">
+                                                                            Front Desk Bank Transfer Revenue
+                                                                        </li>
+                                                                    @endif
+                                                                    @if ($role_revenue->guest_deposit == 1)
+                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Guest Deposit Revenue')">
+                                                                            Guest Deposit Bank Transfer Revenue
+                                                                        </li>
+                                                                    @endif
+                                                                    @if ($role_revenue->all_outlet == 1)
+                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'All Outlet Revenue')">
+                                                                            All Outlet Bank Transfer Revenue
+                                                                        </li>
+                                                                    @endif
+                                                                    @if ($role_revenue->agoda == 1)
+                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Agoda Revenue')">
+                                                                            Agoda Bank Transfer Revenue
+                                                                        </li>
+                                                                    @endif
+                                                                    @if ($role_revenue->credit_card_hotel == 1)
+                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Card Revenue')">
+                                                                            Credit Card Hotel Revenue
+                                                                        </li>
+                                                                    @endif
+                                                                    @if ($role_revenue->elexa == 1)
+                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Elexa EGAT Revenue')">
+                                                                            Elexa EGAT Bank Transfer Revenue
+                                                                        </li>
+                                                                    @endif
+                                                                    @if ($role_revenue->no_category == 1)
+                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'No Category')">
+                                                                            No Category
+                                                                        </li>
+                                                                    @endif
+                                                                    @if ($role_revenue->water_park == 1)
+                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Water Park Revenue')">
+                                                                            Water Park Bank Transfer Revenue
+                                                                        </li>
+                                                                    @endif
+                                                                    @if ($role_revenue->credit_water_park == 1)
+                                                                        <li class="button-li" onclick="change_status({{ $item->id }}, 'Credit Water Park Revenue')">
+                                                                            Credit Card Water Park Revenue
+                                                                        </li>
+                                                                    @endif
+                                                                    @if ($role_revenue->transfer == 1)
+                                                                        <li class="button-li" onclick="transfer_data({{ $item->id }})">Transfer</li>
+                                                                    @endif
+                                                                    @if ($role_revenue->time == 1)
+                                                                        <li class="button-li" onclick="update_time_data({{ $item->id }})">Update Time</li>
+                                                                    @endif
+                                                                    @if ($role_revenue->split == 1)
+                                                                        <li class="button-li" onclick="split_data({{ $item->id }}, {{ $item->amount }})">
+                                                                            Split Revenue
+                                                                        </li>
+                                                                    @endif
+                                                                    @if ($role_revenue->edit == 1)
+                                                                        <li class="button-li" onclick="edit({{ $item->id }})">Edit</li>
+                                                                        <li class="button-li" onclick="deleted({{ $item->id }})">Delete</li>
+                                                                    @endif
+                                                                </ul>
+                                                        </div>
+                                                    @endif
                                                 @endif
                                             </td>
                                         </tr>

@@ -28,8 +28,11 @@
                 }
 
                 ## Check Close Day
-                $close_day = App\Models\SMS_alerts::checkCloseDay($date_from2);
-                // $close_day = 0;
+                if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow' || !isset($filter_by)) {
+                    $close_day = App\Models\SMS_alerts::checkCloseDay($date_from2);
+                } else {
+                    $close_day = 0;
+                }
             @endphp
             <!-- กล่อง เมนูข้างบน -->
             <div>
@@ -563,7 +566,7 @@
                                                         {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
                                                     </td>
                                                     <td class="td-content-center" style="text-align: center;">
-                                                        @if ($close_day == 0 || Auth::user()->edit_close_day == 1)
+                                                        @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
                                                             <div class="dropdown">
                                                                 <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
                                                                     Select <span class="caret"></span>
@@ -766,7 +769,7 @@
                                                             {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
                                                         </td>
                                                         <td class="td-content-center" style="text-align: center;">
-                                                            @if ($close_day == 0 || Auth::user()->edit_close_day == 1)
+                                                            @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
                                                                 @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
                                                                     <div class="dropdown">
                                                                         <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
@@ -964,7 +967,7 @@
                                                             {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
                                                         </td>
                                                         <td class="td-content-center" style="text-align: center;">
-                                                            @if ($close_day == 0 || Auth::user()->edit_close_day == 1)
+                                                            @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
                                                                 @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
                                                                     <div class="dropdown">
                                                                         <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">

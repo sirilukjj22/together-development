@@ -71,122 +71,145 @@
 
     <div id="content-index" class="body-header d-flex py-3">
         <div class="container-xl">
-            <div class="nav-content" style="justify-content: space-between;margin:0.8rem 0">
-                <h1 class="h-daily" style=" margin:0;">Daily Revenue by Type</h1>
-                <div class="nav-content">
-                    <div>
-                        <div class="">
-                            <input type="text" id="select-date" name="" class="input-showdatepick mw-130" placeholder="{{ !empty($pickup_time) ? $pickup_time : date('d F Y') }}" readonly>
-                        </div>
-                    </div>
-                    <div class="" style="display: flex; gap:2px">
-                        <div class="">
-                            <button data-toggle="modal" data-target="#exampleModal2" class="button" type="button"
-                                style="border-top: 0px; border-left: 0px">
-                                <span class="d-sm-none d-none d-md-inline-block">Search</span>
-                                <i class="fa fa-search" style="font-size: 15px;"></i>
-                            </button>
-                        </div>
-                        <div class="dropdown">
-                            <button class="button dropdown-toggle" type="button" id="dropdownMenuDaily" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-top: 0px; border-left: 0px"> 
-                                <span id="txt-daily">
-                                    @if (isset($filter_by) && $filter_by == 'today' || $date_current == date('Y-m-d'))
-                                        Today
-                                    @elseif (isset($filter_by) && $filter_by == 'yesterday' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('-1 day')))
-                                        Yesterday
-                                    @elseif (isset($filter_by) && $filter_by == 'tomorrow' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('+1 day')))
-                                        Tomorrow
-                                    @elseif (isset($filter_by) && $filter_by == 'week')
-                                        This Week
-                                    @elseif (isset($filter_by) && $filter_by == 'thisMonth')
-                                        This Month
-                                    @elseif (isset($filter_by) && $filter_by == 'thisYear')
-                                        This Year
-                                    @else
-                                        Custom
-                                    @endif
-                                </span>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuDaily">
-                                <a class="dropdown-item" href="#" onclick="search_daily('today')">Today</a>
-                                <a class="dropdown-item" href="#" onclick="search_daily('week')">This Week</a>
-                                <a class="dropdown-item" href="#" onclick="search_daily('thisMonth')">This Month</a>
-                                <a class="dropdown-item" href="#" onclick="search_daily('thisYear')">This Year</a>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modalChoseDateRange">Custom Date Range</a>
-                            </div>
-                            <input type="hidden" name="" id="week-from" value="{{ date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime(isset($filter_by) ? date($date_current) : date('Y-m-d')))))  }}">
-                        </div>
-                        <div class="dropdown">
-                            <button class="button dropdown-toggle" type="button" id="dropdownMenuOperation"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                style="border-top: 0px; border-left: 0px">
-                                Action
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuOperation">
-                                @if ($total_revenue_today->status == 0)
-                                    <a class="dropdown-item" href="#" onclick="Add_data('{{$date_current}}')" data-toggle="modal" data-target="#addIncome" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
-                                        <i class="fa-solid fa-sack-dollar" style="font-size:15px; margin-right:5px;"></i>Add
-                                    </a>
-                                @endif
-                                <a class="dropdown-item" href="#" onclick="view_data('{{$date_current}}')" data-toggle="modal" data-target="#ViewDataModalCenter">
-                                    <i class="fa fa-info-circle fa-solid" style="font-size:15px; margin-right:6px;"></i>Details 
-                                </a>
-                                <a class="dropdown-item" href="#" onclick="export_data(1)"><i class="fa fa-print" style="font-size:15px; margin-right:6px;"></i>Print </a>
-
-                                @if (Auth::user()->permission > 0)
+            <div class="nav-content">
+                <div class="nav-left">
+                    <h1 class="h-daily" style=" margin:0;">Daily Revenue by Type</h1>
+                </div>
+                <div class="nav-right">
+                    <div class="nav-right-in">
+                        <input type="text" id="select-date" name="" class="input-showdatepick mw-130" placeholder="{{ !empty($pickup_time) ? $pickup_time : date('d F Y') }}" readonly>
+                                <button data-toggle="modal" data-target="#exampleModal2" class="button" type="button"
+                                    style="border-top: 0px; border-left: 0px">
+                                    <span class="d-sm-none d-none d-md-inline-block">Search</span>
+                                    <i class="fa fa-search" style="font-size: 15px;"></i>
+                                </button>
+                            <span class="dropdown">
+                                <button class="button dropdown-toggle" type="button" id="dropdownMenuDaily" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
+                                    <span id="txt-daily">
+                                        @if (isset($filter_by) && $filter_by == 'today' || $date_current == date('Y-m-d'))
+                                            Today
+                                        @elseif (isset($filter_by) && $filter_by == 'yesterday' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('-1 day')))
+                                            Yesterday
+                                        @elseif (isset($filter_by) && $filter_by == 'tomorrow' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('+1 day')))
+                                            Tomorrow
+                                        @elseif (isset($filter_by) && $filter_by == 'week')
+                                            This Week
+                                        @elseif (isset($filter_by) && $filter_by == 'thisMonth')
+                                            This Month
+                                        @elseif (isset($filter_by) && $filter_by == 'thisYear')
+                                            This Year
+                                        @else
+                                            Custom
+                                        @endif
+                                    </span>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuDaily">
+                                    <a class="dropdown-item" href="#" onclick="search_daily('today')">Today</a>
+                                    <a class="dropdown-item" href="#" onclick="search_daily('week')">This Week</a>
+                                    <a class="dropdown-item" href="#" onclick="search_daily('thisMonth')">This Month</a>
+                                    <a class="dropdown-item" href="#" onclick="search_daily('thisYear')">This Year</a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modalChoseDateRange">Custom Date Range</a>
+                                </div>
+                                <input type="hidden" name="" id="week-from" value="{{ date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime(isset($filter_by) ? date($date_current) : date('Y-m-d')))))  }}">
+                            </span>
+                            <span class="dropdown">
+                                <button class="button dropdown-toggle" type="button" id="dropdownMenuOperation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Action
+                                </button>
+                                <div class="dropdown-menu dropdown-action" aria-labelledby="dropdownMenuOperation">
                                     @if ($total_revenue_today->status == 0)
-                                        <button class="dropdown-item btn-close-daily" value="1"><i class="fa fa-lock" style="font-size:15px; margin-right:9px;"></i>Lock </button>
-                                    @else
-                                        <button class="dropdown-item btn-open-daily" value="0"><i class="fa fa-unlock" style="font-size:15px; margin-right:9px;"></i>Unlock </button>
+                                        <a class="dropdown-item" href="#" onclick="Add_data('{{$date_current}}')" data-toggle="modal" data-target="#addIncome" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
+                                            <i class="fa-solid fa-sack-dollar"></i>Add
+                                        </a>
                                     @endif
-                                @endif
-                                
-                            </div>
-                        </div>
+                                    <a class="dropdown-item" href="#" onclick="view_data('{{$date_current}}')" data-toggle="modal" data-target="#ViewDataModalCenter">
+                                        <i class="fa fa-info-circle fa-solid"></i>Details 
+                                    </a>
+                                    <a class="dropdown-item" href="#" onclick="export_data(1)"><i class="fa fa-print"></i>Print </a>
+    
+                                    @if (Auth::user()->permission > 0)
+                                        @if ($total_revenue_today->status == 0)
+                                            <a href="#" class="dropdown-item btn-close-daily" value="1"><i class="fa fa-lock"></i>Lock </a>
+                                        @else
+                                            <a href="#" class="dropdown-item btn-open-daily" value="0"><i class="fa fa-unlock"></i>Unlock </a>
+                                        @endif
+                                    @endif
+                                </div>
+                            </span>
                     </div>
                 </div>
             </div>
             <div class="all-section">
                 <div class="section1">
-                    <div class="">
-                        <div class="box-chart">
-                            @php
-                                $total_credit_hotel_wp = ($credit_revenue->total_credit ?? 0) + ($total_wp_revenue->wp_credit ?? 0);
-                            @endphp
+                    <div class="box-chart" {{ $total_today_revenue_graph > 0 ? '' : 'hidden' }}>
+                        @php
+                            $total_credit_hotel_wp = ($credit_revenue->total_credit ?? 0) + ($total_wp_revenue->wp_credit ?? 0);
+                        @endphp
+                        <canvas id="myChart" class="sm-m-40px"></canvas>
+                        <div class="percent-chart">
                             <div>
-                                <div>
-                                    <canvas id="myChart" class="sm-m-40px"></canvas>
-                                    <div class="percent-chart">
-                                        <div>
-                                            <h6 class="w-40p">
-                                                <i style="color: #2C7F7A ;" class="m-right-5 fa fa-solid fa-square"></i>Cash
-                                            </h6>
-                                            <h6 class="w-5p">:</h6>
-                                            <h6>{{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_cash + $total_wp_revenue->wp_cash) / $total_today_revenue_graph * 100), 2) }}%</h6>
-                                        </div>
-                                        <div>
-                                            <h6 class="w-40p">
-                                                <i style="color: #008996;" class="m-right-5 fa fa-solid fa-square"></i>Bank Transfer
-                                            </h6>
-                                            <h6 class="w-5p">:</h6>
-                                            <h6>{{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_bank_transfer + $total_wp_revenue->wp_transfer) / $total_today_revenue_graph * 100), 2) }}%</h6>
-                                        </div>
-                                        <div>
-                                            <h6 class="w-40p">
-                                                <i style="color: #3cc3b1;"
-                                                    class="m-right-5 fa fa-solid fa-square"></i>Credit Card
-                                            </h6>
-                                            <h6 class="w-5p">:</h6>
-                                            @if ($total_credit_hotel_wp == 0)
-                                                <h6>: {{ number_format(0, 2) }}%</h6>
-                                            @else
-                                                <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_credit_hotel_wp) / $total_today_revenue_graph * 100), 2) }}%</h6>
-                                            @endif
-                                        </div>
+                                <h6 class="w-40p">
+                                    <i style="color: #2C7F7A ;" class="m-right-5 fa fa-solid fa-square"></i>Cash
+                                </h6>
+                                <h6 class="w-5p">:</h6>
+                                <h6>{{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_cash + $total_wp_revenue->wp_cash) / $total_today_revenue_graph * 100), 2) }}%</h6>
+                            </div>
+                            <div>
+                                <h6 class="w-40p">
+                                    <i style="color: #008996;" class="m-right-5 fa fa-solid fa-square"></i>Bank Transfer
+                                </h6>
+                                <h6 class="w-5p">:</h6>
+                                <h6>{{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_bank_transfer + $total_wp_revenue->wp_transfer) / $total_today_revenue_graph * 100), 2) }}%</h6>
+                            </div>
+                            <div>
+                                <h6 class="w-40p">
+                                    <i style="color: #3cc3b1;"
+                                        class="m-right-5 fa fa-solid fa-square"></i>Credit Card
+                                </h6>
+                                <h6 class="w-5p">:</h6>
+                                @if ($total_credit_hotel_wp == 0)
+                                    <h6>: {{ number_format(0, 2) }}%</h6>
+                                @else
+                                    <h6>: {{ number_format($total_today_revenue_graph == 0 ? 0 : (($total_credit_hotel_wp) / $total_today_revenue_graph * 100), 2) }}%</h6>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-chart" {{ $total_today_revenue_graph == 0 ? '' : 'hidden' }}>
+                        <div class="box-chart-zero">
+                            <div class="circle-top">
+                                <div class="circle-ani">
+                                    <div class=""></div>
+                                </div>
+                                <div class="circle-detail">
+                                    <div>
+                                        <div>0.00</div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- </div> -->
+                            <div class="percent-chart">
+                                <div>
+                                    <h6 class="w-40p">
+                                        <i style="color: #2C7F7A ;" class="m-right-5 fa fa-solid fa-square"></i>Cash
+                                    </h6>
+                                    <h6 class="w-5p">:</h6>
+                                    <h6> 0.00%</h6>
+                                </div>
+                                <div>
+                                    <h6 class="w-40p">
+                                        <i style="color: #008996;" class="m-right-5 fa fa-solid fa-square"></i>Bank Transfer
+                                    </h6>
+                                    <h6 class="w-5p">:</h6>
+                                    <h6> 0.00%</h6>
+                                </div>
+                                <div>
+                                    <h6 class="w-40p">
+                                        <i style="color: #3cc3b1;" class="m-right-5 fa fa-solid fa-square"></i>Credit Card
+                                    </h6>
+                                    <h6 class="w-5p">:</h6>
+                                    <h6> 0.00%</h6>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="box-content">

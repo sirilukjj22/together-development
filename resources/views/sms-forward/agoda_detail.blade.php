@@ -123,7 +123,9 @@
                                     </td>
                                     <td>{{ number_format($item->amount, 2) }}</td>
                                     <td class="text-center">
-                                        <a href="{{ route('sms-agoda-receive-payment', $item->id) }}" class="btn btn-primary rounded-pill" type="button">รับชำระ</a>
+                                        @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
+                                            <a href="{{ route('sms-agoda-receive-payment', $item->id) }}" class="btn btn-primary rounded-pill" type="button">รับชำระ</a>
+                                        @endif
                                     </td>
                                 </tr>
                                 <?php $total_sms += $item->amount; ?>
