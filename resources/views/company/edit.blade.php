@@ -360,7 +360,7 @@
                             </div>
                             <div class="tab-pane fade" id="nav-Visit" role="tabpanel" rel="0">
                                 <div style="min-height: 70vh;" class="mt-2">
-                                    <table id="company-VisitTable" class="company-VisitTable ui striped table nowrap unstackable hover">
+                                    <table id="company-VisitTable" class="example2 ui striped table nowrap unstackable hover">
                                         <caption class="caption-top">
                                             <div>
                                                 <div class="flex-end-g2">
@@ -707,23 +707,23 @@
 <script type="text/javascript" src="{{ asset('assets/helper/searchTableCompany.js')}}"></script>
     <script>
         $(document).ready(function() {
-            new DataTable('.example', {
-                searching: false,
-                paging: false,
-                info: false,
-                columnDefs: [{
-                    className: 'dtr-control',
-                    orderable: true,
-                    target: null,
-                }],
-                order: [0, 'asc'],
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
-                    }
-                }
-            });
+            // new DataTable('.example', {
+            //     searching: false,
+            //     paging: false,
+            //     info: false,
+            //     columnDefs: [{
+            //         className: 'dtr-control',
+            //         orderable: true,
+            //         target: null,
+            //     }],
+            //     order: [0, 'asc'],
+            //     responsive: {
+            //         details: {
+            //             type: 'column',
+            //             target: 'tr'
+            //         }
+            //     }
+            // });
         });
         $(document).on('keyup', '.search-data-company-Tax', function () {
             var id = $(this).attr('id');
@@ -806,11 +806,11 @@
         }
     </script>
     <script>
-        function nav(id) {
+        const table_name = ['company-VisitTable', 'company-TaxTable'];
 
-            console.log(id);
-            if (id == 'nav1') {
-                new DataTable('.example', {
+        $(document).ready(function() {
+            for (let index = 0; index < table_name.length; index++) {
+                new DataTable('#'+table_name[index], {
                     searching: false,
                     paging: false,
                     info: false,
@@ -827,8 +827,15 @@
                         }
                     }
                 });
-            }else if (id == 'nav2') {
-                new DataTable('#company-VisitTable', {
+            }
+        
+        });
+
+        function nav(id) {
+
+            for (let index = 0; index < table_name.length; index++) {
+                $('#'+table_name[index]).DataTable().destroy();
+                new DataTable('#'+table_name[index], {
                     searching: false,
                     paging: false,
                     info: false,
@@ -848,25 +855,7 @@
             }
 
         }
-        // $('#nav2').on('click', function () {
-        //     new DataTable('.example', {
-        //         searching: false,
-        //         paging: false,
-        //         info: false,
-        //         columnDefs: [{
-        //             className: 'dtr-control',
-        //             orderable: true,
-        //             target: null,
-        //         }],
-        //         order: [0, 'asc'],
-        //         responsive: {
-        //             details: {
-        //                 type: 'column',
-        //                 target: 'tr'
-        //             }
-        //         }
-        //     });
-        // });
+
         $(document).on('keyup', '.search-data-company-Visit', function () {
 
             var id = $(this).attr('id');
