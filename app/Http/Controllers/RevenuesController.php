@@ -964,7 +964,7 @@ class RevenuesController extends Controller
 
             $month_from = date('Y-m-d', strtotime($adate));
             $month_to = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-' . $request->day)));
-            $date_first_day = $adate;
+            $date_first_day = $adate; 
 
             $month_to_date = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-01')));
             $month_to_date2 = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-' . $request->day)));
