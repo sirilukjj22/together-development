@@ -1322,6 +1322,11 @@ button.grey {
 }
 
 .modal-footer {
-  padding: 0.5rem 0;
-  border: none;
+  padding: 0.5rem 0.7rem;
+  border-top: 1px solid #000;
+  margin-top: 1rem;
+}
+
+input {
+  text-align: left;
 }

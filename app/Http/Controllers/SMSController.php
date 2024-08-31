@@ -398,7 +398,9 @@ class SMSController extends Controller
                     $f_date = $value->date_into;
                 }
                 
-                $close_day = SMS_alerts::checkCloseDay($f_date);
+                // $close_day = SMS_alerts::checkCloseDay($f_date);
+                $close_day = 0;
+                ## End Check Close Day
 
                 $img_bank = '';
                 $transfer_bank = '';
@@ -682,7 +684,9 @@ class SMSController extends Controller
                     $f_date = $value->date_into;
                 }
                 
-                $close_day = SMS_alerts::checkCloseDay($f_date);
+                // $close_day = SMS_alerts::checkCloseDay($f_date);
+                $close_day = 0;
+                ## End Check Close Day
 
                     $img_bank = '';
                     $transfer_bank = '';
@@ -1269,6 +1273,9 @@ class SMSController extends Controller
      */
     public function store(Request $request)
     {
+        ## Check Close Day
+        $close_day = SMS_alerts::checkCloseDay($f_date);
+
         if (isset($request->id)) {
 
             SMS_alerts::where('id', $request->id)->update([
