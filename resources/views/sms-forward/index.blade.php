@@ -76,7 +76,7 @@
                                 <input type="hidden" name="" id="week-from" value="{{ date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))) }}">
                                 <input type="hidden" name="" id="week-to" value="{{ date('d M', strtotime("+6 day", strtotime($this_week))) }}">
                             </div>
-                            @if ($close_day == 0)
+                            @if ($close_day == 0 || Auth::user()->edit_close_day == 1)
                                 <button type="button" class="ch-button" data-toggle="modal" data-target="#exampleModalCenter5" style="white-space: nowrap;">Add</button>
                             @endif
                         </div>
@@ -563,7 +563,7 @@
                                                         {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
                                                     </td>
                                                     <td class="td-content-center" style="text-align: center;">
-                                                        @if ($close_day == 0)
+                                                        @if ($close_day == 0 || Auth::user()->edit_close_day == 1)
                                                             <div class="dropdown">
                                                                 <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
                                                                     Select <span class="caret"></span>
@@ -766,7 +766,7 @@
                                                             {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
                                                         </td>
                                                         <td class="td-content-center" style="text-align: center;">
-                                                            @if ($close_day == 0)
+                                                            @if ($close_day == 0 || Auth::user()->edit_close_day == 1)
                                                                 @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
                                                                     <div class="dropdown">
                                                                         <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
@@ -964,7 +964,7 @@
                                                             {{ $item->date_into != '' ? Carbon\Carbon::parse($item->date_into)->format('d/m/Y') : '-' }}
                                                         </td>
                                                         <td class="td-content-center" style="text-align: center;">
-                                                            @if ($close_day == 0)
+                                                            @if ($close_day == 0 || Auth::user()->edit_close_day == 1)
                                                                 @if (($item->status != 4 && $item->remark == 'Auto') || Auth::user()->permission > 0)
                                                                     <div class="dropdown">
                                                                         <button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
@@ -1102,7 +1102,7 @@
                     <h5 class="modal-title text-white" id="exampleModalCenter2Label">โอนย้าย</h5>
                     <button type="button" class="btn-close lift" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('sms-transfer') }}" method="POST" enctype="multipart/form-data" class="basic-form">
+                <form action="#" method="POST" enctype="multipart/form-data" id="form-transfer" class="basic-form">
                     @csrf
                     <div class="modal-body row">
                         <div class="col-md-12 col-12">
@@ -1117,7 +1117,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-color-green lift">Save changes</button>
+                        <button type="button" class="btn btn-color-green lift" id="btn-save-transfer">Save changes</button>
                     </div>
                 </form>
             </div>
@@ -1213,7 +1213,7 @@
             <div class="modal-content rounded-lg">
                 <div class="modal-header md-header">
                     <h5 class="modal-title text-white" id="exampleModalCenter5Label">Add</h5>
-                    <button type="button" class="close text-white text-2xl" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close text-white text-2xl" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -1281,7 +1281,7 @@
                     </div>
                     <input type="hidden" name="id" id="id">
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="font-size: 15px;">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size: 15px;">Close</button>
                         <button type="button" class="btn btn-color-green sa-button-submit">Save changes</button>
                     </div>
                 </form>
@@ -1849,8 +1849,13 @@
                 url: "{!! url('sms-change-status/"+$id+"/"+$status+"') !!}",
                 datatype: "JSON",
                 async: false,
-                success: function(result) {
-                    location.reload();
+                success: function(response) {
+                    if (response.status == 200) {
+                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                        location.reload();
+                    } else {
+                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
+                    }
                 },
             });
         }
@@ -1896,7 +1901,12 @@
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
-                    location.reload();
+                    if (response.status == 200) {
+                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                        location.reload();
+                    } else {
+                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
+                    }
                 },
             });
         }
@@ -1906,6 +1916,27 @@
             $('#text-split-amount').text("(" + currencyFormat($amount) + ")");
             $('#balance_amount').val($amount);
             $('#SplitModalCenter').modal('show');
+        }
+
+        function change_split() {
+            jQuery.ajax({
+                url: "{!! url('sms-update-split') !!}",
+                type: 'POST',
+                dataType: "json",
+                cache: false,
+                data: $('.form-split').serialize(),
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.status == 200) {
+                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                        location.reload();
+                    } else {
+                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
+                    }
+                },
+            });
         }
 
         $(document).on('click', '#btn-save-other-revenue', function () {
@@ -1924,10 +1955,33 @@
                 async: false,
                 success: function(response) {
                     if (response.status == 200) {
-                        Swal.fire('เรียบร้อย!', '', 'success');
+                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
                         location.reload();
                     } else {
-                        Swal.fire('ไม่สำเร็จ', '', 'info');
+                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
+                    }
+                },
+            });
+        });
+
+        $(document).on('click', '#btn-save-transfer', function () {
+
+            jQuery.ajax({
+                type: "POST",
+                url: "{!! url('sms-transfer') !!}",
+                datatype: "JSON",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: $('#form-transfer').serialize(),
+                cache: false,
+                async: false,
+                success: function(response) {
+                    if (response.status == 200) {
+                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                        location.reload();
+                    } else {
+                        Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
                     }
                 },
             });
@@ -2114,15 +2168,18 @@
                         url: "{!! url('sms-delete/"+$id+"') !!}",
                         datatype: "JSON",
                         async: false,
-                        success: function(result) {
-                            Swal.fire('ลบข้อมูลเรียบร้อย!', '', 'success');
-                            location.reload();
+                        success: function(response) {
+                            if (response.status == 200) {
+                                Swal.fire('ลบข้อมูลเรียบร้อย!', '', 'success');
+                                location.reload();
+                            } else {
+                                Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ response.message +' แล้ว', 'error');
+                            }
                         },
                     });
 
                 } else if (result.isDenied) {
                     Swal.fire('ลบข้อมูลไม่สำเร็จ!', '', 'info');
-                    location.reload();
                 }
             });
         }
@@ -2198,15 +2255,23 @@
 
             } else {
 
+                var adate = new Date(date);
+                var month = adate.getMonth() + 1;
+                date = adate.getDate() +'/'+ month.toString().padStart(2, '0') +'/'+ adate.getFullYear();
+
                 jQuery.ajax({
                     type: "POST",
                     url: "{!! route('sms-store') !!}",
                     datatype: "JSON",
                     data: $('#form-id').serialize(),
                     async: false,
-                    success: function(result) {
-                        Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
-                        location.reload();
+                    success: function(response) {
+                        if (response.status == 200) {
+                            Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                            location.reload();
+                        } else {
+                            Swal.fire('ไม่สามารถทำรายการได้!', 'ระบบได้ทำการปิดยอดวันที่ '+ date +' แล้ว', 'error');
+                        }
                     },
                 });
             }

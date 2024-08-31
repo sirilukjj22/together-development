@@ -398,8 +398,8 @@ class SMSController extends Controller
                     $f_date = $value->date_into;
                 }
                 
-                // $close_day = SMS_alerts::checkCloseDay($f_date);
-                $close_day = 0;
+                $close_day = SMS_alerts::checkCloseDay($f_date);
+                // $close_day = 0;
                 ## End Check Close Day
 
                 $img_bank = '';
@@ -434,7 +434,7 @@ class SMSController extends Controller
                 if($value->status == 8) { $revenue_name = 'Elexa EGAT Revenue'; } 
                 if($value->status == 9) { $revenue_name = 'Other Revenue Bank Transfer'; }
 
-                if ($close_day == 0) {
+                if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
                     $btn_action .='<div class="dropdown">';
                                 $btn_action .='<button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
                                     Select <span class="caret"></span>
@@ -684,8 +684,8 @@ class SMSController extends Controller
                     $f_date = $value->date_into;
                 }
                 
-                // $close_day = SMS_alerts::checkCloseDay($f_date);
-                $close_day = 0;
+                $close_day = SMS_alerts::checkCloseDay($f_date);
+                // $close_day = 0;
                 ## End Check Close Day
 
                     $img_bank = '';
@@ -720,7 +720,7 @@ class SMSController extends Controller
                     if($value->status == 8) { $revenue_name = 'Elexa EGAT Revenue'; } 
                     if($value->status == 9) { $revenue_name = 'Other Revenue Bank Transfer'; }
     
-                    if ($close_day == 0) {
+                    if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
                         $btn_action .='<div class="dropdown">';
                             $btn_action .='<button class="btn" type="button" style="background-color: #2C7F7A; color:white;" data-toggle="dropdown" data-toggle="dropdown">
                                 Select <span class="caret"></span>
@@ -1274,48 +1274,51 @@ class SMSController extends Controller
     public function store(Request $request)
     {
         ## Check Close Day
-        $close_day = SMS_alerts::checkCloseDay($f_date);
+        $close_day = SMS_alerts::checkCloseDay($request->date);
+        // $close_day = 0;
 
-        if (isset($request->id)) {
+        if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
+            if (isset($request->id)) {
 
-            SMS_alerts::where('id', $request->id)->update([
-                'date' => $request->date . " " . $request->time  ?? null,
-                'transfer_from' => $request->transfer_from ?? 0,
-                'into_account' => $request->into_account == "076355900016902" ? "708-226791-3" : $request->into_account,
-                'amount' => $request->amount ?? null,
-                'into_qr' => $request->into_account == "076355900016902" ? "708-226791-3" : null,
-                'status' => $request->status == 0 ? 0 : $request->status,
-                'transfer_status' => 0,
-                'split_status' => 0,
-                'remark' => Auth::user()->name,
-                'updated_by' => Auth::user()->id
-            ]);
-
-            // return back()->with('success', 'ระบบได้ทำการแก้ไขรายการในระบบเรียบร้อยแล้ว');
-            return response()->json([
-                'status' => 200,
-            ]);
+                SMS_alerts::where('id', $request->id)->update([
+                    'date' => $request->date . " " . $request->time  ?? null,
+                    'transfer_from' => $request->transfer_from ?? 0,
+                    'into_account' => $request->into_account == "076355900016902" ? "708-226791-3" : $request->into_account,
+                    'amount' => $request->amount ?? null,
+                    'into_qr' => $request->into_account == "076355900016902" ? "708-226791-3" : null,
+                    'status' => $request->status == 0 ? 0 : $request->status,
+                    'transfer_status' => 0,
+                    'split_status' => 0,
+                    'remark' => Auth::user()->name,
+                    'updated_by' => Auth::user()->id
+                ]);
+    
+                return response()->json([
+                    'status' => 200,
+                ]);
+            } else {
+    
+                SMS_alerts::create([
+                    'date' => $request->date . " " . $request->time  ?? null,
+                    'transfer_from' => $request->transfer_from ?? 0,
+                    'into_account' => $request->into_account == "076355900016902" ? "708-226791-3" : $request->into_account,
+                    'amount' => $request->amount ?? null,
+                    'into_qr' => $request->into_account == "076355900016902" ? "708-226791-3" : null,
+                    'booking_id' => $request->status == 5 ? $request->booking_id : NULL,
+                    'status' => $request->status == 0 ? 0 : $request->status,
+                    'transfer_status' => 0,
+                    'split_status' => 0,
+                    'remark' => Auth::user()->name,
+                    'created_by' => Auth::user()->id
+                ]);
+    
+                return response()->json([
+                    'status' => 200,
+                ]);
+            }
         } else {
-
-            SMS_alerts::create([
-                'date' => $request->date . " " . $request->time  ?? null,
-                'transfer_from' => $request->transfer_from ?? 0,
-                'into_account' => $request->into_account == "076355900016902" ? "708-226791-3" : $request->into_account,
-                'amount' => $request->amount ?? null,
-                'into_qr' => $request->into_account == "076355900016902" ? "708-226791-3" : null,
-                'booking_id' => $request->status == 5 ? $request->booking_id : NULL,
-                'status' => $request->status == 0 ? 0 : $request->status,
-                'transfer_status' => 0,
-                'split_status' => 0,
-                'remark' => Auth::user()->name,
-                'created_by' => Auth::user()->id
-            ]);
-
-            $url = url()->previous();
-
-            // return redirect($url)->with('success', 'ระบบได้ทำการบันทึกรายการในระบบเรียบร้อยแล้ว');
             return response()->json([
-                'status' => 200,
+                'status' => 403,
             ]);
         }
     }
@@ -1328,90 +1331,149 @@ class SMSController extends Controller
      */
     public function change_status($id, $status)
     {
-        if ($status == "No Category") {
-            SMS_alerts::where('id', $id)->update([
-                'status' => 0,
-            ]);
-        } elseif ($status == "Guest Deposit Revenue") {
-            SMS_alerts::where('id', $id)->update([
-                'status' => 1,
-            ]);
-        } elseif ($status == "All Outlet Revenue") {
-            SMS_alerts::where('id', $id)->update([
-                'status' => 2,
-            ]);
-        } elseif ($status == "Water Park Revenue") {
-            SMS_alerts::where('id', $id)->update([
-                'status' => 3,
-            ]);
-        } elseif ($status == "Credit Card Revenue") {
-            SMS_alerts::where('id', $id)->update([
-                'status' => 4,
-            ]);
-        } elseif ($status == "Credit Agoda Revenue") {
-            SMS_alerts::where('id', $id)->update([
-                'status' => 5,
-            ]);
-        } elseif ($status == "Front Desk Revenue") {
-            SMS_alerts::where('id', $id)->update([
-                'status' => 6,
-            ]);
-        } elseif ($status == "Credit Water Park Revenue") {
-            SMS_alerts::where('id', $id)->update([
-                'status' => 7,
-            ]);
-        } elseif ($status == "Elexa EGAT Revenue") {
-            SMS_alerts::where('id', $id)->update([
-                'status' => 8,
-            ]);
+        ## Check Close Day
+        $check_date = SMS_alerts::where('id', $id)->select('date', 'date_into')->first();
+
+        if ($check_date->date_into == '') {
+            $f_date = $check_date->date;
+        } else {
+            $f_date = $check_date->date_into;
         }
 
-        return redirect(route('sms-alert'));
+        $close_day = SMS_alerts::checkCloseDay($f_date);
+        ## End Check Close Day
+
+        if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
+            if ($status == "No Category") {
+                SMS_alerts::where('id', $id)->update([
+                    'status' => 0,
+                ]);
+            } elseif ($status == "Guest Deposit Revenue") {
+                SMS_alerts::where('id', $id)->update([
+                    'status' => 1,
+                ]);
+            } elseif ($status == "All Outlet Revenue") {
+                SMS_alerts::where('id', $id)->update([
+                    'status' => 2,
+                ]);
+            } elseif ($status == "Water Park Revenue") {
+                SMS_alerts::where('id', $id)->update([
+                    'status' => 3,
+                ]);
+            } elseif ($status == "Credit Card Revenue") {
+                SMS_alerts::where('id', $id)->update([
+                    'status' => 4,
+                ]);
+            } elseif ($status == "Credit Agoda Revenue") {
+                SMS_alerts::where('id', $id)->update([
+                    'status' => 5,
+                ]);
+            } elseif ($status == "Front Desk Revenue") {
+                SMS_alerts::where('id', $id)->update([
+                    'status' => 6,
+                ]);
+            } elseif ($status == "Credit Water Park Revenue") {
+                SMS_alerts::where('id', $id)->update([
+                    'status' => 7,
+                ]);
+            } elseif ($status == "Elexa EGAT Revenue") {
+                SMS_alerts::where('id', $id)->update([
+                    'status' => 8,
+                ]);
+            }
+    
+            return response()->json([
+                'status' => 200,
+            ]);
+
+        } else {
+            return response()->json([
+                'status' => 403,
+                'message' => date('d/m/Y', strtotime(date($f_date))),
+            ]);
+        }
     }
 
     public function update_time($id, $time)
     {
-        $check_data = SMS_alerts::find($id);
-        SMS_alerts::where('id', $id)->update([
-            'date' => Carbon::parse($check_data->date)->format('Y-m-d').' '.Carbon::parse($time)->format('H:i:s'),
-        ]);
+        ## Check Close Day
+        $check_date = SMS_alerts::where('id', $id)->select('id', 'date', 'date_into')->first();
 
-        return response()->json([
-            'status' => 200,
-        ]);
+        if ($check_date->date_into == '') {
+            $f_date = $check_date->date;
+        } else {
+            $f_date = $check_date->date_into;
+        }
+
+        $close_day = SMS_alerts::checkCloseDay($f_date);
+        ## End Check Close Day
+
+        if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
+            SMS_alerts::where('id', $id)->update([
+                'date' => Carbon::parse($check_date->date)->format('Y-m-d').' '.Carbon::parse($time)->format('H:i:s'),
+            ]);
+
+            return response()->json([
+                'status' => 200,
+            ]);
+
+        } else {
+            return response()->json([
+                'status' => 403,
+                'message' => date('d/m/Y', strtotime(date($f_date))),
+            ]);
+        }
     }
 
     public function update_split(Request $request)
     {
-        // dd($request);
-        $status = 200;
-        $data = SMS_alerts::find($request->splitID);
-        $time = Carbon::parse($data->date)->format('H:i:s');
-        foreach ($request->date_split as $key => $value) {
-            SMS_alerts::create([
-                'split_ref_id' => $data->id,
-                'date' => $data->date,
-                'date_into' => date($value . ' ' . $time),
-                'transfer_from' => $data->transfer_from,
-                'into_account' => $data->into_account,
-                'amount' => $request->amount_split[$key],
-                'sequence' => $key + 2,
-                'split_status' => 1,
-                'remark' => Auth::user()->name,
-                'status' => $data->status
-            ]);
+        ## Check Close Day
+        $check_date = SMS_alerts::where('id', $request->splitID)->select('id', 'date', 'date_into')->first();
 
-            SMS_alerts::where('id', $request->splitID)->update([
-                'amount' => 0,
-                'amount_before_split' => $data->amount,
-                'sequence' => 1,
-                'split_status' => 3
-            ]);
+        if ($check_date->date_into == '') {
+            $f_date = $check_date->date;
+        } else {
+            $f_date = $check_date->date_into;
         }
 
-        return response()->json([
-            'status' => $status,
-        ]);
+        $close_day = SMS_alerts::checkCloseDay($f_date);
+        ## End Check Close Day
+
+        if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
+            $data = SMS_alerts::find($request->splitID);
+            $time = Carbon::parse($data->date)->format('H:i:s');
+            foreach ($request->date_split as $key => $value) {
+                SMS_alerts::create([
+                    'split_ref_id' => $data->id,
+                    'date' => $data->date,
+                    'date_into' => date($value . ' ' . $time),
+                    'transfer_from' => $data->transfer_from,
+                    'into_account' => $data->into_account,
+                    'amount' => $request->amount_split[$key],
+                    'sequence' => $key + 2,
+                    'split_status' => 1,
+                    'remark' => Auth::user()->name,
+                    'status' => $data->status
+                ]);
+
+                SMS_alerts::where('id', $request->splitID)->update([
+                    'amount' => 0,
+                    'amount_before_split' => $data->amount,
+                    'sequence' => 1,
+                    'split_status' => 3
+                ]);
+            }
+
+            return response()->json([
+                'status' => 200,
+            ]);
+
+        } else {
+            return response()->json([
+                'status' => 403,
+                'message' => date('d/m/Y', strtotime(date($f_date))),
+            ]);
+        }
 
         // return back();
     }
@@ -1436,32 +1498,73 @@ class SMSController extends Controller
 
     public function other_revenue(Request $request)
     {
-        try {
-            SMS_alerts::where('id', $request->dataID)->update([
-                'other_remark' => $request->other_revenue_remark,
-                'status' => 9
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 500,
-            ]);
+        ## Check Close Day
+        $check_date = SMS_alerts::where('id', $request->dataID)->select('date', 'date_into')->first();
+
+        if ($check_date->date_into == '') {
+            $f_date = $check_date->date;
+        } else {
+            $f_date = $check_date->date_into;
         }
 
-        return response()->json([
-            'status' => 200,
-        ]);
+        $close_day = SMS_alerts::checkCloseDay($f_date);
+        ## End Check Close Day
+
+        if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
+            try {
+                SMS_alerts::where('id', $request->dataID)->update([
+                    'other_remark' => $request->other_revenue_remark,
+                    'status' => 9
+                ]);
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'status' => 500,
+                ]);
+            }
+    
+            return response()->json([
+                'status' => 200,
+            ]);
+
+        } else {
+            return response()->json([
+                'status' => 403,
+                'message' => date('d/m/Y', strtotime(date($f_date))),
+            ]);
+        }
     }
 
     public function transfer(Request $request)
     {
-        // $check_data = SMS_alerts::find($request->dataID);
-        SMS_alerts::where('id', $request->dataID)->update([
-            'date_into' => date($request->date_transfer . ' 21:59:59'),
-            'transfer_remark' => $request->transfer_remark,
-            'transfer_status' => 1
-        ]);
+        ## Check Close Day
+        $check_date = SMS_alerts::where('id', $request->dataID)->select('date', 'date_into')->first();
 
-        return redirect(route('sms-alert'));
+        if (!empty($check_date) && $check_date->date_into == '') {
+            $f_date = $check_date->date;
+        } else {
+            $f_date = $check_date->date_into;
+        }
+
+        $close_day = SMS_alerts::checkCloseDay($f_date);
+        ## End Check Close Day
+
+        if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
+            SMS_alerts::where('id', $request->dataID)->update([
+                'date_into' => date($request->date_transfer . ' 21:59:59'),
+                'transfer_remark' => $request->transfer_remark,
+                'transfer_status' => 1
+            ]);
+
+            return response()->json([
+                'status' => 200,
+            ]);
+
+        } else {
+            return response()->json([
+                'status' => 403,
+                'message' => date('d/m/Y', strtotime(date($f_date))),
+            ]);
+        }
     }
 
     /**
@@ -1968,7 +2071,31 @@ class SMSController extends Controller
 
     public function delete($id)
     {
-        SMS_alerts::where('id', $id)->delete();
+        ## Check Close Day
+        $check_date = SMS_alerts::where('id', $id)->select('date', 'date_into')->first();
+
+        if ($check_date->date_into == '') {
+            $f_date = $check_date->date;
+        } else {
+            $f_date = $check_date->date_into;
+        }
+
+        $close_day = SMS_alerts::checkCloseDay($f_date);
+        ## End Check Close Day
+
+        if ($close_day == 0 || Auth::user()->edit_close_day == 1) {
+            SMS_alerts::where('id', $id)->delete();
+
+            return response()->json([
+                'status' => 200,
+            ]);
+
+        } else {
+            return response()->json([
+                'status' => 403,
+                'message' => date('d/m/Y', strtotime(date($f_date))),
+            ]);
+        }
 
         return redirect(route('sms-alert'));
     }
