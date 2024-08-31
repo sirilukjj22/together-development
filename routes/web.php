@@ -200,7 +200,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('tax-company-search-table', 'search_table_company');
         Route::post('tax-company-paginate-table', 'paginate_table_company');
 
-        Route::post(';Visit-company-search-table', 'search_table_company_Visit');
+        Route::post('Visit-company-search-table', 'search_table_company_Visit');
         Route::post('Visit-company-paginate-table', 'paginate_table_company_Visit');
     });
 

@@ -361,7 +361,6 @@ function getPageVisit(page, perPage, table_n)
 
 
     $('#currentPage-' + table_n).val(page);
-console.log(table_name);
 
     $('#' + table_name).DataTable().destroy();
     if (table_n == "company-Visit") {
@@ -385,7 +384,7 @@ console.log(table_name);
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0, 1, 3, 4, 5, 6, 7, 8, 9, 10], className: 'dt-center td-content-center' },
+                { targets: [0, 1, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {

@@ -268,13 +268,13 @@
         <div class="row clearfix">
             <div class="col-sm-12 col-12">
                 <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Tax" role="tab">Additional Company Tax Invoice</a></li>{{--ประวัติการแก้ไข--}}
-                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Visit" role="tab">Lastest Visit info</a></li>{{--QUOTAION--}}
-                    <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Billing" role="tab">Billing Folio info </a></li>{{--เอกสารออกบิล--}}
-                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Contract" role="tab">Contract Rate Document</a></li>{{--Doc. number--}}
-                    <li class="nav-item" id="nav5"><a class="nav-link " data-bs-toggle="tab" href="#nav-Freelancer" role="tab">Latest Freelancer By</a></li>{{--ชื่อ คนแนะนำ ครั้งต่อครั้ง ต่อ เอกสาร--}}
-                    <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-Commission" role="tab">Lastest Freelancer Commission</a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
-                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-User" role="tab">User logs</a></li>{{--ประวัติการแก้ไข--}}
+                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Tax" role="tab" onclick="nav($id='nav1')">Additional Company Tax Invoice</a></li>{{--ประวัติการแก้ไข--}}
+                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Visit" onclick="nav($id='nav2')" role="tab">Lastest Visit info</a></li>{{--QUOTAION--}}
+                    <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Billing" onclick="nav($id='nav3')" role="tab">Billing Folio info </a></li>{{--เอกสารออกบิล--}}
+                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Contract" onclick="nav($id='nav4')" role="tab">Contract Rate Document</a></li>{{--Doc. number--}}
+                    <li class="nav-item" id="nav5"><a class="nav-link " data-bs-toggle="tab" href="#nav-Freelancer" onclick="nav($id='nav5')" role="tab">Latest Freelancer By</a></li>{{--ชื่อ คนแนะนำ ครั้งต่อครั้ง ต่อ เอกสาร--}}
+                    <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-Commission" onclick="nav($id='nav6')" role="tab">Lastest Freelancer Commission</a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
+                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-User" onclick="nav($id='nav7')" role="tab">User logs</a></li>{{--ประวัติการแก้ไข--}}
                 </ul>
                 <div class="card mb-3">
                     <div class="card-body">
@@ -360,7 +360,7 @@
                             </div>
                             <div class="tab-pane fade" id="nav-Visit" role="tabpanel" rel="0">
                                 <div style="min-height: 70vh;" class="mt-2">
-                                    <table id="company-VisitTable" class="example2 ui striped table nowrap unstackable hover">
+                                    <table id="company-VisitTable" class="company-VisitTable ui striped table nowrap unstackable hover">
                                         <caption class="caption-top">
                                             <div>
                                                 <div class="flex-end-g2">
@@ -806,25 +806,67 @@
         }
     </script>
     <script>
-        $('#nav2').on('click', function () {
-            new DataTable('#company-VisitTable', {
-                searching: false,
-                paging: false,
-                info: false,
-                columnDefs: [{
-                    className: 'dtr-control',
-                    orderable: true,
-                    target: null,
-                }],
-                order: [0, 'asc'],
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
+        function nav(id) {
+
+            console.log(id);
+            if (id == 'nav1') {
+                new DataTable('.example', {
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    columnDefs: [{
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null,
+                    }],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
                     }
-                }
-            });
-        });
+                });
+            }else if (id == 'nav2') {
+                new DataTable('#company-VisitTable', {
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    columnDefs: [{
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null,
+                    }],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    }
+                });
+            }
+
+        }
+        // $('#nav2').on('click', function () {
+        //     new DataTable('.example', {
+        //         searching: false,
+        //         paging: false,
+        //         info: false,
+        //         columnDefs: [{
+        //             className: 'dtr-control',
+        //             orderable: true,
+        //             target: null,
+        //         }],
+        //         order: [0, 'asc'],
+        //         responsive: {
+        //             details: {
+        //                 type: 'column',
+        //                 target: 'tr'
+        //             }
+        //         }
+        //     });
+        // });
         $(document).on('keyup', '.search-data-company-Visit', function () {
 
             var id = $(this).attr('id');
@@ -870,7 +912,7 @@
                         $('#'+id+'-paginate').append(paginateSearchVisit(count_total, id, getUrl));
                     },
                     columnDefs: [
-                                { targets: [0, 1, 3, 4, 5, 6, 7, 8, 9, 10], className: 'dt-center td-content-center' },
+                                { targets: [0, 1, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {

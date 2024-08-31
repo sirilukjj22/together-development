@@ -1059,49 +1059,65 @@ class CompanyController extends Controller
         $search_value = $request->search_value;
         $guest_profile = $request->guest_profile;
         if ($search_value) {
-            $data_query = company_tax::where('Companny_name', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('BranchTax', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('first_name', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('last_name', 'LIKE', '%'.$search_value.'%')
+            $data_query = Quotation::where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
             ->where('Company_ID',$guest_profile)
             ->paginate($perPage);
         }else{
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query = company_tax::where('Company_ID',$guest_profile)->paginate($perPageS);
+            $data_query = Quotation::where('Company_ID',$guest_profile)->paginate($perPageS);
         }
         $data = [];
         if (isset($data_query) && count($data_query) > 0) {
             foreach ($data_query as $key => $value) {
-                $btn_Company = "";
                 $btn_status = "";
-                $btn_action = "";
-                if ($value->status == 1) {
-                    $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatusTax('.$value->id.')">ใช้งาน</button>';
-                } else {
-                    $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatusTax('.$value->id.')">ปิดใช้งาน</button>';
-                }
-                if ($value->Tax_Type == 'Company') {
-                    $btn_Company = $value->Companny_name;
+                $btn_dis = "";
+                $btn_date_in = "";
+                $btn_date_out = "";
+                if ($value->checkin) {
+                    $btn_date_in =   \Carbon\Carbon::parse($value->checkin)->format('d/m/Y');
+                    $btn_date_out =   \Carbon\Carbon::parse($value->checkout)->format('d/m/Y');
                 }else {
-                    $btn_Company = $value->first_name.' '.$value->last_name;
+                    $btn_date_in = '-';
+                    $btn_date_out = '-';
                 }
-                $btn_action .='<div class="btn-group">';
-                $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
-                $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
-                $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/viewTax/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
-                $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/editTax/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
-                $btn_action .='</ul>';
-                $btn_action .='</div>';
-
+                if ($value->SpecialDiscountBath == 0) {
+                    $btn_dis = '-';
+                }else {
+                    $btn_dis = $value->SpecialDiscountBath;
+                }
+                if ($value->status_guest == 1){
+                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                }else{
+                    if ($value->status_document == 0){
+                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                    }elseif($value->status_document == 1){
+                        $btn_status = '<span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>';
+                    }elseif($value->status_document == 2){
+                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approva</span>';
+                    }elseif($value->status_document == 3){
+                        $btn_status = '<span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>';
+                    }elseif($value->status_document == 4){
+                        $btn_status = '<span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>';
+                    }elseif($value->status_document == 6){
+                        $btn_status = '<span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>';
+                    }
+                }
                 $data[] = [
                     'number' => $key + 1,
-                    'Profile_ID_TAX'=>$value->ComTax_ID,
-                    'Company/Individual'=>$btn_Company,
-                    'Branch'=> $value->BranchTax,
-                    'Status'=>$btn_status,
-                    'Order' => $btn_action,
+                    'ID'=>$value->Quotation_ID,
+                    'Company'=>@$value->company->Company_Name,
+                    'IssueDate'=> $value->issue_date,
+                    'ExpirationDate'=>$value->Expirationdate,
+                    'CheckIn' => $btn_date_in,
+                    'CheckOut' => $btn_date_out,
+                    'Discount' => $btn_dis,
+                    'OperatedBy' => @$value->userOperated->name,
+                    'Documentstatus' => $btn_status,
                 ];
-
             }
         }
         return response()->json([
