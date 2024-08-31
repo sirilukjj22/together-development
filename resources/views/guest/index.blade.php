@@ -157,7 +157,6 @@
             var getUrl = window.location.pathname;
             console.log(search_value);
 
-            if (search_value != '') {
                 $('#'+table_name).DataTable().destroy();
                 var table = $('#'+table_name).dataTable({
                     searching: false,
@@ -176,7 +175,22 @@
                     },
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 },
+                "initComplete": function (settings,json){
 
+                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                        var count = $('#'+id+'Table tr').length - 1;
+                    }else{
+                        var count = 0;
+                    }
+                    if (search_value == '') {
+                        count_total = total;
+                    }else{
+                        count_total = count;
+                    }
+                    $('#'+id+'-paginate').children().remove().end();
+                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
+                },
                     columnDefs: [
                                 { targets: [0, 1, 3, 4, 5], className: 'dt-center td-content-center' },
                     ],
@@ -197,12 +211,7 @@
                     ],
 
                 });
-            }
-            else {
-                $('#'+id+'-paginate').children().remove().end();
-                $('#'+id+'-showingEntries').text(showingEntriesSearch(total, id));
-                $('#'+id+'-paginate').append(paginateSearch(total, id, getUrl));
-            }
+
 
             document.getElementById(id).focus();
         });

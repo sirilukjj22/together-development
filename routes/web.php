@@ -174,7 +174,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Company/save', 'save')->name('Company.save');
         Route::get('/Company/change-status/{id}', 'changeStatus')->name('Company.changeStatus');
         Route::get('/Company/view/{id}', 'view')->name('Company.view');
-        Route::post('/Company/Company_edit/Company_update/{id}', 'Company_update')->name('Company_update');
+        Route::post('/Company/Company_edit/Company_update/{id}', 'update')->name('Company_update');
         Route::get('/Company/provinces/{id}', 'provinces')->name('Company.provinces');
         Route::get('/Company/amphuresA/{id}', 'amphuresA')->name('Company.amphuresAgent');
         Route::get('/Company/TambonA/{id}', 'TambonA')->name('Company.TambonAgent');
@@ -190,13 +190,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Company/contact/change-status/{id}', 'changeStatuscontact')->name('Company.contact.changeStatus');
         Route::post('/Company/save/Tax/{id}', 'Tax')->name('Company.Tax');
 
+        Route::get('/company/change-status/tax/{id}', 'changeStatustax')->name('Company.tax.changeStatus');
         Route::get('/Company/viewTax/{id}', 'viewTax')->name('Company.viewTax');
         Route::get('/Company/editTax/{id}', 'editTax')->name('Company.viewTax');
         Route::post('/Company/editTax/update/{Comid}/{id}', 'updatetax')->name('Company.updatetax');
 
-        Route::post('company-search-table', 'company_search_table')->name('company-search-table');
-        Route::post('company-paginate-table', 'company_paginate_table')->name('company-paginate-table');
+        Route::post('company-search-table', 'company_search_table');
+        Route::post('company-paginate-table', 'company_paginate_table');
 
+        Route::post('tax-company-search-table', 'search_table_company');
+        Route::post('tax-company-paginate-table', 'paginate_table_company');
+
+        Route::post(';Visit-company-search-table', 'search_table_company_Visit');
+        Route::post('Visit-company-paginate-table', 'paginate_table_company_Visit');
     });
 
     Route::controller(GuestController::class)->group(function () {
@@ -205,6 +211,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/guest/amphures/{id}', 'amphures')->name('guest.amphures');
         Route::get('/guest/districts/{id}', 'district')->name('guest.districts');
         Route::get('/guest/Tambon/{id}', 'Tambon')->name('guest.Tambon');
+        Route::get('/guest/amphuresT/{id}', 'amphuresT')->name('guest.amphuresT');
+        Route::get('/guest/TambonT/{id}', 'TambonT')->name('guest.TambonT');
+        Route::get('/guest/districtT/{id}', 'districtT')->name('guest.districtT');
         Route::get('/guest/ac', 'ac')->name('guest.ac');
         Route::get('/guest/users_no', 'no')->name('guest.no');
         Route::get('/guest/edit/{id}', 'guest_edit')->name('guest_edit');

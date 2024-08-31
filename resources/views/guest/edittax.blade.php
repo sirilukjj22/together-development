@@ -317,6 +317,9 @@
                 tambonSelect.disabled = false;
                 zipCodeSelect.disabled = false;
                 select_amphures();
+                select_province();
+                select_Tambon();
+                $('#zip_code').empty();
             }
         }
 

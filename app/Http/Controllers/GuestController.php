@@ -34,7 +34,8 @@ class GuestController extends Controller
                 ->orWhere('Last_name', 'LIKE', '%'.$search_value.'%')
                 ->paginate($perPage);
         }else{
-            $data_query = Guest::query()->paginate($perPage);
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = Guest::query()->paginate($perPageS);
         }
         $data = [];
         $path = "/guest/edit/";
@@ -177,7 +178,32 @@ class GuestController extends Controller
 
         ]);
     }
+    public function amphuresT($id)
+    {
 
+        $amphuresA= amphures::where('province_id',$id)->select('name_th','id')->orderby('id','desc')->get();
+        return response()->json([
+            'data' => $amphuresA,
+        ]);
+    }
+    public function TambonT($id)
+    {
+        $TambonA = districts::where('amphure_id',$id)->select('name_th','id')->orderby('id','desc')->get();
+        return response()->json([
+            'data' => $TambonA,
+
+        ]);
+    }
+    public function districtT($id)
+    {
+
+        $districtA = districts::where('id',$id)->select('zip_code','id')->orderby('id','desc')->get();
+        return response()->json([
+            'data' => $districtA,
+
+        ]);
+
+    }
 
     public function guestsave(Request $request){
         $data = $request->all();
@@ -438,6 +464,9 @@ class GuestController extends Controller
             $data_query = log_company::where('created_at', 'LIKE', '%'.$search_value.'%')
                 ->where('Company_ID',$guest_profile)
                 ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = log_company::where('Company_ID',$guest_profile)->paginate($perPageS);
         }
         $data = [];
         if (isset($data_query) && count($data_query) > 0) {
@@ -761,7 +790,8 @@ class GuestController extends Controller
     public function guest_cover(Request $request, $id)
     {
         $data = $request->all();
-
+        $profileguest = Guest::where('id',$id)->first();
+        $Profile_IDGuest = $profileguest->Profile_ID;
         $latestGuest = guest_tax::latest('id')->first();
         if ($latestGuest) {
             $Profile_ID = $latestGuest->id + 1;
@@ -769,11 +799,10 @@ class GuestController extends Controller
             // ถ้าไม่มี Guest ในฐานข้อมูล เริ่มต้นด้วย 1
             $Profile_ID = 1;
         }
-        $Id_profile ="GT-";
-        $N_Profile = $Id_profile.$Profile_ID;
+        $Id_profile ="-";
+        $N_Profile = $Profile_IDGuest.$Id_profile.$Profile_ID;
         try {
-                $profileguest = Guest::where('id',$id)->first();
-                $Profile_IDGuest = $profileguest->Profile_ID;
+
                 $TaxSelect = $request->TaxSelectA;
                 $Company_type = $request->Company_type_tax;
                 $Company_Name = $request->Company_Name_tax;
@@ -1045,6 +1074,9 @@ class GuestController extends Controller
             ->orWhere('last_name', 'LIKE', '%'.$search_value.'%')
             ->where('Company_ID',$guest_profile)
             ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = guest_tax::where('Company_ID',$guest_profile)->paginate($perPageS);
         }
         $data = [];
         if (isset($data_query) && count($data_query) > 0) {
@@ -1072,6 +1104,7 @@ class GuestController extends Controller
 
                 $data[] = [
                     'number' => $key + 1,
+                    'Profile_ID_TAX'=>$value->GuestTax_ID,
                     'Company/Individual'=>$btn_Company,
                     'Branch'=> $value->BranchTax,
                     'Status'=>$btn_status,

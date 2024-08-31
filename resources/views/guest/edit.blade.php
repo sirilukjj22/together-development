@@ -489,11 +489,11 @@
                                                                     }
                                                                     function provinceTax(){
                                                                         var provinceAgentT = $('#provincetax').val();
-                                                                        console.log(1);
+                                                                        console.log(provinceAgentT);
 
                                                                         jQuery.ajax({
                                                                             type:   "GET",
-                                                                            url:    "{!! url('/Company/amphuresT/"+provinceAgentT+"') !!}",
+                                                                            url:    "{!! url('/guest/amphuresT/"+provinceAgentT+"') !!}",
                                                                             datatype:   "JSON",
                                                                             async:  false,
                                                                             success: function(result) {
@@ -514,7 +514,7 @@
                                                                         console.log(amphuresAgent);
                                                                         $.ajax({
                                                                             type:   "GET",
-                                                                            url:    "{!! url('/Company/TambonT/"+amphuresAgent+"') !!}",
+                                                                            url:    "{!! url('/guest/TambonT/"+amphuresAgent+"') !!}",
                                                                             datatype:   "JSON",
                                                                             async:  false,
                                                                             success: function(result) {
@@ -534,7 +534,7 @@
                                                                         console.log(TambonAgent);
                                                                         $.ajax({
                                                                             type:   "GET",
-                                                                            url:    "{!! url('/Company/districtT/"+TambonAgent+"') !!}",
+                                                                            url:    "{!! url('/guest/districtT/"+TambonAgent+"') !!}",
                                                                             datatype:   "JSON",
                                                                             async:  false,
                                                                             success: function(result) {
@@ -580,6 +580,7 @@
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" data-priority="1">No</th>
+                                                    <th class="text-center" data-priority="1">Profile_ID</th>
                                                     <th class="text-center" data-priority="1">Company/Individual</th>
                                                     <th class="text-center">Branch</th>
                                                     <th class="text-center">Status</th>
@@ -591,10 +592,11 @@
                                                     @foreach ($guesttax as $key => $item)
                                                     <tr>
                                                         <td style="text-align: center;">{{ $key + 1 }}</td>
+                                                        <td style="text-align: center;">{{ $item->GuestTax_ID }}</td>
                                                         @if ($item->Tax_Type == 'Company')
-                                                            <td style="text-align: center;">{{ $item->Company_name }}</td>
+                                                            <td >{{ $item->Company_name }}</td>
                                                         @else
-                                                            <td style="text-align: center;">{{ $item->first_name.' '.$item->last_name }} </td>
+                                                            <td >{{ $item->first_name.' '.$item->last_name }} </td>
                                                         @endif
                                                         <td style="text-align: center;">{{ $item->BranchTax }}</td>
                                                         <td style="text-align: center;">
@@ -1164,11 +1166,11 @@
                                         </div>
                                 </caption>
                                 <div style="min-height: 70vh;" class="mt-2">
-                                    <table id="guestTable" class="example2 ui striped table nowrap unstackable hover">
+                                    <table id="guestTable" class="example ui striped table nowrap unstackable hover">
                                         <thead>
                                             <tr>
                                                 <th  class="text-center">No</th>
-                                                <th  >Category</th>
+                                                <th >Category</th>
                                                 <th  class="text-center">Type</th>
                                                 <th  class="text-center">Created_by</th>
                                                 <th  class="text-center">Created Date</th>
@@ -1264,9 +1266,11 @@
                 amphuresSelect.disabled = false;
                 tambonSelect.disabled = false;
                 zipCodeSelect.disabled = false;
-
+                select_amphures();
+                select_province();
+                select_Tambon();
+                $('#zip_code').empty();
             }
-            select_amphures();
         }
 
         function Onclickreadonly() {
@@ -1336,39 +1340,6 @@
         }
     </script>
     <script>
-        // document.getElementById('add-phone').addEventListener('click', function() {
-        //     var phoneContainer = document.getElementById('phone-containerN');
-        //     var newCol = document.createElement('div');
-        //     newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12');
-        //     newCol.innerHTML = `
-        //         <div class="input-group mt-2">
-        //             <input type="text" name="phone[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
-        //             <button type="button" class="btn btn-outline-danger remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
-        //         </div>
-        //     `;
-        //     phoneContainer.appendChild(newCol);
-
-        //     // Add the show class after a slight delay to trigger the transition
-        //     setTimeout(function() {
-        //         newCol.querySelector('.input-group').classList.add('show');
-        //     }, 10);
-
-        //     attachRemoveEvent(newCol.querySelector('.remove-phone'));
-        // });
-
-        // function attachRemoveEvent(button) {
-        //     button.addEventListener('click', function() {
-        //         var phoneContainer = document.getElementById('phone-containerN');
-        //         if (phoneContainer.childElementCount > 1) {
-        //             phoneContainer.removeChild(button.closest('.col-lg-4, .col-md-6, .col-sm-12'));
-        //         }
-        //     });
-        // }
-
-        // // Attach the remove event to the initial remove buttons
-        // document.querySelectorAll('.remove-phone').forEach(function(button) {
-        //     attachRemoveEvent(button);
-        // });
         // Function 1
         document.getElementById('add-phone').addEventListener('click', function() {
             var phoneContainer = document.getElementById('phone-containerN');
@@ -1473,9 +1444,10 @@
             var guest_profile = $('#profile-guest').val();
             var type_status = $('#status').val();
             var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
             console.log(search_value);
 
-            if (search_value != '') {
+
                 $('#'+table_name).DataTable().destroy();
                 var table = $('#'+table_name).dataTable({
                     searching: false,
@@ -1494,8 +1466,24 @@
                     },
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 },
+                "initComplete": function (settings,json){
+
+                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                        var count = $('#'+id+'Table tr').length - 1;
+                    }else{
+                        var count = 0;
+                    }
+                    if (search_value == '') {
+                        count_total = total;
+                    }else{
+                        count_total = count;
+                    }
+                    $('#'+id+'-paginate').children().remove().end();
+                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
+                },
                     columnDefs: [
-                                { targets: [0, 1, 2, 3], className: 'dt-center td-content-center' },
+                                { targets: [0, 2, 3,4], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1506,6 +1494,81 @@
                     },
                     columns: [
                         { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'Category' },
+                        { data: 'type' },
+                        { data: 'Created_by' },
+                        { data: 'created_at' },
+                        { data: 'Content' },
+                    ],
+
+                });
+
+
+
+
+            document.getElementById(id).focus();
+        });
+    </script>
+
+    <script>
+        $(document).on('keyup', '.search-data-guest-Tax', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var guest_profile = $('#profile-guest').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
+            console.log(search_value);
+
+
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/tax-guest-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        guest_profile: guest_profile,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                    "initComplete": function (settings,json){
+
+                        if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                            var count = $('#'+id+'Table tr').length - 1;
+                        }else{
+                            var count = 0;
+                        }
+                        if (search_value == '') {
+                            count_total = total;
+                        }else{
+                            count_total = count;
+                        }
+                        $('#'+id+'-paginate').children().remove().end();
+                        $('#'+id+'-showingEntries').text(showingEntriesSearchTax(1,count_total, id));
+                        $('#'+id+'-paginate').append(paginateSearchTax(count_total, id, getUrl));
+                    },
+                    columnDefs: [
+                                { targets: [0, 1, 3,4,5], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'Profile_ID_TAX' },
                         { data: 'Company/Individual' },
                         { data: 'Branch' },
                         { data: 'Status' },
@@ -1513,85 +1576,19 @@
                     ],
 
                 });
-            }
-            else {
-                $('#'+id+'-paginate').children().remove().end();
-                $('#'+id+'-showingEntries').text(showingEntriesSearch(total, id));
-                $('#'+id+'-paginate').append(paginateSearch(total, id, getUrl));
-            }
-
             document.getElementById(id).focus();
         });
-    </script>
-
-<script>
-    $(document).on('keyup', '.search-data-guest-Tax', function () {
-        var id = $(this).attr('id');
-        var search_value = $(this).val();
-        var table_name = id+'Table';
-        var guest_profile = $('#profile-guest').val();
-        var type_status = $('#status').val();
-        var total = parseInt($('#get-total-'+id).val());
-        console.log(search_value);
-
-        if (search_value != '') {
-            $('#'+table_name).DataTable().destroy();
-            var table = $('#'+table_name).dataTable({
-                searching: false,
-                paging: false,
-                info: false,
-                ajax: {
-                url: '/tax-guest-search-table',
-                type: 'POST',
-                dataType: "json",
-                cache: false,
-                data: {
-                    search_value: search_value,
-                    table_name: table_name,
-                    guest_profile: guest_profile,
-                    status: type_status,
+        function btnstatus(id) {
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('/guest/change-status/tax/" + id + "') !!}",
+                datatype: "JSON",
+                async: false,
+                success: function(result) {
+                    Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                    location.reload();
                 },
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            },
-                columnDefs: [
-                            { targets: [0, 2, 3,4], className: 'dt-center td-content-center' },
-                ],
-                order: [0, 'asc'],
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
-                    }
-                },
-                columns: [
-                    { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                    { data: 'Company/Individual' },
-                    { data: 'Branch' },
-                    { data: 'Status' },
-                    { data: 'Order' },
-                ],
-
             });
         }
-        else {
-            $('#'+id+'-paginate').children().remove().end();
-            $('#'+id+'-showingEntries').text(showingEntriesSearchTax(total, id));
-            $('#'+id+'-paginate').append(paginateSearchTax(total, id, getUrl));
-        }
-
-        document.getElementById(id).focus();
-    });
-    function btnstatus(id) {
-        jQuery.ajax({
-            type: "GET",
-            url: "{!! url('/guest/change-status/tax/" + id + "') !!}",
-            datatype: "JSON",
-            async: false,
-            success: function(result) {
-                Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
-                location.reload();
-            },
-        });
-    }
-</script>
+    </script>
 @endsection

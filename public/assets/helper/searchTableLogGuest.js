@@ -50,7 +50,7 @@ function paginateSearch($total, $table, $link)
             // }
         }
 
-        for ($i = Math.max(1, currentPage - 1); $i <= Math.min(Math.ceil(total / perPage), currentPage + 2); $i++)
+        for ($i = Math.max(1, currentPage - 2); $i <= Math.min(Math.ceil(total / perPage), currentPage + 2); $i++)
         {
             console.log($i);
 
@@ -108,7 +108,7 @@ function getPage(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0, 1, 2, 3, 4], className: 'dt-center td-content-center' },
+                { targets: [0, 2, 3, 4], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -247,7 +247,7 @@ function getPageTax(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0, 2, 3,4], className: 'dt-center td-content-center' },
+                { targets: [0, 1, 3,4,5], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -258,6 +258,7 @@ function getPageTax(page, perPage, table_n)
             },
             columns: [
                 { data: 'number' },
+                { data: 'Profile_ID_TAX' },
                 { data: 'Company/Individual' },
                 { data: 'Branch' },
                 { data: 'Status' },
