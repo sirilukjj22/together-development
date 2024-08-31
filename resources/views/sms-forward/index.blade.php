@@ -1212,8 +1212,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content rounded-lg">
                 <div class="modal-header md-header">
-                    <h5 class="modal-title text-white" id="exampleModalCenter5Label">เพิ่มข้อมูล
-                    </h5>
+                    <h5 class="modal-title text-white" id="exampleModalCenter5Label">Add</h5>
                     <button type="button" class="close text-white text-2xl" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
