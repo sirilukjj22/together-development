@@ -95,10 +95,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('revenue-store', 'store')->name('revenue-store');
         Route::get('revenue-edit/{id}', 'edit')->name('revenue-edit');
         Route::get('revenue-export', 'export')->name('revenue-export');
-        Route::get('revenue-detail/{topic}/{date}', 'detail')->name('revenue-detail');
+        Route::post('revenue-detail', 'detail')->name('revenue-detail');
         Route::get('revenue-input-month/{month}', 'input_month')->name('revenue-input-month');
         Route::post('revenue-daily-close', 'daily_close')->name('revenue-daily-close');
         Route::post('revenue-daily-open', 'daily_open')->name('revenue-daily-open');
+
+        // Table Search / Paginate
+        Route::post('revenue-search-table', 'search_table')->name('revenue-search-table');
+        Route::post('revenue-paginate-table', 'paginate_table')->name('revenue-paginate-table');
     });
 
     # Debit Agoda Revenue

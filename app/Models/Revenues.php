@@ -51,9 +51,19 @@ class Revenues extends Model
             ->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit as total')->first();
 
         ## Date
-        $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)
-            ->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$date_from, $date_to])
-            ->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit as total')->first();
+        if ($filter_by == "week") {
+            $adate = date('Y-m-d', strtotime(date('Y-m-d')));
+            $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
+
+            $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)
+                ->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$adate, $adate2])
+                ->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit as total')->first();
+
+        } else {
+            $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)
+                ->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$date_from, $date_to])
+                ->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit as total')->first();
+        }
 
         ## Month
         $revenue_month_query = Revenues::query();
@@ -118,10 +128,21 @@ class Revenues extends Model
             ->first();
 
         ## Date
-        $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
-            ->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$date_from, $date_to])
-            ->select(DB::raw("(SUM(revenue_credit.agoda_charge) - SUM(revenue_credit.agoda_outstanding)) as total_credit_agoda, SUM(revenue_credit.agoda_charge) as agoda_charge, SUM(revenue_credit.agoda_outstanding) as agoda_outstanding"))
-            ->first();
+        if ($filter_by == "week") {
+            $adate = date('Y-m-d', strtotime(date('Y-m-d')));
+            $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
+
+            $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+                ->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$adate, $adate2])
+                ->select(DB::raw("(SUM(revenue_credit.agoda_charge) - SUM(revenue_credit.agoda_outstanding)) as total_credit_agoda, SUM(revenue_credit.agoda_charge) as agoda_charge, SUM(revenue_credit.agoda_outstanding) as agoda_outstanding"))
+                ->first();
+
+        } else {
+            $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+                ->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$date_from, $date_to])
+                ->select(DB::raw("(SUM(revenue_credit.agoda_charge) - SUM(revenue_credit.agoda_outstanding)) as total_credit_agoda, SUM(revenue_credit.agoda_charge) as agoda_charge, SUM(revenue_credit.agoda_outstanding) as agoda_outstanding"))
+                ->first();
+        }
 
         ## Month
         $revenue_month_query = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)->where('revenue_credit.revenue_type', $type);
@@ -201,9 +222,19 @@ class Revenues extends Model
             ->select(DB::raw("SUM(revenue_credit.ev_charge) as ev_charge, (SUM(revenue_credit.ev_fee) + SUM(ev_vat)) as ev_fee, SUM(revenue_credit.ev_revenue) as ev_revenue"))->first();
 
         ## Date
-        $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
-            ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$date_from, $date_to])
-            ->select(DB::raw("SUM(revenue_credit.ev_charge) as ev_charge, (SUM(revenue_credit.ev_fee) + SUM(ev_vat)) as ev_fee, SUM(revenue_credit.ev_revenue) as ev_revenue"))->first();
+        if ($filter_by == "week") {
+            $adate = date('Y-m-d', strtotime(date('Y-m-d')));
+            $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
+
+            $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
+                ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$adate, $adate2])
+                ->select(DB::raw("SUM(revenue_credit.ev_charge) as ev_charge, (SUM(revenue_credit.ev_fee) + SUM(ev_vat)) as ev_fee, SUM(revenue_credit.ev_revenue) as ev_revenue"))->first();
+
+        } else {
+            $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
+                ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type)->whereBetween('revenue.date', [$date_from, $date_to])
+                ->select(DB::raw("SUM(revenue_credit.ev_charge) as ev_charge, (SUM(revenue_credit.ev_fee) + SUM(ev_vat)) as ev_fee, SUM(revenue_credit.ev_revenue) as ev_revenue"))->first();
+        }
 
         ## Month
         $revenue_month_query = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', $type);
