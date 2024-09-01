@@ -51,7 +51,7 @@ console.log(perPage);
             // }
         }
 
-        for ($i = Math.max(1, currentPage - 1); $i <= Math.min(Math.ceil(total / perPage), currentPage + 2); $i++)
+        for ($i = Math.max(1, currentPage - 2); $i <= Math.min(Math.ceil(total / perPage), currentPage + 2); $i++)
         {
             console.log($i);
 

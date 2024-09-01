@@ -594,14 +594,14 @@ class CompanyController extends Controller
             $faxcount = company_fax::where('Profile_ID',$Profile_ID)->count();
             $faxArray = $fax->toArray();
 
-            $representative = representative::where('Company_ID',$Company_ID)->get();
+
             $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
             $provinceNames = province::select('name_th','id')->get();
 
             $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
             $Quotation = Quotation::where('Company_ID',$Company_ID)->paginate($perPage);
             $company_tax = company_tax::where('Company_ID',$Company_ID)->paginate($perPage);
-
+            $representative = representative::where('Company_ID',$Company_ID)->paginate($perPage);
             $log = log_company::where('Company_ID', $Company_ID)
             ->orderBy('updated_at', 'desc')
             ->paginate($perPage);
@@ -894,6 +894,30 @@ class CompanyController extends Controller
             'data' => $districtA,
         ]);
     }
+    public function amphuresContact($id)
+    {
+        $amphures= amphures::where('province_id',$id)->select('name_th','id')->orderby('id','desc')->get();
+        return response()->json([
+            'data' => $amphures,
+        ]);
+
+    }
+    public function TambonContact($id)
+    {
+        $Tambon = districts::where('amphure_id',$id)->select('name_th','id')->orderby('id','desc')->get();
+        return response()->json([
+            'data' => $Tambon,
+
+        ]);
+    }
+    public function districtContact($id)
+    {
+        $district = districts::where('id',$id)->select('zip_code','name_th','id')->orderby('id','desc')->get();
+        return response()->json([
+            'data' => $district,
+
+        ]);
+    }
     public function SearchContact(Request $request)
     {
         $Company_Name = $request->Company_Name;
@@ -929,6 +953,540 @@ class CompanyController extends Controller
 
         ]);
 
+    }
+    //-------------------------
+
+    //-----------------------------Tax----------------------------
+    public function Tax(Request $request,$id)
+    {
+        $data = $request->all();
+        $Company = companys::where('id',$id)->first();
+        $Profile_IDMain = $Company->Profile_ID;
+        $ids = $Company->id;
+        $latestCom = company_tax::latest('id')->first();
+        if ($latestCom) {
+            $Profile_ID = $latestCom->id + 1;
+        } else {
+            // ถ้าไม่มี Guest ในฐานข้อมูล เริ่มต้นด้วย 1
+            $Profile_ID = 1;
+        }
+        $Id_profile ="-";
+        $N_Profile = $Profile_IDMain.$Id_profile.$Profile_ID;
+
+        {
+            //log
+            $TaxSelectA = $request->TaxSelectA;
+            $Company_type_tax = $request->Company_type_tax;
+            $Company_Name_tax = $request->Company_Name_tax;
+            $CountryOther = $request->countrydataA;
+            $provinceAgent = $request->cityA;
+            $amphuresA = $request->amphuresA;
+            $TambonA = $request->TambonA;
+            $zip_codeA = $request->zip_codeA;
+            $EmailAgent = $request->EmailAgent;
+            $addressAgent = $request->addressAgent;
+            $BranchTax = $request->BranchTax;
+            //-----------------------------------
+            $phoneCom = $request->phoneTax;
+            //-----------------------------------
+            $Taxpayer_Identification =$request->Identification;
+            //------------------------------------------------------------
+            $prefix =$request->prefix;
+            $first_name =$request->first_nameCom;
+            $last_name =$request->last_nameCom;
+
+            if ($TaxSelectA == 'Company') {
+                $comtype = master_document::where('id', $Company_type_tax)->first();
+                if ($comtype->name_th =="บริษัทจำกัด") {
+                    $comtypefullname = "บริษัท ". $Company_Name_tax . " จำกัด";
+                }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                    $comtypefullname = "บริษัท ". $Company_Name_tax . " จำกัด (มหาชน)";
+                }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                    $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company_Name_tax ;
+                }
+            }else{
+                $Mprefix = master_document::where('id', $prefix)->where('Category', 'Mprename')->first();
+                if ($Mprefix) {
+                    if ($Mprefix->name_th == "นาย") {
+                        $comtypefullname = 'ชื่อ : '."นาย " . $first_name . ' ' . $last_name;
+                    } elseif ($Mprefix->name_th == "นาง") {
+                        $comtypefullname = 'ชื่อ : '."นาง " . $first_name . ' ' . $last_name;
+                    } elseif ($Mprefix->name_th == "นางสาว") {
+                        $comtypefullname = 'ชื่อ : '."นางสาว " . $first_name . ' ' . $last_name;
+                    }
+                }
+            }
+
+            if ($CountryOther == 'Thailand') {
+                $provinceNames = province::where('id', $provinceAgent)->first();
+                $TambonID = districts::where('id',$TambonA)->select('name_th','id','zip_code')->first();
+                $amphuresID = amphures::where('id',$amphuresA)->select('name_th','id')->first();
+                $provinceNames = $provinceNames->name_th;
+                $Tambon = $TambonID->name_th;
+                $amphures = $amphuresID->name_th;
+                $Zip_code = $TambonID->zip_code;
+                $AddressIndividual = 'ที่อยู่ : '.$addressAgent.' ตำบล : '.$Tambon.' อำเภอ : '.$amphures.' จังหวัด : '.$provinceNames.' '.$Zip_code;
+            }else{
+                $AddressIndividual = 'ที่อยู่ : '.$addressAgent;
+            }
+            if ($EmailAgent) {
+                $Email = 'อีเมล์ : '.$EmailAgent;
+            }
+            $Identification = null;
+            if ($Taxpayer_Identification) {
+                $Identification = 'เลขบัตรประจำตัว : '.$Taxpayer_Identification;
+            }
+            $Branch = null;
+            if ($BranchTax) {
+                $Branch = 'สาขา : '.$BranchTax;
+            }
+            $phone = null;
+            if ($phoneCom) {
+                $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phoneCom);
+            }
+            $Profile = 'รหัส : '.$N_Profile;
+            $Company = 'รหัสบริษัท : '.$Profile_IDMain;
+
+            $datacompany = '';
+
+            $variables = [$Profile,$Company,$comtypefullname, $Email, $Identification, $Branch, $AddressIndividual, $phone];
+
+            foreach ($variables as $variable) {
+                if (!empty($variable)) {
+                    if (!empty($datacompany)) {
+                        $datacompany .= ' + ';
+                    }
+                    $datacompany .= $variable;
+                }
+            }
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $Profile_IDMain;
+            $save->type = 'Create';
+            $save->Category = 'Create :: Additional Company Tax Invoice';
+            $save->content =$datacompany;
+            $save->save();
+
+        }
+        try {
+            if ($TaxSelectA == 'Company') {
+                $save = new company_tax();
+                $save->ComTax_ID =$N_Profile;
+                $save->Company_ID = $Profile_IDMain;
+                $save->Company_type = $request->Company_type_tax;
+                $save->Companny_name =$request->Company_Name_tax;
+                $save->Tax_Type = 'Company';
+                $save->BranchTax = $request->BranchTax;
+
+                if ($request->countrydataA == "Other_countries") {
+                    $save->Country =$request->countrydataA;
+                    $save->Address =$request->addressAgent;
+                }else {
+                    $save->Country =$request->countrydataA;
+                    $save->City =$request->cityA;
+                    $save->Amphures =$request->amphuresA;
+                    $save->Tambon =$request->TambonA;
+                    $save->Address =$request->addressAgent;
+                    $save->Zip_Code = $request->zip_codeA;
+                }
+                $save->Company_Email = $request->EmailAgent;
+                $save->Taxpayer_Identification = $request->Identification;
+                $save->save();
+
+                foreach ($request->phoneTax as $index => $phoneNumber) {
+                    if ($phoneNumber !== null) {
+                        $savephoneA = new company_tax_phone();
+                        $savephoneA->ComTax_ID = $N_Profile;
+                        $savephoneA->Phone_number = $phoneNumber;
+                        $savephoneA->sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                        $savephoneA->save();
+                    }
+                }
+            }else {
+                $save = new company_tax();
+                $save->ComTax_ID =$N_Profile;
+                $save->Company_ID = $Profile_IDMain;
+                $save->Company_type = $request->prefix;
+                $save->first_name =$request->first_nameCom;
+                $save->last_name =$request->last_nameCom;
+                $save->Tax_Type = 'Individual';
+                if ($CountryOther == "Other_countries") {
+                    $save->Country =$request->countrydataA;
+                    $save->Address =$request->addressAgent;
+                }else {
+                    $save->Country =$request->countrydataA;
+                    $save->City =$request->cityA;
+                    $save->Amphures =$request->amphuresA;
+                    $save->Tambon =$request->TambonA;
+                    $save->Address =$request->addressAgent;
+                    $save->Zip_Code = $request->zip_codeA;
+                }
+                $save->Company_Email = $request->EmailAgent;
+                $save->Taxpayer_Identification = $request->Identification;
+                foreach ($request->phoneTax as $index => $phoneNumber) {
+                    if ($phoneNumber !== null) {
+                        $savephoneA = new company_tax_phone();
+                        $savephoneA->ComTax_ID = $N_Profile;
+                        $savephoneA->Phone_number = $phoneNumber;
+                        $savephoneA->sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                        $savephoneA->save();
+                    }
+                }
+                $save->save();
+            }
+            return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+
+    }
+    public function viewTax($id){
+
+        $viewTax = company_tax::where('id',$id)->first();
+        $ComTax_ID = $viewTax->ComTax_ID;
+        $Company_ID =  $viewTax->Company_ID;
+        $Company = companys::where('Profile_ID',$Company_ID)->first();
+        $CompanyID = $Company->id;
+        $phonetax = company_tax_phone::where('ComTax_ID',$ComTax_ID)->get();
+        $phonetaxcount = company_tax_phone::where('ComTax_ID', $ComTax_ID)->count();
+        $phonetaxDataArray = $phonetax->toArray();
+        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
+        $provinceNames = province::select('name_th','id')->get();
+        $Tambon = districts::where('amphure_id', $viewTax->Amphures)->select('name_th','id')->get();
+        $amphures = amphures::where('province_id', $viewTax->City)->select('name_th','id')->get();
+        $Zip_code = districts::where('amphure_id', $viewTax->Amphures)->select('zip_code','id')->get();
+        $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
+        return view('company.viewtax',compact('viewTax','phonetaxDataArray','provinceNames','Tambon','amphures',
+            'Zip_code','phonetax','phonetaxcount','MCompany_type','Mprefix','CompanyID','ComTax_ID'));
+    }
+    public function editTax($id) {
+        $viewTax = company_tax::where('id',$id)->first();
+        $ComTax_ID = $viewTax->ComTax_ID;
+        $Company_ID =  $viewTax->Company_ID;
+        $Company = companys::where('Profile_ID',$Company_ID)->first();
+        $CompanyID = $Company->id;
+        $Profile_ID = $Company->Profile_ID;
+        $phonetax = company_tax_phone::where('ComTax_ID',$ComTax_ID)->get();
+        $phonetaxcount = company_tax_phone::where('ComTax_ID',$ComTax_ID)->count();
+        $phonetaxDataArray = $phonetax->toArray();
+        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
+        $provinceNames = province::select('name_th','id')->get();
+        $Tambon = districts::where('amphure_id', $viewTax->Amphures)->select('name_th','id')->get();
+        $amphures = amphures::where('province_id', $viewTax->City)->select('name_th','id')->get();
+        $Zip_code = districts::where('amphure_id', $viewTax->Amphures)->select('zip_code','id')->get();
+        $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
+        return view('company.edittax',compact('viewTax','phonetaxDataArray','provinceNames','Tambon','amphures',
+            'Zip_code','phonetax','phonetaxcount','MCompany_type','Mprefix','CompanyID','Profile_ID','ComTax_ID'));
+    }
+    public function updatetax(Request $request ,$Comid, $id){
+        try {
+            $content_last = company_tax::where('id',$id)->first();
+            $ComTax_ID = $content_last->ComTax_ID;
+            $phone = company_tax_phone::where('ComTax_ID',$ComTax_ID)->get();
+            $dataArray = $content_last->toArray();
+            $Company_ID = $content_last->Company_ID;
+            $Company = companys::where('Profile_ID',$Company_ID)->first();
+            $ids = $Company->id;
+            // รวมหมายเลขโทรศัพท์ใน $dataArray
+            $dataArray['phoneCom'] = $phone->pluck('Phone_number')->toArray();
+            $data = $request->all();
+            $datarequest = [
+                'Tax_Type' => $data['Tax_Type'] ?? null,
+                'Company_type' => $data['Company_type'] ?? null,
+                'Companny_name' => $data['Companny_name'] ?? null,
+                'BranchTax' => $data['BranchTax'] ?? null,
+                'first_name' => $data['first_name'] ?? null,
+                'last_name' => $data['last_name'] ?? null,
+                'Taxpayer_Identification' => $data['Taxpayer_Identification'] ?? null,
+                'Company_Email' => $data['Company_Email'] ?? null,
+                'Address' => $data['Address'] ?? null,
+                'Country' => $data['Country'] ?? null,
+                'City' => $data['City'] ?? null,
+                'Amphures' => $data['Amphures'] ?? null,
+                'Tambon' => $data['Tambon'] ?? null,
+                'Zip_Code' => $data['Zip_Code'] ?? null,
+                'phoneCom' => $data['phoneCom'] ?? null,
+
+            ];
+            // dd($data,$datarequest,$dataArray);
+            {
+                $keysToCompare = ['Tax_Type', 'Company_type', 'Companny_name','first_name','last_name', 'BranchTax', 'Taxpayer_Identification', 'Country', 'City', 'Amphures', 'Tambon', 'Zip_Code', 'Company_Email', 'Address', 'phoneCom'];
+                $differences = [];
+                foreach ($keysToCompare as $key) {
+                    if (isset($dataArray[$key]) || isset($datarequest[$key])) {
+                        // ตรวจสอบว่าค่าหนึ่งเป็น null หรือไม่
+                        if ((isset($dataArray[$key]) && is_null($datarequest[$key])) || (is_null($dataArray[$key]) && isset($datarequest[$key]))) {
+                            $differences[$key] = [
+                                'dataArray' => $dataArray[$key] ?? 'null',
+                                'request' => $datarequest[$key] ?? 'null'
+                            ];
+                        } else {
+                            // แปลงค่าของ $dataArray และ $data เป็นชุดข้อมูลเพื่อหาค่าที่แตกต่างกัน
+                            $dataArraySet = collect($dataArray[$key]);
+                            $dataSet = collect($datarequest[$key]);
+
+                            // หาค่าที่แตกต่างกัน
+                            $onlyInDataArray = $dataArraySet->diff($dataSet)->values()->all();
+                            $onlyInRequest = $dataSet->diff($dataArraySet)->values()->all();
+
+                            // ตรวจสอบว่ามีค่าที่แตกต่างหรือไม่
+                            if (!empty($onlyInDataArray) || !empty($onlyInRequest)) {
+                                $differences[$key] = [
+                                    'dataArray' => $onlyInDataArray,
+                                    'request' => $onlyInRequest
+                                ];
+                            }
+                        }
+                    }
+                }
+                $extractedData = [];
+                $extractedDataA= [];
+                // วนลูปเพื่อดึงชื่อคีย์และค่าจาก request
+                foreach ($differences as $key => $value) {
+                    if ($key === 'phoneCom') {
+                        // ถ้าเป็น phoneCom ให้เก็บค่า request ทั้งหมดใน array
+                        $extractedData[$key] = $value['request'];
+                        $extractedDataA[$key] = $value['dataArray'];
+                    } elseif (isset($value['request'][0])) {
+                        // สำหรับคีย์อื่นๆ ให้เก็บค่าแรกจาก array
+                        if (isset($value['request']) && is_array($value['request']) && !empty($value['request'])) {
+                            $extractedData[$key] = $value['request'][0]; // เก็บค่าแรกจาก array
+                        } else {
+                            $extractedData[$key] = $value['request']; // เก็บค่าปกติ
+                        }
+                    }else{
+                        $extractedDataA[$key] = $value['dataArray'][0];
+                    }
+                }
+
+                $Tax_Type = $extractedData['Tax_Type'] ?? null;
+                $Company_type = $extractedData['Company_type'] ?? null;
+                $Compannyname =  $extractedData['Companny_name'] ?? null;
+                $first_name =  $extractedData['first_name'] ?? null;
+                $last_name =  $extractedData['last_name'] ?? null;
+                $BranchTax =  $extractedData['BranchTax'] ?? null;
+                $Taxpayer_Identification =  $extractedData['Taxpayer_Identification'] ?? null;
+                $Country = $extractedData['Country'] ?? null;
+                $City =  $extractedData['City'] ?? null;
+                $Amphures =  $extractedData['Amphures'] ?? null;
+                $Tambon =  $extractedData['Tambon'] ?? null;
+                $Zip_Code =  $extractedData['Zip_Code'] ?? null;
+                $Company_Email =  $extractedData['Company_Email'] ?? null;
+                $Address =  $extractedData['Address'] ?? null;
+                $phoneCom =  $extractedData['phoneCom'] ?? null;
+                $phoneComA =  $extractedDataA['phoneCom'] ?? null;
+
+                $comtypefullname = null;
+
+                // ตรวจสอบค่าต่างๆ ตามลำดับเงื่อนไข
+                if ($Company_type && $first_name && $last_name) {
+                    $Mprefix = master_document::where('id', $Company_type)->where('Category', 'Mprename')->first();
+                    if ($Mprefix) {
+                        if ($Mprefix->name_th == "นาย") {
+                            $comtypefullname = "นาย " . $first_name . ' ' . $last_name;
+                        } elseif ($Mprefix->name_th == "นาง") {
+                            $comtypefullname = "นาง " . $first_name . ' ' . $last_name;
+                        } elseif ($Mprefix->name_th == "นางสาว") {
+                            $comtypefullname = "นางสาว " . $first_name . ' ' . $last_name;
+                        }
+                    }
+                } elseif ($Company_type >= 30) {
+                    $Mprefix = master_document::where('id', $Company_type)->where('Category', 'Mprename')->first();
+                    if ($Mprefix) {
+                        $prename = $Mprefix->name_th;
+                        $comtypefullname = 'คำนำหน้า : ' . $prename;
+                    }
+                } elseif ($first_name && $last_name) {
+                    $comtypefullname = 'ชื่อ : ' . $first_name . ' ' . $last_name;
+                } elseif ($first_name) {
+                    $comtypefullname = 'ชื่อ : ' . $first_name;
+                } elseif ($last_name) {
+                    $comtypefullname = 'นามสกุล : ' . $last_name;
+                }
+
+                if ($Company_type && $Compannyname) {
+                    $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+                    if ($comtype) {
+                        if ($comtype->name_th == "บริษัทจำกัด") {
+                            $comtypefullname = "บริษัท " . $Compannyname . " จำกัด";
+                        } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                            $comtypefullname = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
+                        } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                            $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                        }
+                    }
+                } elseif ($Compannyname && $BranchTax) {
+                    $comtypefullname = 'ชื่อบริษัท : ' . $Compannyname . ' สาขา : ' . $BranchTax;
+                } elseif ($Compannyname) {
+                    $comtypefullname = 'ชื่อบริษัท : ' . $Compannyname;
+                } elseif ($BranchTax) {
+                    $comtypefullname = 'สาขา : ' . $BranchTax;
+                }
+                // แสดงผลลัพธ์
+                $Email = null;
+                if ($Company_Email) {
+                    $Email = 'อีเมล์ : '.$Company_Email;
+                }
+                $Identification = null;
+                if ($Taxpayer_Identification) {
+                    $Identification = 'เลขบัตรประจำตัว : '.$Taxpayer_Identification;
+                }
+                $Branch = null;
+                if ($BranchTax) {
+                    $Branch = 'สาขา : '.$BranchTax;
+                }
+                $phone = null;
+                if ($phoneCom) {
+                    $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phoneCom);
+                }
+                $phoneA = null;
+                if ($phoneComA) {
+                    $phoneA = 'ลบเบอร์โทรศัพท์ : ' . implode(', ', $phoneComA);
+                }
+                $AddressIndividual = null;
+
+                if ($Country == 'Thailand') {
+
+                    $provinceNames = province::where('id', $City)->first();
+                    $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
+                    $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
+                    $provinceNames = $provinceNames->name_th;
+                    $Tambon = $TambonID->name_th;
+                    $amphures = $amphuresID->name_th;
+                    $Zip_code = $TambonID->zip_code;
+                    if ($Address) {
+                        $AddressIndividual = 'ที่อยู่ : '.$Address.'+'.' ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.'+'.$Zip_code;
+                    }else {
+                        $AddressIndividual = 'แก้ไขที่อยู่ '.'ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.'+'.$Zip_code;
+                    }
+
+                }else{
+
+                }
+                $datacompany = '';
+
+                $variables = [$comtypefullname, $Email, $Identification, $Branch, $AddressIndividual, $phone ,$phoneA];
+
+                foreach ($variables as $variable) {
+                    if (!empty($variable)) {
+                        if (!empty($datacompany)) {
+                            $datacompany .= ' + ';
+                        }
+                        $datacompany .= $variable;
+                    }
+                }
+                $userid = Auth::user()->id;
+                $save = new log_company();
+                $save->Created_by = $userid;
+                $save->Company_ID = $Company_ID;
+                $save->type = 'Update';
+                $save->Category = 'Edit :: Additional Company Tax Invoice';
+                $save->content =$datacompany;
+                $save->save();
+            }
+            $TaxSelectA = $request->Tax_Type;
+            $Country =$request->Country;
+            if ($TaxSelectA == 'Company') {
+                $save = company_tax::find($id);
+                $save->Company_type = $request->Company_type;
+                $save->Companny_name =$request->Companny_name;
+                $save->Tax_Type = 'Company';
+                $save->BranchTax = $request->BranchTax;
+
+                if ($Country == "Other_countries") {
+                    if ($city === null) {
+                        return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
+                    }else {
+                        $save->City = $request->City;
+                        $save->Country =$request->Country;
+                        $save->Amphures =null;
+                        $save->Tambon =null;
+                        $save->Address =$request->Address;
+                        $save->Zip_Code = null;
+                    }
+                }else {
+                    $save->Country =$request->Country;
+                    $save->City =$request->City;
+                    $save->Amphures =$request->Amphures;
+                    $save->Tambon =$request->Tambon;
+                    $save->Address =$request->Address;
+                    $save->Zip_Code = $request->Zip_Code;
+                }
+                $save->Company_Email = $request->Company_Email;
+                $save->Taxpayer_Identification = $request->Taxpayer_Identification;
+                $phoneCom = $request->phoneCom;
+                company_tax_phone::where('ComTax_ID', $ComTax_ID)->delete();
+                foreach ($phoneCom as $index => $phoneNumber) {
+                    if ($phoneNumber !== null) {
+                        $savephoneA = new company_tax_phone();
+                        $savephoneA->ComTax_ID = $ComTax_ID;
+                        $savephoneA->Phone_number = $phoneNumber;
+                        $savephoneA->sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                        $savephoneA->save();
+                    }
+                }
+                $save->save();
+            }else{
+                $save = company_tax::find($id);
+                $save->Company_type = $request->Company_type;
+                $save->first_name =$request->first_name;
+                $save->last_name =$request->last_name;
+                $save->Tax_Type = 'Individual';
+                if ($Country == "Other_countries") {
+                    if ($city === null) {
+                        return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
+                    }else {
+                        $save->City = $request->City;
+                        $save->Country =$request->Country;
+                        $save->Amphures =null;
+                        $save->Tambon =null;
+                        $save->Address =$request->Address;
+                        $save->Zip_Code = null;
+                    }
+                }else {
+                    $save->Country =$request->Country;
+                    $save->City =$request->City;
+                    $save->Amphures =$request->Amphures;
+                    $save->Tambon =$request->Tambon;
+                    $save->Address =$request->Address;
+                    $save->Zip_Code = $request->Zip_Code;
+                }
+                $save->Company_Email = $request->Company_Email;
+                $save->Taxpayer_Identification = $request->Taxpayer_Identification;
+                company_tax_phone::where('ComTax_ID', $ComTax_ID)->delete();
+                foreach ($phoneCom as $index => $phoneNumber) {
+                    if ($phoneNumber !== null) {
+                        $savephoneA = new company_tax_phone();
+                        $savephoneA->ComTax_ID = $ComTax_ID;
+                        $savephoneA->Phone_number = $phoneNumber;
+                        $savephoneA->sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                        $savephoneA->save();
+                    }
+                }
+                $save->save();
+            }
+            return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function changeStatustax($id)
+    {
+        $company_tax = company_tax::find($id);
+        if ($company_tax->status == 1 ) {
+            $status = 0;
+            $company_tax->status = $status;
+        }elseif (($company_tax->status == 0 )) {
+            $status = 1;
+            $company_tax->status = $status;
+        }
+        $company_tax->save();
     }
     public function search_table_company(Request $request)
     {
@@ -1040,19 +1598,7 @@ class CompanyController extends Controller
             'data' => $data,
         ]);
     }
-    public function changeStatustax($id)
-    {
-        $company_tax = company_tax::find($id);
-        if ($company_tax->status == 1 ) {
-            $status = 0;
-            $company_tax->status = $status;
-        }elseif (($company_tax->status == 0 )) {
-            $status = 1;
-            $company_tax->status = $status;
-        }
-        $company_tax->save();
-    }
-
+    //-----------------------------------Visit-------------------------------
     public function search_table_company_Visit(Request $request)
     {
         $perPage = (int)$request->perPage;
@@ -1194,4 +1740,253 @@ class CompanyController extends Controller
             'data' => $data,
         ]);
     }
+    //--------------------------Contact--------------
+    public function contactcreate(Request $request ,$id)
+    {
+        try {
+            $data = $request->all();
+            $Company = companys::where('id',$id)->first();
+            $Profile_IDMain = $Company->Profile_ID;
+            $Company_Name = $Company->Company_Name;
+            $Branch = $Company->Branch;
+            $ids = $Company->id;
+
+            $prefix = $request->prefix;
+            $first_name = $request->first_nameContact;
+            $last_name = $request->last_nameContact;
+            $Identification = $request->Identification;
+            $countrydataC = $request->countrydataC;
+            $cityC = $request->cityC;
+            $AmphuresC = $request->amphuresC;
+            $TambonC = $request->TambonC;
+            $Zip_codeC = $request->zip_codeC;
+            $EmailC = $request->EmailAgent;
+            $AddressC = $request->addressAgent;
+            $PhoneC = $request->phoneContact;
+            $Profile_last = representative::where('Company_Name',$Company_Name)
+            ->where('Branch',$Branch)
+            ->where('status', '1')->first();
+            if ( $Profile_last !== null) {
+                $status = $Profile_last->status;
+                if ($status == 1 ) {
+                    $status = 0;
+                    $Profile_last->status = $status;
+                }
+                $Profile_last->save();
+            }
+            $latestAgent = representative::where('Company_Name',$Company_Name)->where('Branch',$Branch)->latest('Profile_ID')->first();
+            if ($latestAgent) {
+                $latestAgent=$latestAgent->Profile_ID+1;
+            }else {
+                $latestAgent=1;
+            }
+            $A_Profile = $latestAgent;
+
+            if ($prefix && $first_name && $last_name) {
+                $Mprefix = master_document::where('id', $prefix)->where('Category', 'Mprename')->first();
+                if ($Mprefix) {
+                    if ($Mprefix->name_th == "นาย") {
+                        $comtypefullname = "นาย " . $first_name . ' ' . $last_name;
+                    } elseif ($Mprefix->name_th == "นาง") {
+                        $comtypefullname = "นาง " . $first_name . ' ' . $last_name;
+                    } elseif ($Mprefix->name_th == "นางสาว") {
+                        $comtypefullname = "นางสาว " . $first_name . ' ' . $last_name;
+                    }
+                }
+            }
+            if ($countrydataC == 'Thailand') {
+                $provinceNames = province::where('id', $cityC)->first();
+                $TambonID = districts::where('id',$TambonC)->select('name_th','id','zip_code')->first();
+                $amphuresID = amphures::where('id',$AmphuresC)->select('name_th','id')->first();
+                $provinceNames = $provinceNames->name_th;
+                $Tambon = $TambonID->name_th;
+                $amphures = $amphuresID->name_th;
+                $Zip_code = $TambonID->zip_code;
+                $AddressIndividual = 'ที่อยู่ : '.$AddressC.' ตำบล : '.$Tambon.' อำเภอ : '.$amphures.' จังหวัด : '.$provinceNames.' '.$Zip_code;
+            }else{
+                $AddressIndividual = 'ที่อยู่ : '.$AddressC;
+            }
+            $Email = null;
+            if ($EmailC) {
+                $Email = 'อีเมล์ผู้ติดต่อ : '.$EmailC;
+            }
+            $phone = null;
+            if ($PhoneC) {
+                $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $PhoneC);
+            }
+
+            $Profile = 'รหัสโปรไฟล์ : '.$A_Profile;
+            $datacompanycontact = '';
+
+            $variables = [$Profile,$comtypefullname,$AddressIndividual, $Email,$Identification, $phone];
+
+            foreach ($variables as $variable) {
+                if (!empty($variable)) {
+                    if (!empty($datacompanycontact)) {
+                        $datacompanycontact .= ' + ';
+                    }
+                    $datacompanycontact .= $variable;
+                }
+            }
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $N_Profile;
+            $save->type = 'Create';
+            $save->Category = 'Create :: Contract Rate Document';
+            $save->content =$datacompanycontact;
+            $save->save();
+
+            $saveC = new representative();
+            $saveC->Profile_ID = $A_Profile;
+            $saveC->prefix = $request->prefix;
+            $saveC->First_name = $request->first_nameContact;
+            $saveC->Last_name = $request->last_nameContact;
+            if ($request->countrydataC == "Other_countries") {
+                $saveC->Country = $request->countrydataC;
+                $saveC->City = $request->cityC;
+            }else{
+                $saveC->Country = $request->countrydataC;
+                $saveC->City = $request->cityC;
+                $saveC->Amphures = $request->amphuresC;
+                $saveC->Tambon = $request->TambonC;
+                $saveC->Zip_Code = $request->zip_codeC;
+            }
+            $saveC->Address = $request->addressAgent;
+            $saveC->Email = $request->EmailAgent;
+            $saveC->Company_ID = $Profile_IDMain;
+            $saveC->Company_Name = $Company_Name;
+            $saveC->Branch = $Branch;
+            $saveC->save();
+            return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function contactview($id){
+        $Company = companys::where('id',$id)->first();
+        $CompanyID = $id;
+        $itemId = $Company->Profile_ID;
+        $representative = representative::where('Company_ID',$itemId)->where('status',1)->first();
+        $representative_ID = $representative->Profile_ID;
+        $repCompany_ID = $representative->Company_ID;
+        $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
+        $provinceNames = province::select('name_th','id')->get();
+        $Tambon = districts::where('amphure_id', $representative->Amphures)->select('name_th','id')->get();
+        $amphures = amphures::where('province_id', $representative->City)->select('name_th','id')->get();
+        $Zip_code = districts::where('amphure_id', $representative->Amphures)->select('zip_code','id')->get();
+        $phone = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID',$repCompany_ID)->get();
+        $phonecount = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID',$repCompany_ID)->count();
+        $phoneDataArray = $phone->toArray();
+        return view('company.viewcontact',compact('representative','Company','Mprefix','provinceNames'
+        ,'provinceNames','Tambon','amphures','Zip_code','phoneDataArray','phonecount','representative_ID','CompanyID'));
+    }
+    public function search_table_company_Contact(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        if ($search_value) {
+            $data_query = representative::where('First_name', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Last_name', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Profile_ID', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = representative::where('Company_ID',$guest_profile)->paginate($perPageS);
+        }
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_Company = "";
+                $btn_status = "";
+                $btn_action = "";
+                if ($value->status == 1) {
+                    $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatusTax('.$value->id.')">ใช้งาน</button>';
+                } else {
+                    $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatusTax('.$value->id.')">ปิดใช้งาน</button>';
+                }
+
+                    $btn_Company = 'คุณ '.$value->First_name.' '.$value->Last_name;
+
+                $btn_action .='<div class="btn-group">';
+                $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
+                $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/contact/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/edit/contact/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                $btn_action .='</ul>';
+                $btn_action .='</div>';
+
+                $data[] = [
+                    'number' => $key + 1,
+                    'Profile_ID_TAX'=>$value->Profile_ID,
+                    'Company'=>$value->Company_ID,
+                    'Branch'=> $value->Branch,
+                    'Name'=>$btn_Company,
+                    'Status'=>$btn_status,
+                    'Order' => $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function  paginate_table_company_Contact(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+        $data = [];
+        if ($perPage == 10) {
+            $data_query = representative::where('Company_ID',$guest_profile)->limit($request->page.'0')->get();
+        } else {
+            $data_query = representative::where('Company_ID',$guest_profile)->paginate($perPage);
+        }
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_Company = "";
+                $btn_status = "";
+                $btn_action = "";
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    if ($value->status == 1) {
+                        $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatusTax('.$value->id.')">ใช้งาน</button>';
+                    } else {
+                        $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatusTax('.$value->id.')">ปิดใช้งาน</button>';
+                    }
+
+                        $btn_Company = 'คุณ '.$value->First_name.' '.$value->Last_name;
+
+                    $btn_action .='<div class="btn-group">';
+                    $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
+                    $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/contact/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                    $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/edit/contact/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                    $btn_action .='</ul>';
+                    $btn_action .='</div>';
+
+                    $data[] = [
+                        'number' => $key + 1,
+                        'Profile_ID_TAX'=>$value->Profile_ID,
+                        'Company'=>$value->Company_ID,
+                        'Branch'=> $value->Branch,
+                        'Name'=>$btn_Company,
+                        'Status'=>$btn_status,
+                        'Order' => $btn_action,
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
 }

@@ -36,7 +36,7 @@ class CompanyController extends Controller
     {
         $Company = companys::find($id);
         $Company_ID = $Company->Profile_ID;
-        $representative = representative::where('Company_ID', 'like', "%{$Company_ID}%")->get();
+        $representative = representative::where('Company_ID',$Company_ID)->get();
         $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         $provinceNames = province::select('name_th','id')->get();
         return view('company.contact',compact('provinceNames','Mprefix','Company','representative'));
@@ -222,18 +222,15 @@ class CompanyController extends Controller
         $representative_ID = $representative->Profile_ID;
         $repCompany_ID = $representative->Company_ID;
         $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
-        $number =  preg_replace("/[^0-9]/", "", $representative->City);
-        $Other_City =  preg_replace("/[^a-zA-Z]/", "", $representative->City);
         $provinceNames = province::select('name_th','id')->get();
         $Tambon = districts::where('amphure_id', $representative->Amphures)->select('name_th','id')->get();
         $amphures = amphures::where('province_id', $representative->City)->select('name_th','id')->get();
         $Zip_code = districts::where('amphure_id', $representative->Amphures)->select('zip_code','id')->get();
-        $phone = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID', 'like', "%{$repCompany_ID}%")->get();
-        $phonecount = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID', 'like', "%{$repCompany_ID}%")->count();
+        $phone = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID',$repCompany_ID)->get();
+        $phonecount = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID',$repCompany_ID)->count();
         $phoneDataArray = $phone->toArray();
-
         return view('company.editContact',compact('representative','Company','Mprefix','provinceNames'
-        ,'number','Other_City','provinceNames','Tambon','amphures','Zip_code','phoneDataArray','phonecount','representative_ID'));
+        ,'provinceNames','Tambon','amphures','Zip_code','phoneDataArray','phonecount','representative_ID'));
     }
     public function contactupdate(Request $request, $companyId , $itemId)
     {

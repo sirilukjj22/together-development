@@ -1519,9 +1519,6 @@
             var type_status = $('#status').val();
             var total = parseInt($('#get-total-'+id).val());
             var getUrl = window.location.pathname;
-            console.log(search_value);
-
-
                 $('#'+table_name).DataTable().destroy();
                 var table = $('#'+table_name).dataTable({
                     searching: false,

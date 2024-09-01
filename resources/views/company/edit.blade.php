@@ -305,7 +305,7 @@
                                             <tr>
                                                 <th class="text-center" data-priority="1">No</th>
                                                 <th class="text-center" data-priority="1">Profile_ID</th>
-                                                <th class="text-center" data-priority="1">Company/Individual</th>
+                                                <th  data-priority="1">Company/Individual</th>
                                                 <th class="text-center">Branch</th>
                                                 <th class="text-center">Status</th>
                                                 <th class="text-center">Order</th>
@@ -315,14 +315,14 @@
                                             @if(!empty($company_tax))
                                                 @foreach ($company_tax as $key => $item)
                                                         <tr>
-                                                            <td>{{ $key + 1 }}</td>
-                                                            <td>{{ $item->ComTax_ID }}</td>
+                                                            <td style="text-align: center;">{{ $key + 1 }}</td>
+                                                            <td style="text-align: center;">{{ $item->ComTax_ID }}</td>
                                                             @if ($item->Tax_Type == 'Company')
                                                                 <td>{{ $item->Companny_name }}</td>
                                                             @else
                                                                 <td>{{ $item->first_name }} {{ $item->last_name }}</td>
                                                             @endif
-                                                            <td>{{ $item->BranchTax }}</td>
+                                                            <td style="text-align: center;">{{ $item->BranchTax }}</td>
                                                             <td style="text-align: center;">
                                                                 <input type="hidden" id="status" value="{{ $item->status }}">
                                                                 @if ($item->status == 1)
@@ -335,8 +335,8 @@
                                                                 <div class="btn-group">
                                                                     <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                                                     <ul class="dropdown-menu border-0 shadow p-3">
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/viewTax/'.$item->id) }}">view</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/editTax/'.$item->id) }}">Edit</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/viewTax/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/editTax/'.$item->id) }}">แก้ไขรายการ</a></li>
                                                                     </ul>
                                                                 </div>
                                                             </td>
@@ -356,6 +356,338 @@
                                             </div>
                                         </caption>
                                     </table>
+                                </div>
+                                <div class="modal fade" id="CreateCompany" tabindex="-1" aria-labelledby="PrenameModalCenterTitle" style="display: none;" aria-hidden="true">
+                                    <div class="modal-dialog  modal-lg modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-color-green">
+                                                <h5 class="modal-title text-white" id="PrenameModalCenterTitle">Add tax invoice</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{url('/Company/save/Tax/'.$Company->id)}}" method="POST">
+                                                @csrf
+                                                <div class="modal-body">
+                                                    <div class="col-sm-12 col-12">
+                                                        <div class="col-sm-4 col-4">
+                                                            <span for="Country">Add Tax</span>
+                                                            <select name="TaxSelectA" id="TaxSelectA" class="select2" onchange="showTaxInput()">
+                                                                <option value="Company">Company</option>
+                                                                <option value="Individual">Individual</option>
+                                                            </select>
+                                                        </div>
+                                                        <div id="Com" style="display: block">
+                                                            <div class="col-sm-12 mt-2">
+                                                                <div class="row">
+                                                                    <div class="col-sm-6 col-6">
+                                                                        <label for="Company_type_tax">ประเภทบริษัท / Company Type</label>
+                                                                        <select name="Company_type_tax" id="Company_type_tax" class="select2" required>
+                                                                            <option value=""></option>
+                                                                            @foreach($MCompany_type as $item)
+                                                                                <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-sm-6 col-6">
+                                                                        <label for="Company_Name">ชื่อบริษัท / Company Name</label>
+                                                                        <input type="text" id="Company_Name_tax" class="form-control" placeholder="ชื่อบริษัท" name="Company_Name_tax" maxlength="70" required>
+                                                                    </div>
+                                                                    <div class="col-sm-6 col-6 mt-2">
+                                                                        <label for="Branch">สาขา / Company Branch <span>&nbsp;&nbsp;&nbsp;&nbsp; </span><input class="form-check-input" type="radio" name="flexRadioDefaultBranchTax" id="flexRadioDefaultBranchTax"> สำนักงานใหญ่</label>
+                                                                        <input type="text" id="BranchTax" name="BranchTax" placeholder="สาขาบริษัท" class="form-control" maxlength="70" required>
+                                                                    </div>
+                                                                    <div class="col-sm-6 col-6 mt-2">
+                                                                        <label for="Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</label><br>
+                                                                        <input type="text" id="IdentificationCompany" class="form-control" name="Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required >
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="Title" style="display: none;">
+                                                            <div class="col-sm-12 mt-2">
+                                                                <div class="row">
+                                                                    <div class="col-sm-6 col-6" >
+                                                                        <span for="prefix">คำนำหน้า / Title</span>
+                                                                        <select name="prefix" id="PrefaceSelectCom" class="select2" disabled required>
+                                                                                <option value=""></option>
+                                                                                @foreach($Mprefix as $item)
+                                                                                    <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                                                @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-sm-6 col-6">
+                                                                        <span for="first_name">ชื่อ / First Name</span>
+                                                                        <input type="text" id="first_nameCom" class="form-control" placeholder="ชื่อ" name="first_nameCom"maxlength="70" disabled required>
+                                                                    </div>
+                                                                    <div class="col-sm-6 col-6 mt-2">
+                                                                        <span for="last_name" >นามสกุล / Last Name</span>
+                                                                        <input type="text" id="last_nameCom" class="form-control" placeholder="นามสกุล" name="last_nameCom"maxlength="70" disabled required>
+                                                                    </div>
+                                                                    <div class="col-sm-6 col-6 mt-2">
+                                                                        <label for="Identification">เลขบัตรประจำตัวประชาชน / Identification number</label><br>
+                                                                        <input type="text" id="IdentificationName" class="form-control" name="Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี"disabled required >
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-12 col-12">
+                                                            <div class="row mt-2">
+                                                                <div class="col-sm-4 col-4">
+                                                                    <span for="Country">ประเทศ / Country</span>
+                                                                    <select name="countrydataA" id="countrySelectA" class="select2" onchange="showcityAInputTax()">
+                                                                        <option value="Thailand">ประเทศไทย</option>
+                                                                        <option value="Other_countries">ประเทศอื่นๆ</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-4 col-4" >
+                                                                    <span for="City">จังหวัด / Province</span>
+                                                                    <select name="cityA" id="provincetax" class="select2" onchange="provinceTax()" style="width: 100%;">
+                                                                        <option value=""></option>
+                                                                        @foreach($provinceNames as $item)
+                                                                            <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-4 col-4">
+                                                                    <span for="Amphures">อำเภอ / District</span>
+                                                                    <select name="amphuresA" id="amphuresT" class="select2" onchange="amphuresTax()" >
+                                                                        <option value=""></option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mt-2">
+                                                                <div class="col-sm-4 col-4">
+                                                                    <span for="Tambon">ตำบล / Subdistrict</span>
+                                                                    <select name="TambonA" id ="TambonT" class="select2" onchange="TambonTax()" style="width: 100%;">
+                                                                        <option value=""></option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-4 col-4">
+                                                                    <span for="zip_code">รหัสไปรษณีย์ / Postal Code</span>
+                                                                    <select name="zip_codeA" id ="zip_codeT" class="select2"  style="width: 100%;">
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-4 col-4">
+                                                                    <span for="Email">อีเมล์ / Email</span>
+                                                                    <input type="text" id="EmailAgent" class="form-control"placeholder="อีเมล์" name="EmailAgent"maxlength="70" required>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <span for="Address">ที่อยู่ / Address</span>
+                                                                <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
+                                                            </div>
+                                                            <div class="row mt-2">
+                                                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                                                    <span for="Company_Phone" class="flex-container">
+                                                                        โทรศัพท์/ Phone number
+                                                                    </span>
+                                                                    <button type="button" class="btn btn-color-green my-2" id="add-phoneTax">เพิ่มหมายเลขโทรศัพท์</button>
+                                                                </div>
+                                                                <div id="phone-containerTax" class="flex-container row">
+                                                                    <!-- Initial input fields -->
+                                                                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                                                                        <div class="input-group show">
+                                                                            <input type="text" name="phoneTax[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                                            <button type="button" class="btn btn-outline-danger remove-phoneTax"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <script>
+                                                                function showTaxInput() {
+                                                                    var TaxSelectA = document.getElementById("TaxSelectA");
+                                                                    var Company_type_tax = document.getElementById("Company_type_tax");
+                                                                    var Company_Name_tax = document.getElementById("Company_Name_tax");
+                                                                    var BranchTax = document.getElementById("BranchTax");
+                                                                    var Title = document.getElementById("Title");
+                                                                    var Com = document.getElementById("Com");
+                                                                    var PrefaceSelectCom = document.getElementById("PrefaceSelectCom");
+                                                                    var first_nameCom = document.getElementById("first_nameCom");
+                                                                    var last_nameCom = document.getElementById("last_nameCom");
+                                                                    var IdentificationCompany = document.getElementById("IdentificationCompany");
+                                                                    var IdentificationName = document.getElementById("IdentificationName");
+
+
+                                                                    if (TaxSelectA.value === "Company") {
+                                                                        // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+                                                                        Com.style.display = "block";
+                                                                        Title.style.display = "none";
+                                                                        // citythaiA.style.display = "none";
+                                                                        // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                        Company_Name_tax.disabled = false;
+                                                                        Company_type_tax.disabled = false;
+                                                                        BranchTax.disabled = false;
+                                                                        PrefaceSelectCom.disabled = true;
+                                                                        first_nameCom.disabled = true;
+                                                                        last_nameCom.disabled = true;
+                                                                        IdentificationCompany.disabled= false;
+                                                                        IdentificationName.disabled= true;
+                                                                    } else if (TaxSelectA.value === "Individual"){
+                                                                        Title.style.display = "block";
+                                                                        // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
+                                                                        // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+                                                                        Com.style.display = "none";
+                                                                        // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                        Company_Name_tax.disabled = true;
+                                                                        Company_type_tax.disabled = true;
+                                                                        BranchTax.disabled = true;
+                                                                        PrefaceSelectCom.disabled = false;
+                                                                        first_nameCom.disabled = false;
+                                                                        last_nameCom.disabled = false;
+                                                                        IdentificationCompany.disabled= true;
+                                                                        IdentificationName.disabled= false;
+                                                                    }
+                                                                }
+                                                                function showcityAInputTax() {
+                                                                    var countrySelectA = document.getElementById("countrySelectA");
+                                                                    var province = document.getElementById("provincetax");
+                                                                    var citythaiA = document.getElementById("citythaiA");
+                                                                    var amphuresSelect = document.getElementById("amphuresT");
+                                                                    var tambonSelect = document.getElementById("TambonT");
+                                                                    var zipCodeSelect = document.getElementById("zip_codeT");
+                                                                    // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
+                                                                    if (countrySelectA.value === "Other_countries") {
+                                                                        // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+                                                                        province.disabled = true;
+
+                                                                        // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                        amphuresSelect.disabled = true;
+                                                                        tambonSelect.disabled = true;
+                                                                        zipCodeSelect.disabled = true;
+                                                                    } else if (countrySelectA.value === "Thailand"){
+                                                                        // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
+                                                                        // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+                                                                        province.disabled = false;
+                                                                        // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                        amphuresSelect.disabled = false;
+                                                                        tambonSelect.disabled = false;
+                                                                        zipCodeSelect.disabled = false;
+
+                                                                        // เรียกใช้ฟังก์ชัน select_amphures() เพื่อเปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                        amphuresT();
+                                                                    }
+                                                                }
+                                                                function provinceTax(){
+                                                                    var provinceAgentT = $('#provincetax').val();
+                                                                    console.log(provinceAgentT);
+
+                                                                    jQuery.ajax({
+                                                                        type:   "GET",
+                                                                        url:    "{!! url('/guest/amphuresT/"+provinceAgentT+"') !!}",
+                                                                        datatype:   "JSON",
+                                                                        async:  false,
+                                                                        success: function(result) {
+                                                                            jQuery('#amphuresT').children().remove().end();
+                                                                            console.log(result);
+                                                                            $('#amphuresT').append(new Option('', ''));
+                                                                            jQuery.each(result.data, function(key, value) {
+                                                                                var amphuresA = new Option(value.name_th,value.id);
+                                                                                //console.log(amphuresA);
+                                                                                $('#amphuresT').append(amphuresA);
+                                                                            });
+                                                                        },
+                                                                    })
+
+                                                                }
+                                                                function amphuresTax(){
+                                                                    var amphuresAgent  = $('#amphuresT').val();
+                                                                    console.log(amphuresAgent);
+                                                                    $.ajax({
+                                                                        type:   "GET",
+                                                                        url:    "{!! url('/guest/TambonT/"+amphuresAgent+"') !!}",
+                                                                        datatype:   "JSON",
+                                                                        async:  false,
+                                                                        success: function(result) {
+                                                                        // console.log(result);
+                                                                            jQuery('#TambonT').children().remove().end();
+                                                                            $('#TambonT').append(new Option('', ''));
+                                                                            jQuery.each(result.data, function(key, value) {
+                                                                                var TambonA  = new Option(value.name_th,value.id);
+                                                                                $('#TambonT').append(TambonA );
+                                                                            // console.log(TambonA);
+                                                                            });
+                                                                        },
+                                                                    })
+                                                                }
+                                                                function TambonTax(){
+                                                                    var TambonAgent  = $('#TambonT').val();
+                                                                    console.log(TambonAgent);
+                                                                    $.ajax({
+                                                                        type:   "GET",
+                                                                        url:    "{!! url('/guest/districtT/"+TambonAgent+"') !!}",
+                                                                        datatype:   "JSON",
+                                                                        async:  false,
+                                                                        success: function(result) {
+                                                                            console.log(result);
+                                                                            jQuery('#zip_codeT').children().remove().end();
+                                                                            //console.log(result);
+                                                                            $('#zip_codeT').append(new Option('', ''));
+                                                                            jQuery.each(result.data, function(key, value) {
+                                                                                var zip_codeA  = new Option(value.zip_code,value.zip_code);
+                                                                                $('#zip_codeT').append(zip_codeA);
+                                                                                //console.log(zip_codeA);
+                                                                            });
+                                                                        },
+                                                                    })
+                                                                }
+                                                                { //phone tax
+                                                                    document.getElementById('add-phoneTax').addEventListener('click', function() {
+                                                                        var phoneContainer = document.getElementById('phone-containerTax');
+                                                                        var newCol = document.createElement('div');
+                                                                        newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12', 'mt-2');
+                                                                        newCol.innerHTML = `
+                                                                            <div class="input-group show">
+                                                                                <input type="text" name="phoneTax[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                                                <button type="button" class="btn btn-outline-danger remove-phoneTax"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+                                                                            </div>
+                                                                        `;
+                                                                        phoneContainer.appendChild(newCol);
+
+                                                                        // Add the show class after a slight delay to trigger the transition
+                                                                        setTimeout(function() {
+                                                                            newCol.querySelector('.input-group').classList.add('show');
+                                                                        }, 10);
+
+                                                                        attachRemoveEvent(newCol.querySelector('.remove-phoneTax'));
+                                                                    });
+
+                                                                    // Function to attach the remove event to the remove buttons
+                                                                    function attachRemoveEvent(button) {
+                                                                        button.addEventListener('click', function() {
+                                                                            var phoneContainer = document.getElementById('phone-containerTax');
+                                                                            if (phoneContainer.childElementCount > 1) {
+                                                                                phoneContainer.removeChild(button.closest('.col-lg-4, .col-md-6, .col-sm-12'));
+                                                                            }
+                                                                        });
+                                                                    }
+
+                                                                    // Attach the remove event to the initial remove buttons
+                                                                    document.querySelectorAll('.remove-phoneTax').forEach(function(button) {
+                                                                        attachRemoveEvent(button);
+                                                                    });
+                                                                }
+                                                                { //Branch
+                                                                    document.addEventListener('DOMContentLoaded', function() {
+                                                                        // Get the radio buttons
+                                                                        const Branch = document.getElementById('flexRadioDefaultBranchTax');
+
+                                                                        Branch.addEventListener('change', function() {
+                                                                            if (Branch.checked) {
+                                                                                $('#BranchTax').val('สำนักงานใหญ่');
+                                                                            }
+                                                                        });
+                                                                    });
+                                                                }
+                                                            </script>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
+                                                    <button type="submit" class="btn btn-color-green lift" id="btn-save">สร้าง</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="nav-Visit" role="tabpanel" rel="0">
@@ -395,10 +727,10 @@
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
                                                     </td>
-                                                    <td>{{ $item->Quotation_ID }}</td>
+                                                    <td style="text-align: center;">{{ $item->Quotation_ID }}</td>
                                                     <td>{{ @$item->company->Company_Name}}</td>
-                                                    <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{ $item->issue_date }}</td>
+                                                    <td style="text-align: center;">{{ $item->Expirationdate }}</td>
                                                     @if ($item->checkin)
                                                     <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
                                                     <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
@@ -451,6 +783,333 @@
                                     </table>
                                 </div>
                             </div>
+                            <div class="tab-pane fade "id="nav-Contract" role="tabpanel" rel="0">
+                                <div class="row my-3">
+                                    <div class="col-lg-10"></div>
+                                    <div class="col-lg-2  d-flex justify-content-end align-items-end">
+                                        <button type="button" class="btn btn-color-green lift btn_modal"  data-bs-toggle="modal" data-bs-target="#CreateAgent"><i class="fa fa-plus"></i> เพิ่มตัวแทนบริษัท</button>
+                                    </div>
+                                </div>
+                                <div style="min-height: 70vh;" class="mt-2">
+                                    <table id="company-ContactTable" class="example ui striped table nowrap unstackable hover">
+                                        <caption class="caption-top">
+                                            <div>
+                                                <div class="flex-end-g2">
+                                                    <label class="entriespage-label">entries per page :</label>
+                                                    <select class="entriespage-button" id="search-per-page-company-Contact" onchange="getPageContact(1, this.value, 'company-Contact')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>10</option>
+                                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>25</option>
+                                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>50</option>
+                                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>100</option>
+                                                    </select>
+                                                    <input class="search-button search-data-company-Contact" id="company-Contact" style="text-align:left;" placeholder="Search" />
+                                                </div>
+                                        </caption>
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" data-priority="1">No</th>
+                                                <th class="text-center" data-priority="1">Profile ID</th>
+                                                <th  data-priority="1">Company ID</th>
+                                                <th class="text-center">Branch</th>
+                                                <th class="text-center">Name</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-center">Order</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($representative))
+                                                @foreach ($representative as $key => $item)
+                                                <tr>
+                                                    <td style="text-align: center;">{{ $key + 1 }}</td>
+                                                    <td style="text-align: center;">{{ $item->Profile_ID }}</td>
+                                                    <td>{{ $item->Company_Name }}</td>
+                                                    <td style="text-align: center;">{{ $item->Branch }}</td>
+                                                    <td style="text-align: center;">คุณ {{ $item->First_name }} {{ $item->Last_name }}</td>
+                                                    <td style="text-align: center;">
+                                                        <input type="hidden" id="status" value="{{ $item->status }}">
+                                                        @if ($item->status == 1)
+                                                        <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatusContact({{ $item->id }})">ใช้งาน</button>
+                                                        @else
+                                                            <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatusContact({{ $item->id }})">ปิดใช้งาน</button>
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
+                                                            <ul class="dropdown-menu border-0 shadow p-3">
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/view/contact/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/edit/contact/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                        <input type="hidden" id="profile-company-Contact" name="profile-company" value="{{$Company->Profile_ID}}">
+                                        <input type="hidden" id="get-total-company-Contact" value="{{ $representative->total() }}">
+                                        <input type="hidden" id="currentPage-company-Contact" value="1">
+                                        <caption class="caption-bottom">
+                                            <div class="md-flex-bt-i-c">
+                                                <p class="py2" id="company-Contact-showingEntries">{{ showingEntriesTableContact($representative, 'company-Contact') }}</p>
+                                                    <div id="company-Contact-paginate">
+                                                        {!! paginateTableContact($representative, 'company-Contact') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                    </div>
+                                            </div>
+                                        </caption>
+                                    </table>
+                                </div>
+                                <div class="modal fade" id="CreateAgent" tabindex="-1" aria-labelledby="PrenameModalCenterTitle" style="display: none;" aria-hidden="true">
+                                    <div class="modal-dialog  modal-lg modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-color-green">
+                                                <h5 class="modal-title text-white" id="PrenameModalCenterTitle">Add Contact</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{url('/Company/edit/contact/create/'.$Company->id)}}" method="POST">
+                                                @csrf
+                                                <div class="modal-body">
+                                                    <div class="col-sm-12 col-12">
+                                                        <div id="TitleContact" >
+                                                            <div class="col-sm-12 mt-2">
+                                                                <div class="row">
+                                                                    <div class="col-sm-4 col-4" >
+                                                                        <span for="prefix">คำนำหน้า / Title</span>
+                                                                        <select name="prefix" id="PrefaceSelectContact" class="select2" required>
+                                                                                <option value=""></option>
+                                                                                @foreach($Mprefix as $item)
+                                                                                    <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                                                @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-sm-4 col-4">
+                                                                        <span for="first_name">ชื่อ / First Name</span>
+                                                                        <input type="text" id="first_nameContact" class="form-control" placeholder="ชื่อ" name="first_nameContact"maxlength="70"  required>
+                                                                    </div>
+                                                                    <div class="col-sm-4 col-4 ">
+                                                                        <span for="last_name" >นามสกุล / Last Name</span>
+                                                                        <input type="text" id="last_nameContact" class="form-control" placeholder="นามสกุล" name="last_nameContact"maxlength="70"  required>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-12 col-12">
+                                                            <div class="row mt-2">
+                                                                <div class="col-sm-4 col-4">
+                                                                    <span for="Country">ประเทศ / Country</span>
+                                                                    <select name="countrydataC" id="countrySelectContact" class="select2" onchange="showcityAInputContact()">
+                                                                        <option value="Thailand">ประเทศไทย</option>
+                                                                        <option value="Other_countries">ประเทศอื่นๆ</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-4 col-4" >
+                                                                    <span for="City">จังหวัด / Province</span>
+                                                                    <select name="cityC" id="provinceC" class="select2" onchange="provinceContact()" style="width: 100%;">
+                                                                        <option value=""></option>
+                                                                        @foreach($provinceNames as $item)
+                                                                            <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-4 col-4">
+                                                                    <span for="Amphures">อำเภอ / District</span>
+                                                                    <select name="amphuresC" id="amphuresC" class="select2" onchange="amphuresContact()" >
+                                                                        <option value=""></option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mt-2">
+                                                                <div class="col-sm-4 col-4">
+                                                                    <span for="Tambon">ตำบล / Subdistrict</span>
+                                                                    <select name="TambonC" id ="TambonC" class="select2" onchange="TambonContact()" style="width: 100%;">
+                                                                        <option value=""></option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-4 col-4">
+                                                                    <span for="zip_code">รหัสไปรษณีย์ / Postal Code</span>
+                                                                    <select name="zip_codeC" id ="zip_codeC" class="select2"  style="width: 100%;">
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-4 col-4">
+                                                                    <span for="Email">อีเมล์ / Email</span>
+                                                                    <input type="text" id="EmailContact" class="form-control"placeholder="อีเมล์" name="EmailAgent"maxlength="70" required>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <span for="Address">ที่อยู่ / Address</span>
+                                                                <textarea type="text" id="addressContact" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
+                                                            </div>
+                                                            <div class="row mt-2">
+                                                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                                                    <span for="Company_Phone" class="flex-container">
+                                                                        โทรศัพท์/ Phone number
+                                                                    </span>
+                                                                    <button type="button" class="btn btn-color-green my-2" id="add-phoneContact">เพิ่มหมายเลขโทรศัพท์</button>
+                                                                </div>
+                                                                <div id="phone-containerContact" class="flex-container row">
+                                                                    <!-- Initial input fields -->
+                                                                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                                                                        <div class="input-group show">
+                                                                            <input type="text" name="phoneContact[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                                            <button type="button" class="btn btn-outline-danger remove-phoneContact"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <script>
+                                                                function showcityAInputContact() {
+                                                                    var countrySelectA = document.getElementById("countrySelectContact");
+                                                                    var province = document.getElementById("provinceC");
+                                                                    var amphuresSelect = document.getElementById("amphuresC");
+                                                                    var tambonSelect = document.getElementById("TambonC");
+                                                                    var zipCodeSelect = document.getElementById("zip_codeC");
+                                                                    // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
+                                                                    if (countrySelectA.value === "Other_countries") {
+                                                                        province.disabled = true;
+                                                                        // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                        amphuresSelect.disabled = true;
+                                                                        tambonSelect.disabled = true;
+                                                                        zipCodeSelect.disabled = true;
+                                                                    } else if (countrySelectA.value === "Thailand"){
+                                                                        // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
+                                                                        // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+                                                                        province.disabled = false;
+                                                                        // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                        amphuresSelect.disabled = false;
+                                                                        tambonSelect.disabled = false;
+                                                                        zipCodeSelect.disabled = false;
+
+                                                                        // เรียกใช้ฟังก์ชัน select_amphures() เพื่อเปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                        amphuresContact();
+                                                                        provinceContact();
+                                                                        TambonContact();
+                                                                        $('#zip_codeContact').empty();
+                                                                    }
+                                                                }
+                                                                function provinceContact(){
+                                                                    var provinceAgentT = $('#provinceC').val();
+                                                                    console.log(provinceAgentT);
+
+                                                                    jQuery.ajax({
+                                                                        type:   "GET",
+                                                                        url:    "{!! url('/Company/amphures/Contact/"+provinceAgentT+"') !!}",
+                                                                        datatype:   "JSON",
+                                                                        async:  false,
+                                                                        success: function(result) {
+                                                                            jQuery('#amphuresC').children().remove().end();
+                                                                            console.log(result);
+                                                                            $('#amphuresC').append(new Option('', ''));
+                                                                            jQuery.each(result.data, function(key, value) {
+                                                                                var amphuresA = new Option(value.name_th,value.id);
+                                                                                //console.log(amphuresA);
+                                                                                $('#amphuresC').append(amphuresA);
+                                                                            });
+                                                                        },
+                                                                    })
+
+                                                                }
+                                                                function amphuresContact(){
+                                                                    var amphuresAgent  = $('#amphuresC').val();
+                                                                    console.log(amphuresAgent);
+                                                                    $.ajax({
+                                                                        type:   "GET",
+                                                                        url:    "{!! url('/Company/Tambon/Contact/"+amphuresAgent+"') !!}",
+                                                                        datatype:   "JSON",
+                                                                        async:  false,
+                                                                        success: function(result) {
+                                                                        console.log(result);
+                                                                            jQuery('#TambonC').children().remove().end();
+                                                                            $('#TambonC').append(new Option('', ''));
+                                                                            jQuery.each(result.data, function(key, value) {
+                                                                                var TambonA  = new Option(value.name_th,value.id);
+                                                                                $('#TambonC').append(TambonA );
+                                                                            console.log(TambonA);
+                                                                            });
+                                                                        },
+                                                                    })
+                                                                }
+                                                                function TambonContact(){
+                                                                    var TambonAgent  = $('#TambonC').val();
+                                                                    console.log(TambonAgent);
+                                                                    $.ajax({
+                                                                        type:   "GET",
+                                                                        url:    "{!! url('/Company/districts/Contact/"+TambonAgent+"') !!}",
+                                                                        datatype:   "JSON",
+                                                                        async:  false,
+                                                                        success: function(result) {
+                                                                            console.log(result);
+                                                                            jQuery('#zip_codeC').children().remove().end();
+                                                                            //console.log(result);
+                                                                            $('#zip_codeC').append(new Option('', ''));
+                                                                            jQuery.each(result.data, function(key, value) {
+                                                                                var zip_codeA  = new Option(value.zip_code,value.zip_code);
+                                                                                $('#zip_codeC').append(zip_codeA);
+                                                                                //console.log(zip_codeA);
+                                                                            });
+                                                                        },
+                                                                    })
+                                                                }
+                                                                { //phone tax
+                                                                    document.getElementById('add-phoneContact').addEventListener('click', function() {
+                                                                        var phoneContainer = document.getElementById('phone-containerContact');
+                                                                        var newCol = document.createElement('div');
+                                                                        newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12', 'mt-2');
+                                                                        newCol.innerHTML = `
+                                                                            <div class="input-group show">
+                                                                                <input type="text" name="phoneContact[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                                                <button type="button" class="btn btn-outline-danger remove-phoneContact"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+                                                                            </div>
+                                                                        `;
+                                                                        phoneContainer.appendChild(newCol);
+
+                                                                        // Add the show class after a slight delay to trigger the transition
+                                                                        setTimeout(function() {
+                                                                            newCol.querySelector('.input-group').classList.add('show');
+                                                                        }, 10);
+
+                                                                        attachRemoveEvent(newCol.querySelector('.remove-phoneContact'));
+                                                                    });
+
+                                                                    // Function to attach the remove event to the remove buttons
+                                                                    function attachRemoveEvent(button) {
+                                                                        button.addEventListener('click', function() {
+                                                                            var phoneContainer = document.getElementById('phone-containerContact');
+                                                                            if (phoneContainer.childElementCount > 1) {
+                                                                                phoneContainer.removeChild(button.closest('.col-lg-4, .col-md-6, .col-sm-12'));
+                                                                            }
+                                                                        });
+                                                                    }
+
+                                                                    // Attach the remove event to the initial remove buttons
+                                                                    document.querySelectorAll('.remove-phoneContact').forEach(function(button) {
+                                                                        attachRemoveEvent(button);
+                                                                    });
+                                                                }
+                                                                { //Branch
+                                                                    document.addEventListener('DOMContentLoaded', function() {
+                                                                        // Get the radio buttons
+                                                                        const Branch = document.getElementById('flexRadioDefaultContact');
+
+                                                                        Branch.addEventListener('change', function() {
+                                                                            if (Branch.checked) {
+                                                                                $('#BranchContact').val('สำนักงานใหญ่');
+                                                                            }
+                                                                        });
+                                                                    });
+                                                                }
+                                                            </script>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
+                                                    <button type="submit" class="btn btn-color-green lift" id="btn-save">สร้าง</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -460,7 +1119,7 @@
     @include('script.script')
 
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
-    <script>
+<script>
     document.addEventListener('DOMContentLoaded', function() {
         // Get the radio buttons
         const Branch = document.getElementById('flexRadioDefaultBranch');
@@ -706,25 +1365,7 @@
 <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
 <script type="text/javascript" src="{{ asset('assets/helper/searchTableCompany.js')}}"></script>
     <script>
-        $(document).ready(function() {
-            // new DataTable('.example', {
-            //     searching: false,
-            //     paging: false,
-            //     info: false,
-            //     columnDefs: [{
-            //         className: 'dtr-control',
-            //         orderable: true,
-            //         target: null,
-            //     }],
-            //     order: [0, 'asc'],
-            //     responsive: {
-            //         details: {
-            //             type: 'column',
-            //             target: 'tr'
-            //         }
-            //     }
-            // });
-        });
+
         $(document).on('keyup', '.search-data-company-Tax', function () {
             var id = $(this).attr('id');
             var search_value = $(this).val();
@@ -804,9 +1445,22 @@
                 },
             });
         }
+        function btnstatusContact(id) {
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('/company/change-status/Contact/" + id + "') !!}",
+                datatype: "JSON",
+                async: false,
+                success: function(result) {
+                    Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                    location.reload();
+                },
+            });
+        }
+
     </script>
     <script>
-        const table_name = ['company-VisitTable', 'company-TaxTable'];
+        const table_name = ['company-VisitTable', 'company-TaxTable','company-ContactTable'];
 
         $(document).ready(function() {
             for (let index = 0; index < table_name.length; index++) {
@@ -828,7 +1482,7 @@
                     }
                 });
             }
-        
+
         });
 
         function nav(id) {
@@ -921,6 +1575,75 @@
                         { data: 'Discount' },
                         { data: 'OperatedBy' },
                         { data: 'Documentstatus' },
+                    ],
+
+                });
+            document.getElementById(id).focus();
+        });
+
+        $(document).on('keyup', '.search-data-company-Contact', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var guest_profile = $('#profile-company-Contact').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
+            console.log(guest_profile);
+
+
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/Contact-company-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        guest_profile: guest_profile,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                    "initComplete": function (settings,json){
+
+                        if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                            var count = $('#'+id+'Table tr').length - 1;
+                        }else{
+                            var count = 0;
+                        }
+                        if (search_value == '') {
+                            count_total = total;
+                        }else{
+                            count_total = count;
+                        }
+                        $('#'+id+'-paginate').children().remove().end();
+                        $('#'+id+'-showingEntries').text(showingEntriesSearchContact(1,count_total, id));
+                        $('#'+id+'-paginate').append(paginateSearchContact(count_total, id, getUrl));
+                    },
+                    columnDefs: [
+                                { targets: [0, 1, 3,4,5,6], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'Profile_ID_TAX' },
+                        { data: 'Company' },
+                        { data: 'Branch' },
+                        { data: 'Name' },
+                        { data: 'Status' },
+                        { data: 'Order' },
                     ],
 
                 });

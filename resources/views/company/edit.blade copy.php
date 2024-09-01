@@ -676,7 +676,6 @@
                                         </tbody>
                                     </table>
                                 </form>
-
                             </div>
                             <div class="tab-pane fade" id="nav-Visit" role="tabpanel" rel="0">
                                 <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
@@ -820,7 +819,7 @@
                                                     </td>
                                                 </tr>
                                                 @endforeach
-                                                @endif
+                                            @endif
                                         </tbody>
                                     </table>
                                 </form>

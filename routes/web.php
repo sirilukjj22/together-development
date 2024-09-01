@@ -181,18 +181,24 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Company/amphuresT/{id}', 'amphuresT')->name('Company.amphuresT');
         Route::get('/Company/TambonT/{id}', 'TambonT')->name('Company.TambonT');
         Route::get('/Company/districtT/{id}', 'districtT')->name('Company.districtT');
+
+        Route::get('/Company/amphures/Contact/{id}', 'amphuresContact')->name('Company.amphuresContact');
+        Route::get('/Company/districts/Contact/{id}', 'districtContact')->name('Company.districtsContact');
+        Route::get('/Company/Tambon/Contact/{id}', 'TambonContact')->name('Company.TambonContact');
         Route::post('/Company/check/company', 'SearchContact');
-        Route::post('/Company/edit/contact/create/{id}', 'contactcreate')->name('contact.update');
-        Route::get('/Company/edit/contact/editcontact/{companyId}/{itemId}', 'contactedit')->name('Company.contact.edit');
+        Route::get('/Company/edit/contact/{id}', 'contactedit')->name('Company.contact.edit');
         Route::post('/Company/edit/contact/editcontact/update/{companyId}/{itemId}', 'contactupdate')->name('Company.contact.update');
 
-        Route::get('/Company/contact/change-status/{id}', 'changeStatuscontact')->name('Company.contact.changeStatus');
-        Route::post('/Company/save/Tax/{id}', 'Tax')->name('Company.Tax');
 
+        Route::post('/Company/save/Tax/{id}', 'Tax')->name('Company.Tax');
         Route::get('/company/change-status/tax/{id}', 'changeStatustax')->name('Company.tax.changeStatus');
         Route::get('/Company/viewTax/{id}', 'viewTax')->name('Company.viewTax');
         Route::get('/Company/editTax/{id}', 'editTax')->name('Company.viewTax');
         Route::post('/Company/editTax/update/{Comid}/{id}', 'updatetax')->name('Company.updatetax');
+
+        Route::post('/Company/edit/contact/create/{id}', 'contactcreate')->name('contact.update');
+        Route::get('/company/change-status/Contact/{id}', 'changeStatuscontact')->name('Company.contact.changeStatus');
+        Route::get('/Company/view/contact/{id}', 'contactview')->name('Company.contact.view');
 
         Route::post('company-search-table', 'company_search_table');
         Route::post('company-paginate-table', 'company_paginate_table');
@@ -202,6 +208,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('Visit-company-search-table', 'search_table_company_Visit');
         Route::post('Visit-company-paginate-table', 'paginate_table_company_Visit');
+
+        Route::post('Contact-company-search-table', 'search_table_company_Contact');
+        Route::post('Contact-company-paginate-table', 'paginate_table_company_Contact');
     });
 
     Route::controller(GuestController::class)->group(function () {

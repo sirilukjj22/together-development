@@ -390,38 +390,38 @@
         }
     </script>
     <script>
-         document.getElementById('add-phone').addEventListener('click', function() {
-        var phoneContainer = document.getElementById('phone-container');
-        var newCol = document.createElement('div');
-        newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12');
-        newCol.innerHTML = `
-            <div class="input-group mt-3">
-                <input type="text" name="phoneCom[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
-                <button type="button" class="btn btn-outline-danger remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
-            </div>
-        `;
-        phoneContainer.appendChild(newCol);
-
-        // Add the show class after a slight delay to trigger the transition
-        setTimeout(function() {
-            newCol.querySelector('.input-group').classList.add('show');
-        }, 10);
-
-        attachRemoveEvent(newCol.querySelector('.remove-phone'));
-    });
-
-    function attachRemoveEvent(button) {
-        button.addEventListener('click', function() {
+        document.getElementById('add-phone').addEventListener('click', function() {
             var phoneContainer = document.getElementById('phone-container');
-            if (phoneContainer.childElementCount > 1) {
-                phoneContainer.removeChild(button.closest('.col-lg-4, .col-md-6, .col-sm-12'));
-            }
-        });
-    }
+            var newCol = document.createElement('div');
+            newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12');
+            newCol.innerHTML = `
+                <div class="input-group mt-3">
+                    <input type="text" name="phoneCom[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                    <button type="button" class="btn btn-outline-danger remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+                </div>
+            `;
+            phoneContainer.appendChild(newCol);
 
-    // Attach the remove event to the initial remove buttons
-    document.querySelectorAll('.remove-phone').forEach(function(button) {
-        attachRemoveEvent(button);
-    });
+            // Add the show class after a slight delay to trigger the transition
+            setTimeout(function() {
+                newCol.querySelector('.input-group').classList.add('show');
+            }, 10);
+
+            attachRemoveEvent(newCol.querySelector('.remove-phone'));
+        });
+
+        function attachRemoveEvent(button) {
+            button.addEventListener('click', function() {
+                var phoneContainer = document.getElementById('phone-container');
+                if (phoneContainer.childElementCount > 1) {
+                    phoneContainer.removeChild(button.closest('.col-lg-4, .col-md-6, .col-sm-12'));
+                }
+            });
+        }
+
+        // Attach the remove event to the initial remove buttons
+        document.querySelectorAll('.remove-phone').forEach(function(button) {
+            attachRemoveEvent(button);
+        });
     </script>
 @endsection
