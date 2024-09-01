@@ -1412,7 +1412,6 @@ class RevenuesController extends Controller
             
         } else {
             $total_front_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"))->first();
-            $front_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $request->month, $request->year, 6, 6);
         }
 
         // Month
@@ -1447,12 +1446,19 @@ class RevenuesController extends Controller
         $total_front_year_query->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"));
         $total_front_year = $total_front_year_query->first();
 
+        // Charge
+        $front_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $request->month, $request->year, 6, 6);
+
         ### Guest Deposit ###
         // Today
         $today_guest_deposit = Revenues::where('date', $date_now)->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"))->first();
 
         // Date
-        $total_guest_deposit = Revenues::whereBetween('date', [$month_from, $month_to])->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"))->first();
+        if ($request->filter_by == "week") {
+            $total_guest_deposit = Revenues::whereBetween('date', [$adate, $adate2])->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"))->first();
+        } else {
+            $total_guest_deposit = Revenues::whereBetween('date', [$month_from, $month_to])->select(DB::raw("SUM(room_cash) as room_cash, SUM(room_transfer) as room_transfer, SUM(room_credit) as room_credit"))->first();
+        }
 
         // Month
         $total_guest_deposit_month_query = Revenues::query();
@@ -1494,7 +1500,11 @@ class RevenuesController extends Controller
         $today_fb_revenue = Revenues::where('date', $date_now)->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"))->first();
 
         // Date
-        $total_fb_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"))->first();
+        if ($request->filter_by == "week") {
+            $total_fb_revenue = Revenues::whereBetween('date', [$adate, $adate2])->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"))->first();
+        } else {
+            $total_fb_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select(DB::raw("SUM(fb_cash) as fb_cash, SUM(fb_transfer) as fb_transfer, SUM(fb_credit) as fb_credit"))->first();
+        }
 
         // Month
         $fb_month_query = Revenues::query();
@@ -1536,7 +1546,11 @@ class RevenuesController extends Controller
         $today_other_revenue = Revenues::where('date', $date_now)->select('other_revenue')->sum('other_revenue');
 
         // Date
-        $total_other_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select('other_revenue')->sum('other_revenue');
+        if ($request->filter_by == "week") {
+            $total_other_revenue = Revenues::whereBetween('date', [$adate, $adate2])->select('other_revenue')->sum('other_revenue');
+        } else {
+            $total_other_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select('other_revenue')->sum('other_revenue');
+        }
 
         // Month
         $other_month_query = Revenues::query();
@@ -1575,7 +1589,11 @@ class RevenuesController extends Controller
         $today_agoda_revenue = Revenues::where('date', $date_now)->sum('total_credit_agoda');
 
         // Date
-        $total_agoda_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->sum('total_credit_agoda');
+        if ($request->filter_by == "week") {
+            $total_agoda_revenue = Revenues::whereBetween('date', [$adate, $adate2])->sum('total_credit_agoda');
+        } else {
+            $total_agoda_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->sum('total_credit_agoda');
+        }
 
         // Month
         $agoda_month_query = Revenues::query();
