@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Revenue_credit;
 use App\Models\Revenues;
 use App\Models\SMS_alerts;
+use App\Models\TB_close_days;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; 
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Carbon\Carbon;
 use PHPUnit\Framework\Constraint\Count;
 
 class RevenuesController extends Controller
@@ -892,15 +894,15 @@ class RevenuesController extends Controller
 
     public function search_calendar(Request $request)
     {
-        if ($request->day == 0) {
-            return $this->search_calendar_all($request);
+        if ($request->revenue_type != '') {
+            return $this->detail($request);
 
         } else {
 
         if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
             $adate = date('Y-m-d 21:00:00', strtotime($request->year . '-' . $request->month . '-' . $request->day.' 21:00:00'));
             $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date($adate . ' 20:59:59');
+            $to = date('Y-m-d 20:59:59', strtotime($adate));
 
             // Revenue
             $month_from = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
@@ -929,49 +931,49 @@ class RevenuesController extends Controller
 
         } elseif ($request->filter_by == "week") {
             $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
-            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $adate = date('Y-m-d');
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
 
-            $month_from = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
-            $month_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($adate))));
+            $month_from = date('Y-m-d', strtotime(date('Y-m-01')));
+            $month_to = date('Y-m-d', strtotime(date($adate2)));
             $date_first_day = $adate;
 
-            $year_from = date('Y-m-d', strtotime(date($request->year . '-01-01')));
+            $year_from = date('Y-m-d', strtotime(date('Y-01-01')));
             $year_to = $adate2;
 
         } elseif ($request->filter_by == "thisMonth") {
             $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
-            $adate = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-01')));
+            $adate = date('Y-m-d', strtotime(date('Y-m-01')));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-m-d 20:59:59', strtotime(date($request->year . '-' . $request->month . '-' . $request->day)));
+            $to = date('Y-m-d 20:59:59', strtotime(date('Y-m-d')));
 
             $month_from = date('Y-m-d', strtotime($adate));
-            $month_to = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-' . $request->day)));
+            $month_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($to))));
             $date_first_day = $adate;
 
-            $year_from = date('Y-m-d', strtotime(date($request->year . '-01-01')));
-            $year_to = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-' . $request->day)));
+            $year_from = date('Y-m-d', strtotime(date('Y-01-01')));
+            $year_to = date('Y-m-d', strtotime(date($to)));
 
         } elseif ($request->filter_by == "thisYear") {
             $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
-            $adate = date('Y-m-d', strtotime(date($request->year . '-01-01')));
+            $adate = date('Y-m-d', strtotime(date('Y-01-01')));
 
-            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-m-d 20:59:59', strtotime(date($request->year . '-' . $request->month . '-' . $request->day)));
+            $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59');
 
             $month_from = date('Y-m-d', strtotime($adate));
-            $month_to = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-' . $request->day)));
+            $month_to = date('Y-m-d');
             $date_first_day = $adate; 
 
-            $month_to_date = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-01')));
-            $month_to_date2 = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-' . $request->day)));
+            $month_to_date = date('Y-m-d', strtotime(date('Y-01-01')));
+            $month_to_date2 = date('Y-m-d', strtotime(date('Y-m-d')));
 
-            $year_from = date('Y-m-d', strtotime(date($request->year . '-01-01')));
-            $year_to = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-' . $request->day)));
+            $year_from = date('Y-m-d', strtotime(date('Y-01-01')));
+            $year_to = date('Y-m-d');
 
         } elseif ($request->filter_by == "customRang") {
             $adate = date('Y-m-d', strtotime(date($request->customRang_start)));
@@ -983,7 +985,6 @@ class RevenuesController extends Controller
             $month_from = date('Y-m-d', strtotime($adate));
             $month_to = date('Y-m-d', strtotime(date($to)));
             $date_first_day = $adate;
-
         }
 
         $datetime = date("Y-".$request->month."-d");
@@ -1015,315 +1016,323 @@ class RevenuesController extends Controller
         $other_array = [];
         $no_type_array = [];
         $transaction_array = [];
-        
-        for ($i=1; $i <= 31; $i++) { 
-            if ($i == 1) {
-                // dd(date("Y-m-".$last_day2, strtotime("-1 months", strtotime($datetime))));
-                $check_sms = SMS_alerts::whereBetween('date', [date("Y-m-".$last_day2, strtotime("-1 months", strtotime($datetime))).' 21:00:00', date('Y-'.$request->month.'-01 21:00:00')])->whereNull('date_into')
-                ->orWhereDate('date_into', date("Y-".$request->month."-01"))
-                ->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))->groupBy('status')->get();
 
-                $sum_bill = 0;
-                foreach ($check_sms as $key => $value) {
-                    // Guest Deposit
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
-                        $room_array[$i] = [
-                            'total_room' => $check_sms[$key]['total_amount'],
-                        ];
-                    }
-                    // All Outlet
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
-                        $fb_array[$i] = [
-                            'total_fb' => $check_sms[$key]['total_amount'],
-                        ];
-                    }
-                    // Water Park
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
-                        $wp_array[$i] = [
-                            'total_wp' => $check_sms[$key]['total_amount'],
-                        ];
-                    }
-                    // Credit Card Hotel
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
-                        $credit_array[$i] = [
-                            'total_credit' => $check_sms[$key]['amount'],
-                        ];
-                    }
-                    // Agoda
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
-                        $agoda_array[$i] = [
-                            'total_agoda' => $check_sms[$key]['total_amount'],
-                        ];
-                    }
-                    // Front Desk
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
-                        $front_array[$i] = [
-                            'total_front' => $check_sms[$key]['total_amount'],
-                        ];
-                    }
-                    // Credit Card Water Park
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
-                        $credit_wp_array[$i] = [
-                            'total_credit_wp' => $check_sms[$key]['total_amount'],
-                        ];
-                    } 
-                    // Elexa
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
-                        $ev_array[$i] = [
-                            'total_ev' => $check_sms[$key]['total_amount'],
-                        ];
-                    } 
-                    // Other
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
-                        $other_array[$i] = [
-                            'total_other' => $check_sms[$key]['total_amount'],
-                        ];
-                    }
-                    // No Category
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
-                        $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
-                    } 
+        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") 
+        {
+            for ($i=1; $i <= 31; $i++) { 
+                if ($i == 1) {
+                    // dd(date("Y-m-".$last_day2, strtotime("-1 months", strtotime($datetime))));
+                    $check_sms = SMS_alerts::whereBetween('date', [date("Y-m-".$last_day2, strtotime("-1 months", strtotime($datetime))).' 21:00:00', date('Y-'.$request->month.'-01 20:59:59')])->whereNull('date_into')
+                    ->orWhereDate('date_into', date("Y-".$request->month."-01"))
+                    ->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))->groupBy('status')->get();
 
-                    $sum_bill += $check_sms[$key]['transaction_bill'];
+                    $sum_bill = 0;
+                    foreach ($check_sms as $key => $value) {
+                        // Guest Deposit
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
+                            $room_array[$i] = [
+                                'total_room' => $check_sms[$key]['total_amount'],
+                            ];
+                        }
+                        // All Outlet
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
+                            $fb_array[$i] = [
+                                'total_fb' => $check_sms[$key]['total_amount'],
+                            ];
+                        }
+                        // Water Park
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
+                            $wp_array[$i] = [
+                                'total_wp' => $check_sms[$key]['total_amount'],
+                            ];
+                        }
+                        // Credit Card Hotel
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
+                            $credit_array[$i] = [
+                                'total_credit' => $check_sms[$key]['amount'],
+                            ];
+                        }
+                        // Agoda
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
+                            $agoda_array[$i] = [
+                                'total_agoda' => $check_sms[$key]['total_amount'],
+                            ];
+                        }
+                        // Front Desk
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
+                            $front_array[$i] = [
+                                'total_front' => $check_sms[$key]['total_amount'],
+                            ];
+                        }
+                        // Credit Card Water Park
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
+                            $credit_wp_array[$i] = [
+                                'total_credit_wp' => $check_sms[$key]['total_amount'],
+                            ];
+                        } 
+                        // Elexa
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
+                            $ev_array[$i] = [
+                                'total_ev' => $check_sms[$key]['total_amount'],
+                            ];
+                        } 
+                        // Other
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
+                            $other_array[$i] = [
+                                'total_other' => $check_sms[$key]['total_amount'],
+                            ];
+                        }
+                        // No Category
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
+                            $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
+                        } 
 
-                    // เช็คค่า 0
-                    if (!isset($room_array[$i])) {
-                        $room_array[$i] = [ 'total_room' => 0, ];
-                    }
+                        $sum_bill += $check_sms[$key]['transaction_bill'];
 
-                    if (!isset($fb_array[$i])) {
-                        $fb_array[$i] = [ 'total_fb' => 0, ];
-                    }
+                        // เช็คค่า 0
+                        if (!isset($room_array[$i])) {
+                            $room_array[$i] = [ 'total_room' => 0, ];
+                        }
 
-                    if (!isset($wp_array[$i])) {
-                        $wp_array[$i] = [ 'total_wp' => 0, ];
-                    }
+                        if (!isset($fb_array[$i])) {
+                            $fb_array[$i] = [ 'total_fb' => 0, ];
+                        }
 
-                    if (!isset($credit_array[$i])) {
-                        $fcredit_array[$i] = [ 'total_credit' => 0, ];
-                    }
+                        if (!isset($wp_array[$i])) {
+                            $wp_array[$i] = [ 'total_wp' => 0, ];
+                        }
 
-                    if (!isset($agoda_array[$i])) {
-                        $agoda_array[$i] = [ 'total_agoda' => 0, ];
-                    }
+                        if (!isset($credit_array[$i])) {
+                            $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                        }
 
-                    if (!isset($front_array[$i])) {
-                        $front_array[$i] = [ 'total_front' => 0, ];
-                    }
+                        if (!isset($agoda_array[$i])) {
+                            $agoda_array[$i] = [ 'total_agoda' => 0, ];
+                        }
 
-                    if (!isset($credit_wp_array[$i])) {
-                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0, ];
-                    } 
+                        if (!isset($front_array[$i])) {
+                            $front_array[$i] = [ 'total_front' => 0, ];
+                        }
 
-                    if (!isset($ev_array[$i])) {
-                        $ev_array[$i] = [ 'total_ev' => 0, ];
-                    }
+                        if (!isset($credit_wp_array[$i])) {
+                            $credit_wp_array[$i] = [ 'total_credit_wp' => 0, ];
+                        } 
 
-                    if (!isset($other_array[$i])) {
-                        $other_array[$i] = [ 'total_other' => 0, ];
-                    }
-                }
+                        if (!isset($ev_array[$i])) {
+                            $ev_array[$i] = [ 'total_ev' => 0, ];
+                        }
 
-                $transaction_array[$i] = ['bill' => $sum_bill];
-                
-            } else {
-                $check_sms = SMS_alerts::whereBetween('date', [date("Y-".$request->month."-".str_pad($i - 1, 2, '0', STR_PAD_LEFT).' 21:00:00'), date('Y-'.$request->month.'-'.str_pad($i, 2, '0', STR_PAD_LEFT).' 21:00:00')])->whereNull('date_into')
-                ->orWhereDate('date_into', date('Y-'.$request->month.'-'.str_pad($i, 2, '0', STR_PAD_LEFT)))
-                ->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))->groupBy('status')->get();
-
-                $sum_bill = 0;
-                foreach ($check_sms as $key => $value) {
-                    // Guest Deposit
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
-                        $room_array[$i] = [
-                            'total_room' => $check_sms[$key]['total_amount'],
-                        ];
-                    }
-                    // All Outlet
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
-                        $fb_array[$i] = [
-                            'total_fb' => $check_sms[$key]['total_amount'],
-                        ];
-                    }
-                    // Water Park
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
-                        $wp_array[$i] = [
-                            'total_wp' => $check_sms[$key]['total_amount'],
-                        ];
-                    }
-                    // Credit Card Hotel
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
-                        $credit_array[$i] = [
-                            'total_credit' => $check_sms[$key]['amount'],
-                        ];
-                    }
-                    // Agoda
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
-                        $agoda_array[$i] = [
-                            'total_agoda' => $check_sms[$key]['total_amount'],
-                        ];
-                    }
-                    // Front Desk
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
-                        $front_array[$i] = [
-                            'total_front' => $check_sms[$key]['total_amount'],
-                        ];
-                    }
-                    // Credit Card Water Park
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
-                        $credit_wp_array[$i] = [
-                            'total_credit_wp' => $check_sms[$key]['total_amount'],
-                        ];
-                    } 
-                    // Elexa
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
-                        $ev_array[$i] = [
-                            'total_ev' => $check_sms[$key]['total_amount'],
-                        ];
-                    } 
-                    // Other
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
-                        $other_array[$i] = [
-                            'total_other' => $check_sms[$key]['total_amount'],
-                        ];
-                    } 
-                    // No Category
-                    if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
-                        $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
-                    } 
-
-                    $sum_bill += $check_sms[$key]['transaction_bill'];
-
-                    // เช็คค่า 0
-                    if (!isset($room_array[$i])) {
-                        $room_array[$i] = [ 'total_room' => 0, ];
+                        if (!isset($other_array[$i])) {
+                            $other_array[$i] = [ 'total_other' => 0, ];
+                        }
                     }
 
-                    if (!isset($fb_array[$i])) {
-                        $fb_array[$i] = [ 'total_fb' => 0, ];
-                    }
-
-                    if (!isset($wp_array[$i])) {
-                        $wp_array[$i] = [ 'total_wp' => 0, ];
-                    }
-
-                    if (!isset($credit_array[$i])) {
-                        $fcredit_array[$i] = [ 'total_credit' => 0, ];
-                    }
-
-                    if (!isset($agoda_array[$i])) {
-                        $agoda_array[$i] = [ 'total_agoda' => 0, ];
-                    }
-
-                    if (!isset($front_array[$i])) {
-                        $front_array[$i] = [ 'total_front' => 0, ];
-                    }
-
-                    if (!isset($credit_wp_array[$i])) {
-                        $credit_wp_array[$i] = [ 'total_credit_wp' => 0, ];
-                    } 
-
-                    if (!isset($ev_array[$i])) {
-                        $ev_array[$i] = [ 'total_ev' => 0, ];
-                    }
-
-                    if (!isset($other_array[$i])) {
-                        $other_array[$i] = [ 'total_other' => 0, ];
-                    }
+                    $transaction_array[$i] = ['bill' => $sum_bill];
                     
+                } else {
+                    $check_sms = SMS_alerts::whereBetween('date', [date("Y-".$request->month."-".str_pad($i - 1, 2, '0', STR_PAD_LEFT).' 21:00:00'), date('Y-'.$request->month.'-'.str_pad($i, 2, '0', STR_PAD_LEFT).' 20:59:59')])->whereNull('date_into')
+                    ->orWhereDate('date_into', date('Y-'.$request->month.'-'.str_pad($i, 2, '0', STR_PAD_LEFT)))
+                    ->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))->groupBy('status')->get();
+
+                    $sum_bill = 0;
+                    foreach ($check_sms as $key => $value) {
+                        // Guest Deposit
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 1) {
+                            $room_array[$i] = [
+                                'total_room' => $check_sms[$key]['total_amount'],
+                            ];
+                        }
+                        // All Outlet
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 2) {
+                            $fb_array[$i] = [
+                                'total_fb' => $check_sms[$key]['total_amount'],
+                            ];
+                        }
+                        // Water Park
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 3) {
+                            $wp_array[$i] = [
+                                'total_wp' => $check_sms[$key]['total_amount'],
+                            ];
+                        }
+                        // Credit Card Hotel
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
+                            $credit_array[$i] = [
+                                'total_credit' => $check_sms[$key]['amount'],
+                            ];
+                        }
+                        // Agoda
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 5) {
+                            $agoda_array[$i] = [
+                                'total_agoda' => $check_sms[$key]['total_amount'],
+                            ];
+                        }
+                        // Front Desk
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 6) {
+                            $front_array[$i] = [
+                                'total_front' => $check_sms[$key]['total_amount'],
+                            ];
+                        }
+                        // Credit Card Water Park
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 7) {
+                            $credit_wp_array[$i] = [
+                                'total_credit_wp' => $check_sms[$key]['total_amount'],
+                            ];
+                        } 
+                        // Elexa
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 8) {
+                            $ev_array[$i] = [
+                                'total_ev' => $check_sms[$key]['total_amount'],
+                            ];
+                        } 
+                        // Other
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 9) {
+                            $other_array[$i] = [
+                                'total_other' => $check_sms[$key]['total_amount'],
+                            ];
+                        } 
+                        // No Category
+                        if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 0) {
+                            $no_type_array[$i] = ['no_type' => $check_sms[$key]['transaction_bill']];
+                        } 
+
+                        $sum_bill += $check_sms[$key]['transaction_bill'];
+
+                        // เช็คค่า 0
+                        if (!isset($room_array[$i])) {
+                            $room_array[$i] = [ 'total_room' => 0, ];
+                        }
+
+                        if (!isset($fb_array[$i])) {
+                            $fb_array[$i] = [ 'total_fb' => 0, ];
+                        }
+
+                        if (!isset($wp_array[$i])) {
+                            $wp_array[$i] = [ 'total_wp' => 0, ];
+                        }
+
+                        if (!isset($credit_array[$i])) {
+                            $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                        }
+
+                        if (!isset($agoda_array[$i])) {
+                            $agoda_array[$i] = [ 'total_agoda' => 0, ];
+                        }
+
+                        if (!isset($front_array[$i])) {
+                            $front_array[$i] = [ 'total_front' => 0, ];
+                        }
+
+                        if (!isset($credit_wp_array[$i])) {
+                            $credit_wp_array[$i] = [ 'total_credit_wp' => 0, ];
+                        } 
+
+                        if (!isset($ev_array[$i])) {
+                            $ev_array[$i] = [ 'total_ev' => 0, ];
+                        }
+
+                        if (!isset($other_array[$i])) {
+                            $other_array[$i] = [ 'total_other' => 0, ];
+                        }
+                        
+                    }
+                    $transaction_array[$i] = ['bill' => $sum_bill];
                 }
-                $transaction_array[$i] = ['bill' => $sum_bill];
             }
-            
-        }
 
-        $room_transfer = 0;
-        $fb_transfer = 0;
-        $wp_transfer = 0;
-        $room_credit = 0;
+            $room_transfer = 0;
+            $fb_transfer = 0;
+            $wp_transfer = 0;
+            $room_credit = 0;
 
-        if (isset($room_array)) {
-            foreach ($room_array as $key => $value) {
-                Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
-                    'room_transfer' => $value['total_room']
-                ]);
+            if (isset($room_array)) {
+                foreach ($room_array as $key => $value) {
+                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                        'room_transfer' => $value['total_room']
+                    ]);
+                }
             }
-        }
 
-        if (isset($fb_array)) {
-            foreach ($fb_array as $key => $value) {
-                Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
-                    'fb_transfer' => $value['total_fb']
-                ]);
+            if (isset($fb_array)) {
+                foreach ($fb_array as $key => $value) {
+                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                        'fb_transfer' => $value['total_fb']
+                    ]);
+                }
             }
-        }
 
-        if (isset($wp_array)) {
-            foreach ($wp_array as $key => $value) {
-                Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
-                    'wp_transfer' => $value['total_wp']
-                ]);
+            if (isset($wp_array)) {
+                foreach ($wp_array as $key => $value) {
+                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                        'wp_transfer' => $value['total_wp']
+                    ]);
+                }
             }
-        }
 
-        if (isset($credit_array)) {
-            foreach ($credit_array as $key => $value) {
-                Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
-                    'total_credit' => $value['total_credit']
-                ]);
+            if (isset($credit_array)) {
+                foreach ($credit_array as $key => $value) {
+                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                        'total_credit' => $value['total_credit']
+                    ]);
+                }
             }
-        }
 
-        if (isset($front_array)) {
-            foreach ($front_array as $key => $value) {
-                Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
-                    'front_transfer' => $value['total_front']
-                ]);
+            if (isset($front_array)) {
+                foreach ($front_array as $key => $value) {
+                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                        'front_transfer' => $value['total_front']
+                    ]);
+                }
             }
-        }
 
-        if (isset($agoda_array)) {
-            foreach ($agoda_array as $key => $value) {
-                // dd($value['total_agoda']);
-                Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
-                    'total_credit_agoda' => $value['total_agoda']
-                ]);
+            if (isset($agoda_array)) {
+                foreach ($agoda_array as $key => $value) {
+                    // dd($value['total_agoda']);
+                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                        'total_credit_agoda' => $value['total_agoda']
+                    ]);
+                }
             }
-        }
 
-        if (isset($ev_array)) {
-            foreach ($ev_array as $key => $value) {
-                Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
-                    'total_elexa' => $value['total_ev']
-                ]);
+            if (isset($ev_array)) {
+                foreach ($ev_array as $key => $value) {
+                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                        'total_elexa' => $value['total_ev']
+                    ]);
+                }
             }
-        }
 
-        if (isset($other_array)) {
-            foreach ($other_array as $key => $value) {
-                Revenues::where('date', date('Y-m-'.$key))->update([
-                    'other_revenue' => $value['total_other']
-                ]);
+            if (isset($other_array)) {
+                foreach ($other_array as $key => $value) {
+                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                        'other_revenue' => $value['total_other']
+                    ]);
+                }
             }
-        }
 
-        if (isset($transaction_array)) {
-            foreach ($transaction_array as $key => $value) {
-                Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
-                    'total_transaction' => $value['bill']
-                ]);
+            if (isset($transaction_array)) {
+                foreach ($transaction_array as $key => $value) {
+                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                        'total_transaction' => $value['bill']
+                    ]);
+                }
             }
-        }
 
-        if (isset($no_type_array)) {
-            foreach ($no_type_array as $key => $value) {
-                Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
-                    'total_no_type' => $value['no_type']
-                ]);
+            if (isset($no_type_array)) {
+                foreach ($no_type_array as $key => $value) {
+                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                        'total_no_type' => $value['no_type']
+                    ]);
+                }
             }
         }
-
-        $date_now = date('Y-m-d', strtotime(date($request->year.'-'.$request->month.'-'.$request->day)));
+        
+        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") 
+        {
+            $date_now = date('Y-m-d', strtotime(date($request->year.'-'.$request->month.'-'.$request->day)));
+        } else {
+            $date_now = date('Y-m-d');
+        }
+        
         $day_now = $request->day;
         $symbol = $day_now == "01" ? "=" : "<=";
 
@@ -1408,7 +1417,6 @@ class RevenuesController extends Controller
         // Date
         if ($request->filter_by == "week") {
             $total_front_revenue = Revenues::whereBetween('date', [$adate, $adate2])->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"))->first();
-            $front_charge = Revenues::getManualCharge($request->filter_by, $adate, $adate2, $date_now, $request->month, $request->year, 6, 6);
             
         } else {
             $total_front_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select(DB::raw("SUM(front_cash) as front_cash, SUM(front_transfer) as front_transfer, SUM(front_credit) as front_credit"))->first();
@@ -1552,6 +1560,8 @@ class RevenuesController extends Controller
             $total_other_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select('other_revenue')->sum('other_revenue');
         }
 
+        // dd([$adate, $adate2, $date_now]);
+
         // Month
         $other_month_query = Revenues::query();
 
@@ -1633,7 +1643,11 @@ class RevenuesController extends Controller
         $today_wp_revenue = Revenues::where('date', $date_now)->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
 
         // Date
-        $total_wp_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
+        if ($request->filter_by == "week") {
+            $total_wp_revenue = Revenues::whereBetween('date', [$adate, $adate2])->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
+        } else {
+            $total_wp_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"))->first();
+        }
 
         // Month
         $wp_month_query = Revenues::query();
@@ -1675,7 +1689,11 @@ class RevenuesController extends Controller
         $today_ev_revenue = Revenues::where('date', $date_now)->select('total_elexa')->sum('total_elexa');
 
         // Date
-        $total_ev_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select('total_elexa')->sum('total_elexa');
+        if ($request->filter_by == "week") {
+            $total_ev_revenue = Revenues::whereBetween('date', [$adate, $adate2])->select('total_elexa')->sum('total_elexa');
+        } else {
+            $total_ev_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select('total_elexa')->sum('total_elexa');
+        }
 
         // Month
         $ev_month_query = Revenues::query();
@@ -2058,192 +2076,328 @@ class RevenuesController extends Controller
         return $pdf->stream();
     }
 
-    public function detail($topic, $date)
+    public function detail(Request $request)
     {
 
-        $change_date = date_create($date);
-        $change_fomat = date_format($change_date,"m-d");
+        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+            $adate = date('Y-m-d 21:00:00', strtotime($request->year . '-' . $request->month . '-' . $request->day.' 21:00:00'));
+            $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime($adate));
 
-        $exp = explode('-', $date);
+            // Revenue
+            $month_from = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $month_to = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-' . $request->day)));
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime(date($request->year . '-' . $request->month . '-' . $request->day))));
 
-        if ($exp[2] != 0) {
-            $adate = $date;
-            $from = date("Y-m-d 21:00:00", strtotime("-1 day",strtotime($adate)));
-            $to = date($date.' 21:00:00');
-            $title = "";
+        } elseif ($request->filter_by == "month") {
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
+            $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
+
+            $month_from = date('Y-m-d', strtotime($adate));
+            $month_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($to))));
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime(date($request->year . '-' . $request->month . '-' . $request->day))));
+
+        } elseif ($request->filter_by == "year") {
+            $adate = date($request->year . '-01' . '-01');
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date($request->year . '-12-31' . ' 20:59:59');
+
+            $month_from = date('Y-m-d', strtotime($adate));
+            $month_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($to))));
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime(date($request->year . '-' . $request->month . '-' . $request->day))));
+
+        } elseif ($request->filter_by == "week") {
+            $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-d');
+            $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
+
+            $month_from = date('Y-m-d', strtotime(date('Y-m-01')));
+            $month_to = date('Y-m-d', strtotime(date($adate2)));
+            $date_first_day = $adate;
+
+            $year_from = date('Y-m-d', strtotime(date('Y-01-01')));
+            $year_to = $adate2;
+
+        } elseif ($request->filter_by == "thisMonth") {
+            $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-d', strtotime(date('Y-m-01')));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime(date('Y-m-d')));
+
+            $month_from = date('Y-m-d', strtotime($adate));
+            $month_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($to))));
+            $date_first_day = $adate;
+
+            $year_from = date('Y-m-d', strtotime(date('Y-01-01')));
+            $year_to = date('Y-m-d', strtotime(date($to)));
+
+        } elseif ($request->filter_by == "thisYear") {
+            $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-d', strtotime(date('Y-01-01')));
+
+            $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59');
+
+            $month_from = date('Y-m-d', strtotime($adate));
+            $month_to = date('Y-m-d');
+            $date_first_day = $adate; 
+
+            $month_to_date = date('Y-m-d', strtotime(date('Y-01-01')));
+            $month_to_date2 = date('Y-m-d', strtotime(date('Y-m-d')));
+
+            $year_from = date('Y-m-d', strtotime(date('Y-01-01')));
+            $year_to = date('Y-m-d');
+
+        } elseif ($request->filter_by == "customRang") {
+            $adate = date('Y-m-d', strtotime(date($request->customRang_start)));
+            $adate2 = date('Y-m-d', strtotime(date($request->customRang_end)));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
+
+            $month_from = date('Y-m-d', strtotime($adate));
+            $month_to = date('Y-m-d', strtotime(date($to)));
+            $date_first_day = $adate;
+        }
+
+        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") 
+        {
+            $date_now = date('Y-m-d', strtotime(date($request->year.'-'.$request->month.'-'.$request->day)));
         } else {
-            $adate = $exp[0]."-".$exp[1].'-'.$this->EOM($exp[1], $exp[0]);
-            $from = date("Y-m-d 21:00:00", strtotime("last day of previous month",strtotime($adate)));
-            $to = date($adate.' 21:00:00');
-            $title = "";
+            $date_now = date('Y-m-d');
         }
         
-
-        // dd($date);
-        if ($topic == "verified") {
-            $data_verified = Revenues::whereMonth('date', $exp[1])->whereYear('date', $exp[0])->where('status', 1)->get();
+        if ($request->revenue_type == "verified") {
+            $data_verified = Revenues::whereBetween('date', [$date_first_day, $month_to])->where('status', 1)->get();
             $title = "Verified";
             return view('revenue.detail_verified', compact('data_verified', 'title'));
 
-        } if ($topic == "unverified") {
-            $data_verified = Revenues::whereMonth('date', $exp[1])->whereYear('date', $exp[0])->where('status', 0)->get();
+        } if ($request->revenue_type == "unverified") {
+            $data_verified = Revenues::whereBetween('date', [$date_first_day, $month_to])->where('status', 0)->get();
             $title = "Unverified";
             return view('revenue.detail_verified', compact('data_verified', 'title'));
+        }
 
-        } if ($topic == "front") {
-            $total_revenue = Revenues::whereDate('date', $adate)->select('front_cash as cash', 'front_transfer as transfer', 'front_credit as credit')->first();
-            $charge = Revenues::getManualCharge($adate, 0, 0, 6, 6);
+        ## Bank Transfer
+        if ($request->revenue_type == "tf_front") {
+            $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 6)->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 6)->paginate(10);
+            $total_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 6)->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 6)->sum('amount');
             $title = "Front Desk";
+            $status = 6;
 
-        } if($topic == "all_outlet") {
-            $total_revenue = Revenues::whereDate('date', $adate)->select('fb_cash as cash', 'fb_transfer as transfer', 'fb_credit as credit')->first();
-            $charge = Revenues::getManualCharge($adate, 0, 0, 2, 2);
-            $title = "All Outlet";
-
-        } if($topic == "guest") {
-            $total_revenue = Revenues::whereDate('date', $adate)->select('room_cash as cash', 'room_transfer as transfer', 'room_credit as credit')->first();
-            $charge = Revenues::getManualCharge($adate, 0, 0, 1, 1);
+        } if($request->revenue_type == "tf_guest") {
+            $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 1)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 1)->paginate(10);
+            $total_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 1)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 1)->sum('amount');
             $title = "Guest Deposit";
+            $status = 1;
 
-        } if($topic == "agoda_charge") {
+        } if($request->revenue_type == "tf_all_outlet") {
+            $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 2)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 2)->paginate(10);
+            $total_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 2)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 2)->sum('amount');
+            $title = "All Outlet Revenue";
+            $status = 2;
+
+        } if ($request->revenue_type == "tf_water_park") {
+            $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 3)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 3)->paginate(10);
+            $total_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 3)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 3)->sum('amount');
+            $title = "Water Park Revenue";
+            $status = 3;
+
+        } if($request->revenue_type == "tf_agoda") {
+            $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 5)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 5)->paginate(10);
+            $total_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 5)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 5)->sum('amount');
+            $title = "Agoda Revenue";
+            $status = 5;
+
+        } if($request->revenue_type == "tf_elexa") {
+            $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 8)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 8)->paginate(10);
+            $total_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 8)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 8)->sum('amount');
+            $title = "Elexa EGAT Revenue";
+            $status = 8;
+
+        } if($request->revenue_type == "tf_other") {
+            $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 9)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 9)->paginate(10);
+            $total_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 9)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 9)->sum('amount');
+            $title = "Other Revenue";
+            $status = 9;
+
+        } 
+
+        ## Credit Card
+        if($request->revenue_type == "cc_credit_hotel") {
+            $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->where('status', 4)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('into_account', "708-226792-1")->where('status', 4)->paginate(10);
+            $total_query = SMS_alerts::whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->where('status', 4)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('into_account', "708-226792-1")->where('status', 4)->sum('amount');
+            $title = "Credit Card Hotel Revenue";
+            $status = 4;
+
+        } if($request->revenue_type == "cc_credit_water_park") {
+            $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 7)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 7)->paginate(10);
+            $total_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 7)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 7)->sum('amount');
+            $title = "Credit Card Water Park Revenue";
+            $status = 7;
+
+        } 
+
+        ## Manual Charge
+        if($request->revenue_type == "mc_front_charge") {
+            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 6)
+                ->where('revenue_credit.revenue_type', 6)->whereBetween('revenue.date', [$month_from, $month_to])
+                ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status')->paginate(10);
+            $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 6)
+                ->where('revenue_credit.revenue_type', 6)->whereBetween('revenue.date', [$month_from, $month_to])->sum('revenue_credit.credit_amount');
+            $title = "Credit Card Front Desk";
+            $status = "manual_charge_6";
+
+        } if($request->revenue_type == "mc_guest_charge") {
+            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 1)
+                ->where('revenue_credit.revenue_type', 1)->whereBetween('revenue.date', [$month_from, $month_to])
+                ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status')->paginate(10);
+            $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 1)
+                ->where('revenue_credit.revenue_type', 1)->whereBetween('revenue.date', [$month_from, $month_to])->sum('revenue_credit.credit_amount');
+            $title = "Credit Card Guest Deposit";
+            $status = "manual_charge_1";
+
+        } if($request->revenue_type == "mc_all_outlet_charge") {
+            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 2)
+                ->where('revenue_credit.revenue_type', 2)->whereBetween('revenue.date', [$month_from, $month_to])
+                ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status')->paginate(10);
+            $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 2)
+                ->where('revenue_credit.revenue_type', 2)->whereBetween('revenue.date', [$month_from, $month_to])->sum('revenue_credit.credit_amount');
+            $title = "Credit Card All Outlet";
+            $status = "manual_charge_2";
+
+        } if($request->revenue_type == "mc_water_park_charge") {
+            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 3)
+                ->where('revenue_credit.revenue_type', 3)->whereBetween('revenue.date', [$month_from, $month_to])
+                ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status')->paginate(10);
+            $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 3)
+                ->where('revenue_credit.revenue_type', 3)->whereBetween('revenue.date', [$month_from, $month_to])->sum('revenue_credit.credit_amount');
+            $title = "Credit Card Water Park";
+            $status = "manual_charge_3";
+
+        } if($request->revenue_type == "mc_agoda_charge") {
+            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+                ->where('revenue_credit.revenue_type', 5)->whereBetween('revenue.date', [$month_from, $month_to])
+                ->select('revenue.date', 'revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding', 'revenue_credit.status')->paginate(10);
+            $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+                ->where('revenue_credit.revenue_type', 5)->whereBetween('revenue.date', [$month_from, $month_to])->sum('revenue_credit.agoda_outstanding');
+            $title = "Agoda";
+            $status = "agoda";
+
+        }
+
+        if($request->revenue_type == "agoda_charge") {
             $agoda_charge = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->whereDate('revenue.date', $adate)->where('revenue_credit.status', 5)
             ->select('revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out', 'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding')->get();
             $title = "Credit Card Agoda Manual Charge";
             return view('revenue.agoda.agoda_charge', compact('agoda_charge', 'title'));
 
-        } if($topic == "agoda_fee") {
+        } if($request->revenue_type == "agoda_fee") {
             $agoda_fee = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->whereDate('revenue.date', $adate)->where('revenue_credit.status', 5)
             ->select('revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out', 'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding')->get();
             $title = "Credit Card Agoda Fee";
             return view('revenue.agoda.agoda_fee', compact('agoda_fee', 'title'));
 
-        } if($topic == "agoda_outstanding") {
+        } if($request->revenue_type == "agoda_outstanding") {
             $agoda_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->whereDate('revenue.date', $adate)->where('revenue_credit.status', 5)
             ->select('revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out', 'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding')->get();
             $title = "Credit Agoda Revenue Outstanding";
             return view('revenue.agoda.agoda_outstanding', compact('agoda_outstanding', 'title'));
 
-        } if($topic == "agoda_revenue") {
-            $agoda_revenue= SMS_alerts::whereDate('date', $adate)->where('status', 5)->get();
-            $title = "Agoda Revenue";
-            return view('revenue.agoda.agoda_revenue', compact('agoda_revenue', 'title'));
-
-        } if($topic == "credit_charge") {
-            $credit_charge = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
-            ->whereDate('revenue.date', $adate)->where('revenue_credit.status', '!=', 5)->select('revenue_credit.*', 'revenue.date')->get();
-            $title = "Credit Card Manual Charge";
-            return view('revenue.credit.credit_charge', compact('credit_charge', 'title'));
-
-        } if($topic == "credit_fee") {
+        } if($request->revenue_type == "credit_fee") {
             $credit_fee= Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->whereDate('revenue.date', $adate)->where('revenue_credit.status', '!=', 5)->select('revenue_credit.*', 'revenue.date')->get();
             $title = "Credit Card Hotel Fee";
             return view('revenue.credit.credit_fee', compact('credit_fee', 'title'));
 
-        } if($topic == "credit_revenue") {
-            $credit_revenue = SMS_alerts::whereDate('date', $adate)->where('status', 4)->whereNull('date_into')->where('into_account', "708-226792-1")
-            ->orWhereDate('date_into', $adate)->where('status', 4)->where('into_account', "708-226792-1")->get();
-            $title = "Credit Card Hotel Revenue";
-            return view('revenue.credit.credit_revenue', compact('credit_revenue', 'title'));
-
-        } if($topic == "wp_charge") {
+        } if($request->revenue_type == "wp_charge") {
             $wp_charge = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->whereDate('revenue.date', $adate)->where('revenue_credit.status', 3)->select('revenue_credit.*', 'revenue.date')->get();
             $title = "Credit Card Water Park Manual Charge";
             return view('revenue.water_park.wp_charge', compact('wp_charge', 'title'));
 
-        } if($topic == "wp_fee") {
+        } if($request->revenue_type == "wp_fee") {
             $wp_fee= Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->whereDate('revenue.date', $adate)->where('revenue_credit.status', 3)->select('revenue_credit.*', 'revenue.date', 'revenue.total_credit')->get();
             $title = "Credit Card Warter Park Fee";
             return view('revenue.water_park.wp_fee', compact('wp_fee', 'title'));
 
-        } if ($topic == "wp") {
-            $total_revenue = Revenues::whereDate('date', $adate)->select('wp_cash as cash', 'wp_transfer as transfer', 'wp_credit as credit')->first();
-            $charge = Revenues::getManualCharge($adate, 0, 0, 3, 3);
-            $title = "Water Park Revenue";
-
-        } if($topic == "wp_credit") {
-            $wp_credit = SMS_alerts::whereDate('date', $adate)->where('status', 7)->get();
-            $title = "Credit Card Water Park Revenue";
-            return view('revenue.water_park.wp_credit', compact('wp_credit', 'title'));
-
-        } if($topic == "ev_outstanding") {
+        } if($request->revenue_type == "ev_outstanding") {
             $ev_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->whereDate('revenue.date', $adate)->where('revenue_credit.status', 8)
             ->select('revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_outstanding')->get();
             $title = "Elexa EGAT Revenue Outstanding";
             return view('revenue.elexa.ev_outstanding', compact('ev_outstanding', 'title'));
 
-        } if($topic == "ev_charge") {
+        } if($request->revenue_type == "ev_charge") {
             $ev_charge = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->whereDate('revenue.date', $adate)->where('revenue_credit.status', 8)
             ->select('revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_outstanding')->get();
             $title = "Elexa EGAT Charge";
             return view('revenue.elexa.ev_charge', compact('ev_charge', 'title'));
 
-        } if($topic == "ev_fee") {
+        } if($request->revenue_type == "ev_fee") {
             $ev_fee = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->whereDate('revenue.date', $adate)->where('revenue_credit.status', 8)
             ->select('revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_outstanding')->get();
             $title = "Elexa Fee";
             return view('revenue.elexa.ev_fee', compact('ev_fee', 'title'));
 
-        } if($topic == "elexa") {
-            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 8)
-                ->orWhereDate('date_into', date('Y-m-d'))
-                ->where('status', 8)->get();
-            $title = "Elexa EGAT Revenue";
-            return view('revenue.elexa.elexa_revenue', compact('data_sms', 'title'));
-
-        } if($topic == "credit") {
+        } if($request->revenue_type == "credit") {
             $data_sms = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('into_account', "708-226792-1")->where('status', 4)->get();
             $title = "Credit Revenue";
 
-        } if($topic == "transfer") {
+        } if($request->revenue_type == "transfer") {
             $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->get();
             $title = "Transfer Revenue";
             return view('revenue.detail2', compact('data_sms', 'title'));
 
-        } if($topic == "transfer_transaction") {
+        } if($request->revenue_type == "transfer_transaction") {
             $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->get();
             $title = "Transfer Transaction";
             return view('revenue.detail2', compact('data_sms', 'title'));
 
-        } if($topic == "credit_transaction") {
+        } if($request->revenue_type == "credit_transaction") {
             $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->get();
             $title = "Credit Card Hotel Transfer Transaction";
             return view('revenue.detail2', compact('data_sms', 'title'));
 
-        } if($topic == "total_transaction") {
+        } if($request->revenue_type == "total_transaction") {
             $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->get();
             $title = "Total Transaction";
             return view('revenue.detail2', compact('data_sms', 'title'));
 
-        } if ($topic == "status") {
+        } if ($request->revenue_type == "status") {
             $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 0)->whereNull('date_into')->get();
             $title = "No Income Type";
             return view('revenue.detail2', compact('data_sms', 'title'));
 
-        } if ($topic == "no_income_revenue") {
+        } if ($request->revenue_type == "no_income_revenue") {
             $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 0)->whereNull('date_into')->get();
             $title = "No Income Revenue";
             return view('revenue.detail2', compact('data_sms', 'title'));
 
-        } if ($topic == "split_revenue") {
+        } if ($request->revenue_type == "split_revenue") {
             $data_sms = SMS_alerts::whereDate('date_into', date('Y-m-d'))->where('split_status', 1)->get();
             $title = "Split Revenue";
             return view('revenue.detail2', compact('data_sms', 'title'));
 
-        } if ($topic == "split_transaction") {
+        } if ($request->revenue_type == "split_transaction") {
             $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('split_status', 1)->get();
             $title = "Split Credit Card Hotel Transaction";
             return view('revenue.detail2', compact('data_sms', 'title'));
 
-        } if($topic == "total_ev_outstanding") {
+        } if($request->revenue_type == "total_ev_outstanding") {
             $ev_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             // ->whereMonth('revenue.date', $exp[1])->whereYear('revenue.date', $exp[0])
             ->where('revenue_credit.status', 8)
@@ -2251,7 +2405,7 @@ class RevenuesController extends Controller
             $title = "Total Elexa EGAT Revenue Outstanding";
             return view('revenue.elexa.ev_outstanding', compact('ev_outstanding', 'title'));
 
-        } if($topic == "total_agoda_outstanding") {
+        } if($request->revenue_type == "total_agoda_outstanding") {
             $agoda_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             // ->whereMonth('revenue.date', $exp[1])->whereYear('revenue.date', $exp[0])
             ->where('revenue_credit.status', 5)->where('revenue_credit.receive_payment', 0)
@@ -2265,6 +2419,362 @@ class RevenuesController extends Controller
 
         }
 
-        return view('revenue.detail', compact('total_revenue', 'charge', 'title'));
+        ## Filter ##
+        $filter_by = $request->filter_by;
+        $day = $request->day;
+        $month = $request->month;
+        $month_to = $request->month_to;
+        $year = $request->year;
+
+        $exp = explode("_", $request->revenue_type);
+
+        if ($exp[0] == "mc" && $request->revenue_type != "mc_agoda_charge") {
+            return view('revenue.manual_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'day', 'month', 'month_to', 'year', 'status'));
+        } elseif ($request->revenue_type == "mc_agoda_charge") {
+            return view('revenue.manual_agoda_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'day', 'month', 'month_to', 'year', 'status'));
+        } else {
+            return view('revenue.detail', compact('data_query', 'total_query', 'title', 'filter_by', 'day', 'month', 'month_to', 'year', 'status'));
+        }
+    }
+
+    public function paginate_table(Request $request)
+    {
+        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $adate2 = date('Y-m-d', strtotime(date($adate)));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime($adate));
+
+        } elseif ($request->filter_by == "month") {
+            $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
+            $adate2 = date('Y-m-d', strtotime($request->year . '-' . $request->month_to . '-' . $lastday));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
+
+        } elseif ($request->filter_by == "thisMonth") {
+            $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-01');
+            $adate2 = date('Y-m-' . $lastday);
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime($adate2));
+
+        } elseif ($request->filter_by == "year") {
+            $adate = date('Y-m-d', strtotime($request->year . '-01' . '-01'));
+            $adate2 = date('Y-m-d', strtotime(date($request->year . '-12-31')));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime($request->year . '-12-31'));
+
+        } elseif ($request->filter_by == "week") {
+            $adate = date('Y-m-d', strtotime('Y-m-d'));
+            $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
+        }
+
+        $perPage = (int)$request->perPage;
+        $exp = explode("_", $request->status);
+
+        if (is_int($request->status)) { 
+            if ($request->table_name == "revenueTable") {
+                $query_sms = SMS_alerts::query()->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status);
+    
+                // $query_sms->orderBy('date', 'asc');
+    
+                if ($perPage == 10) {
+                    $data_query = $query_sms->limit($request->page.'0')->get();
+                } else {
+                    $data_query = $query_sms->paginate($perPage);
+                }
+            }
+        } else {
+            if ($request->status != "mc_agoda_charge" && count($exp) > 1 && $exp[0]."_".$exp[1] == "manual_charge") {
+                $query_revenue = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $exp[2])
+                ->where('revenue_credit.revenue_type', $exp[2])->whereBetween('revenue.date', [$from, $to])
+                ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status');
+
+                if ($perPage == 10) {
+                    $data_query = $query_revenue->limit($request->page.'0')->get();
+                } else {
+                    $data_query = $query_revenue->paginate($perPage);
+                }
+            } elseif ($request->status == "mc_agoda_charge") {
+                $query_revenue = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+                    ->where('revenue_credit.revenue_type', 5)->whereBetween('revenue.date', [$from, $to])
+                    ->select('revenue.date', 'revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding', 'revenue_credit.status');
+
+                    if ($perPage == 10) {
+                        $data_query = $query_revenue->limit($request->page.'0')->get();
+                    } else {
+                        $data_query = $query_revenue->paginate($perPage);
+                    }
+            }
+        }
+
+        $data = [];
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            if ($exp[0]."_".$exp[1] != "manual_charge" && $request->status != "mc_agoda_charge") { ## Manual Charge
+                foreach ($data_query as $key => $value) {
+                    if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                        $img_bank = '';
+                        $transfer_bank = '';
+                        $revenue_name = '';
+        
+                        // โอนจากธนาคาร
+                        $filename = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.jpg';
+                        $filename2 = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.png';
+                    
+                        if (file_exists($filename)) {
+                            $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
+                        } elseif (file_exists($filename2)) {
+                            $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
+                        }
+        
+                        $transfer_bank = '<div class="flex-jc p-left-4 center">'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
+        
+                        // เข้าบัญชี
+                        $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+        
+                        // ประเภทรายได้
+                        if ($value->status == 0) { $revenue_name = '-'; } 
+                        if ($value->status == 1) { $revenue_name = 'Guest Deposit Revenue'; } 
+                        if($value->status == 2) { $revenue_name = 'All Outlet Revenue'; } 
+                        if($value->status == 3) { $revenue_name = 'Water Park Revenue'; } 
+                        if($value->status == 4) { $revenue_name = 'Credit Card Revenue'; } 
+                        if($value->status == 5) { $revenue_name = 'Agoda Bank Transfer Revenue'; } 
+                        if($value->status == 6) { $revenue_name = 'Front Desk Revenue'; } 
+                        if($value->status == 7) { $revenue_name = 'Credit Card Water Park Revenue'; } 
+                        if($value->status == 8) { $revenue_name = 'Elexa EGAT Revenue'; } 
+                        if($value->status == 9) { $revenue_name = 'Other Revenue Bank Transfer'; }
+        
+                        $data[] = [
+                            'number' => $key + 1,
+                            'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                            'time' => Carbon::parse($value->date)->format('H:i:s'),
+                            'transfer_bank' => $transfer_bank,
+                            'into_account' => $into_account,
+                            'amount' => number_format($value->amount, 2),
+                            'remark' => $value->remark ?? 'Auto',
+                            'revenue_name' => $revenue_name,
+                            'date_into' => !empty($value->date_into) ? Carbon::parse($value->date_into)->format('d/m/Y') : '-',
+                        ];
+                    }
+                }
+            } elseif ($request->status == "mc_agoda_charge") { 
+
+                foreach ($data_query as $key => $value) {
+                    if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                        $revenue_name = '';
+                        // ประเภทรายได้
+                        $revenue_name = 'Agoda Revenue';
+        
+                        $data[] = [
+                            'number' => $key + 1,
+                            'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                            'stan' => $value->batch,
+                            'revenue_name' => $revenue_name,
+                            'check_in' => Carbon::parse($value->agoda_check_in)->format('d/m/Y'),
+                            'check_out' => Carbon::parse($value->agoda_check_out)->format('d/m/Y'),
+                            'agoda_charge' => number_format($value->agoda_charge, 2),
+                            'agoda_outstanding' => number_format($value->agoda_outstanding, 2),
+                        ];
+                    }
+                }
+
+            } else {
+                foreach ($data_query as $key => $value) {
+                    if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                        $revenue_name = '';
+                        // ประเภทรายได้
+                        if ($value->status == 0) { $revenue_name = '-'; } 
+                        if ($value->status == 1) { $revenue_name = 'Guest Deposit Revenue'; } 
+                        if($value->status == 2) { $revenue_name = 'All Outlet Revenue'; } 
+                        if($value->status == 3) { $revenue_name = 'Water Park Revenue'; } 
+                        if($value->status == 4) { $revenue_name = 'Credit Card Revenue'; } 
+                        if($value->status == 5) { $revenue_name = 'Agoda Bank Transfer Revenue'; } 
+                        if($value->status == 6) { $revenue_name = 'Front Desk Revenue'; } 
+                        if($value->status == 7) { $revenue_name = 'Credit Card Water Park Revenue'; } 
+                        if($value->status == 8) { $revenue_name = 'Elexa EGAT Revenue'; } 
+                        if($value->status == 9) { $revenue_name = 'Other Revenue Bank Transfer'; }
+        
+                        $data[] = [
+                            'number' => $key + 1,
+                            'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                            'stan' => $value->batch,
+                            'amount' => number_format($value->credit_amount, 2),
+                            'revenue_name' => $revenue_name,
+                        ];
+                    }
+                }
+            }
+        }
+
+        return response()->json([
+                'data' => $data,
+            ]);
+    }
+
+    public function search_table(Request $request)
+    {
+        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $adate2 = date('Y-m-d', strtotime(date($adate)));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime($adate));
+
+        } elseif ($request->filter_by == "month") {
+            $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
+            $adate2 = date('Y-m-d', strtotime($request->year . '-' . $request->month_to . '-' . $lastday));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
+
+        } elseif ($request->filter_by == "thisMonth") {
+            $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-01');
+            $adate2 = date('Y-m-' . $lastday);
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime($adate2));
+
+        } elseif ($request->filter_by == "year") {
+            $adate = date('Y-m-d', strtotime($request->year . '-01' . '-01'));
+            $adate2 = date('Y-m-d', strtotime(date($request->year . '-12-31')));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime($request->year . '-12-31'));
+
+        } elseif ($request->filter_by == "week") {
+            $adate = date('Y-m-d', strtotime('Y-m-d'));
+            $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
+        }
+
+        $data = [];
+
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $exp = explode("_", $request->status);
+
+        if (is_int($request->status)) { 
+            if ($request->table_name == "revenueTable") {
+                if (!empty($request->search_value)) {
+                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])
+                        ->where('date', 'LIKE', '%'.$request->search_value.'%')->whereNull('date_into')->where('status', $request->status)
+                        ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereBetween('date', [$from, $to])
+                        ->whereNull('date_into')->where('status', $request->status)
+                        ->paginate($perPage);
+                } else {
+                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)->orderBy('date', 'asc')->paginate($perPage);
+                }
+
+            }
+        } else {
+            if ($exp[0]."_".$exp[1] == "manual_charge") {
+                if (!empty($request->search_value)) {
+                    $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $exp[2])
+                        ->where('revenue_credit.revenue_type', $exp[2])->whereBetween('revenue.date', [$adate, $adate2])
+                        ->where('revenue_credit.credit_amount', 'LIKE', '%'.$request->search_value.'%')
+                        ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status')->paginate($perPage);
+                } else {
+                    $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $exp[2])
+                        ->where('revenue_credit.revenue_type', $exp[2])->whereBetween('revenue.date', [$adate, $adate2])
+                        ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status')->paginate($perPage);
+                }
+            }
+        }
+
+
+        if (isset($data_query) && count($data_query) > 0) {
+            if ($exp[0]."_".$exp[1] != "manual_charge") { ## Manual Charge
+                foreach ($data_query as $key => $value) {
+
+                    $img_bank = '';
+                    $transfer_bank = '';
+                    $revenue_name = '';
+
+                    // โอนจากธนาคาร
+                    $filename = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.jpg';
+                    $filename2 = base_path() . '/public/image/bank/' . @$value->transfer_bank->name_en . '.png';
+                
+                    if (file_exists($filename)) {
+                        $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.jpg">';
+                    } elseif (file_exists($filename2)) {
+                        $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
+                    }
+
+                    $transfer_bank = '<div class="flex-jc p-left-4 center">'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
+
+                    // เข้าบัญชี
+                    $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
+
+                    // ประเภทรายได้
+                    if ($value->status == 0) { $revenue_name = '-'; } 
+                    if ($value->status == 1) { $revenue_name = 'Guest Deposit Revenue'; } 
+                    if($value->status == 2) { $revenue_name = 'All Outlet Revenue'; } 
+                    if($value->status == 3) { $revenue_name = 'Water Park Revenue'; } 
+                    if($value->status == 4) { $revenue_name = 'Credit Card Revenue'; } 
+                    if($value->status == 5) { $revenue_name = 'Agoda Bank Transfer Revenue'; } 
+                    if($value->status == 6) { $revenue_name = 'Front Desk Revenue'; } 
+                    if($value->status == 7) { $revenue_name = 'Credit Card Water Park Revenue'; } 
+                    if($value->status == 8) { $revenue_name = 'Elexa EGAT Revenue'; } 
+                    if($value->status == 9) { $revenue_name = 'Other Revenue Bank Transfer'; }
+
+                    $data[] = [
+                        'id' => $key + 1,
+                        'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                        'time' => Carbon::parse($value->date)->format('H:i:s'),
+                        'transfer_bank' => $transfer_bank,
+                        'into_account' => $into_account,
+                        'amount' => number_format($value->amount, 2),
+                        'remark' => $value->remark ?? 'Auto',
+                        'revenue_name' => $revenue_name,
+                        'date_into' => !empty($value->date_into) ? Carbon::parse($value->date_into)->format('d/m/Y') : '-',
+                    ];
+                }
+            } else {
+                foreach ($data_query as $key => $value) {
+                    $revenue_name = '';
+                    // ประเภทรายได้
+                    if ($value->status == 0) { $revenue_name = '-'; } 
+                    if ($value->status == 1) { $revenue_name = 'Guest Deposit Revenue'; } 
+                    if($value->status == 2) { $revenue_name = 'All Outlet Revenue'; } 
+                    if($value->status == 3) { $revenue_name = 'Water Park Revenue'; } 
+                    if($value->status == 4) { $revenue_name = 'Credit Card Revenue'; } 
+                    if($value->status == 5) { $revenue_name = 'Agoda Bank Transfer Revenue'; } 
+                    if($value->status == 6) { $revenue_name = 'Front Desk Revenue'; } 
+                    if($value->status == 7) { $revenue_name = 'Credit Card Water Park Revenue'; } 
+                    if($value->status == 8) { $revenue_name = 'Elexa EGAT Revenue'; } 
+                    if($value->status == 9) { $revenue_name = 'Other Revenue Bank Transfer'; }
+    
+                    $data[] = [
+                        'number' => $key + 1,
+                        'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                        'stan' => $value->batch,
+                        'amount' => number_format($value->credit_amount, 2),
+                        'revenue_name' => $revenue_name,
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+            'data' => $data,
+        ]);
     }
 }

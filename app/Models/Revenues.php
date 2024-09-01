@@ -52,7 +52,7 @@ class Revenues extends Model
 
         ## Date
         if ($filter_by == "week") {
-            $adate = date('Y-m-d', strtotime(date($date)));
+            $adate = date('Y-m-d', strtotime(date('Y-m-d')));
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
             $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', $status)
@@ -129,7 +129,7 @@ class Revenues extends Model
 
         ## Date
         if ($filter_by == "week") {
-            $adate = date('Y-m-d', strtotime(date($date)));
+            $adate = date('Y-m-d', strtotime(date('Y-m-d')));
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
             $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
@@ -223,7 +223,7 @@ class Revenues extends Model
 
         ## Date
         if ($filter_by == "week") {
-            $adate = date('Y-m-d', strtotime(date($date)));
+            $adate = date('Y-m-d', strtotime(date('Y-m-d')));
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
             $sum_revenue = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
