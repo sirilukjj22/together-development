@@ -1534,7 +1534,6 @@
     </script>
     <script>
         const table_name = ['company-VisitTable', 'company-TaxTable','company-ContactTable','company-LogTable'];
-
         $(document).ready(function() {
             for (let index = 0; index < table_name.length; index++) {
                 new DataTable('#'+table_name[index], {
@@ -1555,11 +1554,9 @@
                     }
                 });
             }
-
         });
 
         function nav(id) {
-
             for (let index = 0; index < table_name.length; index++) {
                 $('#'+table_name[index]).DataTable().destroy();
                 new DataTable('#'+table_name[index], {
@@ -1580,7 +1577,6 @@
                     }
                 });
             }
-
         }
 
         $(document).on('keyup', '.search-data-company-Visit', function () {

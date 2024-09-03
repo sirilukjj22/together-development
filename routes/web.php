@@ -454,6 +454,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Quotation/view/{id}','view')->name('Quotation.view');
 
         Route::get('/Quotation/Search/All', 'SearchAll')->name('Quotation.Search');
+
+        //----------------------------
+        Route::post('Index-Proposal-search-table', 'search_table_Index_Proposal');
+        Route::post('Index-Proposal-paginate-table', 'paginate_table_Index_Proposal');
     });
 
     #DummyQuotaion
