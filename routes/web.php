@@ -191,7 +191,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Company/Tambon/Contact/{id}', 'TambonContact')->name('Company.TambonContact');
         Route::post('/Company/check/company', 'SearchContact');
         Route::get('/Company/edit/contact/{id}', 'contactedit')->name('Company.contact.edit');
-        Route::post('/Company/edit/contact/editcontact/update/{companyId}/{itemId}', 'contactupdate')->name('Company.contact.update');
+        Route::post('/Company/edit/contact/editcontact/update/{id}', 'contactupdate')->name('Company.contact.update');
 
 
         Route::post('/Company/save/Tax/{id}', 'Tax')->name('Company.Tax');
@@ -215,6 +215,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('Contact-company-search-table', 'search_table_company_Contact');
         Route::post('Contact-company-paginate-table', 'paginate_table_company_Contact');
+
+        Route::post('Log-company-search-table', 'search_table_company_Log');
+        Route::post('Log-company-paginate-table', 'paginate_table_company_Log');
     });
 
     Route::controller(GuestController::class)->group(function () {

@@ -463,10 +463,11 @@ class GuestController extends Controller
         if ($search_value) {
             $data_query = log_company::where('created_at', 'LIKE', '%'.$search_value.'%')
                 ->where('Company_ID',$guest_profile)
+                ->orderBy('updated_at', 'desc')
                 ->paginate($perPage);
         }else{
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query = log_company::where('Company_ID',$guest_profile)->paginate($perPageS);
+            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->paginate($perPageS);
         }
         $data = [];
         if (isset($data_query) && count($data_query) > 0) {
@@ -495,9 +496,9 @@ class GuestController extends Controller
         $guest_profile = $request->guest_profile;
         $data = [];
         if ($perPage == 10) {
-            $data_query = log_company::where('Company_ID',$guest_profile)->limit($request->page.'0')->get();
+            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->limit($request->page.'0')->get();
         } else {
-            $data_query = log_company::where('Company_ID',$guest_profile)->paginate($perPage);
+            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->paginate($perPage);
         }
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';

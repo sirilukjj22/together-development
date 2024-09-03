@@ -718,6 +718,7 @@
                                                 <th class="text-center">Discount </th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Document status</th>
+                                                <th class="text-center">Order</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -764,6 +765,14 @@
                                                                 <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
                                                             @endif
                                                         @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
+                                                            <ul class="dropdown-menu border-0 shadow p-3">
+                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                            </ul>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -1108,6 +1117,70 @@
                                             </form>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-User" role="tabpanel" rel="0">
+                                <div style="min-height: 70vh;" class="mt-2">
+                                    <caption class="caption-top">
+                                        <div>
+                                            <div class="flex-end-g2">
+                                                <label class="entriespage-label">entries per page :</label>
+                                                <select class="entriespage-button" id="search-per-page-company-Log" onchange="getPageLog(1, this.value, 'company-Log')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "company-Log" ? 'selected' : '' }}>10</option>
+                                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "company-Log" ? 'selected' : '' }}>25</option>
+                                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "company-Log" ? 'selected' : '' }}>50</option>
+                                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "company-Log" ? 'selected' : '' }}>100</option>
+                                                </select>
+                                                <input class="search-button search-data-company-Log" id="company-Log" style="text-align:left;" placeholder="Search" />
+                                            </div>
+                                    </caption>
+                                    <table id="company-LogTable" class="example ui striped table nowrap unstackable hover">
+                                        <thead>
+                                            <tr>
+                                                <th  class="text-center">No</th>
+                                                <th >Category</th>
+                                                <th  class="text-center">Type</th>
+                                                <th  class="text-center">Created_by</th>
+                                                <th  class="text-center">Created Date</th>
+                                                <th  class="text-center">Content</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($log))
+                                                @foreach($log as $key => $item)
+                                                <tr>
+                                                    <td style="text-align: center;">{{$key +1 }}</td>
+                                                    <td style="text-align: left;">{{$item->Category}}</td>
+                                                    <td style="text-align: center;">{{$item->type}}</td>
+                                                    <td style="text-align: center;">{{@$item->userOperated->name}}</td>
+                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
+                                                    @php
+                                                        // แยกข้อมูล content ออกเป็น array
+                                                        $contentArray = explode('+', $item->content);
+                                                    @endphp
+                                                    <td style="text-align: left;">
+
+                                                        <b style="color:#0000FF ">{{$item->Category}}</b>
+                                                        @foreach($contentArray as $contentItem)
+                                                            <div>{{ $contentItem }}</div>
+                                                        @endforeach
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                    <input type="hidden" id="profile-company-Log" name="profile-company" value="{{$Company->Profile_ID}}">
+                                    <input type="hidden" id="get-total-company-Log" value="{{ $log->total() }}">
+                                    <input type="hidden" id="currentPage-company-Log" value="1">
+                                    <caption class="caption-bottom">
+                                        <div class="md-flex-bt-i-c">
+                                            <p class="py2" id="company-Log-showingEntries">{{ showingEntriesTableLog($log, 'company-Log') }}</p>
+                                                <div id="company-Log-paginate">
+                                                    {!! paginateTableLog($log, 'company-Log') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                </div>
+                                        </div>
+                                    </caption>
                                 </div>
                             </div>
                         </div>
@@ -1460,7 +1533,7 @@
 
     </script>
     <script>
-        const table_name = ['company-VisitTable', 'company-TaxTable','company-ContactTable'];
+        const table_name = ['company-VisitTable', 'company-TaxTable','company-ContactTable','company-LogTable'];
 
         $(document).ready(function() {
             for (let index = 0; index < table_name.length; index++) {
@@ -1555,7 +1628,7 @@
                         $('#'+id+'-paginate').append(paginateSearchVisit(count_total, id, getUrl));
                     },
                     columnDefs: [
-                                { targets: [0, 1, 3, 4, 5, 6, 7, 8, 9], className: 'dt-center td-content-center' },
+                                { targets: [0, 1, 3, 4, 5, 6, 7, 8, 9,10], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1575,6 +1648,8 @@
                         { data: 'Discount' },
                         { data: 'OperatedBy' },
                         { data: 'Documentstatus' },
+                        { data: 'Order' },
+
                     ],
 
                 });
@@ -1644,6 +1719,75 @@
                         { data: 'Name' },
                         { data: 'Status' },
                         { data: 'Order' },
+                    ],
+
+                });
+            document.getElementById(id).focus();
+        });
+
+
+        $(document).on('keyup', '.search-data-company-Log', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var guest_profile = $('#profile-company-Log').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
+            console.log(guest_profile);
+
+
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/Log-company-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        guest_profile: guest_profile,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                    "initComplete": function (settings,json){
+
+                        if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                            var count = $('#'+id+'Table tr').length - 1;
+                        }else{
+                            var count = 0;
+                        }
+                        if (search_value == '') {
+                            count_total = total;
+                        }else{
+                            count_total = count;
+                        }
+                        $('#'+id+'-paginate').children().remove().end();
+                        $('#'+id+'-showingEntries').text(showingEntriesSearchLog(1,count_total, id));
+                        $('#'+id+'-paginate').append(paginateSearchLog(count_total, id, getUrl));
+                    },
+                    columnDefs: [
+                                { targets: [0, 2, 3,4], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'Category' },
+                        { data: 'type' },
+                        { data: 'Created_by' },
+                        { data: 'created_at' },
+                        { data: 'Content' },
                     ],
 
                 });
