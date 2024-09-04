@@ -6,11 +6,11 @@
             <div class="row align-items-center">
                 <div class="col sms-header">
                     <small class="text-muted">Welcome to Proposal.</small>
-                    <div class=""><span class="span1">Proposal (ข้อเสนอ)</span></div>
+                    <div class=""><span class="span1">Proposal (เอกสารใบข้อเสนอ)</span></div>
                 </div>
                 <div class="col-auto">
-                    @if (@Auth::user()->roleMenuAdd('Proposal',Auth::user()->id) == 1)
-                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Quotation.create') }}'">
+                    @if (@Auth::user()->roleMenuAdd('proposal',Auth::user()->id) == 1)
+                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Proposal.create') }}'">
                         <i class="fa fa-plus"></i> เพิ่มใบเสนอราคา</button>
                     @endif
                     <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#allSearch">
@@ -27,7 +27,7 @@
                                     <div class="modal-body">
                                         <div class="col-12">
                                             <div class="card-body">
-                                                <form action="{{route('Quotation.Search')}}" method="GET" enctype="multipart/form-data" class="row g-3 basic-form">
+                                                <form action="{{route('Proposal.Search')}}" method="GET" enctype="multipart/form-data" class="row g-3 basic-form">
                                                     @csrf
                                                     <div class="col-sm-12 col-12">
                                                         <label for="Status">ตัวเลือก</label>
@@ -147,7 +147,7 @@
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
                     <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                        <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" onclick="nav($id='nav1')"> <span class="badge" style="background-color:#64748b">{{$Proposalcount}}</span> Proposal</a></li>
+                        <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" onclick="nav($id='nav1')"> <span class="badge" style="background-color:#64748b">{{$Proposalcount}}</span> proposal</a></li>
                         <li class="nav-item" id="nav2"><a class="nav-link" data-bs-toggle="tab" href="#nav-Pending" role="tab" onclick="nav($id='nav2')"><span class="badge" style="background-color:#FF6633">{{$Pendingcount}}</span> Pending</a></li>
                         <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting" role="tab" onclick="nav($id='nav3')"><span class="badge bg-warning" >{{$Awaitingcount}}</span> Awaiting Approval</a></li>
                         <li class="nav-item" id="nav4"><a class="nav-link" data-bs-toggle="tab" href="#nav-Approved" role="tab" onclick="nav($id='nav4')"><span class="badge bg-success" >{{$Approvedcount}}</span> Approved</a></li>
@@ -158,25 +158,25 @@
                         <div class="card-body">
                             <div class="tab-pane fade show active" id="nav-Dummy" role="tabpanel" rel="0">
                                 <div style="min-height: 70vh;" class="mt-2">
-                                    <table id="proposal-indexTable" class="example ui striped table nowrap unstackable hover">
-                                        <caption class="caption-top">
-                                            <div>
-                                                <div class="flex-end-g2">
-                                                    <label class="entriespage-label">entries per page :</label>
-                                                    <select class="entriespage-button" id="search-per-page-proposal-index" onchange="getPage(1, this.value, 'proposal-index')">
-                                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposal-index" ? 'selected' : '' }}>10</option>
-                                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposal-index" ? 'selected' : '' }}>25</option>
-                                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposal-index" ? 'selected' : '' }}>50</option>
-                                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposal-index" ? 'selected' : '' }}>100</option>
-                                                    </select>
-                                                    <input class="search-button search-data-proposal-index" id="proposal-index" style="text-align:left;" placeholder="Search" />
-                                                </div>
-                                        </caption>
+                                    <caption class="caption-top">
+                                        <div>
+                                            <div class="flex-end-g2">
+                                                <label class="entriespage-label">entries per page :</label>
+                                                <select class="entriespage-button" id="search-per-page-proposal" onchange="getPage(1, this.value, 'proposal')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>10</option>
+                                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>25</option>
+                                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>50</option>
+                                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>100</option>
+                                                </select>
+                                                <input class="search-button search-data" id="proposal" style="text-align:left;" placeholder="Search" />
+                                            </div>
+                                    </caption>
+                                    <table id="proposalTable" class="example ui striped table nowrap unstackable hover">
                                         <thead>
                                             <tr>
-                                                <th class="text-center" data-priority="1">No</th>
+                                                <th class="text-center"data-priority="1">No</th>
                                                 <th class="text-center">Dummy</th>
-                                                <th class="text-center" data-priority="1">ID</th>
+                                                <th class="text-center" data-priority="1">Proposal ID</th>
                                                 <th class="text-center" data-priority="1">Company</th>
                                                 <th class="text-center">Issue Date</th>
                                                 <th class="text-center">Expiration Date</th>
@@ -186,8 +186,8 @@
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
                                                 <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document status</th>
-                                                <th class="text-center">Order</th>
+                                                <th class="text-center">Document Status</th>
+                                                <th class="text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -199,9 +199,9 @@
                                                     </td>
                                                     <td  style="text-align: center;">
                                                         @if ($item->DummyNo == $item->Quotation_ID )
-                                                        -
+                                                            -
                                                         @else
-                                                        {{ $item->DummyNo }}
+                                                            {{ $item->DummyNo }}
                                                         @endif
                                                     </td>
                                                     <td>{{ $item->Quotation_ID }}</td>
@@ -215,7 +215,6 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-
                                                     <td style="text-align: center;">
                                                         @if ($item->SpecialDiscount == 0)
                                                             -
@@ -247,7 +246,7 @@
                                                             @elseif ($item->status_document == 1)
                                                                 <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
                                                             @elseif ($item->status_document == 2)
-                                                                <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                                <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
                                                             @elseif ($item->status_document == 3)
                                                                 <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
                                                             @elseif ($item->status_document == 4)
@@ -257,81 +256,35 @@
                                                             @endif
                                                         @endif
                                                     </td>
+                                                    @php
+                                                        $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                        $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                    @endphp
                                                     <td style="text-align: center;">
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
-                                                                @if (@Auth::user()->rolePermissionData(Auth::user()->id) == 0)
-                                                                @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 1)
-                                                                    @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/send/email/'.$item->id) }}">Send Email</a></li>
+                                                                @if ($rolePermission > 0)
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
                                                                     @endif
-                                                                    @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
-                                                                        @if (in_array($item->status_document, [1, 6,3]))
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">Edit</a></li>
+
+                                                                    @if ($canEditProposal == 1 && (Auth::user()->id == $item->Operated_by || $rolePermission == 1 || $rolePermission == 3))
+                                                                        @if (in_array($item->status_document, [1, 6, 3]))
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                         @endif
-                                                                        @if($item->status_document == 1)
-                                                                            @if ($item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
-                                                                            <li><a class="dropdown-item py-2 rounded" onclick="Approved({{ $item->id }})">Approved</a></li>
-                                                                            @endif
+
+                                                                        @if($item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                        @elseif($item->status_document == 3 && $item->Confirm_by !== 0)
+                                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
                                                                         @endif
-                                                                        @if($item->status_document == 3)
-                                                                            @if ($item->Confirm_by !== 0 )
-                                                                                <li><a class="dropdown-item py-2 rounded" onclick="Approved({{ $item->id }})">Approved</a></li>
-                                                                            @endif
-                                                                        @endif
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Cancel()"><input type="hidden" name="id" id="id" value="{{$item->id}}">Cancel</a></li>
-                                                                    @endif
-                                                                @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 2)
-                                                                    @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                    @endif
-                                                                    @if (Auth::user()->id == $item->Operated_by)
-                                                                        @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
-                                                                            @if (in_array($item->status_document, [1, 6,3]))
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            @endif
-                                                                            @if($item->status_document == 1)
-                                                                                @if ($item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
-                                                                                <li><a class="dropdown-item py-2 rounded" onclick="Approved({{ $item->id }})">Approved</a></li>
-                                                                                @endif
-                                                                            @endif
-                                                                            @if($item->status_document == 3)
-                                                                                @if ($item->Confirm_by !== 0 )
-                                                                                    <li><a class="dropdown-item py-2 rounded" onclick="Approved({{ $item->id }})">Approved</a></li>
-                                                                                @endif
-                                                                            @endif
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" onclick="Cancel()"><input type="hidden" name="id" id="id" value="{{$item->id}}">Cancel</a></li>
-                                                                        @endif
-                                                                    @endif
-                                                                @elseif (@Auth::user()->rolePermissionData(Auth::user()->id) == 3)
-                                                                    @if (@Auth::user()->roleMenuView('Proposal',Auth::user()->id) == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                    @endif
-                                                                    @if (@Auth::user()->roleMenuEdit('Proposal',Auth::user()->id) == 1)
-                                                                        @if (in_array($item->status_document, [1, 6,3]))
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                        @endif
-                                                                        @if($item->status_document == 1)
-                                                                            @if ($item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
-                                                                            <li><a class="dropdown-item py-2 rounded" onclick="Approved({{ $item->id }})">Approved</a></li>
-                                                                            @endif
-                                                                        @endif
-                                                                        @if($item->status_document == 3)
-                                                                            @if ($item->Confirm_by !== 0 )
-                                                                                <li><a class="dropdown-item py-2 rounded" onclick="Approved({{ $item->id }})">Approved</a></li>
-                                                                            @endif
-                                                                        @endif
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Cancel()"><input type="hidden" name="id" id="id" value="{{$item->id}}">Cancel</a></li>
+
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                     @endif
                                                                 @endif
                                                             </ul>
@@ -341,18 +294,17 @@
                                                 @endforeach
                                             @endif
                                         </tbody>
-                                        {{-- <input type="hidden" id="profile-Proposal-index" name="profile-company" value="{{$Proposal->Quotation_ID}}"> --}}
-                                        <input type="hidden" id="get-total-proposal-index" value="{{ $Proposal->total() }}">
-                                        <input type="hidden" id="currentPage-proposal-index" value="1">
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="proposal-index-showingEntries">{{ showingEntriesTable($Proposal, 'proposal-index') }}</p>
-                                                    <div id="proposal-index-paginate">
-                                                        {!! paginateTable($Proposal, 'proposal-index') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                    </div>
-                                            </div>
-                                        </caption>
                                     </table>
+                                    <input type="hidden" id="get-total-proposal" value="{{ $Proposal->total() }}">
+                                    <input type="hidden" id="currentPage-proposal" value="1">
+                                    <caption class="caption-bottom">
+                                        <div class="md-flex-bt-i-c">
+                                            <p class="py2" id="proposal-showingEntries">{{ showingEntriesTable($Proposal, 'proposal') }}</p>
+                                                <div id="proposal-paginate">
+                                                    {!! paginateTable($Proposal, 'proposal') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                </div>
+                                        </div>
+                                    </caption>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="nav-Pending" role="tabpanel" rel="0">
@@ -376,15 +328,21 @@
             </div>
         </div>
     </div>
+
+    @include('script.script')
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <!-- dataTable -->
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableProposal.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableproposal.js')}}"></script>
     <script>
-        const table_name = ['proposal-indexTable'];
+        const table_name = ['proposalTable'];
         $(document).ready(function() {
             for (let index = 0; index < table_name.length; index++) {
                 console.log();
@@ -431,7 +389,7 @@
                 });
             }
         }
-        $(document).on('keyup', '.search-data-proposal-index', function () {
+        $(document).on('keyup', '.search-data', function () {
             var id = $(this).attr('id');
             var search_value = $(this).val();
             var table_name = id+'Table';
@@ -439,7 +397,7 @@
             var type_status = $('#status').val();
             var total = parseInt($('#get-total-'+id).val());
             var getUrl = window.location.pathname;
-            console.log(table_name);
+            console.log(search_value);
 
                 $('#'+table_name).DataTable().destroy();
                 var table = $('#'+table_name).dataTable({
@@ -447,7 +405,7 @@
                     paging: false,
                     info: false,
                     ajax: {
-                    url: '/Index-Proposal-search-table',
+                    url: '/Proposal-search-table',
                     type: 'POST',
                     dataType: "json",
                     cache: false,
@@ -476,7 +434,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                        { targets: [0, 1, 2, 3,4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ,14], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -486,14 +444,9 @@
                         }
                     },
                     columns: [
-                        {
-                            data: 'id',
-                            "render": function (data, type, row, meta) {
-                                return meta.row + meta.settings._iDisplayStart + 1;
-                            }
-                        },
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
                         { data: 'DummyNo' },
-                        { data: 'Quotation_ID' },
+                        { data: 'Proposal_ID' },
                         { data: 'Company_Name' },
                         { data: 'IssueDate' },
                         { data: 'ExpirationDate' },
@@ -506,11 +459,65 @@
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
                     ],
+
                 });
+
+
             document.getElementById(id).focus();
         });
     </script>
-
+    <script>
+    function Cancel(id){
+        Swal.fire({
+        title: "คุณต้องการปิดการใช้งานใบข้อเสนอนี้ใช่หรือไม่?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "ตกลง",
+        cancelButtonText: "ยกเลิก",
+        confirmButtonColor: "#28a745",
+        dangerMode: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{{ url('/Proposal/cancel/') }}/" + id;
+            }
+        });
+    }
+    function Revice(id){
+        Swal.fire({
+        title: "คุณต้องการปิดการใช้งานใบข้อเสนอนี้ใช่หรือไม่?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "ตกลง",
+        cancelButtonText: "ยกเลิก",
+        confirmButtonColor: "#28a745",
+        dangerMode: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{{ url('/Proposal/Revice/') }}/" + id;
+            }
+        });
+    }
+    function Approved(id) {
+        jQuery.ajax({
+            type: "GET",
+            url: "/Proposal/Request/document/Approve/guest/" + id,
+            datatype: "JSON",
+            async: false,
+            success: function(response) {
+                console.log("AJAX request successful: ", response);
+                if (response.success) {
+                    // เปลี่ยนไปยังหน้าที่ต้องการ
+                location.reload();
+                } else {
+                    alert("An error occurred while processing the request.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX request failed: ", status, error);
+            }
+        });
+    }
+    </script>
 
 
 @endsection

@@ -28,6 +28,7 @@ function paginateSearch($total, $table, $link)
     var nextPageUrl = currentPage;
     var table = $table;
     var html = '';
+console.log(perPage);
 
     if (currentPage > 1) {
         previousPageUrl = currentPage - 1;
@@ -84,18 +85,16 @@ function getPage(page, perPage, table_n)
     var type = $('#status').val();
     var total = parseInt($('#get-total-' + table_n).val());
 
-
     $('#currentPage-' + table_n).val(page);
 
     $('#' + table_name).DataTable().destroy();
-    if (table_n == "proposal-index") {
-        console.log(table_name);
+    if (table_n == "proposal") {
         var table = $('#' + table_name).dataTable({
             searching: false,
             paging: false,
             info: false,
             ajax: {
-                url: '/Index-Proposal-paginate-table',
+                url: '/Proposal-paginate-table',
                 type: 'POST',
                 dataType: "json",
                 cache: false,
@@ -108,7 +107,7 @@ function getPage(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0, 1, 2, 3,4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ,14], className: 'dt-center td-content-center' },
+                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -120,7 +119,7 @@ function getPage(page, perPage, table_n)
             columns: [
                 { data: 'number' },
                 { data: 'DummyNo' },
-                { data: 'Quotation_ID' },
+                { data: 'Proposal_ID' },
                 { data: 'Company_Name' },
                 { data: 'IssueDate' },
                 { data: 'ExpirationDate' },

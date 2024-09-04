@@ -165,7 +165,7 @@
                                                     Proposal</a></li>
                                             <li><a class="ms-link" href="{{ route('ProposalReq.index') }}">Proposal
                                                     Request</a></li>
-                                            <li><a class="ms-link" href="{{ route('Quotation.index') }}">Proposal</a>
+                                            <li><a class="ms-link" href="{{ route('Proposal.index') }}">Proposal</a>
                                             </li>
                                         @endif
                                         @if (Auth::user()->roleMenu->banquet_event_order == 1)
@@ -319,7 +319,7 @@
 
             <!-- main body area -->
                 @yield('content')
-                
+
             <!-- Body: Footer -->
             <div class="body-footer" style="margin: 0 8px;">
                 <div class="container-xl">

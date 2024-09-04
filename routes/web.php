@@ -415,49 +415,50 @@ Route::middleware(['auth'])->group(function () {
 
     #Quotation
     Route::controller(QuotationController::class)->group(function () {
-        Route::get('/Quotation/index', 'index')->name('Quotation.index');
-        Route::get('/Quotation/create', 'create')->name('Quotation.create');
-        Route::get('/Quotation/ac', 'ac')->name('Quotation.ac');
-        Route::get('/Quotation/no', 'no')->name('Quotation.no');
-        Route::get('/Quotation/create/company/{companyID}','Contactcreate')->name('Quotation.Contactcreate');
-        Route::post('/Quotation/create/save', 'save')->name('Quotation.save');
-        Route::get('/Quotation/selectproduct/company/create/{id}', 'selectProduct')->name('Quotation.SelectProduct');
-        Route::post('/Quotation/company/create/quotation/{Quotation_ID}', 'savequotation')->name('Quotation.quotation');
-        Route::get('/Quotation/edit/quotation/{id}','edit')->name('Quotation.edit');
+        Route::get('/Proposal/index', 'index')->name('Proposal.index');
+        Route::get('/Proposal/create', 'create')->name('Proposal.create');
+        Route::get('/Proposal/ac', 'ac')->name('Proposal.ac');
+        Route::get('/Proposal/no', 'no')->name('Proposal.no');
+        Route::get('/Proposal/create/company/{companyID}','Contactcreate')->name('Proposal.Contactcreate');
+        Route::get(' /Proposal/create/Guest/{Guest}','Guestcreate')->name('Proposal.Guestcreate');
+        Route::post('/Proposal/create/save', 'save')->name('Proposal.save');
+        Route::get('/Proposal/selectproduct/company/create/{id}', 'selectProduct')->name('Proposal.SelectProduct');
+        Route::post('/Proposal/company/create/quotation/{Quotation_ID}', 'savequotation')->name('Proposal.quotation');
+        Route::get('/Proposal/edit/quotation/{id}','edit')->name('Proposal.edit');
 
-        Route::get('/Quotation/change-Status/{id}/{status}','changestatus')->name('Quotation.changestatus');
-        Route::post('/Quotation/edit/company/quotation/update/{id}', 'update')->name('Quotation.update');
-        Route::get('/Quotation/company/product/{Quotation_ID}/addProduct', 'addProduct')->name('Quotation.addProduct');
+        Route::get('/Proposal/change-Status/{id}/{status}','changestatus')->name('Proposal.changestatus');
+        Route::post('/Proposal/edit/company/quotation/update/{id}', 'update')->name('Proposal.update');
+        Route::get('/Proposal/company/product/{Quotation_ID}/addProduct', 'addProduct')->name('Proposal.addProduct');
         //----------------------------------Quotaion select product------------------------------------------------------
-        Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttable', 'addProducttable')->name('Quotation.addProducttable');
-        Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttableselect', 'addProducttableselect')->name('Quotation.addProducttableselect');
-        Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttablemain', 'addProducttablemain')->name('Quotation.addProducttablemain');
-        Route::get('/Quotation/selectproduct/{Quotation_ID}/addProductselect', 'addProductselect')->name('Quotation.addProductselect');
-        Route::get('/Quotation/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('Quotation.addProducttablecreatemain');
+        Route::get('/Proposal/selectproduct/{Quotation_ID}/addProducttable', 'addProducttable')->name('Proposal.addProducttable');
+        Route::get('/Proposal/selectproduct/{Quotation_ID}/addProducttableselect', 'addProducttableselect')->name('Proposal.addProducttableselect');
+        Route::get('/Proposal/selectproduct/{Quotation_ID}/addProducttablemain', 'addProducttablemain')->name('Proposal.addProducttablemain');
+        Route::get('/Proposal/selectproduct/{Quotation_ID}/addProductselect', 'addProductselect')->name('Proposal.addProductselect');
+        Route::get('/Proposal/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('Proposal.addProducttablecreatemain');
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
-        Route::get('/Quotation/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('Quotation.sheet');
+        Route::get('/Proposal/Proposal/cover/document/PDF/{id}', 'sheetpdf')->name('Proposal.sheet');
         //--------------------------------------ลูกค้ายืนยัน------------------------------------------------------
-        Route::get('/Proposal/Request/document/Approve/guest/{id}', 'Approve')->name('Quotation.Approve');
+        Route::get('/Proposal/Request/document/Approve/guest/{id}', 'Approve')->name('Proposal.Approve');
         //---------------------------------------LOG-----------------------------------------------------------
-        Route::get('/Quotation/view/quotation/LOG/{id}','LOG')->name('Quotation.LOG');
+        Route::get('/Proposal/view/quotation/LOG/{id}','LOG')->name('Proposal.LOG');
         //-------------------------------------------------------------.
-        Route::get('/Quotation/cancel/{id}','cancel')->name('Quotation.cancel');
+        Route::get('/Proposal/cancel/{id}','cancel')->name('Proposal.cancel');
         //--------------------------------------------------------------
-        Route::get('/Quotation/Revice/{id}','Revice')->name('Quotation.Revice');
+        Route::get('/Proposal/Revice/{id}','Revice')->name('Proposal.Revice');
         //--------------------------------------------------------------
-        Route::post('/Quotation/preview/document/PDF/', 'preview')->name('Quotation.preview');
+        Route::post('/Proposal/preview/document/PDF/', 'preview')->name('Proposal.preview');
 
-        Route::get('/Quotation/send/email/{id}', 'email')->name('Quotation.email');
+        Route::get('/Proposal/send/email/{id}', 'email')->name('Proposal.email');
 
-        Route::post('/Quotation/send/detail/email/{id}', 'sendemail')->name('Quotation.sendemail');
+        Route::post('/Proposal/send/detail/email/{id}', 'sendemail')->name('Proposal.sendemail');
 
-        Route::get('/Quotation/view/{id}','view')->name('Quotation.view');
+        Route::get('/Proposal/view/{id}','view')->name('Proposal.view');
 
-        Route::get('/Quotation/Search/All', 'SearchAll')->name('Quotation.Search');
+        Route::get('/Proposal/Search/All', 'SearchAll')->name('Proposal.Search');
 
         //----------------------------
-        Route::post('Index-Proposal-search-table', 'search_table_Index_Proposal');
-        Route::post('Index-Proposal-paginate-table', 'paginate_table_Index_Proposal');
+        Route::post('Proposal-search-table', 'search_table_proposal');
+        Route::post('Proposal-paginate-table', 'paginate_table_proposal');
     });
 
     #DummyQuotaion
