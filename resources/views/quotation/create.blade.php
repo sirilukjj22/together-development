@@ -177,7 +177,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-8 col-md-12 col-sm-12 image-container">
-                                        <img src="{{ asset('assets2/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
+                                        <img src="{{ asset('assets2/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
                                         <div class="info">
                                             <p class="titleh1">{{$settingCompany->name}}</p>
                                             <p>{{$settingCompany->address}}</p>
@@ -1713,6 +1713,20 @@
                     document.getElementById("myForm").submit();
                 }
             });
+        }
+        function submitPreview() {
+            var previewValue = document.getElementById("preview").value;
+
+            // สร้าง input แบบ hidden ใหม่
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "preview";
+            input.value = 1;
+
+            // เพิ่ม input ลงในฟอร์ม
+            document.getElementById("myForm").appendChild(input);
+            document.getElementById("myForm").setAttribute("target","_blank");
+            document.getElementById("myForm").submit();
         }
     </script>
 @endsection
