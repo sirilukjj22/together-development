@@ -45,9 +45,9 @@
                                     </div>
                                     <div class="col-lg-10 col-md-10 col-sm-12">
                                         <input type="hidden" id="DATATYPE" value="{{$type_Proposal}}">
-                                        {{-- <textarea id="summernote" name="detail">
-                                            Dear คุณ{{$name}} <br>
-                                            Company : {{$comtypefullname}} <br>
+                                        <textarea id="summernote" name="detail">
+                                            Dear คุณ {{$name}} <br>
+                                            {{$comtypefullname}} <br>
                                             Warmest Greeting from Together Resort Kaengkrachan. <br><br>
                                             Please kindly see attached file Proposal letter at Together Resort Kaengkrachan  on {{$checkin}}  {{$checkout}}  {{$day}} {{$night}} .<br><br>
                                             Should there be any further or assisance you may need please don't be hesitate to contact me any time. <br><br>
@@ -59,38 +59,15 @@
                                             Tel : 032-708-888, 098-393-9444<br>
                                             Email : reservation@together-resort.com <br>
                                             Website : www.together-resort.com<br>
-                                        </textarea> --}}
-                                        {{-- <textarea id="summernote" name="detail">
-                                            Dear คุณ{{$name}} <br>
-                                            Warmest Greeting from Together Resort Kaengkrachan. <br><br>
-                                            Please kindly see attached file Proposal letter at Together Resort Kaengkrachan  on {{$checkin}}  {{$checkout}}  {{$day}} {{$night}} .<br><br>
-                                            Should there be any further or assisance you may need please don't be hesitate to contact me any time. <br><br>
-                                            Best regards,<br>
-                                            อัครพล มโนโชคกวินสกุล (Tel : 081-410-8888) <br>
-                                            Adminstrator<br><br>
-                                            < Together Resort Kaengkrachan ><br>
-                                            168 Moo 2 Kaengkrachan Phetchaburi 76170<br>
-                                            Tel : 032-708-888, 098-393-9444<br>
-                                            Email : reservation@together-resort.com <br>
-                                            Website : www.together-resort.com<br>
-                                        </textarea> --}}
-                                        <div id="summernote"></div>
+                                        </textarea>
                                         <script>
-                                            $('#summernote').summernote({
-                                              placeholder: 'Hello stand alone ui',
-                                              tabsize: 2,
-                                              height: 120,
-                                              toolbar: [
-                                                ['style', ['style']],
-                                                ['font', ['bold', 'underline', 'clear']],
-                                                ['color', ['color']],
-                                                ['para', ['ul', 'ol', 'paragraph']],
-                                                ['table', ['table']],
-                                                ['insert', ['link', 'picture', 'video']],
-                                                ['view', ['fullscreen', 'codeview', 'help']]
-                                              ]
+                                        $.getScript('https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js', function ()
+                                            {
+                                                $('#summernote').summernote({
+                                                    height: 400
+                                                });
                                             });
-                                          </script>
+                                        </script>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -133,14 +110,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-
-        // $('#summernote').summernote({
-        //     height: 400
-        // });
-        // $('#summernote2').summernote({
-        //     height: 400
-        // });
-    </script>
 @endsection

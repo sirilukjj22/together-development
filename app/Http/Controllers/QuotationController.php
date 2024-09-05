@@ -1531,11 +1531,11 @@ class QuotationController extends Controller
             $Company_typeID=$companys->Company_type;
             $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
             if ($comtype->name_th =="บริษัทจำกัด") {
-                $comtypefullname = "บริษัท ". $companys->Company_Name . " จำกัด";
+                $comtypefullname = "Company : "." บริษัท ". $companys->Company_Name . " จำกัด";
             }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                $comtypefullname = "บริษัท ". $companys->Company_Name . " จำกัด (มหาชน)";
+                $comtypefullname = "Company : "." บริษัท ". $companys->Company_Name . " จำกัด (มหาชน)";
             }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $companys->Company_Name ;
+                $comtypefullname = "Company : "." ห้างหุ้นส่วนจำกัด ". $companys->Company_Name ;
             }else {
                 $comtypefullname = $companys->Company_Name;
             }
