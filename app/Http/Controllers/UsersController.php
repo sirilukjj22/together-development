@@ -21,7 +21,7 @@ class UsersController extends Controller
      */
     public function index($menu)
     {
-        $users = User::where('status', 1)->get();
+        $users = User::where('status', 1)->paginate(10);
 
         $exp = explode('_', $menu);
 
@@ -29,17 +29,17 @@ class UsersController extends Controller
             $search = $exp[1];
 
             if ($search == "all") {
-                $users = User::get();
+                $users = User::paginate(10);
             }elseif ($search == 'ac') {
-                $users = User::where('status', 1)->get();
+                $users = User::where('status', 1)->paginate(10);
             }else {
-                $users = User::where('status', 0)->get();
+                $users = User::where('status', 0)->paginate(10);
             }
         }
 
         $title = "User";
 
-        return view('users.index', compact('users', 'title'));
+        return view('users.index', compact('users', 'title', 'menu'));
     }
 
     /**
@@ -64,26 +64,132 @@ class UsersController extends Controller
         return view('users.create', compact('tb_menu', 'tb_revenue_type', 'tb_revenue_type2'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function search_table(Request $request)
     {
-        
+        $data = [];
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $search = $request->search_value;
+
+        if (!empty($search)) {
+            $data_query = User::where('status', 1)->where('name', 'like', '%' . $search . '%')->paginate($perPage);
+
+        } else {
+            $data_query = User::where('status', 1)->paginate($perPage);
+        }
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+
+                $permission_name = '';
+                $status_name = '';
+                $btn_action = '';
+
+                // ประเภทรายได้
+                if ($value->status == 0) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Disabled</button>'; } 
+                if ($value->status == 1) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Active</button>'; } 
+
+                if($value->permission == 0) { $permission_name = 'General'; } 
+                if($value->permission == 1) { $permission_name = 'Admin'; } 
+                if($value->permission == 2) { $permission_name = 'Developer'; } 
+
+                if ($value->close_day == 0 || Auth::user()->edit_close_day == 1) {
+                    $btn_action .='<div class="dropdown">';
+                        $btn_action .='<button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown">
+                                            Select <span class="caret"></span>
+                                        </button>';
+                        $btn_action .='<ul class="dropdown-menu">';
+                            if (User::roleMenuEdit('Users', Auth::user()->id) == 1) 
+                            {
+                                $btn_action .='<li class="button-li" onclick="window.location.href=\'' . url('user-edit' . $value->id) . '\'">Edit</li>';
+                            }
+                        $btn_action .='</ul>';
+                    $btn_action .='</div>';
+                }
+
+                $data[] = [
+                    'id' => $key + 1,
+                    'username' => $value->name,
+                    'permission_name' => $permission_name,
+                    'status_name' => $status_name,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+
+        return response()->json([
+            'data' => $data,
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function paginate_table(Request $request)
     {
-        //
+        $perPage = (int)$request->perPage;
+
+        $query_sms = User::query();
+
+            if ($request->status != 0) { 
+                $query_sms->where('status', $request->status); 
+            }
+
+        $query_sms->orderBy('id', 'asc');
+
+        if ($perPage == 10) {
+            $data_query = $query_sms->limit($request->page.'0')->get();
+        } else {
+            $data_query = $query_sms->paginate($perPage);
+        }
+
+        $data = [];
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    $permission_name = '';
+                    $status_name = '';
+                    $btn_action = '';
+
+                    // ประเภทรายได้
+                    if ($value->status == 0) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Disabled</button>'; } 
+                    if ($value->status == 1) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Active</button>'; } 
+
+                    if($value->permission == 0) { $permission_name = 'General'; } 
+                    if($value->permission == 1) { $permission_name = 'Admin'; } 
+                    if($value->permission == 2) { $permission_name = 'Developer'; } 
+
+                    if ($value->close_day == 0 || Auth::user()->edit_close_day == 1) {
+                        $btn_action .='<div class="dropdown">';
+                            $btn_action .='<button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown">
+                                                Select <span class="caret"></span>
+                                            </button>';
+                            $btn_action .='<ul class="dropdown-menu">';
+                                if (User::roleMenuEdit('Users', Auth::user()->id) == 1) 
+                                {
+                                    $btn_action .='<li class="button-li" onclick="window.location.href=\'' . url('user-edit' . $value->id) . '\'">Edit</li>';
+                                }
+                            $btn_action .='</ul>';
+                        $btn_action .='</div>';
+                    }
+
+                    $data[] = [
+                        'number' => $key + 1,
+                        'username' => $value->name,
+                        'permission_name' => $permission_name,
+                        'status_name' => $status_name,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+                'data' => $data,
+            ]);
     }
 
     /**
