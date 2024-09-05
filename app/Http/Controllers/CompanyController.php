@@ -1654,7 +1654,7 @@ class CompanyController extends Controller
                 $btn_action .='<div class="btn-group">';
                 $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                 $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
-                $btn_action .=' <li><a class="dropdown-item py-2 rounded" target="_bank" href=\'' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '\'>Export</a></li>';
+                $btn_action .=' <li><a class="dropdown-item py-2 rounded" target="_bank" href=\'' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '\'>Export</a></li>';
                 $btn_action .='</ul>';
                 $btn_action .='</div>';
                 $data[] = [
@@ -1730,7 +1730,7 @@ class CompanyController extends Controller
                     $btn_action .='<div class="btn-group">';
                     $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                     $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
-                    $btn_action .=' <li><a class="dropdown-item py-2 rounded" target="_bank" href=\'' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '\'>Export</a></li>';
+                    $btn_action .=' <li><a class="dropdown-item py-2 rounded" target="_bank" href=\'' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '\'>Export</a></li>';
                     $btn_action .='</ul>';
                     $btn_action .='</div>';
                     $data[] = [

@@ -370,7 +370,7 @@
                                                     <div class="col-sm-12 col-12">
                                                         <div class="col-sm-4 col-4">
                                                             <span for="Country">Add Tax</span>
-                                                            <select name="TaxSelectA" id="TaxSelectA" class="select2" onchange="showTaxInput()">
+                                                            <select name="TaxSelectA" id="TaxSelectA" class="select21" onchange="showTaxInput()">
                                                                 <option value="Company">Company</option>
                                                                 <option value="Individual">Individual</option>
                                                             </select>
@@ -380,7 +380,7 @@
                                                                 <div class="row">
                                                                     <div class="col-sm-6 col-6">
                                                                         <label for="Company_type_tax">ประเภทบริษัท / Company Type</label>
-                                                                        <select name="Company_type_tax" id="Company_type_tax" class="select2" required>
+                                                                        <select name="Company_type_tax" id="Company_type_tax" class="select21" required>
                                                                             <option value=""></option>
                                                                             @foreach($MCompany_type as $item)
                                                                                 <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -407,7 +407,7 @@
                                                                 <div class="row">
                                                                     <div class="col-sm-6 col-6" >
                                                                         <span for="prefix">คำนำหน้า / Title</span>
-                                                                        <select name="prefix" id="PrefaceSelectCom" class="select2" disabled required>
+                                                                        <select name="prefix" id="PrefaceSelectCom" class="select21" disabled required>
                                                                                 <option value=""></option>
                                                                                 @foreach($Mprefix as $item)
                                                                                     <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -433,14 +433,14 @@
                                                             <div class="row mt-2">
                                                                 <div class="col-sm-4 col-4">
                                                                     <span for="Country">ประเทศ / Country</span>
-                                                                    <select name="countrydataA" id="countrySelectA" class="select2" onchange="showcityAInputTax()">
+                                                                    <select name="countrydataA" id="countrySelectA" class="select21" onchange="showcityAInputTax()">
                                                                         <option value="Thailand">ประเทศไทย</option>
                                                                         <option value="Other_countries">ประเทศอื่นๆ</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-sm-4 col-4" >
                                                                     <span for="City">จังหวัด / Province</span>
-                                                                    <select name="cityA" id="provincetax" class="select2" onchange="provinceTax()" style="width: 100%;">
+                                                                    <select name="cityA" id="provincetax" class="select21" onchange="provinceTax()" style="width: 100%;">
                                                                         <option value=""></option>
                                                                         @foreach($provinceNames as $item)
                                                                             <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -449,7 +449,7 @@
                                                                 </div>
                                                                 <div class="col-sm-4 col-4">
                                                                     <span for="Amphures">อำเภอ / District</span>
-                                                                    <select name="amphuresA" id="amphuresT" class="select2" onchange="amphuresTax()" >
+                                                                    <select name="amphuresA" id="amphuresT" class="select21" onchange="amphuresTax()" >
                                                                         <option value=""></option>
                                                                     </select>
                                                                 </div>
@@ -457,13 +457,13 @@
                                                             <div class="row mt-2">
                                                                 <div class="col-sm-4 col-4">
                                                                     <span for="Tambon">ตำบล / Subdistrict</span>
-                                                                    <select name="TambonA" id ="TambonT" class="select2" onchange="TambonTax()" style="width: 100%;">
+                                                                    <select name="TambonA" id ="TambonT" class="select21" onchange="TambonTax()" style="width: 100%;">
                                                                         <option value=""></option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-sm-4 col-4">
                                                                     <span for="zip_code">รหัสไปรษณีย์ / Postal Code</span>
-                                                                    <select name="zip_codeA" id ="zip_codeT" class="select2"  style="width: 100%;">
+                                                                    <select name="zip_codeA" id ="zip_codeT" class="select21"  style="width: 100%;">
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-sm-4 col-4">
@@ -770,7 +770,7 @@
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
-                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                             </ul>
                                                         </div>
                                                     </td>
@@ -884,7 +884,7 @@
                                                                 <div class="row">
                                                                     <div class="col-sm-4 col-4" >
                                                                         <span for="prefix">คำนำหน้า / Title</span>
-                                                                        <select name="prefix" id="PrefaceSelectContact" class="select2" required>
+                                                                        <select name="prefix" id="PrefaceSelectContact" class="select22" required>
                                                                                 <option value=""></option>
                                                                                 @foreach($Mprefix as $item)
                                                                                     <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -906,14 +906,14 @@
                                                             <div class="row mt-2">
                                                                 <div class="col-sm-4 col-4">
                                                                     <span for="Country">ประเทศ / Country</span>
-                                                                    <select name="countrydataC" id="countrySelectContact" class="select2" onchange="showcityAInputContact()">
+                                                                    <select name="countrydataC" id="countrySelectContact" class="select22" onchange="showcityAInputContact()">
                                                                         <option value="Thailand">ประเทศไทย</option>
                                                                         <option value="Other_countries">ประเทศอื่นๆ</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-sm-4 col-4" >
                                                                     <span for="City">จังหวัด / Province</span>
-                                                                    <select name="cityC" id="provinceC" class="select2" onchange="provinceContact()" style="width: 100%;">
+                                                                    <select name="cityC" id="provinceC" class="select22" onchange="provinceContact()" style="width: 100%;">
                                                                         <option value=""></option>
                                                                         @foreach($provinceNames as $item)
                                                                             <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -922,7 +922,7 @@
                                                                 </div>
                                                                 <div class="col-sm-4 col-4">
                                                                     <span for="Amphures">อำเภอ / District</span>
-                                                                    <select name="amphuresC" id="amphuresC" class="select2" onchange="amphuresContact()" >
+                                                                    <select name="amphuresC" id="amphuresC" class="select22" onchange="amphuresContact()" >
                                                                         <option value=""></option>
                                                                     </select>
                                                                 </div>
@@ -930,13 +930,13 @@
                                                             <div class="row mt-2">
                                                                 <div class="col-sm-4 col-4">
                                                                     <span for="Tambon">ตำบล / Subdistrict</span>
-                                                                    <select name="TambonC" id ="TambonC" class="select2" onchange="TambonContact()" style="width: 100%;">
+                                                                    <select name="TambonC" id ="TambonC" class="select22" onchange="TambonContact()" style="width: 100%;">
                                                                         <option value=""></option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-sm-4 col-4">
                                                                     <span for="zip_code">รหัสไปรษณีย์ / Postal Code</span>
-                                                                    <select name="zip_codeC" id ="zip_codeC" class="select2"  style="width: 100%;">
+                                                                    <select name="zip_codeC" id ="zip_codeC" class="select22"  style="width: 100%;">
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-sm-4 col-4">
@@ -1230,6 +1230,15 @@
         $('.select2').select2({
             placeholder: "Please select an option"
         });
+        $('.select21').select2({
+            dropdownParent: $("#CreateCompany"),
+            placeholder: "Please select an option"
+        });
+        $('.select22').select2({
+            dropdownParent: $("#CreateAgent"),
+            placeholder: "Please select an option"
+        });
+
     });
     function showcityInput() {
         var countrySelect = document.getElementById("countrySelect");
