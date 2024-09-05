@@ -29302,7 +29302,6 @@ progress {
 }
 
 
-
 .form-control::-webkit-datetime-edit {
 
   display: block;
@@ -65466,4 +65465,15 @@ table.dataTable.dtr-inline.collapsed.d-row>tbody>tr[role="row"]>th:first-child::
 
   right: -16px
 
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+}
+
+input[type="time"] {
+  flex: 1;
+  width: 100%;
+  -webkit-appearance: none;
 }

@@ -146,6 +146,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('user-update', 'update')->name('user-update');
         Route::post('user-delete', 'delete')->name('user-delete');
         Route::get('user/change-status/{id}', 'change_status');
+
+        // Table Search / Paginate
+        Route::post('user-search-table', 'search_table')->name('user-search-table');
+        Route::post('user-paginate-table', 'paginate_table')->name('user-paginate-table');
     });
     Route::post('post-registration', [AuthController::class, 'postRegistration'])->name('register.post');
 

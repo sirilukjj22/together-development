@@ -1073,6 +1073,49 @@
         </div>
     </div>
 
+    <style>
+        .flex-container {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-direction: column;
+            flex-direction: column;
+            -webkit-justify-content: flex-start;
+            justify-content: flex-start;
+            -webkit-align-items: stretch; /* Changed from flex-start to stretch */
+            align-items: stretch; /* Allows children to stretch to full width */
+            width: 100%; /* Ensure the container spans full width */
+        }
+
+        .flex-item {
+            -webkit-flex-grow: 1;
+            flex-grow: 1;
+            width: 100%; /* Ensures it spans full width */
+            min-width: 0; /* Critical for flex items to shrink or grow properly */
+        }
+
+        input[type="time"] {
+            padding-left: 15px; /* Adjust to force text towards the left */
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input[type="date"] {
+            padding-left: 15px; /* Adjust to force text towards the left */
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input::-webkit-date-and-time-value { 
+            text-align:left;
+        }
+    </style>
+
     <!-- Modal: Other Revenue -->
     <div class="modal fade" id="modalOtherRevenue" tabindex="-1">
         <div class="modal-dialog">
@@ -1110,7 +1153,11 @@
                     <div class="modal-body row">
                         <div class="col-md-12 col-12">
                             <label>วันที่โอนย้ายไป</label>
-                            <input type="date" class="form-control" name="date_transfer" id="date_transfer">
+                            <div class="flex-container">    
+                                <div class="flex-item">
+                                    <input type="date" class="form-control" name="date_transfer" id="date_transfer">
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-12 col-12 mt-3">
                             <label>หมายเหตุ</label>
@@ -1136,9 +1183,13 @@
                     <button type="button" class="btn-close lift" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body row">
-                    <div class="col-md-12 col-12">
+                    <div class="col-12">
                         <label>เวลา</label>
-                        <input type="time" class="form-control" name="update_time" id="update_time" value="<?php echo date('H:i:s'); ?>" step="any">
+                        <div class="flex-container">                        
+                            <div class="flex-item">
+                                <input type="time" class="form-control" name="update_time" id="update_time" value="<?php echo date('H:i:s'); ?>" step="any">
+                            </div>
+                        </div>
                     </div>
                     <input type="hidden" name="timeID" id="timeID">
                 </div>
@@ -1163,8 +1214,12 @@
                     <div class="modal-body row">
                         <div class="col-md-6">
                             <label>วันที่</label>
-                            <input type="date" class="form-control" name="date-split" id="date-split">
-                            <span class="text-danger fw-bold" id="text-split-alert"></span>
+                            <div class="flex-container">    
+                                <div class="flex-item">
+                                    <input type="date" class="form-control" name="date-split" id="date-split">
+                                    <span class="text-danger fw-bold" id="text-split-alert"></span>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <label>จำนวนเงิน <span class="text-danger fw-bold" id="text-split-amount"></span></label>
@@ -1240,12 +1295,20 @@
                             <div class="wf-py2 ">
                                 <label for="">วันที่โอน <sup class="t-red600">*</sup></label>
                                 <br>
-                                <input class="form-control" type="date" name="date" id="sms-date" required>
+                                <div class="flex-container">    
+                                    <div class="flex-item">
+                                        <input class="form-control" type="date" name="date" id="sms-date" required>
+                                    </div>
+                                </div>
                             </div>
                             <div class="wf-py2 ">
                                 <label for="">เวลาที่โอน <sup class="text-danger">*</sup></label>
                                 <br>
-                                <input class="form-control" type="time" name="time" id="sms-time">
+                                <div class="flex-container">    
+                                    <div class="flex-item">
+                                        <input class="form-control" type="time" name="time" id="sms-time">
+                                    </div>
+                                </div>
                             </div>
                             <div class="wf-py2 Amount agoda" hidden>
                                 <label for="">Booking ID <sup class="text-danger">*</sup></label>

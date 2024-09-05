@@ -115,7 +115,7 @@
                                                 @if ($item->close_day == 0 || Auth::user()->edit_close_day == 1)
                                                     @if ($item->split_status < 3)
                                                         <div class="dropdown">
-                                                            <button class="btn btn-primary" type="button" data-bs-toggle="dropdown" type="button" data-toggle="dropdown" >ทำรายการ
+                                                            <button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown" >ทำรายการ
                                                                 <span class="caret"></span></button>
                                                                 <ul class="dropdown-menu">
                                                                     @if ($role_revenue->front_desk == 1)
