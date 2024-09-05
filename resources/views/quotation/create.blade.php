@@ -19,7 +19,10 @@
     .image-container .info p {
         margin: 5px 0;
     }
-
+    .dataTables_empty {
+    display: none; /* ซ่อนข้อความ */
+    /* หรือสามารถปรับแต่งสไตล์อื่น ๆ ได้ที่นี่ */
+}
     .image-container .titleh1 {
         font-size: 1.2em;
         font-weight: bold;
@@ -529,10 +532,10 @@
                                                             <tr>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">ราคา</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;"data-priority="1">รายการ</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%"data-priority="1">ราคา</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%">คำสั่ง</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%"data-priority="1">คำสั่ง</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody id="product-list">
@@ -556,18 +559,18 @@
                                     </div>
                                 </div>
                                 <div  class=" mt-2">
-                                    <table  class=" example2 ui striped table nowrap unstackable hover" style="width:100%">
+                                    <table id="main" class=" example2 ui striped table nowrap unstackable hover" style="width:100%">
                                         <thead >
                                             <tr>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">No.</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Description</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;"data-priority="1">Description</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:1%;"></th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Quantity</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Unit</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price / Unit</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Discount</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Net Price / Unit</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Amount</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center"data-priority="1">Amount</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Order</th>
                                             </tr>
                                         </thead>
@@ -1149,6 +1152,33 @@
                 });
             }
         });
+        const table_name2 = ['main'];
+        $(document).ready(function() {
+            for (let index = 0; index < table_name2.length; index++) {
+                new DataTable('#'+table_name2[index], {
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    language: {
+                        emptyTable: "",
+                        zeroRecords: ""
+                    },
+                    columnDefs: [{
+                        className: 'dtr-control',
+                        orderable: false,
+                        target: null,
+                    }],
+                    order:  false,
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    }
+                });
+                $('#'+table_name2[index] + ' thead th').removeClass('sorting sorting_asc sorting_desc');
+            }
+        });
         function fetchProducts(status) {
             if (status == 'all' ) {
                 $('#ProductName').text('All Product');
@@ -1165,7 +1195,25 @@
                 $('#ProductName').text('Entertainment');
             }
             $('#ProductName').text();
-            var table = $('.example').DataTable();
+            $('#'+'mainselect1').DataTable().destroy();
+            new DataTable('#mainselect1', {
+                searching: false,
+                paging: false,
+                info: false,
+                columnDefs: [{
+                    className: 'dtr-control',
+                    orderable: true,
+                    target: null,
+                }],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                }
+            });
+            var table = $('#mainselect1').DataTable();
             var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
             var clickCounter = 1;
             $.ajax({
@@ -1184,7 +1232,7 @@
                         var currentPage = 1;
                         var totalItems = response.products.length;
                         var totalPages = Math.ceil(totalItems / pageSize);
-
+                        var maxVisibleButtons = 3; // จำนวนปุ่มที่จะแสดง
                         function renderPage(page) {
                             table.clear();
                             let num = (page - 1) * pageSize + 1;
@@ -1210,13 +1258,30 @@
                             $(`[data-page="${page}"]`).addClass('active');
                         }
 
-                        function createPagination(totalPages) {
+                        function createPagination(totalPages, currentPage) {
                             $('#paginationContainer').html(`
                                 <button class="paginate-btn" data-page="prev">&laquo;</button>
                             `);
 
-                            for (let i = 1; i <= totalPages; i++) {
+                            var startPage = Math.max(1, currentPage - Math.floor(maxVisibleButtons / 2));
+                            var endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
+
+                            if (startPage > 1) {
+                                $('#paginationContainer').append(`<button class="paginate-btn" data-page="1">1</button>`);
+                                if (startPage > 2) {
+                                    $('#paginationContainer').append(`<button class="paginate-btn"  disabled>...</button>`);
+                                }
+                            }
+
+                            for (let i = startPage; i <= endPage; i++) {
                                 $('#paginationContainer').append(`<button class="paginate-btn" data-page="${i}">${i}</button>`);
+                            }
+
+                            if (endPage < totalPages) {
+                                if (endPage < totalPages - 1) {
+                                    $('#paginationContainer').append(`<button class="paginate-btn"disabled >...</button>`);
+                                }
+                                $('#paginationContainer').append(`<button class="paginate-btn" data-page="${totalPages}">${totalPages}</button>`);
                             }
 
                             $('#paginationContainer').append(`
@@ -1224,10 +1289,7 @@
                             `);
                         }
 
-                        // Create pagination buttons
-                        createPagination(totalPages);
-
-                        // Render the first page
+                        createPagination(totalPages, currentPage);
                         renderPage(currentPage);
 
                         // Handle page click
@@ -1243,12 +1305,13 @@
                                     currentPage++;
                                 }
                             } else {
-                                currentPage = page;
+                                currentPage = parseInt(page);
                             }
 
+                            createPagination(totalPages, currentPage);
                             renderPage(currentPage);
                         });
-                    }
+                                    }
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', error);
@@ -1312,7 +1375,7 @@
                     $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
                 });
                 $('#display-selected-items tr').each(function(index) {
-                    $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
+                    $(this).find('td:first-child').text(index); // เปลี่ยนเลขลำดับในคอลัมน์แรก
                 });
             }
             $(document).on('click', '.remove-button', function() {
@@ -1344,7 +1407,7 @@
                                     var netDiscount = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                     var normalPriceview = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-                                    var rowNumbemain = $('#display-selected-items tr').length + 1;
+                                    var rowNumbemain = $('#display-selected-items tr').length;
                                     let discountInput;
                                     var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
                                     var SpecialDiscount = document.getElementById('SpecialDiscount').value;
@@ -1422,7 +1485,7 @@
 
                     $('#display-selected-items tbody tr').each(function(index) {
                         // เปลี่ยนเลขลำดับใหม่
-                        $(this).find('td:first').text(index + 1);
+                        $(this).find('td:first').text(index+1);
                     });
                     renumberRows();
                     totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
