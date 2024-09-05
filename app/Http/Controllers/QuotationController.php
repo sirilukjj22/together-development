@@ -1523,7 +1523,7 @@ class QuotationController extends Controller
         }else{
             $companys = companys::where('Profile_ID',$comid)->first();
             $emailCom = $companys->Company_Email;
-            $contact = $quotation->company_contact;
+            $contact = $companys->Profile_ID;
             $Contact_name = representative::where('id',$contact)->where('status',1)->first();
             $namefirst = $Contact_name->First_name;
             $namelast = $Contact_name->Last_name;
