@@ -22,17 +22,17 @@
                             <div>
                                 <div class="flex-end-g2">
                                     <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-manualAgoda" onchange="getPage(1, this.value, 'manualAgoda')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "manualAgoda" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "manualAgoda" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "manualAgoda" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "manualAgoda" ? 'selected' : '' }}>100</option>
+                                    <select class="entriespage-button" id="search-per-page-agodaOutstanding" onchange="getPage(1, this.value, 'agodaOutstanding')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "agodaOutstanding" ? 'selected' : '' }}>10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "agodaOutstanding" ? 'selected' : '' }}>25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "agodaOutstanding" ? 'selected' : '' }}>50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "agodaOutstanding" ? 'selected' : '' }}>100</option>
                                     </select>
-                                    <input class="search-button search-data" id="manualAgoda" style="text-align:left;" placeholder="Search" />
+                                    <input class="search-button search-data" id="agodaOutstanding" style="text-align:left;" placeholder="Search" />
                                 </div>
                         </caption>
                         <div style="min-height: 70vh;">
-                            <table id="manualAgodaTable" class="example ui striped table nowrap unstackable hover">
+                            <table id="agodaOutstandingTable" class="example ui striped table nowrap unstackable hover">
                                 <thead>
                                     <tr>
                                         <th style="text-align: center;" data-priority="1">#</th>
@@ -41,7 +41,6 @@
                                         <th style="text-align: center;">Income type</th>
                                         <th style="text-align: center;">Check in date</th>
                                         <th style="text-align: center;">Check out date</th>
-                                        <th style="text-align: center;">Credit Card Agoda Charge</th>
                                         <th style="text-align: center;">Credit Agoda Revenue Outstanding</th>
                                     </tr>
                                 </thead>
@@ -54,7 +53,6 @@
                                             <td class="td-content-center">Agoda Revenue</td>
                                             <td class="td-content-center">{{ Carbon\Carbon::parse($item->agoda_check_in)->format('d/m/Y') }}</td>
                                             <td class="td-content-center">{{ Carbon\Carbon::parse($item->agoda_check_out)->format('d/m/Y') }}</td>
-                                            <td class="td-content-center">{{ number_format($item->agoda_charge, 2) }}</td>
                                             <td class="td-content-center">{{ number_format($item->agoda_outstanding, 2) }}</td>
                                         </tr>
                                     @endforeach
@@ -63,10 +61,10 @@
                         </div>
                         <caption class="caption-bottom">
                             <div class="md-flex-bt-i-c">
-                                <p class="py2" id="manualAgoda-showingEntries">{{ showingEntriesTable($data_query, 'manualAgoda') }}</p>
+                                <p class="py2" id="agodaOutstanding-showingEntries">{{ showingEntriesTable($data_query, 'agodaOutstanding') }}</p>
                                 <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total_query, 2) }} บาท</div>
-                                    <div id="manualAgoda-paginate">
-                                        {!! paginateTable($data_query, 'manualAgoda') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                    <div id="agodaOutstanding-paginate">
+                                        {!! paginateTable($data_query, 'agodaOutstanding') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                     </div>
                             </div>
                         </caption>
@@ -83,8 +81,8 @@
     <input type="hidden" id="input-search-year" name="year" value="{{ $year }}">
     <input type="hidden" id="status" value="{{ $status }}">
     <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
-    <input type="hidden" id="get-total-manualAgoda" value="{{ $data_query->total() }}">
-    <input type="hidden" id="currentPage-manualAgoda" value="1">
+    <input type="hidden" id="get-total-agodaOutstanding" value="{{ $data_query->total() }}">
+    <input type="hidden" id="currentPage-agodaOutstanding" value="1">
 
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
@@ -121,20 +119,7 @@
                         className: 'dtr-control',
                         orderable: true,
                         target: null,
-                    },
-                    {
-                        width: '7%',
-                        targets: 0
-                    },
-                    {
-                        width: '10%',
-                        targets: 3
-                    },
-                    {
-                        width: '15%',
-                        targets: 4
                     }
-
                 ],
                 order: [0, 'asc'],
                 responsive: {
@@ -204,7 +189,7 @@
 
                 },
                 columnDefs: [
-                            { targets: [0, 1, 2, 3, 4, 5, 6, 7], className: 'dt-center td-content-center' },
+                            { targets: [0, 1, 2, 3, 4, 5, 6], className: 'dt-center td-content-center' },
                 ],
                 order: [0, 'asc'],
                 responsive: {
@@ -220,7 +205,6 @@
                     { data: 'revenue_name' },
                     { data: 'check_in' },
                     { data: 'check_out' },
-                    { data: 'agoda_charge' },
                     { data: 'agoda_outstanding' },
                 ],
 

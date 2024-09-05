@@ -105,7 +105,7 @@
                                     </span>
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuDaily">
-                                    <a class="dropdown-item" href="#" onclick="search_daily('today')">Today</a>
+                                    <a class="dropdown-item" href="{{ route('revenue') }}">Today</a>
                                     <a class="dropdown-item" href="#" onclick="search_daily('week')">This Week</a>
                                     <a class="dropdown-item" href="#" onclick="search_daily('thisMonth')">This Month</a>
                                     <a class="dropdown-item" href="#" onclick="search_daily('thisYear')">This Year</a>
@@ -119,7 +119,7 @@
                                 </button>
                                 <div class="dropdown-menu dropdown-action" aria-labelledby="dropdownMenuOperation">
                                     @if ($total_revenue_today->status == 0)
-                                        @if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow')
+                                        @if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow' || !isset($filter_by))
                                             <a class="dropdown-item" href="#" onclick="Add_data('{{$date_current}}')" data-toggle="modal" data-target="#addIncome" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
                                                 <i class="fa-solid fa-sack-dollar"></i>Add
                                             </a>
@@ -130,7 +130,7 @@
                                     </a>
                                     <a class="dropdown-item" href="#" onclick="export_data(1)"><i class="fa fa-print"></i>Print </a>
     
-                                    @if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow')
+                                    @if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow' || !isset($filter_by))
                                         @if (Auth::user()->permission > 0)
                                             @if ($total_revenue_today->status == 0)
                                                 <a href="#" class="dropdown-item btn-close-daily" value="1"><i class="fa fa-lock"></i>Lock </a>
@@ -397,7 +397,7 @@
                                 </div>
                                 <div class="t-end">{{ number_format($agoda_charge[0]['revenue_credit_date'], 2) }}</div>
                             </div>
-                            <div class="box-card2 bg-box">
+                            <div class="box-card2 bg-box" onclick="revenue_detail('mc_elexa_charge')">
                                 <div class="f-ic">
                                     <img src="./image/front/elexa.png" alt="" class="img" />
                                     <div>Elexa EGAT</div>
@@ -415,7 +415,7 @@
                             </div>
                         </div>
                         <div class="sub d-grid-r2">
-                            <div class="box-card2 bg-box">
+                            <div class="box-card2 bg-box"> <!-- onclick="revenue_detail('fee_credit_hotel')" -->
                                 <div class="f-ic">
                                     <img src="./image/front/hotel.png" alt="" class="img" />
                                     <div>Credit Card Hotel Fee</div>
@@ -454,14 +454,14 @@
                             <div>{{ number_format($agoda_charge[0]['total'] + $ev_charge[0]['total'], 2) }}</div>
                         </div>
                         <div class="sub d-grid-r2">
-                            <div class="box-card bg-box">
+                            <div class="box-card bg-box" onclick="revenue_detail('agoda_outstanding')">
                                 <!-- <div class="f-ic"> -->
                                 <img src="./image/front/agoda.jpg" alt="" class="img" />
                                 <div>Credit Card Agoda Revenue Outstanding</div>
                                 <!-- </div> -->
                                 <div class="t-end">{{ number_format($agoda_charge[0]['total'], 2) }}</div>
                             </div>
-                            <div class="box-card bg-box">
+                            <div class="box-card bg-box" onclick="revenue_detail('elexa_outstanding')">
                                 <!-- <div class="f-ic"> -->
                                 <img src="./image/front/elexa.png" alt="" class="img" />
                                 <div>Elexa EGAT Revenue Outstanding</div>
@@ -478,36 +478,36 @@
                             <div>Type</div>
                         </div>
                         <div class="sub d-grid-r3">
-                            <div class="box-card3 bg-box">
+                            <div class="box-card3 bg-box" onclick="revenue_detail('transfer_revenue')">
                                 <div>Transfer Revenue</div>
                                 <div class="font-semibold">{{ number_format($total_transfer, 2) }}</div>
                             </div>
-                            <div class="box-card3 bg-box">
+                            <div class="box-card3 bg-box" onclick="revenue_detail('credit_hotel_transfer')">
                                 <div>Credit Card Hotel Transfer Transaction</div>
                                 <div>{{ $total_credit_transaction ?? 0 }}</div>
                             </div>
-                            <div class="box-card3 bg-box">
+                            <div class="box-card3 bg-box" onclick="revenue_detail('split_hotel_revenue')">
                                 <div>Split Credit Card Hotel Revenue</div>
                                 <div class="font-semibold">{{ number_format($total_split, 2) }}</div>
                             </div>
-                            <div class="box-card3 bg-box">
+                            <div class="box-card3 bg-box" onclick="revenue_detail('split_hotel_transaction')">
                                 <div class="t-start">Split Credit Card Hotel Transaction</div>
                                 <div class="font-semibold">{{ number_format($total_split) }}</div>
                             </div>
-                            <div class="box-card3 bg-box">
+                            <div class="box-card3 bg-box" onclick="revenue_detail('no_income_revenue')">
                                 <div>No Income Revenue</div>
                                 <div class="font-semibold">{{ number_format($total_not_type_revenue, 2) }}</div>
                             </div>
-                            <div class="box-card3 bg-box">
+                            <div class="box-card3 bg-box" onclick="revenue_detail('total_transaction')">
                                 <div>Total Transaction</div>
                                 <div class="font-semibold">
                                     {{ number_format($total_revenue_today->total_transaction ?? 0) }}</div>
                             </div>
-                            <div class="box-card3 bg-box">
+                            <div class="box-card3 bg-box" onclick="revenue_detail('transfer_transaction')">
                                 <div>Transfer Transaction</div>
                                 <div class="font-semibold">{{ $total_transfer2 }}</div>
                             </div>
-                            <div class="box-card3 bg-box">
+                            <div class="box-card3 bg-box" onclick="revenue_detail('no_income_type')">
                                 <div>No Incoming Type</div>
                                 <div class="font-semibold">{{ $total_not_type ?? 0 }}</div>
                             </div>
@@ -520,8 +520,7 @@
                             </div>
                             <div class="sub d-grid-r">
                                 <div class="sub-content">
-                                    <div class="box-card3 bg-box"
-                                        style="min-height: 92%;display: flex;justify-content: center;">
+                                    <div class="box-card3 bg-box" style="min-height: 92%;display: flex;justify-content: center;">
                                         <p class="t-center">{{ number_format($monthly_revenue, 2) }} <span> / Month</span>
                                         </p>
                                     </div>
@@ -548,10 +547,10 @@
                             <div class="header">
                                 <div>Verified</div>
                             </div>
-                            <div class="sub d-grid-r">
+                            <div class="sub d-grid-r" onclick="revenue_detail('verified')">
                                 <div class="sub-content">
                                     <div class="box-card3 bg-box"
-                                        style="min-height: 92%;display: flex;justify-content: center;"">
+                                        style="min-height: 92%;display: flex;justify-content: center;">
                                         <p>{{ $total_verified ?? 0 }}</p>
                                     </div>
                                 </div>
@@ -561,7 +560,7 @@
                             <div class="header">
                                 <div>Unverified</div>
                             </div>
-                            <div class="sub d-grid-r">
+                            <div class="sub d-grid-r" onclick="revenue_detail('unverified')">
                                 <div class="sub-content">
                                     <div class="box-card3 bg-box"
                                         style="min-height: 92%;display: flex;justify-content: center;">
