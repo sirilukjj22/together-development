@@ -4,11 +4,11 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class=""><span class="span1">SMS Alert</span><span class="span2"> / {{ $title }}</span></div>
+                    <div class=""><span class="span1">Bank Transaction Revenue</span><span class="span2"> / {{ $title }}</span></div>
                     <div class="span3">{{ $title }}</div>
                 </div>
                 <div class="col-auto">
-                    <a href="javascript:history.back(1)" type="button" class="btn btn-color-green text-white lift">ย้อนกลับ</a>
+                    <a href="javascript:history.back(1)" type="button" class="btn btn-color-green text-white lift">Back</a>
                 </div>
             </div> <!-- .row end -->
         </div>
