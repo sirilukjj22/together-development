@@ -559,7 +559,7 @@
                                     </div>
                                 </div>
                                 <div  class=" mt-2">
-                                    <table id="main" class=" example2 ui striped table nowrap unstackable hover" style="width:100%">
+                                    <table id="main" class=" example2 ui striped table nowrap unstackable " style="width:100%">
                                         <thead >
                                             <tr>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">No.</th>
@@ -1195,24 +1195,6 @@
                 $('#ProductName').text('Entertainment');
             }
             $('#ProductName').text();
-            $('#'+'mainselect1').DataTable().destroy();
-            new DataTable('#mainselect1', {
-                searching: false,
-                paging: false,
-                info: false,
-                columnDefs: [{
-                    className: 'dtr-control',
-                    orderable: true,
-                    target: null,
-                }],
-                order: [0, 'asc'],
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
-                    }
-                }
-            });
             var table = $('#mainselect1').DataTable();
             var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
             var clickCounter = 1;
@@ -1252,7 +1234,7 @@
                                 }
                             }
                             table.draw(false);
-
+                            $('#mainselect1').DataTable().columns.adjust().responsive.recalc();
                             // Update active class for pagination buttons
                             $('.paginate-btn').removeClass('active');
                             $(`[data-page="${page}"]`).addClass('active');
@@ -1327,6 +1309,7 @@
 
                     var product = $(this).val();
                     $('#row-' + product).prop('hidden',true);
+                    $('tr .child').prop('hidden',true);
                     console.log(product);
                     if ($('#productselect' + product).length > 0) {
                         return;
@@ -1562,7 +1545,7 @@
                     let pricetotal = parseFloat(priceCell.text().replace(/,/g, '')) || 0;
                     var Discount = parseFloat(DiscountAmount);
                     let allpax = $(this).find('td').eq(2);
-                    let pax = parseFloat(allpax.text());
+                    let pax = parseFloat(allpax.text().replace(/,/g, '')) || 0;
                     var rowCount = $('#display-selected-items tr').length;
                     if (typevat == '50') {
                         paxtotal +=pax;
@@ -1622,6 +1605,8 @@
                         beforetax= lessDiscount+addedtax;
                         Nettotal= beforetax;
                         totalperson = Nettotal/paxtotal;
+
+
                         $('#sppus').text(isNaN(Discount) ? '0' : Discount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#total-amountpus').text(isNaN(allprice) ? '0' : allprice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         $('#lessDiscountpus').text(isNaN(lessDiscount) ? '0' : lessDiscount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
