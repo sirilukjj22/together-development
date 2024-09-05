@@ -89,7 +89,8 @@ function getPage(page, perPage, table_n) {
     $('#currentPage-' + table_n).val(page);
 
     $('#' + table_name).DataTable().destroy();
-    if (table_n != "manual" && table_n != "manualAgoda") {
+    if (table_n != "manual" && table_n != "manualAgoda" && table_n != "agodaOutstanding" && table_n != "elexaOutstanding" && table_n != "verified") {
+        
         var table = $('#' + table_name).dataTable({
             searching: false,
             paging: false,
@@ -181,7 +182,180 @@ function getPage(page, perPage, table_n) {
             ],
     
         });
-    } if (table_n != "manual" && table_n != "manualAgoda")  {
+
+    } if(table_n == "manualElexa") {
+        var table = $('#' + table_name).dataTable({
+            searching: false,
+            paging: false,
+            info: false,
+            ajax: {
+                url: '/revenue-paginate-table',
+                type: 'POST',
+                dataType: "json",
+                cache: false,
+                data: {
+                    page: page,
+                    perPage: perPage,
+                    table_name: table_name,
+                    filter_by: filter_by,
+                    day: day,
+                    month: month,
+                    year: year,
+                    month_to: month_to,
+                    status: type,
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            },
+            columnDefs: [
+                { targets: [0, 1, 2, 3, 4, 5, 6], className: 'dt-center td-content-center' },
+            ],
+            order: [0, 'asc'],
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            },
+            columns: [
+                { data: 'number' },
+                { data: 'date' },
+                { data: 'revenue_name' },
+                { data: 'ev_charge' },
+                { data: 'ev_fee' },
+                { data: 'ev_vat' },
+                { data: 'ev_revenue' },
+            ],
+    
+        });
+
+    } if(table_n == "agodaOutstanding") {
+        var table = $('#' + table_name).dataTable({
+            searching: false,
+            paging: false,
+            info: false,
+            ajax: {
+                url: '/revenue-paginate-table',
+                type: 'POST',
+                dataType: "json",
+                cache: false,
+                data: {
+                    page: page,
+                    perPage: perPage,
+                    table_name: table_name,
+                    filter_by: filter_by,
+                    day: day,
+                    month: month,
+                    year: year,
+                    month_to: month_to,
+                    status: type,
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            },
+            columnDefs: [
+                // { targets: [0, 1, 2, 3, 4, 5, 6], className: 'dt-center td-content-center' },
+            ],
+            order: [0, 'asc'],
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            },
+            columns: [
+                { data: 'number' },
+                { data: 'date' },
+                { data: 'stan' },
+                { data: 'revenue_name' },
+                { data: 'check_in' },
+                { data: 'check_out' },
+                { data: 'agoda_outstanding' },
+            ],
+    
+        });
+
+    } if(table_n == "elexaOutstanding") {
+        var table = $('#' + table_name).dataTable({
+            searching: false,
+            paging: false,
+            info: false,
+            ajax: {
+                url: '/revenue-paginate-table',
+                type: 'POST',
+                dataType: "json",
+                cache: false,
+                data: {
+                    page: page,
+                    perPage: perPage,
+                    table_name: table_name,
+                    filter_by: filter_by,
+                    day: day,
+                    month: month,
+                    year: year,
+                    month_to: month_to,
+                    status: type,
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            },
+            columnDefs: [
+                { targets: [0, 1, 2, 3], className: 'dt-center td-content-center' },
+            ],
+            order: [0, 'asc'],
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            },
+            columns: [
+                { data: 'number' },
+                { data: 'date' },
+                { data: 'revenue_name' },
+                { data: 'ev_revenue' },
+            ],
+    
+        });
+
+    } if(table_n == "verified") {
+        var table = $('#' + table_name).dataTable({
+            searching: false,
+            paging: false,
+            info: false,
+            ajax: {
+                url: '/revenue-paginate-table',
+                type: 'POST',
+                dataType: "json",
+                cache: false,
+                data: {
+                    page: page,
+                    perPage: perPage,
+                    table_name: table_name,
+                    filter_by: filter_by,
+                    day: day,
+                    month: month,
+                    year: year,
+                    month_to: month_to,
+                    status: type,
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            },
+            columnDefs: [
+                { targets: [0, 1], className: 'dt-center td-content-center' },
+            ],
+            order: [0, 'asc'],
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            },
+            columns: [
+                { data: 'number' },
+                { data: 'date' },
+            ],
+    
+        });
+
+    } if (table_n != "manual" && table_n != "manualAgoda" && table_n != "manualElexa" && table_n != "agodaOutstanding" && table_n != "elexaOutstanding" && table_n != "type" && table_n != "verified")  {
         var table = $('#' + table_name).dataTable({
             searching: false,
             paging: false,
