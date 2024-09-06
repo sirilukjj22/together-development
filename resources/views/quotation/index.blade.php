@@ -205,7 +205,12 @@
                                                         @endif
                                                     </td>
                                                     <td>{{ $item->Quotation_ID }}</td>
-                                                    <td>{{ @$item->company->Company_Name}}</td>
+                                                    @if ($item->type_Proposal == 'Company')
+                                                        <td>{{ @$item->company->Company_Name}}</td>
+                                                    @else
+                                                        <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                    @endif
+
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     @if ($item->checkin)

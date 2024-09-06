@@ -294,10 +294,15 @@ class QuotationController extends Controller
             foreach ($data_query as $key => $value) {
                 $btn_action = "";
                 $btn_status = "";
-
+                $name ="";
                 // สร้าง dropdown สำหรับการทำรายการ
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>{{ @$value->company->Company_Name}}</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
                     // สร้างสถานะการใช้งาน
                     if ($value->status_guest == 1) {
                         $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
@@ -333,7 +338,7 @@ class QuotationController extends Controller
 
                         if ($canEditProposal == 1 && (Auth::user()->id == $value->Operated_by || $rolePermission == 1 || $rolePermission == 3)) {
                             if (in_array($value->status_document, [1, 6, 3])) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Quotation/edit/quotation/' . $value->id) . '\'>Edit</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/edit/quotation/' . $value->id) . '\'>Edit</a></li>';
                             }
 
                             if ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0) {
@@ -341,7 +346,7 @@ class QuotationController extends Controller
                             } elseif ($value->status_document == 3 && $value->Confirm_by !== 0) {
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
                             }
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Quotation/view/quotation/LOG/' . $value->id) . '\'>LOG</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/view/quotation/LOG/' . $value->id) . '\'>LOG</a></li>';
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                         }
                     }
@@ -353,7 +358,7 @@ class QuotationController extends Controller
                         'number' => $key + 1,
                         'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                         'Proposal_ID' => $value->Quotation_ID,
-                        'Company_Name' => @$value->company->Company_Name,
+                        'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
                         'CheckIn' => $value->checkin ? \Carbon\Carbon::parse($value->checkin)->format('d/m/Y') : '-',
@@ -397,6 +402,12 @@ class QuotationController extends Controller
             foreach ($data_query as $key => $value) {
                 $btn_action = "";
                 $btn_status = "";
+                $name = "";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>{{ @$value->company->Company_Name}}</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
                 if ($value->status_guest == 1) {
                     $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
                 } else {
@@ -431,7 +442,7 @@ class QuotationController extends Controller
 
                     if ($canEditProposal == 1 && (Auth::user()->id == $value->Operated_by || $rolePermission == 1 || $rolePermission == 3)) {
                         if (in_array($value->status_document, [1, 6, 3])) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Quotation/edit/quotation/' . $value->id) . '\'>Edit</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/edit/quotation/' . $value->id) . '\'>Edit</a></li>';
                         }
 
                         if ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0) {
@@ -439,7 +450,7 @@ class QuotationController extends Controller
                         } elseif ($value->status_document == 3 && $value->Confirm_by !== 0) {
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
                         }
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Quotation/view/quotation/LOG/' . $value->id) . '\'>LOG</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/view/quotation/LOG/' . $value->id) . '\'>LOG</a></li>';
                         $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                     }
                 }
@@ -450,7 +461,7 @@ class QuotationController extends Controller
                     'number' => $key + 1,
                     'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                     'Proposal_ID' => $value->Quotation_ID,
-                    'Company_Name' => @$value->company->Company_Name,
+                    'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
                     'ExpirationDate' => $value->Expirationdate,
                     'CheckIn' => $value->checkin ? \Carbon\Carbon::parse($value->checkin)->format('d/m/Y') : '-',
@@ -1506,6 +1517,22 @@ class QuotationController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+    //------------------------------แก้ไข--------------------
+    public function edit($id)
+    {
+        $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        $Quotation = Quotation::where('id', $id)->first();
+        $Quotation_ID = $Quotation->Quotation_ID;
+        $Company = companys::select('Company_Name','id','Profile_ID')->get();
+        $Guest = Guest::select('First_name','Last_name','id','Profile_ID')->get();
+        $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
+        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
+        $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
+        $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+        $unit = master_unit::where('status',1)->get();
+        $quantity = master_quantity::where('status',1)->get();
+        return view('quotation.edit',compact('settingCompany','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity'));
     }
     //----------------------------ส่งอีเมล์---------------------
     public function email($id){

@@ -22,7 +22,7 @@
     .dataTables_empty {
     display: none; /* ซ่อนข้อความ */
     /* หรือสามารถปรับแต่งสไตล์อื่น ๆ ได้ที่นี่ */
-}
+    }
     .image-container .titleh1 {
         font-size: 1.2em;
         font-weight: bold;
@@ -133,27 +133,27 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
+    }
 
-.paginate-btn {
-    border: 1px solid #2D7F7B;
-    background-color: white;
-    color: #2D7F7B;
-    padding: 8px 16px;
-    margin: 0 2px;
-    border-radius: 4px;
-    cursor: pointer;
-}
+    .paginate-btn {
+        border: 1px solid #2D7F7B;
+        background-color: white;
+        color: #2D7F7B;
+        padding: 8px 16px;
+        margin: 0 2px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 
-.paginate-btn.active, .paginate-btn:hover {
-    background-color: #2D7F7B;
-    color: white;
-}
+    .paginate-btn.active, .paginate-btn:hover {
+        background-color: #2D7F7B;
+        color: white;
+    }
 
-.paginate-btn:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
+    .paginate-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
 
 </style>
 @section('content')
@@ -530,7 +530,7 @@
                                                     <table id="mainselect1"class="example ui striped table nowrap unstackable hover">
                                                         <thead>
                                                             <tr>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
+                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%"data-priority="1">#</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;"data-priority="1">รายการ</th>
                                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%"data-priority="1">ราคา</th>
@@ -1293,7 +1293,7 @@
                             createPagination(totalPages, currentPage);
                             renderPage(currentPage);
                         });
-                                    }
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', error);
