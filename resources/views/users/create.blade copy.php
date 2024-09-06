@@ -1,27 +1,33 @@
 @extends('layouts.masterLayout')
-@section('content')
-    <div id="content-index" class="body-header border-bottom d-flex py-3">
-        <div class="container-xl">
-            <div class="row align-items-center">
-                <div class="col sms-header">
-                    <div class=""><span class="span1">User</span><span class="span2"> / Create User</span></div>
-                    <div class="span3">Create User</div>
-                </div>
-                <div class="col-auto">
-                    <a href="{{ route('users', 'index') }}" type="button" class="btn btn-color-green text-white lift">Back</a>
-                </div>
-            </div> <!-- .row end -->
+
+    @section('pretitle')
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
+                    <li class="breadcrumb-item"><a href="{{ route('users', 'index') }}">User</a></li>
+                    <li class="breadcrumb-item active">Create User</li>
+                </ol>
+                <h1 class="h4 mt-1">Create User</h1>
+            </div>
+            <div class="col-auto">
+                <a href="{{ route('users', 'index') }}" title="ย้อนกลับ" class="btn btn-outline-dark lift">
+                    ย้อนกลับ
+                </a>
+            </div>
         </div>
     </div>
-    @php
-        $role_revenue = App\Models\Role_permission_revenue::where('user_id', Auth::user()->id)->first();
-    @endphp
-    <div id="content-index" class="body d-flex py-lg-4 py-3">
-        <div class="container-xl">
+    @endsection
+    
+    @section('content')
+        <div class="container">
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
                     <div class="card p-4 mb-4">
-                        <div style="min-height: 70vh;">
+                        <div class="card-header py-3 bg-transparent border-bottom-0 mb-3">
+                            <h5 class="card-title mb-0">Create User</h5>
+                        </div>
+                        <div class="card-body">
                             <form action="{{ route('register.post') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row mb-3">
@@ -62,19 +68,13 @@
                                 </div>
                                 <div class="row mb-3">
                                     <label for="password" class="col-sm-3 col-form-label fw-bold">ส่วนลด / Discount</label>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-2">
                                         <div class="input-group">
                                             <input type="text" min="0" max="100" class="form-control" name="discount" value="0">
                                             <span class="input-group-text">%</span>
                                         </div>
                                     </div>
-                                    <label for="close_day" class="col-sm-3 col-form-label fw-bold text-right">Close Day</label>
-                                    <div class="col-sm-3">
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input" type="checkbox" name="close_day" id="close_day" value="1">
-                                            <label class="form-check-label" for="close_day">Close Day</label>
-                                        </div>
-                                    </div>
+                                    <div class="col-sm-7"></div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="main-menu" class="col-sm-3 col-form-label fw-bold">สิทธิ์การใช้งานเมนู / Menu Permissions</label>
@@ -86,6 +86,7 @@
                                     </div>
                                 </div>
                                 <div class="row justify-content-between">
+                                    {{-- <div class="col-lg-3 col-md-3"></div> --}}
                                     <div class="col-lg-12 col-md-12 mb-3">
                                         <div class="accordion card p-0 p-lg-4" id="accordionExample">
                                             <div class="card border-0">
@@ -286,8 +287,9 @@
                 </div>
             </div> <!-- .row end -->
         </div>
-    </div>
-
+    
+    
+    
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
@@ -296,52 +298,53 @@
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
     @endif
 
-    <script>
-        $(document).ready(function() {
-            $('#permission-select2').select2();
-            $('#permission-edit-select2').select2();
-        });
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#permission-select2').select2();
+        $('#permission-edit-select2').select2();
+    });
 
-        $('#select_menu_all').on('click', function() {
-            var menu = $('#select_menu_all').val();
+    $('#select_menu_all').on('click', function() {
+        var menu = $('#select_menu_all').val();
 
-            if (menu == 0) {
-                $('.select_menu').prop('checked', true);
-                $('#select_menu_all').val(1);
-            } else { 
-                $('.select_menu').prop('checked', false);
-                $('#select_menu_all').val(0);
-            }
-        });
-
-        $('#select_revenue_all').on('click', function() {
-            var revenue = $('#select_revenue_all').val();
-
-            if (revenue == 0) {
-                $('.select_revenue').prop('checked', true);
-                $('#select_revenue_all').val(1);
-            } else {
-                $('.select_revenue').prop('checked', false);
-                $('#select_revenue_all').val(0);
-            }
-        });
-
-        $('.select_menu').on('click', function() {
-            var select_menu = $(this).attr('id');
-
+        if (menu == 0) {
+            $('.select_menu').prop('checked', true);
+            $('#select_menu_all').val(1);
+        } else { 
+            $('.select_menu').prop('checked', false);
             $('#select_menu_all').val(0);
-            $('#select_menu_all').prop('checked', false);
+        }
+    });
 
-            if ($(this).is(':checked')) {
-                $('.select_'+select_menu).prop('checked', true);
-            } else {
-                $('.select_'+select_menu).prop('checked', false);
-            }
-        });
+    $('#select_revenue_all').on('click', function() {
+        var revenue = $('#select_revenue_all').val();
 
-        $('.select_revenue').on('click', function() {
+        if (revenue == 0) {
+            $('.select_revenue').prop('checked', true);
+            $('#select_revenue_all').val(1);
+        } else {
+            $('.select_revenue').prop('checked', false);
             $('#select_revenue_all').val(0);
-            $('#select_revenue_all').prop('checked', false);
-        });
-    </script>
+        }
+    });
+
+    $('.select_menu').on('click', function() {
+        var select_menu = $(this).attr('id');
+
+        $('#select_menu_all').val(0);
+        $('#select_menu_all').prop('checked', false);
+
+        if ($(this).is(':checked')) {
+            $('.select_'+select_menu).prop('checked', true);
+        } else {
+            $('.select_'+select_menu).prop('checked', false);
+        }
+    });
+
+    $('.select_revenue').on('click', function() {
+        $('#select_revenue_all').val(0);
+        $('#select_revenue_all').prop('checked', false);
+    });
+</script>
 @endsection
+    

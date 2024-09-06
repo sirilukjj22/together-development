@@ -132,6 +132,7 @@ class AuthController extends Controller
             'discount' => $data['discount'] ?? 0,
             'permission' => $data['permission'],
             'permission_edit' => $data['permission_edit'] ?? 0,
+            'edit_close_day' => $data['close_day'] ?? 0,
             'status' => 1
           ])->id;
 

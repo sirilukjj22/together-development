@@ -232,6 +232,7 @@ class UsersController extends Controller
                 'discount' => $request->discount ?? 0,
                 'permission' => $request->permission,
                 'permission_edit' => $request->permission_edit ?? 0,
+                'edit_close_day' => $request->close_day ?? 0,
             ]);
     
             if ($request->password != '') {
