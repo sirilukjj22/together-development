@@ -482,10 +482,6 @@ a:visited {
   background-color: rgb(247 255 252 / var(--tw-bg-opacity));
 }
 
-.search-button {
-  max-width: 30%;
-}
-
 .searh-box-bg {
   margin-left: 0.25rem;
   display: flex;

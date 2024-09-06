@@ -8,7 +8,8 @@
                 </div>
                 <div class="col-auto">
                     @if (@Auth::user()->roleMenuAdd('Users', Auth::user()->id) == 1)
-                        <a href="{{ route('user-create') }}" type="button" class="btn btn-color-green text-white lift">Add User</a>
+                        <a href="{{ route('user-create') }}" type="button" class="btn btn-color-green text-white lift">Add
+                            User</a>
                     @endif
                 </div>
             </div> <!-- .row end -->
@@ -24,19 +25,20 @@
                 <div class="col-md-12 col-12">
                     <div class="card p-4 mb-4">
                         <caption class="caption-top">
-                            <div class="d-flex justify-content-between">
-                                <label class="">Status :</label>
-
+                            <div class="top-table-3c">
+                              <!-- Status Dropdown -->
+                              <div class="top-table-3c_1">
+                                <label class="entriespage-label">Status :</label>
                                 <div class="dropdown">
-                                    <button class="bd-button statusbtn enteriespage-button" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                        @if ($menu == "users_all")
-                                                All
-                                            @elseif ($menu == "users_ac")
-                                                Active
-                                            @elseif ($menu == "users_no")
-                                                Disabled
-                                            @else
-                                                Status
+                                    <button class="bd-button statusbtn enteriespage-button" style="min-width: 100px; text-align: left;" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="text-align: left;">
+                                        @if ($menu == 'users_all')
+                                            All
+                                        @elseif ($menu == 'users_ac')
+                                            Active
+                                        @elseif ($menu == 'users_no')
+                                            Disabled
+                                        @else
+                                            Status
                                         @endif
                                         <i class="fas fa-angle-down arrow-dropdown"></i>
                                     </button>
@@ -46,16 +48,24 @@
                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('users', 'users_no') }}">Disabled</a></li>
                                     </ul>
                                 </div>
-                                <div class="flex-end-g2">
-                                    <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-user" onchange="getPage(1, this.value, 'user')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "user" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "user" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "user" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "user" ? 'selected' : '' }}>100</option>
-                                    </select>
-                                    <input class="search-button search-data" id="user" style="text-align:left;" placeholder="Search" />
-                                </div>
+                              </div>
+      
+                            <!-- Entries per Page Dropdown -->
+                            <div class="top-table-3c_2">
+                                <label class="entriespage-label">entries per page :</label>
+                                <select class="entriespage-button bd-button" id="search-per-page-user" style="text-align: left;" onchange="getPage(1, this.value, 'user')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == 'user' ? 'selected' : '' }}>10</option>
+                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == 'user' ? 'selected' : '' }}>25</option>
+                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == 'user' ? 'selected' : '' }}>50</option>
+                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == 'user' ? 'selected' : '' }}>100</option>
+                                </select>
+                            </div>
+      
+                            <!-- Search Input -->
+                            <div class="top-table-3c_3">
+                                <label class="entriespage-label">Search :</label>
+                                <input class="search-button bd-button search-data" id="user" style="text-align: left;" placeholder="Search" />
+                            </div>
                             </div>
                         </caption>
                         <div style="min-height: 70vh;">
@@ -77,7 +87,7 @@
                                             <td class="td-content-center">
                                                 @switch($item->permission)
                                                     @case(0)
-                                                        General
+                                                        Front
                                                     @break
 
                                                     @case(1)
@@ -91,19 +101,25 @@
                                             </td>
                                             <td class="td-content-center">
                                                 @if ($item->status == 1)
-                                                    <button type="button" class="btn btn-light-success btn-sm btn-status" value="{{ $item->id }}">Active</button>
+                                                    <button type="button" class="btn btn-light-success btn-sm btn-status"
+                                                        value="{{ $item->id }}">Active</button>
                                                 @else
-                                                    <button type="button" class="btn btn-light-success btn-sm btn-status" value="{{ $item->id }}">Disabled</button>
+                                                    <button type="button" class="btn btn-light-success btn-sm btn-status"
+                                                        value="{{ $item->id }}">Disabled</button>
                                                 @endif
                                             </td>
                                             <td class="td-content-center">
                                                 <div class="dropdown">
-                                                    <button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown">
+                                                    <button type="button" class="btn"
+                                                        style="background-color: #2C7F7A; color:white;"
+                                                        data-bs-toggle="dropdown" data-toggle="dropdown">
                                                         Select <span class="caret"></span>
                                                     </button>
                                                     @if (@Auth::user()->roleMenuEdit('Users', Auth::user()->id) == 1)
                                                         <ul class="dropdown-menu">
-                                                            <li class="button-li" onclick="window.location.href='{{ route('user-edit', $item->id) }}'">Edit</li>
+                                                            <li class="button-li"
+                                                                onclick="window.location.href='{{ route('user-edit', $item->id) }}'">
+                                                                Edit</li>
                                                         </ul>
                                                     @endif
                                                 </div>
@@ -116,9 +132,9 @@
                         <caption class="caption-bottom">
                             <div class="md-flex-bt-i-c">
                                 <p class="py2" id="user-showingEntries">{{ showingEntriesTable($users, 'user') }}</p>
-                                    <div id="user-paginate">
-                                        {!! paginateTable($users, 'user') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                    </div>
+                                <div id="user-paginate">
+                                    {!! paginateTable($users, 'user') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                </div>
                             </div>
                         </caption>
                     </div> <!-- .card end -->
@@ -151,7 +167,7 @@
     <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableUser.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableUser.js') }}"></script>
 
     <script>
         $(document).ready(function() {
@@ -191,67 +207,82 @@
         });
 
         // Search
-        $(document).on('keyup', '.search-data', function () {
+        $(document).on('keyup', '.search-data', function() {
             var id = $(this).attr('id');
             var search_value = $(this).val();
-            var total = parseInt($('#get-total-'+id).val());
-            var table_name = id+'Table';
+            var total = parseInt($('#get-total-' + id).val());
+            var table_name = id + 'Table';
             var getUrl = window.location.pathname;
 
-            $('#'+table_name).DataTable().destroy();
-            var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                        url: '/user-search-table',
-                        type: 'POST',
-                        dataType: "json",
-                        cache: false,
-                        data: {
-                            search_value: search_value,
-                        },
-                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            $('#' + table_name).DataTable().destroy();
+            var table = $('#' + table_name).dataTable({
+                searching: false,
+                paging: false,
+                info: false,
+                ajax: {
+                    url: '/user-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
                     },
-                    "initComplete": function (settings, json) {
-
-                        if ($('#'+id+'Table .dataTables_empty').length == 0) {
-                            var count = $('#'+id+'Table tr').length - 1;
-                        } else {
-                            var count = 0;
-                            $('.dataTables_empty').addClass('dt-center');
-                        }
-
-                        if (search_value == '') {
-                            count_total = total;
-                        } else {
-                            count_total = count;
-                        }
-                    
-                        $('#'+id+'-paginate').children().remove().end();
-                        $('#'+id+'-showingEntries').text(showingEntriesSearch(1, count_total, id));
-                        $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
-
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    columnDefs: [
-                                { targets: [0, 1, 2, 3, 4], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
+                },
+                "initComplete": function(settings, json) {
+
+                    if ($('#' + id + 'Table .dataTables_empty').length == 0) {
+                        var count = $('#' + id + 'Table tr').length - 1;
+                    } else {
+                        var count = 0;
+                        $('.dataTables_empty').addClass('dt-center');
+                    }
+
+                    if (search_value == '') {
+                        count_total = total;
+                    } else {
+                        count_total = count;
+                    }
+
+                    $('#' + id + '-paginate').children().remove().end();
+                    $('#' + id + '-showingEntries').text(showingEntriesSearch(1, count_total, id));
+                    $('#' + id + '-paginate').append(paginateSearch(count_total, id, getUrl));
+
+                },
+                columnDefs: [{
+                    targets: [0, 1, 2, 3, 4],
+                    className: 'dt-center td-content-center'
+                }, ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                columns: [{
+                        data: 'id',
+                        "render": function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'username' },
-                        { data: 'permission_name' },
-                        { data: 'status_name' },
-                        { data: 'btn_action' },
-                    ],
+                    {
+                        data: 'username'
+                    },
+                    {
+                        data: 'permission_name'
+                    },
+                    {
+                        data: 'status_name'
+                    },
+                    {
+                        data: 'btn_action'
+                    },
+                ],
 
-                });
+            });
 
             document.getElementById(id).focus();
         });
