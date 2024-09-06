@@ -1524,7 +1524,7 @@ class QuotationController extends Controller
             $companys = companys::where('Profile_ID',$comid)->first();
             $emailCom = $companys->Company_Email;
             $contact = $companys->Profile_ID;
-            $Contact_name = representative::where('id',$contact)->where('status',1)->first();
+            $Contact_name = representative::where('Company_ID',$contact)->where('status',1)->first();
             $namefirst = $Contact_name->First_name;
             $namelast = $Contact_name->Last_name;
             $name = $namefirst.' '.$namelast;
