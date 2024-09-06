@@ -75,7 +75,7 @@
         <div class="container-xl">
             <div class="nav-content">
                 <div class="nav-left">
-                    <h1 class="h-daily" style=" margin:0;">Daily Revenue by Type</h1>
+                    <h1 class="h-daily" style=" margin:0;" id="button-change">Daily Revenue by Type &nbsp;<i class="theme-toggle"> &#10024;</i></h1>
                 </div>
                 <div class="nav-right">
                     <div class="nav-right-in">
@@ -1993,15 +1993,14 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"
-        integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
     <!-- Sweet Alert 2 -->
     <script src="{{ asset('assets/bundles/sweetalert2.bundle.js')}}"></script>
     <script src="{{ asset('assets/js/searh-calendar.js') }}"></script>
 
-<script>
+<script type="text/javascript">
     const monthName = [
             "January",
             "February",
@@ -3079,5 +3078,43 @@
             },
         });
     }
+
+    $(function() {
+        var currentClass = "bg-box";
+        var currentChartClass = "box-chart";
+    
+        $("#button-change").on("click", function() {
+            // สลับคลาสของ bg-box
+            if (currentClass === "bg-box") {
+                $(".bg-box").removeClass("bg-box").addClass("bg-box2");
+                currentClass = "bg-box2";
+            } else if (currentClass === "bg-box2") {
+                $(".bg-box2").removeClass("bg-box2").addClass("bg-box3");
+                currentClass = "bg-box3";
+            } else if (currentClass === "bg-box3") {
+                $(".bg-box3").removeClass("bg-box3").addClass("bg-box4");
+                currentClass = "bg-box4";
+            } else {
+                $(".bg-box4").removeClass("bg-box4").addClass("bg-box");
+                currentClass = "bg-box";
+            }
+
+            // สลับคลาสของ box-chart
+            if (currentChartClass === "box-chart") {
+                $(".box-chart").removeClass("box-chart").addClass("box-chart2");
+                currentChartClass = "box-chart2";
+            } else if (currentChartClass === "box-chart2") {
+                $(".box-chart2").removeClass("box-chart2").addClass("box-chart3");
+                currentChartClass = "box-chart3";
+            } else if (currentChartClass === "box-chart3") {
+                $(".box-chart3").removeClass("box-chart3").addClass("box-chart4");
+                currentChartClass = "box-chart4";
+            } else {
+                $(".box-chart4").removeClass("box-chart4").addClass("box-chart");
+                currentChartClass = "box-chart";
+            }
+        });
+    });
+
 </script>
 @endsection
