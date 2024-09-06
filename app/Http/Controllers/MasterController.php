@@ -16,37 +16,88 @@ class MasterController extends Controller
      */
     public function index($menu)
     {
-        $masters = Masters::where('category', $menu)->where('status', 1)->orderBy('sort', 'asc')->get();
+        $masters = Masters::where('category', $menu)->where('status', 1)->orderBy('sort', 'asc')->paginate(10);
 
-        $data_categorys = Masters::where('category', '')->whereNull('deleted_at')->where('status', 1)->get();
+        $data_categorys = Masters::where('category', '')->whereNull('deleted_at')->where('status', 1)->paginate(10);
 
         $exp = explode('_', $menu);
 
         if (count($exp) > 1) {
             $search = $exp[1];
-            $menu = $exp[0];
+            $menu_name = $exp[0];
 
             if ($search == "all") {
-                $masters = Masters::where('category', $menu)->whereNull('deleted_at')->orderBy('sort', 'asc')->get();
+                $masters = Masters::where('category', $menu_name)->whereNull('deleted_at')->orderBy('sort', 'asc')->paginate(10);
             }elseif ($search == 'ac') {
-                $masters = Masters::where('category', $menu)->where('status', 1)->whereNull('deleted_at')->orderBy('sort', 'asc')->get();
+                $masters = Masters::where('category', $menu_name)->where('status', 1)->whereNull('deleted_at')->orderBy('sort', 'asc')->paginate(10);
             }else {
-                $masters = Masters::where('category', $menu)->where('status', 0)->whereNull('deleted_at')->orderBy('sort', 'asc')->get();
+                $masters = Masters::where('category', $menu_name)->where('status', 0)->whereNull('deleted_at')->orderBy('sort', 'asc')->paginate(10);
             }
         }
         
 
-        return view('master.'.$menu, compact('masters' , 'data_categorys'));
+        return view('master.'.$menu_name, compact('masters' , 'data_categorys', 'menu'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function search_table(Request $request)
     {
-        //
+        $data = [];
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $search = $request->search_value;
+
+        if (!empty($search)) {
+            $data_query = Masters::where('category', $request->menu)->whereIn('status', $request->status)->whereNull('deleted_at')
+                ->where(function($query) use ($search) {
+                    $query->where('name_th', 'like', '%' . $search . '%')
+                    ->orWhere('name_en', 'like', '%' . $search . '%');
+                })
+                ->paginate($perPage);
+
+        } else {
+            $data_query = Masters::where('category', $request->menu)->whereIn('status', $request->status)->whereNull('deleted_at')->paginate($perPage);
+        }
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+
+                $image = '';
+                $status_name = '';
+                $btn_action = '';
+
+                $image = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../upload/images/'.@$value->picture.'"></div>';
+
+                // สถานะการใช้งาน
+                if ($value->status == 0) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Disabled</button>'; } 
+                if ($value->status == 1) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Active</button>'; } 
+
+                if ($value->close_day == 0 || Auth::user()->edit_close_day == 1) {
+                    $btn_action .='<div class="dropdown">';
+                        $btn_action .='<button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown">
+                                            Select <span class="caret"></span>
+                                        </button>';
+                        $btn_action .='<ul class="dropdown-menu">';
+                            // if (User::roleMenuEdit('Users', Auth::user()->id) == 1) 
+                            // {
+                                $btn_action .='<li class="button-li" onclick="view_detail('.$value->id.')" data-bs-toggle="modal" data-bs-target="#exampleModalLongAddBank">Edit</li>';
+                            // }
+                        $btn_action .='</ul>';
+                    $btn_action .='</div>';
+                }
+
+                $data[] = [
+                    'id' => $key + 1,
+                    'image' => $image,
+                    'name_th' => $value->name_th,
+                    'name_en' => $value->name_en,
+                    'status_name' => $status_name,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+
+        return response()->json([
+            'data' => $data,
+        ]);
     }
 
     public function store(Request $request)

@@ -134,6 +134,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('master/search-list/{category}/{name_th}/{type_name}', 'search_list');
         Route::get('master/search-list2/{category}/{name_th}/{type_name}', 'search_list2');
         Route::get('master/search-type/{category}/{name_th}/{type_name}', 'search_type');
+
+        // Table Search / Paginate
+        Route::post('master-search-table', 'search_table')->name('master-search-table');
+        Route::post('master-paginate-table', 'paginate_table')->name('master-paginate-table');
     });
 
 
