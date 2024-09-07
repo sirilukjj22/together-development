@@ -1534,6 +1534,12 @@ class QuotationController extends Controller
         $quantity = master_quantity::where('status',1)->get();
         return view('quotation.edit',compact('settingCompany','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity'));
     }
+    public function update(Request $request,$id)
+    {
+        $data = $request->all();
+        dd($data);
+    }
+
     //----------------------------ส่งอีเมล์---------------------
     public function email($id){
         $quotation = Quotation::where('id',$id)->first();

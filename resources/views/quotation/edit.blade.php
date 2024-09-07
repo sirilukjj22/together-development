@@ -584,7 +584,7 @@
                                                             $var = $key+1;
                                                             @endphp
                                                             <tr id="tr-select-main{{$item->Product_ID}}">
-                                                                <input type="hidden" id="tr-select-main" name="tr-select-main[]" value="{{$item->Product_ID}}">
+                                                                <input type="hidden" id="CheckProduct" name="CheckProduct[]" value="{{$item->Product_ID}}">
                                                                 <td style="text-align:center;"><input type="hidden" id="ProductID" name="ProductIDmain[]" value="{{$item->Product_ID}}">{{$key+1}}</td>
                                                                 <td style="text-align:left;">{{@$item->product->name_th}} <span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="{{@$item->product->maximum_discount}} %"></span></td>
                                                                 <td style="color: #fff">
@@ -840,6 +840,7 @@
     <input type="hidden" name="preview" value="1" id="preview">
     <input type="hidden" name="hiddenProductData" id="hiddenProductData">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
     <script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
@@ -1306,11 +1307,14 @@
         }
         $(document).on('click', '.remove-button1', function() {
                 var productId = $(this).val();
-                $('#tr-select-main' + productId).remove();
 
+                $('#trselectmain' + productId).remove();
+                $('#tr-select-main' + productId).remove();
+                $('#display-selected-items tr .child').remove();
+                $('#display-selected-items tr .tr-select-main'+ productId).remove();
                 // Update the sequence numbers
                 $('#display-selected-items tr').each(function(index) {
-                    $(this).find('td:first').text(index + 1); // Change the text of the first cell to be the new sequence number
+                    $(this).find('td:first').text(index); // Change the text of the first cell to be the new sequence number
                 });
 
                 // Optionally, call a function to update totals after removing a row
@@ -1385,23 +1389,25 @@
                 $('#ProductName').text('Entertainment');
             }
             $('#ProductName').text();
+            var table = $('#mainselect1').DataTable();
+            var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
+            var clickCounter = 1;
+
             let productDataArray = [];
 
             // ดึงข้อมูลจากตาราง
             document.querySelectorAll('tr[id^="tr-select-main"]').forEach(function(row) {
-                let productID = row.querySelector('input[name="tr-select-main[]"]').value;
+                let productID = row.querySelector('input[name="CheckProduct[]"]').value;
 
                 // เก็บข้อมูลในอาเรย์
                 productDataArray.push({
                     productID: productID,
                 });
             });
+            console.log(productDataArray);
 
-            // แปลงอาเรย์เป็น JSON และเก็บใน input hidden
             document.querySelector('input[name="hiddenProductData"]').value = JSON.stringify(productDataArray);
-            var table = $('#mainselect1').DataTable();
-            var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
-            var clickCounter = 1;
+
             $.ajax({
                 url: '{{ route("Proposal.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
                 method: 'GET',
@@ -1409,179 +1415,177 @@
                     value: status
                 },
                 success: function(response) {
+
                     if (response.products.length > 0) {
-                    // Clear the existing rows
-                    table.clear();
-                    var num = 0;
-                    var pageSize = 10; // กำหนดจำนวนแถวต่อหน้า
-                    var currentPage = 1;
-                    var totalItems = response.products.length;
-                    var totalPages = Math.ceil(totalItems / pageSize);
-                    var maxVisibleButtons = 3; // จำนวนปุ่มที่จะแสดง
-
-                    let hiddenProductData = document.getElementById('hiddenProductData').value;
-                    let productDataArrayRetrieved = JSON.parse(hiddenProductData);
-                    let productIDsArray = productDataArrayRetrieved.map(product => product.productID);
-
-                    function renderPage(page) {
+                        // Clear the existing rows
                         table.clear();
-                        let num = (page - 1) * pageSize + 1;
-                        for (let i = (page - 1) * pageSize; i < page * pageSize && i < totalItems; i++) {
-                            const data = response.products[i];
-                            const productId = data.id;
-                            const productCode = data.Product_ID;
-                            var existingRowId = $('#tr-select-add' + productId).attr('id');
+                        var rowNumbemain = $('#display-selected-items tr').length;
+                        console.log(rowNumbemain);
 
-                            if ($('#' + existingRowId).val() == undefined) {
-                                if (!productIDsArray.includes(productCode)) {
-                                    table.row.add([
-                                        num++,
-                                        data.Product_ID,
-                                        data.name_th,
-                                        Number(data.normal_price).toLocaleString(),
-                                        data.unit_name,
-                                        `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
-                                    ]).node().id = `row-${productId}`;
+                        var pageSize = 10; // กำหนดจำนวนแถวต่อหน้า
+                        var currentPage = 1;
+                        var totalItems = response.products.length;
+                        var totalPages = Math.ceil(totalItems / pageSize);
+                        var maxVisibleButtons = 3; // จำนวนปุ่มที่จะแสดง
+                        let hiddenProductData = document.getElementById('hiddenProductData').value;
+                        let productDataArrayRetrieved = JSON.parse(hiddenProductData);
+                        let productIDsArray = productDataArrayRetrieved.map(product => product.productID);
+                        function renderPage(page) {
+                            table.clear();
+                            let num = rowNumbemain + (page - 1) * pageSize + 1;
+                            for (let i = (page - 1) * pageSize; i < page * pageSize && i < totalItems; i++) {
+                                const data = response.products[i];
+                                const productId = data.id;
+                                const productCode = data.Product_ID;
+                                var existingRowId = $('#tr-select-add' + productId).attr('id');
+                                if ($('#' + existingRowId).val() == undefined) {
+                                    if (!productIDsArray.includes(productCode)) {
+                                        table.row.add([
+                                            num++,
+                                            data.Product_ID,
+                                            data.name_th,
+                                            Number(data.normal_price).toLocaleString(),
+                                            data.unit_name,
+                                            `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
+                                        ]).node().id = `row-${productId}`;
+                                    }
                                 }
                             }
-                        }
-                        table.draw(false);
-                        $('#mainselect1').DataTable().columns.adjust().responsive.recalc();
-
-                        // Update active class for pagination buttons
-                        $('.paginate-btn').removeClass('active');
-                        $(`[data-page="${page}"]`).addClass('active');
-                    }
-
-                    function createPagination(totalPages, currentPage) {
-                        $('#paginationContainer').html(`
-                            <button class="paginate-btn" data-page="prev">&laquo;</button>
-                        `);
-
-                        var startPage = Math.max(1, currentPage - Math.floor(maxVisibleButtons / 2));
-                        var endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
-
-                        if (startPage > 1) {
-                            $('#paginationContainer').append(`<button class="paginate-btn" data-page="1">1</button>`);
-                            if (startPage > 2) {
-                                $('#paginationContainer').append(`<button class="paginate-btn" disabled>...</button>`);
-                            }
+                            table.draw(false);
+                            $('#mainselect1').DataTable().columns.adjust().responsive.recalc();
+                            // Update active class for pagination buttons
+                            $('.paginate-btn').removeClass('active');
+                            $(`[data-page="${page}"]`).addClass('active');
                         }
 
-                        for (let i = startPage; i <= endPage; i++) {
-                            $('#paginationContainer').append(`<button class="paginate-btn" data-page="${i}">${i}</button>`);
-                        }
+                        function createPagination(totalPages, currentPage) {
+                            $('#paginationContainer').html(`
+                                <button class="paginate-btn" data-page="prev">&laquo;</button>
+                            `);
 
-                        if (endPage < totalPages) {
-                            if (endPage < totalPages - 1) {
-                                $('#paginationContainer').append(`<button class="paginate-btn" disabled>...</button>`);
+                            var startPage = Math.max(1, currentPage - Math.floor(maxVisibleButtons / 2));
+                            var endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
+
+                            if (startPage > 1) {
+                                $('#paginationContainer').append(`<button class="paginate-btn" data-page="1">1</button>`);
+                                if (startPage > 2) {
+                                    $('#paginationContainer').append(`<button class="paginate-btn"  disabled>...</button>`);
+                                }
                             }
-                            $('#paginationContainer').append(`<button class="paginate-btn" data-page="${totalPages}">${totalPages}</button>`);
-                        }
 
-                        $('#paginationContainer').append(`
-                            <button class="paginate-btn" data-page="next">&raquo;</button>
-                        `);
-                    }
-
-                    createPagination(totalPages, currentPage);
-                    renderPage(currentPage);
-
-                    // Handle page click
-                    $(document).on('click', '.paginate-btn', function() {
-                        var page = $(this).data('page');
-
-                        if (page === 'prev') {
-                            if (currentPage > 1) {
-                                currentPage--;
+                            for (let i = startPage; i <= endPage; i++) {
+                                $('#paginationContainer').append(`<button class="paginate-btn" data-page="${i}">${i}</button>`);
                             }
-                        } else if (page === 'next') {
-                            if (currentPage < totalPages) {
-                                currentPage++;
+
+                            if (endPage < totalPages) {
+                                if (endPage < totalPages - 1) {
+                                    $('#paginationContainer').append(`<button class="paginate-btn"disabled >...</button>`);
+                                }
+                                $('#paginationContainer').append(`<button class="paginate-btn" data-page="${totalPages}">${totalPages}</button>`);
                             }
-                        } else {
-                            currentPage = parseInt(page);
+
+                            $('#paginationContainer').append(`
+                                <button class="paginate-btn" data-page="next">&raquo;</button>
+                            `);
                         }
 
                         createPagination(totalPages, currentPage);
                         renderPage(currentPage);
-                    });
-                }
 
+                        // Handle page click
+                        $(document).on('click', '.paginate-btn', function() {
+                            var page = $(this).data('page');
+
+                            if (page === 'prev') {
+                                if (currentPage > 1) {
+                                    currentPage--;
+                                }
+                            } else if (page === 'next') {
+                                if (currentPage < totalPages) {
+                                    currentPage++;
+                                }
+                            } else {
+                                currentPage = parseInt(page);
+                            }
+
+                            createPagination(totalPages, currentPage);
+                            renderPage(currentPage);
+                        });
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', error);
                 }
             });
             $(document).ready(function() {
-            if (!$.fn.DataTable.isDataTable('.product-list-select')) {
-                var table = $('.product-list-select').DataTable();
-            } else {
-                var table = $('.product-list-select').DataTable();
-            }
-            $(document).on('click', '.select-button-product', function() {
-                console.log(table);
-                var product = $(this).val();
-                $('#row-' + product).prop('hidden',true);
-                $('tr .child').prop('hidden',true);
-                if ($('#productselect' + product).length > 0) {
-                    return;
+                if (!$.fn.DataTable.isDataTable('.product-list-select')) {
+                    var table = $('.product-list-select').DataTable();
+                } else {
+                    var table = $('.product-list-select').DataTable();
                 }
-                $.ajax({
-                    url: '{{ route("Proposal.addProductselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
-                    method: 'GET',
-                    data: {
-                        value:product
-                    },
-                    success: function(response) {
-                        $.each(response.products, function(index, val) {
-                            var name = '';
-                            var price = 0;
-                            var rowNumber = $('#product-list-select tr:visible').length+1;
-                            if ($('#productselect' + val.id).length > 0) {
-                                console.log("Product already exists after AJAX call: ", val.id);
-                                return;
-                            }
-                            if ($('#product-list' + val.Product_ID).length > 0) {
-                                console.log("Product already exists after AJAX call: ", val.Product_ID);
-                            }
+                $(document).on('click', '.select-button-product', function() {
+
+                    var product = $(this).val();
+                    $('#row-' + product).prop('hidden',true);
+                    $('tr .child').prop('hidden',true);
+                    console.log(product);
+                    if ($('#productselect' + product).length > 0) {
+                        return;
+                    }
+                    $.ajax({
+                        url: '{{ route("Proposal.addProductselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+                        method: 'GET',
+                        data: {
+                            value:product
+                        },
+                        success: function(response) {
+                            $.each(response.products, function(index, val) {
+                                var name = '';
+                                var price = 0;
+                                var rowNumber = $('#product-list-select tr:visible').length+1;
+                                if ($('#productselect' + val.id).length > 0) {
+                                    console.log("Product already exists after AJAX call: ", val.id);
+                                    return;
+                                }
+                                if ($('#product-list' + val.Product_ID).length > 0) {
+                                    console.log("Product already exists after AJAX call: ", val.Product_ID);
+                                }
+
                                 $('#product-list-select').append(
                                     '<tr id="tr-select-add' + val.id + '">' +
-                                    '<td>' + rowNumber + '</td>' +
+                                    '<td style="text-align:center;">' + rowNumber + '</td>' +
                                     '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + val.Product_ID + '">' + val.Product_ID + '</td>' +
                                     '<td style="text-align:left;">' + val.name_en + '</td>' +
                                     '<td style="text-align:left;">' + Number(val.normal_price).toLocaleString() + '</td>' +
                                     '<td style="text-align:center;">' + val.unit_name + '</td>' +
-                                    '<td style="text-align:center;"><button type="button" class="Btn remove-button" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                    '<td style="text-align:center;"> <button type="button" class="Btn remove-button " style=" border: none;" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
                                     '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
                                     '</tr>'
                                 );
 
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
-                    }
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
                 });
             });
-        });
             function renumberRows() {
                 $('#product-list-select tr:visible').each(function(index) {
                     $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
                 });
                 $('#display-selected-items tr').each(function(index) {
-                    $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
+                    $(this).find('td:first-child').text(index +1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
                 });
             }
             $(document).on('click', '.remove-button', function() {
-                console.log(1);
                 var product = $(this).val();
                 $('#tr-select-add' + product).remove();
                 $('#row-' + product).prop('hidden',false);
-                renumberRows(); // ลบแถวที่มี id เป็น 'tr-select-add' + product
+                renumberRows();// ลบแถวที่มี id เป็น 'tr-select-add' + product
             });
             $(document).on('click', '.confirm-button', function() {
-                var product = $(this).val();
                 var number = $('#randomKey').val();
                 console.log(number);
                 $.ajax({
@@ -1602,7 +1606,8 @@
                                     var normalPrice = parseFloat(normalPriceString);
                                     var netDiscount = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                     var normalPriceview = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                    var rowNumbemain = $('#display-selected-items tr').length + 1;
+
+                                    var rowNumbemain = $('#display-selected-items tr').length+1;
                                     let discountInput;
                                     var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
                                     var SpecialDiscount = document.getElementById('SpecialDiscount').value;
@@ -1616,13 +1621,13 @@
                                         if (roleMenuDiscount == 1) {
                                             discountInput = '<div class="input-group">' +
                                                 '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10))> ' + SpecialDiscount + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
+                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + SpecialDiscount + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
                                                 '<span class="input-group-text">%</span>' +
                                                 '</div>';
                                         } else {
                                             discountInput = '<div class="input-group">' +
                                                 '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10))> ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
                                                 '<span class="input-group-text">%</span>' +
                                                 '</div>';
                                         }
@@ -1631,14 +1636,14 @@
                                         if (roleMenuDiscount == 1) {
                                             discountInput = '<div class="input-group">' +
                                                 '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10))> ' + discountuser + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
+                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + discountuser + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
                                                 '<span class="input-group-text">%</span>' +
                                                 '</div>';
 
                                         } else {
                                             discountInput = '<div class="input-group">' +
                                                 '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10))> ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
                                                 '<span class="input-group-text">%</span>' +
                                                 '</div>';
                                         }
@@ -1649,15 +1654,17 @@
                                         '<td style="text-align:center;">' + rowNumbemain + '</td>' +
                                         '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
                                         '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
-                                        '<td style="width:10%;"><input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="1" min="1" rel="' + number + '" style="text-align:center;"oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);"></td>' +
-                                        '<td style="text-align:center;">' + val.unit_name + '</td>' +
-                                        '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' +  Number(val.normal_price).toLocaleString() + '</td>' +
-                                        '<td style="width:10%;">' + discountInput + '</td>' +
+                                        '<td ><input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]"  value="1" min="1" rel="' + number + '" style="text-align:center;" oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);"></td>' +
+                                        '<td>' + val.unit_name + '</td>' +
+                                        '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
+                                        '<td>' + discountInput + '</td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value=" ' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
-                                        '<td style="text-align:center;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                        '<td  style="text-align:center;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
                                         '</tr>'
                                     );
+                                    $('#display-selected-items tr.parent.dt-hasChild.odd').remove();
+                                    $('#display-selected-items tr.odd').remove();
                                     $('#main').DataTable({
                                         searching: false,
                                         paging: false,
@@ -1694,16 +1701,19 @@
                 });
                 $('#exampleModalproduct').modal('hide');
             });
-            $(document).on('click', '.remove-buttonmain', function() {
-                var product = $(this).val();
-                $('#tr-select-add' + product + ', #tr-select-addmain' + product).remove();
+            $(document).ready(function() {
+                totalAmost();
+                $(document).on('click', '.remove-buttonmain', function() {
+                    var product = $(this).val();
+                    $('#tr-select-add' + product + ', #tr-select-addmain' + product).remove();
 
-                $('#display-selected-items tbody tr').each(function(index) {
-                    // เปลี่ยนเลขลำดับใหม่
-                    $(this).find('td:first').text(index + 1);
+                    $('#display-selected-items tbody tr').each(function(index) {
+                        // เปลี่ยนเลขลำดับใหม่
+                        $(this).find('td:first').text(index+1);
+                    });
+                    renumberRows();
+                    totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
                 });
-                renumberRows();
-                totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
             });
         }
         //----------------------------------------รายการ---------------------------
