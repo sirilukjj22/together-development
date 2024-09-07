@@ -1308,17 +1308,13 @@
         $(document).on('click', '.remove-button1', function() {
                 var productId = $(this).val();
                 var table2 = $('#main').DataTable();
-                var row = table2.row($(this).parents('tr'));            
+                var row = table2.row($(this).parents('tr'));
                 var irow = $(this).closest('tr.child').prev();
                 table2.row(irow).remove().draw();
                 row.remove();
                 table2.draw();
 
                 $('#trselectmain' + productId).remove();
-                // $('#tr-select-main' + productId).remove();
-                // $('#display-selected-items tr .child').remove();
-                // $('#display-selected-items tr .tr-select-main'+ productId).remove();
-                // Update the sequence numbers
                 $('#display-selected-items tr').each(function(index) {
                     $(this).find('td:first').text(index+1); // Change the text of the first cell to be the new sequence number
                 });
@@ -1599,13 +1595,13 @@
                     data: {
                         value: "all"
                     },
-                    success: function(response) {           
+                    success: function(response) {
 
                         $.each(response.products, function (key, val) {
                             $('#tr-select-add' + val.id).prop('hidden',true);
                             if ($('#productselect' + val.id).val() !== undefined) {
                                 if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
-                                    
+
                                     number += 1;
                                     var name = '';
                                     var price = 0;
