@@ -205,7 +205,7 @@
     <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableUser.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableMasterBank.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -247,6 +247,8 @@
                 status = [1];
             } if (status_use == "bank_no") {
                 status = [0];
+            } else {
+                status = [1];
             }
 
             $('#' + table_name).DataTable().destroy();
