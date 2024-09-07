@@ -182,19 +182,6 @@
                         orderable: true,
                         target: null,
                     },
-                    {
-                        width: '7%',
-                        targets: 0
-                    },
-                    {
-                        width: '10%',
-                        targets: 3
-                    },
-                    {
-                        width: '15%',
-                        targets: 4
-                    }
-
                 ],
                 order: [0, 'asc'],
                 responsive: {
