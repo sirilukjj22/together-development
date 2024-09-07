@@ -3080,10 +3080,10 @@
     }
 
     $(function() {
-        var currentClass = "bg-box";
-        var currentChartClass = "box-chart";
+    var currentClass = "bg-box";
+    var currentChartClass = "box-chart";
     
-        $("#button-change").on("click", function() {
+    $("#button-change").on("click", function() {
             // สลับคลาสของ bg-box
             if (currentClass === "bg-box") {
                 $(".bg-box").removeClass("bg-box").addClass("bg-box2");
@@ -3094,8 +3094,11 @@
             } else if (currentClass === "bg-box3") {
                 $(".bg-box3").removeClass("bg-box3").addClass("bg-box4");
                 currentClass = "bg-box4";
+            } else if (currentClass === "bg-box4") {
+                $(".bg-box4").removeClass("bg-box4").addClass("bg-box5");
+                currentClass = "bg-box5";
             } else {
-                $(".bg-box4").removeClass("bg-box4").addClass("bg-box");
+                $(".bg-box5").removeClass("bg-box5").addClass("bg-box");
                 currentClass = "bg-box";
             }
 
@@ -3109,8 +3112,11 @@
             } else if (currentChartClass === "box-chart3") {
                 $(".box-chart3").removeClass("box-chart3").addClass("box-chart4");
                 currentChartClass = "box-chart4";
+            } else if (currentChartClass === "box-chart4") {
+                $(".box-chart4").removeClass("box-chart4").addClass("box-chart5");
+                currentChartClass = "box-chart5";
             } else {
-                $(".box-chart4").removeClass("box-chart4").addClass("box-chart");
+                $(".box-chart5").removeClass("box-chart5").addClass("box-chart");
                 currentChartClass = "box-chart";
             }
         });

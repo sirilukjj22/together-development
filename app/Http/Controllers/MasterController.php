@@ -22,6 +22,8 @@ class MasterController extends Controller
 
         $exp = explode('_', $menu);
 
+        $menu_name = $menu;
+
         if (count($exp) > 1) {
             $search = $exp[1];
             $menu_name = $exp[0];

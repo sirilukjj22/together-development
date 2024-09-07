@@ -1264,46 +1264,18 @@ td {
 }
 
 .box-chart {
-  border: 1px solid rgba(10, 124, 108, 1);
+  border: 1px rgb(155, 212, 206) solid;
   border-radius: 7px;
   padding: 0.75rem;
   height: 100%;
-  box-shadow: #246e67 2px 3px 5px 2px, inset -2px -1px 5px rgba(10, 124, 108, 1);
-  background: rgb(4, 108, 110);
-  background: linear-gradient(351deg,
-      #02a8925c,
-      #03a49255,
-      #9adecec4,
-      #9adecec4,
-      #00ad9694,
-      #02927f77);
-  /* box-shadow: inset 5px 5px 15px rgba(10, 124, 108, 1),
-    inset -5px -5px 15px rgba(10, 124, 108, 1); */
-}
-
-.bg-box {
-  margin: 0.25rem;
-  background-color: white;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-  border-radius: 0.375rem;
-  background: rgb(71, 138, 127);
-  background: linear-gradient(168deg,
-      rgb(0, 72, 86) 0%,
-      rgb(1, 84, 77),
-      rgb(9, 48, 41) 100%);
-  background-size: 200% 200%;
-  box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
-  color: white;
-}
-
-.bg-box:hover {
-  background-color: white;
-  background-image: linear-gradient(160deg,
-      rgb(198, 249, 244) 20%,
-      rgb(198, 249, 244) 30%,
-      rgb(18, 118, 110));
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
-  color: black;
+  box-shadow: #246e67 2px 3px 5px 2px;
+  background: rgb(102, 218, 133);
+  background: linear-gradient(
+    158deg,
+    rgb(144, 230, 167) 0%,
+    rgb(135, 207, 183) 24%,
+    rgb(78, 166, 184) 100%
+  );
 }
 
 .box-chart2 {
@@ -1312,105 +1284,80 @@ td {
   padding: 0.75rem;
   height: 100%;
   box-shadow: #246e67 2px 3px 5px 2px;
-  background: rgba(254, 255, 255, 0.993);
-  background-image: linear-gradient(160deg,
-      rgba(165, 239, 232, 0.573),
-      rgba(198, 249, 244, 0.589),
-      rgba(228, 236, 236, 0.31),
-      rgba(4, 147, 130, 0.351),
-      rgba(181, 182, 182, 0.877));
-  background-size: 200% 200%;
-  animation: gradient 30s ease infinite;
-}
-
-.bg-box2 {
-  margin: 0.25rem;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-  border-radius: 0.375rem;
-  background-color: rgb(228, 233, 235);
-  background-image: linear-gradient(160deg,
-      rgba(165, 239, 232, 0.573),
-      rgba(211, 240, 237, 0.814),
-      rgba(224, 233, 233, 0.205),
-      rgba(4, 147, 130, 0.351),
-      rgb(222, 248, 245));
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
-  color: black;
-  background-size: 400% 400%;
-  animation: gradient 30s ease infinite;
-}
-
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.bg-box2:hover {
-  background-image: linear-gradient(#0c6f67, #053a39);
-  color: white;
-}
-
-td {
-  padding: 0.2rem;
+  background: rgb(102, 218, 133);
+  background: linear-gradient(
+    158deg,
+    rgb(119, 233, 149) 0%,
+    rgb(160, 231, 201) 24%,
+    rgb(125, 208, 224) 100%
+  );
 }
 
 .box-chart3 {
-  border: 1px rgb(155, 212, 206) solid;
-  border-radius: 7px;
-  padding: 0.75rem;
-  height: 100%;
-  box-shadow: #246e67 2px 3px 5px 2px;
-  background: rgb(102, 218, 133);
-  background: linear-gradient(158deg,
-      rgb(114, 224, 143) 0%,
-      rgb(134, 231, 191) 34%,
-      rgba(56, 185, 210, 1) 100%);
+  border: 1px solid rgb(38, 66, 64); /* สีเขียวเข้มที่หรูหรา */
+  background: linear-gradient(168deg, #a4dfe0 0%, #b1ecec 40%, #468a8a 100%);
+  color: #4d4d4d;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px;
+  box-shadow: #29726b 2px 3px 5px 2px;
 }
 
 .box-chart4 {
+  border: 1px solid rgba(10, 124, 108, 1);
+  border-radius: 7px;
+  padding: 0.75rem;
+  height: 100%;
+  box-shadow: #246e67 2px 3px 5px 2px, inset -2px -1px 5px rgba(10, 124, 108, 1);
+  background: rgb(4, 108, 110);
+  background: linear-gradient(
+    351deg,
+    #02a8925c,
+    #03a49255,
+    #9adecec4,
+    #9adecec4,
+    #00ad9694,
+    #02927f77
+  );
+}
+
+.box-chart5 {
   border: 1px rgb(155, 212, 206) solid;
   border-radius: 7px;
   padding: 0.75rem;
   height: 100%;
   box-shadow: #246e67 2px 3px 5px 2px;
   background-color: white;
-  background-image: linear-gradient(160deg,
-      rgb(165, 239, 232),
-      rgb(198, 249, 244),
-      rgb(216, 242, 240),
-      rgba(4, 148, 131, 0.815),
-      rgb(222, 248, 245));
+  background-image: linear-gradient(
+    160deg,
+    rgb(165, 239, 232),
+    rgb(198, 249, 244),
+    rgb(216, 242, 240),
+    rgba(4, 148, 131, 0.815),
+    rgb(222, 248, 245)
+  );
   background-size: 400% 400%;
   animation: gradient 30s ease infinite;
 }
 
 .bg-box {
   margin: 0.25rem;
-  border-radius: 0.5rem;
-  background-color: #f7f9f9;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 6px 18px;
-  background: linear-gradient(168deg, #38a0a1 0%, #539797 40%, #206c6d 100%);
-  color: #ffffff;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  border-radius: 0.375rem;
+  background: rgb(133, 231, 160);
+  background: linear-gradient(
+    130deg,
+    rgb(144, 230, 167) 0%,
+    rgb(135, 207, 183) 24%,
+    rgb(77, 166, 184) 100%
+  );
 }
 
 .bg-box:hover {
-  background-color: white;
-  background-image: linear-gradient(160deg,
-      #7ae9d8 20%,
-      #78e4cc 40%,
-      #31afa7 100%);
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 12px 24px,
-    rgba(0, 0, 0, 0.12) 0px 8px 16px;
-  color: #333333;
+  background-image: linear-gradient(rgb(134, 231, 231), rgb(134, 231, 231));
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  color: black;
 }
 
 .bg-box2 {
@@ -1418,62 +1365,93 @@ td {
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   border-radius: 0.375rem;
-  background: rgb(71, 138, 127);
-  background: linear-gradient(168deg,
-      rgb(0, 72, 86) 0%,
-      rgb(1, 84, 77),
-      rgb(9, 48, 41) 100%);
-  background-size: 200% 200%;
-  box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
-  color: white;
+  background: rgb(102, 218, 133);
+  background: linear-gradient(
+    158deg,
+    rgb(148, 238, 172) 0%,
+    rgb(134, 231, 191) 34%,
+    rgb(118, 221, 241) 100%
+  );
 }
 
 .bg-box2:hover {
-  background-color: white;
-  background-image: linear-gradient(160deg,
-      rgb(198, 249, 244) 20%,
-      rgb(198, 249, 244) 30%,
-      rgb(18, 118, 110));
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
-  color: black;
-}
-
-.bg-box3 {
-  margin: 0.25rem;
-  background-color: white;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-  border-radius: 0.375rem;
-  background: rgb(102, 218, 133);
-  background: linear-gradient(158deg,
-      rgb(114, 224, 143) 0%,
-      rgb(134, 231, 191) 34%,
-      rgba(56, 185, 210, 1) 100%);
-}
-
-.bg-box3:hover {
   background-image: linear-gradient(rgb(134, 231, 231), rgb(134, 231, 231));
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   color: black;
 }
 
+.bg-box3 {
+  margin: 0.25rem;
+  border-radius: 0.5rem;
+  background-color: #f7f9f9;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 6px 18px;
+  background: linear-gradient(168deg, #38a0a1 0%, #539797 40%, #206c6d 100%);
+  background-size: 200% 200%;
+  color: #ffffff;
+}
+
+.bg-box3:hover {
+  background-color: white;
+  background-image: linear-gradient(
+    160deg,
+    #7ae9d8 20%,
+    #78e4cc 40%,
+    #31afa7 100%
+  );
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 12px 24px,
+    rgba(0, 0, 0, 0.12) 0px 8px 16px;
+  color: #333333;
+}
+
 .bg-box4 {
+  margin: 0.25rem;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  border-radius: 0.375rem;
+  background: rgb(71, 138, 127);
+  background: linear-gradient(
+    168deg,
+    rgb(0, 72, 86) 0%,
+    rgb(1, 84, 77),
+    rgb(9, 48, 41) 100%
+  );
+  background-size: 200% 200%;
+  box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+  color: white;
+}
+
+.bg-box4:hover {
+  background-color: white;
+  background-image: linear-gradient(
+    160deg,
+    rgb(198, 249, 244) 20%,
+    rgb(198, 249, 244) 30%,
+    rgb(18, 118, 110)
+  );
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  color: black;
+}
+
+.bg-box5 {
   margin: 0.25rem;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   border-radius: 0.375rem;
   background-color: white;
-  background-image: linear-gradient(160deg,
-      rgb(165, 239, 232),
-      rgb(198, 249, 244),
-      rgb(172, 231, 226),
-      rgba(4, 148, 131, 0.815),
-      rgb(222, 248, 245));
+  background-image: linear-gradient(
+    160deg,
+    rgb(165, 239, 232),
+    rgb(198, 249, 244),
+    rgb(172, 231, 226),
+    rgba(4, 148, 131, 0.815),
+    rgb(222, 248, 245)
+  );
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
   color: black;
   background-size: 400% 400%;
   animation: gradient 30s ease infinite;
 }
 
-.bg-box4:hover {
+.bg-box5:hover {
   background-image: linear-gradient(#0c6f67, #053a39);
   color: white;
 }
@@ -1482,11 +1460,9 @@ td {
   0% {
     background-position: 0% 50%;
   }
-
   50% {
     background-position: 100% 50%;
   }
-
   100% {
     background-position: 0% 50%;
   }
