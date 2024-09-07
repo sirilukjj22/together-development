@@ -102,6 +102,72 @@ class MasterController extends Controller
         ]);
     }
 
+    public function paginate_table(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+
+            $query = Masters::query()->where('category', $request->menu)->whereIn('status', $request->status)->whereNull('deleted_at');
+
+            $query->orderBy('sort', 'asc');
+
+            if ($perPage == 10) {
+                $data_query = $query->limit($request->page.'0')->get();
+            } else {
+                $data_query = $query->paginate($perPage);
+            }
+
+        $data = [];
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    $image = '';
+                    $status_name = '';
+                    $btn_action = '';
+
+                    $image = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../upload/images/'.@$value->picture.'"></div>';
+
+                    // สถานะการใช้งาน
+                    if ($value->status == 0) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Disabled</button>'; } 
+                    if ($value->status == 1) { $status_name = '<button type="button" class="btn btn-light-success btn-sm btn-status" value="'.$value->id.'">Active</button>'; } 
+
+                    if ($value->close_day == 0 || Auth::user()->edit_close_day == 1) {
+                        $btn_action .='<div class="dropdown">';
+                            $btn_action .='<button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown">
+                                                Select <span class="caret"></span>
+                                            </button>';
+                            $btn_action .='<ul class="dropdown-menu">';
+                                // if (User::roleMenuEdit('Users', Auth::user()->id) == 1) 
+                                // {
+                                    $btn_action .='<li class="button-li" onclick="view_detail('.$value->id.')" data-bs-toggle="modal" data-bs-target="#exampleModalLongAddBank">Edit</li>';
+                                // }
+                            $btn_action .='</ul>';
+                        $btn_action .='</div>';
+                    }
+
+                    $data[] = [
+                        'id' => $key + 1,
+                        'image' => $image,
+                        'name_th' => $value->name_th,
+                        'name_en' => $value->name_en,
+                        'status_name' => $status_name,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+                'data' => $data,
+            ]);
+    }
+
     public function store(Request $request)
     {
         // dd($request);
