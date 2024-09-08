@@ -173,6 +173,7 @@ class AuthController extends Controller
 
             'setting' => $data['menu_setting'] ?? 0,
             'user' => $data['menu_user'] ?? 0,
+            'department' => $request->menu_department ?? 0,
             'bank' => $data['menu_bank'] ?? 0,
             'product_item' => $data['menu_product_item'] ?? 0,
             'quantity' => $data['menu_quantity'] ?? 0,
@@ -183,7 +184,8 @@ class AuthController extends Controller
             'company_market' => $data['menu_company_market'] ?? 0,
             'company_event' => $data['menu_company_event'] ?? 0,
             'booking' => $data['menu_booking'] ?? 0,
-            'document_template_pdf' => $data['menu_template'] ?? 0,
+            'document_template_pdf' => $request->menu_document_template_pdf ?? 0,
+            'report' => $request->menu_report ?? 0,
 
             'select_menu_all' => $data['select_menu_all'] ?? 0,
           ]);

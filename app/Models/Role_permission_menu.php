@@ -45,6 +45,7 @@ class Role_permission_menu extends Model
         'setting',
         'document_template_pdf',
         'user',
+        'department',
         'bank',
         'product_item',
         'quantity',
@@ -55,6 +56,7 @@ class Role_permission_menu extends Model
         'company_market',
         'company_event',
         'booking',
+        'report',
         
         'select_menu_all',
     ];

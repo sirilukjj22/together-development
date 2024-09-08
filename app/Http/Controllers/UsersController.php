@@ -281,6 +281,7 @@ class UsersController extends Controller
                 
                 'setting' => $request->menu_setting ?? 0,
                 'user' => $request->menu_user ?? 0,
+                'department' => $request->menu_department ?? 0,
                 'bank' => $request->menu_bank ?? 0,
                 'product_item' => $request->menu_product_item ?? 0,
                 'quantity' => $request->menu_quantity ?? 0,
@@ -291,7 +292,8 @@ class UsersController extends Controller
                 'company_market' => $request->menu_company_market ?? 0,
                 'company_event' => $request->menu_company_event ?? 0,
                 'booking' => $request->menu_booking ?? 0,
-                'document_template_pdf' => $request->menu_template ?? 0,
+                'document_template_pdf' => $request->menu_document_template_pdf ?? 0,
+                'report' => $request->menu_report ?? 0,
 
                 'select_menu_all' => $request->select_menu_all ?? 0,
               ]);
