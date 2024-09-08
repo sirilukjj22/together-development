@@ -129,15 +129,15 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col">
-                <small class="text-muted">Welcome to Edit Proposal.</small>
-                <h1 class="h4 mt-1">Edit Proposal (แก้ไขข้อเสนอ)</h1>
+                <small class="text-muted">Welcome to View Proposal.</small>
+                <h1 class="h4 mt-1">View Proposal (ดูข้อเสนอ)</h1>
             </div>
         </div>
     </div>
 @endsection
 @section('content')
-<form id="myForm" action="{{url('/Quotation/edit/company/quotation/update/'.$Quotation->id)}}" method="POST">
-    @csrf
+{{-- <form id="myForm" action="{{route('Quotation.update')}}" method="POST">
+    @csrf --}}
         <div class="container">
             <div class="container mt-3">
                 <div class="row clearfix">
@@ -158,6 +158,7 @@
                                     <div class="row">
                                         <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Proposal</b>
                                         <span class="titleQuotation">{{$Quotation_ID}}</span>
+                                        <input type="hidden" id="Quotationold" name="Quotationold" value="{{$QuotationID}}">
                                         <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
                                             <div class="col-12 col-md-12 col-sm-12">
                                                 <div class="row">
@@ -165,7 +166,7 @@
                                                         <span>Issue Date:</span>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
-                                                        <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;"value="{{$Quotation->issue_date}}" >
+                                                        <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;"value="{{$Quotation->issue_date}}" @disabled(true)>
                                                     </div>
                                                 </div>
                                             </div>
@@ -175,7 +176,7 @@
                                                         <span>Expiration Date:</span>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly  value="{{$Quotation->Expirationdate}}">
+                                                        <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly  value="{{$Quotation->Expirationdate}}" disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -187,7 +188,7 @@
                             <div class="row mt-5">
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                     <label class="labelcontact" for="">Customer Company</label>
-                                    <select name="Company" id="Company" class="select2" onchange="companyContact()" required>
+                                    <select name="Company" id="Company" class="select2" onchange="companyContact()" disabled>
                                         @foreach($Company as $item)
                                             <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->Company_Name }}</option>
                                         @endforeach
@@ -198,41 +199,37 @@
                                     <input type="text" name="Company_Contact" id="Company_Contact" class="form-control" value="{{$Contact_name->First_name}} {{$Contact_name->Last_name}}" disabled>
                                     <input type="hidden" name="Company_Contact" id="Company_Contactname" class="form-control" value="{{$Contact_name->id}}">
                                 </div>
-                                <div class="col-lg-6 col-md-6 col-sm-12 mt-2">
-                                    <button style="float: right;" type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Company.index') }}'">
-                                        <i class="fa fa-plus"></i> เพิ่มบริษัท</button>
-                                </div>
                             </div>
                             <hr class="mt-3 my-3" style="border: 1px solid #000">
                             <div  class="row mt-2">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" disabled> No Check In Date</label>
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col-lg-2 col-md-6 col-sm-12">
                                     <label for="chekin">Check In Date
-                                    <input type="date" name="Checkin" id="Checkin" class="form-control" onchange="CheckDate()" value="{{$Quotation->checkin}}" required>
+                                    <input type="date" name="Checkin" id="Checkin" class="form-control" onchange="CheckDate()" value="{{$Quotation->checkin}}" disabled>
                                 </div>
                                 <div class="col-lg-2 col-md-6 col-sm-12">
                                     <label for="chekin">Check Out Date </label>
-                                    <input type="date" name="Checkout" id="Checkout" class="form-control"onchange="CheckDate()"  value="{{$Quotation->checkout}}"  required>
+                                    <input type="date" name="Checkout" id="Checkout" class="form-control"onchange="CheckDate()"  value="{{$Quotation->checkout}}"  disabled>
                                 </div>
                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                     <label for="">จำนวน</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="Day" id="Day" placeholder="จำนวนวัน" value="{{$Quotation->day}}">
+                                        <input type="text" class="form-control" name="Day" id="Day" placeholder="จำนวนวัน" value="{{$Quotation->day}}"disabled>
                                         <span class="input-group-text">Day</span>
-                                        <input type="text" class="form-control" name="Night" id="Night" placeholder="จำนวนคืน" value="{{$Quotation->night}}">
+                                        <input type="text" class="form-control" name="Night" id="Night" placeholder="จำนวนคืน" value="{{$Quotation->night}}"disabled>
                                         <span class="input-group-text">Night</span>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                     <label for="">จำนวนผู้เข้าพัก (ผู้ใหญ่/เด็ก)</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่" value="{{$Quotation->adult}}">
+                                        <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่" value="{{$Quotation->adult}}"disabled>
                                         <span class="input-group-text">ผู้ใหญ่</span>
-                                        <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก" value="{{$Quotation->children}}">
+                                        <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก" value="{{$Quotation->children}}"disabled>
                                         <span class="input-group-text">เด็ก</span>
                                     </div>
                                 </div>
@@ -240,7 +237,7 @@
                             <div class="row mt-2">
                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                     <label  for="">Event</label>
-                                    <select name="Mevent" id="Mevent" class="select2"  onchange="masterevent()" required>
+                                    <select name="Mevent" id="Mevent" class="select2"  onchange="masterevent()" disabled>
                                         <option value=""></option>
                                         @foreach($Mevent as $item)
                                             <option value="{{ $item->id }}"{{$Quotation->eventformat == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
@@ -250,7 +247,7 @@
                                 </div>
                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                     <label  for="">Vat Type</label>
-                                    <select name="Mvat" id="Mvat" class="select2"  onchange="mastervat()" required>
+                                    <select name="Mvat" id="Mvat" class="select2"  onchange="mastervat()" disabled>
                                         <option value=""></option>
                                         @foreach($Mvat as $item)
                                             <option value="{{ $item->id }}"{{$Quotation->vat_type == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
@@ -296,14 +293,14 @@
                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                     <label  for="">Special Discount</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="SpecialDiscount" id="SpecialDiscount" placeholder="ส่วนลดคิดเป็น %"  value="{{$Quotation->SpecialDiscount}}" >
+                                        <input type="text" class="form-control" name="SpecialDiscount" id="SpecialDiscount" placeholder="ส่วนลดคิดเป็น %"  value="{{$Quotation->SpecialDiscount}}" disabled>
                                         <span class="input-group-text">%</span>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-6 col-sm-12">
                                     <label  for="">Discount Amount</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท" value="{{$Quotation->SpecialDiscountBath}}">
+                                        <input type="text" class="form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท" value="{{$Quotation->SpecialDiscountBath}}"disabled>
                                         <span class="input-group-text">Bath</span>
                                     </div>
                                 </div>
@@ -392,19 +389,20 @@
                                                 <p style="display: inline-block;font-weight: bold;">Number of Guests :</p>
                                             </div>
                                             <div class="col-lg-6">
-                                                @if ($Quotation->checkin == null)
-                                                    <p style="display: inline-block;"><span id="checkinpo">-</span></p><br>
+
+                                                @if ($Quotation->checkin == NULL)
+                                                    <p style="display: inline-block;"><span id="checkinpo">No Check in date</span></p><br>
                                                     <p style="display: inline-block;"><span id="checkoutpo">-</span></p><br>
                                                 @else
-                                                    <p style="display: inline-block;"><span >{{$Quotation->checkin}}</span></p><br>
-                                                    <p style="display: inline-block;"><span >{{$Quotation->checkout}}</span></p><br>
+                                                    <p style="display: inline-block;"><span id="checkinpo">{{$Quotation->checkin}}</span></p><br>
+                                                    <p style="display: inline-block;"><span id="checkoutpo">{{$Quotation->checkout}}</span></p><br>
                                                 @endif
                                                 @if ($Quotation->day == null)
                                                     <p style="display: inline-block;"><span id="daypo">-</span><span id="nightpo"></span></P><br>
                                                 @else
                                                     <p style="display: inline-block;"><span >{{$Quotation->day}}</span> วัน <span >{{$Quotation->night}}</span> คืน</p><br>
                                                 @endif
-                                                    <p style="display: inline-block;"><span id="Adultpo">{{$Quotation->adult}}</span> Adult , <span id="Childrenpo">{{$Quotation->children}}</span> Children</p>
+                                                <p style="display: inline-block;"><span id="Adultpo">{{$Quotation->adult}}</span> Adult , <span id="Childrenpo">{{$Quotation->children}}</span> Children</p>
                                             </div>
                                         </div>
                                     </div>
@@ -412,79 +410,6 @@
                                 </div>
                                 <div class="mt-2">
                                     <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-2 col-md-12 col-sm-12">
-                                        <button  id="addproduct" type="button" class="btn btn-color-green lift btn_modal my-3" data-bs-toggle="modal" data-bs-target="#exampleModalproduct"onclick="fetchProducts('all')">
-                                            <i class="fa fa-plus"></i> Add Product</button>
-                                    </div>
-                                    <div class="modal fade" id="exampleModalproduct" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-xl">
-                                        <div class="modal-content">
-                                            <div class="modal-header btn-color-green ">
-                                                <h5 class="modal-title text-white" id="exampleModalLabel">Product</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="col-12 mt-3">
-                                                    <div class="dropdown">
-                                                        <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <span id="ProductName">ประเภท Product</span>
-                                                        </button>
-                                                        <ul class="dropdown-menu border-0 shadow p-3">
-                                                            <li><a class="dropdown-item py-2 rounded" data-value="all" onclick="fetchProducts('all')">All Product</a></li>
-                                                            <li><a class="dropdown-item py-2 rounded" data-value="Room_Type"onclick="fetchProducts('Room_Type')">Room</a></li>
-                                                            <li><a class="dropdown-item py-2 rounded" data-value="Banquet"onclick="fetchProducts('Banquet')">Banquet</a></li>
-                                                            <li><a class="dropdown-item py-2 rounded" data-value="Meals"onclick="fetchProducts('Meals')">Meal</a></li>
-                                                            <li><a class="dropdown-item py-2 rounded" data-value="Entertainment"onclick="fetchProducts('Entertainment')">Entertainment</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <hr class="mt-3 my-3" style="border: 1px solid #000">
-                                                <div class="col-12 mt-3">
-                                                    <h3>รายการที่เลือก</h3>
-                                                    <table  class="table table-hover align-middle mb-0">
-                                                        <thead >
-                                                            <tr>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 7%">#</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 11%">ราคา</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 11%">หน่วย</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 11%">คำสั่ง</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="product-list-select">
-
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="col-12 mt-3">
-                                                    <table  class="myDataTableQuotationmodal table table-hover align-middle mb-0" style="width:100%">
-                                                        <thead >
-                                                            <tr>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">#</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">รหัส</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">รายการ</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">ราคา</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 10%">หน่วย</th>
-                                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width: 5%">คำสั่ง</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="product-list">
-
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
-                                                <button type="button" class="btn btn-color-green lift confirm-button" id="confirm-button">สร้าง</button>
-                                            </div>
-                                        </div>
-                                        </div>
-                                        <div id="modalOverlay" class="modal-overlay"></div>
-                                    </div>
                                 </div>
                                 <div class="row mt-2">
                                     <table class=" table  align-middle mb-0" style="width:100%">
@@ -497,7 +422,7 @@
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Unit</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price / Unit</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Discount</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Net Price / Unit</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price Discount</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Amount</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Order</th>
                                             </tr>
@@ -511,7 +436,7 @@
                                                             $var = $key+1;
                                                             @endphp
                                                             <tr id="tr-select-main{{$item->Product_ID}}">
-                                                                <input type="hidden" id="tr-select-main" name="tr-select-main[]" value="{{$item->Product_ID}}">
+                                                                <input type="hidden" id="tr-select-main{{$item->Product_ID}}" name="tr-select-main[]" value="{{$item->Product_ID}}">
                                                                 <td><input type="hidden" id="ProductID" name="ProductIDmain[]" value="{{$item->Product_ID}}">{{$key+1}}</td>
                                                                 <td style="text-align:left;">{{@$item->product->name_th}} <span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="{{@$item->product->maximum_discount}} %"></span></td>
                                                                 <td style="color: #fff">
@@ -519,13 +444,13 @@
                                                                     <span id="paxtotal{{$var}}">{{ floatval($item->pax) * floatval($item->Quantity) }}</span>
                                                                 </td>
                                                                 <td class="Quantity" data-value="{{$item->Quantity}}" style="text-align:center;">
-                                                                    <input type="text" id="quantity{{$var}}" name="Quantitymain[]" rel="{{$var}}" style="text-align:center;"class="quantity-input form-control" value="{{$item->Quantity}} "oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
+                                                                    <input type="text" id="quantity{{$var}}" name="Quantitymain[]" rel="{{$var}}" style="text-align:center;"class="quantity-input form-control" value="{{$item->Quantity}} "oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"disabled>
                                                                 </td>
                                                                 <td>{{ $singleUnit->name_th }}</td>
-                                                                <td class="priceproduct" data-value="{{$item->priceproduct}}"style="text-align:center;"><input type="hidden" id="totalprice-unit{{$var}}" name="priceproductmain[]" value="{{$item->priceproduct}}">{{ number_format($item->priceproduct) }}</td>
+                                                                <td class="priceproduct" data-value="{{$item->priceproduct}}"style="text-align:center;"><input type="hidden" id="totalprice-unit{{$var}}" name="priceproductmain[]" value="{{$item->priceproduct}}">{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
                                                                 <td class="discount"style="text-align:center;">
                                                                     <div class="input-group">
-                                                                        <input type="text" id="discount{{$var}}" name="discountmain[]" rel="{{$var}}"style="text-align:center;" class="discount-input form-control" value="{{$item->discount}}"oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
+                                                                        <input type="text" id="discount{{$var}}" name="discountmain[]" rel="{{$var}}"style="text-align:center;" class="discount-input form-control" value="{{$item->discount}}"oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"disabled>
                                                                         <input type="hidden" id="maxdiscount{{$var}}" name="maxdiscount[]" rel="{{$var}}" class=" form-control" value="{{$item->product->maximum_discount}}">
                                                                         <span class="input-group-text">%</span>
                                                                     </div>
@@ -533,7 +458,7 @@
                                                                 <td class="net-price"style="text-align:center;" ><span id="net_discount{{$var}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</span></td>
                                                                 <td class="item-total"style="text-align:center;"><span id="all-total{{$var}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</span></td>
                                                                 <td>
-                                                                    <button type="button" class="Btn remove-button1"  id="remove-button1{{$var}}" value="{{$item->Product_ID}}">
+                                                                    <button type="button" class="Btn "   value="{{$item->Product_ID}}">
                                                                         <i class="fa fa-minus-circle text-danger fa-lg"></i>
                                                                     </button>
                                                                 </td>
@@ -709,6 +634,7 @@
                                                 <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
                                                 @php
                                                     use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
                                                 @endphp
                                                 <div class="mt-3">
                                                     {!! QrCode::size(90)->generate('No found'); !!}
@@ -747,13 +673,9 @@
                                 <div class="col-12 row mt-5">
                                     <div class="col-4"></div>
                                     <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
-                                        <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
-                                            Cancel
+                                        <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('Quotation.index') }}'">
+                                            Back
                                         </button>
-                                        <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
-                                            Preview
-                                        </button>
-                                        <button type="submit" class="btn btn-color-green lift btn_modal" onclick="confirmSubmit(event)">Save</button>
                                     </div>
                                     <div class="col-4"></div>
                                 </div>
@@ -763,8 +685,7 @@
                 </div>
             </div>
         </div>
-    </form>
-    <input type="hidden" name="hiddenProductData" id="hiddenProductData">
+    {{-- </form> --}}
 <input type="hidden" name="preview" value="1" id="preview">
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
@@ -798,8 +719,8 @@
             console.log(`จำนวนคืน: ${nights} คืน`);
             $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
             $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-            $('#daypo').text(totalDays + ' วัน');
-            $('#nightpo').text(nights + ' คืน');
+            $('#daypo').text(totalDays);
+            $('#nightpo').text(nights);
         } else if (checkoutDate.getTime() === checkinDate.getTime()) {
             // กรณีที่ Check-in Date เท่ากับ Check-out Date
             const totalDays = 1;
@@ -808,8 +729,8 @@
 
             $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
             $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-            $('#daypo').text(isNaN(totalDays) ? '0' : totalDays + ' วัน');
-            $('#nightpo').text('0 คืน');
+            $('#daypo').text(isNaN(totalDays) ? '0' : totalDays);
+            $('#nightpo').text('0');
             console.log(`จำนวนวัน: ${totalDays} วัน`);
             console.log(`จำนวนคืน: 0 คืน`);
         } else {
@@ -843,18 +764,13 @@
                 dateout.disabled = true;
                 Day.disabled = true;
                 Night.disabled = true;
-                flexCheckChecked.checked = true;
-                $('#checkinpo').text('No Check in date');// ตั้งค่า flexCheckChecked เป็น checked
-                $('#checkoutpo').text('-');
-                $('#daypo').text('-');
-                $('#nightpo').text(' ');
+                flexCheckChecked.checked = true; // ตั้งค่า flexCheckChecked เป็น checked
             } else {
                 dateInput.disabled = false;
                 dateout.disabled = false;
                 Day.disabled = false;
                 Night.disabled = false;
-                flexCheckChecked.checked = false;
-               // ตั้งค่า flexCheckChecked เป็น unchecked
+                flexCheckChecked.checked = false; // ตั้งค่า flexCheckChecked เป็น unchecked
             }
         }
 
@@ -870,23 +786,11 @@
                 dateout.disabled = true;
                 Day.disabled = true;
                 Night.disabled = true;
-                $('#checkinpo').text('No Check in date');
-                $('#checkoutpo').text('-');
-                $('#daypo').text('-');
-                $('#nightpo').text(' ');
-                $('#Checkin').val('');
-                $('#Checkout').val('');
-                $('#Day').val('');
-                $('#Night').val('');
             } else {
                 dateInput.disabled = false;
                 dateout.disabled = false;
                 Day.disabled = false;
                 Night.disabled = false;
-                $('#Checkin').val('');
-                $('#Checkout').val('');
-                $('#Day').val('');
-                $('#Night').val('');
             }
         });
     });
@@ -899,12 +803,12 @@
     });
     $(document).on('keyup', '#Children', function() {
         var Children =  Number($(this).val());
-        $('#Childrenpo').text(' , '+ Children +' Children');
+        $('#Childrenpo').text(Children);
         totalAmost();
     });
     $(document).on('keyup', '#Adult', function() {
         var adult =  Number($(this).val());
-        $('#Adultpo').text(adult +' Adult');
+        $('#Adultpo').text(adult);
         totalAmost();
     });
     $(document).on('keyup', '#DiscountAmount', function() {
@@ -1100,6 +1004,7 @@
         }
     });
 </script>
+{{-- ส่วน add product --}}
 <script>
     function submitPreview() {
         var previewValue = document.getElementById("preview").value;
@@ -1128,40 +1033,10 @@
             if (typeof totalAmost === 'function') {
                 totalAmost();
             }
-            renumberRows();
         });
 </script>
 <script>
     function fetchProducts(status) {
-        if (status == 'all' ) {
-            $('#ProductName').text('All Product');
-        }else if (status == 'Room_Type') {
-            $('#ProductName').text('Room');
-        }
-        else if (status == 'Banquet') {
-            $('#ProductName').text('Banquet');
-        }
-        else if (status == 'Meals') {
-            $('#ProductName').text('Meals');
-        }
-        else if (status == 'Entertainment') {
-            $('#ProductName').text('Entertainment');
-        }
-        $('#ProductName').text();
-        let productDataArray = [];
-
-        // ดึงข้อมูลจากตาราง
-        document.querySelectorAll('tr[id^="tr-select-main"]').forEach(function(row) {
-            let productID = row.querySelector('input[name="tr-select-main[]"]').value;
-
-            // เก็บข้อมูลในอาเรย์
-            productDataArray.push({
-                productID: productID,
-            });
-        });
-
-        // แปลงอาเรย์เป็น JSON และเก็บใน input hidden
-        document.querySelector('input[name="hiddenProductData"]').value = JSON.stringify(productDataArray);
         var table = $('.myDataTableQuotationmodal').DataTable();
         var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
         var clickCounter = 1;
@@ -1174,29 +1049,19 @@
             success: function(response) {
                 if (response.products.length > 0) {
                     // Clear the existing rows
-                    table.clear(); //tr-select-main{{$item->Product_ID}}
-                    var num = 0;
+                    table.clear();
 
-                    let hiddenProductData = document.getElementById('hiddenProductData').value;
-                    let productDataArrayRetrieved = JSON.parse(hiddenProductData);
-                    let productIDsArray = productDataArrayRetrieved.map(product => product.productID);
                     for (let i = 0; i < response.products.length; i++) {
                         const data = response.products[i];
                         const productId = data.id;
-                        const productCode = data.Product_ID;
-                        const existingRowId = $('#tr-select-add' + productId).attr('id'); // ดึงค่า id ของแถว
-                        if ($('#' + existingRowId).val() == undefined) {
-                            if (!productIDsArray.includes(productCode)) {
-                                table.row.add([
-                                    num += 1,
-                                    data.Product_ID,
-                                    data.name_th,
-                                    Number(data.normal_price).toLocaleString(),
-                                    data.unit_name,
-                                    `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
-                                ]).node().id = `row-${productId}`;
-                            }
-                        }
+                        table.row.add([
+                            i + 1,
+                            data.Product_ID,
+                            data.name_th,
+                            data.unit_name,
+                            data.normal_price,
+                            `<button type="button"  class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
+                        ]).node().id = `row-${productId}`;
                     }
                     table.draw(false);
                 }
@@ -1214,7 +1079,6 @@
         $(document).on('click', '.select-button-product', function() {
             console.log(table);
             var product = $(this).val();
-            $('#row-' + product).prop('hidden',true);
             if ($('#productselect' + product).length > 0) {
                 return;
             }
@@ -1228,22 +1092,19 @@
                     $.each(response.products, function(index, val) {
                         var name = '';
                         var price = 0;
-                        var rowNumber = $('#product-list-select tr:visible').length+1;
+                        var rowNumber = $('#product-list-select tr').length+1;
                         if ($('#productselect' + val.id).length > 0) {
-                            console.log("Product already exists after AJAX call: ", val.id);
-                            return;
-                        }
-                        if ($('#product-list' + val.Product_ID).length > 0) {
-                            console.log("Product already exists after AJAX call: ", val.Product_ID);
-                        }
+                        console.log("Product already exists after AJAX call: ", val.id);
+                        return;
+                    }
                             $('#product-list-select').append(
                                 '<tr id="tr-select-add' + val.id + '">' +
                                 '<td>' + rowNumber + '</td>' +
                                 '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + val.Product_ID + '">' + val.Product_ID + '</td>' +
                                 '<td style="text-align:left;">' + val.name_en + '</td>' +
-                                '<td style="text-align:left;">' + Number(val.normal_price).toLocaleString() + '</td>' +
-                                '<td style="text-align:center;">' + val.unit_name + '</td>' +
-                                '<td style="text-align:center;"><button type="button" class="Btn remove-button" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                '<td style="text-align:right;">' + val.unit_name + '</td>' +
+                                '<td>' + val.normal_price + '</td>' +
+                                '<td><button type="button" class="Btn remove-button" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
                                 '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
                                 '</tr>'
                             );
@@ -1257,7 +1118,7 @@
         });
     });
         function renumberRows() {
-            $('#product-list-select tr:visible').each(function(index) {
+            $('#product-list-select tr').each(function(index) {
                 $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
             });
             $('#display-selected-items tr').each(function(index) {
@@ -1268,7 +1129,6 @@
             console.log(1);
             var product = $(this).val();
             $('#tr-select-add' + product).remove();
-            $('#row-' + product).prop('hidden',false);
             renumberRows(); // ลบแถวที่มี id เป็น 'tr-select-add' + product
         });
         $(document).on('click', '.confirm-button', function() {
@@ -1283,7 +1143,6 @@
                 },
                 success: function(response) {
                     $.each(response.products, function (key, val) {
-                        $('#tr-select-add' + val.id).prop('hidden',true);
                         if ($('#productselect' + val.id).val() !== undefined) {
                             if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
                                 number += 1;
@@ -1335,43 +1194,21 @@
                                     }
                                 }
 
-                                $('#main').DataTable().destroy();
-                                $('#display-selected-items').append(
-                                        '<tr id="tr-select-addmain' + val.id + '">' +
-                                        '<td style="text-align:center;">' + rowNumbemain + '</td>' +
-                                        '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
-                                        '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
-                                        '<td style="width:10%;"><input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="1" min="1" rel="' + number + '" style="text-align:center;"oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);"></td>' +
-                                        '<td style="text-align:center;">' + val.unit_name + '</td>' +
-                                        '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' +  Number(val.normal_price).toLocaleString() + '</td>' +
-                                        '<td style="width:10%;">' + discountInput + '</td>' +
-                                        '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
-                                        '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value=" ' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
-                                        '<td style="text-align:center;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
-                                        '</tr>'
-                                    );
 
-                                $('#main').DataTable({
-                                    searching: false,
-                                    paging: false,
-                                    info: false,
-                                    language: {
-                                        emptyTable: "",
-                                        zeroRecords: ""
-                                    },
-                                    columnDefs: [{
-                                        className: 'dtr-control',
-                                        orderable: false,
-                                        target: null,
-                                    }],
-                                    order:  false,
-                                    responsive: {
-                                        details: {
-                                            type: 'column',
-                                            target: 'tr'
-                                        }
-                                    }
-                                });
+                                $('#display-selected-items').append(
+                                    '<tr id="tr-select-addmain' + val.id + '">' +
+                                    '<td>' + rowNumbemain + '</td>' +
+                                    '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
+                                    '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
+                                    '<td ><input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="1" min="1" rel="' + number + '" style="text-align:center;"oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);"></td>' +
+                                    '<td>' + val.unit_name + '</td>' +
+                                    '<td><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + val.normal_price + '</td>' +
+                                    '<td>' + discountInput + '</td>' +
+                                    '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
+                                    '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value=" ' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
+                                    '<td><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                    '</tr>'
+                                );
                                 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
                                 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                                     return new bootstrap.Tooltip(tooltipTriggerEl)
