@@ -459,7 +459,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Proposal/selectproduct/{Quotation_ID}/addProductselect', 'addProductselect')->name('Proposal.addProductselect');
         Route::get('/Proposal/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('Proposal.addProducttablecreatemain');
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
-        Route::get('/Proposal/Proposal/cover/document/PDF/{id}', 'sheetpdf')->name('Proposal.sheet');
+        Route::get('/Proposal/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('Proposal.sheet');
         //--------------------------------------ลูกค้ายืนยัน------------------------------------------------------
         Route::get('/Proposal/Request/document/Approve/guest/{id}', 'Approve')->name('Proposal.Approve');
         //---------------------------------------LOG-----------------------------------------------------------
@@ -482,6 +482,27 @@ Route::middleware(['auth'])->group(function () {
         //----------------------------
         Route::post('Proposal-search-table', 'search_table_proposal');
         Route::post('Proposal-paginate-table', 'paginate_table_proposal');
+        //--------------------------pending---------
+        Route::post('Proposal-Pending-search-table', 'search_table_paginate_pending');
+        Route::post('Proposal-Pending-paginate-table', 'paginate_pending_table_proposal');
+        //--------------------------Awaiting---------
+        Route::post('Proposal-Awaiting-search-table', 'search_table_paginate_awaiting');
+        Route::post('Proposal-Awaiting-paginate-table', 'paginate_awaiting_table_proposal');
+         //--------------------------Approved---------
+        Route::post('Proposal-Approved-search-table', 'search_table_paginate_approved');
+        Route::post('Proposal-Approved-paginate-table', 'paginate_approved_table_proposal');
+         //--------------------------Reject-----------
+        Route::post('Proposal-Reject-search-table', 'search_table_paginate_reject');
+        Route::post('Proposal-Reject-paginate-table', 'paginate_reject_table_proposal');
+        //--------------------------Cancel-----------
+        Route::post('Proposal-Cancel-search-table', 'search_table_paginate_cancel');
+        Route::post('Proposal-Cancel-paginate-table', 'paginate_cancel_table_proposal');
+        //--------------------------LogPdf-----------
+        Route::post('Proposal-Log-search-table', 'search_table_paginate_log_pdf');
+        Route::post('Proposal-Log-paginate-table', 'paginate_log_pdf_table_proposal');
+        //--------------------------LogDoc-----------
+        Route::post('Proposal-LogDoc-search-table', 'search_table_paginate_log_doc');
+        Route::post('Proposal-LogDoc-paginate-table', 'paginate_log_doc_table_proposal');
     });
 
     #DummyQuotaion

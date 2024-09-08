@@ -356,5 +356,365 @@
     }
 
     //Proposal
+    //-----Pending
+    function showingEntriesTablePending($data, $table)
+    {
+        $total = $data->total();
+        $currentPage = $data->currentPage();
+        $perPage = !empty($_GET['table']) && @$_GET['table'] == $table ? $_GET['perPage'] : 10;
+
+        $from = ($currentPage - 1) * $perPage + 1;
+        $to = min($currentPage * $perPage, $total);
+
+        $html = '';
+
+        $html .= 'Showing '.$from .' to '. $to .' of '. $total .' entries';
+
+        return $html;
+    }
+
+    function paginateTablePending($data, $table)
+    {
+        $currentPage = 1;
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $num = 0;
+        $html = '';
+
+        $html .= '<div class="pagination" style="white-space: nowrap;">
+                    <a href="#" onclick="getPagePending('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
+                    if ($data->total() > 0) {
+                        if ($currentPage > 3)
+                        {
+                            $html .= '<a class="" href="#" onclick="getPagePending(1, '.$perPage.', '."'$table'".')">1</a>';
+
+                            if ($currentPage > 4)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                        }
+
+                        for ($i = max(1, $currentPage - 2); $i <= min($data->lastPage(), $currentPage + 2); $i++)
+                        {
+                            if ($currentPage == $i) {
+                                $html .= '<a class="active" href="#" onclick="getPagePending('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            } else {
+                                $html .= '<a class="" href="#" onclick="getPagePending('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            }
+                        }
+
+                        if ($currentPage < $data->lastPage() - 2)
+                        {
+                            if ($currentPage < $data->lastPage() - 3)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                            $html .= '<a href="#" onclick="getPagePending(' .$data->lastPage(). ', ' . $perPage . ', '."'$table'".')">'.$data->lastPage().'</a>';
+                        }
+                    }
+          $html .= '<a href="#" onclick="getPagePending('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>
+                  </div>';
+
+        return $html;
+    }
+    //--------Awaiting
+    function showingEntriesTableAwaiting($data, $table)
+    {
+        $total = $data->total();
+        $currentPage = $data->currentPage();
+        $perPage = !empty($_GET['table']) && @$_GET['table'] == $table ? $_GET['perPage'] : 10;
+
+        $from = ($currentPage - 1) * $perPage + 1;
+        $to = min($currentPage * $perPage, $total);
+
+        $html = '';
+
+        $html .= 'Showing '.$from .' to '. $to .' of '. $total .' entries';
+
+        return $html;
+    }
+
+    function paginateTableAwaiting($data, $table)
+    {
+        $currentPage = 1;
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $num = 0;
+        $html = '';
+
+        $html .= '<div class="pagination" style="white-space: nowrap;">
+                    <a href="#" onclick="getPageAwaiting('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
+                    if ($data->total() > 0) {
+                        if ($currentPage > 3)
+                        {
+                            $html .= '<a class="" href="#" onclick="getPageAwaiting(1, '.$perPage.', '."'$table'".')">1</a>';
+
+                            if ($currentPage > 4)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                        }
+
+                        for ($i = max(1, $currentPage - 2); $i <= min($data->lastPage(), $currentPage + 2); $i++)
+                        {
+                            if ($currentPage == $i) {
+                                $html .= '<a class="active" href="#" onclick="getPageAwaiting('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            } else {
+                                $html .= '<a class="" href="#" onclick="getPageAwaiting('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            }
+                        }
+
+                        if ($currentPage < $data->lastPage() - 2)
+                        {
+                            if ($currentPage < $data->lastPage() - 3)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                            $html .= '<a href="#" onclick="getPageAwaiting(' .$data->lastPage(). ', ' . $perPage . ', '."'$table'".')">'.$data->lastPage().'</a>';
+                        }
+                    }
+          $html .= '<a href="#" onclick="getPageAwaiting('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>
+                  </div>';
+
+        return $html;
+    }
+    //------------getPageApproved
+    function showingEntriesTableApproved($data, $table)
+    {
+        $total = $data->total();
+        $currentPage = $data->currentPage();
+        $perPage = !empty($_GET['table']) && @$_GET['table'] == $table ? $_GET['perPage'] : 10;
+
+        $from = ($currentPage - 1) * $perPage + 1;
+        $to = min($currentPage * $perPage, $total);
+
+        $html = '';
+
+        $html .= 'Showing '.$from .' to '. $to .' of '. $total .' entries';
+
+        return $html;
+    }
+
+    function paginateTableApproved($data, $table)
+    {
+        $currentPage = 1;
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $num = 0;
+        $html = '';
+
+        $html .= '<div class="pagination" style="white-space: nowrap;">
+                    <a href="#" onclick="getPageApproved('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
+                    if ($data->total() > 0) {
+                        if ($currentPage > 3)
+                        {
+                            $html .= '<a class="" href="#" onclick="getPageApproved(1, '.$perPage.', '."'$table'".')">1</a>';
+
+                            if ($currentPage > 4)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                        }
+
+                        for ($i = max(1, $currentPage - 2); $i <= min($data->lastPage(), $currentPage + 2); $i++)
+                        {
+                            if ($currentPage == $i) {
+                                $html .= '<a class="active" href="#" onclick="getPageApproved('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            } else {
+                                $html .= '<a class="" href="#" onclick="getPageApproved('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            }
+                        }
+
+                        if ($currentPage < $data->lastPage() - 2)
+                        {
+                            if ($currentPage < $data->lastPage() - 3)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                            $html .= '<a href="#" onclick="getPageApproved(' .$data->lastPage(). ', ' . $perPage . ', '."'$table'".')">'.$data->lastPage().'</a>';
+                        }
+                    }
+          $html .= '<a href="#" onclick="getPageApproved('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>
+                  </div>';
+
+        return $html;
+    }
+    //----------------Reject-----------------
+    function showingEntriesTableReject($data, $table)
+    {
+        $total = $data->total();
+        $currentPage = $data->currentPage();
+        $perPage = !empty($_GET['table']) && @$_GET['table'] == $table ? $_GET['perPage'] : 10;
+
+        $from = ($currentPage - 1) * $perPage + 1;
+        $to = min($currentPage * $perPage, $total);
+
+        $html = '';
+
+        $html .= 'Showing '.$from .' to '. $to .' of '. $total .' entries';
+
+        return $html;
+    }
+
+    function paginateTableReject($data, $table)
+    {
+        $currentPage = 1;
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $num = 0;
+        $html = '';
+
+        $html .= '<div class="pagination" style="white-space: nowrap;">
+                    <a href="#" onclick="getPageReject('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
+                    if ($data->total() > 0) {
+                        if ($currentPage > 3)
+                        {
+                            $html .= '<a class="" href="#" onclick="getPageReject(1, '.$perPage.', '."'$table'".')">1</a>';
+
+                            if ($currentPage > 4)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                        }
+
+                        for ($i = max(1, $currentPage - 2); $i <= min($data->lastPage(), $currentPage + 2); $i++)
+                        {
+                            if ($currentPage == $i) {
+                                $html .= '<a class="active" href="#" onclick="getPageReject('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            } else {
+                                $html .= '<a class="" href="#" onclick="getPageReject('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            }
+                        }
+
+                        if ($currentPage < $data->lastPage() - 2)
+                        {
+                            if ($currentPage < $data->lastPage() - 3)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                            $html .= '<a href="#" onclick="getPageReject(' .$data->lastPage(). ', ' . $perPage . ', '."'$table'".')">'.$data->lastPage().'</a>';
+                        }
+                    }
+          $html .= '<a href="#" onclick="getPageReject('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>
+                  </div>';
+
+        return $html;
+    }
+    //-----------------Cancel-------------
+    function showingEntriesTableCancel($data, $table)
+    {
+        $total = $data->total();
+        $currentPage = $data->currentPage();
+        $perPage = !empty($_GET['table']) && @$_GET['table'] == $table ? $_GET['perPage'] : 10;
+
+        $from = ($currentPage - 1) * $perPage + 1;
+        $to = min($currentPage * $perPage, $total);
+
+        $html = '';
+
+        $html .= 'Showing '.$from .' to '. $to .' of '. $total .' entries';
+
+        return $html;
+    }
+
+    function paginateTableCancel($data, $table)
+    {
+        $currentPage = 1;
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $num = 0;
+        $html = '';
+
+        $html .= '<div class="pagination" style="white-space: nowrap;">
+                    <a href="#" onclick="getPageCancel('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
+                    if ($data->total() > 0) {
+                        if ($currentPage > 3)
+                        {
+                            $html .= '<a class="" href="#" onclick="getPageCancel(1, '.$perPage.', '."'$table'".')">1</a>';
+
+                            if ($currentPage > 4)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                        }
+
+                        for ($i = max(1, $currentPage - 2); $i <= min($data->lastPage(), $currentPage + 2); $i++)
+                        {
+                            if ($currentPage == $i) {
+                                $html .= '<a class="active" href="#" onclick="getPageCancel('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            } else {
+                                $html .= '<a class="" href="#" onclick="getPageCancel('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            }
+                        }
+
+                        if ($currentPage < $data->lastPage() - 2)
+                        {
+                            if ($currentPage < $data->lastPage() - 3)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                            $html .= '<a href="#" onclick="getPageCancel(' .$data->lastPage(). ', ' . $perPage . ', '."'$table'".')">'.$data->lastPage().'</a>';
+                        }
+                    }
+          $html .= '<a href="#" onclick="getPageCancel('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>
+                  </div>';
+
+        return $html;
+    }
+    //Log
+    function showingEntriesTableLogDoc($data, $table)
+    {
+        $total = $data->total();
+        $currentPage = $data->currentPage();
+        $perPage = !empty($_GET['table']) && @$_GET['table'] == $table ? $_GET['perPage'] : 10;
+
+        $from = ($currentPage - 1) * $perPage + 1;
+        $to = min($currentPage * $perPage, $total);
+
+        $html = '';
+
+        $html .= 'Showing '.$from .' to '. $to .' of '. $total .' entries';
+
+        return $html;
+    }
+
+    function paginateTableLogDoc($data, $table)
+    {
+        $currentPage = 1;
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $num = 0;
+        $html = '';
+
+        $html .= '<div class="pagination" style="white-space: nowrap;">
+                    <a href="#" onclick="getPageLogDoc('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
+                    if ($data->total() > 0) {
+                        if ($currentPage > 3)
+                        {
+                            $html .= '<a class="" href="#" onclick="getPageLogDoc(1, '.$perPage.', '."'$table'".')">1</a>';
+
+                            if ($currentPage > 4)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                        }
+
+                        for ($i = max(1, $currentPage - 2); $i <= min($data->lastPage(), $currentPage + 2); $i++)
+                        {
+                            if ($currentPage == $i) {
+                                $html .= '<a class="active" href="#" onclick="getPageLogDoc('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            } else {
+                                $html .= '<a class="" href="#" onclick="getPageLogDoc('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            }
+                        }
+
+                        if ($currentPage < $data->lastPage() - 2)
+                        {
+                            if ($currentPage < $data->lastPage() - 3)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                            $html .= '<a href="#" onclick="getPageLogDoc(' .$data->lastPage(). ', ' . $perPage . ', '."'$table'".')">'.$data->lastPage().'</a>';
+                        }
+                    }
+          $html .= '<a href="#" onclick="getPageLogDoc('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>
+                  </div>';
+
+        return $html;
+    }
 ?>
 

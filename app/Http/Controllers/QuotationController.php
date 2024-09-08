@@ -51,36 +51,19 @@ class QuotationController extends Controller
         $missingQuotationIDs = $Quotation_IDs->diff($document_IDs);
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         Quotation::whereIn('Quotation_ID', $missingQuotationIDs)->delete();
-        if ($user->permission == 0) {
-            $Proposalcount = Quotation::query()->where('Operated_by',$userid)->count();
-            $Proposal = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->paginate($perPage);
-            $Pending = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->where('status_guest',0)->paginate($perPage);
-            $Pendingcount = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->where('status_guest',0)->count();
-            $Awaiting = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',2)->paginate($perPage);
-            $Awaitingcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',2)->count();
-            $Approved = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_guest',1)->paginate($perPage);
-            $Approvedcount = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->count();
-            $Reject = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPage);
-            $Rejectcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',4)->count();
-            $Cancel = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',0)->paginate($perPage);
-            $Cancelcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',0)->count();
-            $User = User::where('permission',$permissionid)->where('id',$userid)->select('name','id','permission')->get();
-        }
-        elseif ($user->permission == 1 || $user->permission == 2) {
-            $Proposalcount = Quotation::query()->count();
-            $Proposal = Quotation::query()->orderBy('created_at', 'desc')->paginate($perPage);;
-            $Pending = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->paginate($perPage);
-            $Pendingcount = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->count();
-            $Awaiting = Quotation::query()->where('status_document',2)->paginate($perPage);
-            $Awaitingcount = Quotation::query()->where('status_document',2)->count();
-            $Approved = Quotation::query()->where('status_guest',1)->paginate($perPage);
-            $Approvedcount = Quotation::query()->where('status_guest',1)->count();
-            $Reject = Quotation::query()->where('status_document',4)->paginate($perPage);
-            $Rejectcount = Quotation::query()->where('status_document',4)->count();
-            $Cancel = Quotation::query()->where('status_document',0)->paginate($perPage);
-            $Cancelcount = Quotation::query()->where('status_document',0)->count();
-            $User = User::select('name','id','permission')->whereIn('permission',[0,1,2])->get();
-        }
+        $Proposalcount = Quotation::query()->count();
+        $Proposal = Quotation::query()->orderBy('created_at', 'desc')->paginate($perPage);
+        $Pending = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->paginate($perPage);
+        $Pendingcount = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->count();
+        $Awaiting = Quotation::query()->where('status_document',2)->paginate($perPage);
+        $Awaitingcount = Quotation::query()->where('status_document',2)->count();
+        $Approved = Quotation::query()->where('status_guest',1)->paginate($perPage);
+        $Approvedcount = Quotation::query()->where('status_guest',1)->count();
+        $Reject = Quotation::query()->where('status_document',4)->paginate($perPage);
+        $Rejectcount = Quotation::query()->where('status_document',4)->count();
+        $Cancel = Quotation::query()->where('status_document',0)->paginate($perPage);
+        $Cancelcount = Quotation::query()->where('status_document',0)->count();
+        $User = User::select('name','id','permission')->whereIn('permission',[0,1,2])->get();
         return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount','User'));
     }
     public function SearchAll(Request $request){
@@ -278,13 +261,16 @@ class QuotationController extends Controller
         $perPage = (int)$request->perPage;
         $userid = Auth::user()->id;
         $data = [];
+        $permissionid = Auth::user()->permission;
         if ($perPage == 10) {
-            $data_query = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')
+            $data_query = Quotation::query()->orderBy('created_at', 'desc')
             ->limit($request->page.'0')
             ->get();
         } else {
-            $data_query = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->paginate($perPage);
+            $data_query = Quotation::query()->orderBy('created_at', 'desc')->paginate($perPage);
         }
+
+
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';
 
@@ -299,7 +285,7 @@ class QuotationController extends Controller
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
                     if ($value->type_Proposal == 'Company') {
-                        $name = '<td>{{ @$value->company->Company_Name}}</td>';
+                        $name = '<td>' .@$value->company->Company_Name. '</td>';
                     }else {
                         $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
                     }
@@ -324,32 +310,69 @@ class QuotationController extends Controller
                     $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                     $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                     $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $CreateBy = Auth::user()->id;
+                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
 
                     $btn_action = '<div class="dropdown">';
                     $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                     $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
                     if ($rolePermission > 0) {
-                        if ($canViewProposal == 1) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/view/' . $value->id) . '\'>View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '\'>Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/send/email/' . $value->id) . '\'>Send Email</a></li>';
+                        if ($rolePermission == 1 && $isOperatedByCreator) {
+                            if ($canViewProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                            }
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                }
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        } elseif ($rolePermission == 2) {
+                            if ($canViewProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            }
+                            if ($isOperatedByCreator) {
+                                if ($canViewProposal) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                                }
+                                if ($canEditProposal) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                    if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                    }
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                            }
+                        } elseif ($rolePermission == 3) {
+                            if ($canViewProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            }
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                }
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
                         }
-
-                        if ($canEditProposal == 1 && (Auth::user()->id == $value->Operated_by || $rolePermission == 1 || $rolePermission == 3)) {
-                            if (in_array($value->status_document, [1, 6, 3])) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/edit/quotation/' . $value->id) . '\'>Edit</a></li>';
-                            }
-
-                            if ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
-                            } elseif ($value->status_document == 3 && $value->Confirm_by !== 0) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
-                            }
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/view/quotation/LOG/' . $value->id) . '\'>LOG</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                    } else {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                         }
                     }
+
 
                     $btn_action .= '</ul>';
                     $btn_action .= '</div>';
@@ -384,19 +407,38 @@ class QuotationController extends Controller
         $search_value = $request->search_value;
         $guest_profile = $request->guest_profile;
         $userid = Auth::user()->id;
-        if ($search_value) {
-            $data_query = Quotation::where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-            ->where('Company_ID',$guest_profile)
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+        $permissionid = Auth::user()->permission;
+        if ($permissionid == 0) {
+            if ($search_value) {
+                $data_query = Quotation::where('Operated_by',$userid)
+                ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+            }else{
+                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+                $data_query = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->paginate($perPageS);
+            }
         }else{
-            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->paginate($perPageS);
+            if ($search_value) {
+                $data_query = Quotation::where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+            }else{
+                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+                $data_query = Quotation::query()->orderBy('created_at', 'desc')->paginate($perPageS);
+            }
         }
+
         $data = [];
         if (isset($data_query) && count($data_query) > 0) {
             foreach ($data_query as $key => $value) {
@@ -404,7 +446,1037 @@ class QuotationController extends Controller
                 $btn_status = "";
                 $name = "";
                 if ($value->type_Proposal == 'Company') {
-                    $name = '<td>{{ @$value->company->Company_Name}}</td>';
+                    $name = '<td>' .@$value->company->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                if ($value->status_guest == 1) {
+                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                } else {
+                    if ($value->status_document == 0) {
+                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                    } elseif ($value->status_document == 1) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 2) {
+                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                    } elseif ($value->status_document == 3) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 4) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                    } elseif ($value->status_document == 6) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    }
+                }
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $CreateBy = Auth::user()->id;
+                $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+
+                if ($rolePermission > 0) {
+                    if ($rolePermission == 1 && $isOperatedByCreator) {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        }
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                            }
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                        }
+                    } elseif ($rolePermission == 2) {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        }
+                        if ($isOperatedByCreator) {
+                            if ($canViewProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                            }
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                }
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        }
+                    } elseif ($rolePermission == 3) {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        }
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                            }
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                        }
+                    }
+                } else {
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                    }
+                }
+
+
+
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => $key + 1,
+                    'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
+                    'Proposal_ID' => $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->issue_date,
+                    'ExpirationDate' => $value->Expirationdate,
+                    'CheckIn' => $value->checkin ? \Carbon\Carbon::parse($value->checkin)->format('d/m/Y') : '-',
+                    'CheckOut' => $value->checkout ? \Carbon\Carbon::parse($value->checkout)->format('d/m/Y') : '-',
+                    'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
+                    'Operated' => @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    //------------------tablepending----------------------
+    public function  paginate_pending_table_proposal(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($permissionid == 0) {
+            if ($perPage == 10) {
+                $data_query = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->where('status_guest',0)->limit($request->page.'0')
+                ->get();
+            } else {
+                $data_query = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->where('status_guest',0)->paginate($perPage);
+            }
+        }else {
+            if ($perPage == 10) {
+                $data_query = Quotation::query()->where('status_guest',0)->whereIn('status_document',[1,3])->limit($request->page.'0')
+                ->get();
+            } else {
+                $data_query = Quotation::query()->where('status_guest',0)->whereIn('status_document',[1,3])->paginate($perPage);
+            }
+        }
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    // สร้างสถานะการใช้งาน
+                    if ($value->status_guest == 1) {
+                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                    } else {
+                        if ($value->status_document == 0) {
+                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                        } elseif ($value->status_document == 1) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        } elseif ($value->status_document == 2) {
+                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                        } elseif ($value->status_document == 3) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        } elseif ($value->status_document == 4) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                        } elseif ($value->status_document == 6) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        }
+                    }
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $CreateBy = Auth::user()->id;
+                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+
+                    if ($rolePermission > 0) {
+                        if ($rolePermission == 1 && $isOperatedByCreator) {
+                            if ($canViewProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                            }
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                }
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        } elseif ($rolePermission == 2) {
+                            if ($canViewProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            }
+                            if ($isOperatedByCreator) {
+                                if ($canViewProposal) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                                }
+                                if ($canEditProposal) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                    if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                    }
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                            }
+                        } elseif ($rolePermission == 3) {
+                            if ($canViewProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            }
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                }
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        }
+                    } else {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        }
+                    }
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => $key + 1,
+                        'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
+                        'Proposal_ID' => $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->issue_date,
+                        'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin ? \Carbon\Carbon::parse($value->checkin)->format('d/m/Y') : '-',
+                        'CheckOut' => $value->checkout ? \Carbon\Carbon::parse($value->checkout)->format('d/m/Y') : '-',
+                        'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
+                        'Operated' => @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_pending(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+        $permissionid = Auth::user()->permission;
+        if ($permissionid == 0) {
+            if ($search_value) {
+                $data_query = Quotation::where('status_guest',0)
+                ->whereIn('status_document',[1,3])
+                ->where('Operated_by',$userid)
+                ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+            }else{
+                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+                $data_query = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->where('status_guest',0)->paginate($perPageS);
+            }
+        }else {
+            if ($search_value) {
+                $data_query = Quotation::where('status_guest',0)
+                ->whereIn('status_document',[1,3])
+                ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+            }else{
+                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+                $data_query = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->paginate($perPageS);
+            }
+        }
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name = "";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                if ($value->status_guest == 1) {
+                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                } else {
+                    if ($value->status_document == 0) {
+                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                    } elseif ($value->status_document == 1) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 2) {
+                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                    } elseif ($value->status_document == 3) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 4) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                    } elseif ($value->status_document == 6) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    }
+                }
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $CreateBy = Auth::user()->id;
+                $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+
+                if ($rolePermission > 0) {
+                    if ($rolePermission == 1 && $isOperatedByCreator) {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        }
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                            }
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                        }
+                    } elseif ($rolePermission == 2) {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        }
+                        if ($isOperatedByCreator) {
+                            if ($canViewProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                            }
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                }
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        }
+                    } elseif ($rolePermission == 3) {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        }
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                            }
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                        }
+                    }
+                } else {
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                    }
+                }
+
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => $key + 1,
+                    'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
+                    'Proposal_ID' => $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->issue_date,
+                    'ExpirationDate' => $value->Expirationdate,
+                    'CheckIn' => $value->checkin ? \Carbon\Carbon::parse($value->checkin)->format('d/m/Y') : '-',
+                    'CheckOut' => $value->checkout ? \Carbon\Carbon::parse($value->checkout)->format('d/m/Y') : '-',
+                    'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
+                    'Operated' => @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    //----------------------tableAwaiting-----------------
+    public function  paginate_awaiting_table_proposal(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($user->permission == 0) {
+            if ($perPage == 10) {
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',2)->limit($request->page.'0')
+                ->get();
+            } else {
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',2)->paginate($perPage);
+            }
+        }else {
+            if ($perPage == 10) {
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_document',2)->limit($request->page.'0')
+                ->get();
+            } else {
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_document',2)->paginate($perPage);
+            }
+        }
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    // สร้างสถานะการใช้งาน
+                    if ($value->status_guest == 1) {
+                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                    } else {
+                        if ($value->status_document == 0) {
+                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                        } elseif ($value->status_document == 1) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        } elseif ($value->status_document == 2) {
+                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                        } elseif ($value->status_document == 3) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        } elseif ($value->status_document == 4) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                        } elseif ($value->status_document == 6) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        }
+                    }
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+
+                    if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
+                        if ($canViewProposal == 1) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_bank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        }
+                    }
+
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => $key + 1,
+                        'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
+                        'Proposal_ID' => $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->issue_date,
+                        'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin ? \Carbon\Carbon::parse($value->checkin)->format('d/m/Y') : '-',
+                        'CheckOut' => $value->checkout ? \Carbon\Carbon::parse($value->checkout)->format('d/m/Y') : '-',
+                        'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
+                        'Operated' => @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_awaiting(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+        $permissionid = Auth::user()->permission;
+        if ($permissionid == 0) {
+            if ($search_value) {
+                $data_query = Quotation::where('status_document',2)
+                ->where('Operated_by',$userid)
+                ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+            }else{
+                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',2)->paginate($perPageS);
+            }
+        }else{
+            if ($search_value) {
+                $data_query = Quotation::where('status_document',2)
+                ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+            }else{
+                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_document',2)->paginate($perPageS);
+            }
+        }
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name = "";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                if ($value->status_guest == 1) {
+                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                } else {
+                    if ($value->status_document == 0) {
+                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                    } elseif ($value->status_document == 1) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 2) {
+                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                    } elseif ($value->status_document == 3) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 4) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                    } elseif ($value->status_document == 6) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    }
+                }
+                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+
+                if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
+                    if ($canViewProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_bank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                    }
+                }
+
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => $key + 1,
+                    'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
+                    'Proposal_ID' => $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->issue_date,
+                    'ExpirationDate' => $value->Expirationdate,
+                    'CheckIn' => $value->checkin ? \Carbon\Carbon::parse($value->checkin)->format('d/m/Y') : '-',
+                    'CheckOut' => $value->checkout ? \Carbon\Carbon::parse($value->checkout)->format('d/m/Y') : '-',
+                    'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
+                    'Operated' => @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    //----------------------tableApp-----------------
+    public function  paginate_approved_table_proposal(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($permissionid == 0) {
+            if ($perPage == 10) {
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_guest',1)->limit($request->page.'0')
+                ->get();
+            } else {
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_guest',1)->paginate($perPage);
+            }
+        }else {
+            if ($perPage == 10) {
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_guest',1)->limit($request->page.'0')
+                ->get();
+            } else {
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_guest',1)->paginate($perPage);
+            }
+        }
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    // สร้างสถานะการใช้งาน
+                    if ($value->status_guest == 1) {
+                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                    } else {
+                        if ($value->status_document == 0) {
+                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                        } elseif ($value->status_document == 1) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        } elseif ($value->status_document == 2) {
+                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                        } elseif ($value->status_document == 3) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        } elseif ($value->status_document == 4) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                        } elseif ($value->status_document == 6) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        }
+                    }
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $CreateBy = Auth::user()->id;
+                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
+                    $btn_action = '<div class="btn-group">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+
+                    if ($rolePermission > 0 ) {
+                        if (in_array($rolePermission, [1, 2, 3])) {
+                            if ($canViewProposal == 1) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                            }
+
+                            if ($canEditProposal == 1) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                if ($value->Operated_by == $CreateBy) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                            }
+                        }
+                    } elseif ($canViewProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                    }
+
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => $key + 1,
+                        'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
+                        'Proposal_ID' => $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->issue_date,
+                        'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin ? \Carbon\Carbon::parse($value->checkin)->format('d/m/Y') : '-',
+                        'CheckOut' => $value->checkout ? \Carbon\Carbon::parse($value->checkout)->format('d/m/Y') : '-',
+                        'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
+                        'Operated' => @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_approved(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+        $permissionid = Auth::user()->permission;
+        if ($permissionid == 0) {
+            if ($search_value) {
+                $data_query = Quotation::where('status_guest',1)
+                ->where('Operated_by',$userid)
+                ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+            }else{
+                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_guest',1)->paginate($perPageS);
+            }
+        }else{
+            if ($search_value) {
+                $data_query = Quotation::where('status_guest',1)
+                ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+            }else{
+                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_guest',1)->paginate($perPageS);
+            }
+        }
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name = "";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                if ($value->status_guest == 1) {
+                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                } else {
+                    if ($value->status_document == 0) {
+                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                    } elseif ($value->status_document == 1) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 2) {
+                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                    } elseif ($value->status_document == 3) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 4) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                    } elseif ($value->status_document == 6) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    }
+                }
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $CreateBy = Auth::user()->id;
+                $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                $btn_action = '<div class="btn-group">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+
+                if ($rolePermission > 0 ) {
+                    if (in_array($rolePermission, [1, 2, 3])) {
+                        if ($canViewProposal == 1) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        }
+
+                        if ($canEditProposal == 1) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                            if ($value->Operated_by == $CreateBy) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        }
+                    }
+                } elseif ($canViewProposal == 1) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                }
+
+
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => $key + 1,
+                    'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
+                    'Proposal_ID' => $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->issue_date,
+                    'ExpirationDate' => $value->Expirationdate,
+                    'CheckIn' => $value->checkin ? \Carbon\Carbon::parse($value->checkin)->format('d/m/Y') : '-',
+                    'CheckOut' => $value->checkout ? \Carbon\Carbon::parse($value->checkout)->format('d/m/Y') : '-',
+                    'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
+                    'Operated' => @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+     //----------------------tablereject-----------------
+    public function  paginate_reject_table_proposal(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($permissionid == 0) {
+            if ($perPage == 10) {
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',4)->limit($request->page.'0')
+                ->get();
+            } else {
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPage);
+            }
+        }else {
+            if ($perPage == 10) {
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_document',4)->limit($request->page.'0')
+                ->get();
+            } else {
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPage);
+            }
+        }
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    // สร้างสถานะการใช้งาน
+                    if ($value->status_guest == 1) {
+                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                    } else {
+                        if ($value->status_document == 0) {
+                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                        } elseif ($value->status_document == 1) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        } elseif ($value->status_document == 2) {
+                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                        } elseif ($value->status_document == 3) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        } elseif ($value->status_document == 4) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                        } elseif ($value->status_document == 6) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        }
+                    }
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+
+                    $btn_action = '<div class="btn-group">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+
+
+                    if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
+                        if ($canViewProposal == 1) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        }
+
+                        if ($rolePermission == 1 || $rolePermission == 2) {
+                            if (Auth::user()->id == $value->Operated_by) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        }
+                    }
+
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => $key + 1,
+                        'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
+                        'Proposal_ID' => $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->issue_date,
+                        'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin ? \Carbon\Carbon::parse($value->checkin)->format('d/m/Y') : '-',
+                        'CheckOut' => $value->checkout ? \Carbon\Carbon::parse($value->checkout)->format('d/m/Y') : '-',
+                        'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
+                        'Operated' => @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_reject(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+        $permissionid = Auth::user()->permission;
+        if ($permissionid == 0) {
+            if ($search_value) {
+                $data_query = Quotation::where('status_document',4)
+                ->where('Operated_by',$userid)
+                ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+            }else{
+                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPageS);
+            }
+        }else{
+            if ($search_value) {
+                $data_query = Quotation::where('status_document',4)
+                ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+            }else{
+                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPageS);
+            }
+        }
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name = "";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company->Company_Name. '</td>';
                 }else {
                     $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
                 }
@@ -429,32 +1501,249 @@ class QuotationController extends Controller
                 $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                 $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
 
-                $btn_action = '<div class="dropdown">';
+                $btn_action = '<div class="btn-group">';
                 $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                 $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
-                if ($rolePermission > 0) {
+
+                if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
                     if ($canViewProposal == 1) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/view/' . $value->id) . '\'>View</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '\'>Export</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/send/email/' . $value->id) . '\'>Send Email</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                     }
 
-                    if ($canEditProposal == 1 && (Auth::user()->id == $value->Operated_by || $rolePermission == 1 || $rolePermission == 3)) {
-                        if (in_array($value->status_document, [1, 6, 3])) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/edit/quotation/' . $value->id) . '\'>Edit</a></li>';
+                    if ($rolePermission == 1 || $rolePermission == 2) {
+                        if (Auth::user()->id == $value->Operated_by) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                         }
-
-                        if ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
-                        } elseif ($value->status_document == 3 && $value->Confirm_by !== 0) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
-                        }
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Proposal/view/quotation/LOG/' . $value->id) . '\'>LOG</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                     }
                 }
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => $key + 1,
+                    'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
+                    'Proposal_ID' => $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->issue_date,
+                    'ExpirationDate' => $value->Expirationdate,
+                    'CheckIn' => $value->checkin ? \Carbon\Carbon::parse($value->checkin)->format('d/m/Y') : '-',
+                    'CheckOut' => $value->checkout ? \Carbon\Carbon::parse($value->checkout)->format('d/m/Y') : '-',
+                    'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
+                    'Operated' => @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function  paginate_cancel_table_proposal(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($permissionid == 3) {
+            if ($perPage == 10) {
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',0)->limit($request->page.'0')
+                ->get();
+            } else {
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',0)->paginate($perPage);
+            }
+        }else {
+            if ($perPage == 10) {
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_document',0)->limit($request->page.'0')
+                ->get();
+            } else {
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_document',0)->paginate($perPage);
+            }
+        }
 
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    // สร้างสถานะการใช้งาน
+                    if ($value->status_guest == 1) {
+                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                    } else {
+                        if ($value->status_document == 0) {
+                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                        } elseif ($value->status_document == 1) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        } elseif ($value->status_document == 2) {
+                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                        } elseif ($value->status_document == 3) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        } elseif ($value->status_document == 4) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                        } elseif ($value->status_document == 6) {
+                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                        }
+                    }
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $CreateBy = Auth::user()->id;
+                    $btn_action = '<div class="btn-group">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+
+
+                    if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
+                        if ($canViewProposal == 1) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        }
+
+                        if ($rolePermission == 1 || $rolePermission == 2) {
+                            if (Auth::user()->id == $value->Operated_by) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                            }
+                        }
+                    }
+
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => $key + 1,
+                        'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
+                        'Proposal_ID' => $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->issue_date,
+                        'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin ? \Carbon\Carbon::parse($value->checkin)->format('d/m/Y') : '-',
+                        'CheckOut' => $value->checkout ? \Carbon\Carbon::parse($value->checkout)->format('d/m/Y') : '-',
+                        'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
+                        'Operated' => @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_cancel(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+        $permissionid = Auth::user()->permission;
+        if ($permissionid == 0) {
+            if ($search_value) {
+                $data_query = Quotation::where('status_document',4)
+                ->where('Operated_by',$userid)
+                ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+            }else{
+                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPageS);
+            }
+        }else{
+            if ($search_value) {
+                $data_query = Quotation::where('status_document',4)
+                ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+            }else{
+                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPageS);
+            }
+        }
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name = "";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                if ($value->status_guest == 1) {
+                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                } else {
+                    if ($value->status_document == 0) {
+                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                    } elseif ($value->status_document == 1) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 2) {
+                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                    } elseif ($value->status_document == 3) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 4) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                    } elseif ($value->status_document == 6) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    }
+                }
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+
+                $btn_action = '<div class="btn-group">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+
+                if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
+                    if ($canViewProposal == 1) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                    }
+
+                    if ($rolePermission == 1 || $rolePermission == 2) {
+                        if (Auth::user()->id == $value->Operated_by) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                        }
+                    }
+                }
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
                 $data[] = [
@@ -3007,5 +4296,572 @@ class QuotationController extends Controller
             'products' => $products,
 
         ]);
+    }
+
+    public function Approve($id){
+        $quotation = Quotation::find($id);
+        $quotation->status_guest = 1;
+        $quotation->save();
+        $data = Quotation::where('id',$id)->first();
+        $Quotation_ID = $data->Quotation_ID;
+        $userid = Auth::user()->id;
+        $save = new log_company();
+        $save->Created_by = $userid;
+        $save->Company_ID = $Quotation_ID;
+        $save->type = 'Approve';
+        $save->Category = 'Approve :: Proposal';
+        $save->content = 'Approve of guest '.'+'.'Document Proposal ID : '.$Quotation_ID;
+        $save->save();
+        return response()->json(['success' => true]);
+    }
+    //----------------------------log
+    public function LOG($id)
+    {
+        $Quotation = Quotation::where('id', $id)->first();
+        $QuotationID = $Quotation->Quotation_ID;
+        $correct = $Quotation->correct;
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        if ($Quotation) {
+
+
+            // Use a regular expression to capture the part of the string before the first hyphen
+            if (preg_match('/^(PD-\d{8})/', $QuotationID, $matches)) {
+                $QuotationID = $matches[1];
+            }
+
+        }
+        $log = log::where('Quotation_ID', 'LIKE', $QuotationID . '%')->paginate($perPage);
+        $path = 'Log_PDF/proposal/';
+
+        $logproposal = log_company::where('Company_ID', $QuotationID)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+        return view('quotation.document',compact('log','path','correct','logproposal','QuotationID'));
+    }
+
+    //-------------------------------Log----------------------------
+    public function search_table_paginate_log_doc (Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+
+        if ($search_value) {
+            $data_query = log_company::where('created_at', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('updated_at', 'desc')
+                ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->paginate($perPageS);
+        }
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $contentArray = explode('+', $value->content);
+                $content = implode('</br>', $contentArray);
+                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                $name = $Category.'</br>'.$content;
+                $data[] = [
+                    'number' => $key + 1,
+                    'Category'=>$value->Category,
+                    'type'=>$value->type,
+                    'Created_by'=>@$value->userOperated->name,
+                    'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                    'Content' => $name,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function  paginate_log_doc_table_proposal (Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+        $data = [];
+        if ($perPage == 10) {
+            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->limit($request->page.'0')->get();
+        } else {
+            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->paginate($perPage);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $contentArray = explode('+', $value->content);
+                $content = implode('</br>', $contentArray);
+                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                $name = $Category.'</br>'.$content;
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    $data[] = [
+                        'number' => $key + 1,
+                        'Category'=>$value->Category,
+                        'type'=>$value->type,
+                        'Created_by'=>@$value->userOperated->name,
+                        'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                        'Content' => $name,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function  paginate_log_pdf_table_proposal(Request $request){
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+        $data = [];
+        if ($perPage == 10) {
+            $data_query = log::where('Quotation_ID',$guest_profile)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query =  log::where('Quotation_ID',$guest_profile)->paginate($perPage);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    $correct = $value->correct;
+                    $path = 'Log_PDF/proposal/';
+                    $pdf_url = asset($path . $value->Quotation_ID. ".pdf");
+                    if ($value->correct == $correct) {
+                        if ($correct == 0) {
+                            $btn_action = '<a href="' . $pdf_url . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                            $btn_action .= '<i class="fa fa-print"></i>';
+                            $btn_action .= '</a>';
+                        } else {
+                            $btn_action = '<a href="' . asset($path . $value->Quotation_ID . '-' . $correct . ".pdf") . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                            $btn_action .= '<i class="fa fa-print"></i> ให้ปรับ ใช้ในcontroller';
+                            $btn_action .= '</a>';
+                        }
+                    } else {
+                        $btn_action = '<a href="' . $pdf_url . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                        $btn_action .= '<i class="fa fa-print"></i>';
+                        $btn_action .= '</a>';
+                    }
+
+                    $data[] = [
+                        'number' => $key + 1,
+                        'Quotation_ID' => $value->Quotation_ID,
+                        'type' => $value->QuotationType,
+                        'Correct' => $value->correct,
+                        'created_at' =>\Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                        'Export' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function  search_table_paginate_log_pdf(Request $request){
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+        $search_value = $request->search_value;
+        $data = [];
+        if ($search_value) {
+            $query = Log::where('Quotation_ID', $guest_profile);
+            $data_query = $query->where('created_at', 'LIKE', '%'.$search_value.'%')->paginate($perPage);
+        } else {
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query =  log::where('Quotation_ID',$guest_profile)->paginate($perPageS);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                // สร้าง dropdown สำหรับการทำรายการ
+                $correct = $value->correct;
+                $path = 'Log_PDF/proposal/';
+                $pdf_url = asset($path . $value->Quotation_ID. ".pdf");
+                if ($value->correct == $correct) {
+                    if ($correct == 0) {
+                        $btn_action = '<a href="' . $pdf_url . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                        $btn_action .= '<i class="fa fa-print"></i>';
+                        $btn_action .= '</a>';
+                    } else {
+                        $btn_action = '<a href="' . asset($path . $value->Quotation_ID . '-' . $correct . ".pdf") . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                        $btn_action .= '<i class="fa fa-print"></i> ให้ปรับ ใช้ในcontroller';
+                        $btn_action .= '</a>';
+                    }
+                } else {
+                    $btn_action = '<a href="' . $pdf_url . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                    $btn_action .= '<i class="fa fa-print"></i>';
+                    $btn_action .= '</a>';
+                }
+
+                $data[] = [
+                    'number' => $key + 1,
+                    'Quotation_ID' => $value->Quotation_ID,
+                    'type' => $value->QuotationType,
+                    'Correct' => $value->correct,
+                    'created_at' =>\Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                    'Export' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function cancel($id){
+        $Quotation = Quotation::find($id);
+        $Quotation->status_document = 0;
+        $Quotation->save();
+        $data = Quotation::where('id',$id)->first();
+        $Quotation_ID = $data->Quotation_ID;
+        $userid = Auth::user()->id;
+        $save = new log_company();
+        $save->Created_by = $userid;
+        $save->Company_ID = $Quotation_ID;
+        $save->type = 'Cancel';
+        $save->Category = 'Cancel :: Proposal';
+        $save->content = 'Cancel Document Proposal ID : '.$Quotation_ID;
+        $save->save();
+        return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+    }
+    public function Revice($id){
+        $Quotation = Quotation::find($id);
+        $Quotation->status_document = 1;
+        $Quotation->save();
+        $data = Quotation::where('id',$id)->first();
+        $Quotation_ID = $data->Quotation_ID;
+        $userid = Auth::user()->id;
+        $save = new log_company();
+        $save->Created_by = $userid;
+        $save->Company_ID = $Quotation_ID;
+        $save->type = 'Revice';
+        $save->Category = 'Revice :: Proposal';
+        $save->content = 'Revice Document Proposal ID : '.$Quotation_ID;
+        $save->save();
+        return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+    }
+    public function sheetpdf(Request $request ,$id) {
+        $Quotation = Quotation::where('id', $id)->first();
+        $Quotation_ID = $Quotation->Quotation_ID;
+        $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+        $datarequest = [
+            'Proposal_ID' => $Quotation['Quotation_ID'] ?? null,
+            'IssueDate' => $Quotation['issue_date'] ?? null,
+            'Expiration' => $Quotation['Expirationdate'] ?? null,
+            'Selectdata' => $Quotation['type_Proposal'] ?? null,
+            'Data_ID' => $Quotation['Company_ID'] ?? null,
+            'Adult' => $Quotation['adult'] ?? null,
+            'Children' => $Quotation['children'] ?? null,
+            'Mevent' => $Quotation['eventformat'] ?? null,
+            'Mvat' => $Quotation['vat_type'] ?? null,
+            'DiscountAmount' => $Quotation['SpecialDiscountBath'] ?? null,
+            'comment' => $Quotation['comment'] ?? null,
+            'PaxToTalall' => $Quotation['TotalPax'] ?? null,
+            'Checkin' => $Quotation['checkin'] ?? null,
+            'Checkout' => $Quotation['checkout'] ?? null,
+            'Day' => $Quotation['day'] ?? null,
+            'Night' => $Quotation['night'] ?? null,
+            'userid'=> $Quotation['Operated_by'] ?? null,
+        ];
+        $Products = Arr::wrap($selectproduct->pluck('Product_ID')->toArray());
+        $quantities = $selectproduct->pluck('Quantity')->toArray();
+        $discounts = $selectproduct->pluck('discount')->toArray();
+        $priceUnits = $selectproduct->pluck('priceproduct')->toArray();
+        $productItems = [];
+        $totaldiscount = [];
+        foreach ($Products as $index => $productID) {
+            if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+                $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
+                $discountedPrices = [];
+                $discountedPricestotal = [];
+                $totaldiscount = [];
+                // คำนวณราคาสำหรับแต่ละรายการ
+                for ($i = 0; $i < count($quantities); $i++) {
+                    $quantity = intval($quantities[$i]);
+                    $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
+                    $discount = floatval($discounts[$i]);
+
+                    $totaldiscount0 = (($priceUnit * $discount)/100);
+                    $totaldiscount[] = $totaldiscount0;
+
+                    $totalPrice = ($quantity * $priceUnit);
+                    $totalPrices[] = $totalPrice;
+
+                    $discountedPrice = (($totalPrice * $discount )/ 100);
+                    $discountedPrices[] = $priceUnit-$totaldiscount0;
+
+                    $discountedPriceTotal = $totalPrice - $discountedPrice;
+                    $discountedPricestotal[] = $discountedPriceTotal;
+                }
+            }
+            $items = master_product_item::where('Product_ID', $productID)->get();
+            $QuotationVat= $datarequest['Mvat'];
+            $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
+            foreach ($items as $item) {
+                // ตรวจสอบและกำหนดค่า quantity และ discount
+                $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+                $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
+                $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
+                $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
+                $discountedPricestotal = isset($discountedPricestotal[$index]) ? $discountedPricestotal[$index] : 0;
+                $totaldiscount = isset($totaldiscount[$index]) ? $totaldiscount[$index] : 0;
+                $productItems[] = [
+                    'product' => $item,
+                    'quantity' => $quantity,
+                    'discount' => $discount,
+                    'totalPrices'=>$totalPrices,
+                    'discountedPrices'=>$discountedPrices,
+                    'discountedPricestotal'=>$discountedPricestotal,
+                    'totaldiscount'=>$totaldiscount,
+                ];
+            }
+        }
+        {//คำนวน
+            $totalAmount = 0;
+            $totalPrice = 0;
+            $subtotal = 0;
+            $beforeTax = 0;
+            $AddTax = 0;
+            $Nettotal =0;
+            $totalaverage=0;
+
+            $SpecialDistext = $datarequest['DiscountAmount'];
+            $SpecialDis = floatval($SpecialDistext);
+            $totalguest = 0;
+            $totalguest = $datarequest['Adult'] + $datarequest['Children'];
+            $guest = $datarequest['PaxToTalall'];
+            if ($Mvat->id == 50) {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $beforeTax = $subtotal/1.07;
+                    $AddTax = $subtotal-$beforeTax;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$guest;
+
+                }
+            }
+            elseif ($Mvat->id == 51) {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$guest;
+
+                }
+            }
+            elseif ($Mvat->id == 52) {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $AddTax = $subtotal*7/100;
+                    $Nettotal = $subtotal+$AddTax;
+                    $totalaverage =$Nettotal/$guest;
+                }
+            }else
+            {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $beforeTax = $subtotal/1.07;
+                    $AddTax = $subtotal-$beforeTax;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$guest;
+                }
+            }
+            $pagecount = count($productItems);
+            $page = $pagecount/10;
+
+            $page_item = 1;
+            if ($page > 1.1 && $page < 2.1) {
+                $page_item += 1;
+
+            } elseif ($page > 1.1) {
+            $page_item = 1 + $page > 1.1 ? ceil($page) : 1;
+            }
+        }
+        {//QRCODE
+            $id = $datarequest['Proposal_ID'];
+            $protocol = $request->secure() ? 'https' : 'http';
+            $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+            $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
+            $qrCodeBase64 = base64_encode($qrCodeImage);
+        }
+        $userid = $datarequest['userid'];
+        $Proposal_ID = $datarequest['Proposal_ID'];
+        $IssueDate = $datarequest['IssueDate'];
+        $Expiration = $datarequest['Expiration'];
+        $Selectdata = $datarequest['Selectdata'];
+        $Data_ID = $datarequest['Data_ID'];
+        $Adult = $datarequest['Adult'];
+        $Children = $datarequest['Children'];
+        $Mevent = $datarequest['Mevent'];
+        $Mvat = $datarequest['Mvat'];
+        $DiscountAmount = $datarequest['DiscountAmount'];
+        $Checkin = $datarequest['Checkin'];
+        $Checkout = $datarequest['Checkout'];
+        $Day = $datarequest['Day'];
+        $Night = $datarequest['Night'];
+        $comment = $datarequest['comment'];
+        $user = User::where('id',$userid)->select('id','name')->first();
+        $fullName = null;
+        $Contact_Name = null;
+        $Contact_phone =null;
+        $Contact_Email = null;
+        if ($Selectdata == 'Guest') {
+            $Data = Guest::where('Profile_ID',$Data_ID)->first();
+            $prename = $Data->preface;
+            $First_name = $Data->First_name;
+            $Last_name = $Data->Last_name;
+            $Address = $Data->Address;
+            $Email = $Data->Email;
+            $Taxpayer_Identification = $Data->Identification_Number;
+            $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
+            $name = $prefix->name_th;
+            $fullName = $name.' '.$First_name.' '.$Last_name;
+            //-------------ที่อยู่
+            $CityID=$Data->City;
+            $amphuresID = $Data->Amphures;
+            $TambonID = $Data->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $Fax_number = '-';
+            $phone = phone_guest::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+        }else{
+            $Company = companys::where('Profile_ID',$Data_ID)->first();
+            $Company_type = $Company->Company_type;
+            $Compannyname = $Company->Company_Name;
+            $Address = $Company->Address;
+            $Email = $Company->Company_Email;
+            $Taxpayer_Identification = $Company->Taxpayer_Identification;
+            $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+            if ($comtype) {
+                if ($comtype->name_th == "บริษัทจำกัด") {
+                    $fullName = "บริษัท " . $Compannyname . " จำกัด";
+                } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                    $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
+                } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                    $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                }
+            }
+            $representative = representative::where('Company_ID',$Data_ID)->first();
+            $prename = $representative->prefix;
+            $Contact_Email = $representative->Email;
+            $prefix = master_document::where('id', $prename)->where('Category', 'Mprename')->first();
+            $name = $prefix->name_th;
+            $Contact_Name = $representative->First_name.' '.$representative->Last_name;
+            $CityID=$Company->City;
+            $amphuresID = $Company->Amphures;
+            $TambonID = $Company->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $company_fax = company_fax::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+            if ($company_fax) {
+                $Fax_number =  $company_fax->Fax_number;
+            }else{
+                $Fax_number = '-';
+            }
+            $phone = company_phone::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+            $Contact_phone = representative_phone::where('Company_ID',$Data_ID)->where('Sequence','main')->first();
+        }
+        $eventformat = master_document::where('id',$Mevent)->select('name_th','id')->first();
+        $template = master_template::query()->latest()->first();
+        $CodeTemplate = $template->CodeTemplate;
+        $sheet = master_document_sheet::select('topic','name_th','id','CodeTemplate')->get();
+        $Reservation_show = $sheet->where('topic', 'Reservation')->where('CodeTemplate',$CodeTemplate)->first();
+        $Paymentterms = $sheet->where('topic', 'Paymentterms')->where('CodeTemplate',$CodeTemplate)->first();
+        $note = $sheet->where('topic', 'note')->where('CodeTemplate',$CodeTemplate)->first();
+        $Cancellations = $sheet->where('topic', 'Cancellations')->where('CodeTemplate',$CodeTemplate)->first();
+        $Complimentary = $sheet->where('topic', 'Complimentary')->where('CodeTemplate',$CodeTemplate)->first();
+        $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->where('CodeTemplate',$CodeTemplate)->first();
+        $date = Carbon::now();
+        $unit = master_unit::where('status',1)->get();
+        $quantity = master_quantity::where('status',1)->get();
+        $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        if ($Checkin) {
+            $checkin = Carbon::parse($Checkin)->format('d/m/Y');
+            $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+        }else{
+            $checkin = '-';
+            $checkout = '-';
+        }
+        $data = [
+            'settingCompany'=>$settingCompany,
+            'page_item'=>$page_item,
+            'page'=>$pagecount,
+            'Selectdata'=>$Selectdata,
+            'date'=>$date,
+            'fullName'=>$fullName,
+            'provinceNames'=>$provinceNames,
+            'Address'=>$Address,
+            'amphuresID'=>$amphuresID,
+            'TambonID'=>$TambonID,
+            'Email'=>$Email,
+            'phone'=>$phone,
+            'Fax_number'=>$Fax_number,
+            'Day'=>$Day,
+            'Night'=>$Night,
+            'Checkin'=>$checkin,
+            'Checkout'=>$checkout,
+            'eventformat'=>$eventformat,
+            'totalguest'=>$totalguest,
+            'Reservation_show'=>$Reservation_show,
+            'Paymentterms'=>$Paymentterms,
+            'note'=>$note,
+            'Cancellations'=>$Cancellations,
+            'Complimentary'=>$Complimentary,
+            'All_rights_reserved'=>$All_rights_reserved,
+            'Proposal_ID'=>$Proposal_ID,
+            'IssueDate'=>$IssueDate,
+            'Expiration'=>$Expiration,
+            'qrCodeBase64'=>$qrCodeBase64,
+            'user'=>$user,
+            'Taxpayer_Identification'=>$Taxpayer_Identification,
+            'Adult'=>$Adult,
+            'Children'=>$Children,
+            'totalAmount'=>$totalAmount,
+            'SpecialDis'=>$SpecialDis,
+            'subtotal'=>$subtotal,
+            'beforeTax'=>$beforeTax,
+            'Nettotal'=>$Nettotal,
+            'totalguest'=>$totalguest,
+            'guest'=>$guest,
+            'totalaverage'=>$totalaverage,
+            'AddTax'=>$AddTax,
+            'productItems'=>$productItems,
+            'unit'=>$unit,
+            'quantity'=>$quantity,
+            'Mvat'=>$Mvat,
+            'comment'=>$comment,
+            'Mevent'=>$Mevent,
+            'Contact_Name'=>$Contact_Name,
+            'Contact_phone'=>$Contact_phone,
+            'Contact_Email'=>$Contact_Email,
+        ];
+        $view= $template->name;
+        $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
+        return $pdf->stream();
+
+
     }
 }
