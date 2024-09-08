@@ -85,7 +85,7 @@
                                                                                             <label class="form-check-label" for="menu_{{ $item->name2 }}"><b>{{ $item->name2 }}</b></label>
                                                                                         </div>
                                                                                     </td>
-                                                                                    @if ($item->id == "Product Item")
+                                                                                    @if ($item->name_en == "Product Item")
                                                                                         <td>
                                                                                             <div class="text-center">
                                                                                                 <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item->name2 }}_add" id="menu_{{ $item->name2 }}_add" value="1" {{ @$department->roleMenuAdd($item->id, $department->id) == 1 ? 'checked' : '' }}> 
@@ -139,37 +139,37 @@
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_add" id="menu_{{ $item2->name2 }}_add" value="1" {{ @$department->roleMenuAdd($item2->name_en, $department->id) == 1 ? 'checked' : '' }}>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_add" id="menu_{{ $item2->name2 }}_add" value="1" {{ @$department->roleMenuAdd($item2->id, $department->id) == 1 ? 'checked' : '' }}>
                                                                                                 <label class="form-check-label" for="menu_{{ $item2->name2 }}_add"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_edit" id="menu_{{ $item2->name2 }}_edit" value="1" {{ @$department->roleMenuEdit($item2->name_en, $department->id) == 1 ? 'checked' : '' }}>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_edit" id="menu_{{ $item2->name2 }}_edit" value="1" {{ @$department->roleMenuEdit($item2->id, $department->id) == 1 ? 'checked' : '' }}>
                                                                                                 <label class="form-check-label" for="menu_{{ $item2->name2 }}_edit"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_delete" id="menu_{{ $item2->name2 }}_delete" value="1" {{ @$department->roleMenuDelete($item2->name_en, $department->id) == 1 ? 'checked' : '' }}>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_delete" id="menu_{{ $item2->name2 }}_delete" value="1" {{ @$department->roleMenuDelete($item2->id, $department->id) == 1 ? 'checked' : '' }}>
                                                                                                 <label class="form-check-label" for="menu_{{ $item2->name2 }}_delete"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_view" id="menu_{{ $item2->name2 }}_view" value="1" {{ @$department->roleMenuView($item2->name_en, $department->id) == 1 ? 'checked' : '' }}>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_view" id="menu_{{ $item2->name2 }}_view" value="1" {{ @$department->roleMenuView($item2->id, $department->id) == 1 ? 'checked' : '' }}>
                                                                                                 <label class="form-check-label" for="menu_{{ $item2->name2 }}_view"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_discount" id="menu_{{ $item2->name2 }}_discount" value="1" {{ @$department->roleMenuDiscount($item2->name_en, $department->id) == 1 ? 'checked' : '' }}>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_discount" id="menu_{{ $item2->name2 }}_discount" value="1" {{ @$department->roleMenuDiscount($item2->id, $department->id) == 1 ? 'checked' : '' }}>
                                                                                                 <label class="form-check-label" for="menu_{{ $item2->name2 }}_discount"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_special_discount" id="menu_{{ $item2->name2 }}_special_discount" value="1" {{ @$department->roleMenuSpecialDiscount($item2->name_en, $department->id) == 1 ? 'checked' : '' }}>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_special_discount" id="menu_{{ $item2->name2 }}_special_discount" value="1" {{ @$department->roleMenuSpecialDiscount($item2->id, $department->id) == 1 ? 'checked' : '' }}>
                                                                                                 <label class="form-check-label" for="menu_{{ $item2->name2 }}_special_discount"></label>
                                                                                             </div>
                                                                                         </td>
