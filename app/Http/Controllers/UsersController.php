@@ -57,12 +57,12 @@ class UsersController extends Controller
 
         $tb_revenue_type = [
             'Front Desk Revenue', 'Guest Deposit Revenue', 'All Outlet Revenue', 'Agoda Revenue', 'Credit Card Hotel Revenue', 'Elexa EGAT Revenue',
-            'Water Park Revenue', 'Credit Card Water Park Revenue', 'No Category', 'Transfer', 'Update Time', 'Split Revenue', 'Edit / Delete',
+            'Water Park Revenue', 'Credit Card Water Park Revenue', 'Other Revenue', 'No Category', 'Transfer', 'Update Time', 'Split Revenue', 'Edit / Delete',
         ];
 
         $tb_revenue_type2 = [
             'front_desk', 'guest_deposit', 'all_outlet', 'agoda', 'credit_card_hotel', 'elexa',
-            'water_park', 'credit_water_park', 'no_category', 'transfer', 'time', 'split', 'edit',
+            'water_park', 'credit_water_park', 'other_revenue', 'no_category', 'transfer', 'time', 'split', 'edit',
         ];
         
         return view('users.create', compact('tb_menu', 'departments', 'tb_revenue_type', 'tb_revenue_type2'));
@@ -206,6 +206,7 @@ class UsersController extends Controller
     {
         $user = User::where('id', $id)->first();
         $tb_menu = DB::table('tb_menu')->get();
+        $departments = TB_departments::get();
 
         $tb_revenue_type = [
             'Front Desk Revenue', 'Guest Deposit Revenue', 'All Outlet Revenue', 'Agoda Revenue', 'Credit Card Hotel Revenue', 'Elexa EGAT Revenue',
@@ -217,7 +218,7 @@ class UsersController extends Controller
             'water_park', 'credit_water_park', 'other_revenue', 'no_category', 'transfer', 'time', 'split', 'edit',
         ];
 
-        return view('users.edit', compact('user', 'tb_menu', 'tb_revenue_type', 'tb_revenue_type2'));
+        return view('users.edit', compact('user', 'tb_menu', 'departments', 'tb_revenue_type', 'tb_revenue_type2'));
     }
 
     /**

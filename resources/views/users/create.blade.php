@@ -48,7 +48,11 @@
                                         <select class="form-control" name="permission" id="permission-select2" onchange="select_department()">
                                             <option value="">Select</option>
                                             @foreach ($departments as $item)
-                                                <option value="{{ $item->id }}">{{ $item->department }}</option>
+                                                @if (Auth::user()->permission == 1 && $item->department == "Developer")
+                                                    <option value="{{ $item->id }}">{{ $item->department }}</option>
+                                                @else
+                                                    <option value="{{ $item->id }}">{{ $item->department }}</option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </div>
@@ -70,11 +74,11 @@
                                             <span class="input-group-text">%</span>
                                         </div>
                                     </div>
-                                    <label for="close_day" class="col-sm-3 col-form-label fw-bold text-right">Close Day</label>
+                                    <label for="close-day" class="col-sm-3 col-form-label fw-bold text-right">Close Day</label>
                                     <div class="col-sm-3">
                                         <div class="form-check mt-2">
-                                            <input class="form-check-input" type="checkbox" name="close_day" id="close_day" value="1">
-                                            <label class="form-check-label" for="close_day">Close Day</label>
+                                            <input class="form-check-input" type="checkbox" name="close_day" id="close-day" value="1">
+                                            <label class="form-check-label" for="close-day">Close Day</label>
                                         </div>
                                     </div>
                                 </div>
@@ -279,7 +283,7 @@
                                     </div>
                                 </div> <!-- Row end  -->
                                 <div class="text-end col-12">
-                                    <a href="{{ route('users', 'index') }}" type="button" class="btn btn-outline-dark lift">Cancle</a>
+                                    <a href="{{ route('users', 'index') }}" type="button" class="btn btn-outline-dark lift">Cancel</a>
                                     <button type="submit" class="btn btn-color-green lift">Save</button>
                                 </div>
                             </form>
@@ -350,6 +354,7 @@
             var id = $('#permission-select2').val();
             $('.select_menu').prop('checked', false);
             $('.select_revenue').prop('checked', false);
+            $('#close-day').prop('checked', false);
 
             jQuery.ajax({
                 type: "GET",
@@ -357,6 +362,11 @@
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
+                    // Department 
+                    if (response.data.close_day == 1) {
+                        $('#close-day').prop('checked', true);
+                    }
+
                     // Menu
                     $.each(response.data_menu, function (key, val) {
                         $('#menu_'+val.menu_id).prop('checked', true);
@@ -417,6 +427,10 @@
 
                     if (response.data_revenue.credit_water_park == 1) {
                         $('#revenue_credit_water_park').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.other_revenue == 1) {
+                        $('#revenue_other_revenue').prop('checked', true);
                     }
 
                     if (response.data_revenue.no_category == 1) {
