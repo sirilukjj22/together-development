@@ -27,8 +27,7 @@ use App\Http\Controllers\proposal_request;
 use App\Http\Controllers\Document_invoice;
 use App\Http\Controllers\receiptController;
 use App\Http\Controllers\Masterpromotion;
-
-
+use App\Http\Controllers\UserDepartmentsController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -155,7 +154,23 @@ Route::middleware(['auth'])->group(function () {
         Route::post('user-search-table', 'search_table')->name('user-search-table');
         Route::post('user-paginate-table', 'paginate_table')->name('user-paginate-table');
     });
+    // Add User
     Route::post('post-registration', [AuthController::class, 'postRegistration'])->name('register.post');
+
+
+    ## User Department
+    Route::controller(UserDepartmentsController::class)->group(function () {
+        Route::get('user-department', 'index')->name('user-department');
+        Route::get('user-department-create', 'create')->name('user-department-create');
+        Route::get('user-department-edit/{id}', 'edit')->name('user-department-edit');
+        Route::get('user-department-detail/{id}', 'detail')->name('user-department-detail');
+        Route::post('user-department-store', 'store')->name('user-department-store');
+        Route::post('user-department-update', 'update')->name('user-department-update');
+
+        // Table Search / Paginate
+        Route::post('user-department-search-table', 'search_table')->name('user-department-search-table');
+        Route::post('user-department-paginate-table', 'paginate_table')->name('user-department-paginate-table');
+    });
 
     ####################################################
 

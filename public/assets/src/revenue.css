@@ -1266,16 +1266,11 @@ td {
 .box-chart {
   border: 1px rgb(155, 212, 206) solid;
   border-radius: 7px;
+  background-image: linear-gradient(#f4faf9, #b4e4e2);
+  box-shadow: inset 0px 4px 15px #399486;
   padding: 0.75rem;
   height: 100%;
   box-shadow: #246e67 2px 3px 5px 2px;
-  background: rgb(102, 218, 133);
-  background: linear-gradient(
-    158deg,
-    rgb(144, 230, 167) 0%,
-    rgb(135, 207, 183) 24%,
-    rgb(78, 166, 184) 100%
-  );
 }
 
 .box-chart2 {
@@ -1342,15 +1337,13 @@ td {
 
 .bg-box {
   margin: 0.25rem;
-  background-color: white;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   border-radius: 0.375rem;
-  background: rgb(133, 231, 160);
-  background: linear-gradient(
-    130deg,
-    rgb(144, 230, 167) 0%,
-    rgb(135, 207, 183) 24%,
-    rgb(77, 166, 184) 100%
+  background: rgb(151, 209, 211);
+  background-image: linear-gradient(
+    to right,
+    rgba(85, 219, 134, 0.3),
+    rgba(3, 140, 126, 0.3)
   );
 }
 

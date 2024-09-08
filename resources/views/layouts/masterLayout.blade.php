@@ -247,19 +247,26 @@
                                 </li>
                             @endif
                             @if (Auth::user()->roleMenu->setting == 1)
-                                <li><a class="m-link" href="#"><i class="fa fa-lg fa-list"
-                                            style="font-weight: bold; color: white;"></i> <span>Report</span></a></li>
+                                <li><a class="m-link" href="#"><i class="fa fa-lg fa-list" style="font-weight: bold; color: white;"></i> <span>Report</span></a></li>
                             @endif
                             @if (Auth::user()->roleMenu->setting == 1)
                                 <li class="collapsed">
-                                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Setting"
-                                        href="#"><i class="fa fa-lg fa-cogs"></i> <span>Setting</span> <span
-                                            class="arrow fa fa-angle-down ms-auto text-end"></span></a>
+                                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Setting" href="#"><i class="fa fa-lg fa-cogs"></i> 
+                                        <span>Setting</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span>
+                                    </a>
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Setting">
                                         @if (Auth::user()->roleMenu->user == 1)
-                                            <li><a class="ms-link" href="{{ route('users', 'index') }}">User</a></li>
+                                            <li class="collapsed">
+                                                <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-user-level-2" href="#"><span>User</span> <span class="arrow fa fa-plus ms-auto text-end"></span></a>
+                            
+                                                <!-- Menu: Sub menu level 3 -->
+                                                <ul class="sub-menu collapse" id="menu-user-level-2">
+                                                    <li><a class="ms-link" href="{{ route('users', 'index') }}">User</a></li>
+                                                    <li><a class="ms-link" href="{{ route('user-department') }}">Department</a></li>
+                                                </ul>
+                                            </li>
                                         @endif
                                         @if (Auth::user()->roleMenu->bank == 1)
                                             <li><a class="ms-link" href="{{ route('master', 'bank') }}">Bank</a></li>
