@@ -8,16 +8,12 @@
                 </div>
                 <div class="col-auto">
                     @if (@Auth::user()->roleMenuAdd('Users', Auth::user()->id) == 1)
-                        <a href="{{ route('user-create') }}" type="button" class="btn btn-color-green text-white lift">Add
-                            User</a>
+                        <a href="{{ route('user-department-create') }}" type="button" class="btn btn-color-green text-white lift">Add Department</a>
                     @endif
                 </div>
             </div> <!-- .row end -->
         </div>
     </div>
-    @php
-        $role_revenue = App\Models\Role_permission_revenue::where('user_id', Auth::user()->id)->first();
-    @endphp
     <div id="content-index" class="body d-flex py-lg-4 py-3">
 
         <div class="container-xl">
@@ -27,44 +23,23 @@
                         <caption class="caption-top">
                             <div class="top-table-3c">
                               <!-- Status Dropdown -->
-                              <div class="top-table-3c_1">
-                                <label class="entriespage-label">Status :</label>
-                                <div class="dropdown">
-                                    <button class="bd-button statusbtn enteriespage-button" style="min-width: 100px; text-align: left;" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="text-align: left;">
-                                        @if ($menu == 'users_all')
-                                            All
-                                        @elseif ($menu == 'users_ac')
-                                            Active
-                                        @elseif ($menu == 'users_no')
-                                            Disabled
-                                        @else
-                                            Status
-                                        @endif
-                                        <i class="fas fa-angle-down arrow-dropdown"></i>
-                                    </button>
-                                    <ul class="dropdown-menu border-0 shadow p-3">
-                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('users', 'users_all') }}">All</a></li>
-                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('users', 'users_ac') }}">Active</a></li>
-                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('users', 'users_no') }}">Disabled</a></li>
-                                    </ul>
-                                </div>
-                              </div>
+                              <div class="top-table-3c_1"></div>
       
                             <!-- Entries per Page Dropdown -->
                             <div class="top-table-3c_2">
                                 <label class="entriespage-label">entries per page :</label>
-                                <select class="entriespage-button bd-button" id="search-per-page-user" style="text-align: left;" onchange="getPage(1, this.value, 'user')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == 'user' ? 'selected' : '' }}>10</option>
-                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == 'user' ? 'selected' : '' }}>25</option>
-                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == 'user' ? 'selected' : '' }}>50</option>
-                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == 'user' ? 'selected' : '' }}>100</option>
+                                <select class="entriespage-button bd-button" id="search-per-page-department" style="text-align: left;" onchange="getPage(1, this.value, 'department')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == 'department' ? 'selected' : '' }}>10</option>
+                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == 'department' ? 'selected' : '' }}>25</option>
+                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == 'department' ? 'selected' : '' }}>50</option>
+                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == 'department' ? 'selected' : '' }}>100</option>
                                 </select>
                             </div>
       
                             <!-- Search Input -->
                             <div class="top-table-3c_3">
                                 <label class="entriespage-label">Search :</label>
-                                <input class="search-button bd-button search-data" id="user" style="text-align: left;" placeholder="Search" />
+                                <input class="search-button bd-button search-data" id="department" style="text-align: left;" placeholder="Search" />
                             </div>
                             </div>
                         </caption>
@@ -81,45 +56,19 @@
                             </div>
                         @endif
                         <div style="min-height: 70vh;">
-                            <table id="userTable" class="example ui striped table nowrap unstackable hover">
+                            <table id="departmentTable" class="example ui striped table nowrap unstackable hover">
                                 <thead>
                                     <tr>
                                         <th style="text-align: center;" data-priority="1">#</th>
-                                        <th style="text-align: center;" data-priority="1">Name</th>
-                                        <th style="text-align: center;">Permission</th>
-                                        <th style="text-align: center;">Status</th>
+                                        <th style="text-align: center;" data-priority="1">Department Name</th>
                                         <th style="text-align: center;" data-priority="1">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($users as $key => $item)
+                                    @foreach ($departments as $key => $item)
                                         <tr style="text-align: center;">
                                             <td class="td-content-center">{{ $key + 1 }}</td>
-                                            <td class="td-content-center">{{ $item->name }}</td>
-                                            <td class="td-content-center">
-                                                @switch($item->permission)
-                                                    @case(0)
-                                                        Front
-                                                    @break
-
-                                                    @case(1)
-                                                        Admin
-                                                    @break
-
-                                                    @case(2)
-                                                        Developer
-                                                    @break
-                                                @endswitch
-                                            </td>
-                                            <td class="td-content-center">
-                                                @if ($item->status == 1)
-                                                    <button type="button" class="btn btn-light-success btn-sm btn-status"
-                                                        value="{{ $item->id }}">Active</button>
-                                                @else
-                                                    <button type="button" class="btn btn-light-success btn-sm btn-status"
-                                                        value="{{ $item->id }}">Disabled</button>
-                                                @endif
-                                            </td>
+                                            <td class="td-content-center">{{ $item->department }}</td>
                                             <td class="td-content-center">
                                                 <div class="dropdown">
                                                     <button type="button" class="btn"
@@ -129,9 +78,7 @@
                                                     </button>
                                                     @if (@Auth::user()->roleMenuEdit('Users', Auth::user()->id) == 1)
                                                         <ul class="dropdown-menu">
-                                                            <li class="button-li"
-                                                                onclick="window.location.href='{{ route('user-edit', $item->id) }}'">
-                                                                Edit</li>
+                                                            <li class="button-li" onclick="window.location.href='{{ route('user-department-edit', $item->id) }}'">Edit</li>
                                                         </ul>
                                                     @endif
                                                 </div>
@@ -143,9 +90,9 @@
                         </div>
                         <caption class="caption-bottom">
                             <div class="md-flex-bt-i-c">
-                                <p class="py2" id="user-showingEntries">{{ showingEntriesTable($users, 'user') }}</p>
-                                <div id="user-paginate">
-                                    {!! paginateTable($users, 'user') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                <p class="py2" id="department-showingEntries">{{ showingEntriesTable($departments, 'department') }}</p>
+                                <div id="department-paginate">
+                                    {!! paginateTable($departments, 'department') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                 </div>
                             </div>
                         </caption>
@@ -155,8 +102,8 @@
         </div>
     </div>
 
-    <input type="hidden" id="get-total-user" value="{{ $users->total() }}">
-    <input type="hidden" id="currentPage-user" value="1">
+    <input type="hidden" id="get-total-department" value="{{ $departments->total() }}">
+    <input type="hidden" id="currentPage-department" value="1">
 
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
@@ -219,7 +166,7 @@
                 paging: false,
                 info: false,
                 ajax: {
-                    url: '/user-search-table',
+                    url: '/user-department-search-table',
                     type: 'POST',
                     dataType: "json",
                     cache: false,
@@ -251,7 +198,7 @@
 
                 },
                 columnDefs: [{
-                    targets: [0, 1, 2, 3, 4],
+                    targets: [0, 1, 2],
                     className: 'dt-center td-content-center'
                 }, ],
                 order: [0, 'asc'],
@@ -261,24 +208,10 @@
                         target: 'tr'
                     }
                 },
-                columns: [{
-                        data: 'id',
-                        "render": function(data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
-                        }
-                    },
-                    {
-                        data: 'username'
-                    },
-                    {
-                        data: 'permission_name'
-                    },
-                    {
-                        data: 'status_name'
-                    },
-                    {
-                        data: 'btn_action'
-                    },
+                columns: [
+                    { data: 'id', "render": function(data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                    { data: 'department' },
+                    { data: 'btn_action' },
                 ],
 
             });
