@@ -28,11 +28,20 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="main-menu" class="col-sm-3 col-form-label fw-bold">สิทธิ์การใช้งานเมนู / Menu Permissions</label>
+                                    <label for="close-day" class="col-sm-3 col-form-label fw-bold">Close Day</label>
+                                    <div class="col-sm-9">
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" name="close_day" id="close-day" value="1">
+                                            <label class="form-check-label" for="close-day">Close Day <span class="text-danger" style="font-size: 12px;">* สิทธิ์การแก้ไขยอดวันที่ Close Day แล้ว</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="main-menu" class="col-sm-3 col-form-label fw-bold">Menu Permissions</label>
                                     <div class="col-sm-9">
                                         <div class="form-check mt-2">
                                             <input class="form-check-input" type="checkbox" name="select_menu_all" id="select_menu_all" value="0">
-                                            <label class="form-check-label" for="select_menu_all">เลือกทั้งหมด</label>
+                                            <label class="form-check-label" for="select_menu_all">Select All</label>
                                         </div>
                                     </div>
                                 </div>
@@ -172,11 +181,11 @@
                                     </div>
                                 </div> <!-- Row end  -->
                                 <div class="row mb-3 mt-3">
-                                    <label for="main-menu" class="col-sm-3 col-form-label fw-bold">สิทธิ์ใช้งานประเภทรายได้ / <br> Revenue type permissions</label>
+                                    <label for="main-menu" class="col-sm-3 col-form-label fw-bold">Revenue type permissions</label>
                                     <div class="col-sm-3">
                                         <div class="form-check mt-2">
                                             <input class="form-check-input" type="checkbox" name="select_revenue_all" id="select_revenue_all" value="0">
-                                            <label class="form-check-label" for="select_revenue_all">เลือกทั้งหมด</label>
+                                            <label class="form-check-label" for="select_revenue_all">Select All</label>
                                         </div>
                                     </div>
                                 </div>
@@ -228,7 +237,7 @@
                                     </div>
                                 </div> <!-- Row end  -->
                                 <div class="text-end col-12">
-                                    <a href="{{ route('users', 'index') }}" type="button" class="btn btn-outline-dark lift">Cancle</a>
+                                    <a href="{{ route('user-department', 'index') }}" type="button" class="btn btn-outline-dark lift">Cancel</a>
                                     <button type="submit" class="btn btn-color-green lift">Save</button>
                                 </div>
                             </form>

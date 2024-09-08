@@ -38,6 +38,15 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
+                                    <label for="close-day" class="col-sm-3 col-form-label fw-bold">Close Day</label>
+                                    <div class="col-sm-9">
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" name="close_day" id="close-day" value="1" {{ $department->close_day == 1 ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="close-day">Close Day <span class="text-danger" style="font-size: 12px;">* สิทธิ์การแก้ไขยอดวันที่ Close Day แล้ว</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
                                     <label for="main-menu" class="col-sm-3 col-form-label fw-bold">Menu Permissions</label>
                                     <div class="col-sm-3">
                                         <div class="form-check mt-2">
@@ -47,7 +56,6 @@
                                     </div>
                                 </div>
                                 <div class="row justify-content-between">
-                                    {{-- <div class="col-lg-3 col-md-3"></div> --}}
                                     <div class="col-lg-12 col-md-12 mb-3">
                                         <div class="accordion card p-0 p-lg-4" id="accordionExample">
                                             <div class="card border-0">
@@ -189,11 +197,11 @@
                                     </div>
                                 </div> <!-- Row end  -->
                                 <div class="row mb-3">
-                                    <label for="main-menu" class="col-sm-3 col-form-label fw-bold">สิทธิ์ใช้งานประเภทรายได้ / <br> Revenue type permissions</label>
+                                    <label for="main-menu" class="col-sm-3 col-form-label fw-bold">Revenue type permissions</label>
                                     <div class="col-sm-3">
                                         <div class="form-check mt-2">
                                             <input class="form-check-input" type="checkbox" name="select_revenue_all" id="select_revenue_all" value="{{ @$department->roleRevenues->select_revenue_all }}" {{ @$department->roleRevenues->select_revenue_all == 1 ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="select_revenue_all">เลือกทั้งหมด</label>
+                                            <label class="form-check-label" for="select_revenue_all">Select All</label>
                                         </div>
                                     </div>
                                 </div>
@@ -245,7 +253,7 @@
                                     </div>
                                 </div> <!-- Row end  -->
                                 <div class="text-end col-12">
-                                    <a href="{{ route('user-department') }}" type="button" class="btn btn-outline-dark lift">Cancle</a>
+                                    <a href="{{ route('user-department') }}" type="button" class="btn btn-outline-dark lift">Cancel</a>
                                     <button type="submit" class="btn btn-color-green lift">Save</button>
                                 </div>
                             </form>
