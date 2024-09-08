@@ -45,9 +45,15 @@
                                 <div class="row mb-3">
                                     <label for="permission-select2" class="col-sm-3 col-form-label fw-bold">สิทธิ์ในการเข้าถึง / Access rights <sup class="text-danger">*</sup></label>
                                     <div class="col-sm-3">
-                                        <select class="form-control" name="permission" id="permission-select2">
-                                            <option value="0">ผู้ใช้งานทั่วไป</option>
-                                            <option value="1">แอดมิน</option>
+                                        <select class="form-control" name="permission" id="permission-select2" onchange="select_department()">
+                                            <option value="">Select</option>
+                                            @foreach ($departments as $item)
+                                                @if (Auth::user()->permission == 1 && $item->department == "Developer")
+                                                    <option value="{{ $item->id }}">{{ $item->department }}</option>
+                                                @else
+                                                    <option value="{{ $item->id }}">{{ $item->department }}</option>
+                                                @endif
+                                            @endforeach
                                         </select>
                                     </div>
                                     <label for="permission-edit-select2" class="col-sm-2 col-form-label text-right fw-bold">สิทธิ์ในการใช้ข้อมูล<sup class="text-danger">*</sup></label>
@@ -68,11 +74,11 @@
                                             <span class="input-group-text">%</span>
                                         </div>
                                     </div>
-                                    <label for="close_day" class="col-sm-3 col-form-label fw-bold text-right">Close Day</label>
+                                    <label for="close-day" class="col-sm-3 col-form-label fw-bold text-right">Close Day</label>
                                     <div class="col-sm-3">
                                         <div class="form-check mt-2">
-                                            <input class="form-check-input" type="checkbox" name="close_day" id="close_day" value="1">
-                                            <label class="form-check-label" for="close_day">Close Day</label>
+                                            <input class="form-check-input" type="checkbox" name="close_day" id="close-day" value="1">
+                                            <label class="form-check-label" for="close-day">Close Day</label>
                                         </div>
                                     </div>
                                 </div>
@@ -116,45 +122,45 @@
                                                                                 <tr>
                                                                                     <td>
                                                                                         <div>
-                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}" id="menu_{{ $item->name2 }}" value="1">
-                                                                                            <label class="form-check-label" for="menu_{{ $item->name2 }}"><b>{{ $item->name_en }}</b></label>
+                                                                                            <input class="form-check-input select_menu" type="checkbox" name="menu_{{ $item->name2 }}" id="menu_{{ $item->id }}" value="1">
+                                                                                            <label class="form-check-label" for="menu_{{ $item->id }}"><b>{{ $item->name_en }}</b></label>
                                                                                         </div>
                                                                                     </td>
                                                                                     @if ($item->name_en == "Product Item")
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item->name2 }}_add" id="menu_{{ $item->name2 }}_add" value="1">
-                                                                                                <label class="form-check-label" for="menu_{{ $item->name2 }}_add"></label>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_add" id="menu_{{ $item->id }}_add" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item->id }}_add"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item->name2 }}_edit" id="menu_{{ $item->name2 }}_edit" value="1">
-                                                                                                <label class="form-check-label" for="menu_{{ $item->name2 }}_edit"></label>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_edit" id="menu_{{ $item->id }}_edit" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item->id }}_edit"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item->name2 }}_delete" id="menu_{{ $item->name2 }}_delete" value="1">
-                                                                                                <label class="form-check-label" for="menu_{{ $item->name2 }}_delete"></label>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_delete" id="menu_{{ $item->id }}_delete" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item->id }}_delete"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item->name2 }}_view" id="menu_{{ $item->name2 }}_view" value="1">
-                                                                                                <label class="form-check-label" for="menu_{{ $item->name2 }}_view"></label>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_view" id="menu_{{ $item->id }}_view" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item->id }}_view"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item->name2 }}_discount" id="menu_{{ $item->name2 }}_discount" value="1">
-                                                                                                <label class="form-check-label" for="menu_{{ $item->name2 }}_discount"></label>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_discount" id="menu_{{ $item->id }}_discount" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item->id }}_discount"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item->name2 }}_special_discount" id="menu_{{ $item->name2 }}_special_discount" value="1">
-                                                                                                <label class="form-check-label" for="menu_{{ $item->name2 }}_special_discount"></label>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_special_discount" id="menu_{{ $item->id }}_special_discount" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item->id }}_special_discount"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                     @endif
@@ -165,44 +171,44 @@
                                                                                     <tr>
                                                                                         <td>
                                                                                            <div>
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}" id="menu_{{ $item2->name2 }}" value="1">
-                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}">{{ $item2->name_en }}</label>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}" id="menu_{{ $item2->id }}" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->id }}">{{ $item2->name_en }}</label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_add" id="menu_{{ $item2->name2 }}_add" value="1">
-                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}_add"></label>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_add" id="menu_{{ $item2->id }}_add" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->id }}_add"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_edit" id="menu_{{ $item2->name2 }}_edit" value="1">
-                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}_edit"></label>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_edit" id="menu_{{ $item2->id }}_edit" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->id }}_edit"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_delete" id="menu_{{ $item2->name2 }}_delete" value="1">
-                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}_delete"></label>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_delete" id="menu_{{ $item2->id }}_delete" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->id }}_delete"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_view" id="menu_{{ $item2->name2 }}_view" value="1">
-                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}_view"></label>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_view" id="menu_{{ $item2->id }}_view" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->id }}_view"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_discount" id="menu_{{ $item2->name2 }}_discount" value="1">
-                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}_discount"></label>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_discount" id="menu_{{ $item2->id }}_discount" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->id }}_discount"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
                                                                                             <div class="text-center">
-                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->name2 }}" type="checkbox" name="menu_{{ $item2->name2 }}_special_discount" id="menu_{{ $item2->name2 }}_special_discount" value="1">
-                                                                                                <label class="form-check-label" for="menu_{{ $item2->name2 }}_special_discount"></label>
+                                                                                                <input class="form-check-input select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_special_discount" id="menu_{{ $item2->id }}_special_discount" value="1">
+                                                                                                <label class="form-check-label" for="menu_{{ $item2->id }}_special_discount"></label>
                                                                                             </div>
                                                                                         </td>
                                                                                     </tr>
@@ -256,8 +262,8 @@
                                                                             <tr>
                                                                                 <td>
                                                                                     <div class="text-center">
-                                                                                        <input class="form-check-input select_revenue" type="checkbox" name="{{ $name2 }}" id="{{ $name2 }}" value="1">
-                                                                                        <label class="form-check-label" for="{{ $name2 }}"></label>
+                                                                                        <input class="form-check-input select_revenue" type="checkbox" name="{{ $name2 }}" id="revenue_{{ $name2 }}" value="1">
+                                                                                        <label class="form-check-label" for="revenue_{{ $name2 }}"></label>
                                                                                     </div>
                                                                                 </td>
                                                                                 <td>
@@ -277,7 +283,7 @@
                                     </div>
                                 </div> <!-- Row end  -->
                                 <div class="text-end col-12">
-                                    <a href="{{ route('users', 'index') }}" type="button" class="btn btn-outline-dark lift">Cancle</a>
+                                    <a href="{{ route('users', 'index') }}" type="button" class="btn btn-outline-dark lift">Cancel</a>
                                     <button type="submit" class="btn btn-color-green lift">Save</button>
                                 </div>
                             </form>
@@ -343,5 +349,111 @@
             $('#select_revenue_all').val(0);
             $('#select_revenue_all').prop('checked', false);
         });
+
+        function select_department() {
+            var id = $('#permission-select2').val();
+            $('.select_menu').prop('checked', false);
+            $('.select_revenue').prop('checked', false);
+            $('#close-day').prop('checked', false);
+
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('user-search-department/"+id+"') !!}",
+                datatype: "JSON",
+                async: false,
+                success: function(response) {
+                    // Department 
+                    if (response.data.close_day == 1) {
+                        $('#close-day').prop('checked', true);
+                    }
+
+                    // Menu
+                    $.each(response.data_menu, function (key, val) {
+                        $('#menu_'+val.menu_id).prop('checked', true);
+
+                        if (val.add_data == 1) {
+                            $('#menu_'+val.menu_id+'_add').prop('checked', true);
+                        }
+
+                        if (val.edit_data == 1) {
+                            $('#menu_'+val.menu_id+'_edit').prop('checked', true);
+                        }
+
+                        if (val.delete_data == 1) {
+                            $('#menu_'+val.menu_id+'_delete').prop('checked', true);
+                        }
+
+                        if (val.view_data == 1) {
+                            $('#menu_'+val.menu_id+'_view').prop('checked', true);
+                        }
+
+                        if (val.discount == 1) {
+                            $('#menu_'+val.menu_id+'_discount').prop('checked', true);
+                        }
+
+                        if (val.special_discount == 1) {
+                            $('#menu_'+val.menu_id+'_special_discount').prop('checked', true);
+                        }
+                    });
+                    
+                    // Revenue 
+                    if (response.data_revenue.front_desk == 1) {
+                        $('#revenue_front_desk').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.guest_deposit == 1) {
+                        $('#revenue_guest_deposit').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.all_outlet == 1) {
+                        $('#revenue_all_outlet').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.agoda == 1) {
+                        $('#revenue_agoda').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.credit_card_hotel == 1) {
+                        $('#revenue_credit_card_hotel').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.elexa == 1) {
+                        $('#revenue_elexa').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.water_park == 1) {
+                        $('#revenue_water_park').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.credit_water_park == 1) {
+                        $('#revenue_credit_water_park').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.other_revenue == 1) {
+                        $('#revenue_other_revenue').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.no_category == 1) {
+                        $('#revenue_no_category').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.transfer == 1) {
+                        $('#revenue_transfer').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.time == 1) {
+                        $('#revenue_time').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.split == 1) {
+                        $('#revenue_split').prop('checked', true);
+                    }
+
+                    if (response.data_revenue.edit == 1) {
+                        $('#revenue_edit').prop('checked', true);
+                    }
+                },
+            });
+        }
     </script>
 @endsection

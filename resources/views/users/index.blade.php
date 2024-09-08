@@ -96,21 +96,7 @@
                                         <tr style="text-align: center;">
                                             <td class="td-content-center">{{ $key + 1 }}</td>
                                             <td class="td-content-center">{{ $item->name }}</td>
-                                            <td class="td-content-center">
-                                                @switch($item->permission)
-                                                    @case(0)
-                                                        Front
-                                                    @break
-
-                                                    @case(1)
-                                                        Admin
-                                                    @break
-
-                                                    @case(2)
-                                                        Developer
-                                                    @break
-                                                @endswitch
-                                            </td>
+                                            <td class="td-content-center">{{ @$item->permissionName->department }}</td>
                                             <td class="td-content-center">
                                                 @if ($item->status == 1)
                                                     <button type="button" class="btn btn-light-success btn-sm btn-status"
@@ -122,16 +108,12 @@
                                             </td>
                                             <td class="td-content-center">
                                                 <div class="dropdown">
-                                                    <button type="button" class="btn"
-                                                        style="background-color: #2C7F7A; color:white;"
-                                                        data-bs-toggle="dropdown" data-toggle="dropdown">
+                                                    <button type="button" class="btn" style="background-color: #2C7F7A; color:white;" data-bs-toggle="dropdown" data-toggle="dropdown">
                                                         Select <span class="caret"></span>
                                                     </button>
                                                     @if (@Auth::user()->roleMenuEdit('Users', Auth::user()->id) == 1)
                                                         <ul class="dropdown-menu">
-                                                            <li class="button-li"
-                                                                onclick="window.location.href='{{ route('user-edit', $item->id) }}'">
-                                                                Edit</li>
+                                                            <li class="button-li" onclick="window.location.href='{{ route('user-edit', $item->id) }}'">Edit</li>
                                                         </ul>
                                                     @endif
                                                 </div>

@@ -120,9 +120,11 @@
                                 <div class="dropdown-menu dropdown-action" aria-labelledby="dropdownMenuOperation">
                                     @if ($total_revenue_today->status == 0)
                                         @if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow' || !isset($filter_by))
-                                            <a class="dropdown-item" href="#" onclick="Add_data('{{$date_current}}')" data-toggle="modal" data-target="#addIncome" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
-                                                <i class="fa-solid fa-sack-dollar"></i>Add
-                                            </a>
+                                            @if (@Auth::user()->roleMenuAdd('Hotel & Water Park Revenue', Auth::user()->id) == 1)
+                                                <a class="dropdown-item" href="#" onclick="Add_data('{{$date_current}}')" data-toggle="modal" data-target="#addIncome" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
+                                                    <i class="fa-solid fa-sack-dollar"></i>Add
+                                                </a>
+                                            @endif
                                         @endif
                                     @endif
                                     <a class="dropdown-item" href="#" onclick="view_data('{{$date_current}}')" data-toggle="modal" data-target="#ViewDataModalCenter">

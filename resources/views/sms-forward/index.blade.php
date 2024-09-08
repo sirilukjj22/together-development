@@ -80,7 +80,9 @@
                                 <input type="hidden" name="" id="week-to" value="{{ date('d M', strtotime("+6 day", strtotime($this_week))) }}">
                             </div>
                             @if ($close_day == 0 || Auth::user()->edit_close_day == 1)
-                                <button type="button" class="ch-button" data-toggle="modal" data-target="#exampleModalCenter5" style="white-space: nowrap;">Add</button>
+                                @if (@Auth::user()->roleMenuAdd('Daily Bank Transaction Revenue', Auth::user()->id) == 1)
+                                    <button type="button" class="ch-button" data-toggle="modal" data-target="#exampleModalCenter5" style="white-space: nowrap;">Add</button>
+                                @endif
                             @endif
                         </div>
                     </div>
@@ -557,8 +559,7 @@
     
                                                         @if ($item->split_status == 1)
                                                             <br>
-                                                            <span class="text-danger">(Split Credit Card From
-                                                                {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
+                                                            <span class="text-danger">(Split Credit Card From {{ number_format(@$item->fullAmount->amount_before_split, 2) }})</span>
                                                         @endif
     
                                                     </td>

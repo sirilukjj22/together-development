@@ -46,6 +46,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function permissionName()
+    {
+        return $this->hasOne(TB_departments::class, 'id', 'permission');
+    }
+
     public function rolePermissionData($user_id)
     {
         $check = User::where('id', $user_id)->first();

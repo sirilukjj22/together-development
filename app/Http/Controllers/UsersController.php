@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Role_permission_menu;
 use App\Models\Role_permission_menu_sub;
 use App\Models\Role_permission_revenue;
+use App\Models\TB_departments;
+use App\Models\TB_permission_department_menus;
+use App\Models\TB_permission_department_revenues;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -50,18 +53,19 @@ class UsersController extends Controller
     public function create()
     {
         $tb_menu = DB::table('tb_menu')->get();
+        $departments = TB_departments::get();
 
         $tb_revenue_type = [
             'Front Desk Revenue', 'Guest Deposit Revenue', 'All Outlet Revenue', 'Agoda Revenue', 'Credit Card Hotel Revenue', 'Elexa EGAT Revenue',
-            'Water Park Revenue', 'Credit Card Water Park Revenue', 'No Category', 'Transfer', 'Update Time', 'Split Revenue', 'Edit / Delete',
+            'Water Park Revenue', 'Credit Card Water Park Revenue', 'Other Revenue', 'No Category', 'Transfer', 'Update Time', 'Split Revenue', 'Edit / Delete',
         ];
 
         $tb_revenue_type2 = [
             'front_desk', 'guest_deposit', 'all_outlet', 'agoda', 'credit_card_hotel', 'elexa',
-            'water_park', 'credit_water_park', 'no_category', 'transfer', 'time', 'split', 'edit',
+            'water_park', 'credit_water_park', 'other_revenue', 'no_category', 'transfer', 'time', 'split', 'edit',
         ];
         
-        return view('users.create', compact('tb_menu', 'tb_revenue_type', 'tb_revenue_type2'));
+        return view('users.create', compact('tb_menu', 'departments', 'tb_revenue_type', 'tb_revenue_type2'));
     }
 
     public function search_table(Request $request)
@@ -202,6 +206,7 @@ class UsersController extends Controller
     {
         $user = User::where('id', $id)->first();
         $tb_menu = DB::table('tb_menu')->get();
+        $departments = TB_departments::get();
 
         $tb_revenue_type = [
             'Front Desk Revenue', 'Guest Deposit Revenue', 'All Outlet Revenue', 'Agoda Revenue', 'Credit Card Hotel Revenue', 'Elexa EGAT Revenue',
@@ -213,7 +218,7 @@ class UsersController extends Controller
             'water_park', 'credit_water_park', 'other_revenue', 'no_category', 'transfer', 'time', 'split', 'edit',
         ];
 
-        return view('users.edit', compact('user', 'tb_menu', 'tb_revenue_type', 'tb_revenue_type2'));
+        return view('users.edit', compact('user', 'tb_menu', 'departments', 'tb_revenue_type', 'tb_revenue_type2'));
     }
 
     /**
@@ -276,6 +281,7 @@ class UsersController extends Controller
                 
                 'setting' => $request->menu_setting ?? 0,
                 'user' => $request->menu_user ?? 0,
+                'department' => $request->menu_department ?? 0,
                 'bank' => $request->menu_bank ?? 0,
                 'product_item' => $request->menu_product_item ?? 0,
                 'quantity' => $request->menu_quantity ?? 0,
@@ -286,7 +292,8 @@ class UsersController extends Controller
                 'company_market' => $request->menu_company_market ?? 0,
                 'company_event' => $request->menu_company_event ?? 0,
                 'booking' => $request->menu_booking ?? 0,
-                'document_template_pdf' => $request->menu_template ?? 0,
+                'document_template_pdf' => $request->menu_document_template_pdf ?? 0,
+                'report' => $request->menu_report ?? 0,
 
                 'select_menu_all' => $request->select_menu_all ?? 0,
               ]);
@@ -367,5 +374,19 @@ class UsersController extends Controller
                 User::where('id', $value)->delete();
             }
         }
+    }
+
+    public function search_department($id)
+    {
+        $data = TB_departments::find($id);
+        $data_menu = TB_permission_department_menus::where('department_id', $id)->get();
+        $data_revenue = TB_permission_department_revenues::where('department_id', $id)->first();
+
+        return response()->json([
+            'data' => $data,
+            'data_menu' => $data_menu,
+            'data_revenue' => $data_revenue
+        ]);
+        
     }
 }
