@@ -246,7 +246,7 @@
                                     </ul>
                                 </li>
                             @endif
-                            @if (Auth::user()->roleMenu->setting == 1)
+                            @if (Auth::user()->roleMenu->report == 1)
                                 <li><a class="m-link" href="#"><i class="fa fa-lg fa-list" style="font-weight: bold; color: white;"></i> <span>Report</span></a></li>
                             @endif
                             @if (Auth::user()->roleMenu->setting == 1)
@@ -264,7 +264,9 @@
                                                 <!-- Menu: Sub menu level 3 -->
                                                 <ul class="sub-menu collapse" id="menu-user-level-2">
                                                     <li><a class="ms-link" href="{{ route('users', 'index') }}">User</a></li>
-                                                    <li><a class="ms-link" href="{{ route('user-department') }}">Department</a></li>
+                                                    @if (Auth::user()->roleMenu->department == 1)
+                                                        <li><a class="ms-link" href="{{ route('user-department') }}">Department</a></li>
+                                                    @endif
                                                 </ul>
                                             </li>
                                         @endif
