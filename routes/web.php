@@ -146,9 +146,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('user-create', 'create')->name('user-create');
         Route::get('user-edit/{id}', 'edit')->name('user-edit');
         Route::get('user-detail/{id}', 'detail')->name('user-detail');
+        Route::get('user-search-department/{id}', 'search_department')->name('user-search-department');
         Route::post('user-update', 'update')->name('user-update');
         Route::post('user-delete', 'delete')->name('user-delete');
         Route::get('user/change-status/{id}', 'change_status');
+
 
         // Table Search / Paginate
         Route::post('user-search-table', 'search_table')->name('user-search-table');

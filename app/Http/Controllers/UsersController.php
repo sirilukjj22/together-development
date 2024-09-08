@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Role_permission_menu;
 use App\Models\Role_permission_menu_sub;
 use App\Models\Role_permission_revenue;
+use App\Models\TB_departments;
+use App\Models\TB_permission_department_menus;
+use App\Models\TB_permission_department_revenues;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -50,6 +53,7 @@ class UsersController extends Controller
     public function create()
     {
         $tb_menu = DB::table('tb_menu')->get();
+        $departments = TB_departments::get();
 
         $tb_revenue_type = [
             'Front Desk Revenue', 'Guest Deposit Revenue', 'All Outlet Revenue', 'Agoda Revenue', 'Credit Card Hotel Revenue', 'Elexa EGAT Revenue',
@@ -61,7 +65,7 @@ class UsersController extends Controller
             'water_park', 'credit_water_park', 'no_category', 'transfer', 'time', 'split', 'edit',
         ];
         
-        return view('users.create', compact('tb_menu', 'tb_revenue_type', 'tb_revenue_type2'));
+        return view('users.create', compact('tb_menu', 'departments', 'tb_revenue_type', 'tb_revenue_type2'));
     }
 
     public function search_table(Request $request)
@@ -367,5 +371,19 @@ class UsersController extends Controller
                 User::where('id', $value)->delete();
             }
         }
+    }
+
+    public function search_department($id)
+    {
+        $data = TB_departments::find($id);
+        $data_menu = TB_permission_department_menus::where('department_id', $id)->get();
+        $data_revenue = TB_permission_department_revenues::where('department_id', $id)->first();
+
+        return response()->json([
+            'data' => $data,
+            'data_menu' => $data_menu,
+            'data_revenue' => $data_revenue
+        ]);
+        
     }
 }
