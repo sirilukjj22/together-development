@@ -474,7 +474,7 @@
                                 <div class="table-d p-4 mb-4">
                                     <caption class="caption-top">
                                         <div class="flex-end-g2">
-                                            <label class="entriespage-label">entries per page :</label>
+                                            <label class="entriespage-label sm-500px-hidden">entries per page :</label>
                                             <select class="entriespage-button" id="search-per-page-sms" onchange="getPage(1, this.value, 'sms')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
                                                 <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "sms" ? 'selected' : '' }}>10</option>
                                                 <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "sms" ? 'selected' : '' }}>25</option>
@@ -676,7 +676,7 @@
                                     <h1 class="table-label">Transfer Revenue</h1>
                                     <caption class="caption-top">
                                         <div class="flex-end-g2">
-                                            <label class="entriespage-label">entries per page :</label>
+                                            <label class="entriespage-label sm-500px-hidden">entries per page :</label>
                                             <select class="entriespage-button" id="search-per-page-transfer" onchange="getPage(1, this.value, 'transfer')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
                                                 <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>10</option>
                                                 <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "transfer" ? 'selected' : '' }}>25</option>
@@ -880,7 +880,7 @@
                                     <h1 class="table-label">Split Credit Card Hotel Revenue</h1>
                                     <caption class="caption-top">
                                         <div class="flex-end-g2">
-                                            <label class="entriespage-label">entries per page :</label>
+                                            <label class="entriespage-label sm-500px-hidden">entries per page :</label>
                                             <select class="entriespage-button" id="search-per-page-split" onchange="getPage(1, this.value, 'split')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
                                                 <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "split" ? 'selected' : '' }}>10</option>
                                                 <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "split" ? 'selected' : '' }}>25</option>

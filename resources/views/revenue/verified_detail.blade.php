@@ -21,7 +21,7 @@
                         <caption class="caption-top">
                             <div>
                                 <div class="flex-end-g2">
-                                    <label class="entriespage-label">entries per page :</label>
+                                    <label class="entriespage-label sm-500px-hidden">entries per page :</label>
                                     <select class="entriespage-button" id="search-per-page-verified" onchange="getPage(1, this.value, 'verified')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
                                         <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "verified" ? 'selected' : '' }}>10</option>
                                         <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "verified" ? 'selected' : '' }}>25</option>

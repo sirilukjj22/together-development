@@ -26,7 +26,7 @@
                         <table id="revenueTable" class="example ui striped table nowrap unstackable hover">
                             <caption class="caption-top">
                                     <div class="flex-end-g2">
-                                        <label class="entriespage-label">entries per page :</label>
+                                        <label class="entriespage-label sm-500px-hidden">entries per page :</label>
                                         <select class="entriespage-button" id="search-per-page-revenue" onchange="getPage(1, this.value, 'revenue')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
                                             <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>10</option>
                                             <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "revenue" ? 'selected' : '' }}>25</option>

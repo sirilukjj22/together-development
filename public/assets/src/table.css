@@ -431,3 +431,9 @@ input {
       display: none;
   }
 }
+
+@media (max-width: 500px) {
+  .sm-500px-hidden {
+    display: none;
+  }
+}

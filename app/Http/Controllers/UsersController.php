@@ -318,6 +318,22 @@ class UsersController extends Controller
 
               $menu_name = DB::table('tb_menu')->where('category_name', 2)->get();
               $check_menu = Role_permission_menu_sub::where('user_id', $request->id)->delete();
+
+              if (isset($request->menu_product_item)) {
+                $add_data = 'menu_product_item_add';
+                $edit_data = 'menu_product_item_edit';
+                $delete_data = 'menu_product_item_delete';
+                $view_data = 'menu_product_item_view';
+
+                Role_permission_menu_sub::create([
+                    'user_id' => $request->id,
+                    'menu_name' => "Product Item",
+                    'add_data' => $request->$add_data ?? 0,
+                    'edit_data' => $request->$edit_data ?? 0,
+                    'delete_data' => $request->$delete_data ?? 0,
+                    'view_data' => $request->$view_data ?? 0,
+                ]);
+              }
           foreach ($menu_name as $key => $value) {
                 $add_data = 'menu_'.$value->name2.'_add';
                 $edit_data = 'menu_'.$value->name2.'_edit';

@@ -211,6 +211,17 @@ class AuthController extends Controller
 
           $menu_name = DB::table('tb_menu')->where('category_name', 2)->get();
 
+          if (isset($data['menu_product_item'])) {
+            Role_permission_menu_sub::create([
+                'user_id' => $user_id,
+                'menu_name' => "Product Item",
+                'add_data' => $data['menu_product_item_add'] ?? 0,
+                'edit_data' => $data['menu_product_item_edit'] ?? 0,
+                'delete_data' => $data['menu_product_item_delete'] ?? 0,
+                'view_data' => $data['menu_product_item_view'] ?? 0,
+            ]);
+          }
+
           foreach ($menu_name as $key => $value) {
             if (isset($data['menu_'.$value->name2]) && $data['menu_'.$value->name2] == 1) {
                 Role_permission_menu_sub::create([
