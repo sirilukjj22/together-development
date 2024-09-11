@@ -198,11 +198,19 @@
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Company Address :</b></td>
-                        <td>{{$Address}} {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}</td>
+                        <td>{{$Address}}
+                            @if ()
+                                {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td></td>
-                    <td> {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
+                    <td>
+                        @if ()
+                            {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
+                        @endif
+                    </td>
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Company Email :</b></td>
@@ -421,11 +429,19 @@
                                 </tr>
                                 <tr>
                                     <td><b style="margin-left: 10px;">Company Address :</b></td>
-                                    <td>{{$Address}} {{'ตำบล' . $TambonID->name_th}}</td>
+                                    <td>{{$Address}}
+                                        @if ($TambonID)
+                                            {{'ตำบล' . $TambonID->name_th}}
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td> {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
+                                    <td>
+                                        @if ($TambonID)
+                                            {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td><b style="margin-left: 10px;">Company Number :</b></td>
@@ -943,11 +959,19 @@
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Guest Address :</b></td>
-                        <td>{{$Address}} {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}</td>
+                        <td>{{$Address}}
+                            @if ($TambonID)
+                                {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td></td>
-                    <td> {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
+                        <td>
+                            @if ($TambonID)
+                                {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Guest Email :</b></td>
@@ -1159,11 +1183,19 @@
                                 </tr>
                                 <tr>
                                     <td><b style="margin-left: 10px;">Guest Address :</b></td>
-                                    <td>{{$Address}} {{'ตำบล' . $TambonID->name_th}}</td>
+                                    <td>{{$Address}}
+                                        @if ($TambonID)
+                                            {{'ตำบล' . $TambonID->name_th}}
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td> {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
+                                    <td>
+                                        @if ($TambonID)
+                                            {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td><b style="margin-left: 10px;">Guest Number :</b></td>

@@ -3662,10 +3662,7 @@ class QuotationController extends Controller
             }else{
                 $Products = $Productslast;
             }
-            $productold = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
-            foreach ($productold as $product) {
-                $product->delete();
-            }
+            $productold = document_quotation::where('Quotation_ID', $Quotation_ID)->delete();
             if ($Products !== null) {
                 foreach ($Products as $index => $ProductID) {
                     $saveProduct = new document_quotation();

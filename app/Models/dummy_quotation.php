@@ -56,10 +56,11 @@ class dummy_quotation extends Model
     {
         return $this->hasOne(User::class, 'id','Confirm_by');
     }
-    public function  company2()
+    public function  guest()
     {
-        return $this->hasOne(companys::class, 'Profile_ID', 'Company_ID');
+        return $this->hasOne(Guest::class, 'Profile_ID', 'Company_ID');
     }
+
     public function  document()
     {
         return $this->hasMany(document_dummy_quotation::class, 'Quotation_ID', 'DummyNo');

@@ -11,7 +11,7 @@
                 </div>
                 <div class="col-auto">
                     @if (@Auth::user()->roleMenuAdd('proposal',Auth::user()->id) == 1)
-                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Proposal.create') }}'">
+                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('DummyQuotation.create') }}'">
                         <i class="fa fa-plus"></i> เพิ่มใบเสนอราคา</button>
                     @endif
                     <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#allSearch">
@@ -210,7 +210,11 @@
                                                         @endif
                                                     </td>
                                                     <td>{{ $item->DummyNo}}</td>
-                                                    <td>{{ @$item->company->Company_Name}}</td>
+                                                    @if ($item->type_Proposal == 'Company')
+                                                        <td>{{ @$item->company->Company_Name}}</td>
+                                                    @else
+                                                        <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                    @endif
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
@@ -1262,7 +1266,7 @@
                         }
                     },
                     columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'number'},
                         { data: 'DummyNo' },
                         { data: 'Company_Name' },
                         { data: 'IssueDate' },

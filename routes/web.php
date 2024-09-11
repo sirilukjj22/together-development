@@ -512,9 +512,8 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(DummyQuotationController::class)->group(function () {
         Route::get('/Dummy/Proposal/index', 'index')->name('DummyQuotation.index');
         Route::get('/Dummy/Proposal/create', 'create')->name('DummyQuotation.create');
-        Route::get('/Dummy/Proposal/ac', 'ac')->name('DummyQuotation.ac');
-        Route::get('/Dummy/Proposal/no', 'no')->name('DummyQuotation.no');
         Route::get('/Dummy/Proposal/create/company/{companyID}','Contactcreate')->name('DummyQuotation.Contactcreate');
+        Route::get('/Dummy/Proposal/create/Guest/{Guest}','Guestcreate')->name('DummyQuotation.Guestcreate');
         Route::post('/Dummy/Proposal/create/save', 'save')->name('DummyQuotation.save');
         Route::get('/Dummy/Proposal/selectproduct/company/create/{id}', 'selectProduct')->name('DummyQuotation.SelectProduct');
         Route::post('/Dummy/Proposal/company/create/quotation/{Quotation_ID}', 'savequotation')->name('DummyQuotation.quotation');
@@ -528,7 +527,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Dummy/Proposal/selectproduct/{Quotation_ID}/addProducttablemain', 'addProducttablemain')->name('DummyQuotation.addProducttablemain');
         Route::get('/Dummy/Proposal/selectproduct/{Quotation_ID}/addProductselect', 'addProductselect')->name('DummyQuotation.addProductselect');
         Route::get('/Dummy/Proposal/selectproduct/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('DummyQuotation.addProducttablecreatemain');
-        Route::get('/Dummy/Proposal/edit/{id}','edit')->name('DummyQuotation.edit');
+        Route::get('/Dummy/Proposal/edit/quotation/{id}','edit')->name('DummyQuotation.edit');
         Route::get('/Dummy/Proposal/cancel/{id}','Cancel')->name('DummyQuotation.cancel');
         Route::get('/Dummy/Proposal/Generate/{id}','Generate')->name('DummyQuotation.Generate');
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------

@@ -233,7 +233,7 @@
                                     <div class="row mt-2" >
                                         <div class="col-lg-6 col-md-6 col-sm-12">
                                             <label class="labelcontact" for="">Customer Company</label>
-                                            <button style="float: right;" type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Company.index') }}'">
+                                            <button style="float: right;" type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Company','index') }}'">
                                                 <i class="fa fa-plus"></i> เพิ่มบริษัท</button>
                                             <select name="Company" id="Company" class="select2" onchange="companyContact()" required>
                                                 <option value=""></option>
@@ -254,7 +254,7 @@
                                     <div class="row mt-2" >
                                         <div class="col-lg-6 col-md-6 col-sm-12">
                                             <label class="labelcontact" for="">Customer Guest </label>
-                                            <button style="float: right" type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('guest.index') }}'"><i class="fa fa-plus"></i> เพิ่มลูกค้า</button>
+                                            <button style="float: right" type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('guest','index') }}'"><i class="fa fa-plus"></i> เพิ่มลูกค้า</button>
                                             <select name="Guest" id="Guest" class="select2" onchange="GuestContact()" required>
                                                 <option value=""></option>
                                                 @foreach($Guest as $item)
