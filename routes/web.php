@@ -192,12 +192,10 @@ Route::middleware(['auth'])->group(function () {
     ## Company
     Route::controller(CompanyController::class)->group(function () {
         Route::get('/Company/{menu}', 'index')->name('Company');
-        Route::get('/Company/create', 'create')->name('Company.create');
+        Route::get('/Company-create', 'create')->name('Company.create');
         Route::get('/Company/amphures/{id}', 'amphures')->name('Company.amphures');
         Route::get('/Company/districts/{id}', 'district')->name('Company.districts');
         Route::get('/Company/Tambon/{id}', 'Tambon')->name('Company.Tambon');
-        Route::get('/Company/ac', 'ac')->name('Company.ac');
-        Route::get('/Company/no', 'no')->name('Company.no');
         Route::get('/Company/edit/{id}', 'edit')->name('Company.edit');
         Route::post('/Company/save', 'save')->name('Company.save');
         Route::get('/Company/change-status/{id}', 'changeStatus')->name('Company.changeStatus');
@@ -247,7 +245,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::controller(GuestController::class)->group(function () {
         Route::get('/guest/{menu}', 'index')->name('guest');
-        Route::get('/guest/create', 'create')->name('guestcreate');
+        Route::get('/guest-create', 'create')->name('guestcreate');
         Route::get('/guest/amphures/{id}', 'amphures')->name('guest.amphures');
         Route::get('/guest/districts/{id}', 'district')->name('guest.districts');
         Route::get('/guest/Tambon/{id}', 'Tambon')->name('guest.Tambon');
