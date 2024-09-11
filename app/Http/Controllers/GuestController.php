@@ -13,15 +13,27 @@ use App\Models\master_document;
 use App\Models\log_company;
 use App\Models\guest_tax;
 use App\Models\guest_tax_phone;
+use App\Models\Quotation;
 use Auth;
 class GuestController extends Controller
 {
-    public function index()
+    public function index($menu)
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $Guest = Guest::query()->paginate($perPage);
         $Mbooking = master_document::select('name_en','id')->get();
-        return view('guest.index',compact('Guest','Mbooking'));
+        $exp = explode('.', $menu);
+        if (count($exp) > 1) {
+            $search = $exp[1];
+            if ($search == "all") {
+                $Guest = Guest::paginate($perPage);
+            }elseif ($search == 'ac') {
+                $Guest = Guest::where('status', 1)->paginate($perPage);
+            }else {
+                $Guest = Guest::where('status', 0)->paginate($perPage);
+            }
+        }
+        return view('guest.index',compact('Guest','Mbooking', 'menu'));
     }
     public function search_table(Request $request)
     {
@@ -424,6 +436,7 @@ class GuestController extends Controller
         $phoneDataArray = $phone->toArray();
 
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $Quotation = Quotation::where('Company_ID',$Profile_ID)->paginate($perPage);
         $log = log_company::where('Company_ID', $Profile_ID)
         ->orderBy('updated_at', 'desc')
         ->paginate($perPage);
@@ -433,7 +446,7 @@ class GuestController extends Controller
         $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
 
         return view('guest.edit',compact('Guest','Other_City','provinceNames','amphures','Tambon','Zip_code'
-        ,'booking_channel','prefix','phonecount','phoneDataArray','log','MCompany_type','Mprefix','guesttax'));
+        ,'booking_channel','prefix','phonecount','phoneDataArray','log','MCompany_type','Mprefix','guesttax','Quotation'));
     }
     public function view($id){
         $Guest = Guest::find($id);
@@ -1493,6 +1506,169 @@ class GuestController extends Controller
         $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
         return view('guest.viewtax',compact('MCompany_type','prefix','Zip_code','amphures','Tambon','phoneDataArray','phonecount','phone','Profile_ID','Guest','provinceNames','ID'));
+    }
+
+     //-----------------------------------Visit-------------------------------
+    public function search_table_guest_Visit(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        if ($search_value) {
+            $data_query = Quotation::where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = Quotation::where('Company_ID',$guest_profile)->paginate($perPageS);
+        }
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_status = "";
+                $btn_dis = "";
+                $btn_date_in = "";
+                $btn_date_out = "";
+                $btn_action = "";
+                $name = "";
+                $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                if ($value->checkin) {
+                    $btn_date_in =   \Carbon\Carbon::parse($value->checkin)->format('d/m/Y');
+                    $btn_date_out =   \Carbon\Carbon::parse($value->checkout)->format('d/m/Y');
+                }else {
+                    $btn_date_in = '-';
+                    $btn_date_out = '-';
+                }
+                if ($value->SpecialDiscountBath == 0) {
+                    $btn_dis = '-';
+                }else {
+                    $btn_dis = $value->SpecialDiscountBath;
+                }
+                if ($value->status_guest == 1){
+                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                }else{
+                    if ($value->status_document == 0){
+                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                    }elseif($value->status_document == 1){
+                        $btn_status = '<span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>';
+                    }elseif($value->status_document == 2){
+                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approva</span>';
+                    }elseif($value->status_document == 3){
+                        $btn_status = '<span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>';
+                    }elseif($value->status_document == 4){
+                        $btn_status = '<span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>';
+                    }elseif($value->status_document == 6){
+                        $btn_status = '<span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>';
+                    }
+                }
+                $btn_action .='<div class="btn-group">';
+                $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
+                $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .=' <li><a class="dropdown-item py-2 rounded" target="_bank" href=\'' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '\'>Export</a></li>';
+                $btn_action .='</ul>';
+                $btn_action .='</div>';
+                $data[] = [
+                    'number' => $key + 1,
+                    'ID'=>$value->Quotation_ID,
+                    'Company'=>$name,
+                    'IssueDate'=> $value->issue_date,
+                    'ExpirationDate'=>$value->Expirationdate,
+                    'CheckIn' => $btn_date_in,
+                    'CheckOut' => $btn_date_out,
+                    'Discount' => $btn_dis,
+                    'OperatedBy' => @$value->userOperated->name,
+                    'Documentstatus' => $btn_status,
+                    'Order'=>$btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function  paginate_table_guest_Visit(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+        $data = [];
+        if ($perPage == 10) {
+            $data_query = Quotation::where('Company_ID',$guest_profile)->limit($request->page.'0')->get();
+        } else {
+            $data_query = Quotation::where('Company_ID',$guest_profile)->paginate($perPage);
+        }
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_status = "";
+                $btn_dis = "";
+                $btn_date_in = "";
+                $btn_date_out = "";
+                $btn_action = "";
+                $name = "";
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    if ($value->checkin) {
+                        $btn_date_in =   \Carbon\Carbon::parse($value->checkin)->format('d/m/Y');
+                        $btn_date_out =   \Carbon\Carbon::parse($value->checkout)->format('d/m/Y');
+                    }else {
+                        $btn_date_in = '-';
+                        $btn_date_out = '-';
+                    }
+                    if ($value->SpecialDiscountBath == 0) {
+                        $btn_dis = '-';
+                    }else {
+                        $btn_dis = $value->SpecialDiscountBath;
+                    }
+                    if ($value->status_guest == 1){
+                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                    }else{
+                        if ($value->status_document == 0){
+                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                        }elseif($value->status_document == 1){
+                            $btn_status = '<span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>';
+                        }elseif($value->status_document == 2){
+                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approva</span>';
+                        }elseif($value->status_document == 3){
+                            $btn_status = '<span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>';
+                        }elseif($value->status_document == 4){
+                            $btn_status = '<span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>';
+                        }elseif($value->status_document == 6){
+                            $btn_status = '<span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>';
+                        }
+                    }
+                    $btn_action .='<div class="btn-group">';
+                    $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
+                    $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .=' <li><a class="dropdown-item py-2 rounded" target="_bank" href=\'' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '\'>Export</a></li>';
+                    $btn_action .='</ul>';
+                    $btn_action .='</div>';
+                    $data[] = [
+                        'number' => $key + 1,
+                        'ID'=>$value->Quotation_ID,
+                        'Company'=> $name,
+                        'IssueDate'=> $value->issue_date,
+                        'ExpirationDate'=>$value->Expirationdate,
+                        'CheckIn' => $btn_date_in,
+                        'CheckOut' => $btn_date_out,
+                        'Discount' => $btn_dis,
+                        'OperatedBy' => @$value->userOperated->name,
+                        'Documentstatus' => $btn_status,
+                        'Order'=>$btn_action,
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+            'data' => $data,
+        ]);
     }
 
 }

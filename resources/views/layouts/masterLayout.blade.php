@@ -117,9 +117,9 @@
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Profile">
-                                        <li><a class="ms-link" href="{{ route('Company.index') }}">Company / Agent</a>
+                                        <li><a class="ms-link" href="{{ route('Company', 'index') }}">Company / Agent</a>
                                         </li>
-                                        <li><a class="ms-link" href="{{ route('guest.index') }}">Guest</a></li>
+                                        <li><a class="ms-link" href="{{ route('guest', 'index') }}">Guest</a></li>
                                     </ul>
                                 </li>
                             @endif
@@ -251,7 +251,7 @@
                             @endif
                             @if (Auth::user()->roleMenu->setting == 1)
                                 <li class="collapsed">
-                                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Setting" href="#"><i class="fa fa-lg fa-cogs"></i> 
+                                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Setting" href="#"><i class="fa fa-lg fa-cogs"></i>
                                         <span>Setting</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span>
                                     </a>
 
@@ -260,7 +260,7 @@
                                         @if (Auth::user()->roleMenu->user == 1)
                                             <li class="collapsed">
                                                 <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-user-level-2" href="#"><span>User</span> <span class="arrow fa fa-plus ms-auto text-end"></span></a>
-                            
+
                                                 <!-- Menu: Sub menu level 3 -->
                                                 <ul class="sub-menu collapse" id="menu-user-level-2">
                                                     <li><a class="ms-link" href="{{ route('users', 'index') }}">User</a></li>

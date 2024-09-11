@@ -228,7 +228,7 @@
                                             function checkInput() {
                                                 var input = document.getElementById("discount_contract_rate");
                                                 if (input.value > 100) {
-                                                    input.value = 100; // กำหนดค่าใหม่เป็น 100
+                                                    input.value = 100;
                                                 }
                                             }
                                         </script>
@@ -247,7 +247,7 @@
                                 <div class="row mt-3">
                                     <div class="col-lg-3 col-sm-12"></div>
                                     <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
-                                        <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{ route('guest.index') }}'">{{ __('ย้อนกลับ') }}</button>
+                                        <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{ route('guest','index') }}'">{{ __('ย้อนกลับ') }}</button>
                                         <button type="submit" class="btn btn-color-green lift ">บันทึกข้อมูล</button>
                                     </div>
                                     <div class="col-lg-3 col-sm-12"></div>
@@ -261,13 +261,13 @@
         <div class="row clearfix">
             <div class="col-sm-12 col-12">
                 <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
-                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Tax" role="tab">Additional Guest Tax Invoice</a></li>{{--ประวัติการแก้ไข--}}
-                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Visit" role="tab">Lastest Visit info</a></li>{{--QUOTAION--}}
-                    <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Billing" role="tab">Billing Folio info </a></li>{{--เอกสารออกบิล--}}
-                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Contract" role="tab">Contract Rate Document</a></li>{{--Doc. number--}}
-                    <li class="nav-item" id="nav5"><a class="nav-link " data-bs-toggle="tab" href="#nav-Freelancer" role="tab">Latest Freelancer By</a></li>{{--ชื่อ คนแนะนำ ครั้งต่อครั้ง ต่อ เอกสาร--}}
-                    <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-Commission" role="tab">Lastest Freelancer Commission</a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
-                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" href="#nav-User" role="tab">User logs</a></li>{{--ประวัติการแก้ไข--}}
+                    <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" onclick="nav($id='nav1')" href="#nav-Tax" role="tab">Additional Guest Tax Invoice</a></li>{{--ประวัติการแก้ไข--}}
+                    <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" onclick="nav($id='nav2')" href="#nav-Visit" role="tab">Lastest Visit info</a></li>{{--QUOTAION--}}
+                    <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" onclick="nav($id='nav3')" href="#nav-Billing" role="tab">Billing Folio info </a></li>{{--เอกสารออกบิล--}}
+                    <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" onclick="nav($id='nav4')" href="#nav-Contract" role="tab">Contract Rate Document</a></li>{{--Doc. number--}}
+                    <li class="nav-item" id="nav5"><a class="nav-link " data-bs-toggle="tab" onclick="nav($id='nav5')" href="#nav-Freelancer" role="tab">Latest Freelancer By</a></li>{{--ชื่อ คนแนะนำ ครั้งต่อครั้ง ต่อ เอกสาร--}}
+                    <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" onclick="nav($id='nav6')" href="#nav-Commission" role="tab">Lastest Freelancer Commission</a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
+                    <li class="nav-item" id="nav7"><a class="nav-link" data-bs-toggle="tab" onclick="nav($id='nav7')" href="#nav-User" role="tab">User logs</a></li>{{--ประวัติการแก้ไข--}}
                 </ul>
                 <div class="card mb-3">
                     <div class="card-body">
@@ -563,9 +563,8 @@
                                         </div>
                                     </div>
                                     <div style="min-height: 70vh;" class="mt-2">
-                                        <table id="guest-TaxTable" class="example ui striped table nowrap unstackable hover">
+                                        <table id="guest-TaxTable" class="example2 ui striped table nowrap unstackable hover">
                                             <caption class="caption-top">
-                                                <div>
                                                     <div class="flex-end-g2">
                                                         <label class="entriespage-label">entries per page :</label>
                                                         <select class="entriespage-button" id="search-per-page-guest-Tax" onchange="getPageTax(1, this.value, 'guest-Tax')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
@@ -636,34 +635,47 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="nav-Visit" role="tabpanel" rel="0">
-                                <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
-                                    @csrf
-                                    <table class="myTableProposalRequest2 table table-hover align-middle mb-0" style="width:100%">
+                                <div style="min-height: 70vh;" class="mt-2">
+                                    <table id="guest-VisitTable" class="example2 ui striped table nowrap unstackable hover">
+                                        <caption class="caption-top">
+                                            <div>
+                                                <div class="flex-end-g2">
+                                                    <label class="entriespage-label">entries per page :</label>
+                                                    <select class="entriespage-button" id="search-per-page-guest-Visit" onchange="getPageVisit(1, this.value, 'guest-Visit')">
+                                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "guest-Visit" ? 'selected' : '' }}>10</option>
+                                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "guest-Visit" ? 'selected' : '' }}>25</option>
+                                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "guest-Visit" ? 'selected' : '' }}>50</option>
+                                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "guest-Visit" ? 'selected' : '' }}>100</option>
+                                                    </select>
+                                                    <input class="search-button search-data-guest-Visit" id="guest-Visit" style="text-align:left;" placeholder="Search" />
+                                                </div>
+                                        </caption>
                                         <thead>
                                             <tr>
-                                                <th>No</th>
-                                                <th>ID</th>
-                                                <th>Company</th>
-                                                <th>Issue Date</th>
-                                                <th>Expiration Date</th>
-                                                <th>Check In</th>
-                                                <th>Check Out</th>
+                                                <th class="text-center" data-priority="1">No</th>
+                                                <th class="text-center" data-priority="1">ID</th>
+                                                <th data-priority="1">Individual</th>
+                                                <th class="text-center">Issue Date</th>
+                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Check In</th>
+                                                <th class="text-center">Check Out</th>
                                                 <th class="text-center">Discount </th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Document status</th>
+                                                <th class="text-center">Order</th>
                                             </tr>
                                         </thead>
-                                        {{-- <tbody>
+                                        <tbody>
                                             @if(!empty($Quotation))
                                                 @foreach ($Quotation as $key => $item)
                                                 <tr>
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
                                                     </td>
-                                                    <td>{{ $item->Quotation_ID }}</td>
-                                                    <td>{{ @$item->company->Company_Name}}</td>
-                                                    <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{ $item->Quotation_ID }}</td>
+                                                    <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                    <td style="text-align: center;">{{ $item->issue_date }}</td>
+                                                    <td style="text-align: center;">{{ $item->Expirationdate }}</td>
                                                     @if ($item->checkin)
                                                     <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
                                                     <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
@@ -678,7 +690,6 @@
                                                             {{$item->SpecialDiscountBath}}
                                                         @endif
                                                     </td>
-
                                                     <td >{{ @$item->userOperated->name }}</td>
                                                     <td style="text-align: center;">
                                                         @if($item->status_guest == 1)
@@ -691,7 +702,7 @@
                                                             @elseif ($item->status_document == 2)
                                                                 <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
                                                             @elseif ($item->status_document == 3)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                                <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
                                                             @elseif ($item->status_document == 4)
                                                                 <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
                                                             @elseif ($item->status_document == 6)
@@ -699,12 +710,31 @@
                                                             @endif
                                                         @endif
                                                     </td>
+                                                    <td style="text-align: center;">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
+                                                            <ul class="dropdown-menu border-0 shadow p-3">
+                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 @endforeach
                                             @endif
-                                        </tbody> --}}
+                                        </tbody>
+                                        <input type="hidden" id="profile-guest-Visit" name="profile-company" value="{{$Guest->Profile_ID}}">
+                                        <input type="hidden" id="get-total-guest-Visit" value="{{ $Quotation->total() }}">
+                                        <input type="hidden" id="currentPage-guest-Visit" value="1">
+                                        <caption class="caption-bottom">
+                                            <div class="md-flex-bt-i-c">
+                                                <p class="py2" id="guest-Visit-showingEntries">{{ showingEntriesTableVisit($Quotation, 'guest-Visit') }}</p>
+                                                    <div id="guest-Visit-paginate">
+                                                        {!! paginateTableVisit($Quotation, 'guest-Visit') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                    </div>
+                                            </div>
+                                        </caption>
                                     </table>
-                                </form>
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="nav-Billing" role="tabpanel" rel="0">
                                 <form enctype="multipart/form-data" class="row g-3 basic-form" id="form-id2">
@@ -1152,8 +1182,8 @@
                                 </form>
                             </div>
                             <div class="tab-pane fade" id="nav-User" role="tabpanel" rel="0">
-                                <caption class="caption-top">
-                                    <div>
+                                <div style="min-height: 70vh;" class="mt-2">
+                                    <caption class="caption-top">
                                         <div class="flex-end-g2">
                                             <label class="entriespage-label">entries per page :</label>
                                             <select class="entriespage-button" id="search-per-page-guest" onchange="getPage(1, this.value, 'guest')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
@@ -1164,8 +1194,7 @@
                                             </select>
                                             <input class="search-button search-data-log" id="guest" style="text-align:left;" placeholder="Search" />
                                         </div>
-                                </caption>
-                                <div style="min-height: 70vh;" class="mt-2">
+                                    </caption>
                                     <table id="guestTable" class="example ui striped table nowrap unstackable hover">
                                         <thead>
                                             <tr>
@@ -1202,18 +1231,18 @@
                                             @endif
                                         </tbody>
                                     </table>
-                                </div>
-                                <input type="hidden" id="profile-guest" name="profile-guest" value="{{$Guest->Profile_ID}}">
-                                <input type="hidden" id="get-total-guest" value="{{ $log->total() }}">
-                                <input type="hidden" id="currentPage-guest" value="1">
-                                <caption class="caption-bottom">
-                                    <div class="md-flex-bt-i-c">
-                                        <p class="py2" id="guest-showingEntries">{{ showingEntriesTable($log, 'guest') }}</p>
-                                        <div id="guest-paginate">
-                                            {!! paginateTable($log, 'guest') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                    <input type="hidden" id="profile-guest" name="profile-guest" value="{{$Guest->Profile_ID}}">
+                                    <input type="hidden" id="get-total-guest" value="{{ $log->total() }}">
+                                    <input type="hidden" id="currentPage-guest" value="1">
+                                    <caption class="caption-bottom">
+                                        <div class="md-flex-bt-i-c">
+                                            <p class="py2" id="guest-showingEntries">{{ showingEntriesTable($log, 'guest') }}</p>
+                                            <div id="guest-paginate">
+                                                {!! paginateTable($log, 'guest') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                            </div>
                                         </div>
-                                    </div>
-                                </caption>
+                                    </caption>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1418,25 +1447,52 @@
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
     <script type="text/javascript" src="{{ asset('assets/helper/searchTableLogGuest.js')}}"></script>
     <script>
+       const table_name = ['guest-TaxTable','guestTable','guest-VisitTable'];
         $(document).ready(function() {
-            new DataTable('.example', {
-                searching: false,
-                paging: false,
-                info: false,
-                columnDefs: [{
-                    className: 'dtr-control',
-                    orderable: true,
-                    target: null,
-                }],
-                order: [0, 'asc'],
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
+            for (let index = 0; index < table_name.length; index++) {
+                console.log(table_name);
+
+                new DataTable('#'+table_name[index], {
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    columnDefs: [{
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null,
+                    }],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
                     }
-                }
-            });
+                });
+            }
         });
+        function nav(id) {
+            for (let index = 0; index < table_name.length; index++) {
+                $('#'+table_name[index]).DataTable().destroy();
+                new DataTable('#'+table_name[index], {
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    columnDefs: [{
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null,
+                    }],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    }
+                });
+            }
+        }
         $(document).on('keyup', '.search-data-log', function () {
             var id = $(this).attr('id');
             var search_value = $(this).val();
@@ -1508,9 +1564,6 @@
 
             document.getElementById(id).focus();
         });
-    </script>
-
-    <script>
         $(document).on('keyup', '.search-data-guest-Tax', function () {
             var id = $(this).attr('id');
             var search_value = $(this).val();
@@ -1575,6 +1628,81 @@
                 });
             document.getElementById(id).focus();
         });
+        $(document).on('keyup', '.search-data-guest-Visit', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var guest_profile = $('#profile-guest-Visit').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
+
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/Visit-guest-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        guest_profile: guest_profile,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                    "initComplete": function (settings,json){
+
+                        if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                            var count = $('#'+id+'Table tr').length - 1;
+                        }else{
+                            var count = 0;
+                        }
+                        if (search_value == '') {
+                            count_total = total;
+                        }else{
+                            count_total = count;
+                        }
+                        $('#'+id+'-paginate').children().remove().end();
+                        $('#'+id+'-showingEntries').text(showingEntriesSearchVisit(1,count_total, id));
+                        $('#'+id+'-paginate').append(paginateSearchVisit(count_total, id, getUrl));
+                    },
+                    columnDefs: [
+                                { targets: [0, 1, 3, 4, 5, 6, 7, 8, 9,10], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'ID' },
+                        { data: 'Company' },
+                        { data: 'IssueDate' },
+                        { data: 'ExpirationDate' },
+                        { data: 'CheckIn' },
+                        { data: 'CheckOut' },
+                        { data: 'Discount' },
+                        { data: 'OperatedBy' },
+                        { data: 'Documentstatus' },
+                        { data: 'Order' },
+
+                    ],
+
+                });
+            document.getElementById(id).focus();
+        });
+    </script>
+
+    <script>
+
         function btnstatus(id) {
             jQuery.ajax({
                 type: "GET",

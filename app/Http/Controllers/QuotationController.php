@@ -42,9 +42,6 @@ class QuotationController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        $userid = Auth::user()->id;
-        $permissionid = Auth::user()->permission;
         $Quotation_IDs = Quotation::query()->pluck('Quotation_ID');
         $document = document_quotation::whereIn('Quotation_ID', $Quotation_IDs)->get();
         $document_IDs = $document->pluck('Quotation_ID');
@@ -90,7 +87,7 @@ class QuotationController extends Controller
             $Proposalcount = Quotation::query()->count();
 
             if ($Filter == 'All') {
-                $Proposal = Quotation::query()->orderBy('created_at', 'desc')->get();
+                $Proposal = Quotation::query()->orderBy('created_at', 'desc')->paginate($perPage);
             }elseif ($Filter == 'Nocheckin') {
                 if ($Filter == 'Nocheckin'&&$checkin ==null&& $checkout == null) {
                     if ($Filter == 'Nocheckin'&&$Usercheck ==null&& $status == null) {

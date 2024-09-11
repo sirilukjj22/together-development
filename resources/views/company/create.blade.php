@@ -361,7 +361,7 @@
                                 <div class="row mt-2">
                                     <div class="col-lg-3 col-sm-12"></div>
                                     <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
-                                        <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{ route('Company.index') }}'">{{ __('ย้อนกลับ') }}</button>
+                                        <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{ route('Company','index') }}'">{{ __('ย้อนกลับ') }}</button>
                                         <button type="submit" class="btn btn-color-green lift " onclick="confirmSubmit(event)">บันทึกข้อมูล</button>
                                     </div>
                                     <div class="col-lg-3 col-sm-12"></div>

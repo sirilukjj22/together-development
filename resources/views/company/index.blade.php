@@ -35,16 +35,7 @@
                     </ol>
                 </div>
                 <div class="col-auto">
-                    <div class="dropdown">
-                        <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            สถานะการใช้งาน
-                        </button>
-                        <ul class="dropdown-menu border-0 shadow p-3">
-                            <li><a class="dropdown-item py-2 rounded" href="{{ route('Company.index') }}">ทั้งหมด</a></li>
-                            <li><a class="dropdown-item py-2 rounded" href="{{ route('Company.ac', ['value' => 1]) }}">ใช้งาน</a></li>
-                            <li><a class="dropdown-item py-2 rounded" href="{{ route('Company.no', ['value' => 0]) }}">ปิดใช้งาน</a></li>
-                        </ul>
-                    </div>
+
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
@@ -55,7 +46,28 @@
                         <div class="card-body">
                             <caption class="caption-top">
                                 <div>
-                                    <div class="flex-end-g2">
+                                    <div class="top-table-3c">
+                                        <div class="top-table-3c_1">
+                                            <div class="dropdown">
+                                                <button class="bd-button statusbtn enteriespage-button" style="min-width: 100px; text-align: left;" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="text-align: left;">
+                                                    @if ($menu == 'Company.all')
+                                                        All
+                                                    @elseif ($menu == 'Company.ac')
+                                                        Active
+                                                    @elseif ($menu == 'Company.no')
+                                                        Disabled
+                                                    @else
+                                                        Status
+                                                    @endif
+                                            <i class="fas fa-angle-down arrow-dropdown"></i>
+                                                </button>
+                                                <ul class="dropdown-menu border-0 shadow p-3">
+                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('Company', 'Company.all') }}">All</a></li>
+                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('Company', 'Company.ac') }}">Active</a></li>
+                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('Company', 'Company.no') }}">Disabled</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                         <label class="entriespage-label">entries per page :</label>
                                         <select class="entriespage-button" id="search-per-page-Company" onchange="getPage(1, this.value, 'Company')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
                                             <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "Company" ? 'selected' : '' }}>10</option>

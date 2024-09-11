@@ -436,7 +436,7 @@
                                         <div class="row mt-3">
                                             <div class="col-4"></div>
                                             <div class="col-4" style="display:flex; justify-content:center; align-items:center;">
-                                                <button type="button" class="btn btn-secondary lift " onclick="window.location.href='{{ route('Company.index') }}'" >{{ __('ย้อนกลับ') }}</button>
+                                                <button type="button" class="btn btn-secondary lift " onclick="window.location.href='{{ route('Company','index') }}'" >{{ __('ย้อนกลับ') }}</button>
                                             </div>
                                             <div class="col-4"></div>
                                         </div>

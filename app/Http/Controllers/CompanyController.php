@@ -21,7 +21,7 @@ use App\Models\log_company;
 use Auth;
 class CompanyController extends Controller
 {
-    public function index()
+    public function index($menu)
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $Company = companys::query()
@@ -30,7 +30,33 @@ class CompanyController extends Controller
             ->select('companys.*', 'company_phones.Phone_number as Phone_number')
             ->orderBy('companys.id', 'asc')
             ->paginate($perPage);
-        return view('company.index',compact('Company'));
+        $exp = explode('.', $menu);
+        if (count($exp) > 1) {
+            $search = $exp[1];
+            if ($search == "all") {
+                $Company = companys::query()
+                    ->leftJoin('company_phones', 'companys.Profile_ID', '=', 'company_phones.Profile_ID')
+                    ->where('companys.status', 1)
+                    ->select('companys.*', 'company_phones.Phone_number as Phone_number')
+                    ->orderBy('companys.id', 'asc')
+                    ->paginate($perPage);
+            }elseif ($search == 'ac') {
+                $Company = companys::query()
+                    ->leftJoin('company_phones', 'companys.Profile_ID', '=', 'company_phones.Profile_ID')
+                    ->where('companys.status', 1)
+                    ->select('companys.*', 'company_phones.Phone_number as Phone_number')
+                    ->orderBy('companys.id', 'asc')
+                    ->paginate($perPage);
+            }else {
+                $Company = companys::query()
+                    ->leftJoin('company_phones', 'companys.Profile_ID', '=', 'company_phones.Profile_ID')
+                    ->where('companys.status', 0)
+                    ->select('companys.*', 'company_phones.Phone_number as Phone_number')
+                    ->orderBy('companys.id', 'asc')
+                    ->paginate($perPage);
+            }
+        }
+        return view('company.index',compact('Company','menu'));
     }
     public function company_paginate_table(Request $request)
     {
@@ -152,34 +178,7 @@ class CompanyController extends Controller
             'data' => $data,
         ]);
     }
-    public function ac(Request $request)
-    {
-        $ac = $request->value;
-        if ($ac == 1 ) {
-            $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $Company = companys::query()
-            ->leftJoin('company_phones', 'companys.Profile_ID', '=', 'company_phones.Profile_ID')
-            ->where('companys.status', 1)
-            ->select('companys.*', 'company_phones.Phone_number as Phone_number')
-            ->orderBy('companys.id', 'asc')
-            ->paginate($perPage);
-        }
-        return view('company.index',compact('Company'));
-    }
-    public function no(Request $request)
-    {
-        $no = $request->value;
-        if ($no == 0 ) {
-            $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $Company = companys::query()
-            ->leftJoin('company_phones', 'companys.Profile_ID', '=', 'company_phones.Profile_ID')
-            ->where('companys.status', 0)
-            ->select('companys.*', 'company_phones.Phone_number as Phone_number')
-            ->orderBy('companys.id', 'asc')
-            ->paginate($perPage);
-        }
-        return view('company.index',compact('Company'));
-    }
+
     public function create()
     {
         $latestCom = companys::latest('id')->first();

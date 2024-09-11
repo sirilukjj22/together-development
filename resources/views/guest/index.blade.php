@@ -35,18 +35,6 @@
                     </ol>
                 </div>
                 <div class="col-auto">
-                    <div class="dropdown">
-                        <button class="btn btn-outline-dark lift dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            สถานะการใช้งาน
-                        </button>
-                        {{-- <button type="button" class="btn btn-danger lift sa-buttons"><i class="fa fa-trash-o"></i> ลบหลายรายการ</button> --}}
-
-                        <ul class="dropdown-menu border-0 shadow p-3">
-                            <li><a class="dropdown-item py-2 rounded" href="{{ route('guest.index') }}">ทั้งหมด</a></li>
-                            <li><a class="dropdown-item py-2 rounded" href="{{ route('guest.ac', ['value' => 1]) }}">ใช้งาน</a></li>
-                            <li><a class="dropdown-item py-2 rounded" href="{{ route('guest.no', ['value' => 0]) }}">ปิดใช้งาน</a></li>
-                        </ul>
-                    </div>
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
@@ -56,17 +44,38 @@
                     <div class="card mb-3">
                         <div class="card-body">
                             <caption class="caption-top">
-                                <div>
-                                    <div class="flex-end-g2">
-                                        <label class="entriespage-label">entries per page :</label>
-                                        <select class="entriespage-button" id="search-per-page-guest" onchange="getPage(1, this.value, 'guest')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "guest" ? 'selected' : '' }}>10</option>
-                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "guest" ? 'selected' : '' }}>25</option>
-                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "guest" ? 'selected' : '' }}>50</option>
-                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "guest" ? 'selected' : '' }}>100</option>
-                                        </select>
-                                        <input class="search-button search-data" id="guest" style="text-align:left;" placeholder="Search" />
+                                <div class="top-table-3c">
+                                    <div class="top-table-3c_1">
+                                        <div class="dropdown">
+                                            <button class="bd-button statusbtn enteriespage-button" style="min-width: 100px; text-align: left;" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="text-align: left;">
+                                                @if ($menu == 'guest.all')
+                                                    All
+                                                @elseif ($menu == 'guest.ac')
+                                                    Active
+                                                @elseif ($menu == 'guest.no')
+                                                    Disabled
+                                                @else
+                                                    Status
+                                                @endif
+                                        <i class="fas fa-angle-down arrow-dropdown"></i>
+                                            </button>
+                                            <ul class="dropdown-menu border-0 shadow p-3">
+                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.all') }}">All</a></li>
+                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.ac') }}">Active</a></li>
+                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.no') }}">Disabled</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
+                                    <label class="entriespage-label">entries per page :</label>
+                                    <select class="entriespage-button" id="search-per-page-guest" onchange="getPage(1, this.value, 'guest')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "guest" ? 'selected' : '' }}>10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "guest" ? 'selected' : '' }}>25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "guest" ? 'selected' : '' }}>50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "guest" ? 'selected' : '' }}>100</option>
+                                    </select>
+                                    <input class="search-button search-data" id="guest" style="text-align:left;" placeholder="Search" />
+
+                                </div>
                             </caption>
                             <div style="min-height: 70vh;" class="mt-2">
                                 <table id="guestTable" class="example ui striped table nowrap unstackable hover">
@@ -239,7 +248,19 @@
     @include('script.script')
 
     <script>
-
+        function fetchStatus(status) {
+            if (status == 'all' ) {
+                $('#StatusName').text('All');
+            }else if (status == 'Active') {
+                $('#StatusName').text('Active');
+            }
+            else if (status == 'Disabled') {
+                $('#StatusName').text('Disabled');
+            }
+            else if (status == ' ') {
+                $('#StatusName').text('สถานะการใช้งาน');
+            }
+        }
         function btnstatus(id) {
             jQuery.ajax({
                 type: "GET",
