@@ -247,7 +247,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::controller(GuestController::class)->group(function () {
         Route::get('/guest/{menu}', 'index')->name('guest');
-        Route::get('/guest/create', 'create')->name('guest.create');
+        Route::get('/guest/create', 'create')->name('guestcreate');
         Route::get('/guest/amphures/{id}', 'amphures')->name('guest.amphures');
         Route::get('/guest/districts/{id}', 'district')->name('guest.districts');
         Route::get('/guest/Tambon/{id}', 'Tambon')->name('guest.Tambon');

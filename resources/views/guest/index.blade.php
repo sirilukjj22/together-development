@@ -9,7 +9,7 @@
                     <div class=""><span class="span1">Guest (ลูกค้า)</span></div>
                 </div>
                 <div class="col-auto">
-                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('guest.create') }}'">
+                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/guest/create') }}'">
                         <i class="fa fa-plus"></i> เพิ่มลูกค้า
                     </button>
                 </div>
