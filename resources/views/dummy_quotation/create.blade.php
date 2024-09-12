@@ -162,7 +162,7 @@
             <div class="row align-items-center">
                 <div class="col sms-header">
                     <small class="text-muted">Welcome to Create Dummy Proposal.</small>
-                    <div class=""><span class="span1">Create Dummy Proposal (เพิ่มเอกสารใบข้อเสนอ)</span></div>
+                    <div class=""><span class="span1">Create Dummy Proposal (เพิ่มต้นแบบเอกสารใบข้อเสนอ)</span></div>
                 </div>
             </div> <!-- .row end -->
         </div>

@@ -6,8 +6,8 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Proposal.</small>
-                    <div class=""><span class="span1">Proposal (เอกสารใบข้อเสนอ)</span></div>
+                    <small class="text-muted">Welcome to Dummy Proposal.</small>
+                    <div class=""><span class="span1">Dummy Proposal (ต้นแบบเอกสารใบข้อเสนอ)</span></div>
                 </div>
                 <div class="col-auto">
                     @if (@Auth::user()->roleMenuAdd('proposal',Auth::user()->id) == 1)
@@ -265,12 +265,18 @@
                                                                         @endif
 
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                            @if ($item->status_document !== 2 && $item->status_document !== 5)
+                                                                                @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Generate({{ $item->id }})">Generate</a></li>
+                                                                                @else
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Revice</a></li>
+                                                                                @else
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
                                                                             @endif
-                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
                                                                     @elseif ($rolePermission == 2)
                                                                         @if ($canViewProposal == 1)
@@ -279,15 +285,21 @@
                                                                         @if ($item->Operated_by == $CreateBy)
                                                                             @if ($canViewProposal == 1)
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                             @endif
                                                                             @if ($canEditProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                                @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
-                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                                @if ($item->status_document !== 2 && $item->status_document !== 5)
+                                                                                    @if ($item->status_document == 3)
+                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Generate({{ $item->id }})">Generate</a></li>
+                                                                                    @else
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                    @endif
+                                                                                    @if ($item->status_document == 0)
+                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Revice</a></li>
+                                                                                    @else
+                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                    @endif
                                                                                 @endif
-                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
                                                                         @endif
                                                                     @elseif ($rolePermission == 3)
@@ -297,12 +309,18 @@
                                                                             <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         @endif
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
-                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                            @if ($item->status_document !== 2 && $item->status_document !== 5)
+                                                                                @if ($item->status_document == 3)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Generate({{ $item->id }})">Generate</a></li>
+                                                                                @else
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Revice</a></li>
+                                                                                @else
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
                                                                             @endif
-                                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
                                                                     @endif
                                                                 @else
@@ -333,36 +351,36 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="nav-Pending" role="tabpanel" rel="0">
-                                {{-- <div style="min-height: 70vh;" class="mt-2">
+                                <div style="min-height: 70vh;" class="mt-2">
                                     <caption class="caption-top">
-                                        <div class="flex-end-g2">
+                                        <div class="top-table-3c">
+                                            <div class="top-table-3c_1">
+                                                <div class="dropdown">
+                                                    <button type="button" class="btn btn-color-green lift btn_modal" id="Submit_Documents"><i class="fa fa-paper-plane-o"></i> ส่งเอกสาร</button>
+                                                </div>
+                                            </div>
                                             <label class="entriespage-label">entries per page :</label>
-                                            <select class="entriespage-button" id="search-per-page-proposalPending" onchange="getPagePending(1, this.value, 'proposalPending')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposalPending" ? 'selected' : '' }}>10</option>
-                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposalPending" ? 'selected' : '' }}>25</option>
-                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposalPending" ? 'selected' : '' }}>50</option>
-                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposalPending" ? 'selected' : '' }}>100</option>
+                                            <select class="entriespage-button" id="search-per-page-dummyproposalPending" onchange="getPagePending(1, this.value, 'dummyproposalPending')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "dummyproposalPending" ? 'selected' : '' }}>10</option>
+                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "dummyproposalPending" ? 'selected' : '' }}>25</option>
+                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "dummyproposalPending" ? 'selected' : '' }}>50</option>
+                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "dummyproposalPending" ? 'selected' : '' }}>100</option>
                                             </select>
-                                            <input class="search-button search-data-Pending" id="proposalPending" style="text-align:left;" placeholder="Search" />
+                                            <input class="search-button search-data-Pending" id="dummyproposalPending" style="text-align:left;" placeholder="Search" />
                                         </div>
                                     </caption>
-                                    <table id="proposalPendingTable" class="example2 ui striped table nowrap unstackable hover">
+                                    <table id="dummyproposalPendingTable" class="example2 ui striped table nowrap unstackable hover">
                                         <thead>
                                             <tr>
-                                                <th class="text-center"data-priority="1">No</th>
-                                                <th class="text-center">Dummy</th>
-                                                <th class="text-center" data-priority="1">Proposal ID</th>
-                                                <th class="text-center" data-priority="1">Company</th>
-                                                <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Expiration Date</th>
-                                                <th class="text-center">Check In</th>
-                                                <th class="text-center">Check Out</th>
-                                                <th class="text-center">Discount (%)</th>
-                                                <th class="text-center">Discount (Bath)</th>
-                                                <th class="text-center">Approve  By</th>
-                                                <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document Status</th>
-                                                <th class="text-center">Action</th>
+                                                <th>#</th>
+                                                <th>ID</th>
+                                                <th>Company / Individual</th>
+                                                <th>Issue Date</th>
+                                                <th>Expiration Date</th>
+                                                <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Approve By</th>
+                                                <th class="text-center">Document status</th>
+                                                <th class="text-center">Order</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -370,31 +388,26 @@
                                                 @foreach ($Pending as $key => $item)
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        {{$key +1}}
-                                                    </td>
-                                                    <td  style="text-align: center;">
-                                                        @if ($item->DummyNo == $item->Quotation_ID )
-                                                            -
+                                                        @if ($item->status_document == 1)
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                                <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                            </div>
                                                         @else
-                                                            {{ $item->DummyNo }}
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                                <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                            </div>
                                                         @endif
                                                     </td>
-                                                    <td>{{ $item->Quotation_ID }}</td>
+                                                    <td>{{ $item->DummyNo}}</td>
                                                     @if ($item->type_Proposal == 'Company')
                                                         <td>{{ @$item->company->Company_Name}}</td>
                                                     @else
                                                         <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                     @endif
-
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
-                                                    @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
-                                                    @else
-                                                    <td style="text-align: center;">-</td>
-                                                    <td style="text-align: center;">-</td>
-                                                    @endif
                                                     <td style="text-align: center;">
                                                         @if ($item->SpecialDiscount == 0)
                                                             -
@@ -403,37 +416,624 @@
                                                         @endif
                                                     </td>
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscountBath	== 0)
+                                                        @if (@$item->userConfirm->name == null)
+                                                            -
+                                                        @else
+                                                            {{ @$item->userConfirm->name }}
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if($item->status_document == 0)
+                                                            <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                        @elseif ($item->status_document == 1)
+                                                            <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                        @elseif ($item->status_document == 2)
+                                                            <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                        @elseif ($item->status_document == 3)
+                                                            <span class="badge rounded-pill bg-success">Approved</span>
+                                                        @elseif ($item->status_document == 4)
+                                                            <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
+                                                        @elseif ($item->status_document == 5)
+                                                            <span class="badge rounded-pill "style="background-color:#0ea5e9">Generate</span>
+                                                        @endif
+                                                    </td>
+                                                    @php
+                                                        $CreateBy = Auth::user()->id;
+                                                        $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                        $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                    @endphp
+                                                    <td style="text-align: center;">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                            <ul class="dropdown-menu border-0 shadow p-3">
+                                                                @if ($rolePermission > 0)
+                                                                    @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
+                                                                        @if ($canViewProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                        @endif
+
+                                                                        @if ($canEditProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 0)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Revice</a></li>
+                                                                            @else
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                        @endif
+                                                                    @elseif ($rolePermission == 2)
+                                                                        @if ($canViewProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        @endif
+                                                                        @if ($item->Operated_by == $CreateBy)
+                                                                            @if ($canViewProposal == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                            @endif
+                                                                            @if ($canEditProposal == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Revice</a></li>
+                                                                                @else
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                            @endif
+                                                                        @endif
+                                                                    @elseif ($rolePermission == 3)
+                                                                        @if ($canViewProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        @endif
+                                                                        @if ($canEditProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 0)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Revice</a></li>
+                                                                            @else
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                        @endif
+                                                                    @endif
+                                                                @else
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                    @endif
+                                                                @endif
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                    <input type="hidden" id="get-total-dummyproposalPending" value="{{ $Pending->total() }}">
+                                    <input type="hidden" id="currentPage-dummyproposalPending" value="1">
+                                    <caption class="caption-bottom">
+                                        <div class="md-flex-bt-i-c">
+                                            <p class="py2" id="dummyproposalPending-showingEntries">{{ showingEntriesTablePending($Pending, 'dummyproposalPending') }}</p>
+                                                <div id="dummyproposalPending-paginate">
+                                                    {!! paginateTablePending($Pending, 'dummyproposalPending') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                </div>
+                                        </div>
+                                    </caption>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade "id="nav-Awaiting" role="tabpanel" rel="0">
+                                <div style="min-height: 70vh;" class="mt-2">
+                                    <caption class="caption-top">
+                                        <div class="flex-end-g2">
+                                            <label class="entriespage-label">entries per page :</label>
+                                            <select class="entriespage-button" id="search-per-page-dummyproposalAwaiting" onchange="getPageAwaiting(1, this.value, 'dummyproposalAwaiting')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "dummyproposalAwaiting" ? 'selected' : '' }}>10</option>
+                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "dummyproposalAwaiting" ? 'selected' : '' }}>25</option>
+                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "dummyproposalAwaiting" ? 'selected' : '' }}>50</option>
+                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "dummyproposalAwaiting" ? 'selected' : '' }}>100</option>
+                                            </select>
+                                            <input class="search-button search-data-Awaiting" id="dummyproposalAwaiting" style="text-align:left;" placeholder="Search" />
+                                        </div>
+                                    </caption>
+                                    <table id="dummyproposalAwaitingTable" class="example2 ui striped table nowrap unstackable hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>ID</th>
+                                                <th>Company / Individual</th>
+                                                <th>Issue Date</th>
+                                                <th>Expiration Date</th>
+                                                <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Approve By</th>
+                                                <th class="text-center">Document status</th>
+                                                <th class="text-center">Order</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($Awaiting))
+                                                @foreach ($Awaiting as $key => $item)
+                                                <tr>
+                                                    <td style="text-align: center;">
+                                                        @if ($item->status_document == 1)
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                                <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                            </div>
+                                                        @else
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                                <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                            </div>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $item->DummyNo}}</td>
+                                                    @if ($item->type_Proposal == 'Company')
+                                                        <td>{{ @$item->company->Company_Name}}</td>
+                                                    @else
+                                                        <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                    @endif
+                                                    <td>{{ $item->issue_date }}</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">
+                                                        @if ($item->SpecialDiscount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
                                                         @endif
                                                     </td>
-                                                    <td >
-                                                        @if ($item->Confirm_by == 'Auto' || $item->Confirm_by == '-')
-                                                            {{ @$item->Confirm_by}}
+                                                    <td style="text-align: center;">
+                                                        @if (@$item->userConfirm->name == null)
+                                                            -
                                                         @else
                                                             {{ @$item->userConfirm->name }}
                                                         @endif
                                                     </td>
-                                                    <td >{{ @$item->userOperated->name }}</td>
                                                     <td style="text-align: center;">
-                                                        @if($item->status_guest == 1)
+                                                        @if($item->status_document == 0)
+                                                            <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                        @elseif ($item->status_document == 1)
+                                                            <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                        @elseif ($item->status_document == 2)
+                                                            <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                        @elseif ($item->status_document == 3)
                                                             <span class="badge rounded-pill bg-success">Approved</span>
+                                                        @elseif ($item->status_document == 4)
+                                                            <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
+                                                        @elseif ($item->status_document == 5)
+                                                            <span class="badge rounded-pill "style="background-color:#0ea5e9">Generate</span>
+                                                        @endif
+                                                    </td>
+                                                    @php
+                                                        $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                        $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                                                    @endphp
+                                                    <td style="text-align: center;">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                            <ul class="dropdown-menu border-0 shadow p-3">
+                                                                @if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3)
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                    @endif
+                                                                @endif
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                    <input type="hidden" id="get-total-dummyproposalAwaiting" value="{{ $Awaiting->total() }}">
+                                    <input type="hidden" id="currentPage-dummyproposalAwaiting" value="1">
+                                    <caption class="caption-bottom">
+                                        <div class="md-flex-bt-i-c">
+                                            <p class="py2" id="dummyproposalAwaiting-showingEntries">{{ showingEntriesTableAwaiting($Awaiting, 'dummyproposalAwaiting') }}</p>
+                                                <div id="dummyproposalAwaiting-paginate">
+                                                    {!! paginateTableAwaiting($Awaiting, 'dummyproposalAwaiting') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                </div>
+                                        </div>
+                                    </caption>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-Approved" role="tabpanel" rel="0">
+                                <div style="min-height: 70vh;" class="mt-2">
+                                    <caption class="caption-top">
+                                        <div class="flex-end-g2">
+                                            <label class="entriespage-label">entries per page :</label>
+                                            <select class="entriespage-button" id="search-per-page-dummyproposalApproved" onchange="getPageApproved(1, this.value, 'dummyproposalApproved')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "dummyproposalApproved" ? 'selected' : '' }}>10</option>
+                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "dummyproposalApproved" ? 'selected' : '' }}>25</option>
+                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "dummyproposalApproved" ? 'selected' : '' }}>50</option>
+                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "dummyproposalApproved" ? 'selected' : '' }}>100</option>
+                                            </select>
+                                            <input class="search-button search-data-Approved" id="dummyproposalApproved" style="text-align:left;" placeholder="Search" />
+                                        </div>
+                                    </caption>
+                                    <table id="dummyproposalApprovedTable" class="example2 ui striped table nowrap unstackable hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>ID</th>
+                                                <th>Company / Individual</th>
+                                                <th>Issue Date</th>
+                                                <th>Expiration Date</th>
+                                                <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Approve By</th>
+                                                <th class="text-center">Document status</th>
+                                                <th class="text-center">Order</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($Approved))
+                                                @foreach ($Approved as $key => $item)
+                                                <tr>
+                                                    <td style="text-align: center;">
+                                                        @if ($item->status_document == 1)
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                                <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                            </div>
                                                         @else
-                                                            @if($item->status_document == 0)
-                                                                <span class="badge rounded-pill bg-danger">Cancel</span>
-                                                            @elseif ($item->status_document == 1)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 2)
-                                                                <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
-                                                            @elseif ($item->status_document == 3)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 4)
-                                                                <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
-                                                            @elseif ($item->status_document == 6)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                            @endif
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                                <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                            </div>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $item->DummyNo}}</td>
+                                                    @if ($item->type_Proposal == 'Company')
+                                                        <td>{{ @$item->company->Company_Name}}</td>
+                                                    @else
+                                                        <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                    @endif
+                                                    <td>{{ $item->issue_date }}</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">
+                                                        @if ($item->SpecialDiscount == 0)
+                                                            -
+                                                        @else
+                                                            <i class="bi bi-check-lg text-green" ></i>
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if (@$item->userConfirm->name == null)
+                                                            -
+                                                        @else
+                                                            {{ @$item->userConfirm->name }}
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if($item->status_document == 0)
+                                                            <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                        @elseif ($item->status_document == 1)
+                                                            <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                        @elseif ($item->status_document == 2)
+                                                            <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                        @elseif ($item->status_document == 3)
+                                                            <span class="badge rounded-pill bg-success">Approved</span>
+                                                        @elseif ($item->status_document == 4)
+                                                            <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
+                                                        @elseif ($item->status_document == 5)
+                                                            <span class="badge rounded-pill "style="background-color:#0ea5e9">Generate</span>
+                                                        @endif
+                                                    </td>
+                                                    @php
+                                                        $CreateBy = Auth::user()->id;
+                                                        $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                        $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                    @endphp
+                                                    <td style="text-align: center;">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                            <ul class="dropdown-menu border-0 shadow p-3">
+                                                                @if ($rolePermission > 0)
+                                                                    @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
+                                                                        @if ($canViewProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                        @endif
+
+                                                                        @if ($canEditProposal == 1)
+                                                                            @if ($item->status_document !== 2)
+                                                                                @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Generate({{ $item->id }})">Generate</a></li>
+                                                                                @else
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
+                                                                                @else
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                            @endif
+                                                                        @endif
+                                                                    @elseif ($rolePermission == 2)
+                                                                        @if ($canViewProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        @endif
+                                                                        @if ($item->Operated_by == $CreateBy)
+                                                                            @if ($canViewProposal == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            @endif
+                                                                            @if ($canEditProposal == 1)
+                                                                                @if ($item->status_document !== 2)
+                                                                                    @if ($item->status_document == 3)
+                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Generate({{ $item->id }})">Generate</a></li>
+                                                                                    @else
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                    @endif
+                                                                                    @if ($item->status_document == 0)
+                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
+                                                                                    @else
+                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                    @endif
+                                                                                @endif
+                                                                            @endif
+                                                                        @endif
+                                                                    @elseif ($rolePermission == 3)
+                                                                        @if ($canViewProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        @endif
+                                                                        @if ($canEditProposal == 1)
+                                                                            @if ($item->status_document !== 2)
+                                                                                @if ($item->status_document == 3)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Generate({{ $item->id }})">Generate</a></li>
+                                                                                @else
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
+                                                                                @else
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                            @endif
+                                                                        @endif
+                                                                    @endif
+                                                                @else
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                    @endif
+                                                                @endif
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                    <input type="hidden" id="get-total-dummyproposalApproved" value="{{ $Approved->total() }}">
+                                    <input type="hidden" id="currentPage-dummyproposalApproved" value="1">
+                                    <caption class="caption-bottom">
+                                        <div class="md-flex-bt-i-c">
+                                            <p class="py2" id="dummyproposalApproved-showingEntries">{{ showingEntriesTableApproved($Approved, 'dummyproposalApproved') }}</p>
+                                                <div id="dummyproposalApproved-paginate">
+                                                    {!! paginateTableApproved($Approved, 'dummyproposalApproved') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                </div>
+                                        </div>
+                                    </caption>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-Generate" role="tabpanel" rel="0">
+                                <div style="min-height: 70vh;" class="mt-2">
+                                    <caption class="caption-top">
+                                        <div class="flex-end-g2">
+                                            <label class="entriespage-label">entries per page :</label>
+                                            <select class="entriespage-button" id="search-per-page-dummyproposalGenerate" onchange="getPageGenerate(1, this.value, 'dummyproposalGenerate')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "dummyproposalGenerate" ? 'selected' : '' }}>10</option>
+                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "dummyproposalGenerate" ? 'selected' : '' }}>25</option>
+                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "dummyproposalGenerate" ? 'selected' : '' }}>50</option>
+                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "dummyproposalGenerate" ? 'selected' : '' }}>100</option>
+                                            </select>
+                                            <input class="search-button search-data-Generate" id="dummyproposalGenerate" style="text-align:left;" placeholder="Search" />
+                                        </div>
+                                    </caption>
+                                    <table id="dummyproposalGenerateTable" class="example2 ui striped table nowrap unstackable hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>ID</th>
+                                                <th>Company / Individual</th>
+                                                <th>Issue Date</th>
+                                                <th>Expiration Date</th>
+                                                <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Approve By</th>
+                                                <th class="text-center">Document status</th>
+                                                <th class="text-center">Order</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($Generate))
+                                                @foreach ($Generate as $key => $item)
+                                                <tr>
+                                                    <td style="text-align: center;">
+                                                        @if ($item->status_document == 1)
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                                <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                            </div>
+                                                        @else
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                                <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                            </div>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $item->DummyNo}}</td>
+                                                    @if ($item->type_Proposal == 'Company')
+                                                        <td>{{ @$item->company->Company_Name}}</td>
+                                                    @else
+                                                        <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                    @endif
+                                                    <td>{{ $item->issue_date }}</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">
+                                                        @if ($item->SpecialDiscount == 0)
+                                                            -
+                                                        @else
+                                                            <i class="bi bi-check-lg text-green" ></i>
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if (@$item->userConfirm->name == null)
+                                                            -
+                                                        @else
+                                                            {{ @$item->userConfirm->name }}
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if($item->status_document == 0)
+                                                            <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                        @elseif ($item->status_document == 1)
+                                                            <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                        @elseif ($item->status_document == 2)
+                                                            <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                        @elseif ($item->status_document == 3)
+                                                            <span class="badge rounded-pill bg-success">Approved</span>
+                                                        @elseif ($item->status_document == 4)
+                                                            <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
+                                                        @elseif ($item->status_document == 5)
+                                                            <span class="badge rounded-pill "style="background-color:#0ea5e9">Generate</span>
+                                                        @endif
+                                                    </td>
+                                                    @php
+                                                        $CreateBy = Auth::user()->id;
+                                                        $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                        $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                    @endphp
+                                                    <td style="text-align: center;">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                            <ul class="dropdown-menu border-0 shadow p-3">
+                                                                @if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3)
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                    @endif
+                                                                @endif
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                    <input type="hidden" id="get-total-dummyproposalGenerate" value="{{ $Generate->total() }}">
+                                    <input type="hidden" id="currentPage-dummyproposalGenerate" value="1">
+                                    <caption class="caption-bottom">
+                                        <div class="md-flex-bt-i-c">
+                                            <p class="py2" id="dummyproposalGenerate-showingEntries">{{ showingEntriesTableGenerate($Generate, 'dummyproposalGenerate') }}</p>
+                                            <div id="dummyproposalGenerate-paginate">
+                                                {!! paginateTableGenerate($Generate, 'dummyproposalGenerate') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                            </div>
+                                        </div>
+                                    </caption>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-Reject" role="tabpanel" rel="0">
+                                <div style="min-height: 70vh;" class="mt-2">
+                                    <caption class="caption-top">
+                                        <div class="flex-end-g2">
+                                            <label class="entriespage-label">entries per page :</label>
+                                            <select class="entriespage-button" id="search-per-page-dummyproposalReject" onchange="getPageReject(1, this.value, 'dummyproposalReject')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "dummyproposalReject" ? 'selected' : '' }}>10</option>
+                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "dummyproposalReject" ? 'selected' : '' }}>25</option>
+                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "dummyproposalReject" ? 'selected' : '' }}>50</option>
+                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "dummyproposalReject" ? 'selected' : '' }}>100</option>
+                                            </select>
+                                            <input class="search-button search-data-Reject" id="dummyproposalReject" style="text-align:left;" placeholder="Search" />
+                                        </div>
+                                    </caption>
+                                    <table id="dummyproposalRejectTable" class="example2 ui striped table nowrap unstackable hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>ID</th>
+                                                <th>Company / Individual</th>
+                                                <th>Issue Date</th>
+                                                <th>Expiration Date</th>
+                                                <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Approve By</th>
+                                                <th class="text-center">Document status</th>
+                                                <th class="text-center">Order</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($Reject))
+                                                @foreach ($Reject as $key => $item)
+                                                <tr>
+                                                    <td style="text-align: center;">
+                                                        @if ($item->status_document == 1)
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                                <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                            </div>
+                                                        @else
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                                <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                            </div>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $item->DummyNo}}</td>
+                                                    @if ($item->type_Proposal == 'Company')
+                                                        <td>{{ @$item->company->Company_Name}}</td>
+                                                    @else
+                                                        <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                    @endif
+                                                    <td>{{ $item->issue_date }}</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">
+                                                        @if ($item->SpecialDiscount == 0)
+                                                            -
+                                                        @else
+                                                            <i class="bi bi-check-lg text-green" ></i>
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if (@$item->userConfirm->name == null)
+                                                            -
+                                                        @else
+                                                            {{ @$item->userConfirm->name }}
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if($item->status_document == 0)
+                                                            <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                        @elseif ($item->status_document == 1)
+                                                            <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                        @elseif ($item->status_document == 2)
+                                                            <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                        @elseif ($item->status_document == 3)
+                                                            <span class="badge rounded-pill bg-success">Approved</span>
+                                                        @elseif ($item->status_document == 4)
+                                                            <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
+                                                        @elseif ($item->status_document == 5)
+                                                            <span class="badge rounded-pill "style="background-color:#0ea5e9">Generate</span>
                                                         @endif
                                                     </td>
                                                     @php
@@ -449,57 +1049,44 @@
                                                                 @if ($rolePermission > 0)
                                                                     @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                         @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                         @endif
-
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
-                                                                            @endif
-                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
                                                                     @elseif ($rolePermission == 2)
                                                                         @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
                                                                         @endif
                                                                         @if ($item->Operated_by == $CreateBy)
                                                                             @if ($canViewProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                             @endif
                                                                             @if ($canEditProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                                @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
-                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
-                                                                                @endif
+                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
                                                                         @endif
                                                                     @elseif ($rolePermission == 3)
                                                                         @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         @endif
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
-                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
-                                                                            @endif
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
                                                                     @endif
                                                                 @else
                                                                     @if ($canViewProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                     @endif
                                                                 @endif
                                                             </ul>
@@ -510,493 +1097,44 @@
                                             @endif
                                         </tbody>
                                     </table>
-                                    <input type="hidden" id="get-total-proposalPending" value="{{ $Pending->total() }}">
-                                    <input type="hidden" id="currentPage-proposalPending" value="1">
+                                    <input type="hidden" id="get-total-dummyproposalReject" value="{{ $Reject->total() }}">
+                                    <input type="hidden" id="currentPage-dummyproposalReject" value="1">
                                     <caption class="caption-bottom">
                                         <div class="md-flex-bt-i-c">
-                                            <p class="py2" id="proposalPending-showingEntries">{{ showingEntriesTablePending($Pending, 'proposalPending') }}</p>
-                                                <div id="proposalPending-paginate">
-                                                    {!! paginateTablePending($Pending, 'proposalPending') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                            <p class="py2" id="dummyproposalReject-showingEntries">{{ showingEntriesTableReject($Reject, 'dummyproposalReject') }}</p>
+                                                <div id="dummyproposalReject-paginate">
+                                                    {!! paginateTableReject($Reject, 'dummyproposalReject') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                                 </div>
                                         </div>
                                     </caption>
-                                </div> --}}
-                            </div>
-                            <div class="tab-pane fade "id="nav-Awaiting" role="tabpanel" rel="0">
-                                {{-- <div style="min-height: 70vh;" class="mt-2">
-                                    <caption class="caption-top">
-                                        <div class="flex-end-g2">
-                                            <label class="entriespage-label">entries per page :</label>
-                                            <select class="entriespage-button" id="search-per-page-proposalAwaiting" onchange="getPageAwaiting(1, this.value, 'proposalAwaiting')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposalAwaiting" ? 'selected' : '' }}>10</option>
-                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposalAwaiting" ? 'selected' : '' }}>25</option>
-                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposalAwaiting" ? 'selected' : '' }}>50</option>
-                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposalAwaiting" ? 'selected' : '' }}>100</option>
-                                            </select>
-                                            <input class="search-button search-data-Awaiting" id="proposalAwaiting" style="text-align:left;" placeholder="Search" />
-                                        </div>
-                                    </caption>
-                                    <table id="proposalAwaitingTable" class="example2 ui striped table nowrap unstackable hover">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center"data-priority="1">No</th>
-                                                <th class="text-center">Dummy</th>
-                                                <th class="text-center" data-priority="1">Proposal ID</th>
-                                                <th class="text-center" data-priority="1">Company</th>
-                                                <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Expiration Date</th>
-                                                <th class="text-center">Check In</th>
-                                                <th class="text-center">Check Out</th>
-                                                <th class="text-center">Discount (%)</th>
-                                                <th class="text-center">Discount (Bath)</th>
-                                                <th class="text-center">Approve  By</th>
-                                                <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document Status</th>
-                                                <th class="text-center">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if(!empty($Awaiting))
-                                                @foreach ($Awaiting as $key => $item)
-                                                <tr>
-                                                    <td style="text-align: center;">
-                                                        {{$key +1}}
-                                                    </td>
-                                                    <td  style="text-align: center;">
-                                                        @if ($item->DummyNo == $item->Quotation_ID )
-                                                            -
-                                                        @else
-                                                            {{ $item->DummyNo }}
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $item->Quotation_ID }}</td>
-                                                    @if ($item->type_Proposal == 'Company')
-                                                        <td>{{ @$item->company->Company_Name}}</td>
-                                                    @else
-                                                        <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
-                                                    @endif
-
-                                                    <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
-                                                    @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
-                                                    @else
-                                                    <td style="text-align: center;">-</td>
-                                                    <td style="text-align: center;">-</td>
-                                                    @endif
-                                                    <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
-                                                            -
-                                                        @else
-                                                            <i class="bi bi-check-lg text-green" ></i>
-                                                        @endif
-                                                    </td>
-                                                    <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscountBath	== 0)
-                                                            -
-                                                        @else
-                                                            <i class="bi bi-check-lg text-green" ></i>
-                                                        @endif
-                                                    </td>
-                                                    <td >
-                                                        @if ($item->Confirm_by == 'Auto' || $item->Confirm_by == '-')
-                                                            {{ @$item->Confirm_by}}
-                                                        @else
-                                                            {{ @$item->userConfirm->name }}
-                                                        @endif
-                                                    </td>
-                                                    <td >{{ @$item->userOperated->name }}</td>
-                                                    <td style="text-align: center;">
-                                                        @if($item->status_guest == 1)
-                                                            <span class="badge rounded-pill bg-success">Approved</span>
-                                                        @else
-                                                            @if($item->status_document == 0)
-                                                                <span class="badge rounded-pill bg-danger">Cancel</span>
-                                                            @elseif ($item->status_document == 1)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 2)
-                                                                <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
-                                                            @elseif ($item->status_document == 3)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 4)
-                                                                <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
-                                                            @elseif ($item->status_document == 6)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                            @endif
-                                                        @endif
-                                                    </td>
-                                                    @php
-                                                        $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                        $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                                                    @endphp
-                                                    <td style="text-align: center;">
-                                                        <div class="btn-group">
-                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
-                                                            <ul class="dropdown-menu border-0 shadow p-3">
-                                                                @if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3)
-                                                                    @if ($canViewProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                    @endif
-                                                                @endif
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            @endif
-                                        </tbody>
-                                    </table>
-                                    <input type="hidden" id="get-total-proposalAwaiting" value="{{ $Awaiting->total() }}">
-                                    <input type="hidden" id="currentPage-proposalAwaiting" value="1">
-                                    <caption class="caption-bottom">
-                                        <div class="md-flex-bt-i-c">
-                                            <p class="py2" id="proposalAwaiting-showingEntries">{{ showingEntriesTableAwaiting($Awaiting, 'proposalAwaiting') }}</p>
-                                                <div id="proposalAwaiting-paginate">
-                                                    {!! paginateTableAwaiting($Awaiting, 'proposalAwaiting') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                </div>
-                                        </div>
-                                    </caption>
-                                </div> --}}
-                            </div>
-                            <div class="tab-pane fade" id="nav-Approved" role="tabpanel" rel="0">
-                                {{-- <div style="min-height: 70vh;" class="mt-2">
-                                    <caption class="caption-top">
-                                        <div class="flex-end-g2">
-                                            <label class="entriespage-label">entries per page :</label>
-                                            <select class="entriespage-button" id="search-per-page-proposalApproved" onchange="getPageApproved(1, this.value, 'proposalApproved')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposalApproved" ? 'selected' : '' }}>10</option>
-                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposalApproved" ? 'selected' : '' }}>25</option>
-                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposalApproved" ? 'selected' : '' }}>50</option>
-                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposalApproved" ? 'selected' : '' }}>100</option>
-                                            </select>
-                                            <input class="search-button search-data-Approved" id="proposalApproved" style="text-align:left;" placeholder="Search" />
-                                        </div>
-                                    </caption>
-                                    <table id="proposalApprovedTable" class="example2 ui striped table nowrap unstackable hover">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center"data-priority="1">No</th>
-                                                <th class="text-center">Dummy</th>
-                                                <th class="text-center" data-priority="1">Proposal ID</th>
-                                                <th class="text-center" data-priority="1">Company</th>
-                                                <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Expiration Date</th>
-                                                <th class="text-center">Check In</th>
-                                                <th class="text-center">Check Out</th>
-                                                <th class="text-center">Discount (%)</th>
-                                                <th class="text-center">Discount (Bath)</th>
-                                                <th class="text-center">Approve  By</th>
-                                                <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document Status</th>
-                                                <th class="text-center">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if(!empty($Approved))
-                                                @foreach ($Approved as $key => $item)
-                                                <tr>
-                                                    <td style="text-align: center;">
-                                                        {{$key +1}}
-                                                    </td>
-                                                    <td  style="text-align: center;">
-                                                        @if ($item->DummyNo == $item->Quotation_ID )
-                                                            -
-                                                        @else
-                                                            {{ $item->DummyNo }}
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $item->Quotation_ID }}</td>
-                                                    @if ($item->type_Proposal == 'Company')
-                                                        <td>{{ @$item->company->Company_Name}}</td>
-                                                    @else
-                                                        <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
-                                                    @endif
-
-                                                    <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
-                                                    @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
-                                                    @else
-                                                    <td style="text-align: center;">-</td>
-                                                    <td style="text-align: center;">-</td>
-                                                    @endif
-                                                    <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
-                                                            -
-                                                        @else
-                                                            <i class="bi bi-check-lg text-green" ></i>
-                                                        @endif
-                                                    </td>
-                                                    <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscountBath	== 0)
-                                                            -
-                                                        @else
-                                                            <i class="bi bi-check-lg text-green" ></i>
-                                                        @endif
-                                                    </td>
-                                                    <td >
-                                                        @if ($item->Confirm_by == 'Auto' || $item->Confirm_by == '-')
-                                                            {{ @$item->Confirm_by}}
-                                                        @else
-                                                            {{ @$item->userConfirm->name }}
-                                                        @endif
-                                                    </td>
-                                                    <td >{{ @$item->userOperated->name }}</td>
-                                                    <td style="text-align: center;">
-                                                        @if($item->status_guest == 1)
-                                                            <span class="badge rounded-pill bg-success">Approved</span>
-                                                        @else
-                                                            @if($item->status_document == 0)
-                                                                <span class="badge rounded-pill bg-danger">Cancel</span>
-                                                            @elseif ($item->status_document == 1)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 2)
-                                                                <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
-                                                            @elseif ($item->status_document == 3)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 4)
-                                                                <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
-                                                            @elseif ($item->status_document == 6)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                            @endif
-                                                        @endif
-                                                    </td>
-                                                    @php
-                                                        $CreateBy = Auth::user()->id;
-                                                        $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                        $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                                                    @endphp
-                                                    <td style="text-align: center;">
-                                                        <div class="btn-group">
-                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
-                                                            <ul class="dropdown-menu border-0 shadow p-3">
-                                                                @if ($rolePermission > 0)
-                                                                    @if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3)
-                                                                        @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                        @endif
-
-                                                                        @if ($canEditProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                            @if ($item->Operated_by == $CreateBy)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
-                                                                            @endif
-                                                                        @endif
-                                                                    @endif
-                                                                @else
-                                                                    @if ($canViewProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                    @endif
-                                                                @endif
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            @endif
-                                        </tbody>
-                                    </table>
-                                    <input type="hidden" id="get-total-proposalApproved" value="{{ $Approved->total() }}">
-                                    <input type="hidden" id="currentPage-proposalApproved" value="1">
-                                    <caption class="caption-bottom">
-                                        <div class="md-flex-bt-i-c">
-                                            <p class="py2" id="proposalApproved-showingEntries">{{ showingEntriesTableApproved($Approved, 'proposalApproved') }}</p>
-                                                <div id="proposalApproved-paginate">
-                                                    {!! paginateTableApproved($Approved, 'proposalApproved') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                </div>
-                                        </div>
-                                    </caption>
-                                </div> --}}
-                            </div>
-                            <div class="tab-pane fade" id="nav-Reject" role="tabpanel" rel="0">
-                                {{-- <div style="min-height: 70vh;" class="mt-2">
-                                    <caption class="caption-top">
-                                        <div class="flex-end-g2">
-                                            <label class="entriespage-label">entries per page :</label>
-                                            <select class="entriespage-button" id="search-per-page-proposalReject" onchange="getPageReject(1, this.value, 'proposalReject')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposalReject" ? 'selected' : '' }}>10</option>
-                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposalReject" ? 'selected' : '' }}>25</option>
-                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposalReject" ? 'selected' : '' }}>50</option>
-                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposalReject" ? 'selected' : '' }}>100</option>
-                                            </select>
-                                            <input class="search-button search-data-Reject" id="proposalReject" style="text-align:left;" placeholder="Search" />
-                                        </div>
-                                    </caption>
-                                    <table id="proposalRejectTable" class="example2 ui striped table nowrap unstackable hover">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center"data-priority="1">No</th>
-                                                <th class="text-center">Dummy</th>
-                                                <th class="text-center" data-priority="1">Proposal ID</th>
-                                                <th class="text-center" data-priority="1">Company</th>
-                                                <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Expiration Date</th>
-                                                <th class="text-center">Check In</th>
-                                                <th class="text-center">Check Out</th>
-                                                <th class="text-center">Discount (%)</th>
-                                                <th class="text-center">Discount (Bath)</th>
-                                                <th class="text-center">Approve  By</th>
-                                                <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document Status</th>
-                                                <th class="text-center">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if(!empty($Reject))
-                                                @foreach ($Reject as $key => $item)
-                                                <tr>
-                                                    <td style="text-align: center;">
-                                                        {{$key +1}}
-                                                    </td>
-                                                    <td  style="text-align: center;">
-                                                        @if ($item->DummyNo == $item->Quotation_ID )
-                                                            -
-                                                        @else
-                                                            {{ $item->DummyNo }}
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $item->Quotation_ID }}</td>
-                                                    @if ($item->type_Proposal == 'Company')
-                                                        <td>{{ @$item->company->Company_Name}}</td>
-                                                    @else
-                                                        <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
-                                                    @endif
-
-                                                    <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
-                                                    @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
-                                                    @else
-                                                    <td style="text-align: center;">-</td>
-                                                    <td style="text-align: center;">-</td>
-                                                    @endif
-                                                    <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
-                                                            -
-                                                        @else
-                                                            <i class="bi bi-check-lg text-green" ></i>
-                                                        @endif
-                                                    </td>
-                                                    <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscountBath	== 0)
-                                                            -
-                                                        @else
-                                                            <i class="bi bi-check-lg text-green" ></i>
-                                                        @endif
-                                                    </td>
-                                                    <td >
-                                                        @if ($item->Confirm_by == 'Auto' || $item->Confirm_by == '-')
-                                                            {{ @$item->Confirm_by}}
-                                                        @else
-                                                            {{ @$item->userConfirm->name }}
-                                                        @endif
-                                                    </td>
-                                                    <td >{{ @$item->userOperated->name }}</td>
-                                                    <td style="text-align: center;">
-                                                        @if($item->status_guest == 1)
-                                                            <span class="badge rounded-pill bg-success">Approved</span>
-                                                        @else
-                                                            @if($item->status_document == 0)
-                                                                <span class="badge rounded-pill bg-danger">Cancel</span>
-                                                            @elseif ($item->status_document == 1)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 2)
-                                                                <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
-                                                            @elseif ($item->status_document == 3)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 4)
-                                                                <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
-                                                            @elseif ($item->status_document == 6)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                            @endif
-                                                        @endif
-                                                    </td>
-                                                    @php
-                                                        $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                        $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                                                        $CreateBy = Auth::user()->id;
-                                                    @endphp
-                                                    <td style="text-align: center;">
-                                                        <div class="btn-group">
-                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
-                                                            <ul class="dropdown-menu border-0 shadow p-3">
-                                                                @if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3)
-                                                                    @if ($canViewProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                    @endif
-                                                                    @if ($rolePermission == 1 || $rolePermission == 2)
-                                                                        @if (Auth::user()->id == $item->Operated_by)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
-                                                                        @endif
-                                                                    @endif
-                                                                @endif
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            @endif
-                                        </tbody>
-                                    </table>
-                                    <input type="hidden" id="get-total-proposalReject" value="{{ $Reject->total() }}">
-                                    <input type="hidden" id="currentPage-proposalReject" value="1">
-                                    <caption class="caption-bottom">
-                                        <div class="md-flex-bt-i-c">
-                                            <p class="py2" id="proposalReject-showingEntries">{{ showingEntriesTableReject($Reject, 'proposalReject') }}</p>
-                                                <div id="proposalReject-paginate">
-                                                    {!! paginateTableReject($Reject, 'proposalReject') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                </div>
-                                        </div>
-                                    </caption>
-                                </div> --}}
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="nav-Cancel" role="tabpanel" rel="0">
-                                {{-- <div style="min-height: 70vh;" class="mt-2">
+                                <div style="min-height: 70vh;" class="mt-2">
                                     <caption class="caption-top">
                                         <div class="flex-end-g2">
                                             <label class="entriespage-label">entries per page :</label>
-                                            <select class="entriespage-button" id="search-per-page-proposalCancel" onchange="getPageCancel(1, this.value, 'proposalCancel')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposalCancel" ? 'selected' : '' }}>10</option>
-                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposalCancel" ? 'selected' : '' }}>25</option>
-                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposalCancel" ? 'selected' : '' }}>50</option>
-                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposalCancel" ? 'selected' : '' }}>100</option>
+                                            <select class="entriespage-button" id="search-per-page-dummyproposalCancel" onchange="getPageCancel(1, this.value, 'dummyproposalCancel')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "dummyproposalCancel" ? 'selected' : '' }}>10</option>
+                                                <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "dummyproposalCancel" ? 'selected' : '' }}>25</option>
+                                                <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "dummyproposalCancel" ? 'selected' : '' }}>50</option>
+                                                <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "dummyproposalCancel" ? 'selected' : '' }}>100</option>
                                             </select>
-                                            <input class="search-button search-data-Cancel" id="proposalCancel" style="text-align:left;" placeholder="Search" />
+                                            <input class="search-button search-data-Cancel" id="dummyproposalCancel" style="text-align:left;" placeholder="Search" />
                                         </div>
                                     </caption>
-                                    <table id="proposalCancelTable" class="example2 ui striped table nowrap unstackable hover">
+                                    <table id="dummyproposalCancelTable" class="example2 ui striped table nowrap unstackable hover">
                                         <thead>
                                             <tr>
-                                                <th class="text-center"data-priority="1">No</th>
-                                                <th class="text-center">Dummy</th>
-                                                <th class="text-center" data-priority="1">Proposal ID</th>
-                                                <th class="text-center" data-priority="1">Company</th>
-                                                <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Expiration Date</th>
-                                                <th class="text-center">Check In</th>
-                                                <th class="text-center">Check Out</th>
-                                                <th class="text-center">Discount (%)</th>
-                                                <th class="text-center">Discount (Bath)</th>
-                                                <th class="text-center">Approve  By</th>
-                                                <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document Status</th>
-                                                <th class="text-center">Action</th>
+                                                <th>#</th>
+                                                <th>ID</th>
+                                                <th>Company / Individual</th>
+                                                <th>Issue Date</th>
+                                                <th>Expiration Date</th>
+                                                <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Approve By</th>
+                                                <th class="text-center">Document status</th>
+                                                <th class="text-center">Order</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1004,31 +1142,26 @@
                                                 @foreach ($Cancel as $key => $item)
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        {{$key +1}}
-                                                    </td>
-                                                    <td  style="text-align: center;">
-                                                        @if ($item->DummyNo == $item->Quotation_ID )
-                                                            -
+                                                        @if ($item->status_document == 1)
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}">
+                                                                <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                            </div>
                                                         @else
-                                                            {{ $item->DummyNo }}
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                                <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
+                                                            </div>
                                                         @endif
                                                     </td>
-                                                    <td>{{ $item->Quotation_ID }}</td>
+                                                    <td>{{ $item->DummyNo}}</td>
                                                     @if ($item->type_Proposal == 'Company')
                                                         <td>{{ @$item->company->Company_Name}}</td>
                                                     @else
                                                         <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                     @endif
-
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
-                                                    @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
-                                                    @else
-                                                    <td style="text-align: center;">-</td>
-                                                    <td style="text-align: center;">-</td>
-                                                    @endif
                                                     <td style="text-align: center;">
                                                         @if ($item->SpecialDiscount == 0)
                                                             -
@@ -1037,59 +1170,78 @@
                                                         @endif
                                                     </td>
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscountBath	== 0)
+                                                        @if (@$item->userConfirm->name == null)
                                                             -
-                                                        @else
-                                                            <i class="bi bi-check-lg text-green" ></i>
-                                                        @endif
-                                                    </td>
-                                                    <td >
-                                                        @if ($item->Confirm_by == 'Auto' || $item->Confirm_by == '-')
-                                                            {{ @$item->Confirm_by}}
                                                         @else
                                                             {{ @$item->userConfirm->name }}
                                                         @endif
                                                     </td>
-                                                    <td >{{ @$item->userOperated->name }}</td>
                                                     <td style="text-align: center;">
-                                                        @if($item->status_guest == 1)
+                                                        @if($item->status_document == 0)
+                                                            <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                        @elseif ($item->status_document == 1)
+                                                            <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
+                                                        @elseif ($item->status_document == 2)
+                                                            <span class="badge rounded-pill bg-warning">Awaiting Approva</span>
+                                                        @elseif ($item->status_document == 3)
                                                             <span class="badge rounded-pill bg-success">Approved</span>
-                                                        @else
-                                                            @if($item->status_document == 0)
-                                                                <span class="badge rounded-pill bg-danger">Cancel</span>
-                                                            @elseif ($item->status_document == 1)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 2)
-                                                                <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
-                                                            @elseif ($item->status_document == 3)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 4)
-                                                                <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
-                                                            @elseif ($item->status_document == 6)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                            @endif
+                                                        @elseif ($item->status_document == 4)
+                                                            <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
+                                                        @elseif ($item->status_document == 5)
+                                                            <span class="badge rounded-pill "style="background-color:#0ea5e9">Generate</span>
                                                         @endif
                                                     </td>
                                                     @php
                                                         $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
                                                         $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                                                         $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                        $CreateBy = Auth::user()->id;
                                                     @endphp
                                                     <td style="text-align: center;">
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
-                                                                @if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3)
-                                                                    @if ($canViewProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                    @endif
-                                                                    @if ($rolePermission == 1 || $rolePermission == 2)
-                                                                        @if (Auth::user()->id == $item->Operated_by)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                @if ($rolePermission > 0)
+                                                                    @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
+                                                                        @if ($canViewProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                        @endif
+                                                                        @if ($canEditProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
                                                                         @endif
+                                                                    @elseif ($rolePermission == 2)
+                                                                        @if ($canViewProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        @endif
+                                                                        @if ($item->Operated_by == $CreateBy)
+                                                                            @if ($canViewProposal == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                            @endif
+                                                                            @if ($canEditProposal == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
+                                                                            @endif
+                                                                        @endif
+                                                                    @elseif ($rolePermission == 3)
+                                                                        @if ($canViewProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        @endif
+                                                                        @if ($canEditProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
+                                                                        @endif
+                                                                    @endif
+                                                                @else
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                     @endif
                                                                 @endif
                                                             </ul>
@@ -1100,17 +1252,17 @@
                                             @endif
                                         </tbody>
                                     </table>
-                                    <input type="hidden" id="get-total-proposalCancel" value="{{ $Reject->total() }}">
-                                    <input type="hidden" id="currentPage-proposalCancel" value="1">
+                                    <input type="hidden" id="get-total-dummyproposalCancel" value="{{ $Cancel->total() }}">
+                                    <input type="hidden" id="currentPage-dummyproposalCancel" value="1">
                                     <caption class="caption-bottom">
                                         <div class="md-flex-bt-i-c">
-                                            <p class="py2" id="proposalCancel-showingEntries">{{ showingEntriesTableCancel($Reject, 'proposalCancel') }}</p>
-                                                <div id="proposalCancel-paginate">
-                                                    {!! paginateTableCancel($Reject, 'proposalCancel') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                            <p class="py2" id="dummyproposalCancel-showingEntries">{{ showingEntriesTableCancel($Cancel, 'dummyproposalCancel') }}</p>
+                                                <div id="dummyproposalCancel-paginate">
+                                                    {!! paginateTableCancel($Cancel, 'dummyproposalCancel') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                                 </div>
                                         </div>
                                     </caption>
-                                </div> --}}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1118,6 +1270,7 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -1256,7 +1409,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,4,5,6,7,8], className: 'dt-center td-content-center' },
+                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1282,384 +1435,430 @@
 
             document.getElementById(id).focus();
         });
-        // $(document).on('keyup', '.search-data-Pending', function () {
-        //     var id = $(this).attr('id');
-        //     var search_value = $(this).val();
-        //     var table_name = id+'Table';
-        //     var filter_by = $('#filter-by').val();
-        //     var type_status = $('#status').val();
-        //     var total = parseInt($('#get-total-'+id).val());
-        //     var getUrl = window.location.pathname;
-        //     console.log(search_value);
+        $(document).on('keyup', '.search-data-Pending', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var filter_by = $('#filter-by').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
+            console.log(search_value);
 
-        //         $('#'+table_name).DataTable().destroy();
-        //         var table = $('#'+table_name).dataTable({
-        //             searching: false,
-        //             paging: false,
-        //             info: false,
-        //             ajax: {
-        //             url: '/Proposal-Pending-search-table',
-        //             type: 'POST',
-        //             dataType: "json",
-        //             cache: false,
-        //             data: {
-        //                 search_value: search_value,
-        //                 table_name: table_name,
-        //                 filter_by: filter_by,
-        //                 status: type_status,
-        //             },
-        //             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        //         },
-        //         "initComplete": function (settings,json){
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/DummyProposal-Pending-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                "initComplete": function (settings,json){
 
-        //             if ($('#'+id+'Table .dataTable_empty').length == 0) {
-        //                 var count = $('#'+id+'Table tr').length - 1;
-        //             }else{
-        //                 var count = 0;
-        //             }
-        //             if (search_value == '') {
-        //                 count_total = total;
-        //             }else{
-        //                 count_total = count;
-        //             }
-        //             $('#'+id+'-paginate').children().remove().end();
-        //             $('#'+id+'-showingEntries').text(showingEntriesSearchPending(1,count_total, id));
-        //             $('#'+id+'-paginate').append(paginateSearchPending(count_total, id, getUrl));
-        //         },
-        //             columnDefs: [
-        //                         { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
-        //             ],
-        //             order: [0, 'asc'],
-        //             responsive: {
-        //                 details: {
-        //                     type: 'column',
-        //                     target: 'tr'
-        //                 }
-        //             },
-        //             columns: [
-        //                 { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-        //                 { data: 'DummyNo' },
-        //                 { data: 'Proposal_ID' },
-        //                 { data: 'Company_Name' },
-        //                 { data: 'IssueDate' },
-        //                 { data: 'ExpirationDate' },
-        //                 { data: 'CheckIn' },
-        //                 { data: 'CheckOut' },
-        //                 { data: 'DiscountP' },
-        //                 { data: 'DiscountB' },
-        //                 { data: 'Approve' },
-        //                 { data: 'Operated' },
-        //                 { data: 'DocumentStatus' },
-        //                 { data: 'btn_action' }
-        //             ],
+                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                        var count = $('#'+id+'Table tr').length - 1;
+                    }else{
+                        var count = 0;
+                    }
+                    if (search_value == '') {
+                        count_total = total;
+                    }else{
+                        count_total = count;
+                    }
+                    $('#'+id+'-paginate').children().remove().end();
+                    $('#'+id+'-showingEntries').text(showingEntriesSearchPending(1,count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearchPending(count_total, id, getUrl));
+                },
+                    columnDefs: [
+                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'number'},
+                        { data: 'DummyNo' },
+                        { data: 'Company_Name' },
+                        { data: 'IssueDate' },
+                        { data: 'ExpirationDate' },
+                        { data: 'DiscountP' },
+                        { data: 'Approve' },
+                        { data: 'DocumentStatus' },
+                        { data: 'btn_action' }
+                    ],
 
-        //         });
+                });
 
 
-        //     document.getElementById(id).focus();
-        // });
-        // $(document).on('keyup', '.search-data-Awaiting', function () {
-        //     var id = $(this).attr('id');
-        //     var search_value = $(this).val();
-        //     var table_name = id+'Table';
-        //     var filter_by = $('#filter-by').val();
-        //     var type_status = $('#status').val();
-        //     var total = parseInt($('#get-total-'+id).val());
-        //     var getUrl = window.location.pathname;
-        //     console.log(search_value);
+            document.getElementById(id).focus();
+        });
+        $(document).on('keyup', '.search-data-Awaiting', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var filter_by = $('#filter-by').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
+            console.log(search_value);
 
-        //         $('#'+table_name).DataTable().destroy();
-        //         var table = $('#'+table_name).dataTable({
-        //             searching: false,
-        //             paging: false,
-        //             info: false,
-        //             ajax: {
-        //             url: '/Proposal-Awaiting-search-table',
-        //             type: 'POST',
-        //             dataType: "json",
-        //             cache: false,
-        //             data: {
-        //                 search_value: search_value,
-        //                 table_name: table_name,
-        //                 filter_by: filter_by,
-        //                 status: type_status,
-        //             },
-        //             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        //         },
-        //         "initComplete": function (settings,json){
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/DummyProposal-Awaiting-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                "initComplete": function (settings,json){
 
-        //             if ($('#'+id+'Table .dataTable_empty').length == 0) {
-        //                 var count = $('#'+id+'Table tr').length - 1;
-        //             }else{
-        //                 var count = 0;
-        //             }
-        //             if (search_value == '') {
-        //                 count_total = total;
-        //             }else{
-        //                 count_total = count;
-        //             }
-        //             $('#'+id+'-paginate').children().remove().end();
-        //             $('#'+id+'-showingEntries').text(showingEntriesSearchAwaiting(1,count_total, id));
-        //             $('#'+id+'-paginate').append(paginateSearchAwaiting(count_total, id, getUrl));
-        //         },
-        //             columnDefs: [
-        //                         { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
-        //             ],
-        //             order: [0, 'asc'],
-        //             responsive: {
-        //                 details: {
-        //                     type: 'column',
-        //                     target: 'tr'
-        //                 }
-        //             },
-        //             columns: [
-        //                 { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-        //                 { data: 'DummyNo' },
-        //                 { data: 'Proposal_ID' },
-        //                 { data: 'Company_Name' },
-        //                 { data: 'IssueDate' },
-        //                 { data: 'ExpirationDate' },
-        //                 { data: 'CheckIn' },
-        //                 { data: 'CheckOut' },
-        //                 { data: 'DiscountP' },
-        //                 { data: 'DiscountB' },
-        //                 { data: 'Approve' },
-        //                 { data: 'Operated' },
-        //                 { data: 'DocumentStatus' },
-        //                 { data: 'btn_action' }
-        //             ],
+                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                        var count = $('#'+id+'Table tr').length - 1;
+                    }else{
+                        var count = 0;
+                    }
+                    if (search_value == '') {
+                        count_total = total;
+                    }else{
+                        count_total = count;
+                    }
+                    $('#'+id+'-paginate').children().remove().end();
+                    $('#'+id+'-showingEntries').text(showingEntriesSearchAwaiting(1,count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearchAwaiting(count_total, id, getUrl));
+                },
+                    columnDefs: [
+                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'number'},
+                        { data: 'DummyNo' },
+                        { data: 'Company_Name' },
+                        { data: 'IssueDate' },
+                        { data: 'ExpirationDate' },
+                        { data: 'DiscountP' },
+                        { data: 'Approve' },
+                        { data: 'DocumentStatus' },
+                        { data: 'btn_action' }
+                    ],
 
-        //         });
+                });
 
 
-        //     document.getElementById(id).focus();
-        // });
-        // $(document).on('keyup', '.search-data-Approved', function () {
-        //     var id = $(this).attr('id');
-        //     var search_value = $(this).val();
-        //     var table_name = id+'Table';
-        //     var filter_by = $('#filter-by').val();
-        //     var type_status = $('#status').val();
-        //     var total = parseInt($('#get-total-'+id).val());
-        //     var getUrl = window.location.pathname;
-        //     console.log(search_value);
+            document.getElementById(id).focus();
+        });
+        $(document).on('keyup', '.search-data-Approved', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var filter_by = $('#filter-by').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
+            console.log(search_value);
 
-        //         $('#'+table_name).DataTable().destroy();
-        //         var table = $('#'+table_name).dataTable({
-        //             searching: false,
-        //             paging: false,
-        //             info: false,
-        //             ajax: {
-        //             url: '/Proposal-Approved-search-table',
-        //             type: 'POST',
-        //             dataType: "json",
-        //             cache: false,
-        //             data: {
-        //                 search_value: search_value,
-        //                 table_name: table_name,
-        //                 filter_by: filter_by,
-        //                 status: type_status,
-        //             },
-        //             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        //         },
-        //         "initComplete": function (settings,json){
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/DummyProposal-Approved-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                "initComplete": function (settings,json){
 
-        //             if ($('#'+id+'Table .dataTable_empty').length == 0) {
-        //                 var count = $('#'+id+'Table tr').length - 1;
-        //             }else{
-        //                 var count = 0;
-        //             }
-        //             if (search_value == '') {
-        //                 count_total = total;
-        //             }else{
-        //                 count_total = count;
-        //             }
-        //             $('#'+id+'-paginate').children().remove().end();
-        //             $('#'+id+'-showingEntries').text(showingEntriesSearchApproved(1,count_total, id));
-        //             $('#'+id+'-paginate').append(paginateSearchApproved(count_total, id, getUrl));
-        //         },
-        //             columnDefs: [
-        //                         { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
-        //             ],
-        //             order: [0, 'asc'],
-        //             responsive: {
-        //                 details: {
-        //                     type: 'column',
-        //                     target: 'tr'
-        //                 }
-        //             },
-        //             columns: [
-        //                 { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-        //                 { data: 'DummyNo' },
-        //                 { data: 'Proposal_ID' },
-        //                 { data: 'Company_Name' },
-        //                 { data: 'IssueDate' },
-        //                 { data: 'ExpirationDate' },
-        //                 { data: 'CheckIn' },
-        //                 { data: 'CheckOut' },
-        //                 { data: 'DiscountP' },
-        //                 { data: 'DiscountB' },
-        //                 { data: 'Approve' },
-        //                 { data: 'Operated' },
-        //                 { data: 'DocumentStatus' },
-        //                 { data: 'btn_action' }
-        //             ],
+                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                        var count = $('#'+id+'Table tr').length - 1;
+                    }else{
+                        var count = 0;
+                    }
+                    if (search_value == '') {
+                        count_total = total;
+                    }else{
+                        count_total = count;
+                    }
+                    $('#'+id+'-paginate').children().remove().end();
+                    $('#'+id+'-showingEntries').text(showingEntriesSearchApproved(1,count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearchApproved(count_total, id, getUrl));
+                },
+                    columnDefs: [
+                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'number' },
+                        { data: 'DummyNo' },
+                        { data: 'Company_Name' },
+                        { data: 'IssueDate' },
+                        { data: 'ExpirationDate' },
+                        { data: 'DiscountP' },
+                        { data: 'Approve' },
+                        { data: 'DocumentStatus' },
+                        { data: 'btn_action' }
+                    ],
 
-        //         });
+                });
 
 
-        //     document.getElementById(id).focus();
-        // });
-        // $(document).on('keyup', '.search-data-Reject', function () {
-        //     var id = $(this).attr('id');
-        //     var search_value = $(this).val();
-        //     var table_name = id+'Table';
-        //     var filter_by = $('#filter-by').val();
-        //     var type_status = $('#status').val();
-        //     var total = parseInt($('#get-total-'+id).val());
-        //     var getUrl = window.location.pathname;
+            document.getElementById(id).focus();
+        });
+        $(document).on('keyup', '.search-data-Generate', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var filter_by = $('#filter-by').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
+            console.log(search_value);
 
-        //         $('#'+table_name).DataTable().destroy();
-        //         var table = $('#'+table_name).dataTable({
-        //             searching: false,
-        //             paging: false,
-        //             info: false,
-        //             ajax: {
-        //             url: '/Proposal-Reject-search-table',
-        //             type: 'POST',
-        //             dataType: "json",
-        //             cache: false,
-        //             data: {
-        //                 search_value: search_value,
-        //                 table_name: table_name,
-        //                 filter_by: filter_by,
-        //                 status: type_status,
-        //             },
-        //             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        //         },
-        //         "initComplete": function (settings,json){
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/DummyProposal-Generate-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                "initComplete": function (settings,json){
 
-        //             if ($('#'+id+'Table .dataTable_empty').length == 0) {
-        //                 var count = $('#'+id+'Table tr').length - 1;
-        //             }else{
-        //                 var count = 0;
-        //             }
-        //             if (search_value == '') {
-        //                 count_total = total;
-        //             }else{
-        //                 count_total = count;
-        //             }
-        //             $('#'+id+'-paginate').children().remove().end();
-        //             $('#'+id+'-showingEntries').text(showingEntriesSearchReject(1,count_total, id));
-        //             $('#'+id+'-paginate').append(paginateSearchReject(count_total, id, getUrl));
-        //         },
-        //             columnDefs: [
-        //                         { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
-        //             ],
-        //             order: [0, 'asc'],
-        //             responsive: {
-        //                 details: {
-        //                     type: 'column',
-        //                     target: 'tr'
-        //                 }
-        //             },
-        //             columns: [
-        //                 { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-        //                 { data: 'DummyNo' },
-        //                 { data: 'Proposal_ID' },
-        //                 { data: 'Company_Name' },
-        //                 { data: 'IssueDate' },
-        //                 { data: 'ExpirationDate' },
-        //                 { data: 'CheckIn' },
-        //                 { data: 'CheckOut' },
-        //                 { data: 'DiscountP' },
-        //                 { data: 'DiscountB' },
-        //                 { data: 'Approve' },
-        //                 { data: 'Operated' },
-        //                 { data: 'DocumentStatus' },
-        //                 { data: 'btn_action' }
-        //             ],
+                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                        var count = $('#'+id+'Table tr').length - 1;
+                    }else{
+                        var count = 0;
+                    }
+                    if (search_value == '') {
+                        count_total = total;
+                    }else{
+                        count_total = count;
+                    }
+                    $('#'+id+'-paginate').children().remove().end();
+                    $('#'+id+'-showingEntries').text(showingEntriesSearchGenerate(1,count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearchGenerate(count_total, id, getUrl));
+                },
+                    columnDefs: [
+                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'number' },
+                        { data: 'DummyNo' },
+                        { data: 'Company_Name' },
+                        { data: 'IssueDate' },
+                        { data: 'ExpirationDate' },
+                        { data: 'DiscountP' },
+                        { data: 'Approve' },
+                        { data: 'DocumentStatus' },
+                        { data: 'btn_action' }
+                    ],
 
-        //         });
+                });
 
 
-        //     document.getElementById(id).focus();
-        // });
-        // $(document).on('keyup', '.search-data-Cancel', function () {
-        //     var id = $(this).attr('id');
-        //     var search_value = $(this).val();
-        //     var table_name = id+'Table';
-        //     var filter_by = $('#filter-by').val();
-        //     var type_status = $('#status').val();
-        //     var total = parseInt($('#get-total-'+id).val());
-        //     var getUrl = window.location.pathname;
+            document.getElementById(id).focus();
+        });
+        $(document).on('keyup', '.search-data-Reject', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var filter_by = $('#filter-by').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
 
-        //         $('#'+table_name).DataTable().destroy();
-        //         var table = $('#'+table_name).dataTable({
-        //             searching: false,
-        //             paging: false,
-        //             info: false,
-        //             ajax: {
-        //             url: '/Proposal-Cancel-search-table',
-        //             type: 'POST',
-        //             dataType: "json",
-        //             cache: false,
-        //             data: {
-        //                 search_value: search_value,
-        //                 table_name: table_name,
-        //                 filter_by: filter_by,
-        //                 status: type_status,
-        //             },
-        //             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        //         },
-        //         "initComplete": function (settings,json){
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/DummyProposal-Reject-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                "initComplete": function (settings,json){
 
-        //             if ($('#'+id+'Table .dataTable_empty').length == 0) {
-        //                 var count = $('#'+id+'Table tr').length - 1;
-        //             }else{
-        //                 var count = 0;
-        //             }
-        //             if (search_value == '') {
-        //                 count_total = total;
-        //             }else{
-        //                 count_total = count;
-        //             }
-        //             $('#'+id+'-paginate').children().remove().end();
-        //             $('#'+id+'-showingEntries').text(showingEntriesSearchCancel(1,count_total, id));
-        //             $('#'+id+'-paginate').append(paginateSearchCancel(count_total, id, getUrl));
-        //         },
-        //             columnDefs: [
-        //                         { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
-        //             ],
-        //             order: [0, 'asc'],
-        //             responsive: {
-        //                 details: {
-        //                     type: 'column',
-        //                     target: 'tr'
-        //                 }
-        //             },
-        //             columns: [
-        //                 { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-        //                 { data: 'DummyNo' },
-        //                 { data: 'Proposal_ID' },
-        //                 { data: 'Company_Name' },
-        //                 { data: 'IssueDate' },
-        //                 { data: 'ExpirationDate' },
-        //                 { data: 'CheckIn' },
-        //                 { data: 'CheckOut' },
-        //                 { data: 'DiscountP' },
-        //                 { data: 'DiscountB' },
-        //                 { data: 'Approve' },
-        //                 { data: 'Operated' },
-        //                 { data: 'DocumentStatus' },
-        //                 { data: 'btn_action' }
-        //             ],
+                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                        var count = $('#'+id+'Table tr').length - 1;
+                    }else{
+                        var count = 0;
+                    }
+                    if (search_value == '') {
+                        count_total = total;
+                    }else{
+                        count_total = count;
+                    }
+                    $('#'+id+'-paginate').children().remove().end();
+                    $('#'+id+'-showingEntries').text(showingEntriesSearchReject(1,count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearchReject(count_total, id, getUrl));
+                },
+                    columnDefs: [
+                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'number' },
+                        { data: 'DummyNo' },
+                        { data: 'Company_Name' },
+                        { data: 'IssueDate' },
+                        { data: 'ExpirationDate' },
+                        { data: 'DiscountP' },
+                        { data: 'Approve' },
+                        { data: 'DocumentStatus' },
+                        { data: 'btn_action' }
+                    ],
 
-        //         });
+                });
 
 
-        //     document.getElementById(id).focus();
-        // });
+            document.getElementById(id).focus();
+        });
+        $(document).on('keyup', '.search-data-Cancel', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var filter_by = $('#filter-by').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
+
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/DummyProposal-Cancel-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                "initComplete": function (settings,json){
+
+                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                        var count = $('#'+id+'Table tr').length - 1;
+                    }else{
+                        var count = 0;
+                    }
+                    if (search_value == '') {
+                        count_total = total;
+                    }else{
+                        count_total = count;
+                    }
+                    $('#'+id+'-paginate').children().remove().end();
+                    $('#'+id+'-showingEntries').text(showingEntriesSearchCancel(1,count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearchCancel(count_total, id, getUrl));
+                },
+                    columnDefs: [
+                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'number' },
+                        { data: 'DummyNo' },
+                        { data: 'Company_Name' },
+                        { data: 'IssueDate' },
+                        { data: 'ExpirationDate' },
+                        { data: 'DiscountP' },
+                        { data: 'Approve' },
+                        { data: 'DocumentStatus' },
+                        { data: 'btn_action' }
+                    ],
+
+                });
+
+
+            document.getElementById(id).focus();
+        });
     </script>
     <script>
         function Generate(id){
@@ -1673,7 +1872,7 @@
             dangerMode: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "{{ url('/Dummy/Quotation/Generate/') }}/" + id;
+                    window.location.href = "{{ url('/Dummy/Proposal/Generate/') }}/" + id;
                 }
             });
         }
@@ -1688,7 +1887,22 @@
             dangerMode: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "{{ url('/Dummy/Quotation/cancel/') }}/" + id;
+                    window.location.href = "{{ url('/Dummy/Proposal/cancel/') }}/" + id;
+                }
+            });
+        }
+        function Revice(id){
+            Swal.fire({
+            title: "คุณต้องการเปิดการใช้งานรายการนี้ใช่หรือไม่?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+            confirmButtonColor: "#28a745",
+            dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ url('/Dummy/Proposal/cancel/') }}/" + id;
                 }
             });
         }

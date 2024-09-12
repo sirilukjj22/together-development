@@ -199,7 +199,7 @@
                     <tr>
                         <td><b style="margin-left: 30px;">Company Address :</b></td>
                         <td>{{$Address}}
-                            @if ()
+                            @if ($TambonID)
                                 {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}
                             @endif
                         </td>
@@ -207,7 +207,7 @@
                     <tr>
                         <td></td>
                     <td>
-                        @if ()
+                        @if ($TambonID)
                             {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
                         @endif
                     </td>

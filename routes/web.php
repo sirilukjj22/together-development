@@ -492,7 +492,7 @@ Route::middleware(['auth'])->group(function () {
          //--------------------------Approved---------
         Route::post('Proposal-Approved-search-table', 'search_table_paginate_approved');
         Route::post('Proposal-Approved-paginate-table', 'paginate_approved_table_proposal');
-         //--------------------------Reject-----------
+        //--------------------------Reject-----------
         Route::post('Proposal-Reject-search-table', 'search_table_paginate_reject');
         Route::post('Proposal-Reject-paginate-table', 'paginate_reject_table_proposal');
         //--------------------------Cancel-----------
@@ -544,6 +544,28 @@ Route::middleware(['auth'])->group(function () {
         //----------------------------
         Route::post('DummyProposal-search-table', 'search_table_dummyproposal');
         Route::post('DummyProposal-paginate-table', 'paginate_table_dummyproposal');
+
+        //--------------------------LogDoc-----------
+        Route::post('DummyProposal-LogDoc-search-table', 'search_table_paginate_log_doc_dummyproposal');
+        Route::post('DummyProposal-LogDoc-paginate-table', 'paginate_log_doc_table_dummyproposal');
+         //--------------------------pending---------
+        Route::post('DummyProposal-Pending-search-table', 'search_table_paginate_pending');
+        Route::post('DummyProposal-Pending-paginate-table', 'paginate_pending_table_proposal');
+        //--------------------------Awaiting---------
+        Route::post('DummyProposal-Awaiting-search-table', 'search_table_paginate_awaiting');
+        Route::post('DummyProposal-Awaiting-paginate-table', 'paginate_awaiting_table_proposal');
+        //--------------------------Approved---------
+        Route::post('DummyProposal-Approved-search-table', 'search_table_paginate_approved');
+        Route::post('DummyProposal-Approved-paginate-table', 'paginate_approved_table_proposal');
+        //--------------------------Generate---------
+        Route::post('DummyProposal-Generate-search-table', 'search_table_paginate_generate');
+        Route::post('DummyProposal-Generate-paginate-table', 'paginate_generate_table_proposal');
+        //--------------------------Reject-----------
+        Route::post('DummyProposal-Reject-search-table', 'search_table_paginate_reject');
+        Route::post('DummyProposal-Reject-paginate-table', 'paginate_reject_table_proposal');
+        //--------------------------Cancel-----------
+        Route::post('DummyProposal-Cancel-search-table', 'search_table_paginate_cancel');
+        Route::post('DummyProposal-Cancel-paginate-table', 'paginate_cancel_table_proposal');
     });
 
     #Proposal Request

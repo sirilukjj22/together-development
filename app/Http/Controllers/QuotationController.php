@@ -322,12 +322,14 @@ class QuotationController extends Controller
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                             }
                             if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                if ($value->status_document !== 2) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                    if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                    }
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                                 }
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
                         } elseif ($rolePermission == 2) {
                             if ($canViewProposal) {
@@ -336,15 +338,17 @@ class QuotationController extends Controller
                             if ($isOperatedByCreator) {
                                 if ($canViewProposal) {
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
                                 }
                                 if ($canEditProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                    if ($value->status_document !== 2) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                        if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                        }
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                                     }
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                                 }
                             }
                         } elseif ($rolePermission == 3) {
@@ -354,12 +358,14 @@ class QuotationController extends Controller
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
                             }
                             if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                if ($value->status_document !== 2) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                    if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                    }
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                                 }
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
                         }
                     } else {
@@ -482,12 +488,14 @@ class QuotationController extends Controller
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                         }
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                            if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                }
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                         }
                     } elseif ($rolePermission == 2) {
                         if ($canViewProposal) {
@@ -496,15 +504,17 @@ class QuotationController extends Controller
                         if ($isOperatedByCreator) {
                             if ($canViewProposal) {
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
                             }
                             if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                if ($value->status_document !== 2) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                    if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                    }
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                                 }
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
                         }
                     } elseif ($rolePermission == 3) {
@@ -514,12 +524,14 @@ class QuotationController extends Controller
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
                         }
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                            if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                }
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                         }
                     }
                 } else {

@@ -536,6 +536,65 @@
 
         return $html;
     }
+    //------------getPageApproved
+    function showingEntriesTableGenerate($data, $table)
+    {
+        $total = $data->total();
+        $currentPage = $data->currentPage();
+        $perPage = !empty($_GET['table']) && @$_GET['table'] == $table ? $_GET['perPage'] : 10;
+
+        $from = ($currentPage - 1) * $perPage + 1;
+        $to = min($currentPage * $perPage, $total);
+
+        $html = '';
+
+        $html .= 'Showing '.$from .' to '. $to .' of '. $total .' entries';
+
+        return $html;
+    }
+    function paginateTableGenerate($data, $table)
+    {
+        $currentPage = 1;
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $num = 0;
+        $html = '';
+
+        $html .= '<div class="pagination" style="white-space: nowrap;">
+                    <a href="#" onclick="getPageGenerate('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
+                    if ($data->total() > 0) {
+                        if ($currentPage > 3)
+                        {
+                            $html .= '<a class="" href="#" onclick="getPageGenerate(1, '.$perPage.', '."'$table'".')">1</a>';
+
+                            if ($currentPage > 4)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                        }
+
+                        for ($i = max(1, $currentPage - 2); $i <= min($data->lastPage(), $currentPage + 2); $i++)
+                        {
+                            if ($currentPage == $i) {
+                                $html .= '<a class="active" href="#" onclick="getPageGenerate('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            } else {
+                                $html .= '<a class="" href="#" onclick="getPageGenerate('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            }
+                        }
+
+                        if ($currentPage < $data->lastPage() - 2)
+                        {
+                            if ($currentPage < $data->lastPage() - 3)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                            $html .= '<a href="#" onclick="getPageGenerate(' .$data->lastPage(). ', ' . $perPage . ', '."'$table'".')">'.$data->lastPage().'</a>';
+                        }
+                    }
+          $html .= '<a href="#" onclick="getPageGenerate('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>
+                  </div>';
+
+        return $html;
+    }
     //----------------Reject-----------------
     function showingEntriesTableReject($data, $table)
     {

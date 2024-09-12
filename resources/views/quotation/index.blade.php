@@ -280,12 +280,14 @@
                                                                         @endif
 
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                            @if ($item->status_document !== 2)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                                @endif
+                                                                                <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
-                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
                                                                     @elseif ($rolePermission == 2)
                                                                         @if ($canViewProposal == 1)
@@ -294,15 +296,17 @@
                                                                         @if ($item->Operated_by == $CreateBy)
                                                                             @if ($canViewProposal == 1)
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                             @endif
                                                                             @if ($canEditProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                                @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
-                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                                @if ($item->status_document !== 2)
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                    @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                                    @endif
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                                 @endif
-                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
                                                                         @endif
                                                                     @elseif ($rolePermission == 3)
@@ -312,12 +316,14 @@
                                                                             <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         @endif
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
-                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                            @if ($item->status_document !== 2)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                                @endif
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
-                                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
                                                                     @endif
                                                                 @else
@@ -1133,6 +1139,7 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

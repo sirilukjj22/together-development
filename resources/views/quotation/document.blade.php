@@ -156,7 +156,15 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="col-12 row mt-5">
+                                <div class="col-4"></div>
+                                <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
+                                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('Proposal.index') }}'">
+                                        Back
+                                    </button>
+                                </div>
+                                <div class="col-4"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -171,7 +179,7 @@
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
     <script type="text/javascript" src="{{ asset('assets/helper/searchTableProposal.js')}}"></script>
     <script>
-        const table_name = ['proposalLogTable'];
+        const table_name = ['proposalLogTable','proposal-LogTable'];
             $(document).ready(function() {
                 for (let index = 0; index < table_name.length; index++) {
                     console.log();
