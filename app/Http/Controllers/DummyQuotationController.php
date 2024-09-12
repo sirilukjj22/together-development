@@ -5003,7 +5003,7 @@ class DummyQuotationController extends Controller
 
         }
         elseif ($value == 'all'){
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.type', 'asc')
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
             ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
         }
         return response()->json([
@@ -5033,7 +5033,7 @@ class DummyQuotationController extends Controller
 
         }
         elseif ($value == 'all'){
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.type', 'asc')
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
             ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
 
         }
@@ -5045,7 +5045,7 @@ class DummyQuotationController extends Controller
     public function addProductselect($Quotation_ID, Request $request) {
         $value = $request->input('value');
         $products = master_product_item::leftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
-        ->orderBy('master_product_items.type', 'asc')
+        ->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
         ->where('master_product_items.status', 1)
         ->where('master_product_items.id', $value)
         ->select('master_product_items.*', 'master_units.name_th as unit_name')
@@ -5059,7 +5059,7 @@ class DummyQuotationController extends Controller
     public function addProducttableselect($Quotation_ID, Request $request) {
         $value = $request->input('value');
         $products = master_product_item::leftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
-        ->orderBy('master_product_items.type', 'asc')
+        ->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
         ->where('master_product_items.status', 1)
         ->where('master_product_items.id', $value)
         ->select('master_product_items.*', 'master_units.name_th as unit_name')
@@ -5072,7 +5072,7 @@ class DummyQuotationController extends Controller
     }
     public function addProducttablemain($Quotation_ID, Request $request) {
         $value = $request->input('value');
-        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.type', 'asc')
+        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
         ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
         return response()->json([
             'products' => $products,
@@ -5081,7 +5081,7 @@ class DummyQuotationController extends Controller
     }
     public function addProducttablecreatemain($Quotation_ID, Request $request) {
         $value = $request->input('value');
-        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.type', 'asc')
+        $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
         ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
         return response()->json([
             'products' => $products,
