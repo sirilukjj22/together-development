@@ -3206,9 +3206,6 @@ class DummyQuotationController extends Controller
                             }
                             if ($canEditProposal) {
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
-                                }
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
                         } elseif ($rolePermission == 2) {
@@ -3222,9 +3219,6 @@ class DummyQuotationController extends Controller
                                 if ($canEditProposal) {
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
-                                    }
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                                 }
                             }
@@ -3236,9 +3230,6 @@ class DummyQuotationController extends Controller
                             }
                             if ($canEditProposal) {
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
-                                }
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
                         }
@@ -3374,9 +3365,6 @@ class DummyQuotationController extends Controller
                             }
                             if ($canEditProposal) {
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
-                                }
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
                         } elseif ($rolePermission == 2) {
@@ -3390,9 +3378,6 @@ class DummyQuotationController extends Controller
                                 if ($canEditProposal) {
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
-                                    }
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                                 }
                             }
@@ -3404,9 +3389,6 @@ class DummyQuotationController extends Controller
                             }
                             if ($canEditProposal) {
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Dummy/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
-                                }
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
                         }
