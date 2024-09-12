@@ -4542,7 +4542,7 @@ class QuotationController extends Controller
         $save->Category = 'Cancel :: Proposal';
         $save->content = 'Cancel Document Proposal ID : '.$Quotation_ID;
         $save->save();
-        return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
     public function Revice($id){
         $Quotation = Quotation::find($id);
