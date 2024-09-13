@@ -655,33 +655,70 @@ class GuestController extends Controller
                     }
                     $AddressIndividual = null;
                     if ($datarequest['Country'] == 'Thailand') {
-
-                        $provinceNames = province::where('id', $City)->first();
-                        $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
-                        $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
-                        $provinceNames = $provinceNames->name_th;
-                        $TambonCheck = $TambonID->name_th;
-                        $amphures = $amphuresID->name_th;
-                        $Zip_code = $TambonID->zip_code;
-                        $AddressCheck = null;
-                        if ($Address) {
-                            $AddressCheck = 'ที่อยู่ : '.$Address;
+                        if ($City) {
+                            $provinceNames = province::where('id', $City)->first();
+                            $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
+                            $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
+                            $provinceNames = $provinceNames->name_th;
+                            $TambonCheck = $TambonID->name_th;
+                            $amphures = $amphuresID->name_th;
+                            $Zip_code = $TambonID->zip_code;
+                            $AddressCheck = null;
+                            if ($Address) {
+                                $AddressCheck = 'ที่อยู่ : '.$Address;
+                            }
+                            $CountryCheck = null;
+                            if ($Country) {
+                                $CountryCheck = ' ประเทศ : '.$Country;
+                            }
+                            $AddressIndividual = $AddressCheck.'+'.$CountryCheck.'+'.' ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.' '.$Zip_code;
+                        }elseif ($Country&&$Address) {
+                            $CountryCheck = null;
+                            if ($Country) {
+                                $CountryCheck = ' ประเทศ : '.$Country;
+                            }
+                            if ($Address) {
+                                $AddressCheck = 'ที่อยู่ : '.$Address;
+                            }
+                            $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
+                        }elseif ($Country) {
+                            $CountryCheck = null;
+                            if ($Country) {
+                                $CountryCheck = ' ประเทศ : '.$Country;
+                            }
+                            $AddressIndividual = $CountryCheck;
+                        }else{
+                            $AddressCheck = null;
+                            if ($Address) {
+                                $AddressCheck = 'ที่อยู่ : '.$Address;
+                            }
+                            $AddressIndividual = $AddressCheck;
                         }
-                        $CountryCheck = null;
-                        if ($Country) {
-                            $CountryCheck = ' ประเทศ : '.$Country;
-                        }
-                        $AddressIndividual = $AddressCheck.'+'.$CountryCheck.'+'.' ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.' '.$Zip_code;
                     }else{
-                        $AddressCheck = null;
-                        if ($Address) {
-                            $AddressCheck = 'ที่อยู่ : '.$Address;
+
+                        if ($Address&&$Country) {
+                            $AddressCheck = null;
+                            if ($Address) {
+                                $AddressCheck = 'ที่อยู่ : '.$Address;
+                            }
+                            $CountryCheck = null;
+                            if ($Country) {
+                                $CountryCheck = ' ประเทศ : '.$Country;
+                            }
+                            $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
+                        }elseif ($Address) {
+                            $AddressCheck = null;
+                            if ($Address) {
+                                $AddressCheck = 'ที่อยู่ : '.$Address;
+                            }
+                            $AddressIndividual = $AddressCheck;
+                        }else{
+                            $CountryCheck = null;
+                            if ($Country) {
+                                $CountryCheck = ' ประเทศ : '.$Country;
+                            }
+                            $AddressIndividual = $CountryCheck;
                         }
-                        $CountryCheck = null;
-                        if ($Country) {
-                            $CountryCheck = ' ประเทศ : '.$Country;
-                        }
-                        $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
                     }
                     $Email = null;
                     if ($Emailcheck) {
@@ -1263,35 +1300,70 @@ class GuestController extends Controller
 
         $AddressIndividual = null;
         if ($datarequest['Country'] == 'Thailand') {
-
-            $provinceNames = province::where('id', $City)->first();
-            $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
-            $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
-            $provinceNames = $provinceNames->name_th;
-            $TambonCheck = $TambonID->name_th;
-            $amphures = $amphuresID->name_th;
-            $Zip_code = $TambonID->zip_code;
-            $AddressCheck = null;
-            if ($Address) {
-                $AddressCheck = 'ที่อยู่ : '.$Address;
+            if ($City) {
+                $provinceNames = province::where('id', $City)->first();
+                $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
+                $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
+                $provinceNames = $provinceNames->name_th;
+                $TambonCheck = $TambonID->name_th;
+                $amphures = $amphuresID->name_th;
+                $Zip_code = $TambonID->zip_code;
+                $AddressCheck = null;
+                if ($Address) {
+                    $AddressCheck = 'ที่อยู่ : '.$Address;
+                }
+                $CountryCheck = null;
+                if ($Country) {
+                    $CountryCheck = ' ประเทศ : '.$Country;
+                }
+                $AddressIndividual = $AddressCheck.'+'.$CountryCheck.'+'.' ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.' '.$Zip_code;
+            }elseif ($Country&&$Address) {
+                $CountryCheck = null;
+                if ($Country) {
+                    $CountryCheck = ' ประเทศ : '.$Country;
+                }
+                if ($Address) {
+                    $AddressCheck = 'ที่อยู่ : '.$Address;
+                }
+                $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
+            }elseif ($Country) {
+                $CountryCheck = null;
+                if ($Country) {
+                    $CountryCheck = ' ประเทศ : '.$Country;
+                }
+                $AddressIndividual = $CountryCheck;
+            }else{
+                $AddressCheck = null;
+                if ($Address) {
+                    $AddressCheck = 'ที่อยู่ : '.$Address;
+                }
+                $AddressIndividual = $AddressCheck;
             }
-            $CountryCheck = null;
-            if ($Country) {
-                $CountryCheck = ' ประเทศ : '.$Country;
-            }
-            $AddressIndividual = $AddressCheck.'+'.$CountryCheck.'+'.' ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.' '.$Zip_code;
-
         }else{
 
-            $AddressCheck = null;
-            if ($Address) {
-                $AddressCheck = 'ที่อยู่ : '.$Address;
+            if ($Address&&$Country) {
+                $AddressCheck = null;
+                if ($Address) {
+                    $AddressCheck = 'ที่อยู่ : '.$Address;
+                }
+                $CountryCheck = null;
+                if ($Country) {
+                    $CountryCheck = ' ประเทศ : '.$Country;
+                }
+                $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
+            }elseif ($Address) {
+                $AddressCheck = null;
+                if ($Address) {
+                    $AddressCheck = 'ที่อยู่ : '.$Address;
+                }
+                $AddressIndividual = $AddressCheck;
+            }else{
+                $CountryCheck = null;
+                if ($Country) {
+                    $CountryCheck = ' ประเทศ : '.$Country;
+                }
+                $AddressIndividual = $CountryCheck;
             }
-            $CountryCheck = null;
-            if ($Country) {
-                $CountryCheck = ' ประเทศ : '.$Country;
-            }
-            $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
         }
 
         $EmailTax = null;
