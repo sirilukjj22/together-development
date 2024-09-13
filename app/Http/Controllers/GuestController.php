@@ -619,7 +619,7 @@ class GuestController extends Controller
                     $Amphures =  $extractedData['Amphures'] ?? null;
                     $Tambon =  $extractedData['Tambon'] ?? null;
                     $Zip_Code =  $extractedData['Zip_Code'] ?? null;
-                    $Email =  $extractedData['Email'] ?? null;
+                    $Emailcheck =  $extractedData['Email'] ?? null;
                     $Identification_Number =  $extractedData['Identification_Number'] ?? null;
                     $Contract_Rate_Start_Date =  $extractedData['Contract_Rate_Start_Date'] ?? null;
                     $Contract_Rate_End_Date =  $extractedData['Contract_Rate_End_Date'] ?? null;
@@ -667,8 +667,8 @@ class GuestController extends Controller
                         $AddressIndividual = 'ที่อยู่ : '.$Address.'+'.' ประเทศ : '.$Country;
                     }
                     $Email = null;
-                    if ($Email) {
-                        $Email = 'อีเมล์ผู้ติดต่อ : '.$Email;
+                    if ($Emailcheck) {
+                        $Email = 'อีเมล์ผู้ติดต่อ : '.$Emailcheck;
                     }
                     $phone = null;
                     if ($phoneCom) {
