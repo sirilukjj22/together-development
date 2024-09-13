@@ -65,6 +65,7 @@ class Quotation extends Model
     }
     public function  contact2()
     {
-        return $this->hasOne(representative::class, 'id', 'company_contact');
+        return $this->hasOne(representative::class, 'Company_ID', 'Company_ID')
+                ->where('status', 1);
     }
 }

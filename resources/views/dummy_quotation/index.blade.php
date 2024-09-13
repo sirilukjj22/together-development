@@ -260,7 +260,7 @@
                                                                     @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                         @if ($canViewProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                         @endif
 
@@ -285,7 +285,7 @@
                                                                         @if ($item->Operated_by == $CreateBy)
                                                                             @if ($canViewProposal == 1)
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                             @endif
                                                                             @if ($canEditProposal == 1)
                                                                                 @if ($item->status_document !== 2 && $item->status_document !== 5)
@@ -306,7 +306,7 @@
                                                                         @if ($canViewProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         @endif
                                                                         @if ($canEditProposal == 1)
                                                                             @if ($item->status_document !== 2 && $item->status_document !== 5)
@@ -326,7 +326,7 @@
                                                                 @else
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                     @endif
                                                                 @endif
@@ -451,7 +451,7 @@
                                                                     @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                         @if ($canViewProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                         @endif
 
@@ -472,7 +472,7 @@
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                             @endif
                                                                             @if ($canEditProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                                 @if ($item->status_document == 0)
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Revice</a></li>
@@ -485,7 +485,7 @@
                                                                         @if ($canViewProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         @endif
                                                                         @if ($canEditProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
@@ -499,7 +499,7 @@
                                                                 @else
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                     @endif
                                                                 @endif
@@ -616,7 +616,7 @@
                                                                 @if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3)
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                     @endif
                                                                 @endif
@@ -736,7 +736,7 @@
                                                                     @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                         @if ($canViewProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                         @endif
 
@@ -761,7 +761,7 @@
                                                                         @if ($item->Operated_by == $CreateBy)
                                                                             @if ($canViewProposal == 1)
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                             @endif
                                                                             @if ($canEditProposal == 1)
                                                                                 @if ($item->status_document !== 2)
@@ -782,7 +782,7 @@
                                                                         @if ($canViewProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         @endif
                                                                         @if ($canEditProposal == 1)
                                                                             @if ($item->status_document !== 2)
@@ -802,7 +802,7 @@
                                                                 @else
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                     @endif
                                                                 @endif
@@ -921,7 +921,7 @@
                                                                 @if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3)
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                     @endif
                                                                 @endif
@@ -1041,7 +1041,7 @@
                                                                     @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                         @if ($canViewProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                         @endif
                                                                         @if ($canEditProposal == 1)
@@ -1057,7 +1057,7 @@
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                             @endif
                                                                             @if ($canEditProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
@@ -1066,7 +1066,7 @@
                                                                         @if ($canViewProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         @endif
                                                                         @if ($canEditProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
@@ -1076,7 +1076,7 @@
                                                                 @else
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                     @endif
                                                                 @endif
@@ -1196,7 +1196,7 @@
                                                                     @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                         @if ($canViewProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                         @endif
                                                                         @if ($canEditProposal == 1)
@@ -1212,7 +1212,7 @@
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                             @endif
                                                                             @if ($canEditProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
                                                                             @endif
@@ -1221,7 +1221,7 @@
                                                                         @if ($canViewProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         @endif
                                                                         @if ($canEditProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
@@ -1231,7 +1231,7 @@
                                                                 @else
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                     @endif
                                                                 @endif

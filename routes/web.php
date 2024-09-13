@@ -529,7 +529,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Dummy/Proposal/cancel/{id}','Cancel')->name('DummyQuotation.cancel');
         Route::get('/Dummy/Proposal/Generate/{id}','Generate')->name('DummyQuotation.Generate');
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
-        Route::get('/Dummy/Proposal/Quotation/cover/document/PDF/{id}', 'sheetpdf')->name('DummyQuotation.sheet');
+        Route::get('/Dummy/Proposal/cover/document/PDF/{id}', 'sheetpdf')->name('DummyQuotation.sheet');
         //-----------------------------------ส่งเอกสาร-----------------------------------------------------------------------
         Route::get('/Dummy/Proposal/send/documents', 'senddocuments')->name('DummyQuotation.senddocuments');
 
@@ -575,6 +575,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Dummy/Proposal/Request/document/view/Approve/', 'Approve')->name('DummyQuotation.Approve');
         Route::post('/Dummy/Proposal/Request/document/view/Reject/', 'Reject')->name('DummyQuotation.Reject');
         Route::get('/Dummy/Proposal/Request/document/view/Approve/viewApprove/{id}','viewApprove')->name('DummyQuotation.viewApprove');
+
+        //----------------------------
+        Route::post('Proposal-request-search-table', 'search_table_proposal');
+        Route::post('Proposal-request-paginate-table', 'paginate_table_proposal');
     });
     ##-------------------------------TemplateController-----------------
     Route::controller(Master_TemplateController::class)->group(function () {
