@@ -1274,6 +1274,7 @@ class GuestController extends Controller
             $phoneTaxA = 'ลบเบอร์โทรศัพท์ : ' . implode(', ', $phoneA);
         }
         $TaxType = null;
+        $comtypefullname = null;
         if ($Tax_Type) {
             if ($Company_type >= 30) {
                 $Mprefix = master_document::where('id', $Company_type)->where('Category', 'Mprename')->first();
