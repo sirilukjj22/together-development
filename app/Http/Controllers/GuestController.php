@@ -653,18 +653,35 @@ class GuestController extends Controller
                     } elseif ($last_name) {
                         $comtypefullname = 'นามสกุล : ' . $last_name;
                     }
-                    $AddressIndividual =null;
-                    if ($Country == 'Thailand') {
+                    $AddressIndividual = null;
+                    if ($datarequest['Country'] == 'Thailand') {
+
                         $provinceNames = province::where('id', $City)->first();
                         $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
                         $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
-                        $provinceNamesN = $provinceNames->name_th;
-                        $TambonN = $TambonID->name_th;
-                        $amphuresN = $amphuresID->name_th;
-                        $Zip_codeN = $TambonID->zip_code;
-                        $AddressIndividual = 'ที่อยู่ : '.$Address.'+'.' ประเทศ : '.$Country.' ตำบล : '.$TambonN.' อำเภอ : '.$amphuresN.' จังหวัด : '.$provinceNamesN.' '.$Zip_codeN;
-                    }elseif ($Country == 'Other_countries'){
-                        $AddressIndividual = 'ที่อยู่ : '.$Address.'+'.' ประเทศ : '.$Country;
+                        $provinceNames = $provinceNames->name_th;
+                        $TambonCheck = $TambonID->name_th;
+                        $amphures = $amphuresID->name_th;
+                        $Zip_code = $TambonID->zip_code;
+                        $AddressCheck = null;
+                        if ($Address) {
+                            $AddressCheck = 'ที่อยู่ : '.$Address;
+                        }
+                        $CountryCheck = null;
+                        if ($Country) {
+                            $CountryCheck = ' ประเทศ : '.$Country;
+                        }
+                        $AddressIndividual = $AddressCheck.'+'.$CountryCheck.'+'.' ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.' '.$Zip_code;
+                    }else{
+                        $AddressCheck = null;
+                        if ($Address) {
+                            $AddressCheck = 'ที่อยู่ : '.$Address;
+                        }
+                        $CountryCheck = null;
+                        if ($Country) {
+                            $CountryCheck = ' ประเทศ : '.$Country;
+                        }
+                        $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
                     }
                     $Email = null;
                     if ($Emailcheck) {
@@ -1245,18 +1262,38 @@ class GuestController extends Controller
 
 
         $AddressIndividual = null;
-        if ($Country == 'Thailand') {
+        if ($datarequest['Country'] == 'Thailand') {
+
             $provinceNames = province::where('id', $City)->first();
             $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
             $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
             $provinceNames = $provinceNames->name_th;
-            $Tambon = $TambonID->name_th;
+            $TambonCheck = $TambonID->name_th;
             $amphures = $amphuresID->name_th;
             $Zip_code = $TambonID->zip_code;
-            $AddressIndividual = 'ที่อยู่ : '.$Address.'+'.' ประเทศ : '.$Country.'+'.' ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.'+'.$Zip_code;
-        }elseif ($City) {
-            $AddressIndividual = 'ที่อยู่ : '.$Address.'+'.' ประเทศ : '.$Country;
+            $AddressCheck = null;
+            if ($Address) {
+                $AddressCheck = 'ที่อยู่ : '.$Address;
+            }
+            $CountryCheck = null;
+            if ($Country) {
+                $CountryCheck = ' ประเทศ : '.$Country;
+            }
+            $AddressIndividual = $AddressCheck.'+'.$CountryCheck.'+'.' ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.' '.$Zip_code;
+
+        }else{
+
+            $AddressCheck = null;
+            if ($Address) {
+                $AddressCheck = 'ที่อยู่ : '.$Address;
+            }
+            $CountryCheck = null;
+            if ($Country) {
+                $CountryCheck = ' ประเทศ : '.$Country;
+            }
+            $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
         }
+
         $EmailTax = null;
         if ($Email) {
             $EmailTax = 'อีเมล์ : '.$Email;
@@ -1396,6 +1433,7 @@ class GuestController extends Controller
                 $datacompany .= $variable;
             }
         }
+
         $userid = Auth::user()->id;
         $save = new log_company();
         $save->Created_by = $userid;
