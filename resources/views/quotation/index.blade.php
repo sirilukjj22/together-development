@@ -243,7 +243,7 @@
                                                     </td>
                                                     <td >{{ @$item->userOperated->name }}</td>
                                                     <td style="text-align: center;">
-                                                        @if($item->status_guest == 1)
+                                                        @if($item->status_guest == 1 && $item->status_document !== 0)
                                                             <span class="badge rounded-pill bg-success">Approved</span>
                                                         @else
                                                             @if($item->status_document == 0)
@@ -272,57 +272,64 @@
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
                                                                 @if ($rolePermission > 0)
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                    @endif
                                                                     @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
-                                                                        @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                        @endif
-
                                                                         @if ($canEditProposal == 1)
                                                                             @if ($item->status_document !== 2)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                                @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                                @if ($item->status_document == 3 || $item->status_document == 1 && $item->status_guest == 0)
                                                                                     <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
                                                                                 @endif
-                                                                                <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
-                                                                            @endif
-                                                                        @endif
-                                                                    @elseif ($rolePermission == 2)
-                                                                        @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                        @endif
-                                                                        @if ($item->Operated_by == $CreateBy)
-                                                                            @if ($canViewProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                            @endif
-                                                                            @if ($canEditProposal == 1)
-                                                                                @if ($item->status_document !== 2)
-                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                                    @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
-                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                                @if ($item->status_document == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
+                                                                                @else
+                                                                                    @if ($item->status_document !== 4)
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
                                                                                     @endif
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                                 @endif
                                                                             @endif
                                                                         @endif
-                                                                    @elseif ($rolePermission == 3)
-                                                                        @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                    @elseif ($rolePermission == 2)
+                                                                        @if ($item->Operated_by == $CreateBy)
+                                                                            @if ($canEditProposal == 1)
+                                                                                @if ($item->status_document !== 2)
+                                                                                    @if ($item->status_document == 3 || $item->status_document == 1 && $item->status_guest == 0)
+                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
+                                                                                    @endif
+                                                                                    @if ($item->status_document == 0)
+                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
+                                                                                    @else
+                                                                                        @if ($item->status_document !== 4)
+                                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
+                                                                                        @endif
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                    @endif
+                                                                                @endif
+                                                                            @endif
                                                                         @endif
+                                                                    @elseif ($rolePermission == 3)
                                                                         @if ($canEditProposal == 1)
                                                                             @if ($item->status_document !== 2)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                                @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+
+                                                                                @if ($item->status_document == 3 || $item->status_document == 1 && $item->status_guest == 0)
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
                                                                                 @endif
-                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @if ($item->status_document == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
+                                                                                @else
+                                                                                    @if ($item->status_document !== 4)
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
+                                                                                    @endif
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+
+                                                                                @endif
                                                                             @endif
                                                                         @endif
                                                                     @endif
@@ -439,23 +446,7 @@
                                                     </td>
                                                     <td >{{ @$item->userOperated->name }}</td>
                                                     <td style="text-align: center;">
-                                                        @if($item->status_guest == 1)
-                                                            <span class="badge rounded-pill bg-success">Approved</span>
-                                                        @else
-                                                            @if($item->status_document == 0)
-                                                                <span class="badge rounded-pill bg-danger">Cancel</span>
-                                                            @elseif ($item->status_document == 1)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 2)
-                                                                <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
-                                                            @elseif ($item->status_document == 3)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 4)
-                                                                <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
-                                                            @elseif ($item->status_document == 6)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                            @endif
-                                                        @endif
+                                                        <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
                                                     </td>
                                                     @php
                                                         $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
@@ -468,51 +459,38 @@
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
                                                                 @if ($rolePermission > 0)
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                    @endif
                                                                     @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
-                                                                        @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                        @endif
-
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                             @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
                                                                                 <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
                                                                             @endif
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
                                                                     @elseif ($rolePermission == 2)
-                                                                        @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                        @endif
                                                                         @if ($item->Operated_by == $CreateBy)
-                                                                            @if ($canViewProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                            @endif
                                                                             @if ($canEditProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                                 @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
                                                                                 @endif
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
                                                                         @endif
                                                                     @elseif ($rolePermission == 3)
-                                                                        @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                        @endif
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                             @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
                                                                                 <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Approved({{ $item->id }})">Approved</a></li>
                                                                             @endif
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
                                                                     @endif
@@ -768,23 +746,7 @@
                                                     </td>
                                                     <td >{{ @$item->userOperated->name }}</td>
                                                     <td style="text-align: center;">
-                                                        @if($item->status_guest == 1)
-                                                            <span class="badge rounded-pill bg-success">Approved</span>
-                                                        @else
-                                                            @if($item->status_document == 0)
-                                                                <span class="badge rounded-pill bg-danger">Cancel</span>
-                                                            @elseif ($item->status_document == 1)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 2)
-                                                                <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
-                                                            @elseif ($item->status_document == 3)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 4)
-                                                                <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
-                                                            @elseif ($item->status_document == 6)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                            @endif
-                                                        @endif
+                                                        <span class="badge rounded-pill bg-success">Approved</span>
                                                     </td>
                                                     @php
                                                         $CreateBy = Auth::user()->id;
@@ -797,19 +759,36 @@
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
                                                                 @if ($rolePermission > 0)
-                                                                    @if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3)
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                    @endif
+                                                                    @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                         @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
                                                                         @endif
-
                                                                         @if ($canEditProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                        @endif
+                                                                    @elseif ($rolePermission == 2)
+                                                                        @if ($item->Operated_by == $CreateBy)
+                                                                            @if ($canViewProposal == 1)
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
-                                                                            @if ($item->Operated_by == $CreateBy)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                                <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                             @endif
+                                                                            @if ($canEditProposal == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                        @endif
+                                                                    @elseif ($rolePermission == 3)
+                                                                        @if ($canViewProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/send/email/'.$item->id) }}">Send Email</a></li>
+                                                                        @endif
+                                                                        @if ($canEditProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
                                                                     @endif
                                                                 @else
@@ -925,23 +904,7 @@
                                                     </td>
                                                     <td >{{ @$item->userOperated->name }}</td>
                                                     <td style="text-align: center;">
-                                                        @if($item->status_guest == 1)
-                                                            <span class="badge rounded-pill bg-success">Approved</span>
-                                                        @else
-                                                            @if($item->status_document == 0)
-                                                                <span class="badge rounded-pill bg-danger">Cancel</span>
-                                                            @elseif ($item->status_document == 1)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 2)
-                                                                <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
-                                                            @elseif ($item->status_document == 3)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 4)
-                                                                <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
-                                                            @elseif ($item->status_document == 6)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                            @endif
-                                                        @endif
+                                                        <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
                                                     </td>
                                                     @php
                                                         $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
@@ -953,18 +916,35 @@
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
-                                                                @if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3)
+                                                                @if ($rolePermission > 0)
                                                                     @if ($canViewProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                     @endif
-                                                                    @if ($rolePermission == 1 || $rolePermission == 2)
-                                                                        @if (Auth::user()->id == $item->Operated_by)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">Edit</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
+                                                                    @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
+                                                                        @if ($canEditProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                        @endif
+                                                                    @elseif ($rolePermission == 2)
+                                                                        @if ($item->Operated_by == $CreateBy)
+                                                                            @if ($canEditProposal == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                        @endif
+                                                                    @elseif ($rolePermission == 3)
+                                                                        @if ($canEditProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
                                                                         @endif
+                                                                    @endif
+                                                                @else
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                     @endif
                                                                 @endif
                                                             </ul>
@@ -1073,44 +1053,47 @@
                                                     </td>
                                                     <td >{{ @$item->userOperated->name }}</td>
                                                     <td style="text-align: center;">
-                                                        @if($item->status_guest == 1)
-                                                            <span class="badge rounded-pill bg-success">Approved</span>
-                                                        @else
-                                                            @if($item->status_document == 0)
-                                                                <span class="badge rounded-pill bg-danger">Cancel</span>
-                                                            @elseif ($item->status_document == 1)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 2)
-                                                                <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
-                                                            @elseif ($item->status_document == 3)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                            @elseif ($item->status_document == 4)
-                                                                <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
-                                                            @elseif ($item->status_document == 6)
-                                                                <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                            @endif
-                                                        @endif
+                                                        <span class="badge rounded-pill bg-danger">Cancel</span>
                                                     </td>
                                                     @php
                                                         $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
                                                         $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                                                         $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                        $CreateBy = Auth::user()->id;
                                                     @endphp
                                                     <td style="text-align: center;">
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
-                                                                @if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3)
+                                                                @if ($rolePermission > 0)
                                                                     @if ($canViewProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/'.$item->id) }}">View</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                     @endif
-                                                                    @if ($rolePermission == 1 || $rolePermission == 2)
-                                                                        @if (Auth::user()->id == $item->Operated_by)
+                                                                    @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
+                                                                        @if ($canEditProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
+                                                                        @endif
+                                                                    @elseif ($rolePermission == 2)
+                                                                        @if ($item->Operated_by == $CreateBy)
+                                                                            @if ($canEditProposal == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
+                                                                            @endif
+                                                                        @endif
+                                                                    @elseif ($rolePermission == 3)
+                                                                        @if ($canEditProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Quotation/edit/quotation/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Revice({{ $item->id }})">Revice</a></li>
                                                                         @endif
+                                                                    @endif
+                                                                @else
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/'.$item->id) }}">View</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Proposal/view/quotation/LOG/'.$item->id) }}">LOG</a></li>
                                                                     @endif
                                                                 @endif
                                                             </ul>
@@ -1672,7 +1655,7 @@
         }
         function Revice(id){
             Swal.fire({
-            title: "คุณต้องการปิดการใช้งานใบข้อเสนอนี้ใช่หรือไม่?",
+            title: "คุณต้องการเปิดการใช้งานใบข้อเสนอนี้ใช่หรือไม่?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "ตกลง",

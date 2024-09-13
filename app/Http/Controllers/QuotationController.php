@@ -54,8 +54,8 @@ class QuotationController extends Controller
         $Pendingcount = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->count();
         $Awaiting = Quotation::query()->where('status_document',2)->paginate($perPage);
         $Awaitingcount = Quotation::query()->where('status_document',2)->count();
-        $Approved = Quotation::query()->where('status_guest',1)->paginate($perPage);
-        $Approvedcount = Quotation::query()->where('status_guest',1)->count();
+        $Approved = Quotation::query()->where('status_guest',1)->whereIn('status_document',[1,3])->paginate($perPage);
+        $Approvedcount = Quotation::query()->where('status_guest',1)->whereIn('status_document',[1,3])->count();
         $Reject = Quotation::query()->where('status_document',4)->paginate($perPage);
         $Rejectcount = Quotation::query()->where('status_document',4)->count();
         $Cancel = Quotation::query()->where('status_document',0)->paginate($perPage);
@@ -287,7 +287,7 @@ class QuotationController extends Controller
                         $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
                     }
                     // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
+                    if ($value->status_guest == 1 &&$value->status_document !== 0) {
                         $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
                     } else {
                         if ($value->status_document == 0) {
@@ -315,56 +315,62 @@ class QuotationController extends Controller
                     $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
                     if ($rolePermission > 0) {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        }
                         if ($rolePermission == 1 && $isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            }
                             if ($canEditProposal) {
                                 if ($value->status_document !== 2) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                    if ($value->status_document == 3 || $value->status_document == 1 && $value->status_guest == 0) {
                                         $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
                                     }
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                                }
-                            }
-                        } elseif ($rolePermission == 2) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                            }
-                            if ($isOperatedByCreator) {
-                                if ($canViewProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                }
-                                if ($canEditProposal) {
-                                    if ($value->status_document !== 2) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                        if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                    if ($value->status_document == 0) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                                    }else {
+                                        if ($value->status_document !== 4) {
+                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
                                         }
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                                         $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                                     }
                                 }
                             }
-                        } elseif ($rolePermission == 3) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        } elseif ($rolePermission == 2) {
+                            if ($isOperatedByCreator) {
+                                if ($canEditProposal) {
+                                    if ($value->status_document !== 2) {
+                                        if ($value->status_document == 3 || $value->status_document == 1 && $value->status_guest == 0) {
+                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                        }
+                                        if ($value->status_document == 0) {
+                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                                        }else {
+                                            if ($value->status_document !== 4) {
+                                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                            }
+                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                        }
+                                    }
+                                }
                             }
+                        } elseif ($rolePermission == 3) {
                             if ($canEditProposal) {
                                 if ($value->status_document !== 2) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                    if ($value->status_document == 3 || $value->status_document == 1 && $value->status_guest == 0) {
                                         $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
                                     }
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                    if ($value->status_document == 0) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                                    }else {
+                                        if ($value->status_document !== 4) {
+                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                        }
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                    }
                                 }
                             }
                         }
@@ -456,7 +462,7 @@ class QuotationController extends Controller
                 if ($value->status_guest == 1) {
                     $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
                 } else {
-                    if ($value->status_document == 0) {
+                    if ($value->status_guest == 1 &&$value->status_document !== 0) {
                         $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
                     } elseif ($value->status_document == 1) {
                         $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
@@ -481,56 +487,62 @@ class QuotationController extends Controller
                 $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
                 if ($rolePermission > 0) {
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                    }
                     if ($rolePermission == 1 && $isOperatedByCreator) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
                         if ($canEditProposal) {
                             if ($value->status_document !== 2) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                if ($value->status_document == 3 || $value->status_document == 1 && $value->status_guest == 0) {
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
                                 }
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
-                            }
-                        }
-                    } elseif ($rolePermission == 2) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                        }
-                        if ($isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            }
-                            if ($canEditProposal) {
-                                if ($value->status_document !== 2) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                if ($value->status_document == 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                                }else {
+                                    if ($value->status_document !== 4) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
                                     }
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                                 }
                             }
                         }
-                    } elseif ($rolePermission == 3) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                    } elseif ($rolePermission == 2) {
+                        if ($isOperatedByCreator) {
+                            if ($canEditProposal) {
+                                if ($value->status_document !== 2) {
+                                    if ($value->status_document == 3 || $value->status_document == 1 && $value->status_guest == 0) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                                    }
+                                    if ($value->status_document == 0) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                                    }else {
+                                        if ($value->status_document !== 4) {
+                                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                        }
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                    }
+                                }
+                            }
                         }
+                    } elseif ($rolePermission == 3) {
                         if ($canEditProposal) {
                             if ($value->status_document !== 2) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                if ($value->status_document == 3 || $value->status_document == 1 && $value->status_guest == 0) {
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
                                 }
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                if ($value->status_document == 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                                }else {
+                                    if ($value->status_document !== 4) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                    }
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
                             }
                         }
                     }
@@ -541,8 +553,6 @@ class QuotationController extends Controller
                         $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                     }
                 }
-
-
 
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
@@ -610,23 +620,8 @@ class QuotationController extends Controller
                         $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
                     }
                     // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
-                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                    } else {
-                        if ($value->status_document == 0) {
-                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                        } elseif ($value->status_document == 1) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 2) {
-                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                        } elseif ($value->status_document == 3) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 4) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                        } elseif ($value->status_document == 6) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        }
-                    }
+
+                    $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
                     $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                     $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                     $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
@@ -638,50 +633,38 @@ class QuotationController extends Controller
                     $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
                     if ($rolePermission > 0) {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        }
                         if ($rolePermission == 1 && $isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            }
                             if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                if ($value->status_document == 3 || $value->status_document == 1 && $value->status_guest == 0) {
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
                                 }
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
                         } elseif ($rolePermission == 2) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                            }
                             if ($isOperatedByCreator) {
-                                if ($canViewProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                }
                                 if ($canEditProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                    if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                    if ($value->status_document == 3 || $value->status_document == 1 && $value->status_guest == 0) {
                                         $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
                                     }
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                                 }
                             }
                         } elseif ($rolePermission == 3) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            }
                             if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                if ($value->status_document == 3 || $value->status_document == 1 && $value->status_guest == 0) {
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
                                 }
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
                         }
@@ -772,23 +755,8 @@ class QuotationController extends Controller
                 }else {
                     $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
                 }
-                if ($value->status_guest == 1) {
-                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                } else {
-                    if ($value->status_document == 0) {
-                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                    } elseif ($value->status_document == 1) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    } elseif ($value->status_document == 2) {
-                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                    } elseif ($value->status_document == 3) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    } elseif ($value->status_document == 4) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                    } elseif ($value->status_document == 6) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    }
-                }
+
+                $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
                 $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                 $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                 $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
@@ -800,50 +768,38 @@ class QuotationController extends Controller
                 $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
                 if ($rolePermission > 0) {
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                    }
                     if ($rolePermission == 1 && $isOperatedByCreator) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                            if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                            if ($value->status_document == 3 || $value->status_document == 1 && $value->status_guest == 0) {
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
                             }
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                         }
                     } elseif ($rolePermission == 2) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                        }
                         if ($isOperatedByCreator) {
-                            if ($canViewProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            }
                             if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                                if ($value->status_document == 3 || $value->status_document == 1 && $value->status_guest == 0) {
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
                                 }
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
                         }
                     } elseif ($rolePermission == 3) {
-                        if ($canViewProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                        }
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                            if ($value->status_document == 3 || ($value->status_document == 1 && $value->SpecialDiscountBath == 0 && $value->SpecialDiscount == 0)) {
+                            if ($value->status_document == 3 || $value->status_document == 1 && $value->status_guest == 0) {
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
                             }
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                         }
                     }
@@ -854,7 +810,6 @@ class QuotationController extends Controller
                         $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                     }
                 }
-
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
                 $data[] = [
@@ -1094,17 +1049,17 @@ class QuotationController extends Controller
         $permissionid = Auth::user()->permission;
         if ($permissionid == 0) {
             if ($perPage == 10) {
-                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_guest',1)->limit($request->page.'0')
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_guest',1)->whereIn('status_document',[1,3])->limit($request->page.'0')
                 ->get();
             } else {
-                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_guest',1)->paginate($perPage);
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_guest',1)->whereIn('status_document',[1,3])->paginate($perPage);
             }
         }else {
             if ($perPage == 10) {
-                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_guest',1)->limit($request->page.'0')
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_guest',1)->whereIn('status_document',[1,3])->limit($request->page.'0')
                 ->get();
             } else {
-                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_guest',1)->paginate($perPage);
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_guest',1)->whereIn('status_document',[1,3])->paginate($perPage);
             }
         }
 
@@ -1127,23 +1082,7 @@ class QuotationController extends Controller
                         $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
                     }
                     // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
-                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                    } else {
-                        if ($value->status_document == 0) {
-                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                        } elseif ($value->status_document == 1) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 2) {
-                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                        } elseif ($value->status_document == 3) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 4) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                        } elseif ($value->status_document == 6) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        }
-                    }
+                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
                     $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                     $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                     $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
@@ -1153,26 +1092,45 @@ class QuotationController extends Controller
                     $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                     $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
-                    if ($rolePermission > 0 ) {
-                        if (in_array($rolePermission, [1, 2, 3])) {
-                            if ($canViewProposal == 1) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                            }
-
-                            if ($canEditProposal == 1) {
+                    if ($rolePermission > 0) {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        }
+                        if ($rolePermission == 1 && $isOperatedByCreator) {
+                            if ($canViewProposal) {
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                                if ($value->Operated_by == $CreateBy) {
+                            }
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        } elseif ($rolePermission == 2) {
+                            if ($isOperatedByCreator) {
+                                if ($canViewProposal) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                                }
+                                if ($canEditProposal) {
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                                 }
                             }
+                        } elseif ($rolePermission == 3) {
+                            if ($canViewProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                            }
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
                         }
-                    } elseif ($canViewProposal == 1) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                    } else {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        }
                     }
 
                     $btn_action .= '</ul>';
@@ -1212,6 +1170,7 @@ class QuotationController extends Controller
         if ($permissionid == 0) {
             if ($search_value) {
                 $data_query = Quotation::where('status_guest',1)
+                ->whereIn('status_document',[1,3])
                 ->where('Operated_by',$userid)
                 ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
                 ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
@@ -1223,11 +1182,12 @@ class QuotationController extends Controller
                 ->paginate($perPage);
             }else{
                 $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_guest',1)->paginate($perPageS);
+                $data_query =  Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_guest',1)->whereIn('status_document',[1,3])->paginate($perPageS);
             }
         }else{
             if ($search_value) {
                 $data_query = Quotation::where('status_guest',1)
+                ->whereIn('status_document',[1,3])
                 ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
                 ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
                 ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
@@ -1238,7 +1198,7 @@ class QuotationController extends Controller
                 ->paginate($perPage);
             }else{
                 $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_guest',1)->paginate($perPageS);
+                $data_query =  Quotation::query()->orderBy('created_at', 'desc')->where('status_guest',1)->whereIn('status_document',[1,3])->paginate($perPageS);
             }
         }
 
@@ -1253,23 +1213,7 @@ class QuotationController extends Controller
                 }else {
                     $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
                 }
-                if ($value->status_guest == 1) {
-                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                } else {
-                    if ($value->status_document == 0) {
-                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                    } elseif ($value->status_document == 1) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    } elseif ($value->status_document == 2) {
-                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                    } elseif ($value->status_document == 3) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    } elseif ($value->status_document == 4) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                    } elseif ($value->status_document == 6) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    }
-                }
+                $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
                 $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                 $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                 $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
@@ -1280,28 +1224,46 @@ class QuotationController extends Controller
                 $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                 $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
-                if ($rolePermission > 0 ) {
-                    if (in_array($rolePermission, [1, 2, 3])) {
-                        if ($canViewProposal == 1) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
-                        }
-
-                        if ($canEditProposal == 1) {
+                if ($rolePermission > 0) {
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                    }
+                    if ($rolePermission == 1 && $isOperatedByCreator) {
+                        if ($canViewProposal) {
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
-                            if ($value->Operated_by == $CreateBy) {
+                        }
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                        }
+                    } elseif ($rolePermission == 2) {
+                        if ($isOperatedByCreator) {
+                            if ($canViewProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                            }
+                            if ($canEditProposal) {
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
                         }
+                    } elseif ($rolePermission == 3) {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/send/email/' . $value->id) . '">Send Email</a></li>';
+                        }
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                        }
                     }
-                } elseif ($canViewProposal == 1) {
-                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
-                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                } else {
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                    }
                 }
-
 
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
@@ -1369,48 +1331,50 @@ class QuotationController extends Controller
                         $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
                     }
                     // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
-                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                    } else {
-                        if ($value->status_document == 0) {
-                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                        } elseif ($value->status_document == 1) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 2) {
-                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                        } elseif ($value->status_document == 3) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 4) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                        } elseif ($value->status_document == 6) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        }
-                    }
+                    $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
                     $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                     $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                     $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $CreateBy = Auth::user()->id;
+                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
 
-                    $btn_action = '<div class="btn-group">';
+                    $btn_action = '<div class="dropdown">';
                     $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                     $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
-
-                    if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
-                        if ($canViewProposal == 1) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                    if ($rolePermission > 0) {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                         }
-
-                        if ($rolePermission == 1 || $rolePermission == 2) {
-                            if (Auth::user()->id == $value->Operated_by) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                        if ($rolePermission == 1 && $isOperatedByCreator) {
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        } elseif ($rolePermission == 2) {
+                            if ($isOperatedByCreator) {
+                                if ($canEditProposal) {
+                                    if ($canEditProposal) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                    }
+                                }
+                            }
+                        } elseif ($rolePermission == 3) {
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                             }
                         }
+                    } else {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        }
                     }
-
                     $btn_action .= '</ul>';
                     $btn_action .= '</div>';
 
@@ -1489,45 +1453,48 @@ class QuotationController extends Controller
                 }else {
                     $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
                 }
-                if ($value->status_guest == 1) {
-                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                } else {
-                    if ($value->status_document == 0) {
-                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                    } elseif ($value->status_document == 1) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    } elseif ($value->status_document == 2) {
-                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                    } elseif ($value->status_document == 3) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    } elseif ($value->status_document == 4) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                    } elseif ($value->status_document == 6) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    }
-                }
+                $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
                 $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                 $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                 $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $CreateBy = Auth::user()->id;
+                $isOperatedByCreator = $value->Operated_by == $CreateBy;
 
-                $btn_action = '<div class="btn-group">';
+                $btn_action = '<div class="dropdown">';
                 $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                 $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
-
-                if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
-                    if ($canViewProposal == 1) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                if ($rolePermission > 0) {
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                     }
-
-                    if ($rolePermission == 1 || $rolePermission == 2) {
-                        if (Auth::user()->id == $value->Operated_by) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/edit/quotation/' . $value->id) . '">Edit</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                    if ($rolePermission == 1 && $isOperatedByCreator) {
+                        if ($canEditProposal) {
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        }
+                    } elseif ($rolePermission == 2) {
+                        if ($isOperatedByCreator) {
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        }
+                    } elseif ($rolePermission == 3) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
                         }
+                    }
+                } else {
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                     }
                 }
                 $btn_action .= '</ul>';
@@ -1595,47 +1562,50 @@ class QuotationController extends Controller
                         $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
                     }
                     // สร้างสถานะการใช้งาน
-                    if ($value->status_guest == 1) {
-                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                    } else {
-                        if ($value->status_document == 0) {
-                            $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                        } elseif ($value->status_document == 1) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 2) {
-                            $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                        } elseif ($value->status_document == 3) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        } elseif ($value->status_document == 4) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                        } elseif ($value->status_document == 6) {
-                            $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                        }
-                    }
+                    $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
                     $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                     $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                     $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
                     $CreateBy = Auth::user()->id;
-                    $btn_action = '<div class="btn-group">';
+                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                    $btn_action = '<div class="dropdown">';
                     $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                     $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
-
-                    if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
-                        if ($canViewProposal == 1) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                    if ($rolePermission > 0) {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                         }
-
-                        if ($rolePermission == 1 || $rolePermission == 2) {
-                            if (Auth::user()->id == $value->Operated_by) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                        if ($rolePermission == 1 && $isOperatedByCreator) {
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                            }
+                        } elseif ($rolePermission == 2) {
+                            if ($isOperatedByCreator) {
+                                if ($canEditProposal) {
+                                    if ($canEditProposal) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                                    }
+                                }
+                            }
+                        } elseif ($rolePermission == 3) {
+                            if ($canEditProposal) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
                             }
                         }
+                    } else {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                        }
                     }
-
                     $btn_action .= '</ul>';
                     $btn_action .= '</div>';
 
@@ -1714,43 +1684,48 @@ class QuotationController extends Controller
                 }else {
                     $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
                 }
-                if ($value->status_guest == 1) {
-                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
-                } else {
-                    if ($value->status_document == 0) {
-                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
-                    } elseif ($value->status_document == 1) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    } elseif ($value->status_document == 2) {
-                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
-                    } elseif ($value->status_document == 3) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    } elseif ($value->status_document == 4) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
-                    } elseif ($value->status_document == 6) {
-                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
-                    }
-                }
+                $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
                 $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                 $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                 $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $CreateBy = Auth::user()->id;
+                $isOperatedByCreator = $value->Operated_by == $CreateBy;
 
-                $btn_action = '<div class="btn-group">';
+                $btn_action = '<div class="dropdown">';
                 $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                 $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
-                if ($rolePermission == 1 || $rolePermission == 2 || $rolePermission == 3) {
-                    if ($canViewProposal == 1) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/' . $value->id) . '">View</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Quotation/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
+                if ($rolePermission > 0) {
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                     }
-
-                    if ($rolePermission == 1 || $rolePermission == 2) {
-                        if (Auth::user()->id == $value->Operated_by) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Quotation/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                    if ($rolePermission == 1 && $isOperatedByCreator) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
                         }
+                    } elseif ($rolePermission == 2) {
+                        if ($isOperatedByCreator) {
+                            if ($canEditProposal) {
+                                if ($canEditProposal) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                                }
+                            }
+                        }
+                    } elseif ($rolePermission == 3) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/edit/quotation/' . $value->id) . '">Edit</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Revice(' . $value->id . ')">Revice</a></li>';
+                        }
+                    }
+                } else {
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Proposal/view/quotation/LOG/' . $value->id) . '">LOG</a></li>';
                     }
                 }
                 $btn_action .= '</ul>';
@@ -2290,6 +2265,8 @@ class QuotationController extends Controller
                     $Checkout = $datarequest['Checkout'];
                     $Day = $datarequest['Day'];
                     $Night = $datarequest['Night'];
+                    $TotalPax = $datarequest['PaxToTalall'];
+
                     $Head = 'รายการ';
                     if ($productsArray) {
                         $products['products'] =$productsArray;
@@ -2382,10 +2359,13 @@ class QuotationController extends Controller
                         $checkout = Carbon::parse($Checkout)->format('d/m/Y');
                         $Time = 'วันเข้าที่พัก : '.$checkin.' '.'วันออกที่พัก : '.$checkout.' '.'จำนวน : '.$Day.' วัน '.' '.$Night.' คืน ';
                     }
-
+                    $Pax = null;
+                    if ($TotalPax) {
+                        $Pax = 'รวมความจุของห้องพัก : '.$TotalPax;
+                    }
                     $datacompany = '';
 
-                    $variables = [$QuotationID, $Issue_Date, $Expiration_Date, $fullName, $Contact_Name,$Time,$nameevent,$namevat,$Head];
+                    $variables = [$QuotationID, $Issue_Date, $Expiration_Date, $fullName, $Contact_Name,$Time,$nameevent,$namevat,$Pax,$Head];
 
                     // แปลง array ของ $formattedProductData เป็น string เดียวที่มีรายการทั้งหมด
                     $formattedProductDataString = implode(' + ', $formattedProductData);
@@ -3647,12 +3627,16 @@ class QuotationController extends Controller
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
                 $save->status_document = 1;
+                $save->status_guest = 0;
+                $save->correct = $correctup;
                 $save->Confirm_by = 'Auto';
                 $save->save();
             }else {
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->SpecialDiscountBath = $SpecialDiscountBath;
                 $save->status_document = 2;
+                $save->status_guest = 0;
+                $save->correct = $correctup;
                 $save->Confirm_by = '-';
                 $save->save();
             }
@@ -4134,9 +4118,15 @@ class QuotationController extends Controller
 
             $quotation = Quotation::where('id',$id)->first();
             $QuotationID = $quotation->Quotation_ID;
+            $correct = $quotation->correct;
             $path = 'Log_PDF/proposal/';
-            $pdf = $path.$QuotationID;
-            $pdfPath = $path.$QuotationID.'.pdf';
+            if ($correct > 0) {
+                $pdf = $path.$QuotationID.'-'.$correct;
+                $pdfPath = $path.$QuotationID.'-'.$correct.'.pdf';
+            }else{
+                $pdf = $path.$QuotationID;
+                $pdfPath = $path.$QuotationID.'.pdf';
+            }
             $comid = $quotation->Company_ID;
             $Quotation_ID= $quotation->Quotation_ID;
             $companys = companys::where('Profile_ID',$comid)->first();
@@ -4340,7 +4330,7 @@ class QuotationController extends Controller
         $path = 'Log_PDF/proposal/';
 
         $logproposal = log_company::where('Company_ID', $QuotationID)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('updated_at', 'desc')
             ->paginate($perPage);
         return view('quotation.document',compact('log','path','correct','logproposal','QuotationID'));
     }
@@ -4558,7 +4548,7 @@ class QuotationController extends Controller
         $save->Category = 'Revice :: Proposal';
         $save->content = 'Revice Document Proposal ID : '.$Quotation_ID;
         $save->save();
-        return redirect()->route('Quotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
     public function sheetpdf(Request $request ,$id) {
         $Quotation = Quotation::where('id', $id)->first();

@@ -2,6 +2,11 @@
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <style>
+        .btn-space {
+        margin-right: 10px; /* ปรับขนาดช่องว่างตามต้องการ */
+    }
+    </style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
         <div class="container-xl">
@@ -83,7 +88,7 @@
                                         <label for="ถึง">สิ่งที่แนบมาด้วย: </label>
                                     </div>
                                     <div class="col-lg-10 col-md-10 col-sm-12">
-                                        ใบเสนอราคา Proposal เลขที่ {{$Quotation_ID}} <a href="{{ url('/Quotation/Quotation/cover/document/PDF/'.$quotation->id) }}" target="_blank" >[เอกสาร]</a>
+                                        ใบเสนอราคา Proposal เลขที่ {{$Quotation_ID}} <a href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$quotation->id) }}" target="_blank" >[เอกสาร]</a>
                                         <input type="file" name="files[]" class="form-control" multiple>
                                     </div>
                                 </div>
@@ -98,7 +103,10 @@
                                 </div>
                                 <div class=" row mt-5">
                                     <div class="col-4"></div>
-                                    <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
+                                    <div class="col-4 "style="display:flex; justify-content:center; align-items:center;">
+                                        <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('Proposal.index') }}'">
+                                            Cancel
+                                        </button>
                                         <button type="submit" class="btn btn-color-green lift btn_modal" >Send</button>
                                     </div>
                                     <div class="col-4"></div>
