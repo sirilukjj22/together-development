@@ -22,8 +22,12 @@
         $num = 0;
         $html = '';
 
-        $html .= '<div class="pagination" style="white-space: nowrap;">
-                    <a href="#" onclick="getPage('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
+        $html .= '<div class="pagination" style="white-space: nowrap;">';
+        if ($currentPage <= 1) {
+            $html .= '<a href="#" class="r-l-md">&laquo;</a>';
+        } else {
+            $html .= '<a href="#" onclick="getPage('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
+        }
                     if ($data->total() > 0) {
                         if ($currentPage > 3)
                         {
@@ -53,8 +57,12 @@
                             $html .= '<a href="#" onclick="getPage(' .$data->lastPage(). ', ' . $perPage . ', '."'$table'".')">'.$data->lastPage().'</a>';
                         }
                     }
-          $html .= '<a href="#" onclick="getPage('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>
-                  </div>';
+        if ($currentPage >= $data->lastPage()) {
+            $html .= '<a href="#" class="r-r-md">&raquo;</a>';
+        } else {
+            $html .= '<a href="#" onclick="getPage('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>';
+        }
+            $html .= '</div>';
 
         return $html;
     }
@@ -137,8 +145,8 @@
         $num = 0;
         $html = '';
 
-        $html .= '<div class="pagination" style="white-space: nowrap;">
-                    <a href="#" onclick="getPageTax('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
+        $html .= '<div class="pagination" style="white-space: nowrap;">';
+        $html .= '<a href="#" onclick="getPageTax('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
                     if ($data->total() > 0) {
                         if ($currentPage > 3)
                         {
@@ -168,8 +176,8 @@
                             $html .= '<a href="#" onclick="getPageTax(' .$data->lastPage(). ', ' . $perPage . ', '."'$table'".')">'.$data->lastPage().'</a>';
                         }
                     }
-          $html .= '<a href="#" onclick="getPageTax('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>
-                  </div>';
+            $html .= '<a href="#" onclick="getPageTax('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>';
+          $html .= '</div>';
 
         return $html;
     }
