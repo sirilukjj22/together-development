@@ -747,6 +747,7 @@ class GuestController extends Controller
         $Contract_Rate_End_Date = $request->contract_rate_end_date;
         $Discount_Contract_Rate = $request->discount_contract_rate;
         $Lastest_Introduce_By = $request->latest_introduced_by;
+        $Booking_Channel =  implode(',',$request->booking_channel);
         $phones = $request->input('phone');
         try {
 
