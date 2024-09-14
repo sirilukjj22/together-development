@@ -382,7 +382,7 @@ class GuestController extends Controller
         if ($save->save()) {
             return redirect()->route('guest','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } else {
-            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return redirect()->route('guest','index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
     public function ac(Request $request)
@@ -653,73 +653,40 @@ class GuestController extends Controller
                     } elseif ($last_name) {
                         $comtypefullname = 'นามสกุล : ' . $last_name;
                     }
-                    $AddressIndividual = null;
-                    if ($datarequest['Country'] == 'Thailand') {
-                        if ($City) {
-                            $provinceNames = province::where('id', $City)->first();
-                            $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
-                            $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
-                            $provinceNames = $provinceNames->name_th;
-                            $TambonCheck = $TambonID->name_th;
-                            $amphures = $amphuresID->name_th;
-                            $Zip_code = $TambonID->zip_code;
-                            $AddressCheck = null;
-                            if ($Address) {
-                                $AddressCheck = 'ที่อยู่ : '.$Address;
-                            }
-                            $CountryCheck = null;
-                            if ($Country) {
-                                $CountryCheck = ' ประเทศ : '.$Country;
-                            }
-                            $AddressIndividual = $AddressCheck.'+'.$CountryCheck.'+'.' ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.' '.$Zip_code;
-                        }elseif ($Country&&$Address) {
-                            $CountryCheck = null;
-                            if ($Country) {
-                                $CountryCheck = ' ประเทศ : '.$Country;
-                            }
-                            if ($Address) {
-                                $AddressCheck = 'ที่อยู่ : '.$Address;
-                            }
-                            $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
-                        }elseif ($Country) {
-                            $CountryCheck = null;
-                            if ($Country) {
-                                $CountryCheck = ' ประเทศ : '.$Country;
-                            }
-                            $AddressIndividual = $CountryCheck;
-                        }else{
-                            $AddressCheck = null;
-                            if ($Address) {
-                                $AddressCheck = 'ที่อยู่ : '.$Address;
-                            }
-                            $AddressIndividual = $AddressCheck;
-                        }
-                    }else{
 
-                        if ($Address&&$Country) {
-                            $AddressCheck = null;
-                            if ($Address) {
-                                $AddressCheck = 'ที่อยู่ : '.$Address;
-                            }
-                            $CountryCheck = null;
-                            if ($Country) {
-                                $CountryCheck = ' ประเทศ : '.$Country;
-                            }
-                            $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
-                        }elseif ($Address) {
-                            $AddressCheck = null;
-                            if ($Address) {
-                                $AddressCheck = 'ที่อยู่ : '.$Address;
-                            }
-                            $AddressIndividual = $AddressCheck;
-                        }else{
-                            $CountryCheck = null;
-                            if ($Country) {
-                                $CountryCheck = ' ประเทศ : '.$Country;
-                            }
-                            $AddressIndividual = $CountryCheck;
-                        }
+                    $AddressIndividual = null;
+                    $CountryCheck = null;
+                    $AddressCheck = null;
+                    $provinceNames = null;
+                    $TambonCheck = null;
+                    $AmphuresCheck = null;
+                    $Zip_CodeCheck =null;
+                    if ($Country) {
+                        $CountryCheck = 'ประเทศ : '.$Country;
                     }
+                    if ($Address) {
+                        $AddressCheck = 'ที่อยู่ : '.$Address;
+                    }
+                    if ($City) {
+                        $provinceNames = province::where('id', $City)->first();
+                        $provinceNames = $provinceNames->name_th;
+                        $provinceNames = ' จังหวัด : '.$provinceNames;
+                    }
+                    if ($Tambon) {
+                        $TambonID = districts::where('id',$Tambon)->select('name_th','id')->first();
+                        $TambonName = $TambonID->name_th;
+                        $TambonCheck = ' ตำบล : '.$TambonName;
+                    }
+                    if ($Amphures) {
+                        $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
+                        $amphures = $amphuresID->name_th;
+                        $AmphuresCheck = ' อำเภอ : '.$TambonName;
+                    }
+                    if ($Zip_Code) {
+                        $Zip_CodeCheck = ' รหัสไปรษณีย์ : '.$Zip_Code;
+                    }
+                    $AddressIndividual = $CountryCheck.'+'.$AddressCheck.' '.$TambonCheck.' '.$AmphuresCheck.'+'.$provinceNames.' '.$Zip_CodeCheck;
+
                     $Email = null;
                     if ($Emailcheck) {
                         $Email = 'อีเมล์ผู้ติดต่อ : '.$Emailcheck;
@@ -804,20 +771,18 @@ class GuestController extends Controller
         $Booking_Channel =  implode(',',$request->booking_channel);
         $phones = $request->input('phone');
         try {
-
             $save = Guest::find($id);
             $save->preface =$Preface;
             $save->First_name =$First_name;
             $save->Last_name =$Last_name;
             $save->Booking_Channel =$Booking_Channel;
             if ($CountryOther == "Other_countries") {
-                if ($city === null) {
-                    return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
-                }else {
-                    $save->City = $city;
-                    $save->Country = $CountryOther;
-                    $save->Address = $Address;
-                }
+                $save->City = null;
+                $save->Country = $CountryOther;
+                $save->Address = $Address;
+                $save->Tambon = null;
+                $save->Zip_Code = null;
+                $save->Amphures = null;
             }else {
                 $save->Country = $CountryOther;
                 $save->City = $province;
@@ -851,9 +816,9 @@ class GuestController extends Controller
                 }
             }
             $save->save();
-            return redirect()->route('guest.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->route('guest_edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return redirect()->route('guest_edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
     public function guest_cover(Request $request, $id)
@@ -1060,9 +1025,7 @@ class GuestController extends Controller
             }
             return redirect()->route('guest_edit', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('guest_edit', ['id' => $id])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
     public function guestStatustax($id)
@@ -1299,73 +1262,37 @@ class GuestController extends Controller
 
 
         $AddressIndividual = null;
-        if ($datarequest['Country'] == 'Thailand') {
-            if ($City) {
-                $provinceNames = province::where('id', $City)->first();
-                $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
-                $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
-                $provinceNames = $provinceNames->name_th;
-                $TambonCheck = $TambonID->name_th;
-                $amphures = $amphuresID->name_th;
-                $Zip_code = $TambonID->zip_code;
-                $AddressCheck = null;
-                if ($Address) {
-                    $AddressCheck = 'ที่อยู่ : '.$Address;
-                }
-                $CountryCheck = null;
-                if ($Country) {
-                    $CountryCheck = ' ประเทศ : '.$Country;
-                }
-                $AddressIndividual = $AddressCheck.'+'.$CountryCheck.'+'.' ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.' '.$Zip_code;
-            }elseif ($Country&&$Address) {
-                $CountryCheck = null;
-                if ($Country) {
-                    $CountryCheck = ' ประเทศ : '.$Country;
-                }
-                if ($Address) {
-                    $AddressCheck = 'ที่อยู่ : '.$Address;
-                }
-                $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
-            }elseif ($Country) {
-                $CountryCheck = null;
-                if ($Country) {
-                    $CountryCheck = ' ประเทศ : '.$Country;
-                }
-                $AddressIndividual = $CountryCheck;
-            }else{
-                $AddressCheck = null;
-                if ($Address) {
-                    $AddressCheck = 'ที่อยู่ : '.$Address;
-                }
-                $AddressIndividual = $AddressCheck;
-            }
-        }else{
-
-            if ($Address&&$Country) {
-                $AddressCheck = null;
-                if ($Address) {
-                    $AddressCheck = 'ที่อยู่ : '.$Address;
-                }
-                $CountryCheck = null;
-                if ($Country) {
-                    $CountryCheck = ' ประเทศ : '.$Country;
-                }
-                $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
-            }elseif ($Address) {
-                $AddressCheck = null;
-                if ($Address) {
-                    $AddressCheck = 'ที่อยู่ : '.$Address;
-                }
-                $AddressIndividual = $AddressCheck;
-            }else{
-                $CountryCheck = null;
-                if ($Country) {
-                    $CountryCheck = ' ประเทศ : '.$Country;
-                }
-                $AddressIndividual = $CountryCheck;
-            }
+        $CountryCheck = null;
+        $AddressCheck = null;
+        $provinceNames = null;
+        $TambonCheck = null;
+        $AmphuresCheck = null;
+        $Zip_CodeCheck =null;
+        if ($Country) {
+            $CountryCheck = 'ประเทศ : '.$Country;
         }
-
+        if ($Address) {
+            $AddressCheck = 'ที่อยู่ : '.$Address;
+        }
+        if ($City) {
+            $provinceNames = province::where('id', $City)->first();
+            $provinceNames = $provinceNames->name_th;
+            $provinceNames = ' จังหวัด : '.$provinceNames;
+        }
+        if ($Tambon) {
+            $TambonID = districts::where('id',$Tambon)->select('name_th','id')->first();
+            $TambonName = $TambonID->name_th;
+            $TambonCheck = ' ตำบล : '.$TambonName;
+        }
+        if ($Amphures) {
+            $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
+            $amphures = $amphuresID->name_th;
+            $AmphuresCheck = ' อำเภอ : '.$TambonName;
+        }
+        if ($Zip_Code) {
+            $Zip_CodeCheck = ' รหัสไปรษณีย์ : '.$Zip_Code;
+        }
+        $AddressIndividual = $CountryCheck.'+'.$AddressCheck.' '.$TambonCheck.' '.$AmphuresCheck.'+'.$provinceNames.' '.$Zip_CodeCheck;
         $EmailTax = null;
         if ($Email) {
             $EmailTax = 'อีเมล์ : '.$Email;
@@ -1521,6 +1448,8 @@ class GuestController extends Controller
                 $save->Company_name =$request->Company_name;
                 $save->Tax_Type = 'Company';
                 $save->BranchTax = $request->Branch;
+                $save->first_name =$request->first_name;
+                $save->last_name =$request->last_name;
 
                 if ($request->Country == "Other_countries") {
                     $save->Country =$request->Country;
@@ -1560,7 +1489,7 @@ class GuestController extends Controller
                 $save->last_name =$request->last_name;
                 $save->Tax_Type = 'Individual';
                 $save->BranchTax = $request->Branch;
-
+                $save->Company_name =$request->Company_name;
                 if ($request->Country == "Other_countries") {
                     $save->Country =$request->Country;
                     $save->Address =$request->Address;
@@ -1595,9 +1524,7 @@ class GuestController extends Controller
             }
             return redirect()->route('guest_edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('guest_edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
     public function guest_view_tax($id)

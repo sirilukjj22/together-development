@@ -518,13 +518,10 @@ class CompanyController extends Controller
                     $saveAgent->save();
                 }
 
-                return redirect()->route('Company.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+                return redirect()->route('Company','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
             }
         } catch (\Exception $e) {
-            // return response()->json([
-            //     'error' => $e->getMessage()
-            // ], 500);
-            return redirect()->route('Company.create')->with('error', 'เกิดข้อผิดพลาด');
+            return redirect()->route('Company','index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
 
     }
@@ -620,7 +617,7 @@ class CompanyController extends Controller
             $dataArray['phone'] = $phone->pluck('Phone_number')->toArray();
             $dataArray['fax'] = $fax->pluck('Fax_number')->toArray();// เพิ่มค่า phone เข้าไปใน $dataArray
             $data = $request->all();
-            $keysToCompare = ['Company_type', 'Company_Name', 'Booking_Channel','Branch','Market', 'Country', 'City', 'Amphures', 'Tambon', 'Zip_Code', 'Company_Email', 'Company_Website', 'Taxpayer_Identification', 'Lastest_Introduce_By', 'phone','fax'];
+            $keysToCompare = ['Company_type', 'Company_Name', 'Address','Booking_Channel','Branch','Market', 'Country', 'City', 'Amphures', 'Tambon', 'Zip_Code', 'Company_Email', 'Company_Website', 'Taxpayer_Identification', 'Lastest_Introduce_By', 'phone','fax'];
             $differences = [];
             foreach ($keysToCompare as $key) {
                 if (isset($dataArray[$key]) && isset($data[$key])) {
@@ -727,19 +724,37 @@ class CompanyController extends Controller
                 $faxA = 'ลบเบอร์แฟกซ์ : ' . implode(', ', $faxComA);
             }
             $AddressIndividual = null;
-            if ($Country == 'Thailand') {
-                $provinceNames = province::where('id', $City)->first();
-                $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
-
-                $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
-                $provinceNames = $provinceNames->name_th;
-                $Tambon = $TambonID->name_th;
-                $amphures = $amphuresID->name_th;
-                $Zip_code = $TambonID->zip_code;
-                $AddressIndividual = 'ที่อยู่ : '.$Address.'+'.' ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.'+'.$Zip_code;
-            }elseif ($City) {
-                $AddressIndividual = 'ที่อยู่ : '.$City;
+            $CountryCheck = null;
+            $AddressCheck = null;
+            $provinceNames = null;
+            $TambonCheck = null;
+            $AmphuresCheck = null;
+            $Zip_CodeCheck =null;
+            if ($Country) {
+                $CountryCheck = 'ประเทศ : '.$Country;
             }
+            if ($Address) {
+                $AddressCheck = 'ที่อยู่ : '.$Address;
+            }
+            if ($City) {
+                $provinceNames = province::where('id', $City)->first();
+                $provinceNames = $provinceNames->name_th;
+                $provinceNames = ' จังหวัด : '.$provinceNames;
+            }
+            if ($Tambon) {
+                $TambonID = districts::where('id',$Tambon)->select('name_th','id')->first();
+                $TambonName = $TambonID->name_th;
+                $TambonCheck = ' ตำบล : '.$TambonName;
+            }
+            if ($Amphures) {
+                $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
+                $amphures = $amphuresID->name_th;
+                $AmphuresCheck = ' อำเภอ : '.$TambonName;
+            }
+            if ($Zip_Code) {
+                $Zip_CodeCheck = ' รหัสไปรษณีย์ : '.$Zip_Code;
+            }
+            $AddressIndividual = $CountryCheck.'+'.$AddressCheck.' '.$TambonCheck.' '.$AmphuresCheck.'+'.$provinceNames.' '.$Zip_CodeCheck;
             if ($Market) {
                 $WMarket = master_document::where('id', $Market)->where('Category', 'Mmarket')->first();
                 $SMarket = $WMarket->name_th;
@@ -836,7 +851,7 @@ class CompanyController extends Controller
             $save->save();
             return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
-            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return redirect()->route('Company.edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
 
@@ -1328,13 +1343,15 @@ class CompanyController extends Controller
                 if ($Company_Email) {
                     $Email = 'อีเมล์ : '.$Company_Email;
                 }
+                $Branch = null;
+                if ($Tax_Type == 'Individual') {
+                    $Branch = 'สาขา : -';
+                }else{
+                    $Branch = 'สาขา : ' . $BranchTax;
+                }
                 $Identification = null;
                 if ($Taxpayer_Identification) {
                     $Identification = 'เลขบัตรประจำตัว : '.$Taxpayer_Identification;
-                }
-                $Branch = null;
-                if ($BranchTax) {
-                    $Branch = 'สาขา : '.$BranchTax;
                 }
                 $phone = null;
                 if ($phoneCom) {
@@ -1345,25 +1362,37 @@ class CompanyController extends Controller
                     $phoneA = 'ลบเบอร์โทรศัพท์ : ' . implode(', ', $phoneComA);
                 }
                 $AddressIndividual = null;
-
-                if ($Country == 'Thailand') {
-
-                    $provinceNames = province::where('id', $City)->first();
-                    $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
-                    $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
-                    $provinceNames = $provinceNames->name_th;
-                    $Tambon = $TambonID->name_th;
-                    $amphures = $amphuresID->name_th;
-                    $Zip_code = $TambonID->zip_code;
-                    if ($Address) {
-                        $AddressIndividual = 'ที่อยู่ : '.$Address.'+'.' ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.'+'.$Zip_code;
-                    }else {
-                        $AddressIndividual = 'แก้ไขที่อยู่ '.'ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.'+'.$Zip_code;
-                    }
-
-                }else{
-                    $AddressIndividual = 'ที่อยู่ : '.$Address;
+                $CountryCheck = null;
+                $AddressCheck = null;
+                $provinceNames = null;
+                $TambonCheck = null;
+                $AmphuresCheck = null;
+                $Zip_CodeCheck =null;
+                if ($Country) {
+                    $CountryCheck = 'ประเทศ : '.$Country;
                 }
+                if ($Address) {
+                    $AddressCheck = 'ที่อยู่ : '.$Address;
+                }
+                if ($City) {
+                    $provinceNames = province::where('id', $City)->first();
+                    $provinceNames = $provinceNames->name_th;
+                    $provinceNames = ' จังหวัด : '.$provinceNames;
+                }
+                if ($Tambon) {
+                    $TambonID = districts::where('id',$Tambon)->select('name_th','id')->first();
+                    $TambonName = $TambonID->name_th;
+                    $TambonCheck = ' ตำบล : '.$TambonName;
+                }
+                if ($Amphures) {
+                    $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
+                    $amphures = $amphuresID->name_th;
+                    $AmphuresCheck = ' อำเภอ : '.$TambonName;
+                }
+                if ($Zip_Code) {
+                    $Zip_CodeCheck = ' รหัสไปรษณีย์ : '.$Zip_Code;
+                }
+                $AddressIndividual = $CountryCheck.'+'.$AddressCheck.' '.$TambonCheck.' '.$AmphuresCheck.'+'.$provinceNames.' '.$Zip_CodeCheck;
                 $datacompany = '';
 
                 $variables = [$comtypefullname, $Email, $Identification, $Branch, $AddressIndividual, $phone ,$phoneA];
@@ -1393,7 +1422,50 @@ class CompanyController extends Controller
                 $save->Companny_name =$request->Companny_name;
                 $save->Tax_Type = 'Company';
                 $save->BranchTax = $request->BranchTax;
+                $save->first_name =$request->first_name;
+                $save->last_name =$request->last_name;
+                if ($Country == "Other_countries") {
+                    if ($city === null) {
+                        return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
+                    }else {
+                        $save->City = $request->City;
+                        $save->Country =$request->Country;
+                        $save->Amphures =null;
+                        $save->Tambon =null;
+                        $save->Address =$request->Address;
+                        $save->Zip_Code = null;
+                    }
+                }else {
+                    $save->Country =$request->Country;
+                    $save->City =$request->City;
+                    $save->Amphures =$request->Amphures;
+                    $save->Tambon =$request->Tambon;
+                    $save->Address =$request->Address;
+                    $save->Zip_Code = $request->Zip_Code;
+                }
+                $save->Company_Email = $request->Company_Email;
+                $save->Taxpayer_Identification = $request->Taxpayer_Identification;
+                $phoneCom = $request->phoneCom;
 
+                company_tax_phone::where('ComTax_ID', $ComTax_ID)->delete();
+                foreach ($phoneCom as $index => $phoneNumber) {
+                    if ($phoneNumber !== null) {
+                        $savephoneA = new company_tax_phone();
+                        $savephoneA->ComTax_ID = $ComTax_ID;
+                        $savephoneA->Phone_number = $phoneNumber;
+                        $savephoneA->sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                        $savephoneA->save();
+                    }
+                }
+                $save->save();
+            }else{
+                $save = company_tax::find($id);
+                $save->Company_type = $request->Company_type;
+                $save->first_name =$request->first_name;
+                $save->last_name =$request->last_name;
+                $save->Tax_Type = 'Individual';
+                $save->BranchTax = $request->BranchTax;
+                $save->Companny_name =$request->Companny_name;
                 if ($Country == "Other_countries") {
                     if ($city === null) {
                         return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
@@ -1427,50 +1499,10 @@ class CompanyController extends Controller
                     }
                 }
                 $save->save();
-            }else{
-                $save = company_tax::find($id);
-                $save->Company_type = $request->Company_type;
-                $save->first_name =$request->first_name;
-                $save->last_name =$request->last_name;
-                $save->Tax_Type = 'Individual';
-                if ($Country == "Other_countries") {
-                    if ($city === null) {
-                        return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
-                    }else {
-                        $save->City = $request->City;
-                        $save->Country =$request->Country;
-                        $save->Amphures =null;
-                        $save->Tambon =null;
-                        $save->Address =$request->Address;
-                        $save->Zip_Code = null;
-                    }
-                }else {
-                    $save->Country =$request->Country;
-                    $save->City =$request->City;
-                    $save->Amphures =$request->Amphures;
-                    $save->Tambon =$request->Tambon;
-                    $save->Address =$request->Address;
-                    $save->Zip_Code = $request->Zip_Code;
-                }
-                $save->Company_Email = $request->Company_Email;
-                $save->Taxpayer_Identification = $request->Taxpayer_Identification;
-                company_tax_phone::where('ComTax_ID', $ComTax_ID)->delete();
-                foreach ($phoneCom as $index => $phoneNumber) {
-                    if ($phoneNumber !== null) {
-                        $savephoneA = new company_tax_phone();
-                        $savephoneA->ComTax_ID = $ComTax_ID;
-                        $savephoneA->Phone_number = $phoneNumber;
-                        $savephoneA->sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                        $savephoneA->save();
-                    }
-                }
-                $save->save();
             }
             return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('Company.edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
     public function changeStatustax($id)
@@ -1884,9 +1916,7 @@ class CompanyController extends Controller
             $saveC->save();
             return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('Company.edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
     public function contactedit(Request $request, $id )
@@ -2038,72 +2068,37 @@ class CompanyController extends Controller
                 $comtypefullname = 'นามสกุล : ' . $Last_name;
             }
             $AddressIndividual = null;
-            if ($datarequest['Country'] == 'Thailand') {
-                if ($City) {
-                    $provinceNames = province::where('id', $City)->first();
-                    $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
-                    $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
-                    $provinceNames = $provinceNames->name_th;
-                    $TambonCheck = $TambonID->name_th;
-                    $amphures = $amphuresID->name_th;
-                    $Zip_code = $TambonID->zip_code;
-                    $AddressCheck = null;
-                    if ($Address) {
-                        $AddressCheck = 'ที่อยู่ : '.$Address;
-                    }
-                    $CountryCheck = null;
-                    if ($Country) {
-                        $CountryCheck = ' ประเทศ : '.$Country;
-                    }
-                    $AddressIndividual = $AddressCheck.'+'.$CountryCheck.'+'.' ตำบล : '.$Tambon.'+'.' อำเภอ : '.$amphures.'+'.' จังหวัด : '.$provinceNames.' '.$Zip_code;
-                }elseif ($Country&&$Address) {
-                    $CountryCheck = null;
-                    if ($Country) {
-                        $CountryCheck = ' ประเทศ : '.$Country;
-                    }
-                    if ($Address) {
-                        $AddressCheck = 'ที่อยู่ : '.$Address;
-                    }
-                    $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
-                }elseif ($Country) {
-                    $CountryCheck = null;
-                    if ($Country) {
-                        $CountryCheck = ' ประเทศ : '.$Country;
-                    }
-                    $AddressIndividual = $CountryCheck;
-                }else{
-                    $AddressCheck = null;
-                    if ($Address) {
-                        $AddressCheck = 'ที่อยู่ : '.$Address;
-                    }
-                    $AddressIndividual = $AddressCheck;
-                }
-            }else{
-
-                if ($Address&&$Country) {
-                    $AddressCheck = null;
-                    if ($Address) {
-                        $AddressCheck = 'ที่อยู่ : '.$Address;
-                    }
-                    $CountryCheck = null;
-                    if ($Country) {
-                        $CountryCheck = ' ประเทศ : '.$Country;
-                    }
-                    $AddressIndividual = $AddressCheck.'+'.$CountryCheck;
-                }elseif ($Address) {
-                    $AddressCheck = null;
-                    if ($Address) {
-                        $AddressCheck = 'ที่อยู่ : '.$Address;
-                    }
-                    $AddressIndividual = $AddressCheck;
-                }else{
-                    $CountryCheck = null;
-                    if ($Country) {
-                        $CountryCheck = ' ประเทศ : '.$Country;
-                    }
-                    $AddressIndividual = $CountryCheck;
-                }
+            $CountryCheck = null;
+            $AddressCheck = null;
+            $provinceNames = null;
+            $TambonCheck = null;
+            $AmphuresCheck = null;
+            $Zip_CodeCheck =null;
+            if ($Country) {
+                $CountryCheck = 'ประเทศ : '.$Country;
             }
+            if ($Address) {
+                $AddressCheck = 'ที่อยู่ : '.$Address;
+            }
+            if ($City) {
+                $provinceNames = province::where('id', $City)->first();
+                $provinceNames = $provinceNames->name_th;
+                $provinceNames = ' จังหวัด : '.$provinceNames;
+            }
+            if ($Tambon) {
+                $TambonID = districts::where('id',$Tambon)->select('name_th','id')->first();
+                $TambonName = $TambonID->name_th;
+                $TambonCheck = ' ตำบล : '.$TambonName;
+            }
+            if ($Amphures) {
+                $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
+                $amphures = $amphuresID->name_th;
+                $AmphuresCheck = ' อำเภอ : '.$TambonName;
+            }
+            if ($Zip_Code) {
+                $Zip_CodeCheck = ' รหัสไปรษณีย์ : '.$Zip_Code;
+            }
+            $AddressIndividual = $CountryCheck.'+'.$AddressCheck.' '.$TambonCheck.' '.$AmphuresCheck.'+'.$provinceNames.' '.$Zip_CodeCheck;
             $Company_Email = null;
             if ($Email) {
                 $Company_Email = 'อีเมล์ : '.$Email;
@@ -2173,9 +2168,7 @@ class CompanyController extends Controller
             $saveC->save();
             return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('Company.edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
 
     }

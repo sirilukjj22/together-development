@@ -66,7 +66,7 @@
                                 <div class="row mt-2">
                                     <div class="col-sm-4 col-4">
                                         <span for="Country">Add Tax</span>
-                                        <select name="Tax_Type" id="TaxSelectA" class="form-select" onchange="showTaxInput()" >
+                                        <select name="Tax_Type" id="TaxSelectA" class="select2" onchange="showTaxInput()" >
                                             <option value="Company"{{$Guest->Tax_Type == "Company" ? 'selected' : ''}}>Company</option>
                                             <option value="Individual"{{$Guest->Tax_Type == "Individual" ? 'selected' : ''}}>Individual</option>
                                         </select>
@@ -76,7 +76,7 @@
                                     <div class="row mt-2">
                                         <div class="col-sm-2 col-2">
                                             <label for="Company_type_tax">ประเภทบริษัท / Company Type</label>
-                                            <select name="Company_type" id="Company_type" class="form-select" required disabled>
+                                            <select name="Company_type" id="Company_type" class="select2" required disabled>
                                                 <option value=""></option>
                                                 @foreach($MCompany_type as $item)
                                                     <option value="{{ $item->id }}"{{$Guest->Company_type == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
@@ -97,7 +97,7 @@
                                     <div class="row mt-2">
                                         <div class="col-sm-2 col-2" >
                                             <span for="prefix">คำนำหน้า / Title</span>
-                                            <select name="Company_type" id="Preface" class="form-select" required disabled>
+                                            <select name="Company_type" id="Preface" class="select2" required disabled>
                                                     <option value=""></option>
                                                     @foreach($prefix as $item)
                                                         <option value="{{ $item->id }}"{{$Guest->Company_type == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
@@ -131,14 +131,14 @@
                                 <div class="row mt-2">
                                     <div class="col-sm-6 col-6">
                                         <span for="Country">ประเทศ / Country</span>
-                                        <select name="Country" id="countrySelect" class="form-select" onchange="showcityAInput()">
+                                        <select name="Country" id="countrySelect" class="select2" onchange="showcityAInput()">
                                             <option value="Thailand" {{$Guest->Country == "Thailand" ? 'selected' : ''}}>ประเทศไทย</option>
                                             <option value="Other_countries" {{$Guest->Country == "Other_countries" ? 'selected' : ''}}>ประเทศอื่นๆ</option>
                                         </select>
                                     </div>
                                     <div class="col-sm-6 col-6">
                                         <span for="City">จังหวัด / City</span>
-                                        <select name="City" id="province" class="form-select" onchange="select_province()" style="width: 100%;" >
+                                        <select name="City" id="province" class="select2" onchange="select_province()" style="width: 100%;" >
                                             <option value=""></option>
                                             @foreach($provinceNames as $item)
                                                 <option value="{{ $item->id }}"{{$Guest->City == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
@@ -149,7 +149,7 @@
                                 <div class="row mt-2">
                                     <div class="col-sm-4 col-4">
                                         <span for="Amphures">อำเภอ / Amphures</span>
-                                        <select name="Amphures" id="amphures" class="form-select" onchange="select_amphures()" >
+                                        <select name="Amphures" id="amphures" class="select2" onchange="select_amphures()" >
                                             @foreach($amphures as $item)
                                                 <option value="{{ $item->id }}" {{ $Guest->Amphures == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
                                             @endforeach
@@ -157,7 +157,7 @@
                                     </div>
                                     <div class="col-sm-4 col-4">
                                         <span for="Tambon">ตำบล / Tambon</span>
-                                        <select name="Tambon" id ="Tambon" class="form-select" onchange="select_Tambon()" style="width: 100%;">
+                                        <select name="Tambon" id ="Tambon" class="select2" onchange="select_Tambon()" style="width: 100%;">
                                             @foreach($Tambon as $item)
                                                 <option value="{{ $item->id }}" {{ $Guest->Tambon == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
                                             @endforeach
@@ -165,7 +165,7 @@
                                     </div>
                                     <div class="col-sm-4 col-4">
                                         <span for="Zip_Code">รหัสไปรษณีย์ / Zip_code</span>
-                                        <select name="Zip_Code" id ="zip_code" class="form-select"  style="width: 100%;">
+                                        <select name="Zip_Code" id ="zip_code" class="select2"  style="width: 100%;">
                                             @foreach($Zip_code as $item)
                                                 <option value="{{ $item->zip_code }}" {{ $Guest->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
                                             @endforeach

@@ -197,7 +197,7 @@
                                         <span for="Zip_Code">รหัสไปรษณีย์ / Postal Code</span>
                                         <select name="Zip_Code" id ="zip_codeA" class="select2"  style="width: 100%;">
                                             @foreach($Zip_code as $item)
-                                                <option value="{{ $item->id }}" {{ $viewTax->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
+                                                <option value="{{ $item->zip_code }}" {{ $viewTax->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
                                             @endforeach
                                         </select>
                                     </div>
