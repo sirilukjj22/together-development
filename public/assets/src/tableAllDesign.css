@@ -1,0 +1,232 @@
+/* Table ที่มี 8 คอลัมป์แล้วค่อยๆ hide เมื่อ sreen ไม่พอ */
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table#table-together {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: rgb(1, 45, 48);
+  border-radius: 5px;
+  overflow: hidden;
+  border-collapse: collapse;
+}
+
+#table-together th,
+td {
+  padding: 8px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#table-together th:first-child {
+  border-top-left-radius: 5px;
+}
+
+#table-together th:last-child {
+  border-top-right-radius: 5px;
+}
+
+#table-together tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 5px;
+}
+
+#table-together tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 5px;
+}
+
+#table-together tbody tr:nth-child(odd) {
+  background-color: #f2f2f2;
+}
+
+#table-together tbody tr:hover {
+  background-color: #e2f5f2;
+}
+
+#table-together > tbody tr.main-row:nth-of-type(4n-1) {
+  background-color: #f9f9f9;
+}
+
+#table-together > tbody tr.main-row:nth-of-type(4n-1):hover {
+  background-color: #e2f5f2;
+}
+
+#table-together th,
+td {
+  border-bottom: 1px solid #cdc9c9f3;
+  padding: 8px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#table-together th {
+  background-color: #03635b;
+  color: white;
+  border-left: 1px solid #9c9c9c94;
+}
+
+@media (max-width: 1200px) {
+  #table-together td:nth-child(8),
+  #table-together th:nth-child(8) {
+    display: none;
+  }
+}
+
+@media (max-width: 992px) {
+  #table-together td:nth-child(6),
+  #table-together th:nth-child(6) {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  #table-together td:nth-child(5),
+  #table-together th:nth-child(5) {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  #table-together td:nth-child(4),
+  #table-together th:nth-child(4) {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  #table-together td:nth-child(3),
+  #table-together th:nth-child(3) {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  #table-together td:nth-child(2),
+  #table-together th:nth-child(2) {
+    display: none;
+  }
+}
+
+#table-together .hidden-row {
+  display: none;
+}
+
+#table-together .hidden-row td {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+#table-together .hidden-info {
+  width: 100%;
+  border-collapse: collapse;
+  display: grid;
+  place-content: center;
+  border: 0;
+}
+
+#table-together .hd-column {
+  display: grid;
+  grid-template-columns: 120px auto;
+  margin-bottom: 4px;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid rgba(173, 172, 172, 0.366);
+}
+
+#table-together .hd-column:nth-last-child(1) {
+  border-bottom: 0px solid rgba(218, 214, 214, 0.856);
+}
+
+#table-together .hd-column span:nth-child(1) {
+  font-weight: bold;
+  text-align: start;
+}
+
+#table-together .hd-column span:nth-child(2) {
+  text-align: start;
+}
+
+.total-balance-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8fdfd;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-top: 0.7rem;
+  font-family: "Arial", sans-serif;
+}
+
+.total-balance-container .label {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #03635b;
+  margin-right: 1rem;
+}
+
+.total-balance-container .value {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #004d40;
+}
+
+/* Table หน้าออกบิล*/
+
+.table-revenueEditBill-container {
+  margin-bottom: 1rem;
+  overflow: auto;
+}
+
+table#table-revenueEditBill {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  color: rgb(1, 45, 48);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+#table-revenueEditBill td:nth-child(1),
+#table-revenueEditBill th:nth-child(1) {
+  text-align: center;
+  width: 10%;
+}
+
+#table-revenueEditBill td:nth-child(2),
+#table-revenueEditBill th:nth-child(2) {
+  text-align: start;
+  width: 60%;
+}
+
+#table-revenueEditBill td:nth-child(3),
+#table-revenueEditBill th:nth-child(3) {
+  text-align: end;
+  width: 15%;
+}
+
+#table-revenueEditBill td:nth-child(4),
+#table-revenueEditBill th:nth-child(4) {
+  text-align: end;
+  width: 15%;
+}
+
+#table-revenueEditBill th {
+  border-top: 1px solid #a7adad;
+  border-bottom: 1px solid #a7adad;
+  text-transform: uppercase;
+}
+#table-revenueEditBill td {
+  border-top: 1px solid #a7adad;
+  text-transform: capitalize;
+}
+
+#table-revenueEditBill th,
+#table-revenueEditBill td {
+  padding: 0.5rem;
+}

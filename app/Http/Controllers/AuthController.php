@@ -123,7 +123,6 @@ class AuthController extends Controller
 
     public function create(array $data)
     {
-
       try {
         $user_id = User::create([
             'name' => $data['name'],
@@ -168,12 +167,10 @@ class AuthController extends Controller
             'general_ledger' => $data['menu_general_ledger'] ?? 0,
             'sms_alert' => $data['menu_sms_alert'] ?? 0,
             'revenue' => $data['menu_revenue'] ?? 0,
-            
-            // 'report' => $data['menu_report'] ?? 0,
 
             'setting' => $data['menu_setting'] ?? 0,
             'user' => $data['menu_user'] ?? 0,
-            'department' => $request->menu_department ?? 0,
+            'department' => $data['menu_department'] ?? 0,
             'bank' => $data['menu_bank'] ?? 0,
             'product_item' => $data['menu_product_item'] ?? 0,
             'quantity' => $data['menu_quantity'] ?? 0,
@@ -184,8 +181,8 @@ class AuthController extends Controller
             'company_market' => $data['menu_company_market'] ?? 0,
             'company_event' => $data['menu_company_event'] ?? 0,
             'booking' => $data['menu_booking'] ?? 0,
-            'document_template_pdf' => $request->menu_document_template_pdf ?? 0,
-            'report' => $request->menu_report ?? 0,
+            'document_template_pdf' => $data['menu_document_template_pdf'] ?? 0,
+            'report' => $data['menu_report'] ?? 0,
 
             'select_menu_all' => $data['select_menu_all'] ?? 0,
           ]);
@@ -236,6 +233,20 @@ class AuthController extends Controller
                 ]);
             }
           }
+
+          // Report
+          if (isset($data['menu_report']) && $data['menu_report'] == 1) {
+            Role_permission_menu_sub::create([
+                'user_id' => $user_id,
+                'menu_name' => "Report",
+                'add_data' => $data['menu_report_add'] ?? 0,
+                'edit_data' => $data['menu_report_edit'] ?? 0,
+                'delete_data' => $data['menu_report_delete'] ?? 0,
+                'view_data' => $data['menu_report_view'] ?? 0,
+                'discount' => $data['menu_report_discount'] ?? 0,
+                'special_discount' => $data['menu_report_special_discount'] ?? 0,
+            ]);
+        }
 
       } catch (\Throwable $th) {
         return $th->getMessage();

@@ -1,0 +1,256 @@
+li {
+  list-style: none;
+}
+
+.bg-tegether-full {
+  background-image: linear-gradient(to right, rgb(10, 87, 83), rgb(4, 8, 8));
+}
+
+.bg-tegether {
+  background-image: linear-gradient(to right, rgb(4, 8, 8), rgb(12, 73, 70));
+}
+
+.bg-tegether:hover {
+  background: linear-gradient(rgba(17, 17, 16, 0.3), rgba(0, 0, 0, 0.7)),
+    url(img/together-view.jpg) center no-repeat;
+}
+
+.bg-tegether-inside {
+  background-image: linear-gradient(to right, rgb(9, 55, 55), rgb(2, 26, 24));
+}
+
+.bg-tegether-inside:hover {
+  background-image: linear-gradient(to right, rgb(6, 94, 56), rgb(2, 26, 16));
+}
+
+.a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: 0.3s;
+}
+
+.border-rd-7px {
+  border-radius: 7px;
+}
+
+.a:hover {
+  overflow: visible;
+  white-space: wrap;
+  font-weight: 600;
+  color: #093835;
+  text-align: start;
+  /* background-color: #d9f7fa; */
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.box {
+  height: 1fr;
+  background-color: #2c7f7a;
+  height: 2rem;
+}
+
+/* Table */
+.table-revenue-detail {
+  display: none;
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: aliceblue;
+  border-radius: 7px;
+  color: white;
+  position: relative;
+}
+
+#table-revenue td {
+  text-align: center;
+}
+
+#table-revenue th {
+  text-transform: uppercase;
+  text-align: center;
+}
+
+#table-revenue td.total {
+  font-weight: 600;
+}
+
+/* Card */
+
+.wrap-card-revenue-inside {
+  display: grid;
+  gap: 4px;
+}
+
+@media (min-width: 600px) {
+  .wrap-card-revenue-inside {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 900px) {
+  .col-span-2 {
+    grid-column: 1 / 3;
+  }
+}
+
+@media (min-width: 900px) {
+  .wrap-card-revenue-inside {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+  }
+}
+
+.card-revenue-inside-sum {
+  display: block;
+  color: white;
+  text-align: center;
+  align-content: center;
+  border: 1px solid white;
+  border-radius: 50%;
+  width: 15rem;
+  height: 15rem;
+  font-size: 1.8rem;
+  margin: 01rem;
+}
+
+.card-revenue-inside-sum :nth-child(2) {
+  font-size: 1rem;
+}
+
+.card-revenue-inside {
+  flex-grow: 1;
+  min-height: 100%;
+  padding: 1rem;
+  display: grid;
+  border-radius: 7px;
+  grid-template-rows: auto 1fr auto;
+}
+
+.card-revenue-inside div {
+  background-color: rgba(249, 247, 247, 0.6);
+  font-weight: 400;
+}
+
+.card-revenue-inside h1 {
+  color: white;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.card-revenue-inside div p {
+  /* display: flex;
+  justify-content: space-between; */
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 10px;
+  padding: 0.3rem 0.5rem;
+  margin: 0.5rem;
+  border-bottom: 1px solid rgb(207, 215, 215);
+}
+
+.card-revenue-inside div p :nth-child(2) {
+  text-align: right;
+}
+
+.card-revenue-inside .total {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.3rem 0.5rem;
+  font-weight: 700;
+}
+
+/* card 1 */
+
+.wrap-show-income {
+  display: grid;
+  width: 100%;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+@media (min-width: 1000px) {
+  .wrap-show-income {
+    display: grid;
+    grid-template-columns: 20rem auto;
+  }
+}
+
+.show-income-left {
+  display: grid;
+  color: white;
+  text-align: center;
+  align-content: center;
+  border: 1px solid white;
+  border-radius: 50%;
+  width: 15rem;
+  height: 15rem;
+  font-size: 1.8rem;
+  margin: 1rem;
+}
+
+.show-income-left :nth-child(2) {
+  font-size: 1rem;
+}
+
+.show-income-right {
+  width: 100%;
+  display: grid;
+  gap: 0.5rem;
+  color: white;
+}
+
+@media (min-width: 600px) {
+  .show-income-right {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.show-income-right div {
+  display: grid;
+  grid-template-columns: auto auto;
+  border: rgba(227, 224, 224, 0.389) 1px solid;
+  padding: 1rem;
+  border-radius: 7px;
+  font-size: 1.3rem;
+  align-items: center;
+  min-height: 6rem;
+}
+
+.show-income-right div :nth-child(1) {
+  text-align: left;
+}
+
+.show-income-right div :nth-child(2) {
+  text-align: right;
+}
+
+.back-button {
+  position: absolute;
+  right: 1rem;
+  top: 0;
+  border: white 1px solid;
+  padding: 0.5rem 2rem;
+  border-radius: 7px;
+  margin: 0.5rem;
+  background-color: rgba(243, 248, 248, 0.4);
+}
+
+.back-button:before {
+  content: "\00AB";
+  font-size: 1.4rem;
+  margin-right: 0.5rem;
+}

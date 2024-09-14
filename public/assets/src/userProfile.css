@@ -1,0 +1,273 @@
+/* Form Container */
+.main-content {
+  padding: 2rem 1rem;
+}
+
+.form-title-top {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  width: 100%;
+}
+
+.wrap-permissoion-create-user {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
+}
+
+.wrap-permissoion-create-user section {
+  flex-grow: 1;
+  padding: 1rem;
+}
+@media (max-width: 600px) {
+  .wrap-permissoion-create-user {
+    grid-template-columns: 1fr;
+  }
+  .wrap-permissoion-create-user section {
+    padding: 0.5rem;
+  }
+}
+
+.form-group {
+  padding: 0.7rem 0;
+}
+
+.permissions-select {
+  display: grid;
+  width: 100%;
+  padding: 0rem 1rem;
+}
+@media (max-width: 600px) {
+  .permissions-select {
+    padding: 0;
+  }
+}
+
+.permissions-select p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.permissions-select p label {
+  min-width: 310px;
+}
+
+.permissions-select p label::after {
+  content: "🡇";
+}
+
+/* 3D Style for Inputs */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="number"] {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 7px;
+  box-shadow: inset 2px 2px 8px rgba(0, 0, 0, 0.1),
+    inset -2px -2px 8px rgba(255, 255, 255, 0.429);
+  background: #f5f9f9;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  height: 100%;
+  text-align: start;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus,
+.form-group input[type="number"]:focus,
+.form-group select {
+  outline: none;
+  box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.1),
+    inset -1px -1px 5px rgba(255, 255, 255, 0.8);
+}
+
+/* Icon Labels for Inputs */
+.icon-label {
+  display: flex;
+  align-items: center;
+}
+
+.icon-label .icon-user,
+.icon-label .icon-email,
+.icon-label .icon-lock,
+.icon-label .icon-percent {
+  margin-right: 10px;
+  width: 24px;
+  height: 24px;
+  background-size: cover;
+}
+
+/* Add hover effect */
+
+input[type="checkbox"] {
+  position: relative;
+  width: 1.2rem;
+  height: 1.2rem;
+  background-color: #fff;
+  border: 2px solid #2c7f7a;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  margin-right: 0.3rem;
+}
+
+input[type="checkbox"].select-row {
+  position: relative;
+  width: 1rem;
+  height: 1rem;
+  background-color: #fff;
+  border: 2px solid #2c7f7a;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+@media (max-width: 500px) {
+  input[type="checkbox"].select-row {
+    display: none;
+  }
+}
+
+input[type="checkbox"]:hover,
+input[type="checkbox"]:focus,
+input[type="checkbox"]:checked {
+  filter: drop-shadow(1px 2px 2px #0f7476);
+}
+
+/* Table */
+
+.table-permissions-container {
+  border: 1px solid #cdcbcb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+table#table-permissions {
+  width: 100%;
+  color: rgb(1, 45, 48);
+  table-layout: fixed;
+  border-color: #03635b;
+  width: 100%;
+  background-color: white;
+}
+
+#table-permissions tbody tr:nth-child(odd):not(.head-sub) {
+  background-color: white;
+}
+
+#table-permissions tbody tr:nth-child(even):not(.head-sub) {
+  background-color: rgb(251, 251, 251);
+}
+
+#table-permissions tbody tr:not(.head-sub):hover {
+  background-color: #efefef;
+}
+
+#table-permissions thead tr {
+  background-color: #036361;
+  color: white;
+}
+#table-permissions th:nth-child(1) {
+  width: 100px;
+  text-align: left;
+  text-align: center;
+}
+
+#table-permissions th {
+  padding: 8px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 50px;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+}
+
+#table-permissions .head-sub td {
+  background-color: #248a8a23;
+  margin: 0;
+}
+
+#table-permissions th,
+#table-permissions td {
+  padding: 8px;
+  text-align: center;
+  white-space: nowrap;
+  border: none;
+}
+
+#table-permissions tr:not(:last-child) {
+  border-bottom: 1px solid rgb(216, 215, 215);
+}
+
+table#table-permissions td:nth-child(1) {
+  text-align: left;
+  margin-left: 10px;
+  color: #0f544e;
+  min-width: 120px;
+  white-space: wrap;
+}
+
+table#table-permissions tr :nth-child(n + 2) {
+  width: 12%;
+}
+
+/* Style for table headers */
+
+.revenue-type-container {
+  border: 1px solid #cdcbcb;
+  justify-content: start;
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+table#revenue-type-table {
+  width: 100%;
+  color: rgb(1, 45, 48);
+  table-layout: fixed;
+  border-color: #03635b;
+  width: 100%;
+  background-color: white;
+}
+
+#revenue-type-table tbody tr:nth-child(odd) {
+  background-color: rgb(251, 251, 251);
+}
+
+#revenue-type-table tbody tr:hover {
+  background-color: #efefef;
+}
+#revenue-type-table th,
+#revenue-type-table td {
+  padding: 0.5rem 1rem;
+}
+
+#revenue-type-table td {
+  display: grid;
+  grid-template-columns: 50px 200px;
+  place-content: center;
+}
+
+#revenue-type-table tr {
+  border-bottom: 1px solid rgb(222, 219, 219);
+}
+
+#revenue-type-table tr:nth-last-child(1) {
+  border-bottom: 0px solid rgb(222, 219, 219);
+}
+
+#revenue-type-table thead th {
+  background-color: #036361;
+  color: white;
+  text-align: center;
+}
+
+#revenue-type-table td {
+  text-align: left;
+}

@@ -1,0 +1,182 @@
+/* Remove text selection */
+.no-select {
+  user-select: none; /* Standard CSS property for most browsers */
+  -webkit-user-select: none; /* Safari and Chrome */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+}
+.today,
+.current-month,
+.current-year {
+  background-color: rgba(27, 134, 129, 0.261) !important;
+  color: #000 !important;
+}
+
+.selected-range {
+  background-color: rgba(9, 123, 125, 0.785) !important;
+  color: #fff !important;
+}
+
+.date:hover,
+.month:hover,
+.year:hover,
+.date.active,
+.month.active,
+.year.active {
+  background-color: rgba(9, 123, 125, 0.785) !important;
+  color: #fff !important;
+}
+
+.calendars-container {
+  display: grid;
+  gap: 20px;
+}
+
+.calendar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.calendar-wrapper h3 {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.selected-value-box {
+  margin-bottom: 4px;
+  color: #063e39;
+  font-size: 1em;
+  padding: 0.5rem;
+  background-color: #fff;
+  border-radius: 7px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  border: 1px solid #5c908d;
+}
+
+.t-alight-center {
+  text-align: center;
+}
+
+body {
+  -webkit-font-smoothing: antialiased; /* ทำให้ตัวอักษรคมชัดขึ้นใน iOS */
+}
+
+.calendar {
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  overflow: hidden;
+  margin-bottom: 20px;
+  -webkit-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.calendar header {
+  background-color: rgb(23, 123, 118);
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calendar header h2 {
+  margin: 0;
+  font-size: 1.1em;
+}
+
+.calendar header button {
+  background-color: rgb(23, 123, 118);
+  border: none;
+  color: #fff;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: background-color 0.3s ease;
+  -webkit-transition: background-color 0.3s ease; /* Safari/iOS */
+}
+
+.calendar header button:hover {
+  color: rgb(115, 218, 218);
+}
+
+.days-of-week,
+.dates-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
+  background-color: white;
+  padding: 10px;
+  color: #73aea2;
+  font-weight: 500;
+}
+
+.months-grid,
+.years-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background-color: white;
+  gap: 5px;
+  padding: 10px;
+}
+
+.date {
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 5px;
+  font-weight: 500;
+  color: #555;
+  background-color: white;
+  font-size: 0.85rem;
+}
+
+.month,
+.year {
+  padding: 10px 5px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 5px;
+  font-weight: 500;
+  color: #555;
+  background-color: #f5f4f4;
+  font-size: 0.9rem;
+}
+
+button,
+.date,
+.month,
+.year {
+  -webkit-tap-highlight-color: transparent; /* ลดการไฮไลต์เมื่อกดใน iOS */
+  touch-action: manipulation; /* ปรับการตอบสนองการสัมผัส */
+}
+
+/* จัดให้ calendar วันที่แสดงก่อน */
+.calendars-container {
+  display: block;
+}
+
+#date-picker-wrapper {
+  display: block;
+}
+
+#month-picker-wrapper,
+#year-picker-wrapper {
+  display: none;
+}
+
+.date.other-month {
+  color: #ccc;
+}
+
+.top-calendar {
+  color: #063e39;
+  font-weight: 600;
+  margin-top: 1rem;
+}
