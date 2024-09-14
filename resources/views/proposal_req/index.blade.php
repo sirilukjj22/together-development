@@ -38,8 +38,8 @@
                 <div class="col-md-12 col-12">
                     <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
                         <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-proposal" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$proposalcount}}</span> Proposal Request</a></li>{{--ประวัติการแก้ไข--}}
-                        <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-log" onclick="nav($id='nav4')" role="tab"><span class="badge bg-success" >{{0}}</span> LOG</a></li>{{--Doc. number--}}
-                        <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-cancel" onclick="nav($id='nav6')" role="tab"><span class="badge bg-danger" >{{0}}</span> Cancel</a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
+                        <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-log" onclick="nav($id='nav4')" role="tab"><span class="badge bg-success" >{{$logcount}}</span> LOG</a></li>{{--Doc. number--}}
+                        {{-- <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-cancel" onclick="nav($id='nav6')" role="tab"><span class="badge bg-danger" >{{0}}</span> Cancel</a></li> --}}
                     </ul>
                     <div class="card mb-3">
                         <div class="card-body">
@@ -109,11 +109,87 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="nav-log" role="tabpanel" rel="0">
+                                    <div style="min-height: 70vh;" class="mt-2">
+                                        <caption class="caption-top">
+                                            <div class="flex-end-g2">
+                                                <label class="entriespage-label">entries per page :</label>
+                                                <select class="entriespage-button" id="search-per-page-proposal-Log" onchange="getPageLogDoc(1, this.value, 'proposal-Log')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>10</option>
+                                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>25</option>
+                                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>50</option>
+                                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposal-Log" ? 'selected' : '' }}>100</option>
+                                                </select>
+                                                <input class="search-button search-data-proposal-Log" id="proposal-Log" style="text-align:left;" placeholder="Search" />
+                                            </div>
+                                        </caption>
+                                        <table id="proposal-LogTable" class="example ui striped table nowrap unstackable hover">
+                                            <thead>
+                                                <tr>
+                                                    <th  class="text-center">No</th>
+                                                    <th >Category</th>
+                                                    <th  class="text-center">Type</th>
+                                                    <th  class="text-center">Created_by</th>
+                                                    <th  class="text-center">Created Date</th>
+                                                    <th  class="text-center">Content</th>
+                                                    <th  class="text-center">Document</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(!empty($log))
+                                                    @foreach($log as $key => $item)
+                                                    <tr>
+                                                        <td style="text-align: center;">{{$key +1 }}</td>
+                                                        <td style="text-align: left;">{{$item->Category}}</td>
+                                                        <td style="text-align: center;">{{$item->type}}</td>
+                                                        <td style="text-align: center;">{{@$item->userOperated->name}}</td>
+                                                        <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
+                                                        @php
+                                                            // แยกข้อมูล content ออกเป็น array
+                                                            $contentArray = explode('+', $item->content);
+                                                        @endphp
+                                                        <td style="text-align: left;">
 
+                                                            <b style="color:#0000FF ">{{$item->Category}}</b>
+                                                            @foreach($contentArray as $contentItem)
+                                                                <div>{{ $contentItem }}</div>
+                                                            @endforeach
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            @if ($item->quotation_id)
+                                                                <a target="_blank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->quotation_id) }}" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">
+                                                                    <i class="fa fa-print"></i>
+                                                                </a>
+                                                            @elseif ($item->dummy_quotation_id)
+                                                                <a target="_bank" href="{{ url('/Dummy/Proposal/cover/document/PDF/'.$item->dummy_quotation_id) }}" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">
+                                                                    <i class="fa fa-print"></i>
+                                                                </a>
+                                                            @else
+                                                                <a href="{{ asset($path.$item->Company_ID.".pdf") }}" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">
+                                                                    <i class="fa fa-print"></i>
+                                                                </a>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                        <input type="hidden" id="profile-proposal-Log" name="profile-proposal" value="{{$userid}}">
+                                        <input type="hidden" id="get-total-proposal-Log" value="{{ $log->total() }}">
+                                        <input type="hidden" id="currentPage-proposal-Log" value="1">
+                                        <caption class="caption-bottom">
+                                            <div class="md-flex-bt-i-c">
+                                                <p class="py2" id="proposal-Log-showingEntries">{{ showingEntriesTableLogDoc($log, 'proposal-Log') }}</p>
+                                                    <div id="proposal-Log-paginate">
+                                                        {!! paginateTableLogDoc($log, 'proposal-Log') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                    </div>
+                                            </div>
+                                        </caption>
+                                    </div>
                                 </div>
-                                <div class="tab-pane fade" id="nav-cancel" role="tabpanel" rel="0">
+                                {{-- <div class="tab-pane fade" id="nav-cancel" role="tabpanel" rel="0">
 
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -130,7 +206,7 @@
     <script type="text/javascript" src="{{ asset('assets/helper/searchTableProposalRequest.js')}}"></script>
 
     <script>
-        const table_name = ['proposalTable'];
+        const table_name = ['proposalTable','proposal-LogTable'];
         $(document).ready(function() {
             for (let index = 0; index < table_name.length; index++) {
                 console.log();
@@ -240,6 +316,74 @@
                         { data: 'status' },
                         { data: 'btn_action' },
                     ],
+                });
+            document.getElementById(id).focus();
+        });
+        $(document).on('keyup', '.search-data-proposal-Log', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var guest_profile = $('#profile-proposal-Log').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
+            console.log(guest_profile);
+
+
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/Proposal-LogDoc-request-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        guest_profile: guest_profile,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                    "initComplete": function (settings,json){
+
+                        if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                            var count = $('#'+id+'Table tr').length - 1;
+                        }else{
+                            var count = 0;
+                        }
+                        if (search_value == '') {
+                            count_total = total;
+                        }else{
+                            count_total = count;
+                        }
+                        $('#'+id+'-paginate').children().remove().end();
+                        $('#'+id+'-showingEntries').text(showingEntriesSearchLogDoc(1,count_total, id));
+                        $('#'+id+'-paginate').append(paginateSearchLogDoc(count_total, id, getUrl));
+                    },
+                    columnDefs: [
+                                { targets: [0, 2, 3 ,4 ,6], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'Category' },
+                        { data: 'type' },
+                        { data: 'Created_by' },
+                        { data: 'created_at' },
+                        { data: 'Content' },
+                        { data: 'Doc' },
+                    ],
+
                 });
             document.getElementById(id).focus();
         });

@@ -57,23 +57,22 @@ class proposal_request extends Controller
         ->select('id', 'DummyNo', 'Company_ID', 'Operated_by', 'QuotationType', DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
         ->union($quotation1);
         $proposalcount = DB::table(DB::raw("({$proposal1->toSql()}) as sub"))->mergeBindings($proposal1->getQuery())->count();
-
-        $Quotation = Quotation::whereIn('status_document', [3])
-            ->select('id','DummyNo', 'Company_ID', 'issue_date', 'Expirationdate', 'SpecialDiscount','Confirm_by','Approve_at', 'Operated_by', 'status_document', 'QuotationType');
-
-        $Logproposal = dummy_quotation::whereIn('status_document', [3, 5])
-                    ->select('id','DummyNo', 'Company_ID', 'issue_date', 'Expirationdate', 'SpecialDiscount','Confirm_by', 'Approve_at','Operated_by', 'status_document', 'QuotationType')
-                    ->union($Quotation)
-                    ->get();
-        $Logproposalcount = dummy_quotation::whereIn('status_document', [3,5])
-                    ->select('id','DummyNo', 'Company_ID', 'issue_date', 'Expirationdate', 'SpecialDiscount', 'Confirm_by','Approve_at','Operated_by', 'status_document', 'QuotationType')
-                    ->union($Quotation)
-                    ->count();
-        $logdummy = log::select('Quotation_ID','Approve_date','Approve_time')->where('QuotationType','DummyProposal')->get();
-        $logdummycount = log::query()->where('QuotationType','DummyProposal')->count();
+        $userid = Auth::user()->id;
+        $log = log_company::select(
+            'log_company.*',
+            'Quotation.id as quotation_id',
+            'dummy_quotation.id as dummy_quotation_id'
+        )
+        ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete'])
+        ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
+        ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
+        ->orderBy('log_company.updated_at', 'desc')
+        ->paginate($perPage);
+        $logcount = log_company::whereIn('type', ['Request Reject', 'Request Approval', 'Request Delete'])
+        ->orderBy('updated_at', 'desc')
+        ->count();
         $path = 'Log_PDF/proposal/';
-
-        return view('proposal_req.index',compact('proposal','Logproposal','Logproposalcount','logdummy','path','logdummycount','proposalcount'));
+        return view('proposal_req.index',compact('proposal','proposalcount','userid','log','logcount','path'));
     }
     public function view($id,$Type)
     {
@@ -742,6 +741,155 @@ class proposal_request extends Controller
             'data' => $data,
         ]);
     }
+    public function search_table_paginate_log_doc (Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
 
+        if ($search_value) {
+            $data_query = log_company::select(
+                'log_company.*',
+                'Quotation.id as quotation_id',
+                'dummy_quotation.id as dummy_quotation_id'
+            )
+            ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
+            ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
+            ->where(function ($query) use ($search_value) {
+                // ค้นหาในผู้ใช้ (userOperated) ตามชื่อ
+                $query->whereHas('userOperated', function ($q) use ($search_value) {
+                    $q->where('name', 'LIKE', '%'.$search_value.'%');
+                })
+                // ค้นหาตาม Company_ID หรือ Type
+                ->orWhere('log_company.Company_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('log_company.type', 'LIKE', '%'.$search_value.'%');
+            })
+            ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete'])
+            ->orderBy('log_company.updated_at', 'desc')
+            ->paginate($perPage);
+
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = log_company::select(
+                'log_company.*',
+                'Quotation.id as quotation_id',
+                'dummy_quotation.id as dummy_quotation_id'
+            )
+            ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete'])
+            ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
+            ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
+            ->orderBy('log_company.updated_at', 'desc')
+            ->paginate($perPageS);
+        }
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $path = 'Log_PDF/proposal/';
+                if ($value->quotation_id) {
+                    $btn_action = '<a target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->quotation_id) . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                    $btn_action .= '<i class="fa fa-print"></i>';
+                    $btn_action .= '</a>';
+                } elseif ($value->dummy_quotation_id) {
+                    $btn_action = '<a target="_blank" href="' . url('/Dummy/Proposal/cover/document/PDF/' . $value->dummy_quotation_id) . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                    $btn_action .= '<i class="fa fa-print"></i>';
+                    $btn_action .= '</a>';
+                } else {
+                    $btn_action = '<a href="' . asset($path . $value->Company_ID . ".pdf") . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                    $btn_action .= '<i class="fa fa-print"></i>';
+                    $btn_action .= '</a>';
+                }
+                $contentArray = explode('+', $value->content);
+                $content = implode('</br>', $contentArray);
+                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                $name = $Category.'</br>'.$content;
+                $data[] = [
+                    'number' => $key + 1,
+                    'Category'=>$value->Category,
+                    'type'=>$value->type,
+                    'Created_by'=>@$value->userOperated->name,
+                    'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                    'Content' => $name,
+                    'Doc'=> $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function  paginate_log_doc_table_proposal (Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+        $data = [];
+        if ($perPage == 10) {
+            $data_query = log_company::select(
+                'log_company.*',
+                'Quotation.id as quotation_id',
+                'dummy_quotation.id as dummy_quotation_id'
+            )
+            ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete'])
+            ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
+            ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
+            ->orderBy('log_company.updated_at', 'desc')
+            ->limit($request->page.'0')->get();
+        } else {
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = log_company::select(
+                'log_company.*',
+                'Quotation.id as quotation_id',
+                'dummy_quotation.id as dummy_quotation_id'
+            )
+            ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete'])
+            ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
+            ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
+            ->orderBy('log_company.updated_at', 'desc')
+            ->paginate($perPageS);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    $btn_action = "";
+                    $path = 'Log_PDF/proposal/';
+                    if ($value->quotation_id) {
+                        $btn_action = '<a target="_blank" href="' . url('/Proposal/Quotation/cover/document/PDF/' . $value->quotation_id) . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                        $btn_action .= '<i class="fa fa-print"></i>';
+                        $btn_action .= '</a>';
+                    } elseif ($value->dummy_quotation_id) {
+                        $btn_action = '<a target="_blank" href="' . url('/Dummy/Proposal/cover/document/PDF/' . $value->dummy_quotation_id) . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                        $btn_action .= '<i class="fa fa-print"></i>';
+                        $btn_action .= '</a>';
+                    } else {
+                        $btn_action = '<a href="' . asset($path . $value->Company_ID . ".pdf") . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                        $btn_action .= '<i class="fa fa-print"></i>';
+                        $btn_action .= '</a>';
+                    }
+                    $contentArray = explode('+', $value->content);
+                    $content = implode('</br>', $contentArray);
+                    $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                    $name = $Category.'</br>'.$content;
+                    $data[] = [
+                        'number' => $key + 1,
+                        'Category'=>$value->Category,
+                        'type'=>$value->type,
+                        'Created_by'=>@$value->userOperated->name,
+                        'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                        'Content' => $name,
+                        'Doc'=> $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
 
 }

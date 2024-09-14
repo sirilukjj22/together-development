@@ -579,6 +579,9 @@ Route::middleware(['auth'])->group(function () {
         //----------------------------
         Route::post('Proposal-request-search-table', 'search_table_proposal');
         Route::post('Proposal-request-paginate-table', 'paginate_table_proposal');
+
+        Route::post('Proposal-LogDoc-request-search-table', 'search_table_paginate_log_doc');
+        Route::post('Proposal-LogDoc-request-paginate-table', 'paginate_log_doc_table_proposal');
     });
     ##-------------------------------TemplateController-----------------
     Route::controller(Master_TemplateController::class)->group(function () {
