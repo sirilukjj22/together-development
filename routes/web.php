@@ -575,7 +575,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Dummy/Proposal/Request/document/view/Approve/', 'Approve')->name('DummyQuotation.Approve');
         Route::post('/Dummy/Proposal/Request/document/view/Reject/', 'Reject')->name('DummyQuotation.Reject');
         Route::get('/Dummy/Proposal/Request/document/view/Approve/viewApprove/{id}','viewApprove')->name('DummyQuotation.viewApprove');
-
+        Route::get('/Proposal/request/log', 'LOG')->name('ProposalReq.log');
         //----------------------------
         Route::post('Proposal-request-search-table', 'search_table_proposal');
         Route::post('Proposal-request-paginate-table', 'paginate_table_proposal');

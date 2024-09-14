@@ -57,22 +57,8 @@ class proposal_request extends Controller
         ->select('id', 'DummyNo', 'Company_ID', 'Operated_by', 'QuotationType', DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
         ->union($quotation1);
         $proposalcount = DB::table(DB::raw("({$proposal1->toSql()}) as sub"))->mergeBindings($proposal1->getQuery())->count();
-        $userid = Auth::user()->id;
-        $log = log_company::select(
-            'log_company.*',
-            'Quotation.id as quotation_id',
-            'dummy_quotation.id as dummy_quotation_id'
-        )
-        ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete'])
-        ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
-        ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
-        ->orderBy('log_company.updated_at', 'desc')
-        ->paginate($perPage);
-        $logcount = log_company::whereIn('type', ['Request Reject', 'Request Approval', 'Request Delete'])
-        ->orderBy('updated_at', 'desc')
-        ->count();
-        $path = 'Log_PDF/proposal/';
-        return view('proposal_req.index',compact('proposal','proposalcount','userid','log','logcount','path'));
+
+        return view('proposal_req.index',compact('proposal','proposalcount'));
     }
     public function view($id,$Type)
     {
@@ -740,6 +726,27 @@ class proposal_request extends Controller
         return response()->json([
             'data' => $data,
         ]);
+    }
+
+    public function LOG()
+    {
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $userid = Auth::user()->id;
+        $log = log_company::select(
+            'log_company.*',
+            'Quotation.id as quotation_id',
+            'dummy_quotation.id as dummy_quotation_id'
+        )
+        ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete'])
+        ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
+        ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
+        ->orderBy('log_company.updated_at', 'desc')
+        ->paginate($perPage);
+        $logcount = log_company::whereIn('type', ['Request Reject', 'Request Approval', 'Request Delete'])
+        ->orderBy('updated_at', 'desc')
+        ->count();
+        $path = 'Log_PDF/proposal/';
+        return view('proposal_req.log',compact('userid','log','logcount','path'));
     }
     public function search_table_paginate_log_doc (Request $request)
     {
