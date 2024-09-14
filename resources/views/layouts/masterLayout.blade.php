@@ -24,7 +24,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/al.style.min.css') }}">
     <!-- project layout css file -->
     <link rel="stylesheet" href="{{ asset('assets/css/layout.c.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/src/smsPage.css') }}">
 
     <!-- table design css -->
     <link rel="stylesheet" href="{{ asset('assets/css/dataTables.min.css')}}" />
@@ -42,9 +41,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
     <!-- สำหรับ style css -->
+    <link rel="stylesheet" href="{{ asset('assets/src/smsPage.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/src/table.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/src/index.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/src/revenue.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/src/userProfile.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/src/global.css') }}" />
     <!-- สำหรับ tooltip info -->
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
     <!-- icon font -->

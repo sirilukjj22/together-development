@@ -24,7 +24,8 @@ class User extends Authenticatable
         'discount',
         'status',
         'permission',
-        'permission_edit'
+        'permission_edit',
+        'edit_close_day'
     ];
 
     /**

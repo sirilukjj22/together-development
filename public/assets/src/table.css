@@ -390,6 +390,10 @@ input {
   flex-grow: 0;
 }
 
+.top-table-3c_2 label {
+  white-space: nowrap;
+}
+
 @media (max-width: 750px) {
   .top-table-3c > div {
     flex-grow: 1;

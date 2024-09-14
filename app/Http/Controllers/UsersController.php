@@ -174,7 +174,7 @@ class UsersController extends Controller
                             $btn_action .='<ul class="dropdown-menu">';
                                 if (User::roleMenuEdit('Users', Auth::user()->id) == 1) 
                                 {
-                                    $btn_action .='<li class="button-li" onclick="window.location.href=\'' . url('user-edit' . $value->id) . '\'">Edit</li>';
+                                    $btn_action .='<li class="button-li" onclick="window.location.href=\'' . url('user-edit/' . $value->id) . '\'">Edit</li>';
                                 }
                             $btn_action .='</ul>';
                         $btn_action .='</div>';
@@ -355,6 +355,20 @@ class UsersController extends Controller
                     'special_discount' => $request->$special_discount ?? 0,
                 ]);
             }
+          }
+
+          // Report
+          if ($request->menu_report == 1) {
+            Role_permission_menu_sub::create([
+                'user_id' => $request->id,
+                'menu_name' => "Report",
+                'add_data' => $request->menu_report_add ?? 0,
+                'edit_data' => $request->menu_report_edit ?? 0,
+                'delete_data' => $request->menu_report_delete ?? 0,
+                'view_data' => $request->menu_report_view ?? 0,
+                'discount' => $request->menu_report_discount ?? 0,
+                'special_discount' => $request->menu_report_special_discount ?? 0,
+            ]);
           }
           
         } catch (\Throwable $th) {

@@ -1,6 +1,6 @@
 @extends('layouts.masterLayout')
 @section('content')
-    <div id="content-index" class="body-header border-bottom d-flex py-3">
+    <div id="content-index" class="border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
