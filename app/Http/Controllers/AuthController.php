@@ -102,25 +102,6 @@ class AuthController extends Controller
         return redirect("login")->withSuccess('Opps! You do not have access');
     }
 
-    // public function menu_name()
-    // {
-    //     $menu = [
-    //         'Company / Agent', 'Guest', 'Membership',
-    //         'Message Inbox', 'Registration Request', 'Message Request',
-    //         'Dummy Proposal', 'Proposal Request', 'Proposal', 
-    //         'Banquet Event Order', 'Hotel Contract Rate Agreement', 'Proforma Invoice',
-    //         'Billing Folio', 'Product Item', 'Debtor Agoda',
-    //         'Debtor Elexa', 'Request Repair', 'Repair Job',
-    //         'Preventive Maintenance', 'Daily Bank Transaction Revenue', 'Hotel & Water Park Revenue',
-    //         'User (Setting)', 'Bank (Setting)', 'Quantity (Setting)',
-    //         'Unit (Setting)', 'Prename (Setting)', 'Company Type (Setting)',
-    //         'Company Market (Setting)', 'Company Event (Setting)', 'Booking (Setting)',
-    //         'Template (Setting)'
-    //     ];
-
-    //     return $menu;
-    // }
-
     public function create(array $data)
     {
       try {

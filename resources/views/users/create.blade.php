@@ -106,6 +106,7 @@
                                                             @if ($item->category_name == 1)
                                                                 <tr class="head-sub">
                                                                     <td colspan="7">
+                                                                        <input class="select_menu" type="checkbox" name="menu_{{ $item->name2 }}" id="menu_{{ $item->id }}" value="1">
                                                                         <strong>{{ $item->name_en }}</strong>
                                                                     </td>
                                                                 </tr>

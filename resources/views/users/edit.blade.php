@@ -106,8 +106,9 @@
                                                                 @php
                                                                     $menu = $item->name2;
                                                                 @endphp
-                                                                <tr class="head-sub">
+                                                                <tr class="head-sub" style="background-color: #248a8a23;">
                                                                     <td colspan="7">
+                                                                        <input class="select_menu" type="checkbox" name="menu_{{ $item->name2 }}" id="menu_{{ $item->id }}" value="1" {{ @$user->roleMenu->$menu == 1 ? 'checked' : '' }}>
                                                                         <strong>{{ $item->name_en }}</strong>
                                                                     </td>
                                                                 </tr>
@@ -382,6 +383,19 @@
         //     $('#select_revenue_all').val(0);
         //     $('#select_revenue_all').prop('checked', false);
         // });
+
+        $('.select_menu').on('click', function() {
+            var select_menu = $(this).attr('id');
+
+            $('#select_menu_all').val(0);
+            $('#select_menu_all').prop('checked', false);
+
+            if ($(this).is(':checked')) {
+                $('.select_'+select_menu).prop('checked', true);
+            } else {
+                $('.select_'+select_menu).prop('checked', false);
+            }
+        });
 
         function select_department() {
             var id = $('#access-rights').val();

@@ -71,6 +71,7 @@
                                                             @if ($item->category_name == 1)
                                                                 <tr class="head-sub">
                                                                     <td colspan="7">
+                                                                        <input class="select_menu" type="checkbox" name="menu_{{ $item->name2 }}_main" id="menu_{{ $item->name2 }}_main" value="1" {{ @$department->roleMenuSelect($item->id, $department->id) == 1 ? 'checked' : '' }}>
                                                                         <strong>{{ $item->name_en }}</strong>
                                                                     </td>
                                                                 </tr>

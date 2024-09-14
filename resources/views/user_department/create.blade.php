@@ -70,32 +70,33 @@
                                                             @if ($item->category_name == 1)
                                                                 <tr class="head-sub">
                                                                     <td colspan="7">
+                                                                        <input class="select_menu" type="checkbox" name="menu_{{ $item->name2 }}_main" id="menu_{{ $item->id }}_main" value="1">
                                                                         <strong>{{ $item->name_en }}</strong>
                                                                     </td>
                                                                 </tr>
                                                                 @if ($item->name_en == "Product Item" || $item->name_en == "Report")
                                                                     <tr>
                                                                         <td>
-                                                                            <input class="select-row select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}" id="menu_{{ $item->id }}" value="1">
+                                                                            <input class="select-row select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}" id="menu_{{ $item->id }}" value="1">
                                                                             {{ $item->name_en }}
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_view" id="menu_{{ $item->id }}_view" value="1">
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}_view" id="menu_{{ $item->id }}_view" value="1">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_edit" id="menu_{{ $item->id }}_edit" value="1">
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}_edit" id="menu_{{ $item->id }}_edit" value="1">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_add" id="menu_{{ $item->id }}_add" value="1">
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}_add" id="menu_{{ $item->id }}_add" value="1">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_delete" id="menu_{{ $item->id }}_delete" value="1">
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}_delete" id="menu_{{ $item->id }}_delete" value="1">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_discount" id="menu_{{ $item->id }}_discount" value="1">
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}_discount" id="menu_{{ $item->id }}_discount" value="1">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_special_discount" id="menu_{{ $item->id }}_special_discount" value="1">
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}_special_discount" id="menu_{{ $item->id }}_special_discount" value="1">
                                                                         </td>
                                                                     </tr>
                                                                 @endif
@@ -105,26 +106,26 @@
                                                                 @if ($item2->category_name == 2 && $item2->menu_main == $item->id)
                                                                     <tr>
                                                                         <td>
-                                                                            <input class="select-row select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}" id="menu_{{ $item2->id }}" value="1">
+                                                                            <input class="select-row select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}" id="menu_{{ $item2->id }}" value="1">
                                                                             {{ $item2->name_en }}
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_view" id="menu_{{ $item2->id }}_view" value="1">
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}_view" id="menu_{{ $item2->id }}_view" value="1">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_edit" id="menu_{{ $item2->id }}_edit" value="1">
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}_edit" id="menu_{{ $item2->id }}_edit" value="1">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_add" id="menu_{{ $item2->id }}_add" value="1">
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}_add" id="menu_{{ $item2->id }}_add" value="1">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_delete" id="menu_{{ $item2->id }}_delete" value="1">
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}_delete" id="menu_{{ $item2->id }}_delete" value="1">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_discount" id="menu_{{ $item2->id }}_discount" value="1">
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}_discount" id="menu_{{ $item2->id }}_discount" value="1">
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_special_discount" id="menu_{{ $item2->id }}_special_discount" value="1">
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}_special_discount" id="menu_{{ $item2->id }}_special_discount" value="1">
                                                                         </td>
                                                                     </tr>
 
@@ -334,6 +335,19 @@
             } else {
                 $('.select_revenue').prop('checked', false);
                 $('#select_revenue_all').val(0);
+            }
+        });
+
+        $('.select_menu').on('click', function() {
+            var select_menu = $(this).attr('id');
+
+            $('#select_menu_all').val(0);
+            $('#select_menu_all').prop('checked', false);
+
+            if ($(this).is(':checked')) {
+                $('.select_'+select_menu).prop('checked', true);
+            } else {
+                $('.select_'+select_menu).prop('checked', false);
             }
         });
 

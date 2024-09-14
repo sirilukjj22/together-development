@@ -39,6 +39,7 @@ class UserDepartmentsController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request);
         try {
 
             $data_id = TB_departments::create([
@@ -54,19 +55,22 @@ class UserDepartmentsController extends Controller
                 $view_data = 'menu_'.$value->name2.'_view';
                 $discount = 'menu_'.$value->name2.'_discount';
                 $special_discount = 'menu_'.$value->name2.'_special_discount';
-                $menu_name2 = 'menu_'.$value->name2;
+                $menu_name2 = 'menu_'.$value->name2.'_main';
 
             if ($request->$menu_name2 == 1) {
-                TB_permission_department_menus::create([
-                    'department_id' => $data_id,
-                    'menu_id' => $value->id,
-                    'add_data' => $request->$add_data ?? 0,
-                    'edit_data' => $request->$edit_data ?? 0,
-                    'delete_data' => $request->$delete_data ?? 0,
-                    'view_data' => $request->$view_data ?? 0,
-                    'discount' => $request->$discount ?? 0,
-                    'special_discount' => $request->$special_discount ?? 0,
-                ]);
+                $category_menu = DB::table('tb_menu')->where('menu_main', $value->id)->get();
+                foreach ($category_menu as $key2 => $value2) {
+                    TB_permission_department_menus::create([
+                        'department_id' => $data_id,
+                        'menu_id' => $value2->id,
+                        'add_data' => $request->$add_data ?? 0,
+                        'edit_data' => $request->$edit_data ?? 0,
+                        'delete_data' => $request->$delete_data ?? 0,
+                        'view_data' => $request->$view_data ?? 0,
+                        'discount' => $request->$discount ?? 0,
+                        'special_discount' => $request->$special_discount ?? 0,
+                    ]);
+                }
             }
           }
 
