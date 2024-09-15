@@ -89,14 +89,28 @@ class CompanyController extends Controller
                 $btn_action = "";
                 $btn_status = "";
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
-                    $btn_action .='<div class="dropdown">';
-                    $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;
-                    </button>';
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $btn_action .='<div class="btn-group">';
+                    $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                     $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
-                    $btn_action .='<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
-                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/edit/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                    if ($rolePermission > 0) {
+                        if ($canViewProposal) {
+                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                        }
+                        if ($canEditProposal) {
+                            $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/edit/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                        }
+                    } else {
+                        if ($canViewProposal) {
+                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                        }
+                    }
                     $btn_action .='</ul>';
                     $btn_action .='</div>';
+
+
                     if ($value->status == 1) {
                         $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
                     } else {
@@ -148,12 +162,24 @@ class CompanyController extends Controller
             foreach ($data_query as $key => $value) {
                 $btn_action = "";
                 $btn_status = "";
-                $btn_action .='<div class="dropdown">';
-                $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;
-                </button>';
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $btn_action .='<div class="btn-group">';
+                $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                 $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
-                $btn_action .='<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
-                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/edit/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                if ($rolePermission > 0) {
+                    if ($canViewProposal) {
+                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                    }
+                    if ($canEditProposal) {
+                        $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/edit/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                    }
+                } else {
+                    if ($canViewProposal) {
+                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                    }
+                }
                 $btn_action .='</ul>';
                 $btn_action .='</div>';
                 if ($value->status == 1) {
@@ -1549,14 +1575,26 @@ class CompanyController extends Controller
                 }else {
                     $btn_Company = $value->first_name.' '.$value->last_name;
                 }
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
                 $btn_action .='<div class="btn-group">';
                 $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                 $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
-                $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/viewTax/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
-                $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/editTax/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                if ($rolePermission > 0) {
+                    if ($canViewProposal) {
+                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/viewTax/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                    }
+                    if ($canEditProposal) {
+                        $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/editTax/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                    }
+                } else {
+                    if ($canViewProposal) {
+                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/viewTax/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                    }
+                }
                 $btn_action .='</ul>';
                 $btn_action .='</div>';
-
                 $data[] = [
                     'number' => $key + 1,
                     'Profile_ID_TAX'=>$value->ComTax_ID,
@@ -1603,11 +1641,24 @@ class CompanyController extends Controller
                     }else {
                         $btn_Company = $value->first_name.' '.$value->last_name;
                     }
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
                     $btn_action .='<div class="btn-group">';
                     $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                     $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
-                    $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/viewTax/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
-                    $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/editTax/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                    if ($rolePermission > 0) {
+                        if ($canViewProposal) {
+                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/viewTax/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                        }
+                        if ($canEditProposal) {
+                            $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/editTax/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                        }
+                    } else {
+                        if ($canViewProposal) {
+                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/viewTax/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                        }
+                    }
                     $btn_action .='</ul>';
                     $btn_action .='</div>';
 
@@ -2211,16 +2262,27 @@ class CompanyController extends Controller
                     $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatusTax('.$value->id.')">ปิดใช้งาน</button>';
                 }
 
-                    $btn_Company = 'คุณ '.$value->First_name.' '.$value->Last_name;
-
+                $btn_Company = 'คุณ '.$value->First_name.' '.$value->Last_name;
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
                 $btn_action .='<div class="btn-group">';
                 $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                 $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
-                $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/contact/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
-                $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/edit/contact/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                if ($rolePermission > 0) {
+                    if ($canViewProposal) {
+                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/contact/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                    }
+                    if ($canEditProposal) {
+                        $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/edit/contact/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                    }
+                } else {
+                    if ($canViewProposal) {
+                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/contact/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                    }
+                }
                 $btn_action .='</ul>';
                 $btn_action .='</div>';
-
                 $data[] = [
                     'number' => $key + 1,
                     'Profile_ID_TAX'=>$value->Profile_ID,
@@ -2262,13 +2324,25 @@ class CompanyController extends Controller
                         $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatusTax('.$value->id.')">ปิดใช้งาน</button>';
                     }
 
-                        $btn_Company = 'คุณ '.$value->First_name.' '.$value->Last_name;
-
+                    $btn_Company = 'คุณ '.$value->First_name.' '.$value->Last_name;
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
                     $btn_action .='<div class="btn-group">';
                     $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                     $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
-                    $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/contact/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
-                    $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/edit/contact/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                    if ($rolePermission > 0) {
+                        if ($canViewProposal) {
+                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/contact/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                        }
+                        if ($canEditProposal) {
+                            $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/edit/contact/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                        }
+                    } else {
+                        if ($canViewProposal) {
+                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/Company/view/contact/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                        }
+                    }
                     $btn_action .='</ul>';
                     $btn_action .='</div>';
 

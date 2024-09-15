@@ -331,12 +331,27 @@
                                                                     <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatusTax({{ $item->id }})">ปิดใช้งาน</button>
                                                                 @endif
                                                             </td>
+                                                            @php
+                                                                $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                                $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                                                                $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                            @endphp
                                                             <td style="text-align: center;">
                                                                 <div class="btn-group">
                                                                     <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                                                     <ul class="dropdown-menu border-0 shadow p-3">
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/viewTax/'.$item->id) }}">ดูรายละเอียด</a></li>
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/editTax/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                                                        @if ($rolePermission > 0)
+                                                                            @if ($canViewProposal == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/viewTax/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                                                            @endif
+                                                                            @if ($canEditProposal == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/editTax/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                                                            @endif
+                                                                        @else
+                                                                            @if ($canViewProposal == 1)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/viewTax/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                                                            @endif
+                                                                        @endif
                                                                     </ul>
                                                                 </div>
                                                             </td>
@@ -842,12 +857,27 @@
                                                             <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatusContact({{ $item->id }})">ปิดใช้งาน</button>
                                                         @endif
                                                     </td>
+                                                    @php
+                                                        $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                        $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                    @endphp
                                                     <td style="text-align: center;">
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
-                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/view/contact/'.$item->id) }}">ดูรายละเอียด</a></li>
-                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/edit/contact/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                                                @if ($rolePermission > 0)
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/view/contact/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                                                    @endif
+                                                                    @if ($canEditProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/edit/contact/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                                                    @endif
+                                                                @else
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/view/contact/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                                                    @endif
+                                                                @endif
                                                             </ul>
                                                         </div>
                                                     </td>
