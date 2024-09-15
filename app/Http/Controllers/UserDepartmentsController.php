@@ -49,28 +49,27 @@ class UserDepartmentsController extends Controller
 
             $menu_name = DB::table('tb_menu')->get();
             foreach ($menu_name as $key => $value) {
+                $menu_name2 = 'menu_'.$value->name2.'_main';
+                $menu_name3 = 'menu_'.$value->name2;
+
+            if ($request->$menu_name2 == 1 || $request->$menu_name3 == 1) {
                 $add_data = 'menu_'.$value->name2.'_add';
                 $edit_data = 'menu_'.$value->name2.'_edit';
                 $delete_data = 'menu_'.$value->name2.'_delete';
                 $view_data = 'menu_'.$value->name2.'_view';
                 $discount = 'menu_'.$value->name2.'_discount';
                 $special_discount = 'menu_'.$value->name2.'_special_discount';
-                $menu_name2 = 'menu_'.$value->name2.'_main';
 
-            if ($request->$menu_name2 == 1) {
-                $category_menu = DB::table('tb_menu')->where('menu_main', $value->id)->get();
-                foreach ($category_menu as $key2 => $value2) {
-                    TB_permission_department_menus::create([
-                        'department_id' => $data_id,
-                        'menu_id' => $value2->id,
-                        'add_data' => $request->$add_data ?? 0,
-                        'edit_data' => $request->$edit_data ?? 0,
-                        'delete_data' => $request->$delete_data ?? 0,
-                        'view_data' => $request->$view_data ?? 0,
-                        'discount' => $request->$discount ?? 0,
-                        'special_discount' => $request->$special_discount ?? 0,
-                    ]);
-                }
+                TB_permission_department_menus::create([
+                    'department_id' => $data_id,
+                    'menu_id' => $value->id,
+                    'add_data' => $request->$add_data ?? 0,
+                    'edit_data' => $request->$edit_data ?? 0,
+                    'delete_data' => $request->$delete_data ?? 0,
+                    'view_data' => $request->$view_data ?? 0,
+                    'discount' => $request->$discount ?? 0,
+                    'special_discount' => $request->$special_discount ?? 0,
+                ]);
             }
           }
 
@@ -139,9 +138,10 @@ class UserDepartmentsController extends Controller
                 $view_data = 'menu_'.$value->name2.'_view';
                 $discount = 'menu_'.$value->name2.'_discount';
                 $special_discount = 'menu_'.$value->name2.'_special_discount';
-                $menu_name2 = 'menu_'.$value->name2;
+                $menu_name2 = 'menu_'.$value->name2.'_main';
+                $menu_name3 = 'menu_'.$value->name2;
 
-            if ($request->$menu_name2 == 1) {
+            if ($request->$menu_name2 == 1 || $request->$menu_name3 == 1) {
                 TB_permission_department_menus::create([
                     'department_id' => $request->id,
                     'menu_id' => $value->id,
@@ -259,7 +259,7 @@ class UserDepartmentsController extends Controller
                             $btn_action .='<ul class="dropdown-menu">';
                                 if (User::roleMenuEdit('Users', Auth::user()->id) == 1) 
                                 {
-                                    $btn_action .='<li class="button-li" onclick="window.location.href=\'' . url('user-department-edit' . $value->id) . '\'">Edit</li>';
+                                    $btn_action .='<li class="button-li" onclick="window.location.href=\'' . url('user-department-edit/' . $value->id) . '\'">Edit</li>';
                                 }
                             $btn_action .='</ul>';
                         $btn_action .='</div>';

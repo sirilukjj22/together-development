@@ -8,7 +8,7 @@
                     <div class="span3">Create Department</div>
                 </div>
                 <div class="col-auto">
-                    <a href="{{ route('users', 'index') }}" type="button"
+                    <a href="{{ route('user-department') }}" type="button"
                         class="btn btn-color-green text-white lift">Back</a>
                 </div>
             </div> <!-- .row end -->
@@ -68,7 +68,7 @@
                                                     @if (isset($tb_menu))
                                                         @foreach ($tb_menu as $item)
                                                             @if ($item->category_name == 1)
-                                                                <tr class="head-sub">
+                                                                <tr class="head-sub" style="background-color: #248a8a23;">
                                                                     <td colspan="7">
                                                                         <input class="select_menu" type="checkbox" name="menu_{{ $item->name2 }}_main" id="menu_{{ $item->id }}_main" value="1">
                                                                         <strong>{{ $item->name_en }}</strong>
