@@ -609,6 +609,9 @@ Route::middleware(['auth'])->group(function () {
         //--------------------------------------Re---------------------------------------
 
         Route::get(' /Document/invoice/Generate/to/Re/{id}','GenerateRe')->name('invoice.GenerateRe');
+
+        Route::post('invoice-search-table', 'search_table_invoice');
+        Route::post('invoice-paginate-table', 'paginate_table_invoice');
     });
 
     ##-------------------------------document receipt-----------------
