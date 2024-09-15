@@ -2057,7 +2057,7 @@ class SMSController extends Controller
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
 
         $filter_by = $request->filter_by;
-        $search_date = $request->date;
+        $search_date = $from;
 
         $status = $request->status;
         $into_account = $request->into_account;
@@ -2283,7 +2283,7 @@ class SMSController extends Controller
         }
 
         $filter_by = $request->filter_by;
-        $search_date = $request->date;
+        $search_date = $from;
         $into_account = $request->into_account;
 
         return view('sms-forward.detail', compact('data_sms', 'total_sms', 'data_bank', 'title', 'filter_by', 'search_date', 'status', 'into_account'));
@@ -2355,7 +2355,7 @@ class SMSController extends Controller
         $title = "Agoda bank Transfer Revenue";
 
         $filter_by = $request->filter_by;
-        $search_date = $request->date;
+        $search_date = $from;
         $status = $request->status;
         $into_account = $request->into_account;
 
