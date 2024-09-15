@@ -247,43 +247,43 @@ class UsersController extends Controller
             }
     
             Role_permission_menu::where('user_id', $request->id)->update([
-                'profile' => $request->menu_profile ?? 0,
+                'profile' => $request->menu_profile_main ?? 0,
                 'company' => $request->menu_company ?? 0,
                 'guest' => $request->menu_guest ?? 0,
 
-                'freelancer' => $request->menu_freelancer ?? 0,
+                'freelancer' => $request->menu_freelancer_main ?? 0,
                 'membership' => $request->menu_membership ?? 0,
                 'message_inbox' => $request->menu_message_inbox ?? 0,
                 'registration_request' => $request->menu_registration_request ?? 0,
                 'message_request' => $request->menu_message_request ?? 0,
 
-                'document' => $request->menu_document ?? 0,
+                'document' => $request->menu_document_main ?? 0,
                 'banquet_event_order' => $request->menu_banquet_event_order ?? 0,
                 'proposal' => $request->menu_proposal ?? 0,
                 'hotel_contact_rate' => $request->menu_hotel_contact_rate ?? 0,
                 'proforma_invoice' => $request->menu_proforma_invoice ?? 0,
                 'billing_folio' => $request->menu_billing_folio ?? 0,
 
-                'debtor' => $request->menu_debtor ?? 0,
+                'debtor' => $request->menu_debtor_main ?? 0,
                 'agoda' => $request->menu_agoda ?? 0,
                 'elexa' => $request->menu_elexa ?? 0,
 
-                'maintenance' => $request->menu_maintenance ?? 0,
+                'maintenance' => $request->menu_maintenance_main ?? 0,
                 'request_repair' => $request->menu_request_repair ?? 0,
                 'repair_job' => $request->menu_repair_job ?? 0,
                 'preventive_maintenance' => $request->menu_preventive_maintenance ?? 0,
 
-                'general_ledger' => $request->menu_general_ledger ?? 0,
+                'general_ledger' => $request->menu_general_ledger_main ?? 0,
                 'sms_alert' => $request->menu_sms_alert ?? 0,
                 'revenue' => $request->menu_revenue ?? 0,
 
                 // 'report' => $request->report ?? 0,
                 
-                'setting' => $request->menu_setting ?? 0,
+                'setting' => $request->menu_setting_main ?? 0,
                 'user' => $request->menu_user ?? 0,
                 'department' => $request->menu_department ?? 0,
                 'bank' => $request->menu_bank ?? 0,
-                'product_item' => $request->menu_product_item ?? 0,
+                'product_item' => $request->menu_product_item_main ?? 0,
                 'quantity' => $request->menu_quantity ?? 0,
                 'unit' => $request->menu_unit ?? 0,
                 'prefix' => $request->menu_prefix ?? 0,
@@ -293,7 +293,7 @@ class UsersController extends Controller
                 'company_event' => $request->menu_company_event ?? 0,
                 'booking' => $request->menu_booking ?? 0,
                 'document_template_pdf' => $request->menu_document_template_pdf ?? 0,
-                'report' => $request->menu_report ?? 0,
+                'report' => $request->menu_report_main ?? 0,
 
                 'select_menu_all' => $request->select_menu_all ?? 0,
               ]);

@@ -108,33 +108,33 @@
                                                                 @endphp
                                                                 <tr class="head-sub" style="background-color: #248a8a23;">
                                                                     <td colspan="7">
-                                                                        <input class="select_menu" type="checkbox" name="menu_{{ $item->name2 }}" id="menu_{{ $item->id }}" value="1" {{ @$user->roleMenu->$menu == 1 ? 'checked' : '' }}>
+                                                                        <input class="select_menu" type="checkbox" name="menu_{{ $item->name2 }}_main" id="menu_{{ $item->id }}_main" value="1" {{ @$user->roleMenu->$menu == 1 ? 'checked' : '' }}>
                                                                         <strong>{{ $item->name_en }}</strong>
                                                                     </td>
                                                                 </tr>
                                                                 @if ($item->name_en == "Product Item" || $item->name_en == "Report")
                                                                     <tr>
                                                                         <td>
-                                                                            <input class="select-row select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}" id="menu_{{ $item->id }}" value="1" {{ @$user->roleMenu->$menu == 1 ? 'checked' : '' }}>
+                                                                            <input class="select-row select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}" id="menu_{{ $item->id }}" value="1" {{ @$user->roleMenuSub($user->id, $item->name_en) == 1 ? 'checked' : '' }}>
                                                                             {{ $item->name_en }}
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_view" id="menu_{{ $item->id }}_view" value="1" {{ @$user->roleMenuView($item->name_en, $user->id) == 1 ? 'checked' : '' }}>
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}_view" id="menu_{{ $item->id }}_view" value="1" {{ @$user->roleMenuView($item->name_en, $user->id) == 1 ? 'checked' : '' }}>
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_edit" id="menu_{{ $item->id }}_edit" value="1" {{ @$user->roleMenuEdit($item->name_en, $user->id) == 1 ? 'checked' : '' }}>
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}_edit" id="menu_{{ $item->id }}_edit" value="1" {{ @$user->roleMenuEdit($item->name_en, $user->id) == 1 ? 'checked' : '' }}>
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_add" id="menu_{{ $item->id }}_add" value="1" {{ @$user->roleMenuAdd($item->name_en, $user->id) == 1 ? 'checked' : '' }}>
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}_add" id="menu_{{ $item->id }}_add" value="1" {{ @$user->roleMenuAdd($item->name_en, $user->id) == 1 ? 'checked' : '' }}>
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_delete" id="menu_{{ $item->id }}_delete" value="1" {{ @$user->roleMenuDelete($item->name_en, $user->id) == 1 ? 'checked' : '' }}>
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}_delete" id="menu_{{ $item->id }}_delete" value="1" {{ @$user->roleMenuDelete($item->name_en, $user->id) == 1 ? 'checked' : '' }}>
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_discount" id="menu_{{ $item->id }}_discount" value="1" {{ @$user->roleMenuDiscount($item->name_en, $user->id) == 1 ? 'checked' : '' }}>
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}_discount" id="menu_{{ $item->id }}_discount" value="1" {{ @$user->roleMenuDiscount($item->name_en, $user->id) == 1 ? 'checked' : '' }}>
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item->name2 }}_special_discount" id="menu_{{ $item->id }}_special_discount" value="1" {{ @$user->roleMenuSpecialDiscount($item->name_en, $user->id) == 1 ? 'checked' : '' }}>
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item->name2 }}_special_discount" id="menu_{{ $item->id }}_special_discount" value="1" {{ @$user->roleMenuSpecialDiscount($item->name_en, $user->id) == 1 ? 'checked' : '' }}>
                                                                         </td>
                                                                     </tr>
                                                                 @endif
@@ -147,26 +147,26 @@
                                                                     @endphp
                                                                     <tr>
                                                                         <td>
-                                                                            <input class="select-row select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}" id="menu_{{ $item2->id }}" value="1" {{ @$user->roleMenu->$menu2 == 1 ? 'checked' : '' }}>
+                                                                            <input class="select-row select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}" id="menu_{{ $item2->id }}" value="1" {{ @$user->roleMenu->$menu2 == 1 ? 'checked' : '' }}>
                                                                             {{ $item2->name_en }}
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_view" id="menu_{{ $item2->id }}_view" value="1" {{ @$user->roleMenuView($item2->name_en, $user->id) == 1 ? 'checked' : '' }}>
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}_view" id="menu_{{ $item2->id }}_view" value="1" {{ @$user->roleMenuView($item2->name_en, $user->id) == 1 ? 'checked' : '' }}>
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_edit" id="menu_{{ $item2->id }}_edit" value="1" {{ @$user->roleMenuEdit($item2->name_en, $user->id) == 1 ? 'checked' : '' }}>
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}_edit" id="menu_{{ $item2->id }}_edit" value="1" {{ @$user->roleMenuEdit($item2->name_en, $user->id) == 1 ? 'checked' : '' }}>
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_add" id="menu_{{ $item2->id }}_add" value="1" {{ @$user->roleMenuAdd($item2->name_en, $user->id) == 1 ? 'checked' : '' }}>
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}_add" id="menu_{{ $item2->id }}_add" value="1" {{ @$user->roleMenuAdd($item2->name_en, $user->id) == 1 ? 'checked' : '' }}>
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_delete" id="menu_{{ $item2->id }}_delete" value="1" {{ @$user->roleMenuDelete($item2->name_en, $user->id) == 1 ? 'checked' : '' }}>
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}_delete" id="menu_{{ $item2->id }}_delete" value="1" {{ @$user->roleMenuDelete($item2->name_en, $user->id) == 1 ? 'checked' : '' }}>
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_discount" id="menu_{{ $item2->id }}_discount" value="1" {{ @$user->roleMenuDiscount($item2->name_en, $user->id) == 1 ? 'checked' : '' }}>
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}_discount" id="menu_{{ $item2->id }}_discount" value="1" {{ @$user->roleMenuDiscount($item2->name_en, $user->id) == 1 ? 'checked' : '' }}>
                                                                         </td>
                                                                         <td>
-                                                                            <input class="select_menu select_menu_{{ $item->id }}" type="checkbox" name="menu_{{ $item2->name2 }}_special_discount" id="menu_{{ $item2->id }}_special_discount" value="1" {{ @$user->roleMenuSpecialDiscount($item2->name_en, $user->id) == 1 ? 'checked' : '' }}>
+                                                                            <input class="select_menu select_menu_{{ $item->id }}_main" type="checkbox" name="menu_{{ $item2->name2 }}_special_discount" id="menu_{{ $item2->id }}_special_discount" value="1" {{ @$user->roleMenuSpecialDiscount($item2->name_en, $user->id) == 1 ? 'checked' : '' }}>
                                                                         </td>
                                                                     </tr>
 
@@ -174,7 +174,7 @@
                                                                         <tr style="background-color: rgb(239, 240, 240);">
                                                                             <td colspan="7">
                                                                                 <input class="select-row" type="checkbox" name="close_day" id="close-day" value="1" {{ $user->edit_close_day == 1 ? 'checked' : '' }}>
-                                                                                Close Day (สำหรับการแสดงค่าของ Bank Transaction Revenue) {{ $user->edit_close_day }}
+                                                                                Close Day (สำหรับการแสดงค่าของ Bank Transaction Revenue)
                                                                             </td>
                                                                         <tr>
                                                                     @endif
@@ -416,6 +416,7 @@
 
                     // Menu
                     $.each(response.data_menu, function(key, val) {
+                        $('#menu_' + val.menu_id + '_main').prop('checked', true); // Topic Main
                         $('#menu_' + val.menu_id).prop('checked', true);
 
                         if (val.add_data == 1) {

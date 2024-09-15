@@ -66,6 +66,18 @@ class User extends Authenticatable
         return $this->hasOne(Role_permission_menu::class, 'user_id', 'id');
     }
 
+    public function roleMenuSub($user_id, $menu) // Menu Product Item, Report
+    {
+        $check = Role_permission_menu_sub::where('user_id', $user_id)->where('menu_name', $menu)->first();
+
+        $permission = 0;
+
+        if (!empty($check)) {
+            $permission = 1;
+        }
+        return $permission;
+    }
+
     public function roleRevenues()
     {
         return $this->hasOne(Role_permission_revenue::class, 'user_id', 'id');

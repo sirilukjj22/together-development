@@ -125,7 +125,7 @@
                                     </ul>
                                 </li>
                             @endif
-                            {{-- @if (Auth::user()->roleMenu->freelancer == 1) --}}
+                            @if (Auth::user()->roleMenu->freelancer == 1)
                                 <li class="collapsed">
                                     <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Freelancer"
                                         href="#"><i class="fa fa-lg fa-user-plus"></i> <span>Freelancer</span>
@@ -151,8 +151,8 @@
                                         @endif
                                     </ul>
                                 </li>
-                            {{-- @endif --}}
-                            {{-- @if (Auth::user()->roleMenu->document == 1) --}}
+                            @endif
+                            @if (Auth::user()->roleMenu->document == 1)
                                 <li class="collapsed">
                                     <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Document"
                                         href="#">
@@ -163,8 +163,10 @@
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Document">
                                         @if (Auth::user()->roleMenu->proposal == 1)
-                                            <li><a class="ms-link" href="{{ route('DummyQuotation.index') }}">Dummy Proposal</a></li>
-                                            <li><a class="ms-link" href="{{ route('ProposalReq.index') }}">Document Request</a></li>
+                                            <li><a class="ms-link" href="{{ route('DummyQuotation.index') }}">Dummy
+                                                    Proposal</a></li>
+                                            <li><a class="ms-link" href="{{ route('ProposalReq.index') }}">Proposal
+                                                    Request</a></li>
                                             <li><a class="ms-link" href="{{ route('Proposal.index') }}">Proposal</a>
                                             </li>
                                         @endif
@@ -185,7 +187,7 @@
                                         @endif
                                     </ul>
                                 </li>
-                            {{-- @endif --}}
+                            @endif
                             @if (Auth::user()->roleMenu->product_item == 1)
                                 <li><a class="m-link" href="{{ route('Mproduct.index') }}"><i
                                             class="fa fa-lg fa-cubes" style="font-weight: bold; color: white;"></i>

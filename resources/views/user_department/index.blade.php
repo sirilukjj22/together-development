@@ -198,8 +198,8 @@
 
                 },
                 columnDefs: [{
-                    targets: [0, 1, 2],
-                    className: 'dt-center td-content-center'
+                    // targets: [0, 1, 2],
+                    // className: 'dt-center td-content-center'
                 }, ],
                 order: [0, 'asc'],
                 responsive: {
