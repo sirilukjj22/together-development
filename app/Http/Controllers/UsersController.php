@@ -104,7 +104,7 @@ class UsersController extends Controller
                         $btn_action .='<ul class="dropdown-menu">';
                             if (User::roleMenuEdit('Users', Auth::user()->id) == 1) 
                             {
-                                $btn_action .='<li class="button-li" onclick="window.location.href=\'' . url('user-edit' . $value->id) . '\'">Edit</li>';
+                                $btn_action .='<li class="button-li" onclick="window.location.href=\'' . url('user-edit/' . $value->id) . '\'">Edit</li>';
                             }
                         $btn_action .='</ul>';
                     $btn_action .='</div>';
