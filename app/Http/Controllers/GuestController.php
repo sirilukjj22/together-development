@@ -64,8 +64,8 @@ class GuestController extends Controller
                 }, $exportbook));
                 $booking = implode('</br>', $booking_names);
                 $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Guest', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
                 $btn_action .='<div class="btn-group">';
                 $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                 $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
@@ -135,8 +135,8 @@ class GuestController extends Controller
                 $booking = implode('</br>', $booking_names);
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
                     $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Guest', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
                     $btn_action .='<div class="btn-group">';
                     $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                     $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
@@ -1097,8 +1097,8 @@ class GuestController extends Controller
                         $btn_Company = $value->first_name.' '.$value->last_name;
                     }
                     $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Guest', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
                     $btn_action .='<div class="btn-group">';
                     $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                     $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
@@ -1167,8 +1167,8 @@ class GuestController extends Controller
                     $btn_Company = $value->first_name.' '.$value->last_name;
                 }
                 $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Guest', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
                 $btn_action .='<div class="btn-group">';
                 $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
                 $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';

@@ -333,8 +333,8 @@
                                                             </td>
                                                             @php
                                                                 $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                                $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                                                                $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                                $canViewProposal = @Auth::user()->roleMenuView('Company / Agent', Auth::user()->id);
+                                                                $canEditProposal = @Auth::user()->roleMenuEdit('Company / Agent', Auth::user()->id);
                                                             @endphp
                                                             <td style="text-align: center;">
                                                                 <div class="btn-group">
@@ -859,8 +859,8 @@
                                                     </td>
                                                     @php
                                                         $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                        $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                        $canViewProposal = @Auth::user()->roleMenuView('Company / Agent', Auth::user()->id);
+                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Company / Agent', Auth::user()->id);
                                                     @endphp
                                                     <td style="text-align: center;">
                                                         <div class="btn-group">

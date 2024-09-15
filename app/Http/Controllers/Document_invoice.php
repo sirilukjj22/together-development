@@ -35,6 +35,7 @@ class Document_invoice extends Controller
 {
     public function index()
     {
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $userid = Auth::user()->id;
         $Approved = Quotation::query()
         ->leftJoin('document_invoice', 'quotation.Refler_ID', '=', 'document_invoice.Refler_ID')
@@ -49,9 +50,7 @@ class Document_invoice extends Controller
             DB::raw('MIN(CASE WHEN document_invoice.document_status IN (1, 2) THEN CAST(REPLACE(document_invoice.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
         )
         ->groupBy('quotation.Quotation_ID','quotation.Operated_by','quotation.status_guest')
-        ->get();
-
-        //   dd($Approved);
+        ->paginate($perPage);
         $Approvedcount = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->count();
 
         $invoice = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->get();

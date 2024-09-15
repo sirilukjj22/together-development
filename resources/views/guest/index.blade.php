@@ -124,8 +124,8 @@
                                                 </td>
                                                 @php
                                                     $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                    $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                    $canViewProposal = @Auth::user()->roleMenuView('Guest', Auth::user()->id);
+                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
                                                 @endphp
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
