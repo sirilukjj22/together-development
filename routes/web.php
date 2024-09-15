@@ -54,7 +54,7 @@ Route::get('sms-api-forward', [SMSController::class, 'forward'])->name('sms-api-
 Route::middleware(['auth'])->group(function () {
 
     # SMS Alert
-    Route::controller(SMSController::class)->group(function () {
+    Route::controller(SMSController::class)->middleware('role:sms_alert')->group(function () {
         Route::get('sms-alert', 'index')->name('sms-alert');
         Route::get('sms-alert-refresh/{day}/{month}/{year}', 'index_refresh')->name('sms-alert-refresh');
         Route::get('sms-change-status/{id}/{status}', 'change_status')->name('sms-change-status');
@@ -87,7 +87,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     # Revenue
-    Route::controller(RevenuesController::class)->group(function () {
+    Route::controller(RevenuesController::class)->middleware('role:revenue')->group(function () {
         Route::get('revenue', 'index')->name('revenue'); // By Type
         Route::get('revenue-department', 'index')->name('revenue-department'); // By Department
         Route::post('revenue-search-calendar', 'search_calendar')->name('revenue-search-calendar');
@@ -105,7 +105,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     # Debit Agoda Revenue
-    Route::controller(AgodaRevenuesController::class)->group(function () {
+    Route::controller(AgodaRevenuesController::class)->middleware('role:agoda')->group(function () {
         Route::get('debit-agoda', 'index')->name('debit-agoda');
         Route::get('debit-agoda-revenue/{month}/{year}', 'index_list_days')->name('debit-agoda-revenue');
         Route::get('debit-agoda-update/{month}/{year}', 'index_update_agoda')->name('debit-agoda-update');
@@ -119,7 +119,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     ## Master Data
-    Route::controller(MasterController::class)->group(function () {
+    Route::controller(MasterController::class)->middleware('role:setting')->group(function () {
         Route::get('master/{menu}', 'index')->name('master');
         Route::get('master/check/{category}/{field}/{datakey}', 'validate_field');
         // Route::get('master/check2/{category}/{field}/{datakey}/{type_name}', [MasterController::class, 'validate_field2']);
@@ -141,7 +141,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     ## Users
-    Route::controller(UsersController::class)->group(function () {
+    Route::controller(UsersController::class)->middleware('role:user')->group(function () {
         Route::get('users/{menu}', 'index')->name('users');
         Route::get('user-create', 'create')->name('user-create');
         Route::get('user-edit/{id}', 'edit')->name('user-edit');
@@ -157,11 +157,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('user-paginate-table', 'paginate_table')->name('user-paginate-table');
     });
     // Add User
-    Route::post('post-registration', [AuthController::class, 'postRegistration'])->name('register.post');
+    Route::post('post-registration', [AuthController::class, 'postRegistration'])->name('register.post')->middleware('role:user');
 
 
     ## User Department
-    Route::controller(UserDepartmentsController::class)->group(function () {
+    Route::controller(UserDepartmentsController::class)->middleware('role:department')->group(function () {
         Route::get('user-department', 'index')->name('user-department');
         Route::get('user-department-create', 'create')->name('user-department-create');
         Route::get('user-department-edit/{id}', 'edit')->name('user-department-edit');
@@ -177,7 +177,7 @@ Route::middleware(['auth'])->group(function () {
     ####################################################
 
     ## Master Booking Channal
-    Route::controller(master_booking::class)->group(function () {
+    Route::controller(master_booking::class)->middleware('role:setting')->group(function () {
         Route::get('/Mbooking/index', 'index')->name('Mbooking.index');
         Route::get('/Mbooking/ac', 'ac')->name('Mbooking.ac');
         Route::get('/Mbooking/no', 'no')->name('Mbooking.no');
@@ -190,7 +190,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     ## Company
-    Route::controller(CompanyController::class)->group(function () {
+    Route::controller(CompanyController::class)->middleware('role:company')->group(function () {
         Route::get('/Company/{menu}', 'index')->name('Company');
         Route::get('/Company-create', 'create')->name('Company.create');
         Route::get('/Company/amphures/{id}', 'amphures')->name('Company.amphures');
@@ -243,7 +243,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('Log-company-paginate-table', 'paginate_table_company_Log');
     });
 
-    Route::controller(GuestController::class)->group(function () {
+    Route::controller(GuestController::class)->middleware('role:guest')->group(function () {
         Route::get('/guest/{menu}', 'index')->name('guest');
         Route::get('/guest-create', 'create')->name('guestcreate');
         Route::get('/guest/amphures/{id}', 'amphures')->name('guest.amphures');
@@ -278,8 +278,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('Visit-guest-paginate-table', 'paginate_table_guest_Visit');
     });
 });
-#master product
-    Route::controller(master_product_i::class)->group(function() {
+    #master product
+    Route::controller(master_product_i::class)->middleware('role:product_item')->group(function() {
         Route::get('/Mproduct/index','index')->name('Mproduct.index');
         Route::get('/Mproduct/create','create')->name('Mproduct.create');
         Route::get('/Mproduct/ac','ac')->name('Mproduct.ac');
@@ -316,20 +316,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mproduct/Unit/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.unit.dupicate');
         Route::get('/Mproduct/Unit/update/{id}/{datakey}/{dataEN}','update_unit')->name('Mproduct.update.unit');
     });
-#master bank
-    Route::controller(Master_bank::class)->group(function() {
-        Route::get('/Mbank/index','index')->name('Mbank.index');
-        Route::get('/Mbank/ac','ac')->name('Mbank.ac');
-        Route::get('/Mbank/no','no')->name('Mbank.no');
-        Route::post('/Mbank/Save','save')->name('Mbank.save');
-        Route::get('/Mbank/update/{id}/{datakey}/{dataEN}/{code}/{swiftcode}','update')->name('Mbank.update');
-        Route::get('/Mbank/change-Status/{id}','changeStatus')->name('Mbank.changeStatus');
-        Route::get('/Mbank/edit/{id}','edit')->name('Mproduct.edit.unit');
-        Route::get('/Mbank/search-list2/{id}/{datakey}','searchMbank')->name('Mproduct.Mbank.search');
-        Route::get('/Mbank/check-edit-name/{id}/{datakey}','dupicateMbank')->name('Mproduct.Mbank.dupicate');
-    });
-#master prefix
-    Route::controller(Master_prefix::class)->group(function() {
+
+    #master prefix
+    Route::controller(Master_prefix::class)->middleware('role:prefix')->group(function() {
         Route::get('/Mprefix/index','index')->name('Mprefix.index');
         Route::get('/Mprefix/ac','ac')->name('Mprefix.ac');
         Route::get('/Mprefix/no','no')->name('Mprefix.no');
@@ -340,7 +329,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mprefix/Mprename/search-list2/{datakey}','searchMprename')->name('Mproduct.Mprefix.search');
         Route::get('/Mprefix/Mprename/check-edit-name/{id}/{datakey}','dupicateMprename')->name('Mproduct.Mprefix.dupicate');
     });
-#master promotion
+
+    #master promotion
     Route::controller(Masterpromotion::class)->group(function() {
         Route::get('/Mpromotion/index','index')->name('Mpromotion.index');
         Route::post('/Mpromotion/Save','save')->name('Mpromotion.save');
@@ -348,8 +338,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mpromotion/no','no')->name('Mpromotion.no');
         Route::get('/Mpromotion/delete/{id}','delete')->name('Mpromotion.delete');
     });
-#master company type
-    Route::controller(Master_Company_type::class)->group(function() {
+
+    #master company type
+    Route::controller(Master_Company_type::class)->middleware('role:company_type')->group(function() {
         Route::get('/Mcomt/index','index')->name('Mcomt.index');
         Route::get('/Mcomt/ac','ac')->name('Mcomt.ac');
         Route::get('/Mcomt/no','no')->name('Mcomt.no');
@@ -361,8 +352,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mcomt/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.Mcomt.dupicate');
 
     });
-#master market
-    Route::controller(Master_market::class)->group(function() {
+    #master market
+    Route::controller(Master_market::class)->middleware('role:company_market')->group(function() {
         Route::get('/Mmarket/index','index')->name('Mmarket.index');
         Route::get('/Mmarket/ac','ac')->name('Mmarket.ac');
         Route::get('/Mmarket/no','no')->name('Mmarket.no');
@@ -374,8 +365,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mmarket/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.Mmarket.dupicate');
     });
 
-#Freelancer Check
-    Route::controller(freelancer_register::class)->group(function() {
+    #Freelancer Check
+    Route::controller(freelancer_register::class)->middleware('role:freelancer')->group(function() {
         Route::get('/Freelancer/checked/index','index')->name('freelancer.index');
         Route::get('/Freelancer/checked/create','create')->name('freelancer.create');
         Route::get('/Freelancer/checked/create/amphures/{id}','amphures')->name('freelancer.amphures');
@@ -391,8 +382,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Freelancer/check/edit/{id}','edit')->name('freelancer.edit');
         Route::get('/Freelancer/check/view/{id}','view')->name('freelancer.view');
     });
-#Freelancer Member
-    Route::controller(FreelancerMemberController::class)->group(function() {
+
+    #Freelancer Member
+    Route::controller(FreelancerMemberController::class)->middleware('role:freelancer')->group(function() {
         Route::get('/Freelancer/member/index','index_member')->name('freelancer_member.index');
         Route::get('/Freelancer/member/view/{id}','viewmember')->name('freelancer_member.view');
         Route::get('/Freelancer/member/edit/{id}','editmember')->name('freelancer_member.edit');
@@ -413,8 +405,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Freelancer/employee/view/data/{id}','viewdataexamineemployee')->name('freelancer.employee.viewdata.examine');
         Route::get('/Freelancer/employee/examine/status{id}','examinestatusemployee')->name('freelancer.employee.examine.status');
     });
-# Master Event Formate
-    Route::controller(MasterEventFormatController::class)->group(function () {
+
+    # Master Event Formate
+    Route::controller(MasterEventFormatController::class)->middleware('role:company_event')->group(function () {
         Route::get('/MEvent/index', 'index')->name('MEvent.index');
         Route::get('/MEvent/ac', 'ac')->name('MEvent.ac');
         Route::get('/MEvent/no', 'no')->name('MEvent.no');
@@ -425,6 +418,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/MEvent/search-list2/{datakey}','search')->name('Mproduct.MEvent.search');
         Route::get('/MEvent/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.MEvent.dupicate');
     });
+
     Route::controller(Master_Vat::class)->group(function () {
         Route::get('/Mvat/index', 'index')->name('Mvat.index');
         Route::get('/Mvat/ac', 'ac')->name('Mvat.ac');
@@ -438,7 +432,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     #Quotation
-    Route::controller(QuotationController::class)->group(function () {
+    Route::controller(QuotationController::class)->middleware('role:document')->group(function () {
         Route::get('/Proposal/index', 'index')->name('Proposal.index');
         Route::get('/Proposal/create', 'create')->name('Proposal.create');
         Route::get('/Proposal/ac', 'ac')->name('Proposal.ac');
@@ -507,7 +501,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     #DummyQuotaion
-    Route::controller(DummyQuotationController::class)->group(function () {
+    Route::controller(DummyQuotationController::class)->middleware('role:document')->group(function () {
         Route::get('/Dummy/Proposal/index', 'index')->name('DummyQuotation.index');
         Route::get('/Dummy/Proposal/create', 'create')->name('DummyQuotation.create');
         Route::get('/Dummy/Proposal/create/company/{companyID}','Contactcreate')->name('DummyQuotation.Contactcreate');
@@ -569,7 +563,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     #Proposal Request
-    Route::controller(proposal_request::class)->group(function () {
+    Route::controller(proposal_request::class)->middleware('role:document')->group(function () {
         Route::get('/Proposal/request/index', 'index')->name('ProposalReq.index');
         Route::get('/Dummy/Proposal/Request/document/view/{id}/{Type}', 'view')->name('ProposalReq.view');
         Route::post('/Dummy/Proposal/Request/document/view/Approve/', 'Approve')->name('DummyQuotation.Approve');
@@ -583,14 +577,16 @@ Route::middleware(['auth'])->group(function () {
         Route::post('Proposal-LogDoc-request-search-table', 'search_table_paginate_log_doc');
         Route::post('Proposal-LogDoc-request-paginate-table', 'paginate_log_doc_table_proposal');
     });
+
     ##-------------------------------TemplateController-----------------
-    Route::controller(Master_TemplateController::class)->group(function () {
+    Route::controller(Master_TemplateController::class)->middleware('role:setting')->group(function () {
         Route::get('/Template/PDF/Template', 'TemplateA1')->name('Template.TemplateA1');
         Route::post('/Template/PDF/Template/save', 'save')->name('Template.save');
         Route::post('/Template/PDF/document/sheet/savetemplate','savesheet')->name('Template.savesheet');
     });
+
     ##-------------------------------document invoice-----------------
-    Route::controller(Document_invoice::class)->group(function () {
+    Route::controller(Document_invoice::class)->middleware('role:document')->group(function () {
         Route::get('/Document/invoice/index', 'index')->name('invoice.index');
         Route::get('/Document/invoice/Generate/{id}','Generate')->name('invoice.Generate');
         Route::post('/Document/invoice/Generate/save', 'save')->name('invoice.save');
@@ -615,7 +611,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     ##-------------------------------document receipt-----------------
-    Route::controller(receiptController::class)->group(function () {
+    Route::controller(receiptController::class)->middleware('role:document')->group(function () {
         Route::get('/Document/receipt/index', 'index')->name('receipt.index');
         Route::get('/Document/receipt/Proposal/invoice/view/LOG/{id}','LOG')->name('receipt.LOG');
         Route::get('/Document/receipt/Proposal/invoice/Generate/{id}','Generate')->name('receipt.Generate');

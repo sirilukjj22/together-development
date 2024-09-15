@@ -88,10 +88,7 @@ function paginateSearch($total, $table, $link) {
 function getPage(page, perPage, table_n) {
     var table_name = table_n + 'Table';
     var filter_by = $('#filter-by').val();
-    var day = $('#input-search-day').val();
-    var month = $('#input-search-month').val();
-    var year = $('#input-search-year').val();
-    var month_to = $('#input-search-month-to').val();
+    var dateString = $('#date').val();
     var type = $('#status').val();
     var account = $('#into_account').val();
     var total = parseInt($('#get-total-' + table_n).val());
@@ -116,10 +113,7 @@ function getPage(page, perPage, table_n) {
                     perPage: perPage,
                     table_name: table_name,
                     filter_by: filter_by,
-                    day: day,
-                    month: month,
-                    year: year,
-                    month_to: month_to,
+                    date: dateString,
                     status: type,
                     into_account: account
                 },

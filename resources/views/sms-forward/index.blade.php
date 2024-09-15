@@ -5,22 +5,14 @@
         <div class="container-xl">
             @php
                 $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))); // อาทิตย์ - เสาร์
-                $date_current = date('Y-m-d'); // วันปัจจุบัน
-
-                $day_from = isset($day) ? $day : date('d');
-                $month_from = isset($month) ? $month : date('m');
-                $year_from = isset($year) ? $year : date('Y');
-                $time_from = isset($time) ? $time : '21:00:00'; // เวลาเริ่มนับตั้งแต่ 21:00:00
-                
-                $date_from = $year_from . '-' . $month_from . '-' . $day_from . ' ' . $time_from;
-                $date_from2 = $year_from . '-' . $month_from . '-' . $day_from;
+                $date_current = isset($search_date) ? $search_date : date('Y-m-d'); // วันปัจจุบัน
 
                 if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow') {
-                    $pickup_time = $day_from . ' ' . formatMonthName($month_from) . ' ' . $year_from;
+                    $pickup_time = date('d F Y', strtotime($search_date));
                 } elseif (isset($filter_by) && $filter_by == 'month') {
-                    $pickup_time = formatMonthName($month) . ' - ' . formatMonthName($month_to);
+                    $pickup_time = $search_date;
                 } elseif (isset($filter_by) && $filter_by == 'year') {
-                    $pickup_time = $year;
+                    $pickup_time = $search_date;
                 } elseif (isset($filter_by) && $filter_by == 'week') {
                     $pickup_time = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d')))))." ~ ".date('d M', strtotime("+6 day", strtotime($this_week)));
                 } elseif (isset($filter_by) && $filter_by == 'thisMonth') {
@@ -29,7 +21,7 @@
 
                 ## Check Close Day
                 if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow' || !isset($filter_by)) {
-                    $close_day = App\Models\SMS_alerts::checkCloseDay($date_from2);
+                    $close_day = App\Models\SMS_alerts::checkCloseDay($date_current);
                 } else {
                     $close_day = 0;
                 }
@@ -54,11 +46,11 @@
                             </button>
                             <button class="ch-button dropdown-toggle" type="button" id="dropdownMenuDaily" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-top: 0px; border-left: 0px">
                                 <span id="txt-daily">
-                                    @if (isset($filter_by) && $filter_by == 'today' || $date_from2 == date('Y-m-d'))
+                                    @if (isset($filter_by) && $filter_by == 'today' || $date_current == date('Y-m-d'))
                                         Today
-                                    @elseif (isset($filter_by) && $filter_by == 'yesterday' || date('Y-m-d', strtotime(date($date_from2))) == date('Y-m-d', strtotime('-1 day')))
+                                    @elseif (isset($filter_by) && $filter_by == 'yesterday' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('-1 day')))
                                         Yesterday
-                                    @elseif (isset($filter_by) && $filter_by == 'tomorrow' || date('Y-m-d', strtotime(date($date_from2))) == date('Y-m-d', strtotime('+1 day')))
+                                    @elseif (isset($filter_by) && $filter_by == 'tomorrow' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('+1 day')))
                                         Tomorrow
                                     @elseif (isset($filter_by) && $filter_by == 'week')
                                         This Week
@@ -80,7 +72,7 @@
                                 <input type="hidden" name="" id="week-to" value="{{ date('d M', strtotime("+6 day", strtotime($this_week))) }}">
                             </div>
                             @if ($close_day == 0 || Auth::user()->edit_close_day == 1)
-                                @if (@Auth::user()->roleMenuAdd('Daily Bank Transaction Revenue', Auth::user()->id) == 1)
+                                @if (@Auth::user()->roleMenuAdd('Bank Transaction Revenue', Auth::user()->id) == 1)
                                     <button type="button" class="ch-button" data-toggle="modal" data-target="#exampleModalCenter5" style="white-space: nowrap;">Add</button>
                                 @endif
                             @endif
@@ -414,15 +406,15 @@
                                                             style="position:relative;top:0; flex-direction:column; justify-content: start; background-color:white">
                                                             <button type="button" value="7" onclick="updateChart(this.value)" class="modal-graph">
                                                                 <div>
-                                                                    <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 7 days ({{ date('d M', strtotime("-6 day")) }} ~ {{ date('d M') }})
+                                                                    <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 7 days ({{ date('d M', strtotime("-7 days", strtotime($date_current))) }} ~ {{ date('d M', strtotime($date_current)) }})
                                                                 </div>
                                                                 <div class="d-flex" style="font-size: 12px;"></div>
                                                             </button>
                                                             <button type="button" value="15" onclick="updateChart(this.value)" class="modal-graph">
-                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 15 days ({{ date('d M', strtotime("-14 day")) }} ~ {{ date('d M') }})
+                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 15 days ({{ date('d M', strtotime("-14 day", strtotime($date_current))) }} ~ {{ date('d M', strtotime($date_current)) }})
                                                             </button>
                                                             <button type="button" value="30" onclick="updateChart(this.value)" class="modal-graph">
-                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 30 days ({{ date('d M', strtotime("-29 day")) }} ~  {{ date('d M') }})
+                                                                <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>Last 30 days ({{ date('d M', strtotime("-29 day", strtotime($date_current))) }} ~  {{ date('d M', strtotime($date_current)) }})
                                                             </button>
                                                             <button type="button" value="week" onclick="updateChartThisWeek(this.value)" class="modal-graph">
                                                                 <i class="fa fa-square" style="font-size: 10px;color: #2c7f7a;margin-right: 8px;"></i>This Week ({{ date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))) }} ~ {{ date('d M', strtotime("+6 day", strtotime($this_week))) }})
@@ -1371,154 +1363,118 @@
                 <form action="{{ route('sms-search-calendar') }}" method="POST" enctype="multipart/form-data" id="form-calendar">
                     @csrf
                     <div class="modal-body">
-                        <div>
-                            <div class="box-ch-button">
-                                <button type="button" id="showD" onclick="Choice(this);" class="ch-pick"> filter by date</button>
-                                <button type="button" id="showM" onclick="Choice(this);" class="ch-pick"> filter by month</button>
-                                <button type="button" id="showY" onclick="Choice(this);" class="ch-pick"> filter by year</button>
-                                <input type="hidden" id="choice-date">
+                        <!-- Modal: เลือกวันที่ modal fade -->
+                        <div class="" style="place-items: center;">
+                            <div class="center" style="gap:0.3rem;">
+                                <button type="button" class="bt-tg bg-tg-light sm flex-grow-1" id="filter-date">Filter by Date</button>
+                                <button type="button" class="bt-tg bg-tg-light sm flex-grow-1" id="filter-month">Filter by Month</button>
+                                <button type="button" class="bt-tg bg-tg-light sm flex-grow-1" id="filter-year">Filter by Year</button>
                             </div>
-                            <div style="width: 100%; display: flex; justify-content: center;">
-                                <div style="width: 95%; align-self:center;align-items: center;">
-                                    <div class="g-g2">
-                                        <div class="fic">
-                                            <select class="box-input-full" id="into_account" name="into_account" onchange="select_account()">
-                                                <option value="" {{ isset($into_account) && $into_account == '' ? 'selected' : '' }}>เลขที่บัญชีทั้งหมด</option>
-                                                <option value="708-226791-3" {{ isset($into_account) && $into_account == '708-226791-3' ? 'selected' : '' }}>SCB 708-226791-3</option>
-                                                <option value="708-226792-1" {{ isset($into_account) && $into_account == '708-226792-1' ? 'selected' : '' }}>SCB 708-226792-1</option>
-                                                <option value="708-227357-4" {{ isset($into_account) && $into_account == '708-227357-4' ? 'selected' : '' }}>SCB 708-227357-4</option>
-                                            </select>
-                                            <!-- tooltip -->
-                                            <div data-tooltip-target="tooltip-default"
-                                                class="relative tooltip-1">
-                                                <span class="fa fa-info-circle"></span>
-                                                </span>
-                                            </div>
-                                            <div id="tooltip-default" role="tooltip" class="absolute tooltip-2">
-                                                <div id="bank-note">
-                                                    @if (isset($bank_note) && $bank_note != '')
-                                                        {!! $bank_note !!}
-                                                    @else
-                                                        Front Desk, Guest Deposit, All Outlet, Agoda And Elexa EGAT Revenue <br>
-                                                        Credit Card Hotel Revenue <br>
-                                                        Warter Park & Credit Card Warter Park Revenue <br>
-                                                    @endif
-                                                </div>
-                                                <div class="tooltip-arrow text-black" data-popper-arrow></div>
-                                            </div>
-                                        </div>
-                                        <select class="box-input-full" name="status">
-                                            <option value="" {{ isset($status) && $status == '' ? 'selected' : '' }}>ประเภทรายได้ทั้งหมด</option>
-                                            <option value="6" {{ isset($status) && $status == 6 ? 'selected' : '' }}>Front Desk Bank Transfer Revenue</option>
-                                            <option value="1" {{ isset($status) && $status == 1 ? 'selected' : '' }}>Guest Deposit Bank Transfer Revenue</option>
-                                            <option value="2" {{ isset($status) && $status == 2 ? 'selected' : '' }}>All Outlet Bank Transfer Revenue</option>
-                                            <option value="4" {{ isset($status) && $status == 4 ? 'selected' : '' }}>Credit Card Revenue</option>
-                                            <option value="5" {{ isset($status) && $status == 5 ? 'selected' : '' }}>Credit Card Agoda Revenue</option>
-                                            <option value="3" {{ isset($status) && $status == 3 ? 'selected' : '' }}>Water Park Bank Transfer Revenue</option>
-                                            <option value="7" {{ isset($status) && $status == 7 ? 'selected' : '' }}>Credit Card Water Park Revenue</option>
-                                            <option value="7" {{ isset($status) && $status == 8 ? 'selected' : '' }}>Elexa EGAT Bank Transfer Revenue</option>
-                                        </select>
+                            <div class="center" style="gap:0.3rem;">
+                                <select class="selected-value-box" id="into_account" name="into_account" onchange="select_account()">
+                                    <option value="" {{ isset($into_account) && $into_account == '' ? 'selected' : '' }}>เลขที่บัญชีทั้งหมด</option>
+                                    <option value="708-226791-3" {{ isset($into_account) && $into_account == '708-226791-3' ? 'selected' : '' }}>SCB 708-226791-3</option>
+                                    <option value="708-226792-1" {{ isset($into_account) && $into_account == '708-226792-1' ? 'selected' : '' }}>SCB 708-226792-1</option>
+                                    <option value="708-227357-4" {{ isset($into_account) && $into_account == '708-227357-4' ? 'selected' : '' }}>SCB 708-227357-4</option>
+                                </select>
+
+                                <!-- tooltip -->
+                                <div data-tooltip-target="tooltip-default" class="relative tooltip-1">
+                                    <span class="fa fa-info-circle"></span>
+                                </div>
+                                <div id="tooltip-default" role="tooltip" class="absolute tooltip-2"> 
+                                    <div id="bank-note">
+                                        @if (isset($bank_note) && $bank_note != '')
+                                            {!! $bank_note !!}
+                                        @else
+                                            Front Desk, Guest Deposit, All Outlet, Agoda And Elexa EGAT Revenue <br>
+                                            Credit Card Hotel Revenue <br>
+                                            Warter Park & Credit Card Warter Park Revenue <br>
+                                        @endif
                                     </div>
-                                    <br>
-                                    <!-- box แสดงวันที่ เดือน ปี -->
-                                    <div id="box"></div>
-                                    <!-- วันเดือนปีซ่อนไว้  display: none-->
-                                    <div id="calendar-day">
-                                        <div class="ch-day" style=" border: none;" style="display: none;">
-                                            <!-- เลือกจากวันที่ -->
-                                            <div id="ch-day">
-                                                <p class="t-month"> filter by date</p>
-                                                <div class="calendar">
-                                                    <div class="month month-top">
-                                                        <i class="fa fa-angle-left prev"></i>
-                                                        <div class="date">
-                                                            <h1 id="mymonth" class="thisMont"></h1>
-                                                            <p id="myDay" class="dateShose"> วันที่เลือก
-                                                            </p>
-                                                            <!-- <p id="" class="date-current border-2"> วันที่เลือก</p> -->
-                                                        </div>
-                                                        <i class="fa fa-angle-right next"></i>
-                                                    </div>
-                                                    <div>
-                                                        <div class="weekdays">
-                                                            <div>Sun</div>
-                                                            <div>Mon</div>
-                                                            <div>Tue</div>
-                                                            <div>Wed</div>
-                                                            <div>Thu</div>
-                                                            <div>Fri</div>
-                                                            <div>Sat</div>
-                                                        </div>
-                                                        <div class="days"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- </div> -->
-                                            <!-- เลือกจากวันเดือน -->
-                                            <div id="ch-month" style="display: none;">
-                                                <p class="t-month"> filter by month</p>
-                                                <div class="calendar">
-                                                    <div class="month month-top">
-                                                        <div
-                                                            style="display: flex; flex-direction:column;width: 100%;">
-                                                            <div class="month-date">
-                                                                <p id="myMonth1" class="thisMont">
-                                                                    เดือนเริ่มต้น</p>
-                                                                <p>&nbsp; - &nbsp;</p>
-                                                                <p id="myMonth2"> สิ้นสุดเดือน
-                                                                </p>
-                                                                <!-- <p id="" class="date-current border-2"> วันที่เลือก</p> -->
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div id="allMonth" class="show-all-month"></div>
-                                                </div>
-                                            </div>
-                                            <!-- เลือกจากปี -->
-                                            <div id="ch-year" style="display: none;">
-                                                <p class="t-month"> filter by Year</p>
-                                                <div class="calendar">
-                                                    <div class="month month-top">
-                                                        <div
-                                                            style="display: flex; gap:20px;justify-content: center; width: 100%;">
-                                                            <p id="myYear" style="font-size: 20px;"> 2024
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="show-all-years">
-                                                        <div class="ch-years" onclick="getYearValue(2024)" value="">2024</div>
-                                                        <div class="ch-years" onclick="getYearValue(2025)" value="">2025</div>
-                                                        <div class="ch-years" onclick="getYearValue(2026)" value="">2026</div>
-                                                        <div class="ch-years" onclick="getYearValue(2027)" value="">2027</div>
-                                                        <div class="ch-years" onclick="getYearValue(2028)" value="">2028</div>
-                                                        <div class="ch-years" onclick="getYearValue(2029)" value="">2029</div>
-                                                        <div class="ch-years" onclick="getYearValue(2030)" value="">2030</div>
-                                                        <div class="ch-years" onclick="getYearValue(2031)" value="">2032</div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <div class="tooltip-arrow text-black" data-popper-arrow></div>
+                                </div>
+                            </div>
+
+                            <select class="selected-value-box" name="status">
+                                <option value="" {{ isset($status) && $status == '' ? 'selected' : '' }}>ประเภทรายได้ทั้งหมด</option>
+                                <option value="6" {{ isset($status) && $status == 6 ? 'selected' : '' }}>Front Desk Bank Transfer Revenue</option>
+                                <option value="1" {{ isset($status) && $status == 1 ? 'selected' : '' }}>Guest Deposit Bank Transfer Revenue</option>
+                                <option value="2" {{ isset($status) && $status == 2 ? 'selected' : '' }}>All Outlet Bank Transfer Revenue</option>
+                                <option value="4" {{ isset($status) && $status == 4 ? 'selected' : '' }}>Credit Card Revenue</option>
+                                <option value="5" {{ isset($status) && $status == 5 ? 'selected' : '' }}>Credit Card Agoda Revenue</option>
+                                <option value="3" {{ isset($status) && $status == 3 ? 'selected' : '' }}>Water Park Bank Transfer Revenue</option>
+                                <option value="7" {{ isset($status) && $status == 7 ? 'selected' : '' }}>Credit Card Water Park Revenue</option>
+                                <option value="8" {{ isset($status) && $status == 8 ? 'selected' : '' }}>Elexa EGAT Bank Transfer Revenue</option>
+                                <option value="9" {{ isset($status) && $status == 9 ? 'selected' : '' }}>Other Bank Transfer Revenue</option>
+                            </select>
+
+                            <input type="text" class="selected-value-box t-alight-center" id="combined-selected-box" value="{{ date('d F Y') }}" />
+                            <!-- box แสดงวันที่ เดือน ปี -->
+                            <div class="calendars-container" id="calendars-container">
+                                <!-- Calendar for Picking a Specific Date -->
+                                <div class="calendar-wrapper flex-grow-1" id="date-picker-wrapper">
+                                    <span class="top-calendar" style="float: left;">Pick a Date</span>
+                                    <div class="calendar" id="date-picker">
+                                        <header>
+                                            <button type="button" id="prev-month">&lt;</button>
+                                            <h2 id="month-year">{{ date('F Y') }}</h2>
+                                            <button type="button" id="next-month">&gt;</button>
+                                        </header>
+                                        <div class="days-of-week">
+                                            <div>Sun</div>
+                                            <div>Mon</div>
+                                            <div>Tue</div>
+                                            <div>Wed</div>
+                                            <div>Thu</div>
+                                            <div>Fri</div>
+                                            <div>Sat</div>
                                         </div>
+                                        <div class="dates-grid" id="dates-grid"></div>
                                     </div>
                                 </div>
-                                <input type="hidden" id="month-click-num" value="0">
-                                <input type="hidden" id="month-number1" value="0">
-                                <input type="hidden" id="month-number2" value="0">
-                                <input type="hidden" id="by-month-year">
 
-                                <!-- Input ส่งค่าไป Controller -->
-                                <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'date' }}">
-                                <input type="hidden" id="input-search-day" name="day" value="{{ isset($day) ? $day : date('d') }}">
-                                <input type="hidden" id="input-search-month" name="month" value="{{ isset($month) ? $month : date('m') }}">
-                                <input type="hidden" id="input-search-month-to" name="month_to" value="{{ isset($month_to) ? $month_to : date('m') }}">
-                                <input type="hidden" id="input-search-year" name="year" value="{{ isset($year) ? $year : date('Y') }}">
-                                <input type="time" id="time" name="time" value="<?php echo isset($time) && $time != $time ?: date('20:59:59'); ?>" hidden>
+                                <!-- Calendar for Picking a Month Range -->
+                                <div class="calendar-wrapper flex-grow-1" id="month-picker-wrapper">
+                                    <span class="top-calendar" style="float: left;">Pick a Month Range</span>
+                                    <div class="calendar" id="month-range-picker">
+                                        <header>
+                                            <button type="button" id="prev-year">&lt;</button>
+                                            <h2 id="year"></h2>
+                                            <button type="button" id="next-year">&gt;</button>
+                                        </header>
+                                        <div class="months-grid"></div>
+                                    </div>
+                                </div>
 
-                                <!-- ประเภทรายได้ -->
-                                <input type="hidden" id="revenue-type" name="revenue_type" value="">
+                                <!-- Calendar for Picking a Year -->
+                                <div class="calendar-wrapper flex-grow-1" id="year-picker-wrapper">
+                                    <span class="top-calendar" style="float: left;">Pick a Year</span>
+                                    <div class="calendar" id="year-picker">
+                                        <div class="years-grid"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Input ส่งค่าไป Controller -->
+                        <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'date' }}">
+                        <input type="hidden" id="date" name="date" value="{{ $date_current }}">
+                        <!-- ประเภทรายได้ -->
+                        <input type="hidden" id="revenue-type" name="revenue_type" value="">
+
+                        <!-- ล่าง modal -->
+                        <div class="modal-footer flex-between" style="padding:0 0.7rem;">
+                            <div class="">
+                                <button type="button" class="bt-tg bg-tg-light sm" id="select-today-button">Today</button>
+                            </div>
+                            <div>
+                                <button type="button" class="bt-tg  sm bt-grey" data-dismiss="modal">Close</button>
+                                <button type="button" id="btn-search-date" class="bt-tg bg-tg-light sm" style="background-color: #2C7F7A;">Search</button>
                             </div>
                         </div>
                         <!-- ล่าง modal -->
-                        <div class="modal-footer flex-between">
+                        {{-- <div class="modal-footer flex-between">
                             <div class="" >
                                 <button type="button" class="ch-pick" onclick="btn_reset_date()">Today</button>
                             </div>
@@ -1526,7 +1482,7 @@
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <button type="button" id="btn-search-date" class="btn btn-success" style="background-color: #2C7F7A;">Search</button>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </form>
             </div>
@@ -1545,7 +1501,6 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script src="{{ asset('assets/js/searh-calendar.js') }}"></script>
     <!-- style สำหรับเปิดปิด custom date -->
 
     <!-- Moment Date -->
@@ -1553,6 +1508,9 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+    <!-- Calendar -->
+    <script src="{{ asset('assets/js/calendar-draft.js')}}"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
     <script type="text/javascript" src="{{ asset('assets/helper/searchTable.js')}}"></script>
@@ -1665,17 +1623,30 @@
             });
 
             var filter_by = $('#filter-by').val();
-            var month = $('#input-search-month').val();
-            var month_to = $('#input-search-month-to').val();
-            var year = $('#input-search-year').val();
 
             if (filter_by == "month") {
-                chartMonthToMonth(month, month_to);
+                var dateString = $('#date').val();
+                var dateSplit = dateString.split('-');
+                var fDate_start = new Date(dateSplit[0]);
+                var fDate_end = new Date(dateSplit[1]);
+                var start_month = fDate_start.getMonth() + 1;
+                var end_month = fDate_end.getMonth() + 1;
+                var year = fDate_end.getFullYear();
+
+                chartMonthToMonth(start_month, end_month, year);
                 $('.graph-date').prop('hidden', true);
                 $('#graphChartByMonthOrYear').prop('hidden', false);
 
             } if (filter_by == "thisMonth") {
-                chartThisMonth2(month, month_to);
+                var dateString = $('#date').val();
+                var dateSplit = dateString.split('-');
+                var fDate_start = new Date(dateSplit[0]);
+                var fDate_end = new Date(dateSplit[1]);
+                var start_month = fDate_start.getMonth() + 1;
+                var end_month = fDate_end.getMonth() + 1;
+                var year = fDate_end.getFullYear();
+
+                chartThisMonth2(start_month, end_month, year);
                 $('.graph-date').prop('hidden', true);
                 $('#graphChartByMonthOrYear').prop('hidden', false);
 
@@ -1697,17 +1668,35 @@
 
             // Calendar
             if (filter_by == "date" || filter_by == "today" || filter_by == "tomorrow" || filter_by == "yesterday") {
-                var day_now = $('#input-search-day').val();
-                var date_now = new Date($('#input-search-year').val()+"-"+$('#input-search-month').val()+"-"+$('#input-search-day').val());
-                document.getElementById("myDay").innerHTML = day_now + " " + monthName[date_now.getMonth()] + " " + date_now.getFullYear();
-                
-                // Delete class
-                $('#day-'+day_now).removeClass('select-day');
-                $('.select-day').removeClass('today');
+                var dateString = $('#date').val();
+                var date = new Date(dateString);
+                var date_now = date.getDate() + ' ' + (date.getMonth() + 1) + ' ' + date.getFullYear();
 
-                // Add class
-                $('#day-'+day_now).addClass('today');
-                $('#day-'+day_now).addClass('select-day');
+                document.getElementById("myDay").innerHTML = date_now;
+            }
+        });
+
+        //เปิดปิด coustome date range
+        $(document).on("click", function (event) {
+            if ($(event.target).closest(".button-row").length) {
+                return;
+            }
+            // Add internal reference
+            $(".target-2").addClass("gStarter");
+            $(".content-col").addClass("gColumn");
+            if ($(event.target).hasClass("target-2") && $(event.target).prop("tagName") == "BUTTON") {
+                if (!$(".target-2").parent().next().children().hasClass("active-customdate")) {
+                    $(".target-2").parent().next().children().addClass("active-customdate");
+                } else {
+                    $(".target-2").parent().next().children().removeClass("active-customdate");
+                    $(".target-2").removeAttr("data-starter");
+                }
+            } else {
+                if (!$(".target-2").closest().parent().next().children().is(event.target)) {
+                    if ($(".target-2").parent().next().children().is(":visible")) {
+                        $(".target-2").parent().next().children().removeClass("active-customdate");
+                    }
+                }
             }
         });
 
@@ -1739,10 +1728,7 @@
             var table_name = id+'Table';
 
             var filter_by = $('#filter-by').val();
-            var day = $('#input-search-day').val();
-            var month = $('#input-search-month').val();
-            var year = $('#input-search-year').val();
-            var month_to = $('#input-search-month-to').val();
+            var dateString = $('#date').val();
             var type = $('#status').val();
             var account = $('#into_account').val();
             var count_total = 0;
@@ -1763,10 +1749,7 @@
                         search_value: search_value,
                         table_name: table_name,
                         filter_by: filter_by,
-                        day: day,
-                        month: month,
-                        year: year,
-                        month_to: month_to,
+                        date: dateString,
                         status: type,
                         into_account: account
                     },
@@ -2396,7 +2379,11 @@
 
     {{-- กราฟ 2 --}}
     <script>
-        var date_now = $('#input-search-year').val() + '-' + $('#input-search-month').val() + '-' + $('#input-search-day').val();
+        var dateString = $('#date').val();
+        var date = new Date(dateString);
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        var date_now = date.getFullYear() + '-' + m.toString().padStart(2, '0') + '-' + d.toString().padStart(2, '0');
         var type = $('#status').val();
         var account = $('#into_account').val();
 

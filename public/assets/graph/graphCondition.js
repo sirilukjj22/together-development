@@ -1,6 +1,8 @@
 function get_graphThisWeek($amount) {
 
-    var date_now = $('#input-search-year').val() + '-' + $('#input-search-month').val() + '-' + $('#input-search-day').val();
+    var dateString = $('#date').val();
+    var date = new Date(dateString);
+    var date_now = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     var type = $('#status').val();
     var account = $('#into_account').val();
 
@@ -29,7 +31,9 @@ function get_graphThisWeek($amount) {
 
 function get_graphThisMonth($amount) {
 
-    var date_now = $('#input-search-year').val() + '-' + $('#input-search-month').val() + '-' + $('#input-search-day').val();
+    var dateString = $('#date').val();
+    var date = new Date(dateString);
+    var date_now = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     var type = $('#status').val();
     var account = $('#into_account').val();
 
@@ -62,7 +66,9 @@ function get_graphThisMonth($amount) {
 
 function get_graphThisMonthByDay($amount) {
 
-    var date_now = $('#input-search-year').val() + '-' + $('#input-search-month').val() + '-' + $('#input-search-day').val();
+    var dateString = $('#date').val();
+    var date = new Date(dateString);
+    var date_now = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     var type = $('#status').val();
     var account = $('#into_account').val();
 
@@ -90,8 +96,6 @@ function get_graphThisMonthByDay($amount) {
 }
 
 function get_graphYearRange($amount, $year) {
-
-    var date_now = $('#input-search-year').val() + '-' + $('#input-search-month').val() + '-' + $('#input-search-day').val();
     var type = $('#status').val();
     var account = $('#into_account').val();
 
@@ -118,9 +122,7 @@ function get_graphYearRange($amount, $year) {
     return revenueDataThisMonth;
 }
 
-function get_graphMonthRange($month, $to_month) {
-
-    var date_now = $('#input-search-year').val() + '-' + $('#input-search-month').val() + '-' + $('#input-search-day').val();
+function get_graphMonthRange($month, $to_month, $year) {
     var type = $('#status').val();
     var account = $('#into_account').val();
 
@@ -136,7 +138,7 @@ function get_graphMonthRange($month, $to_month) {
 
     $.ajax({
         type: "GET",
-        url: "sms-graph-monthRange/"+$month+"/"+$to_month+"/"+type+"/"+account+"",
+        url: "sms-graph-monthRange/"+$month+"/"+$to_month+"/"+$year+""+type+"/"+account+"",
         datatype: "JSON",
         async: false,
         success: function(response) {
@@ -467,10 +469,10 @@ function chartFilterByYear($v_year) {
 
 }
 
-function chartMonthToMonth($month, $to_month) {
+function chartMonthToMonth($month, $to_month, $year) {
 
     var ctx_monthRange = document.getElementById("revenueChartByMonthOrYear").getContext("2d");
-    var maxRevenueValue_monthRange = Math.max(...get_graphMonthRange($month, $to_month));
+    var maxRevenueValue_monthRange = Math.max(...get_graphMonthRange($month, $to_month, $year));
     var buffer_monthRange = 200000; // Adding a buffer value
     var yAxisMax_monthRange = maxRevenueValue_monthRange + buffer_monthRange;
     var roundingFactor_monthRange = 200000;
@@ -483,7 +485,7 @@ function chartMonthToMonth($month, $to_month) {
             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
             datasets: [{
                 label: "Custom Month Range",
-                data: get_graphMonthRange($month, $to_month),
+                data: get_graphMonthRange($month, $to_month, $year),
                 backgroundColor: "#2C7F7A",
                 borderWidth: 0,
                 barPercentage: 0.7,

@@ -47,6 +47,9 @@
     <link rel="stylesheet" href="{{ asset('assets/src/revenue.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/src/userProfile.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/src/global.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/src/tableAllDesign.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/src/calendar-draft.css') }}">
+
     <!-- สำหรับ tooltip info -->
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
     <!-- icon font -->
@@ -70,10 +73,6 @@
             }
         }
     </style>
-
-    @php
-        // $role_permisstion = App\Models\Role_permission_menu::where('user_id', Auth::user()->id)->first();
-    @endphp
 
     <div id="layout-c" class="theme-blue">
         <!-- Navigation -->
@@ -163,10 +162,8 @@
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Document">
                                         @if (Auth::user()->roleMenu->proposal == 1)
-                                            <li><a class="ms-link" href="{{ route('DummyQuotation.index') }}">Dummy
-                                                    Proposal</a></li>
-                                            <li><a class="ms-link" href="{{ route('ProposalReq.index') }}">Proposal
-                                                    Request</a></li>
+                                            <li><a class="ms-link" href="{{ route('DummyQuotation.index') }}">Dummy Proposal</a></li>
+                                            <li><a class="ms-link" href="{{ route('ProposalReq.index') }}">Document Request</a></li>
                                             <li><a class="ms-link" href="{{ route('Proposal.index') }}">Proposal</a>
                                             </li>
                                         @endif

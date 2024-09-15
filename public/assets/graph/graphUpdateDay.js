@@ -1,6 +1,10 @@
 function get_graph() {
 
-    var date_now = $('#input-search-year').val() + '-' + $('#input-search-month').val() + '-' + $('#input-search-day').val();
+    var dateString = $('#date').val();
+    var date = new Date(dateString);
+    var m = date.getMonth() + 1;
+    var d = date.getDate();
+    var date_now = date.getFullYear() + '-' + m.toString().padStart(2, '0') + '-' + d.toString().padStart(2, '0');
     var type = $('#status').val();
     var account = $('#into_account').val();
 
@@ -22,8 +26,6 @@ function get_graph() {
         success: function(response) {
             // Sample data for watch revenue over 30 days
             revenueData = response.amount;
-            
-            
         }
     });
     return revenueData;
@@ -146,7 +148,11 @@ var revenueChart = new Chart(ctx, {
 function updateChart(days) {
     var newData = [];
     var newLabels = [];
-    var date_now = $('#input-search-year').val() + '-' + $('#input-search-month').val() + '-' + $('#input-search-day').val();
+    var dateString = $('#date').val();
+    var date = new Date(dateString);
+    var m = date.getMonth() + 1;
+    var d = date.getDate();
+    var date_now = date.getFullYear() + '-' + m.toString().padStart(2, '0') + '-' + d.toString().padStart(2, '0');
     var adate = new Date(date_now);
     var today = new Date(adate.setDate(adate.getDate() - 1));
 
