@@ -37,16 +37,18 @@ $(document).ready(function () {
     }
 
     lastSelectedValue = value; // เก็บค่าที่เลือกล่าสุด
-    console.log("Updated lastSelectedValue:", lastSelectedValue); // ตรวจสอบว่าค่าถูกอัปเดต
-    $("#combined-selected-box").text(`${value}`);
+    // console.log("Updated lastSelectedValue:", lastSelectedValue); // ตรวจสอบว่าค่าถูกอัปเดต
+    $("#combined-selected-box").val(`${value}`);
+    $("#date").val(`${value}`);
+    
   }
 
-  updateCombinedSelectedBox(); // ไม่มีการส่งค่า ให้แสดงวันที่วันนี้โดยอัตโนมัติ
+  // updateCombinedSelectedBox(); // ไม่มีการส่งค่า ให้แสดงวันที่วันนี้โดยอัตโนมัติ
 
   // ฟังก์ชันเมื่อกดปุ่มส่งค่าที่เลือก
   $("#send-value-button").click(function () {
     alert(`Sending Selected Value: ${lastSelectedValue}`); // แสดงค่า
-    console.log("Sending Value:", lastSelectedValue); // ตรวจสอบค่าที่ถูกส่งใน console
+    // console.log("Sending Value:", lastSelectedValue); // ตรวจสอบค่าที่ถูกส่งใน console
   });
 
   // ฟังก์ชันเมื่อกดปุ่มเลือกวันนี้
@@ -87,24 +89,21 @@ $(document).ready(function () {
       // ตรวจสอบว่าเดือนแรกและเดือนสุดท้ายเหมือนกันหรือไม่
       if (selectedMonthRange[0] === selectedMonthRange[1]) {
         // ถ้าเลือกแค่เดือนเดียว (แม้จะใช้เป็น range) ให้แสดงแค่เดือนเดียว
-        const monthString = `${
-          monthNames[selectedMonthRange[0]]
-        } ${selectedYear}`;
+        const monthString = `${monthNames[selectedMonthRange[0]]
+          } ${selectedYear}`;
         $("#selected-month-box").text(`${monthString}`);
         updateCombinedSelectedBox(monthString);
       } else {
         // ถ้าเลือกสองเดือนที่ต่างกัน ให้แสดงเป็นช่วงของเดือน
-        const monthRangeString = `${monthNames[selectedMonthRange[0]]} - ${
-          monthNames[selectedMonthRange[1]]
-        } ${selectedYear}`;
+        const monthRangeString = `${monthNames[selectedMonthRange[0]]} - ${monthNames[selectedMonthRange[1]]
+          } ${selectedYear}`;
         $("#selected-month-box").text(`${monthRangeString}`);
         updateCombinedSelectedBox(monthRangeString);
       }
     } else if (selectedMonthRange.length === 1) {
       // เมื่อเลือกเดือนเดียว ให้แสดงเฉพาะเดือนนั้น
-      const monthString = `${
-        monthNames[selectedMonthRange[0]]
-      } ${selectedYear}`;
+      const monthString = `${monthNames[selectedMonthRange[0]]
+        } ${selectedYear}`;
       $("#selected-month-box").text(`${monthString}`);
       updateCombinedSelectedBox(monthString);
     } else {
@@ -401,16 +400,19 @@ $(document).ready(function () {
   $("#filter-date").on("click", function () {
     $("#date-picker-wrapper").show();
     $("#month-picker-wrapper, #year-picker-wrapper").hide();
+    $('#filter-by').val("date");
   });
 
   $("#filter-month").on("click", function () {
     $("#month-picker-wrapper").show();
     $("#date-picker-wrapper, #year-picker-wrapper").hide();
+    $('#filter-by').val("month");
   });
 
   $("#filter-year").on("click", function () {
     $("#year-picker-wrapper").show();
     $("#date-picker-wrapper, #month-picker-wrapper").hide();
+    $('#filter-by').val("year");
   });
 });
 
