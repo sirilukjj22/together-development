@@ -80,7 +80,7 @@
                                 <input type="hidden" name="" id="week-to" value="{{ date('d M', strtotime("+6 day", strtotime($this_week))) }}">
                             </div>
                             @if ($close_day == 0 || Auth::user()->edit_close_day == 1)
-                                @if (@Auth::user()->roleMenuAdd('Daily Bank Transaction Revenue', Auth::user()->id) == 1)
+                                @if (@Auth::user()->roleMenuAdd('Bank Transaction Revenue', Auth::user()->id) == 1)
                                     <button type="button" class="ch-button" data-toggle="modal" data-target="#exampleModalCenter5" style="white-space: nowrap;">Add</button>
                                 @endif
                             @endif
