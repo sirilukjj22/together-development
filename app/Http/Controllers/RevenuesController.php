@@ -2485,22 +2485,22 @@ class RevenuesController extends Controller
         $exp = explode("_", $request->revenue_type);
 
         if ($exp[0] == "mc" && $request->revenue_type != "mc_agoda_charge" && $request->revenue_type != "mc_elexa_charge") {
-            return view('revenue.manual_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'day', 'month', 'month_to', 'year', 'status'));
+            return view('revenue.manual_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($request->revenue_type == "mc_agoda_charge") {
-            return view('revenue.manual_agoda_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'day', 'month', 'month_to', 'year', 'status'));
+            return view('revenue.manual_agoda_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($request->revenue_type == "mc_elexa_charge") {
-            return view('revenue.manual_elexa_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'day', 'month', 'month_to', 'year', 'status'));
+            return view('revenue.manual_elexa_charge_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($request->revenue_type == "agoda_outstanding") {
-            return view('revenue.agoda_outstanding_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'day', 'month', 'month_to', 'year', 'status'));
+            return view('revenue.agoda_outstanding_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($request->revenue_type == "elexa_outstanding") {
-            return view('revenue.elexa_outstanding_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'day', 'month', 'month_to', 'year', 'status'));
+            return view('revenue.elexa_outstanding_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($revenue_name == "type") {
-            return view('revenue.type_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'day', 'month', 'month_to', 'year', 'status'));
+            return view('revenue.type_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($revenue_name == "verified") {
-            return view('revenue.verified_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'day', 'month', 'month_to', 'year', 'status'));
+            return view('revenue.verified_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         }
         // elseif ($exp[0] == "fee") {
-        //     return view('revenue.fee_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'day', 'month', 'month_to', 'year', 'status'));
+        //     return view('revenue.fee_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         // } 
         else {
             return view('revenue.detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
@@ -2954,8 +2954,9 @@ class RevenuesController extends Controller
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $exp = explode("_", $request->status);
         $search = $request->search_value;
+        $status = (int)$request->status;
 
-        if (is_int($request->status) && $request->status > 0) {
+        if ($status > 0) {
             if ($request->table_name == "revenueTable") {
                 if (!empty($request->search_value)) {
                     $data_query = SMS_alerts::whereBetween('date', [$from, $to])
@@ -3168,7 +3169,7 @@ class RevenuesController extends Controller
         }
 
         if (isset($data_query) && count($data_query) > 0) {
-            if (count($exp) > 1 && $exp[0]."_".$exp[1] != "manual_charge" && $request->status != "mc_agoda_charge" && $request->status != "mc_elexa_charge" && $request->status != "agoda_outstanding" && $request->status != "elexa_outstanding") { ## Manual Charge
+            if ($status > 0) { ## Manual Charge
                 foreach ($data_query as $key => $value) {
 
                     $img_bank = '';
