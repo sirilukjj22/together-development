@@ -2020,26 +2020,6 @@
         });
     }
 
-    function btn_reset_date() {
-        var date = new Date();
-        var day = date.getDate();
-        document.getElementById("myDay").innerHTML = date.getDate() + " " + monthName[date.getMonth()] + " " + date.getFullYear();
-        
-        // Delete class
-        $('#day-'+day).removeClass('select-day');
-        $('.select-day').removeClass('today');
-
-        // Add class
-        $('#day-'+day).addClass('today');
-        $('#day-'+day).addClass('select-day');
-
-        // Filter 
-        var filter_by = $('#filter-by').val('date');
-        var day = $('#input-search-day').val(day);
-        var month = $('#input-search-month').val(date.getMonth() + 1);
-        var year = $('#input-search-year').val(date.getFullYear());
-    }
-
     function revenue_detail(revenue_name) {
         $('#revenue-type').val(revenue_name);
         $('#form-revenue').submit();

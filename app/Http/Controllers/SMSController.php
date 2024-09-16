@@ -310,7 +310,8 @@ class SMSController extends Controller
 
         } elseif ($request->filter_by == "week") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
-            $adate = $req_date;
+            $sundayOfWeek = date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime($req_date))));
+            $adate = $sundayOfWeek;
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
@@ -620,7 +621,8 @@ class SMSController extends Controller
 
         } elseif ($request->filter_by == "week") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
-            $adate = $req_date;
+            $sundayOfWeek = date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime($req_date))));
+            $adate = $sundayOfWeek;
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
@@ -1690,7 +1692,8 @@ class SMSController extends Controller
 
         } elseif ($request->filter_by == "week") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
-            $adate = $req_date;
+            $sundayOfWeek = date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime($req_date))));
+            $adate = $sundayOfWeek;
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
@@ -2204,7 +2207,8 @@ class SMSController extends Controller
 
         } elseif ($request->filter_by == "week") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
-            $adate = $req_date;
+            $sundayOfWeek = date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime($req_date))));
+            $adate = $sundayOfWeek;
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
@@ -2368,7 +2372,8 @@ class SMSController extends Controller
 
         } elseif ($request->filter_by == "week") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
-            $adate = $req_date;
+            $sundayOfWeek = date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime($req_date))));
+            $adate = $sundayOfWeek;
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));

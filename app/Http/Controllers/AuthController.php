@@ -130,10 +130,13 @@ class AuthController extends Controller
             'message_request' => $data['menu_message_request'] ?? 0,
 
             'document' => $data['menu_document_main'] ?? 0,
+            'dummy_proposal' => $data['menu_dummy_proposal'] ?? 0,
+            'document_request' => $data['menu_document_request'] ?? 0,
             'banquet_event_order' => $data['menu_banquet_event_order'] ?? 0,
             'proposal' => $data['menu_proposal'] ?? 0,
             'hotel_contact_rate' => $data['menu_hotel_contact_rate'] ?? 0,
             'proforma_invoice' => $data['menu_proforma_invoice'] ?? 0,
+            'receipt_payment' => $data['menu_receipt_payment'] ?? 0,
             'billing_folio' => $data['menu_billing_folio'] ?? 0,
 
             'debtor' => $data['menu_debtor_main'] ?? 0,

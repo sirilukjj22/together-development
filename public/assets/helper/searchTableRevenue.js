@@ -37,7 +37,12 @@ function paginateSearch($total, $table, $link) {
     }
 
     html += '<div class="pagination" style="white-space: nowrap;">';
-    html += '<a href="#" class="r-l-md" onclick="getPage(' + previousPageUrl + ', ' + perPage + ', ' + "'" + table + "'" + ')">&laquo;</a>';
+    if (currentPage <= 1) {
+        html += '<a href="#" class="r-l-md">&laquo;</a>';
+    } else {
+        html += '<a href="#" class="r-l-md" onclick="getPage(' + previousPageUrl + ', ' + perPage + ', ' + "'" + table + "'" + ')">&laquo;</a>';
+    }
+
     if (total > 0) {
         if (currentPage > 3)
         {
@@ -47,7 +52,7 @@ function paginateSearch($total, $table, $link) {
             // {
                 html += '<a class="" href="#">...</a>';
             // }
-        }
+        }        
 
         for ($i = Math.max(1, currentPage - 2); $i <= Math.min(Math.ceil(total / perPage), currentPage + 2); $i++)
         {
@@ -68,7 +73,12 @@ function paginateSearch($total, $table, $link) {
             html += '<a href="#" onclick="getPage(' + Math.ceil(total / perPage) + ', ' + perPage + ', ' + "'" + table + "'" + ')">'+ Math.ceil(total / perPage) +'</a>';
         }
     }
-    html += '<a href="#" class="r-r-md" onclick="getPage(' + nextPageUrl + ', ' + perPage + ', ' + "'" + table + "'" + ')">&raquo;</a>';
+
+    if (currentPage >= Math.ceil(total / perPage)) {
+        html += '<a href="#" class="r-r-md">&raquo;</a>';
+    } else {
+        html += '<a href="#" class="r-r-md" onclick="getPage(' + nextPageUrl + ', ' + perPage + ', ' + "'" + table + "'" + ')">&raquo;</a>';
+    }
     html += '</div>';
 
     return html;

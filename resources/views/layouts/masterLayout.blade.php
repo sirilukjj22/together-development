@@ -161,11 +161,14 @@
 
                                     <!-- Menu: Sub menu ul -->
                                     <ul class="sub-menu collapse" id="menu-Document">
-                                        @if (Auth::user()->roleMenu->proposal == 1)
+                                        @if (Auth::user()->roleMenu->dummy_proposal == 1)
                                             <li><a class="ms-link" href="{{ route('DummyQuotation.index') }}">Dummy Proposal</a></li>
+                                        @endif
+                                        @if (Auth::user()->roleMenu->document_request == 1)
                                             <li><a class="ms-link" href="{{ route('ProposalReq.index') }}">Document Request</a></li>
-                                            <li><a class="ms-link" href="{{ route('Proposal.index') }}">Proposal</a>
-                                            </li>
+                                        @endif
+                                        @if (Auth::user()->roleMenu->proposal == 1)
+                                            <li><a class="ms-link" href="{{ route('Proposal.index') }}">Proposal</a></li>
                                         @endif
                                         @if (Auth::user()->roleMenu->banquet_event_order == 1)
                                             <li><a class="ms-link" href="#">Banquet Event Order</a></li>
@@ -175,10 +178,11 @@
                                             </li>
                                         @endif
                                         @if (Auth::user()->roleMenu->proforma_invoice == 1)
-                                            <li><a class="ms-link" href="{{ route('invoice.index') }}">Proforma
-                                                    Invoice</a></li>
+                                            <li><a class="ms-link" href="{{ route('invoice.index') }}">Proforma Invoice</a></li>
                                         @endif
-                                        <li><a class="ms-link" href="{{ route('receipt.index') }}">Receipt Payment</a></li>
+                                        @if (Auth::user()->roleMenu->receipt_payment == 1)
+                                            <li><a class="ms-link" href="{{ route('receipt.index') }}">Receipt Payment</a></li>
+                                        @endif
                                         @if (Auth::user()->roleMenu->billing_folio == 1)
                                             <li><a class="ms-link" href="#">Billing Folio</a></li>
                                         @endif
