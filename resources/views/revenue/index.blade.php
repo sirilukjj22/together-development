@@ -2,22 +2,22 @@
 
 @section('content')
     <?php
-        if (isset($day)) {
-            $date_current = $year . '-' . $month . '-' . $day;
+        if (isset($search_date)) {
+            $date_current = $search_date;
         } else {
             $date_current = date('Y-m-d');
         }
 
         $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))); // อาทิตย์ - เสาร์
         
-        $day_sum = isset($day) ? date('j', strtotime(date('2024-' . $month . '-' . $day))) : date('j');
+        $day_sum = isset($search_date) ? date('j', strtotime($search_date)) : date('j');
 
         if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow') {
-            $pickup_time = $day . ' ' . formatMonthName($month) . ' ' . $year;
+            $pickup_time = date('d F Y', strtotime($search_date));
         } elseif (isset($filter_by) && $filter_by == 'month') {
-            $pickup_time = formatMonthName($month) . ' - ' . formatMonthName($month_to);
+            $pickup_time = $search_date;
         } elseif (isset($filter_by) && $filter_by == 'year') {
-            $pickup_time = $year;
+            $pickup_time = $search_date;
         } elseif (isset($filter_by) && $filter_by == 'week') {
             $pickup_time = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d')))))." ~ ".date('d M', strtotime("+6 day", strtotime($this_week)));
         } elseif (isset($filter_by) && $filter_by == 'thisMonth') {
@@ -26,7 +26,6 @@
             $pickup_time = "01 " . "Jan" . " ~ ". date('d M', strtotime(date('Y-m-01')));
         }
 
-        // dd($filter_by);
     ?>
 
     <?php
@@ -80,7 +79,7 @@
                 <div class="nav-right">
                     <div class="nav-right-in">
                         <input type="text" id="select-date" name="" placeholder="{{ !empty($pickup_time) ? $pickup_time : date('d F Y') }}" readonly>
-                                <button data-toggle="modal" data-target="#exampleModal2" type="button" style="border-top: 0px; border-left: 0px">
+                                <button data-toggle="modal" data-target="#ModalShowCalendar" type="button" style="border-top: 0px; border-left: 0px">
                                     <span class="d-sm-none d-none d-md-inline-block">Search</span>
                                     <i class="fa fa-search" style="font-size: 15px;"></i>
                                 </button>
@@ -1193,135 +1192,100 @@
     </div>
 
     <!-- Modal: เลือกวันที่ modal fade -->
-    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document" style="max-width: 350px;">
-          <div class="modal-content rounded-xl">
-            <div class="modal-header md-header text-white">
-              <div class="w-full">
-                <h5 class=".modal-hd">ค้นหารายการ</h5>
-              </div>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <form action="{{ route('revenue-search-calendar') }}" method="POST" enctype="multipart/form-data" class="" id="form-revenue">
-                @csrf
-                <div class="modal-body ">
-                <div class="">
-                    <div class="box-ch-button">
-                    <button type="button" id="showD" onclick="Choice(this);" class="ch-pick"> filter by date</button>
-                    <button type="button" id="showM" onclick="Choice(this);" class="ch-pick"> filter by month</button>
-                    <button type="button" id="showY" onclick="Choice(this);" class="ch-pick"> filter by year</button>
-                    <input type="hidden" id="choice-date">
+    <div class="modal fade" id="ModalShowCalendar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog mw-350" role="document">
+            <div class="modal-content rounded-xl">
+                <div class="modal-header md-header text-white">
+                    <div class="w-full">
+                        <h5 class=".modal-hd">ค้นหารายการ</h5>
                     </div>
-                    <div style="width: 100%; display: flex; justify-content: center;">
-                    <div style="width: 100%; align-self:center;align-items: center;">
-                        <!-- box แสดงวันที่ เดือน ปี -->
-                        <div id="box"></div>
-                        <!-- วันเดือนปีซ่อนไว้  display: none-->
-                        <div id="calendar-day">
-                        <div class="ch-day" style=" border: none;" style="display: none;">
-                            <!-- เลือกจากวันที่ -->
-                            <div id="ch-day">
-                            <p class="t-month"> filter by date</p>
-                            <div class="calendar">
-                                <div class="month">
-                                <i class="fa fa-angle-left prev"></i>
-                                <div class="date">
-                                    <h1 id="mymonth" class="thisMont"></h1>
-                                    <p id="myDay" class="dateShose"> วันที่เลือก</p>
-                                </div>
-                                <i class="fa fa-angle-right next"></i>
-                                </div>
-                                <div class="">
-                                <div class="weekdays">
-                                    <div>Sun</div>
-                                    <div>Mon</div>
-                                    <div>Tue</div>
-                                    <div>Wed</div>
-                                    <div>Thu</div>
-                                    <div>Fri</div>
-                                    <div>Sat</div>
-                                </div>
-                                <div class="days"></div>
-                                </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('revenue-search-calendar') }}" method="POST" enctype="multipart/form-data" class="" id="form-revenue">
+                    @csrf
+                    <div class="modal-body">
+                        <!-- Modal: เลือกวันที่ modal fade -->
+                        <div class="" style="place-items: center;">
+                            <div class="center" style="gap:0.3rem;">
+                                <button type="button" class="bt-tg bg-tg-light sm flex-grow-1" id="filter-date">Filter by Date</button>
+                                <button type="button" class="bt-tg bg-tg-light sm flex-grow-1" id="filter-month">Filter by Month</button>
+                                <button type="button" class="bt-tg bg-tg-light sm flex-grow-1" id="filter-year">Filter by Year</button>
                             </div>
-                            </div>
-                            <!-- เลือกจากวัเดือน -->
-                            <div id="ch-month" style="display: none;">
-                            <p class="t-month"> filter by month</p>
-                            <div class="calendar">
-                                <div class="month">
-                                <div style="display: flex; flex-direction:column;width: 100%;">
-                                    <div class="month-date">
-                                    <p id="myMonth1" class="thisMont"> เดือนเริ่มต้น</p>
-                                    <p>&nbsp; - &nbsp;</p>
-                                    <p id="myMonth2"> สิ้นสุดเดือน </p>
-                                    <!-- <p id="" class="date-current border-2"> วันที่เลือก</p> -->
+
+                            <input type="text" class="selected-value-box t-alight-center" id="combined-selected-box" value="{{ date('d F Y') }}" />
+                            <!-- box แสดงวันที่ เดือน ปี -->
+                            <div class="calendars-container" id="calendars-container">
+                                <!-- Calendar for Picking a Specific Date -->
+                                <div class="calendar-wrapper flex-grow-1" id="date-picker-wrapper">
+                                    <span class="top-calendar" style="float: left;">Pick a Date</span>
+                                    <div class="calendar" id="date-picker">
+                                        <header>
+                                            <button type="button" id="prev-month">&lt;</button>
+                                            <h2 id="month-year">{{ date('F Y') }}</h2>
+                                            <button type="button" id="next-month">&gt;</button>
+                                        </header>
+                                        <div class="days-of-week">
+                                            <div>Sun</div>
+                                            <div>Mon</div>
+                                            <div>Tue</div>
+                                            <div>Wed</div>
+                                            <div>Thu</div>
+                                            <div>Fri</div>
+                                            <div>Sat</div>
+                                        </div>
+                                        <div class="dates-grid" id="dates-grid"></div>
                                     </div>
                                 </div>
+
+                                <!-- Calendar for Picking a Month Range -->
+                                <div class="calendar-wrapper flex-grow-1" id="month-picker-wrapper">
+                                    <span class="top-calendar" style="float: left;">Pick a Month Range</span>
+                                    <div class="calendar" id="month-range-picker">
+                                        <header>
+                                            <button type="button" id="prev-year">&lt;</button>
+                                            <h2 id="year"></h2>
+                                            <button type="button" id="next-year">&gt;</button>
+                                        </header>
+                                        <div class="months-grid"></div>
+                                    </div>
                                 </div>
-                                <div id="allMonth" class="show-all-month"></div>
-                            </div>
-                            </div>
-                            <!-- เลือกจากปี -->
-                            <div id="ch-year" style="display: none;">
-                            <p class="t-month"> filter by Year</p>
-                            <div class="calendar">
-                                <div class="month">
-                                <div style="display: flex; gap:20px;justify-content: center; width: 100%;">
-                                    <p id="myYear" style="font-size: 20px;"> Select </p>
+
+                                <!-- Calendar for Picking a Year -->
+                                <div class="calendar-wrapper flex-grow-1" id="year-picker-wrapper">
+                                    <span class="top-calendar" style="float: left;">Pick a Year</span>
+                                    <div class="calendar" id="year-picker">
+                                        <div class="years-grid"></div>
+                                    </div>
                                 </div>
-                                </div>
-                                <div class="show-all-years">
-                                <div class="ch-years" onclick="getYearValue(2024)" value="">2024</div>
-                                <div class="ch-years" onclick="getYearValue(2025)" value="">2025</div>
-                                <div class="ch-years" onclick="getYearValue(2026)" value="">2026</div>
-                                <div class="ch-years" onclick="getYearValue(2027)" value="">2027</div>
-                                <div class="ch-years" onclick="getYearValue(2028)" value="">2028</div>
-                                <div class="ch-years" onclick="getYearValue(2029)" value="">2029</div>
-                                <div class="ch-years" onclick="getYearValue(2030)" value="">2030</div>
-                                <div class="ch-years" onclick="getYearValue(2031)" value="">2032</div>
-                                </div>
-                            </div>
                             </div>
                         </div>
-                        </div>
-                    </div>
-                    <input type="hidden" id="month-click-num" value="0">
-                    <input type="hidden" id="month-number1" value="0">
-                    <input type="hidden" id="month-number2" value="0">
-                    <input type="hidden" id="by-month-year">
 
-                    <!-- Input ส่งค่าไป Controller -->
-                    <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'date' }}">
-                    <input type="hidden" id="input-search-day" name="day" value="{{ isset($day) ? $day : date('d') }}">
-                    <input type="hidden" id="input-search-month" name="month" value="{{ isset($month) ? $month : date('m') }}">
-                    <input type="hidden" id="input-search-month-to" name="month_to" value="{{ isset($month_to) ? $month_to : date('m') }}">
-                    <input type="hidden" id="input-search-year" name="year" value="{{ isset($year) ? $year : date('Y') }}">
-                    <input type="hidden" name="customRang_start" id="customRang-start2">
-                    <input type="hidden" name="customRang_end" id="customRang-end2">
+                        <!-- Input ส่งค่าไป Controller -->
+                        <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'date' }}">
+                        <input type="hidden" id="date" name="date" value="{{ $date_current }}">
+                        <input type="hidden" name="customRang_start" id="customRang-start2">
+                        <input type="hidden" name="customRang_end" id="customRang-end2">
+                        <!-- ประเภทรายได้ -->
+                        <input type="hidden" id="revenue-type" name="revenue_type" value="">
 
-                    <!-- ประเภทรายได้ -->
-                    <input type="hidden" id="revenue-type" name="revenue_type" value="">
-
-                    <input type="hidden" name="daily_page" id="daily_page">
+                        <input type="hidden" name="daily_page" id="daily_page">
                         <input type="hidden" name="export_pdf" id="export_pdf" value="0">
-                    </div>
-                </div>
-                    <!-- ล่าง modal -->
-                    <div class="modal-footer flex-between">
-                        <div class="" >
-                            <button type="button" class="ch-pick" onclick="btn_reset_date()">Today</button>
+
+                        <!-- ล่าง modal -->
+                        <div class="modal-footer flex-between" style="padding:0 0.7rem;">
+                            <div class="">
+                                <button type="button" class="bt-tg bg-tg-light sm" id="select-today-button">Today</button>
+                            </div>
+                            <div>
+                                <button type="button" class="bt-tg  sm bt-grey" data-dismiss="modal">Close</button>
+                                <button type="button" id="btn-search-date" class="bt-tg bg-tg-light sm btn-submit-search" style="background-color: #2C7F7A;">Search</button>
+                            </div>
                         </div>
-                        <div>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" id="btn-search-date" class="btn btn-success btn-submit-search" style="background-color: #2C7F7A;">Search</button>
-                        </div>
                     </div>
-                </div>
-            </form>
-          </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -1994,6 +1958,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Calendar -->
+    <script src="{{ asset('assets/js/calendar-draft.js')}}"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
