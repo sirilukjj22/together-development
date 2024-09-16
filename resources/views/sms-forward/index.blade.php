@@ -4,7 +4,7 @@
     <div id="content-index" class="body-header d-flex py-3">
         <div class="container-xl">
             @php
-                $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))); // อาทิตย์ - เสาร์
+                $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(isset($search_date) ? $search_date : date('Y-m-d'))))); // อาทิตย์ - เสาร์
                 $date_current = isset($search_date) ? $search_date : date('Y-m-d'); // วันปัจจุบัน
 
                 if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow') {
@@ -14,7 +14,7 @@
                 } elseif (isset($filter_by) && $filter_by == 'year') {
                     $pickup_time = $search_date;
                 } elseif (isset($filter_by) && $filter_by == 'week') {
-                    $pickup_time = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d')))))." ~ ".date('d M', strtotime("+6 day", strtotime($this_week)));
+                    $pickup_time = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime($search_date))))." ~ ".date('d M', strtotime("+6 day", strtotime($this_week)));
                 } elseif (isset($filter_by) && $filter_by == 'thisMonth') {
                     $pickup_time = "01 " . date('M') . " ~ " . date('t M');
                 }

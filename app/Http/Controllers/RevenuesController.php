@@ -2126,38 +2126,52 @@ class RevenuesController extends Controller
     {
 
         if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
-            $adate = date('Y-m-d 21:00:00', strtotime($request->year . '-' . $request->month . '-' . $request->day.' 21:00:00'));
+            $req_date = Carbon::parse($request->date)->format('Y-m-d');
+            $adate = date('Y-m-d 21:00:00', strtotime($req_date));
             $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate));
 
             // Revenue
-            $month_from = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
-            $month_to = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-' . $request->day)));
-            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime(date($request->year . '-' . $request->month . '-' . $request->day))));
+            $month_from = $req_date;
+            $month_to = $req_date;
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime($req_date)));
 
         } elseif ($request->filter_by == "month") {
-            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
-            $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
+            $exp = explode('-', $request->date);
+
+            $start_month = Carbon::parse($exp[0])->format('m');
+            $end_month = Carbon::parse($exp[0])->format('m');
+            $year = Carbon::parse($exp[0])->format('Y');
+
+            if (isset($exp[1])) { // เลือกมากกว่า 1 เดือน
+                $end_month = Carbon::parse($exp[1])->format('m');
+                $year = Carbon::parse($exp[1])->format('Y');
+            }
+
+            $adate = date('Y-m-d', strtotime($year . '-' . $start_month . '-01'));
+            $lastday = dayLast($end_month, $year); // หาวันสุดท้ายของเดือน
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
+            $to = date($year . '-' . $end_month . '-' . $lastday . ' 20:59:59');
 
             $month_from = date('Y-m-d', strtotime($adate));
             $month_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($to))));
-            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime(date($request->year . '-' . $request->month . '-' . $request->day))));
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime($adate)));
 
         } elseif ($request->filter_by == "year") {
-            $adate = date($request->year . '-01' . '-01');
+            $year = $request->date;
+            $adate = date($year . '-01' . '-01');
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date($request->year . '-12-31' . ' 20:59:59');
+            $to = date($year . '-12-31' . ' 20:59:59');
 
             $month_from = date('Y-m-d', strtotime($adate));
             $month_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($to))));
-            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime(date($request->year . '-' . $request->month . '-' . $request->day))));
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime(date($adate))));
 
         } elseif ($request->filter_by == "week") {
             $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
-            $adate = date('Y-m-d');
+            $sundayOfWeek = date('Y-m-d', strtotime('last sunday', strtotime('next sunday')));
+            $adate = $sundayOfWeek;
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
@@ -2215,7 +2229,7 @@ class RevenuesController extends Controller
 
         if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") 
         {
-            $date_now = date('Y-m-d', strtotime(date($request->year.'-'.$request->month.'-'.$request->day)));
+            $date_now = date('Y-m-d', strtotime($request->date));
         } else {
             $date_now = date('Y-m-d');
         }
@@ -2433,8 +2447,8 @@ class RevenuesController extends Controller
         }
 
         ## Verified / Unverified
-        $date1 = date('Y-m-d', strtotime(date($request->year.'-'.$request->month.'-01')));
-        $date2 = date('Y-m-d', strtotime('last day of this month', strtotime(date(date($request->year.'-'.$request->month.'-'.$request->day)))));
+        $date1 = date('Y-m-01', strtotime($month_from));
+        $date2 = date('Y-m-d', strtotime('last day of this month', strtotime($month_from)));
 
         if ($request->revenue_type == "verified") {
             $data_query = Revenues::whereBetween('date', [$date1, $date2])->where('status', 1)->paginate(10);
@@ -2466,10 +2480,7 @@ class RevenuesController extends Controller
 
         ## Filter ##
         $filter_by = $request->filter_by;
-        $day = $request->day;
-        $month = $request->month;
-        $month_to = $request->month_to;
-        $year = $request->year;
+        $search_date = $month_from;
 
         $exp = explode("_", $request->revenue_type);
 
@@ -2492,26 +2503,38 @@ class RevenuesController extends Controller
         //     return view('revenue.fee_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'day', 'month', 'month_to', 'year', 'status'));
         // } 
         else {
-            return view('revenue.detail', compact('data_query', 'total_query', 'title', 'filter_by', 'day', 'month', 'month_to', 'year', 'status'));
+            return view('revenue.detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         }
     }
 
     public function paginate_table(Request $request)
     {
         if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
-            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $req_date = Carbon::parse($request->date)->format('Y-m-d');
+            $adate = $req_date;
             $adate2 = date('Y-m-d', strtotime(date($adate)));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate));
 
         } elseif ($request->filter_by == "month") {
-            $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
-            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
-            $adate2 = date('Y-m-d', strtotime($request->year . '-' . $request->month_to . '-' . $lastday));
+            $exp = explode('-', $request->date);
+
+            $start_month = Carbon::parse($exp[0])->format('m');
+            $end_month = Carbon::parse($exp[0])->format('m');
+            $year = Carbon::parse($exp[0])->format('Y');
+
+            if (isset($exp[1])) { // เลือกมากกว่า 1 เดือน
+                $end_month = Carbon::parse($exp[1])->format('m');
+                $year = Carbon::parse($exp[1])->format('Y');
+            }
+
+            $lastday = dayLast($end_month, $year); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-d', strtotime($year . '-' . $start_month . '-01'));
+            $adate2 = date('Y-m-d', strtotime($year . '-' . $end_month . '-' . $lastday));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
+            $to = date($year . '-' . $end_month . '-' . $lastday . ' 20:59:59');
 
         } elseif ($request->filter_by == "thisMonth") {
             $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
@@ -2522,14 +2545,16 @@ class RevenuesController extends Controller
             $to = date('Y-m-d 20:59:59', strtotime($adate2));
 
         } elseif ($request->filter_by == "year") {
-            $adate = date('Y-m-d', strtotime($request->year . '-01' . '-01'));
-            $adate2 = date('Y-m-d', strtotime(date($request->year . '-12-31')));
+            $year = $request->date;
+            $adate = date('Y-m-d', strtotime($year . '-01' . '-01'));
+            $adate2 = date('Y-m-d', strtotime(date($year . '-12-31')));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-m-d 20:59:59', strtotime($request->year . '-12-31'));
+            $to = date('Y-m-d 20:59:59', strtotime($year . '-12-31'));
 
         } elseif ($request->filter_by == "week") {
-            $adate = date('Y-m-d', strtotime('Y-m-d'));
+            $sundayOfWeek = date('Y-m-d', strtotime('last sunday', strtotime('next sunday')));
+            $adate = $sundayOfWeek;
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
@@ -2873,19 +2898,31 @@ class RevenuesController extends Controller
     public function search_table(Request $request)
     {
         if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
-            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
+            $req_date = Carbon::parse($request->date)->format('Y-m-d');
+            $adate = $req_date;
             $adate2 = date('Y-m-d', strtotime(date($adate)));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate));
 
         } elseif ($request->filter_by == "month") {
-            $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
-            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
-            $adate2 = date('Y-m-d', strtotime($request->year . '-' . $request->month_to . '-' . $lastday));
+            $exp = explode('-', $request->date);
+
+            $start_month = Carbon::parse($exp[0])->format('m');
+            $end_month = Carbon::parse($exp[0])->format('m');
+            $year = Carbon::parse($exp[0])->format('Y');
+
+            if (isset($exp[1])) { // เลือกมากกว่า 1 เดือน
+                $end_month = Carbon::parse($exp[1])->format('m');
+                $year = Carbon::parse($exp[1])->format('Y');
+            }
+
+            $lastday = dayLast($end_month, $year); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-d', strtotime($year . '-' . $start_month . '-01'));
+            $adate2 = date('Y-m-d', strtotime($year . '-' . $end_month . '-' . $lastday));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
+            $to = date($year . '-' . $end_month . '-' . $lastday . ' 20:59:59');
 
         } elseif ($request->filter_by == "thisMonth") {
             $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
@@ -2896,14 +2933,16 @@ class RevenuesController extends Controller
             $to = date('Y-m-d 20:59:59', strtotime($adate2));
 
         } elseif ($request->filter_by == "year") {
-            $adate = date('Y-m-d', strtotime($request->year . '-01' . '-01'));
-            $adate2 = date('Y-m-d', strtotime(date($request->year . '-12-31')));
+            $year = $request->date;
+            $adate = date('Y-m-d', strtotime($year . '-01' . '-01'));
+            $adate2 = date('Y-m-d', strtotime(date($year . '-12-31')));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-m-d 20:59:59', strtotime($request->year . '-12-31'));
+            $to = date('Y-m-d 20:59:59', strtotime($year . '-12-31'));
 
         } elseif ($request->filter_by == "week") {
-            $adate = date('Y-m-d', strtotime('Y-m-d'));
+            $sundayOfWeek = date('Y-m-d', strtotime('last sunday', strtotime('next sunday')));
+            $adate = $sundayOfWeek;
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
@@ -2916,7 +2955,7 @@ class RevenuesController extends Controller
         $exp = explode("_", $request->status);
         $search = $request->search_value;
 
-        if (is_int($request->status)) { 
+        if (is_int($request->status) && $request->status > 0) {
             if ($request->table_name == "revenueTable") {
                 if (!empty($request->search_value)) {
                     $data_query = SMS_alerts::whereBetween('date', [$from, $to])
