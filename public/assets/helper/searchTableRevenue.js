@@ -104,6 +104,7 @@ function getPage(page, perPage, table_n) {
                     filter_by: filter_by,
                     date: dateString,
                     status: type,
+                    into_account: account
                 },
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
@@ -148,6 +149,7 @@ function getPage(page, perPage, table_n) {
                     filter_by: filter_by,
                     date: dateString,
                     status: type,
+                    into_account: account
                 },
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
@@ -191,6 +193,7 @@ function getPage(page, perPage, table_n) {
                     filter_by: filter_by,
                     date: dateString,
                     status: type,
+                    into_account: account
                 },
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
@@ -233,6 +236,7 @@ function getPage(page, perPage, table_n) {
                     filter_by: filter_by,
                     date: dateString,
                     status: type,
+                    into_account: account
                 },
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
@@ -275,6 +279,7 @@ function getPage(page, perPage, table_n) {
                     filter_by: filter_by,
                     date: dateString,
                     status: type,
+                    into_account: account
                 },
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
@@ -314,6 +319,7 @@ function getPage(page, perPage, table_n) {
                     filter_by: filter_by,
                     date: dateString,
                     status: type,
+                    into_account: account
                 },
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
@@ -351,6 +357,7 @@ function getPage(page, perPage, table_n) {
                     filter_by: filter_by,
                     date: dateString,
                     status: type,
+                    into_account: account
                 },
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },

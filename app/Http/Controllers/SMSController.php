@@ -320,15 +320,31 @@ class SMSController extends Controller
         $data = [];
 
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $search = $request->search_value;
+        $status_type = $request->status;
 
         if ($request->table_name == "smsTable") {
             if (!empty($request->search_value)) {
-                $data_query = SMS_alerts::whereBetween('date', [$from, $to])
-                    ->where('date', 'LIKE', '%'.$request->search_value.'%')->whereNull('date_into')
-                    ->orWhere('amount', 'LIKE', '%'.$request->search_value.'%')->whereBetween('date', [$from, $to])->whereNull('date_into')
+                $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')
+                    ->where(function($query) use ($search) {
+                        $query->where('date', 'LIKE', '%'.$search.'%');
+                        $query->orWhere('amount', 'LIKE', '%'.$search.'%');
+                    })
                     ->orderBy('date', 'asc')->paginate($perPage);
             } else {
                 $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->orderBy('date', 'asc')->paginate($perPage);
+            }
+
+        } elseif ($request->table_name == "smsDetailTable") {
+            if (!empty($request->search_value)) {
+                $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $status_type)
+                    ->where(function($query) use ($search) {
+                        $query->where('date', 'LIKE', '%'.$search.'%');
+                        $query->orWhere('amount', 'LIKE', '%'.$search.'%');
+                    })
+                    ->orderBy('date', 'asc')->paginate($perPage);
+            } else {
+                $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $status_type)->orderBy('date', 'asc')->paginate($perPage);
             }
 
         } elseif ($request->table_name == "transferTable") {
@@ -622,6 +638,22 @@ class SMSController extends Controller
                 if ($request->status != 0 && is_int($request->status)) { 
                     $query_sms->where('status', $request->status); 
                 }
+
+            $query_sms->orderBy('date', 'asc');
+
+            if ($perPage == 10) {
+                $data_query = $query_sms->limit($request->page.'0')->get();
+            } else {
+                $data_query = $query_sms->paginate($perPage);
+            }
+
+        } elseif ($request->table_name == "smsDetailTable") {
+            $query_sms = SMS_alerts::query()->whereBetween('date', [$from, $to])->whereNull('date_into');
+
+                if ($request->into_account != '') { 
+                    $query_sms->where('into_account', $request->into_account);
+                }
+            $query_sms->where('status', $request->status); 
 
             $query_sms->orderBy('date', 'asc');
 
@@ -2057,7 +2089,7 @@ class SMSController extends Controller
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
 
         $filter_by = $request->filter_by;
-        $search_date = $from;
+        $search_date = $adate;
 
         $status = $request->status;
         $into_account = $request->into_account;
@@ -2283,7 +2315,7 @@ class SMSController extends Controller
         }
 
         $filter_by = $request->filter_by;
-        $search_date = $from;
+        $search_date = $adate;
         $into_account = $request->into_account;
 
         return view('sms-forward.detail', compact('data_sms', 'total_sms', 'data_bank', 'title', 'filter_by', 'search_date', 'status', 'into_account'));
@@ -2355,7 +2387,7 @@ class SMSController extends Controller
         $title = "Agoda bank Transfer Revenue";
 
         $filter_by = $request->filter_by;
-        $search_date = $from;
+        $search_date = $adate;
         $status = $request->status;
         $into_account = $request->into_account;
 

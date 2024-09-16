@@ -26,17 +26,17 @@
                             <div>
                                 <div class="flex-end-g2">
                                     <label class="entriespage-label sm-500px-hidden">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-sms" onchange="getPage(1, this.value, 'sms')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "sms" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "sms" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "sms" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "sms" ? 'selected' : '' }}>100</option>
+                                    <select class="entriespage-button" id="search-per-page-smsDetail" onchange="getPage(1, this.value, 'smsDetail')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "smsDetail" ? 'selected' : '' }}>10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "smsDetail" ? 'selected' : '' }}>25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "smsDetail" ? 'selected' : '' }}>50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "smsDetail" ? 'selected' : '' }}>100</option>
                                     </select>
-                                    <input class="search-button search-data" id="sms" style="text-align:left;" placeholder="Search" />
+                                    <input class="search-button search-data" id="smsDetail" style="text-align:left;" placeholder="Search" />
                                 </div>
                         </caption>
                         <div style="min-height: 70vh;">
-                            <table id="smsTable" class="example ui striped table nowrap unstackable hover">
+                            <table id="smsDetailTable" class="example ui striped table nowrap unstackable hover">
                                 <thead>
                                     <tr>
                                         <th style="text-align: center;" data-priority="1">#</th>
@@ -190,10 +190,10 @@
                         </div>
                         <caption class="caption-bottom">
                             <div class="md-flex-bt-i-c">
-                                <p class="py2" id="sms-showingEntries">{{ showingEntriesTable($data_sms, 'sms') }}</p>
+                                <p class="py2" id="smsDetail-showingEntries">{{ showingEntriesTable($data_sms, 'smsDetail') }}</p>
                                 <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format($total_sms, 2) }} บาท</div>
-                                    <div id="sms-paginate">
-                                        {!! paginateTable($data_sms, 'sms') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                    <div id="smsDetail-paginate">
+                                        {!! paginateTable($data_sms, 'smsDetail') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                     </div>
                             </div>
                         </caption>
@@ -426,15 +426,11 @@
     <!-- END MODAL -->
 
     <input type="hidden" id="filter-by" name="filter_by" value="{{ $filter_by }}">
-    <input type="hidden" id="input-search-day" name="day" value="{{ $day }}">
-    <input type="hidden" id="input-search-month" name="month" value="{{ $month }}">
-    <input type="hidden" id="input-search-month-to" name="month_to" value="{{ $month_to }}">
-    <input type="hidden" id="input-search-year" name="year" value="{{ $year }}">
+    <input type="hidden" id="date" name="date" value="{{ $search_date }}">
     <input type="hidden" id="status" value="{{ $status }}">
     <input type="hidden" id="into_account" value="{{ $into_account }}">
-    <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
-    <input type="hidden" id="get-total-sms" value="{{ $data_sms->total() }}">
-    <input type="hidden" id="currentPage-sms" value="1">
+    <input type="hidden" id="get-total-smsDetail" value="{{ $data_sms->total() }}">
+    <input type="hidden" id="currentPage-smsDetail" value="1">
 
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
@@ -457,7 +453,7 @@
     <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTable.js')}}"></script>
+    <script src="{{ asset('assets/helper/searchTable.js')}}"></script>
 
     <script>
         $(document).ready(function() {
@@ -504,10 +500,7 @@
             var table_name = id+'Table';
 
             var filter_by = $('#filter-by').val();
-            var day = $('#input-search-day').val();
-            var month = $('#input-search-month').val();
-            var year = $('#input-search-year').val();
-            var month_to = $('#input-search-month-to').val();
+            var dateString = $('#date').val();
             var type_status = $('#status').val();
             var account = $('#into_account').val();
             var getUrl = window.location.pathname;
@@ -526,10 +519,7 @@
                             search_value: search_value,
                             table_name: table_name,
                             filter_by: filter_by,
-                            day: day,
-                            month: month,
-                            year: year,
-                            month_to: month_to,
+                            date: dateString,
                             status: type_status,
                             into_account: account
                         },
