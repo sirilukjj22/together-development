@@ -131,6 +131,16 @@
       font-size: 10px;
       color: #fff;
     }
+    #contractTable, #contractTable tr, #contractTable td {
+        border: none;
+    }
+    #companyTable, #companyTable tr, #companyTable td {
+        border: none;
+    }
+    #CheckinTable, #CheckinTable tr, #CheckinTable td {
+        border: none;
+    }
+
 </style>
 
 @section('content')
@@ -146,6 +156,24 @@
     </div>
 
     <div id="content-index" class="body d-flex py-lg-4 py-3">
+        <div class="container-xl">
+            <div class="row align-items-center mb-2" >
+                @if (session("error"))
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">บันทึกไม่สำเร็จ!</h4>
+                        <hr>
+                        <p class="mb-0">{{ session('error') }}</p>
+                    </div>
+                @endif
+                <div class="col">
+                    <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ol>
+                </div>
+            </div> <!-- Row end  -->
+        </div> <!-- Row end  -->
         <div class="row clearfix">
             <div class="col-sm-12 col-12">
                 <div class="card mb-3">
@@ -202,41 +230,44 @@
                                     <b id="TiTlecompanyTable" class="com mt-2 my-2"style="font-size:18px">Company Information</b>
                                         <table id="companyTable">
                                             <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Company Name :</b></td>
-                                                <td>
+                                                <td style="text-align: left"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Company Name :</b></td>
+                                                <td style="width:10%">
                                                     <span id="Company_name" name="Company_name" >{{$comtypefullname}}</span>
                                                 </td>
+                                                <td style="width:60%"></td>
                                             </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Address :</b></td>
-                                                <td>
+                                            <tr >
+                                                <td style="text-align: left"><b style="margin-left: 2px;color:#000;">Company Address :</b></td>
+                                                <td >
                                                     <span id="Address">{{$Company->Address}}
                                                         @if ($TambonID)
                                                             {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}
                                                         @endif
                                                     </span>
                                                 </td>
+                                                <td ></td>
                                             </tr>
                                             <tr>
-                                                <td></td>
-                                                <td>
+                                                <td ></td>
+                                                <td style="text-align: left">
                                                     <span id="Address2" >
                                                         @if ($TambonID)
                                                             {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
                                                         @endif
                                                     </span>
                                                 </td>
+                                                <td ></td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
-                                                <td>
+                                                <td style="text-align: left"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
+                                                <td style="text-align: left">
                                                     <span id="Address">
                                                         {{ substr($company_phone->Phone_number, 0, 3) }}-{{ substr($company_phone->Phone_number, 3, 3) }}-{{ substr($company_phone->Phone_number, 6) }}
                                                     </span>
                                                 </td>
-                                                <td>
+                                                <td style="text-align: left">
                                                     <span id="Company_Number"></span>
-                                                    <b style="margin-left: 10px;color:#000;">Company Fax : </b>
+                                                    <b >Company Fax : </b>
                                                     <span id="Company_Fax">
                                                         @if (is_object($company_fax) && property_exists($company_fax, 'Fax_number'))
                                                             <span id="Company_Fax">{{ $company_fax->Fax_number }}</span>
@@ -247,31 +278,38 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Email : </b></td>
-                                                <td><span id="Company_Email">{{$Company->Company_Email}}</span></td>
+                                                <td style="text-align: left"><b style="margin-left: 2px;color:#000;">Company Email : </b></td>
+                                                <td style="text-align: left"><span id="Company_Email">{{$Company->Company_Email}}</span></td>
+                                                <td ></td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Taxpayer Identification : </b></td>
-                                                <td><span id="Taxpayer">{{$Company->Taxpayer_Identification}}</span></td>
+                                                <td style="text-align: left"><b style="margin-left: 2px;color:#000;">Taxpayer Identification : </b></td>
+                                                <td style="text-align: left"><span id="Taxpayer">{{$Company->Taxpayer_Identification}}</span></td>
+                                                <td ></td>
                                             </tr>
                                         </table>
                                         <b id="TiTlecontractTable" class="com mt-2 my-2"style="font-size:18px">Personal Information</b>
                                         <table id="contractTable">
                                             <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Name : </b></td>
-                                                <td>
+                                                <td style="text-align: left;width:20%"><b style="margin-left: 2px; color:#000;">Contact Name : </b></td>
+                                                <td style="text-align: left;width:33%">
                                                     <span id="Company_contact">{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span>
-                                                    <b style="margin-left: 10px;color:#000;">Contact Number : </b>
+
+                                                </td>
+                                                <td style="text-align: left;">
+                                                    <b >Contact Number : </b>
                                                     <span id="Contact_Phone">{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Email : </b></td>
-                                                <td><span id="Contact_Email">{{$Contact_name->Email}}</span></td>
+                                                <td style="text-align: left"><b style="margin-left: 2px;color:#000;">Contact Email : </b></td>
+                                                <td style="text-align: left"><span id="Contact_Email">{{$Contact_name->Email}}</span></td>
+                                                <td ></td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#fff;">Taxpayer Identification : </b></td>
+                                                <td style="text-align: left"><b style="margin-left: 2px;color:#fff;">Taxpayer Identification : </b></td>
                                                 <td style="color: #fff"><span id="Taxpayer"></span></td>
+                                                <td ></td>
                                             </tr>
                                         </table>
                                     @else
@@ -279,7 +317,7 @@
                                         <b id="TiTleguestTable" class="com mt-2 my-2"style="font-size:18px;">Guest Information</b>
                                         <table id="guestTable">
                                             <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Guest Name :</b></td>
+                                                <td style="text-align: left"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Guest Name :</b></td>
                                                 <td>
                                                     <span id="guest_name" name="guest_name" >{{$Company->First_name}} {{$Company->Last_name}}</span>
                                                 </td>
@@ -328,22 +366,22 @@
                                 <div class="col-lg-4 col-md-12 col-sm-12">
                                     <div><br><br><br><br></div>
                                     <div class="col-12 row" >
-                                        <table>
+                                        <table style="margin-left: 20px;" id="CheckinTable">
                                             <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Check In :</b></td>
-                                                <td>
+                                                <td style="text-align: left"><b style="margin-left: 2px;color:#000;">Check In :</b></td>
+                                                <td style="text-align: left">
                                                     <span id="Contact_name" name="Contact_name" >{{$checkin}}</span>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Check Out : </b></td>
-                                                <td>
+                                                <td style="text-align: left"><b style="margin-left: 2px;color:#000;">Check Out : </b></td>
+                                                <td style="text-align: left">
                                                     <span id="Company_Number">{{$checkout}}</span>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Length of Stay :</b></td>
-                                                <td>
+                                                <td style="text-align: left"><b style="margin-left: 2px;color:#000;">Length of Stay :</b></td>
+                                                <td style="text-align: left">
 
                                                     <span id="Company_Number">
                                                         @if ($Quotation->day == null)
@@ -355,8 +393,8 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Number of Guests :</b></td>
-                                                <td>
+                                                <td style="text-align: left"><b style="margin-left: 2px;color:#000;">Number of Guests :</b></td>
+                                                <td style="text-align: left">
                                                     <span id="Company_Number">
                                                         @if ($Quotation->adult == null)
                                                             -
@@ -367,8 +405,8 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Valid :</b></td>
-                                                <td>
+                                                <td style="text-align: left"><b style="margin-left: 2px;color:#000;">Valid :</b></td>
+                                                <td style="text-align: left">
                                                     <input type="date" class="form-control" name="valid" id="valid" required>
                                                 </td>
                                             </tr>
@@ -509,6 +547,7 @@
                                     <input type="hidden" name="balance"  id="balance">
                                     <input type="hidden" name="sum"  id="sum">
                                     <input type="hidden" name="Deposit"  id="Deposit" value="{{$Deposit}}">
+                                    <input type="hidden" name="selecttype"  id="selecttype" value="{{$Quotation->type_Proposal}}">
                                     <input type="hidden" name="Refler_ID"  id="Refler_ID" value="{{$Refler_ID}}">
                                 </div>
                                 <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">

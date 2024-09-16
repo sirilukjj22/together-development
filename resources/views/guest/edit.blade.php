@@ -221,12 +221,12 @@
                                 <div class="row mt-2">
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <label for="contract_rate_start_date">Contract Rate Start Date</label><br>
-                                        <div class="datestyle"><input class="form-control" type="date" id="contract_rate_start_date" name="contract_rate_start_date" onchange="Onclickreadonly()"  value="{{$Guest->Contract_Rate_Start_Date}}"></div>
+                                        <div class="datestyle"><input class="form-control" type="date" id="contract_rate_start_date" name="contract_rate_start_date" onchange="Onclickreadonly()"  value="{{$Guest->Contract_Rate_Start_Date}}"disabled></div>
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <label for="contract_rate_end_date">Contract Rate End Date</label><br>
                                         <div class="datestyle">
-                                        <input type="date" class="form-control" id="contract_rate_end_date" name="contract_rate_end_date" readonly value="{{$Guest->Contract_Rate_End_Date}}">
+                                        <input type="date" class="form-control" id="contract_rate_end_date" name="contract_rate_end_date" readonly value="{{$Guest->Contract_Rate_End_Date}}"disabled>
                                         </div>
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
@@ -240,7 +240,7 @@
                                             }
                                         </script>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" id="discount_contract_rate" name="discount_contract_rate" oninput="checkInput()" min="0" max="100" value="{{$Guest->Discount_Contract_Rate}}">
+                                            <input type="text" class="form-control" id="discount_contract_rate" name="discount_contract_rate" oninput="checkInput()" min="0" max="100" value="{{$Guest->Discount_Contract_Rate}}" disabled>
                                             <span class="input-group-text">%</span>
                                         </div>
                                     </div>

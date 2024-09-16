@@ -196,7 +196,7 @@
                                         <div id="phone-inputs-container" class="flex-container">
                                             @foreach($phoneDataArray as $index => $phone)
                                                 <div class="input-group mb-3">
-                                                    <input type="text" class="form-control" id="phone-main" name="phone[]" value="{{ $phone['Phone_number'] }}" data-index="{{ $index }}" data-old-value="{{ $phone['Phone_number'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
+                                                    <input type="text" class="form-control" id="phone-main" name="phone[]" value="{{ $phone['Phone_number'] }}" data-index="{{ $index }}" maxlength="10" data-old-value="{{ $phone['Phone_number'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
                                                     <button class="btn btn-outline-danger remove-input" type="button" id="remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                                 </div>
                                             @endforeach

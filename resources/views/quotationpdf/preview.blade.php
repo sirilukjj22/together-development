@@ -411,7 +411,7 @@
                         </table>
                     </footer>
                     <main>
-                        <b class="com" style="font-size:18px">Guest Information</b>
+                        <b class="com" style="font-size:18px">Company Information</b>
                         <div style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#2D7F7B; width:55%">
                             <table style="line-height:12px;" >
                                 <tr>
