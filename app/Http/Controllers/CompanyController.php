@@ -18,16 +18,19 @@ use App\Models\Quotation;
 use App\Models\company_tax_phone;
 use App\Models\company_tax;
 use App\Models\log_company;
+use App\Models\country;
 use Auth;
 class CompanyController extends Controller
 {
+
     public function index($menu)
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $Company = companys::query()
             ->leftJoin('company_phones', 'companys.Profile_ID', '=', 'company_phones.Profile_ID')
             ->where('companys.status', 1)
-            ->select('companys.*', 'company_phones.Phone_number as Phone_number')
+            ->select('companys.*', DB::raw('GROUP_CONCAT(company_phones.Phone_number) as Phone_numbers')) // รวมหมายเลขโทรศัพท์เป็นสตริงเดียว
+            ->groupBy('companys.id') // จัดกลุ่มข้อมูลตาม ID ของบริษัท
             ->orderBy('companys.id', 'asc')
             ->paginate($perPage);
         $exp = explode('.', $menu);
@@ -218,12 +221,13 @@ class CompanyController extends Controller
         $N_Profile = $Id_profile.$Profile_ID;
         $latestAgent = 1;
         $A_Profile = $latestAgent;
+        $country = country::select('ct_nameENG')->get();
         $provinceNames = province::select('name_th','id')->get();
         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
         $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
         $Mmarket = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mmarket')->get();
         $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
-        return view('company.create',compact('booking_channel','provinceNames','MCompany_type','Mmarket','Mprefix','N_Profile','A_Profile'));
+        return view('company.create',compact('booking_channel','provinceNames','MCompany_type','Mmarket','Mprefix','N_Profile','A_Profile','country'));
     }
     public function save(Request $request){
         try {
@@ -338,6 +342,7 @@ class CompanyController extends Controller
                             $datacompany .= $variable;
                         }
                     }
+
                     $userid = Auth::user()->id;
                     $save = new log_company();
                     $save->Created_by = $userid;
@@ -354,7 +359,7 @@ class CompanyController extends Controller
                 $save->Company_type = $request->Company_type;
                 $save->Market =$request->Mmarket;
                 $save->Booking_Channel = $request->booking_channel;
-                if ($CountryOther == "Other_countries") {
+                if ($CountryOther != "Thailand") {
                     if ($city === null) {
                         return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
                     }else {
@@ -376,13 +381,16 @@ class CompanyController extends Controller
                 }
                 $save->Company_Email = $request->Company_Email;
                 $save->Company_Website = $request->Company_Website;
-                $save->Taxpayer_Identification = $request->Taxpayer_Identification;
+                $save->Taxpayer_Identification = str_replace('-', '', $request->Taxpayer_Identification);
                 // $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
                 $save->Contract_Rate_Start_Date = $contract_rate_start_date;
                 $save->Contract_Rate_End_Date = $contract_rate_end_date;
                 $save->Lastest_Introduce_By =$Lastest_Introduce_By;
                 if ($phone_company !== null) {
-                    foreach ($phone_company as $index => $phoneNumber) {
+                    $cleanedPhoneNumbers = array_map(function($phone_company) {
+                        return str_replace('-', '', $phone_company);
+                    }, $phone_company);
+                    foreach ($cleanedPhoneNumbers as $index => $phoneNumber) {
                         if ($phoneNumber !== null) {
                             $savephone = new company_phone();
                             $savephone->Profile_ID = $N_Profile;
@@ -393,7 +401,10 @@ class CompanyController extends Controller
                     }
                 }
                 if ($fax !== null) {
-                    foreach ($fax as $index => $faxNumber) {
+                    $cleanedfaxNumbers = array_map(function($fax) {
+                        return str_replace('-', '', $fax);
+                    }, $fax);
+                    foreach ($cleanedfaxNumbers as $index => $faxNumber) {
                         if ($faxNumber !== null) {
                             $savefax = new company_fax();
                             $savefax->Profile_ID = $N_Profile;
@@ -506,17 +517,13 @@ class CompanyController extends Controller
                 $saveAgent->prefix = $request->Preface;
                 $saveAgent->First_name = $request->first_nameAgent;
                 $saveAgent->Last_name = $request->last_nameAgent;
-                if ($countrydataA == "Other_countries") {
-                    if ($cityA === null) {
-                        return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
-                    }else {
-                        $saveAgent->City = $cityA;
-                        $saveAgent->Country = $countrydataA;
-                        $saveAgent->Amphures = null;
-                        $saveAgent->Address = $addressAgent;
-                        $saveAgent->Tambon = null;
-                        $saveAgent->Zip_Code = null;
-                    }
+                if ($countrydataA != "Thailand") {
+                    $saveAgent->City = $cityA;
+                    $saveAgent->Country = $countrydataA;
+                    $saveAgent->Amphures = null;
+                    $saveAgent->Address = $addressAgent;
+                    $saveAgent->Tambon = null;
+                    $saveAgent->Zip_Code = null;
                 }else {
                     $saveAgent->Country = $countrydataA;
                     $saveAgent->City = $cityA;
@@ -532,7 +539,10 @@ class CompanyController extends Controller
 
 
                     foreach ($phoneC as $index => $phoneNumber) {
-                        if ($phoneNumber !== null) {
+                        $cleanedphoneCNumbers = array_map(function($phoneC) {
+                            return str_replace('-', '', $phoneC);
+                        }, $phoneC);
+                        if ($cleanedphoneCNumbers !== null) {
                             $savephoneA = new representative_phone();
                             $savephoneA->Profile_ID = $A_Profile;
                             $savephoneA->Company_ID = $NProfile_ID;
@@ -619,7 +629,7 @@ class CompanyController extends Controller
 
             $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
             $provinceNames = province::select('name_th','id')->get();
-
+            $country = country::select('ct_nameENG')->get();
             $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
             $Quotation = Quotation::where('Company_ID',$Company_ID)->paginate($perPage);
             $company_tax = company_tax::where('Company_ID',$Company_ID)->paginate($perPage);
@@ -630,10 +640,11 @@ class CompanyController extends Controller
             return view('company.edit',compact('Company','booking_channel','provinceNames','Tambon','amphures',
             'Zip_code','faxArray','phoneDataArray','Company_Contact','Mmarket',
             'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID','representative','Mprefix','provinceNames','Quotation','company_tax',
-            'log'));
+            'log','country'));
     }
     public function update(Request $request, $id) {
         {
+
             $company = companys::where('id', $id)->first();
             $company_id = $company->Profile_ID;
             $ids = $company->id;
@@ -642,7 +653,32 @@ class CompanyController extends Controller
             $dataArray = $company->toArray(); // แปลงข้อมูลบริษัทเป็น array
             $dataArray['phone'] = $phone->pluck('Phone_number')->toArray();
             $dataArray['fax'] = $fax->pluck('Fax_number')->toArray();// เพิ่มค่า phone เข้าไปใน $dataArray
-            $data = $request->all();
+            $datarequest = $request->all();
+            $data = [
+                'Company_type' => $datarequest['Company_type'] ?? null,
+                'Company_Name' => $datarequest['Company_Name'] ?? null,
+                'Address' => $datarequest['Address'] ?? null,
+                'Booking_Channel' => $datarequest['Booking_Channel'] ?? null,
+                'Branch' => $datarequest['Branch'] ?? null,
+                'Market' => $datarequest['Market'] ?? null,
+                'Country' => $datarequest['Country'] ?? null,
+                'City' => $datarequest['City'] ?? null,
+                'Amphures' => $datarequest['Amphures'] ?? null,
+                'Zip_Code' => $datarequest['Zip_Code'] ?? null,
+                'Company_Email' => $datarequest['Company_Email'] ?? null,
+                'Tambon' => $datarequest['Tambon'] ?? null,
+                'Company_Website' => $datarequest['Company_Website'] ?? null,
+                'Taxpayer_Identification' => str_replace('-', '', $datarequest['Taxpayer_Identification']) ?? null,
+                'Lastest_Introduce_By' => $datarequest['Lastest_Introduce_By'] ?? null,
+                'phone' => isset($datarequest['phone']) ? array_map(function($phone) {
+                    return str_replace('-', '', $phone);
+                }, $datarequest['phone']) : null,
+                'fax' => isset($datarequest['fax']) ? array_map(function($fax) {
+                    return str_replace('-', '', $fax);
+                }, $datarequest['fax']) : null,
+            ];
+
+
             $keysToCompare = ['Company_type', 'Company_Name', 'Address','Booking_Channel','Branch','Market', 'Country', 'City', 'Amphures', 'Tambon', 'Zip_Code', 'Company_Email', 'Company_Website', 'Taxpayer_Identification', 'Lastest_Introduce_By', 'phone','fax'];
             $differences = [];
             foreach ($keysToCompare as $key) {
@@ -725,9 +761,10 @@ class CompanyController extends Controller
             if ($Company_Email) {
                 $Email = 'อีเมล์ : '.$Company_Email;
             }
+
             $Identification = null;
             if ($Taxpayer_Identification) {
-                $Identification = 'เลขบัตรประจำตัว : '.$Taxpayer_Identification;
+                $Identification = 'เลขบัตรประจำตัว : ' . formatIdCard($Taxpayer_Identification);
             }
             $Branch = null;
             if ($Branch) {
@@ -735,20 +772,28 @@ class CompanyController extends Controller
             }
             $phone = null;
             if ($phoneCom) {
-                $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phoneCom);
+                $formattedPhoneCom = array_map('formatPhoneNumber', $phoneCom);
+                $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $formattedPhoneCom);
             }
+
             $phoneA = null;
             if ($phoneComA) {
-                $phoneA = 'ลบเบอร์โทรศัพท์ : ' . implode(', ', $phoneComA);
+                $formattedPhoneComA = array_map('formatPhoneNumber', $phoneComA);
+                $phoneA = 'ลบเบอร์โทรศัพท์ : ' . implode(', ', $formattedPhoneComA);
             }
+
             $fax = null;
             if ($faxCom) {
-                $fax = 'เพิ่มเบอร์แฟกซ์ : ' . implode(', ', $faxCom);
+                $formattedFaxCom = array_map('formatPhoneNumber', $faxCom); // Use the same function if fax has the same format
+                $fax = 'เพิ่มเบอร์แฟกซ์ : ' . implode(', ', $formattedFaxCom);
             }
+
             $faxA = null;
             if ($faxComA) {
-                $faxA = 'ลบเบอร์แฟกซ์ : ' . implode(', ', $faxComA);
+                $formattedFaxComA = array_map('formatPhoneNumber', $faxComA); // Use the same function if fax has the same format
+                $faxA = 'ลบเบอร์แฟกซ์ : ' . implode(', ', $formattedFaxComA);
             }
+
             $AddressIndividual = null;
             $CountryCheck = null;
             $AddressCheck = null;
@@ -825,9 +870,13 @@ class CompanyController extends Controller
             $save->Market =$request->Market;
             $save->Booking_Channel = $request->Booking_Channel;
 
-            if ($request->Country == "Other_countries") {
+            if ($request->Country != "Thailand") {
                 $save->Country = $request->Country;
-                $save->City = $request->City;
+                $save->Address = $request->Address;
+                $save->City = null;
+                $save->Amphures = null;
+                $save->Tambon = null;
+                $save->Zip_Code = null;
             }else {
                 $save->Country = $request->Country;
                 $save->City = $request->City;
@@ -835,11 +884,11 @@ class CompanyController extends Controller
                 $save->Address = $request->Address;
                 $save->Tambon = $request->Tambon;
                 $save->Zip_Code = $request->Zip_Code;
-                $save->Branch = $request->Branch;
             }
+            $save->Branch = $request->Branch;
             $save->Company_Email = $request->Company_Email;
             $save->Company_Website = $request->Company_Website;
-            $save->Taxpayer_Identification = $request->Taxpayer_Identification;
+            $save->Taxpayer_Identification = str_replace('-', '', $request->Taxpayer_Identification);
             $save->Contract_Rate_Start_Date = $request->contract_rate_start_date;
             $save->Contract_Rate_End_Date = $request->contract_rate_end_date;
             $save->Lastest_Introduce_By =$request->Lastest_Introduce_By;
@@ -851,7 +900,11 @@ class CompanyController extends Controller
             Company_phone::where('Profile_ID', $Profile_ID)->delete();
             company_fax::where('Profile_ID', $Profile_ID)->delete();
             if ($request->phone !== null) {
-                foreach ($request->phone as $index => $phoneNumber) {
+                $phone = $request->phone;
+                $cleanedphoneNumbers = array_map(function($phone) {
+                    return str_replace('-', '', $phone);
+                }, $phone);
+                foreach ($cleanedphoneNumbers as $index => $phoneNumber) {
                     if ($phoneNumber !== null) {
                         $savephone = new company_phone();
                         $savephone->Profile_ID = $Profile_ID;
@@ -862,8 +915,11 @@ class CompanyController extends Controller
                 }
             }
             if ($request->fax !== null) {
-
-                foreach ($request->fax as $index => $faxNumber) {
+                $fax = $request->fax;
+                $cleanedfaxNumbers = array_map(function($fax) {
+                    return str_replace('-', '', $fax);
+                }, $fax);
+                foreach ($cleanedfaxNumbers as $index => $faxNumber) {
 
                     if ($faxNumber !== null) {
                         $savefax = new company_fax();
@@ -1119,7 +1175,7 @@ class CompanyController extends Controller
                 $save->Tax_Type = 'Company';
                 $save->BranchTax = $request->BranchTax;
 
-                if ($request->countrydataA == "Other_countries") {
+                if ($request->countrydataA != "Thailand") {
                     $save->Country =$request->countrydataA;
                     $save->Address =$request->addressAgent;
                 }else {
@@ -1131,14 +1187,16 @@ class CompanyController extends Controller
                     $save->Zip_Code = $request->zip_codeA;
                 }
                 $save->Company_Email = $request->EmailAgent;
-                $save->Taxpayer_Identification = $request->Identification;
+                $save->Taxpayer_Identification = str_replace('-', '', $request->Identification);
                 $save->save();
 
                 foreach ($request->phoneTax as $index => $phoneNumber) {
-                    if ($phoneNumber !== null) {
+                    $cleanedPhoneNumber = str_replace('-', '', $phoneNumber);
+
+                    if (!empty($cleanedPhoneNumber)) {
                         $savephoneA = new company_tax_phone();
                         $savephoneA->ComTax_ID = $N_Profile;
-                        $savephoneA->Phone_number = $phoneNumber;
+                        $savephoneA->Phone_number = $cleanedPhoneNumber;
                         $savephoneA->sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
                         $savephoneA->save();
                     }
@@ -1151,7 +1209,7 @@ class CompanyController extends Controller
                 $save->first_name =$request->first_nameCom;
                 $save->last_name =$request->last_nameCom;
                 $save->Tax_Type = 'Individual';
-                if ($CountryOther == "Other_countries") {
+                if ($CountryOther != "Thailand") {
                     $save->Country =$request->countrydataA;
                     $save->Address =$request->addressAgent;
                 }else {
@@ -1165,10 +1223,11 @@ class CompanyController extends Controller
                 $save->Company_Email = $request->EmailAgent;
                 $save->Taxpayer_Identification = $request->Identification;
                 foreach ($request->phoneTax as $index => $phoneNumber) {
-                    if ($phoneNumber !== null) {
+                    $cleanedPhoneNumber = str_replace('-', '', $phoneNumber);
+                    if (!empty($cleanedPhoneNumber)) {
                         $savephoneA = new company_tax_phone();
                         $savephoneA->ComTax_ID = $N_Profile;
-                        $savephoneA->Phone_number = $phoneNumber;
+                        $savephoneA->Phone_number = $cleanedPhoneNumber;
                         $savephoneA->sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
                         $savephoneA->save();
                     }
@@ -2438,4 +2497,9 @@ class CompanyController extends Controller
             'data' => $data,
         ]);
     }
+
+
+
+
+
 }

@@ -141,9 +141,12 @@
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-12">
                                         <label for="country">ประเทศ / Country</label>
-                                        <select name="Country" id="countrySelect" class="form-select" onchange="showcityInput()">
-                                            <option value="Thailand" {{$Company->Country == "Thailand" ? 'selected' : ''}}>ประเทศไทย</option>
-                                            <option value="Other_countries" {{$Company->Country == "Other_countries" ? 'selected' : ''}}>ประเทศอื่นๆ</option>
+                                        <select name="Country" id="countrySelect" class="select2" onchange="showcityInput()">
+                                            @foreach($country as $item)
+                                                <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == $Company->Country ? 'selected' : '' }}>
+                                                    {{ $item->ct_nameENG }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -189,29 +192,29 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-lg-6 col-md-6 col-sm-12">
-                                            <label for="Company_Phone">
-                                                Company Phone number
-                                            </label>
-                                            <button  type="button" class="btn btn-color-green my-2 add-input" id="add-input">เพิ่มหมายเลขโทรศัพท์</button>
+                                        <label for="Company_Phone">
+                                            Company Phone number
+                                        </label>
+                                        <button type="button" class="btn btn-color-green my-2 add-input" id="add-input">เพิ่มหมายเลขโทรศัพท์</button>
                                         <div id="phone-inputs-container" class="flex-container">
                                             @foreach($phoneDataArray as $index => $phone)
                                                 <div class="input-group mb-3">
-                                                    <input type="text" class="form-control" id="phone-main" name="phone[]" value="{{ $phone['Phone_number'] }}" data-index="{{ $index }}" maxlength="10" data-old-value="{{ $phone['Phone_number'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
-                                                    <button class="btn btn-outline-danger remove-input" type="button" id="remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+                                                    <input type="text" class="form-control phone phone-input" name="phone[]" value="{{ formatPhoneNumber($phone['Phone_number']) }}" data-index="{{ $index }}" maxlength="12" data-old-value="{{ $phone['Phone_number'] }}" required>
+                                                    <button class="btn btn-outline-danger remove-input" type="button"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                                 </div>
                                             @endforeach
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <label for="Company_Phone" class="flex-container">
+                                        <label for="Company_Fax" class="flex-container">
                                             แฟกซ์ของบริษัท / Company Fax number
                                         </label>
                                         <button type="button" class="btn btn-color-green my-2" id="add-fax">เพิ่มหมายเลขแฟกซ์</button>
                                         <div id="fax-inputs-container" class="flex-container">
-                                            @foreach($faxArray as $index => $phone)
+                                            @foreach($faxArray as $index => $fax)
                                                 <div class="input-group mb-3">
-                                                    <input type="text" class="form-control"  name="fax[]" maxlength="10"  value="{{ $phone['Fax_number'] }}" data-index="{{ $index }}" data-old-value="{{ $phone['Fax_number'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
-                                                    <button class="btn btn-outline-danger remove-input" type="button" id="remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+                                                    <input type="text" class="form-control  phone fax-input" name="fax[]" value="{{ formatPhoneNumber($fax['Fax_number']) }}" data-index="{{ $index }}" maxlength="11" data-old-value="{{ $fax['Fax_number'] }}" required>
+                                                    <button class="btn btn-outline-danger remove-input" type="button"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -228,7 +231,7 @@
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <label for="Taxpayer_Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</label><br>
-                                        <input type="text" id="Taxpayer_Identification" class="form-control" name="Taxpayer_Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required value="{{$Company->Taxpayer_Identification}}">
+                                        <input type="text" id="Taxpayer_Identification" class="form-control idcard" name="Taxpayer_Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required value="{{ formatIdCard($Company->Taxpayer_Identification) }}">
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -412,7 +415,7 @@
                                                                     </div>
                                                                     <div class="col-sm-6 col-6 mt-2">
                                                                         <label for="Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</label><br>
-                                                                        <input type="text" id="IdentificationCompany" class="form-control" name="Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required >
+                                                                        <input type="text" id="IdentificationCompany" class="form-control idcard" name="Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required >
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -439,7 +442,7 @@
                                                                     </div>
                                                                     <div class="col-sm-6 col-6 mt-2">
                                                                         <label for="Identification">เลขบัตรประจำตัวประชาชน / Identification number</label><br>
-                                                                        <input type="text" id="IdentificationName" class="form-control" name="Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี"disabled required >
+                                                                        <input type="text" id="IdentificationName" class="form-control idcard" name="Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี"disabled required >
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -449,8 +452,11 @@
                                                                 <div class="col-sm-4 col-4">
                                                                     <span for="Country">ประเทศ / Country</span>
                                                                     <select name="countrydataA" id="countrySelectA" class="select21" onchange="showcityAInputTax()">
-                                                                        <option value="Thailand">ประเทศไทย</option>
-                                                                        <option value="Other_countries">ประเทศอื่นๆ</option>
+                                                                        @foreach($country as $item)
+                                                                            <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == 'Thailand' ? 'selected' : '' }}>
+                                                                                {{ $item->ct_nameENG }}
+                                                                            </option>
+                                                                        @endforeach
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-sm-4 col-4" >
@@ -501,7 +507,7 @@
                                                                     <!-- Initial input fields -->
                                                                     <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                                                                         <div class="input-group show">
-                                                                            <input type="text" name="phoneTax[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                                            <input type="text" name="phoneTax[]" class="form-control phone" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
                                                                             <button type="button" class="btn btn-outline-danger remove-phoneTax"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                                                         </div>
                                                                     </div>
@@ -560,7 +566,7 @@
                                                                     var tambonSelect = document.getElementById("TambonT");
                                                                     var zipCodeSelect = document.getElementById("zip_codeT");
                                                                     // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
-                                                                    if (countrySelectA.value === "Other_countries") {
+                                                                    if (countrySelectA.value !== "Thailand") {
                                                                         // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
                                                                         province.disabled = true;
 
@@ -645,13 +651,30 @@
                                                                     })
                                                                 }
                                                                 { //phone tax
+                                                                    function formatPhoneNumber(value) {
+                                                                        value = value.replace(/\D/g, ""); // เอาตัวอักษรที่ไม่ใช่ตัวเลขออก
+                                                                        let formattedValue = "";
+
+                                                                        if (value.length > 0) {
+                                                                            formattedValue += value.substring(0, 3); // xxx
+                                                                        }
+                                                                        if (value.length > 3) {
+                                                                            formattedValue += "-" + value.substring(3, 6); // xxx-xxx
+                                                                        }
+                                                                        if (value.length > 6) {
+                                                                            formattedValue += "-" + value.substring(6, 10); // xxx-xxx-xxxx
+                                                                        }
+
+                                                                        return formattedValue;
+                                                                    }
+
                                                                     document.getElementById('add-phoneTax').addEventListener('click', function() {
                                                                         var phoneContainer = document.getElementById('phone-containerTax');
                                                                         var newCol = document.createElement('div');
                                                                         newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12', 'mt-2');
                                                                         newCol.innerHTML = `
                                                                             <div class="input-group show">
-                                                                                <input type="text" name="phoneTax[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                                                <input type="text" name="phoneTax[]" class="form-control phone-input" maxlength="12" oninput="formatAndUpdate(this)" required>
                                                                                 <button type="button" class="btn btn-outline-danger remove-phoneTax"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                                                             </div>
                                                                         `;
@@ -664,6 +687,12 @@
 
                                                                         attachRemoveEvent(newCol.querySelector('.remove-phoneTax'));
                                                                     });
+
+                                                                    // Function to format and update the phone number input field
+                                                                    function formatAndUpdate(input) {
+                                                                        const formattedValue = formatPhoneNumber(input.value);
+                                                                        input.value = formattedValue;
+                                                                    }
 
                                                                     // Function to attach the remove event to the remove buttons
                                                                     function attachRemoveEvent(button) {
@@ -679,6 +708,7 @@
                                                                     document.querySelectorAll('.remove-phoneTax').forEach(function(button) {
                                                                         attachRemoveEvent(button);
                                                                     });
+
                                                                 }
                                                                 { //Branch
                                                                     document.addEventListener('DOMContentLoaded', function() {
@@ -937,8 +967,11 @@
                                                                 <div class="col-sm-4 col-4">
                                                                     <span for="Country">ประเทศ / Country</span>
                                                                     <select name="countrydataC" id="countrySelectContact" class="select22" onchange="showcityAInputContact()">
-                                                                        <option value="Thailand">ประเทศไทย</option>
-                                                                        <option value="Other_countries">ประเทศอื่นๆ</option>
+                                                                        @foreach($country as $item)
+                                                                            <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == 'Thailand' ? 'selected' : '' }}>
+                                                                                {{ $item->ct_nameENG }}
+                                                                            </option>
+                                                                        @endforeach
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-sm-4 col-4" >
@@ -989,7 +1022,7 @@
                                                                     <!-- Initial input fields -->
                                                                     <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                                                                         <div class="input-group show">
-                                                                            <input type="text" name="phoneContact[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                                            <input type="text" name="phoneContact[]" class="form-control phone" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
                                                                             <button type="button" class="btn btn-outline-danger remove-phoneContact"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                                                         </div>
                                                                     </div>
@@ -1003,7 +1036,7 @@
                                                                     var tambonSelect = document.getElementById("TambonC");
                                                                     var zipCodeSelect = document.getElementById("zip_codeC");
                                                                     // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
-                                                                    if (countrySelectA.value === "Other_countries") {
+                                                                    if (countrySelectA.value !== "Thailand") {
                                                                         province.disabled = true;
                                                                         // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
                                                                         amphuresSelect.disabled = true;
@@ -1089,13 +1122,29 @@
                                                                     })
                                                                 }
                                                                 { //phone tax
+                                                                    function formatPhoneNumberCon(value) {
+                                                                        value = value.replace(/\D/g, ""); // เอาตัวอักษรที่ไม่ใช่ตัวเลขออก
+                                                                        let formattedValue = "";
+
+                                                                        if (value.length > 0) {
+                                                                            formattedValue += value.substring(0, 3); // xxx
+                                                                        }
+                                                                        if (value.length > 3) {
+                                                                            formattedValue += "-" + value.substring(3, 6); // xxx-xxx
+                                                                        }
+                                                                        if (value.length > 6) {
+                                                                            formattedValue += "-" + value.substring(6, 10); // xxx-xxx-xxxx
+                                                                        }
+
+                                                                        return formattedValue;
+                                                                    }
                                                                     document.getElementById('add-phoneContact').addEventListener('click', function() {
                                                                         var phoneContainer = document.getElementById('phone-containerContact');
                                                                         var newCol = document.createElement('div');
                                                                         newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12', 'mt-2');
                                                                         newCol.innerHTML = `
                                                                             <div class="input-group show">
-                                                                                <input type="text" name="phoneContact[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                                                <input type="text" name="phoneContact[]" class="form-control" maxlength="12" oninput="formatAndUpdate(this)" required>
                                                                                 <button type="button" class="btn btn-outline-danger remove-phoneContact"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                                                             </div>
                                                                         `;
@@ -1108,7 +1157,10 @@
 
                                                                         attachRemoveEvent(newCol.querySelector('.remove-phoneContact'));
                                                                     });
-
+                                                                    function formatAndUpdate(input) {
+                                                                        const formattedValue = formatPhoneNumberCon(input.value);
+                                                                        input.value = formattedValue;
+                                                                    }
                                                                     // Function to attach the remove event to the remove buttons
                                                                     function attachRemoveEvent(button) {
                                                                         button.addEventListener('click', function() {
@@ -1222,6 +1274,7 @@
     @include('script.script')
 
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/formatNumber.js')}}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Get the radio buttons
@@ -1241,7 +1294,7 @@
         var zipCodeSelect = document.getElementById("zip_code");
         var province = document.getElementById("province");
 
-        if (TaxSelectA == "Other_countries") {
+        if (TaxSelectA != "Thailand") {
             // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
             amphuresSelect.disabled = true;
             tambonSelect.disabled = true;
@@ -1278,7 +1331,7 @@
         var province = document.getElementById("province");
 
         // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
-        if (countrySelect.value === "Other_countries") {
+        if (countrySelect.value !== "Thailand") {
             amphuresSelect.disabled = true;
             tambonSelect.disabled = true;
             zipCodeSelect.disabled = true;
@@ -1391,83 +1444,104 @@
     }
     </script>
     <script>
-        document.getElementById('add-input').addEventListener('click', function() {
-            var container = document.getElementById('phone-inputs-container');
-            var index = container.querySelectorAll('.input-group').length;
-            var newInputGroup = document.createElement('div');
-            newInputGroup.classList.add('input-group');
-            newInputGroup.innerHTML = `
-            <div class="input-group mb-3">
-                <input type="text" name="phone[]" class="form-control phone-input" maxlength="10" value="" data-index="${index}" data-old-value="">
-                <button type="button" class="btn btn-outline-danger remove-input" id="remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
-            </div>
-            `;
-            container.appendChild(newInputGroup);
-            addRemoveButtonListener(newInputGroup.querySelector('.remove-input'));
-            addInputChangeListener(newInputGroup.querySelector('.phone-input'));
-            updateWindowPhoneChanged();
-        });
+    document.addEventListener("DOMContentLoaded", function() {
+    function formatPhoneNumber(value) {
+        // ลบตัวอักษรที่ไม่ใช่ตัวเลขออก
+        value = value.replace(/\D/g, "");
+        let formattedValue = "";
 
-        document.getElementById('add-fax').addEventListener('click', function() {
-            var container = document.getElementById('fax-inputs-container');
-            var index = container.querySelectorAll('.input-group').length;
-            var newInputGroup = document.createElement('div');
-            newInputGroup.classList.add('input-group');
-            newInputGroup.innerHTML = `
-                <div class="input-group mb-3">
-                    <input type="text" name="fax[]" class="form-control fax-input" maxlength="10" value="" data-index="${index}" data-old-value="">
-                    <button class="btn btn-outline-danger remove-input" type="button" id="remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
-                </div>
-            `;
-            container.appendChild(newInputGroup);
-            addRemoveButtonListener(newInputGroup.querySelector('.remove-input'));
-            addInputChangeListener(newInputGroup.querySelector('.fax-input'));
-            updateWindowPhoneChanged();
-        });
-
-        document.querySelectorAll('.remove-input').forEach(function(button) {
-            addRemoveButtonListener(button);
-        });
-
-        document.querySelectorAll('.phone-input, .fax-input').forEach(function(input) {
-            addInputChangeListener(input);
-        });
-
-        function addRemoveButtonListener(button) {
-            button.addEventListener('click', function() {
-                var container = button.closest('.input-group, .input-group');
-                container.parentElement.removeChild(container);
-                updateIndices();
-                updateWindowPhoneChanged();
-            });
+        // ฟอร์แมตหมายเลขโทรศัพท์
+        if (value.length > 0) {
+            formattedValue += value.substring(0, 3); // xxx
+        }
+        if (value.length > 3) {
+            formattedValue += "-" + value.substring(3, 6); // xxx-xxx
+        }
+        if (value.length > 6) {
+            formattedValue += "-" + value.substring(6, 10); // xxx-xxx-xxxx
         }
 
-        function addInputChangeListener(input) {
-            input.addEventListener('input', function() {
-                if (input.value !== input.getAttribute('data-old-value')) {
-                    updateWindowPhoneChanged();
-                }
-            });
-        }
+        return formattedValue;
+    }
 
-        function updateIndices() {
-            var phoneInputs = document.querySelectorAll('.phone-input');
-            phoneInputs.forEach(function(input, index) {
-                input.setAttribute('data-index', index);
-                input.setAttribute('name', `phone[${index}]`);
-            });
+    function updatePhoneInput(event) {
+        const input = event.target;
+        input.value = formatPhoneNumber(input.value);
+    }
 
-            var faxInputs = document.querySelectorAll('.fax-input');
-            faxInputs.forEach(function(input, index) {
-                input.setAttribute('data-index', index);
-                input.setAttribute('name', `fax[${index}]`);
-            });
-        }
+    // ฟังก์ชันที่ใช้ในการเพิ่มฟิลด์ใหม่
+    document.getElementById('add-input').addEventListener('click', function() {
+        var container = document.getElementById('phone-inputs-container');
+        var index = container.querySelectorAll('.input-group').length;
+        var newInputGroup = document.createElement('div');
+        newInputGroup.classList.add('input-group', 'mb-3');
+        newInputGroup.innerHTML = `
+            <input type="text" name="phone[]" class="form-control phone-input" maxlength="12" data-index="${index}" data-old-value="">
+            <button type="button" class="btn btn-outline-danger remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+        `;
+        container.appendChild(newInputGroup);
+        addRemoveButtonListener(newInputGroup.querySelector('.remove-input'));
+        addInputChangeListener(newInputGroup.querySelector('.phone-input'));
+        updateIndices();
+    });
 
-        function updateWindowPhoneChanged() {
-            window.phoneChanged1 = 1;
-            console.log('phoneChanged1:', window.phoneChanged1);
-        }
+    // ฟังก์ชันที่ใช้ในการเพิ่มฟิลด์แฟกซ์
+    document.getElementById('add-fax').addEventListener('click', function() {
+        var container = document.getElementById('fax-inputs-container');
+        var index = container.querySelectorAll('.input-group').length;
+        var newInputGroup = document.createElement('div');
+        newInputGroup.classList.add('input-group', 'mb-3');
+        newInputGroup.innerHTML = `
+            <input type="text" name="fax[]" class="form-control fax-input" maxlength="11" data-index="${index}" data-old-value="">
+            <button type="button" class="btn btn-outline-danger remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+        `;
+        container.appendChild(newInputGroup);
+        addRemoveButtonListener(newInputGroup.querySelector('.remove-input'));
+        addInputChangeListener(newInputGroup.querySelector('.fax-input'));
+        updateIndices();
+    });
+
+    // เพิ่ม event listener ให้กับปุ่มลบที่มีอยู่
+    document.querySelectorAll('.remove-input').forEach(function(button) {
+        addRemoveButtonListener(button);
+    });
+
+    // เพิ่ม event listener ให้กับ input field ที่มีอยู่
+    document.querySelectorAll('.phone-input').forEach(function(input) {
+        addInputChangeListener(input);
+    });
+
+    // ฟังก์ชันที่ใช้ในการเพิ่ม event listener ให้กับปุ่มลบ
+    function addRemoveButtonListener(button) {
+        button.addEventListener('click', function() {
+            var container = button.closest('.input-group');
+            container.parentElement.removeChild(container);
+            updateIndices();
+        });
+    }
+
+    // ฟังก์ชันที่ใช้ในการเพิ่ม event listener ให้กับ input field
+    function addInputChangeListener(input) {
+        input.addEventListener('input', updatePhoneInput);
+    }
+
+    // ฟังก์ชันที่ใช้ในการอัปเดตดัชนีของ input fields
+    function updateIndices() {
+        var phoneInputs = document.querySelectorAll('.phone-input');
+        phoneInputs.forEach(function(input, index) {
+            input.setAttribute('data-index', index);
+            input.setAttribute('name', `phone[${index}]`);
+        });
+
+        var faxInputs = document.querySelectorAll('.fax-input');
+        faxInputs.forEach(function(input, index) {
+            input.setAttribute('data-index', index);
+            input.setAttribute('name', `fax[${index}]`);
+        });
+    }
+});
+
+
     </script>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <!-- dataTable -->

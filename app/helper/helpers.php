@@ -120,7 +120,46 @@
     }
 
 
+    function formatPhoneNumber($number) {
+        $number = preg_replace('/\D/', '', $number); // ลบตัวอักษรที่ไม่ใช่ตัวเลขออก
+        $formatted = '';
 
+        if (strlen($number) > 0) {
+            $formatted .= substr($number, 0, 3); // xxx
+        }
+        if (strlen($number) > 3) {
+            $formatted .= '-' . substr($number, 3, 3); // xxx-xxx
+        }
+        if (strlen($number) > 6) {
+            $formatted .= '-' . substr($number, 6); // xxx-xxx-xxxx
+        }
+
+        return $formatted;
+    }
+
+    function formatIdCard($value) {
+
+        $value = preg_replace('/\D/', '', $value); // Remove non-numeric characters
+        $formattedValue = '';
+
+        if (strlen($value) > 0) {
+            $formattedValue .= substr($value, 0, 1); // 1
+        }
+        if (strlen($value) > 1) {
+            $formattedValue .= '-' . substr($value, 1, 4); // 1-2345
+        }
+        if (strlen($value) > 5) {
+            $formattedValue .= '-' . substr($value, 5, 5); // 1-2345-67890
+        }
+        if (strlen($value) > 10) {
+            $formattedValue .= '-' . substr($value, 10, 2); // 1-2345-67890-34
+        }
+        if (strlen($value) > 12) {
+            $formattedValue .= '-' . substr($value, 12, 1); // 1-2345-67890-34-0
+        }
+
+        return $formattedValue;
+    }
     //------------------------------------------guest Tax----------------------------------
     function showingEntriesTableTax($data, $table)
     {

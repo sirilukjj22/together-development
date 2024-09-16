@@ -142,8 +142,11 @@
                                     <div class="col-lg-6 col-md-6 col-sm-12">
                                         <label for="country">ประเทศ / Country</label>
                                         <select name="countrydata" id="countrySelect" class="select2" onchange="showcityInput()" required>
-                                            <option value="Thailand">ประเทศไทย</option>
-                                            <option value="Other_countries">ประเทศอื่นๆ</option>
+                                            @foreach($country as $item)
+                                                <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == 'Thailand' ? 'selected' : '' }}>
+                                                    {{ $item->ct_nameENG }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -191,7 +194,7 @@
                                         <button type="button" class="btn btn-color-green my-2" id="add-input">เพิ่มหมายเลขโทรศัพท์</button>
                                         <div id="inputs-container">
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control"  name="phone_company[]" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
+                                                <input type="text" class="form-control phone"  name="phone_company[]" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
                                                 <button class="btn btn-outline-danger" type="button" id="remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                             </div>
                                         </div>
@@ -203,7 +206,7 @@
                                         <button type="button" class="btn btn-color-green my-2" id="add-fax">เพิ่มหมายเลขแฟกซ์</button>
                                         <div id="fax-container">
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control"  name="fax[]" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
+                                                <input type="text" class="form-control phone"  name="fax[]" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
                                                 <button class="btn btn-outline-danger" type="button" id="remove-fax"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                             </div>
                                         </div>
@@ -223,7 +226,7 @@
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <label for="Taxpayer_Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</label><br>
-                                        <input type="text" class="form-control" id="Taxpayer_Identification" name="Taxpayer_Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required>
+                                        <input type="text" class="form-control  idcard" id="Taxpayer_Identification" name="Taxpayer_Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -295,8 +298,11 @@
                                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                                         <span class="labelcontact" for="">ประเทศ / Country</span>
                                                         <select name="countrydataA" id="countrySelectA" class="select2" onchange="showcityAInput()" required>
-                                                            <option value="Thailand">ประเทศไทย</option>
-                                                            <option value="Other_countries">ประเทศอื่นๆ</option>
+                                                            @foreach($country as $item)
+                                                                <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == 'Thailand' ? 'selected' : '' }}>
+                                                                    {{ $item->ct_nameENG }}
+                                                                </option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                     <div class="col-lg-4 col-md-6 col-sm-12">
@@ -347,7 +353,7 @@
                                                         <button type="button" class="btn btn-color-green my-2" id="add-phone">เพิ่มหมายเลขโทรศัพท์</button>
                                                         <div id="phone-container">
                                                             <div class="input-group mb-3">
-                                                                <input type="text" class="form-control" id="phone-main" name="phone[]" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
+                                                                <input type="text" class="form-control phone" id="phone-main" name="phone[]" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
                                                                 <button class="btn btn-outline-danger" type="button" id="remove-phone" disabled><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                                             </div>
                                                         </div>
@@ -375,6 +381,7 @@
     </div>
     @include('script.script')
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/formatNumber.js')}}"></script>
     <script>
         $(document).ready(function() {
             $('.select2').select2({
@@ -482,7 +489,7 @@
             var zipCodeSelect = document.getElementById("zip_code");
             var province = document.getElementById("province");
 
-            if (countrySelect.value === "Other_countries") {
+            if (countrySelect.value !== "Thailand") {
                 amphuresSelect.disabled = true;
                 tambonSelect.disabled = true;
                 zipCodeSelect.disabled = true;
@@ -555,7 +562,7 @@
 
     </script>
     <script> // โทรศัพท์
-        document.addEventListener("DOMContentLoaded", function() {
+       document.addEventListener("DOMContentLoaded", function() {
             const addButton = document.getElementById('add-input');
             const inputsContainer = document.getElementById('inputs-container');
             let inputCount = 1;
@@ -569,16 +576,31 @@
                 const inputGroup = document.createElement('div');
                 inputGroup.classList.add('input-group', 'mb-3');
 
-                inputGroup.innerHTML = `
-                    <input type="text" class="form-control" name="phone_company[]" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
-                    <button class="btn btn-outline-danger remove-input" type="button"><i class="bi bi-x-circle" ></i></button>
-                `;
+                const inputField = document.createElement('input');
+                inputField.type = 'text';
+                inputField.classList.add('form-control', 'phone');
+                inputField.name = 'phone_company[]';
+                inputField.maxLength = '12';
+                inputField.required = true;
 
-                inputGroup.querySelector('.remove-input').addEventListener('click', function() {
+                // ผูกฟังก์ชัน formatPhoneNumber กับ oninput
+                inputField.addEventListener('input', function() {
+                    this.value = formatPhoneNumber(this.value);
+                });
+
+                const removeButton = document.createElement('button');
+                removeButton.classList.add('btn', 'btn-outline-danger', 'remove-input');
+                removeButton.type = 'button';
+                removeButton.innerHTML = '<i class="bi bi-x-circle"></i>';
+
+                removeButton.addEventListener('click', function() {
                     inputsContainer.removeChild(inputGroup);
                     inputCount--;
                     toggleButtons();
                 });
+
+                inputGroup.appendChild(inputField);
+                inputGroup.appendChild(removeButton);
 
                 return inputGroup;
             }
@@ -596,9 +618,8 @@
             });
 
             toggleButtons(); // Initialize button states
-
         });
-        //-------------------------fax-----------------------------
+ //-------------------------fax-----------------------------
         document.addEventListener("DOMContentLoaded", function() {
             const addButton = document.getElementById('add-fax');
             const inputsContainer = document.getElementById('fax-container');
@@ -613,16 +634,31 @@
                 const inputGroup = document.createElement('div');
                 inputGroup.classList.add('input-group', 'mb-3');
 
-                inputGroup.innerHTML = `
-                    <input type="text" class="form-control" name="fax[]" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
-                    <button class="btn btn-outline-danger remove-fax" type="button"><i class="bi bi-x-circle" ></i></button>
-                `;
+                const inputField = document.createElement('input');
+                inputField.type = 'text';
+                inputField.classList.add('form-control', 'phone');
+                inputField.name = 'fax[]';
+                inputField.maxLength = '11';
+                inputField.required = true;
 
-                inputGroup.querySelector('.remove-fax').addEventListener('click', function() {
+                // ผูกฟังก์ชัน formatPhoneNumber กับ oninput
+                inputField.addEventListener('input', function() {
+                    this.value = formatPhoneNumber(this.value);
+                });
+
+                const removeButton = document.createElement('button');
+                removeButton.classList.add('btn', 'btn-outline-danger', 'remove-fax');
+                removeButton.type = 'button';
+                removeButton.innerHTML = '<i class="bi bi-x-circle"></i>';
+
+                removeButton.addEventListener('click', function() {
                     inputsContainer.removeChild(inputGroup);
                     inputCount--;
                     toggleButtons();
                 });
+
+                inputGroup.appendChild(inputField);
+                inputGroup.appendChild(removeButton);
 
                 return inputGroup;
             }
@@ -633,15 +669,12 @@
                 toggleButtons();
             });
 
-            inputsContainer.querySelector('.remove-fax').addEventListener('click', function() {
-                inputsContainer.querySelector('.input-group').remove();
-                inputCount--;
-                toggleButtons();
-            });
-
             toggleButtons(); // Initialize button states
-
         });
+
+
+
+
         //-------------------------------------phone---------------------------------------
         document.addEventListener("DOMContentLoaded", function() {
             const addButton = document.getElementById('add-phone');
@@ -657,16 +690,31 @@
                 const inputGroup = document.createElement('div');
                 inputGroup.classList.add('input-group', 'mb-3');
 
-                inputGroup.innerHTML = `
-                    <input type="text" class="form-control phone-input" name="phone[]" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
-                    <button class="btn btn-outline-danger remove-phone" type="button"><i class="bi bi-x-circle" style="width:100%;"></i></button>
-                `;
+                const inputField = document.createElement('input');
+                inputField.type = 'text';
+                inputField.classList.add('form-control', 'phone', 'phone-input');
+                inputField.name = 'phone[]';
+                inputField.maxLength = '12';
+                inputField.required = true;
 
-                inputGroup.querySelector('.remove-phone').addEventListener('click', function() {
+                // ผูกฟังก์ชัน formatPhoneNumber กับ oninput
+                inputField.addEventListener('input', function() {
+                    this.value = formatPhoneNumber(this.value);
+                });
+
+                const removeButton = document.createElement('button');
+                removeButton.classList.add('btn', 'btn-outline-danger', 'remove-phone');
+                removeButton.type = 'button';
+                removeButton.innerHTML = '<i class="bi bi-x-circle" style="width:100%;"></i>';
+
+                removeButton.addEventListener('click', function() {
                     inputsContainer.removeChild(inputGroup);
                     inputCount--;
                     toggleButtons();
                 });
+
+                inputGroup.appendChild(inputField);
+                inputGroup.appendChild(removeButton);
 
                 return inputGroup;
             }
@@ -677,14 +725,9 @@
                 toggleButtons();
             });
 
-            inputsContainer.querySelector('.remove-phone').addEventListener('click', function() {
-                inputsContainer.querySelector('.input-group').remove();
-                inputCount--;
-                toggleButtons();
-            });
-
             toggleButtons(); // Initialize button states
         });
+
     </script>
     <script> // Contact
         function provinceC() {
@@ -755,7 +798,7 @@
             var tambonSelect = document.getElementById("TambonA");
             var zipCodeSelect = document.getElementById("zip_codeA");
             var province = document.getElementById("provinceA");
-            if (countrySelectA.value === "Other_countries") {
+            if (countrySelectA.value !== "Thailand") {
                 amphuresSelect.disabled = true;
                 tambonSelect.disabled = true;
                 zipCodeSelect.disabled = true;
@@ -814,20 +857,20 @@
                             $('#add-phone-orther').children().remove().end();
                         console.log(response.phone);
                         $.each(response.phone, function(key, val) {
+                            // ฟอร์แมตเบอร์โทรศัพท์
+                            var formattedPhoneNumber = formatPhoneNumber(val.Phone_number);
+
                             // Disable the first phone input and set its value
                             if (key == 0) {
-                                $('#phone-main').val(val.Phone_number).prop('disabled', true);
-                                console.log(val.Phone_number);
+                                $('#phone-main').val(formattedPhoneNumber).prop('disabled', true);
+                                console.log(formattedPhoneNumber);
                             } else {
                                 // Create a new input element for additional phone numbers
-                                var phoneInput = $('<input type="text" id="phone-' + key + '" name="phone[]" value="' + val.Phone_number + '" class="form-control mt-3" maxlength="10">');
+                                var phoneInput = $('<input type="text" id="phone-' + key + '" name="phone[]" value="' + formattedPhoneNumber + '" class="form-control phone mt-3" maxlength="12">');
                                 phoneInput.prop('disabled', true);
-                                // Disable the input fieldremove-input
+                                // Add the input field to the container
                                 $('#add-phone-orther').append(phoneInput);
                             }
-
-                            // Optionally add a delete button for each phone input (uncomment if needed)
-                            // $('#add-phone-orther').append('<button type="button" id="btn-delete-' + key + '" class="remove-phone" onclick="dele_phone(' + key + ')">ลบ</button>');
                         });
 
 
@@ -854,15 +897,21 @@
                             $('#add-phone-orther').empty();
 
                             $.each(response.phone, function(keyother, val) {
+                                // ฟอร์แมตเบอร์โทรศัพท์
+                                var formattedPhoneNumber = formatPhoneNumber(val);
+
                                 if (keyother == 1) {
-                                    $('#phone-main').val(val).prop('disabled', false);
+                                    // กรณี keyother == 1 ให้สามารถแก้ไขได้
+                                    $('#phone-main').val(formattedPhoneNumber).prop('disabled', false);
                                 } else {
-                                    var phoneInput = $('<input type="text" id="phone-' + keyother + '" name="phone[]" value="' + val + '" class="form-control" maxlength="10">');
-                                    $('#add-phone-orther').append(phoneInput);
-                                    $('#add-phone-orther').append('<button type="button" id="btn-delete-' + keyother + '" onclick="dele_phone(' + keyother + ')">ลบ</button>');
+                                    // กรณีอื่น ๆ ให้สร้าง input ฟิลด์ใหม่พร้อมปุ่มลบ
+                                    var phoneInput = $('<input type="text" id="phone-' + keyother + '" name="phone[]" value="' + formattedPhoneNumber + '" class="form-control phone" maxlength="12">');
+                                    var deleteButton = $('<button type="button" id="btn-delete-' + keyother + '" class="btn btn-danger" onclick="dele_phone(' + keyother + ')">ลบ</button>');
+
+                                    // เพิ่ม input และปุ่มลบใน container
+                                    $('#add-phone-orther').append(phoneInput).append(deleteButton);
                                 }
                             });
-
                         }
                     },
                     error: function(xhr) {
@@ -873,6 +922,23 @@
 
             });
         });
+        // ฟังก์ชัน formatPhoneNumber สำหรับฟอร์แมตเบอร์โทรศัพท์
+        function formatPhoneNumber(value) {
+            value = value.replace(/\D/g, ""); // เอาตัวอักษรที่ไม่ใช่ตัวเลขออก
+            let formattedValue = "";
+
+            if (value.length > 0) {
+            formattedValue += value.substring(0, 3); // 086
+            }
+            if (value.length > 3) {
+            formattedValue += "-" + value.substring(3, 6); // 086-290
+            }
+            if (value.length > 6) {
+            formattedValue += "-" + value.substring(6, 10); // 086-290-1111
+            }
+
+            return formattedValue;
+        }
         function confirmSubmit(event) {
             event.preventDefault(); // Prevent the form from submitting
 

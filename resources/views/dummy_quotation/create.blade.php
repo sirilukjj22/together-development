@@ -376,7 +376,7 @@
                                 <div class="row mt-2">
                                     <div class="col-lg-7 col-md-12 col-sm-12" style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#109699">
                                         <b id="TiTlecompanyTable" class="com mt-2 my-2"style="font-size:18px">Company Information</b>
-                                        <table id="companyTable">
+                                        <table id="companyTable" >
                                             <tr>
                                                 <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Company Name :</b></td>
                                                 <td>
@@ -1409,7 +1409,7 @@
                                                 '</div>';
                                         } else {
                                             discountInput = '<div class="input-group">' +
-                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
+                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" ' +
                                                 'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
                                                 '<span class="input-group-text">%</span>' +
                                                 '</div>';
@@ -1424,12 +1424,16 @@
                                                 '</div>';
                                         }
                                     }
+                                    quantitymain = '<div class="input-group">' +
+                                                '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="0" rel="' + number + '" style="text-align:center;" ' +
+                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.NumberRoom + ') this.value = ' + val.NumberRoom + ';">' +
+                                                '</div>';
                                     $('#display-selected-items').append(
                                         '<tr id="tr-select-addmain' + val.id + '">' +
                                         '<td style="text-align:center;">' + rowNumbemain + '</td>' +
                                         '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
                                         '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
-                                        '<td ><input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]"  value="1" min="1" rel="' + number + '" style="text-align:center;" oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);"></td>' +
+                                        '<td style="text-align:center;width:10%;">'+ quantitymain +'</td>' +
                                         '<td>' + val.unit_name + '</td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
                                         '<td>' + discountInput + '</td>' +
