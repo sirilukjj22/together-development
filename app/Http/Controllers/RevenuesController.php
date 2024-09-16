@@ -2466,18 +2466,6 @@ class RevenuesController extends Controller
 
         }
 
-        // if($request->revenue_type == "fee_credit_hotel") {
-        //     $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->whereIn('revenue_credit.status', [1, 2, 6])
-        //         ->whereBetween('revenue.date', [$month_from, $month_to])
-        //         ->select('revenue.date', 'revenue_credit.batch', 'revenue_credit.status', DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as fee"))->paginate(10);
-        //     $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
-        //         ->whereIn('revenue_credit.status', [1, 2, 6])->whereBetween('revenue.date', [$month_from, $month_to])
-        //         ->select('revenue.date', 'revenue_credit.status', DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as fee"))->first();
-        //     $title = "Credit Card Hotel Fee";
-        //     $status = "fee_all";
-
-        // }
-
         ## Filter ##
         $filter_by = $request->filter_by;
         $search_date = $month_from;
