@@ -1473,16 +1473,6 @@
                                 <button type="button" id="btn-search-date" class="bt-tg bg-tg-light sm" style="background-color: #2C7F7A;">Search</button>
                             </div>
                         </div>
-                        <!-- ล่าง modal -->
-                        {{-- <div class="modal-footer flex-between">
-                            <div class="" >
-                                <button type="button" class="ch-pick" onclick="btn_reset_date()">Today</button>
-                            </div>
-                            <div>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" id="btn-search-date" class="btn btn-success" style="background-color: #2C7F7A;">Search</button>
-                            </div>
-                        </div> --}}
                     </div>
                 </form>
             </div>
@@ -1699,26 +1689,6 @@
                 }
             }
         });
-
-        function btn_reset_date() {
-            var date = new Date();
-            var day = date.getDate();
-            document.getElementById("myDay").innerHTML = date.getDate() + " " + monthName[date.getMonth()] + " " + date.getFullYear();
-            
-            // Delete class
-            $('#day-'+day).removeClass('select-day');
-            $('.select-day').removeClass('today');
-
-            // Add class
-            $('#day-'+day).addClass('today');
-            $('#day-'+day).addClass('select-day');
-
-            // Filter 
-            var filter_by = $('#filter-by').val('date');
-            var day = $('#input-search-day').val(day);
-            var month = $('#input-search-month').val(date.getMonth() + 1);
-            var year = $('#input-search-year').val(date.getFullYear());
-        }
 
         // Search 
         $(document).on('keyup', '.search-data', function () {

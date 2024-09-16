@@ -66,7 +66,13 @@ $(document).ready(function () {
     const todayString = `${selectedDate} ${monthNames[selectedMonth]} ${selectedYear}`;
     updateCombinedSelectedBox(todayString); // อัปเดตด้วยวันที่วันนี้
 
-    alert(`Sending Today's Date: ${todayString}`);
+    $(".date").removeClass("active");
+    $(".today").addClass("active");
+
+    $("#date").val(`${todayString}`);
+    $('#filter-by').val("date");
+
+    // alert(`Sending Today's Date: ${todayString}`);
   }
 
   // ฟังก์ชันสำหรับอัปเดตกล่องแสดงวันที่ที่เลือก
