@@ -52,7 +52,7 @@ class UsersController extends Controller
      */
     public function create()
     {
-        $tb_menu = DB::table('tb_menu')->get();
+        $tb_menu = DB::table('tb_menu')->orderBy('sort', 'asc')->get();
         $departments = TB_departments::get();
 
         $tb_revenue_type = [
@@ -205,7 +205,7 @@ class UsersController extends Controller
     public function edit($id)
     {
         $user = User::where('id', $id)->first();
-        $tb_menu = DB::table('tb_menu')->get();
+        $tb_menu = DB::table('tb_menu')->orderBy('sort', 'asc')->get();
         $departments = TB_departments::get();
 
         $tb_revenue_type = [
@@ -258,10 +258,13 @@ class UsersController extends Controller
                 'message_request' => $request->menu_message_request ?? 0,
 
                 'document' => $request->menu_document_main ?? 0,
+                'dummy_proposal' => $request->menu_dummy_proposal ?? 0,
+                'document_request' => $request->menu_document_request ?? 0,
                 'banquet_event_order' => $request->menu_banquet_event_order ?? 0,
                 'proposal' => $request->menu_proposal ?? 0,
                 'hotel_contact_rate' => $request->menu_hotel_contact_rate ?? 0,
                 'proforma_invoice' => $request->menu_proforma_invoice ?? 0,
+                'receipt_payment' => $request->menu_receipt_payment ?? 0,
                 'billing_folio' => $request->menu_billing_folio ?? 0,
 
                 'debtor' => $request->menu_debtor_main ?? 0,
@@ -276,8 +279,6 @@ class UsersController extends Controller
                 'general_ledger' => $request->menu_general_ledger_main ?? 0,
                 'sms_alert' => $request->menu_sms_alert ?? 0,
                 'revenue' => $request->menu_revenue ?? 0,
-
-                // 'report' => $request->report ?? 0,
                 
                 'setting' => $request->menu_setting_main ?? 0,
                 'user' => $request->menu_user ?? 0,

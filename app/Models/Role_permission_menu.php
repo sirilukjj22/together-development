@@ -23,10 +23,13 @@ class Role_permission_menu extends Model
         'message_request',
 
         'document',
+        'dummy_proposal',
+        'document_request',
         'banquet_event_order',
         'proposal',
         'hotel_contact_rate',
         'proforma_invoice',
+        'receipt_payment',
         'billing_folio',
 
         'general_ledger',

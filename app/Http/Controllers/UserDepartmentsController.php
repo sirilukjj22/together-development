@@ -22,7 +22,7 @@ class UserDepartmentsController extends Controller
 
     public function create()
     {
-        $tb_menu = DB::table('tb_menu')->get();
+        $tb_menu = DB::table('tb_menu')->orderBy('sort', 'asc')->get();
 
         $tb_revenue_type = [
             'Front Desk Revenue', 'Guest Deposit Revenue', 'All Outlet Revenue', 'Agoda Revenue', 'Credit Card Hotel Revenue', 'Elexa EGAT Revenue',
@@ -103,7 +103,7 @@ class UserDepartmentsController extends Controller
     public function edit($id)
     {
         $department = TB_departments::where('id', $id)->first();
-        $tb_menu = DB::table('tb_menu')->get();
+        $tb_menu = DB::table('tb_menu')->orderBy('sort', 'asc')->get();
 
         $tb_revenue_type = [
             'Front Desk Revenue', 'Guest Deposit Revenue', 'All Outlet Revenue', 'Agoda Revenue', 'Credit Card Hotel Revenue', 'Elexa EGAT Revenue',
