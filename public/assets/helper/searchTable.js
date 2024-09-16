@@ -1,5 +1,3 @@
-const { ceil } = require("lodash");
-
 // Showing Entries
 function showingEntriesSearch($page, $total, $table_name) {
     var total = $total;
@@ -53,7 +51,7 @@ function paginateSearch($total, $table, $link) {
             // {
                 html += '<a class="" href="#">...</a>';
             // }
-        }
+        }        
 
         for ($i = Math.max(1, currentPage - 2); $i <= Math.min(Math.ceil(total / perPage), currentPage + 2); $i++)
         {
@@ -93,7 +91,6 @@ function getPage(page, perPage, table_n) {
     var account = $('#into_account').val();
     var total = parseInt($('#get-total-' + table_n).val());
     var getUrl = window.location.pathname;
-
 
     $('#currentPage-' + table_n).val(page);
 
@@ -158,10 +155,7 @@ function getPage(page, perPage, table_n) {
                     perPage: perPage,
                     table_name: table_name,
                     filter_by: filter_by,
-                    day: day,
-                    month: month,
-                    year: year,
-                    month_to: month_to,
+                    date: dateString,
                     status: type,
                     into_account: account
                 },
@@ -184,7 +178,7 @@ function getPage(page, perPage, table_n) {
             ],
     
         });
-    }
+    }    
 
     $('#' + table_n + '-paginate').children().remove().end();
     $('#' + table_n + '-showingEntries').text(showingEntriesSearch(page, total, table_n));

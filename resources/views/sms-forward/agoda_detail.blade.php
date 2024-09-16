@@ -148,10 +148,7 @@
     </div>
 
     <input type="hidden" id="filter-by" name="filter_by" value="{{ $filter_by }}">
-    <input type="hidden" id="input-search-day" name="day" value="{{ $day }}">
-    <input type="hidden" id="input-search-month" name="month" value="{{ $month }}">
-    <input type="hidden" id="input-search-month-to" name="month_to" value="{{ $month_to }}">
-    <input type="hidden" id="input-search-year" name="year" value="{{ $year }}">
+    <input type="hidden" id="date" name="date" value="{{ $search_date }}">
     <input type="hidden" id="status" value="5">
     <input type="hidden" id="into_account" value="{{ $into_account }}">
     <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
@@ -251,10 +248,7 @@
             var table_name = id+'Table';
 
             var filter_by = $('#filter-by').val();
-            var day = $('#input-search-day').val();
-            var month = $('#input-search-month').val();
-            var year = $('#input-search-year').val();
-            var month_to = $('#input-search-month-to').val();
+            var dateString = $('#date').val();
             var type_status = $('#status').val();
             var account = $('#account').val();
             var getUrl = window.location.pathname;         
@@ -274,10 +268,7 @@
                             search_value: search_value,
                             table_name: table_name,
                             filter_by: filter_by,
-                            day: day,
-                            month: month,
-                            year: year,
-                            month_to: month_to,
+                            date: dateString,
                             status: type_status,
                             into_account: account
                         },
@@ -338,10 +329,7 @@
                             search_value: search_value,
                             table_name: table_name,
                             filter_by: filter_by,
-                            day: day,
-                            month: month,
-                            year: year,
-                            month_to: month_to,
+                            date: dateString,
                             status: type_status,
                             into_account: account
                         },

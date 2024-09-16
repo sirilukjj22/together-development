@@ -894,55 +894,86 @@ class RevenuesController extends Controller
 
     public function search_calendar(Request $request)
     {
+        // dd($request);
         if ($request->revenue_type != '') {
             return $this->detail($request);
 
         } else {
 
         if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
-            $adate = date('Y-m-d 21:00:00', strtotime($request->year . '-' . $request->month . '-' . $request->day.' 21:00:00'));
+            $req_date = Carbon::parse($request->date)->format('Y-m-d');
+            $adate = date('Y-m-d 21:00:00', strtotime($req_date));
             $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate));
 
             // Revenue
-            $month_from = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-' . $request->day));
-            $month_to = date('Y-m-d', strtotime(date($request->year . '-' . $request->month . '-' . $request->day)));
-            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime(date($request->year . '-' . $request->month . '-' . $request->day))));
+            $month_from = $req_date;
+            $month_to = $req_date;
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime($req_date)));
+
+            $Fday = date('d', strtotime($month_from));
+            $Fmonth = date('m', strtotime($month_from));
+            $Fyear = date('Y', strtotime($month_from));
 
         } elseif ($request->filter_by == "month") {
-            $adate = date('Y-m-d', strtotime($request->year . '-' . $request->month . '-01'));
-            $lastday = dayLast($request->month_to, $request->year); // หาวันสุดท้ายของเดือน
+            $exp = explode('-', $request->date);
+
+            $start_month = Carbon::parse($exp[0])->format('m');
+            $end_month = Carbon::parse($exp[0])->format('m');
+            $year = Carbon::parse($exp[0])->format('Y');
+
+            if (isset($exp[1])) { // เลือกมากกว่า 1 เดือน
+                $end_month = Carbon::parse($exp[1])->format('m');
+                $year = Carbon::parse($exp[1])->format('Y');
+            }
+
+            $adate = date('Y-m-d', strtotime($year . '-' . $start_month . '-01'));
+            $lastday = dayLast($end_month, $year); // หาวันสุดท้ายของเดือน
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date('Y-' . str_pad($request->month_to, 2 ,0, STR_PAD_LEFT) . '-' . $lastday . ' 20:59:59');
+            $to = date($year . '-' . $end_month . '-' . $lastday . ' 20:59:59');
 
             $month_from = date('Y-m-d', strtotime($adate));
             $month_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($to))));
-            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime(date($request->year . '-' . $request->month . '-' . $request->day))));
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime($adate)));
+
+            $Fday = date('d', strtotime($adate));
+            $Fmonth = $start_month;
+            $Fyear = $year;
 
         } elseif ($request->filter_by == "year") {
-            $adate = date($request->year . '-01' . '-01');
+            $year = $request->date;
+            $adate = date($year . '-01' . '-01');
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
-            $to = date($request->year . '-12-31' . ' 20:59:59');
+            $to = date($year . '-12-31' . ' 20:59:59');
 
             $month_from = date('Y-m-d', strtotime($adate));
             $month_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($to))));
-            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime(date($request->year . '-' . $request->month . '-' . $request->day))));
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime($adate)));
+
+            $Fday = date('d', strtotime($adate));
+            $Fmonth = date('m', strtotime($month_from));
+            $Fyear = $year;
 
         } elseif ($request->filter_by == "week") {
             $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
-            $adate = date('Y-m-d');
+            $sundayOfWeek = date('Y-m-d', strtotime('last sunday', strtotime('next sunday')));
+            $adate = $sundayOfWeek;
             $adate2 = date('Y-m-d', strtotime('+6 day', strtotime(date($adate))));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
 
-            $month_from = date('Y-m-d', strtotime(date('Y-m-01')));
-            $month_to = date('Y-m-d', strtotime(date($adate2)));
+            $month_from = $adate;
+            $month_to = $adate2;
             $date_first_day = $adate;
 
             $year_from = date('Y-m-d', strtotime(date('Y-01-01')));
             $year_to = $adate2;
+
+            $Fday = date('d', strtotime($month_from));
+            $Fmonth = date('m', strtotime($month_from));
+            $Fyear = date('Y', strtotime($month_from));
 
         } elseif ($request->filter_by == "thisMonth") {
             $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
@@ -957,6 +988,10 @@ class RevenuesController extends Controller
 
             $year_from = date('Y-m-d', strtotime(date('Y-01-01')));
             $year_to = date('Y-m-d', strtotime(date($to)));
+
+            $Fday = date('d', strtotime($month_from));
+            $Fmonth = date('m', strtotime($month_from));
+            $Fyear = date('Y', strtotime($month_from));
 
         } elseif ($request->filter_by == "thisYear") {
             $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
@@ -975,6 +1010,10 @@ class RevenuesController extends Controller
             $year_from = date('Y-m-d', strtotime(date('Y-01-01')));
             $year_to = date('Y-m-d');
 
+            $Fday = date('d', strtotime($month_from));
+            $Fmonth = date('m', strtotime($month_from));
+            $Fyear = date('Y', strtotime($month_from));
+
         } elseif ($request->filter_by == "customRang") {
             $adate = date('Y-m-d', strtotime(date($request->customRang_start)));
             $adate2 = date('Y-m-d', strtotime(date($request->customRang_end)));
@@ -985,20 +1024,24 @@ class RevenuesController extends Controller
             $month_from = date('Y-m-d', strtotime($adate));
             $month_to = date('Y-m-d', strtotime(date($to)));
             $date_first_day = $adate;
+
+            $Fday = date('d', strtotime($month_from));
+            $Fmonth = date('m', strtotime($month_from));
+            $Fyear = date('Y', strtotime($month_from));
         }
 
-        $datetime = date("Y-".$request->month."-d");
-        $last_day = $this->EOM($request->month, $request->year);
-        $last_day2 = $this->EOM(date("m", strtotime("-1 months", strtotime($datetime))), $request->year);
+        $datetime = date('Y-m-d', strtotime($month_from));
+        $last_day = $this->EOM($Fmonth, $Fyear);
+        $last_day2 = $this->EOM(date("m", strtotime("-1 months", strtotime($datetime))), $Fyear);
 
-        $check_data = Revenues::whereMonth('date', $request->month)->whereYear('date', $request->year)->first();
+        $check_data = Revenues::whereMonth('date', $Fmonth)->whereYear('date', $Fyear)->first();
 
         if (empty($check_data)) {
             $days = $last_day;
 
             for ($i=1; $i <= $days; $i++) { 
                 Revenues::create([
-                    'date' => $request->year.$request->month.str_pad($i, 2, '0', STR_PAD_LEFT),
+                    'date' => $Fyear.$Fmonth.str_pad($i, 2, '0', STR_PAD_LEFT),
                     'status' => 0
                 ]);
             }
@@ -1021,9 +1064,8 @@ class RevenuesController extends Controller
         {
             for ($i=1; $i <= 31; $i++) { 
                 if ($i == 1) {
-                    // dd(date("Y-m-".$last_day2, strtotime("-1 months", strtotime($datetime))));
-                    $check_sms = SMS_alerts::whereBetween('date', [date("Y-m-".$last_day2, strtotime("-1 months", strtotime($datetime))).' 21:00:00', date('Y-'.$request->month.'-01 20:59:59')])->whereNull('date_into')
-                    ->orWhereDate('date_into', date("Y-".$request->month."-01"))
+                    $check_sms = SMS_alerts::whereBetween('date', [date("Y-m-".$last_day2, strtotime("-1 months", strtotime($datetime))).' 21:00:00', date('Y-'.$Fmonth.'-01 20:59:59')])->whereNull('date_into')
+                    ->orWhereDate('date_into', date("Y-".$Fmonth."-01"))
                     ->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))->groupBy('status')->get();
 
                     $sum_bill = 0;
@@ -1130,8 +1172,8 @@ class RevenuesController extends Controller
                     $transaction_array[$i] = ['bill' => $sum_bill];
                     
                 } else {
-                    $check_sms = SMS_alerts::whereBetween('date', [date("Y-".$request->month."-".str_pad($i - 1, 2, '0', STR_PAD_LEFT).' 21:00:00'), date('Y-'.$request->month.'-'.str_pad($i, 2, '0', STR_PAD_LEFT).' 20:59:59')])->whereNull('date_into')
-                    ->orWhereDate('date_into', date('Y-'.$request->month.'-'.str_pad($i, 2, '0', STR_PAD_LEFT)))
+                    $check_sms = SMS_alerts::whereBetween('date', [date("Y-".$Fmonth."-".str_pad($i - 1, 2, '0', STR_PAD_LEFT).' 21:00:00'), date('Y-'.$Fmonth.'-'.str_pad($i, 2, '0', STR_PAD_LEFT).' 20:59:59')])->whereNull('date_into')
+                    ->orWhereDate('date_into', date('Y-'.$Fmonth.'-'.str_pad($i, 2, '0', STR_PAD_LEFT)))
                     ->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))->groupBy('status')->get();
 
                     $sum_bill = 0;
@@ -1246,7 +1288,7 @@ class RevenuesController extends Controller
 
             if (isset($room_array)) {
                 foreach ($room_array as $key => $value) {
-                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                    Revenues::where('date', date('Y-'.$Fmonth.'-'.$key))->update([
                         'room_transfer' => $value['total_room']
                     ]);
                 }
@@ -1254,7 +1296,7 @@ class RevenuesController extends Controller
 
             if (isset($fb_array)) {
                 foreach ($fb_array as $key => $value) {
-                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                    Revenues::where('date', date('Y-'.$Fmonth.'-'.$key))->update([
                         'fb_transfer' => $value['total_fb']
                     ]);
                 }
@@ -1262,7 +1304,7 @@ class RevenuesController extends Controller
 
             if (isset($wp_array)) {
                 foreach ($wp_array as $key => $value) {
-                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                    Revenues::where('date', date('Y-'.$Fmonth.'-'.$key))->update([
                         'wp_transfer' => $value['total_wp']
                     ]);
                 }
@@ -1270,7 +1312,7 @@ class RevenuesController extends Controller
 
             if (isset($credit_array)) {
                 foreach ($credit_array as $key => $value) {
-                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                    Revenues::where('date', date('Y-'.$Fmonth.'-'.$key))->update([
                         'total_credit' => $value['total_credit']
                     ]);
                 }
@@ -1278,7 +1320,7 @@ class RevenuesController extends Controller
 
             if (isset($front_array)) {
                 foreach ($front_array as $key => $value) {
-                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                    Revenues::where('date', date('Y-'.$Fmonth.'-'.$key))->update([
                         'front_transfer' => $value['total_front']
                     ]);
                 }
@@ -1287,7 +1329,7 @@ class RevenuesController extends Controller
             if (isset($agoda_array)) {
                 foreach ($agoda_array as $key => $value) {
                     // dd($value['total_agoda']);
-                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                    Revenues::where('date', date('Y-'.$Fmonth.'-'.$key))->update([
                         'total_credit_agoda' => $value['total_agoda']
                     ]);
                 }
@@ -1295,7 +1337,7 @@ class RevenuesController extends Controller
 
             if (isset($ev_array)) {
                 foreach ($ev_array as $key => $value) {
-                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                    Revenues::where('date', date('Y-'.$Fmonth.'-'.$key))->update([
                         'total_elexa' => $value['total_ev']
                     ]);
                 }
@@ -1303,7 +1345,7 @@ class RevenuesController extends Controller
 
             if (isset($other_array)) {
                 foreach ($other_array as $key => $value) {
-                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                    Revenues::where('date', date('Y-'.$Fmonth.'-'.$key))->update([
                         'other_revenue' => $value['total_other']
                     ]);
                 }
@@ -1311,7 +1353,7 @@ class RevenuesController extends Controller
 
             if (isset($transaction_array)) {
                 foreach ($transaction_array as $key => $value) {
-                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                    Revenues::where('date', date('Y-'.$Fmonth.'-'.$key))->update([
                         'total_transaction' => $value['bill']
                     ]);
                 }
@@ -1319,7 +1361,7 @@ class RevenuesController extends Controller
 
             if (isset($no_type_array)) {
                 foreach ($no_type_array as $key => $value) {
-                    Revenues::where('date', date('Y-'.$request->month.'-'.$key))->update([
+                    Revenues::where('date', date('Y-'.$Fmonth.'-'.$key))->update([
                         'total_no_type' => $value['no_type']
                     ]);
                 }
@@ -1328,16 +1370,16 @@ class RevenuesController extends Controller
         
         if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") 
         {
-            $date_now = date('Y-m-d', strtotime(date($request->year.'-'.$request->month.'-'.$request->day)));
+            $date_now = date('Y-m-d', strtotime($request->date));
         } else {
             $date_now = date('Y-m-d');
         }
         
-        $day_now = $request->day;
+        $day_now = $Fday;
         $symbol = $day_now == "01" ? "=" : "<=";
 
-        $date1 = date('Y-m-d', strtotime(date($request->year.'-'.$request->month.'-01')));
-        $date2 = date('Y-m-d', strtotime('last day of this month', strtotime(date(date($request->year.'-'.$request->month.'-'.$request->day)))));
+        $date1 = date('Y-m-d', strtotime(date($Fyear.'-'.$Fmonth.'-01')));
+        $date2 = date('Y-m-d', strtotime('last day of this month', strtotime(date(date($Fyear.'-'.$Fmonth.'-01')))));
 
         // verified
         $total_verified = Revenues::whereBetween('date', [$date1, $date2])->where('status', 1)->count();
@@ -1385,7 +1427,7 @@ class RevenuesController extends Controller
         $credit_month_query = Revenues::query();
 
             if ($request->filter_by == "date"|| $request->filter_by == "today") {
-                $credit_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year);
+                $credit_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $Fmonth)->whereYear('date', $Fyear);
 
             } elseif ($request->filter_by == "month" || $request->filter_by == "thisMonth" || $request->filter_by == "year" || $request->filter_by == "week" || $request->filter_by == "customRang") {
                 $credit_month_query->whereBetween('date', [$month_from, $month_to]);
@@ -1401,7 +1443,7 @@ class RevenuesController extends Controller
         $credit_year_query = Revenues::query();
         
             if ($request->filter_by == "date") {
-                $credit_year_query->whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day));
+                $credit_year_query->whereDate('date', '<=', date($request->date));
 
             } elseif ($request->filter_by == "month") {
                 $credit_year_query->whereBetween('date', [$month_from, $month_to]);
@@ -1429,7 +1471,7 @@ class RevenuesController extends Controller
         $total_front_month_query = Revenues::query();
 
             if ($request->filter_by == "date"|| $request->filter_by == "today") {
-                $total_front_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year);
+                $total_front_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $Fmonth)->whereYear('date', $Fyear);
 
             } elseif ($request->filter_by == "month" || $request->filter_by == "thisMonth" || $request->filter_by == "year" || $request->filter_by == "week" || $request->filter_by == "customRang") {
                 $total_front_month_query->whereBetween('date', [$month_from, $month_to]);
@@ -1445,7 +1487,7 @@ class RevenuesController extends Controller
         $total_front_year_query = Revenues::query();
 
             if ($request->filter_by == "date") {
-                $total_front_year_query->whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day));
+                $total_front_year_query->whereDate('date', '<=', date($request->date));
 
             } elseif ($request->filter_by == "month") {
                 $total_front_year_query->whereBetween('date', [$month_from, $month_to]);
@@ -1458,7 +1500,7 @@ class RevenuesController extends Controller
         $total_front_year = $total_front_year_query->first();
 
         // Charge
-        $front_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $request->month, $request->year, 6, 6);
+        $front_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $Fmonth, $Fyear, 6, 6);
 
         ### Guest Deposit ###
         // Today
@@ -1475,7 +1517,7 @@ class RevenuesController extends Controller
         $total_guest_deposit_month_query = Revenues::query();
 
         if ($request->filter_by == "date"|| $request->filter_by == "today") {
-            $total_guest_deposit_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year);
+            $total_guest_deposit_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $Fmonth)->whereYear('date', $Fyear);
 
         } elseif ($request->filter_by == "month" || $request->filter_by == "thisMonth" || $request->filter_by == "year" || $request->filter_by == "week" || $request->filter_by == "customRang") {
             $total_guest_deposit_month_query->whereBetween('date', [$month_from, $month_to]);
@@ -1491,7 +1533,7 @@ class RevenuesController extends Controller
         $guest_deposit_year_query = Revenues::query();
 
             if ($request->filter_by == "date") {
-                $guest_deposit_year_query->whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day));
+                $guest_deposit_year_query->whereDate('date', '<=', date($request->date));
 
             } elseif ($request->filter_by == "month") {
                 $guest_deposit_year_query->whereBetween('date', [$month_from, $month_to]);
@@ -1504,7 +1546,7 @@ class RevenuesController extends Controller
         $total_guest_deposit_year = $guest_deposit_year_query->first();
 
         // Charge
-        $guest_deposit_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $request->month, $request->year, 1, 1);
+        $guest_deposit_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $Fmonth, $Fyear, 1, 1);
  
         ### All Outlet ###
         // Today 
@@ -1521,7 +1563,7 @@ class RevenuesController extends Controller
         $fb_month_query = Revenues::query();
         
             if ($request->filter_by == "date"|| $request->filter_by == "today") {
-                $fb_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year);
+                $fb_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $Fmonth)->whereYear('date', $Fyear);
 
             } elseif ($request->filter_by == "month" || $request->filter_by == "thisMonth" || $request->filter_by == "year" || $request->filter_by == "week" || $request->filter_by == "customRang") {
                 $fb_month_query->whereBetween('date', [$month_from, $month_to]);
@@ -1537,7 +1579,7 @@ class RevenuesController extends Controller
         $fb_year_query = Revenues::query();
 
             if ($request->filter_by == "date") {
-                $fb_year_query->whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day));
+                $fb_year_query->whereDate('date', '<=', date($request->date));
 
             } elseif ($request->filter_by == "month") {
                 $fb_year_query->whereBetween('date', [$month_from, $month_to]);
@@ -1550,7 +1592,7 @@ class RevenuesController extends Controller
         $total_fb_year = $fb_year_query->first();
 
         // Charge
-        $fb_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $request->month, $request->year, 2, 2);
+        $fb_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $Fmonth, $Fyear, 2, 2);
 
         ## Other Revenue ###
         // Today
@@ -1585,7 +1627,7 @@ class RevenuesController extends Controller
         $other_year_query = Revenues::query();
 
             if ($request->filter_by == "date") {
-                $other_year_query->whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day));
+                $other_year_query->whereDate('date', '<=', date($request->date));
 
             } elseif ($request->filter_by == "month") {
                 $other_year_query->whereBetween('date', [$month_from, $month_to]);
@@ -1612,7 +1654,7 @@ class RevenuesController extends Controller
         $agoda_month_query = Revenues::query();
 
             if ($request->filter_by == "date"|| $request->filter_by == "today") {
-                $agoda_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', date('Y'));
+                $agoda_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $Fmonth)->whereYear('date', date('Y'));
 
             } elseif ($request->filter_by == "month" || $request->filter_by == "thisMonth" || $request->filter_by == "year" || $request->filter_by == "week" || $request->filter_by == "customRang") {
                 $agoda_month_query->whereBetween('date', [$month_from, $month_to]);
@@ -1627,7 +1669,7 @@ class RevenuesController extends Controller
         $agoda_year_query = Revenues::query();
         
             if ($request->filter_by == "date") {
-                $agoda_year_query->whereDate('date', '<=', date($request->year.'-'.$request->month.'-'.$request->day));
+                $agoda_year_query->whereDate('date', '<=', date($request->date));
 
             } elseif ($request->filter_by == "month") {
                 $agoda_year_query->whereBetween('date', [$month_from, $month_to]);
@@ -1639,7 +1681,7 @@ class RevenuesController extends Controller
         $total_agoda_year = $agoda_year_query->sum('total_credit_agoda');
 
         // Charge
-        $agoda_charge = Revenues::getManualAgodaCharge($request->filter_by, $month_from, $month_to, $date_now, $request->month, $request->year, 1, 5);
+        $agoda_charge = Revenues::getManualAgodaCharge($request->filter_by, $month_from, $month_to, $date_now, $Fmonth, $Fyear, 1, 5);
 
         ### Water Park ###
         // Today
@@ -1656,7 +1698,7 @@ class RevenuesController extends Controller
         $wp_month_query = Revenues::query();
         
             if ($request->filter_by == "date"|| $request->filter_by == "today") {
-                $wp_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $request->month)->whereYear('date', $request->year);
+                $wp_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $Fmonth)->whereYear('date', $Fyear);
 
             } elseif ($request->filter_by == "month" || $request->filter_by == "thisMonth" || $request->filter_by == "year" || $request->filter_by == "week" || $request->filter_by == "customRang") {
                 $wp_month_query->whereBetween('date', [$month_from, $month_to]);
@@ -1685,7 +1727,7 @@ class RevenuesController extends Controller
         $total_wp_year = $wp_year_query->first();
 
         // Charge
-        $wp_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $request->month, $request->year, 3, 3);
+        $wp_charge = Revenues::getManualCharge($request->filter_by, $month_from, $month_to, $date_now, $Fmonth, $Fyear, 3, 3);
 
         ### Elexa EGAT ###
         // Today
@@ -1731,15 +1773,16 @@ class RevenuesController extends Controller
         $total_ev_year = $ev_year_query->sum('total_elexa');
 
         // Charge
-        $ev_charge = Revenues::getManualEvCharge($request->filter_by, $month_from, $month_to, $date_now, $request->month, $request->year, 8, 8);
+        $ev_charge = Revenues::getManualEvCharge($request->filter_by, $month_from, $month_to, $date_now, $Fmonth, $Fyear, 8, 8);
 
         ## Filter ##
         $filter_by = $request->filter_by;
-        $day = $request->day;
-        $month = $request->month;
-        $month_to = $request->month_to;
-        $year = $request->year;
-        $time = $request->time;
+        $search_date = $request->date;
+        // $day = $request->day;
+        // $month = $request->month;
+        // $month_to = $request->month_to;
+        // $year = $request->year;
+        // $time = $request->time;
 
         $by_page = 'index';
         $by_page_pdf = '1A';
@@ -1797,7 +1840,7 @@ class RevenuesController extends Controller
 
                         'btn_by_page',
 
-                        'filter_by', 'day', 'month', 'month_to', 'year'
+                        'filter_by', 'search_date'
                     )
                 );
                 return $pdf->stream();
@@ -1871,7 +1914,7 @@ class RevenuesController extends Controller
         
                     'btn_by_page',
         
-                    'filter_by', 'day', 'month', 'month_to', 'year'));
+                    'filter_by', 'search_date'));
             }
         }
     }

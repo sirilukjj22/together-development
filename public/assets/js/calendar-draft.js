@@ -40,6 +40,7 @@ $(document).ready(function () {
     // console.log("Updated lastSelectedValue:", lastSelectedValue); // ตรวจสอบว่าค่าถูกอัปเดต
     $("#combined-selected-box").val(`${value}`);
     $("#date").val(`${value}`);
+    $('#filter-by').val("date");
     
   }
 
