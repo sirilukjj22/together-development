@@ -17,19 +17,19 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.semanticui.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.semanticui.css">
 
-    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.min.css') }}?v={{ time() }}">
     <!-- Plugin Css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css') }}?v={{ time() }}">
     <!-- project css file  -->
-    <link rel="stylesheet" href="{{ asset('assets/css/al.style.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/al.style.min.css') }}?v={{ time() }}">
     <!-- project layout css file -->
-    <link rel="stylesheet" href="{{ asset('assets/css/layout.c.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/layout.c.min.css') }}?v={{ time() }}">
 
     <!-- table design css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.min.css')}}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.min.css')}}?v={{ time() }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css')}}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css')}}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css')}}?v={{ time() }}">
     <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script>
 
     <!-- ลิงค์ใส่ใหม่ -->
@@ -41,14 +41,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
     <!-- สำหรับ style css -->
-    <link rel="stylesheet" href="{{ asset('assets/src/smsPage.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/src/table.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/src/index.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/src/revenue.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/src/userProfile.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/src/global.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/src/tableAllDesign.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/src/calendar-draft.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/src/smsPage.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/src/table.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/src/index.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/src/revenue.css') }}?v={{ time() }}" />
+    <link rel="stylesheet" href="{{ asset('assets/src/userProfile.css') }}?v={{ time() }}" />
+    <link rel="stylesheet" href="{{ asset('assets/src/global.css') }}?v={{ time() }}" />
+    <link rel="stylesheet" href="{{ asset('assets/src/tableAllDesign.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/src/calendar-draft.css') }}?v={{ time() }}">
 
     <!-- สำหรับ tooltip info -->
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>

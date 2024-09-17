@@ -114,9 +114,9 @@
     @endif
 
     <!-- table design css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/semantic.min.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.semanticui.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/responsive.semanticui.css') }}?v={{ time() }}">
 
     <!-- table design js -->
     <script src="{{ asset('assets/js/semantic.min.js') }}"></script>
