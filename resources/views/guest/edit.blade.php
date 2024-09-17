@@ -90,9 +90,12 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-lg-6 col-md-6 col-sm-12"><label for="country">ประเทศ / Country</label><br>
-                                        <select name="countrydata" id="countrySelect" class="form-select" onchange="showcityInput()">
-                                            <option value="Thailand" {{$Guest->Country == "Thailand" ? 'selected' : ''}}>ประเทศไทย</option>
-                                            <option value="Other_countries" {{$Guest->Country == "Other_countries" ? 'selected' : ''}}>ประเทศอื่นๆ</option>
+                                        <select name="countrydata" id="countrySelect" class="select2" onchange="showcityInput()">
+                                            @foreach($country as $item)
+                                                <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == $Guest->Country ? 'selected' : '' }}>
+                                                    {{ $item->ct_nameENG }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     @if (($Guest->Country === 'Thailand'))
@@ -188,7 +191,7 @@
                                         @foreach($phoneDataArray as $phone)
                                         <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                                             <div class="input-group show">
-                                                <input type="text" name="phone[]" class="form-control"value="{{ $phone['Phone_number'] }}" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                <input type="text" name="phone[]" class="form-control phone" value="{{ formatPhoneNumber($phone['Phone_number']) }}" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
                                                 <button type="button" class="btn btn-outline-danger remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                             </div>
                                         </div>
@@ -215,7 +218,7 @@
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <label for="identification_number">หมายเลขประจำตัว / Identification Number</label><br>
-                                        <input type="text" class="form-control" id="identification_number" name="identification_number" value="{{$Guest->Identification_Number}}" required>
+                                        <input type="text" class="form-control" id="identification_number idcard" name="identification_number" value="{{ formatIdCard($Guest->Identification_Number) }}" required>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -298,7 +301,7 @@
                                                         <div class="col-sm-12 col-12">
                                                             <div class="col-sm-4 col-4">
                                                                 <span for="Country">Add Tax</span>
-                                                                <select name="TaxSelectA" id="TaxSelectA" class="form-select" onchange="showTaxInput()">
+                                                                <select name="TaxSelectA" id="TaxSelectA" class="select21" onchange="showTaxInput()">
                                                                     <option value="Company">Company</option>
                                                                     <option value="Individual">Individual</option>
                                                                 </select>
@@ -308,7 +311,7 @@
                                                                     <div class="row">
                                                                         <div class="col-sm-6 col-6">
                                                                             <label for="Company_type_tax">ประเภทบริษัท / Company Type</label>
-                                                                            <select name="Company_type_tax" id="Company_type_tax" class="form-select" required>
+                                                                            <select name="Company_type_tax" id="Company_type_tax" class="select21" required>
                                                                                 <option value=""></option>
                                                                                 @foreach($MCompany_type as $item)
                                                                                     <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -325,7 +328,7 @@
                                                                         </div>
                                                                         <div class="col-sm-6 col-6 mt-2">
                                                                             <label for="Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</label><br>
-                                                                            <input type="text" id="IdentificationCompany" class="form-control" name="Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required >
+                                                                            <input type="text" id="IdentificationCompany" class="form-control idcard" name="Identification" maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี" required >
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -334,8 +337,8 @@
                                                                 <div class="col-sm-12 mt-2">
                                                                     <div class="row">
                                                                         <div class="col-sm-6 col-6" >
-                                                                            <span for="prefix">คำนำหน้า / Title</span>
-                                                                            <select name="prefix" id="PrefaceSelectCom" class="form-select" disabled required>
+                                                                            <label for="prefix">คำนำหน้า / Title</label>
+                                                                            <select name="prefix" id="PrefaceSelectCom" class="select21" disabled required>
                                                                                     <option value=""></option>
                                                                                     @foreach($Mprefix as $item)
                                                                                         <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -343,16 +346,16 @@
                                                                             </select>
                                                                         </div>
                                                                         <div class="col-sm-6 col-6">
-                                                                            <span for="first_name">First Name</span>
+                                                                            <label for="first_name">First Name</label>
                                                                             <input type="text" id="first_nameCom" class="form-control" name="first_nameCom"maxlength="70" disabled required>
                                                                         </div>
                                                                         <div class="col-sm-6 col-6 mt-2">
-                                                                            <span for="last_name" >Last Name</span>
+                                                                            <label for="last_name" >Last Name</label>
                                                                             <input type="text" id="last_nameCom" class="form-control" name="last_nameCom"maxlength="70" disabled required>
                                                                         </div>
                                                                         <div class="col-sm-6 col-6 mt-2">
                                                                             <label for="Identification">เลขบัตรประจำตัวประชาชน / Identification number</label><br>
-                                                                            <input type="text" id="IdentificationName" class="form-control" name="Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี"disabled required >
+                                                                            <input type="text" id="IdentificationName" class="form-control idcard" name="Identification" maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี"disabled required >
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -361,14 +364,17 @@
                                                                 <div class="row mt-2">
                                                                     <div class="col-sm-4 col-4">
                                                                         <span for="Country">Country</span>
-                                                                        <select name="countrydataA" id="countrySelectA" class="form-select" onchange="showcityAInputTax()">
-                                                                            <option value="Thailand">ประเทศไทย</option>
-                                                                            <option value="Other_countries">ประเทศอื่นๆ</option>
+                                                                        <select name="countrydataA" id="countrySelectA" class="select21" onchange="showcityAInputTax()">
+                                                                            @foreach($country as $item)
+                                                                                <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == 'Thailand' ? 'selected' : '' }}>
+                                                                                    {{ $item->ct_nameENG }}
+                                                                                </option>
+                                                                            @endforeach
                                                                         </select>
                                                                     </div>
                                                                     <div class="col-sm-4 col-4" >
                                                                         <span for="City">City</span>
-                                                                        <select name="cityA" id="provincetax" class="form-select" onchange="provinceTax()" style="width: 100%;">
+                                                                        <select name="cityA" id="provincetax" class="select21" onchange="provinceTax()" style="width: 100%;">
                                                                             <option value=""></option>
                                                                             @foreach($provinceNames as $item)
                                                                                 <option value="{{ $item->id }}">{{ $item->name_th }}</option>
@@ -377,7 +383,7 @@
                                                                     </div>
                                                                     <div class="col-sm-4 col-4">
                                                                         <span for="Amphures">Amphures</span>
-                                                                        <select name="amphuresA" id="amphuresT" class="form-select" onchange="amphuresTax()" >
+                                                                        <select name="amphuresA" id="amphuresT" class="select21" onchange="amphuresTax()" >
                                                                             <option value=""></option>
                                                                         </select>
                                                                     </div>
@@ -385,13 +391,13 @@
                                                                 <div class="row mt-2">
                                                                     <div class="col-sm-4 col-4">
                                                                         <span for="Tambon">Tambon</span>
-                                                                        <select name="TambonA" id ="TambonT" class="form-select" onchange="TambonTax()" style="width: 100%;">
+                                                                        <select name="TambonA" id ="TambonT" class="select21" onchange="TambonTax()" style="width: 100%;">
                                                                             <option value=""></option>
                                                                         </select>
                                                                     </div>
                                                                     <div class="col-sm-4 col-4">
                                                                         <span for="zip_code">zip_code</span>
-                                                                        <select name="zip_codeA" id ="zip_codeT" class="form-select"  style="width: 100%;">
+                                                                        <select name="zip_codeA" id ="zip_codeT" class="select21"  style="width: 100%;">
                                                                         </select>
                                                                     </div>
                                                                     <div class="col-sm-4 col-4">
@@ -414,7 +420,7 @@
                                                                         <!-- Initial input fields -->
                                                                         <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                                                                             <div class="input-group show">
-                                                                                <input type="text" name="phoneTax[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                                                <input type="text" name="phoneTax[]" class="form-control phone" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
                                                                                 <button type="button" class="btn btn-outline-danger remove-phoneTax"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                                                             </div>
                                                                         </div>
@@ -473,7 +479,7 @@
                                                                         var tambonSelect = document.getElementById("TambonT");
                                                                         var zipCodeSelect = document.getElementById("zip_codeT");
                                                                         // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
-                                                                        if (countrySelectA.value === "Other_countries") {
+                                                                        if (countrySelectA.value !== "Thailand") {
                                                                             // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
                                                                             province.disabled = true;
 
@@ -838,11 +844,21 @@
 
     @include('script.script')
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/formatNumber.js')}}"></script>
     <script>
-        $(document).ready(function() {
+         $(document).ready(function() {
             $('.select2').select2({
                 placeholder: "Please select an option"
             });
+            $('.select21').select2({
+                dropdownParent: $("#CreateCompany"),
+                placeholder: "Please select an option"
+            });
+            $('.select22').select2({
+                dropdownParent: $("#CreateAgent"),
+                placeholder: "Please select an option"
+            });
+
         });
         $(document).ready(function() {
             $('#identification_number').mask('0-0000-00000-00-0');
@@ -868,7 +884,7 @@
             var zipCodeSelect = document.getElementById("zip_code");
 
             // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
-            if (countrySelect.value === "Other_countries") {
+            if (countrySelect.value !== "Thailand") {
 
                 province.disabled = true;
                 amphuresSelect.disabled = true;
@@ -954,14 +970,30 @@
         }
     </script>
     <script>
-        // Function 1
+        function formatPhoneNumber(value) {
+            value = value.replace(/\D/g, ""); // เอาตัวอักษรที่ไม่ใช่ตัวเลขออก
+            let formattedValue = "";
+
+            if (value.length > 0) {
+                formattedValue += value.substring(0, 3); // xxx
+            }
+            if (value.length > 3) {
+                formattedValue += "-" + value.substring(3, 6); // xxx-xxx
+            }
+            if (value.length > 6) {
+                formattedValue += "-" + value.substring(6, 10); // xxx-xxx-xxxx
+            }
+
+            return formattedValue;
+        }
+
         document.getElementById('add-phone').addEventListener('click', function() {
             var phoneContainer = document.getElementById('phone-containerN');
             var newCol = document.createElement('div');
             newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12');
             newCol.innerHTML = `
                 <div class="input-group mt-2">
-                    <input type="text" name="phone[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                    <input type="text" name="phone[]" class="form-control" maxlength="12" oninput="formatAndUpdate(this)" required>
                     <button type="button" class="btn btn-outline-danger remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                 </div>
             `;
@@ -973,7 +1005,10 @@
 
             attachRemoveEventPhone(newCol.querySelector('.remove-phone'));
         });
-
+        function formatAndUpdate(input) {
+            const formattedValue = formatPhoneNumber(input.value);
+            input.value = formattedValue;
+        }
         function attachRemoveEventPhone(button) {
             button.addEventListener('click', function() {
                 var phoneContainer = document.getElementById('phone-containerN');
@@ -995,7 +1030,7 @@
             newColTax.classList.add('col-lg-4', 'col-md-6', 'col-sm-12');
             newColTax.innerHTML = `
                 <div class="input-group mt-2">
-                    <input type="text" name="phoneTax[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                    <input type="text" name="phoneTax[]" class="form-control" maxlength="12" oninput="formatAndUpdate(this)" required>
                     <button type="button" class="btn btn-outline-danger remove-phoneTax"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                 </div>
             `;
@@ -1007,7 +1042,10 @@
 
             attachRemoveEventPhoneTax(newColTax.querySelector('.remove-phoneTax'));
         });
-
+        function formatAndUpdate(input) {
+            const formattedValue = formatPhoneNumber(input.value);
+            input.value = formattedValue;
+        }
         function attachRemoveEventPhoneTax(button) {
             button.addEventListener('click', function() {
                 var phoneContainerTax = document.getElementById('phone-containerTax');

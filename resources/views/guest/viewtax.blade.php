@@ -132,8 +132,11 @@
                                     <div class="col-sm-6 col-6">
                                         <span for="Country">ประเทศ / Country</span>
                                         <select name="Country" id="countrySelect" class="form-select" onchange="showcityAInput()"disabled>
-                                            <option value="Thailand" {{$Guest->Country == "Thailand" ? 'selected' : ''}}>ประเทศไทย</option>
-                                            <option value="Other_countries" {{$Guest->Country == "Other_countries" ? 'selected' : ''}}>ประเทศอื่นๆ</option>
+                                            @foreach($country as $item)
+                                                <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == $Guest->Country ? 'selected' : '' }}>
+                                                    {{ $item->ct_nameENG }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-sm-6 col-6">
@@ -303,7 +306,7 @@
             var amphuresSelect = document.getElementById("amphures");
             var tambonSelect = document.getElementById("Tambon");
             var zipCodeSelect = document.getElementById("zip_code");
-            if (countrySelect.value === "Other_countries") {
+            if (countrySelect.value !== "Thailand") {
 
                 province.disabled = true;
                 amphuresSelect.disabled = true;

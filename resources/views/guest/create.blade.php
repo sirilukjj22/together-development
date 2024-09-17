@@ -83,9 +83,12 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-lg-6 col-md-6 col-sm-12"><label for="country">ประเทศ / Country</label><br>
-                                        <select name="countrydata" id="countrySelect" class="form-select" onchange="showcityInput()">
-                                            <option value="Thailand">ประเทศไทย</option>
-                                            <option value="Other_countries">ประเทศอื่นๆ</option>
+                                        <select name="countrydata" id="countrySelect" class="select2" onchange="showcityInput()">
+                                            @foreach($country as $item)
+                                                <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == 'Thailand' ? 'selected' : '' }}>
+                                                    {{ $item->ct_nameENG }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-12" id="citythai">
@@ -134,7 +137,7 @@
                                         <!-- Initial input fields -->
                                         <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                                             <div class="input-group show">
-                                                <input type="text" name="phone[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                <input type="text" name="phone[]" class="form-control phone" maxlength="14" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
                                                 <button type="button" class="btn btn-outline-danger remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                             </div>
                                         </div>
@@ -156,7 +159,7 @@
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <label for="identification_number">หมายเลขประจำตัว / Identification Number</label><br>
-                                        <input type="text" class="form-control" id="identification_number" name="identification_number"maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required>
+                                        <input type="text" class="form-control idcard" id="identification_number" name="identification_number"maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี" required>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -210,6 +213,7 @@
 
     @include('script.script')
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/formatNumber.js')}}"></script>
     <script>
         $(document).ready(function() {
             $('.select2').select2({
@@ -240,7 +244,7 @@
             var zipCodeSelect = document.getElementById("zip_code");
 
             // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
-            if (countrySelect.value === "Other_countries") {
+            if (countrySelect.value !== "Thailand") {
 
                 province.disabled = true;
                 // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
@@ -327,13 +331,29 @@
         }
     </script>
     <script>
+        function formatPhoneNumber(value) {
+            value = value.replace(/\D/g, ""); // เอาตัวอักษรที่ไม่ใช่ตัวเลขออก
+            let formattedValue = "";
+
+            if (value.length > 0) {
+                formattedValue += value.substring(0, 3); // xxx
+            }
+            if (value.length > 3) {
+                formattedValue += "-" + value.substring(3, 6); // xxx-xxx
+            }
+            if (value.length > 6) {
+                formattedValue += "-" + value.substring(6, 10); // xxx-xxx-xxxx
+            }
+
+            return formattedValue;
+        }
         document.getElementById('add-phone').addEventListener('click', function() {
             var phoneContainer = document.getElementById('phone-container');
             var newCol = document.createElement('div');
             newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12');
             newCol.innerHTML = `
                 <div class="input-group mt-2">
-                    <input type="text" name="phone[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                    <input type="text" name="phone[]" class="form-control" maxlength="14" oninput="formatAndUpdate(this)" required>
                     <button type="button" class="btn btn-outline-danger remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                 </div>
             `;
@@ -346,7 +366,10 @@
 
             attachRemoveEvent(newCol.querySelector('.remove-phone'));
         });
-
+        function formatAndUpdate(input) {
+            const formattedValue = formatPhoneNumber(input.value);
+            input.value = formattedValue;
+        }
         function attachRemoveEvent(button) {
             button.addEventListener('click', function() {
                 var phoneContainer = document.getElementById('phone-container');

@@ -117,7 +117,7 @@
                                 <div class="row mt-2">
                                     <div class="col-sm-6 col-6">
                                         <span for="Taxpayer_Identification">เลขบัตรประจำตัวประชาชน / Identification number</span>
-                                        <input type="text" id="Taxpayer_Identification" class="form-control" name="Taxpayer_Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี"  value="{{$Guest->Taxpayer_Identification}}">
+                                        <input type="text" id="Taxpayer_Identification" class="form-control idcard" name="Taxpayer_Identification" maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี"  value="{{ formatIdCard($Guest->Taxpayer_Identification) }}">
                                     </div>
                                     <div class="col-sm-6 col-6">
                                         <span for="Email">อีเมล์ / Email</span>
@@ -132,8 +132,11 @@
                                     <div class="col-sm-6 col-6">
                                         <span for="Country">ประเทศ / Country</span>
                                         <select name="Country" id="countrySelect" class="select2" onchange="showcityAInput()">
-                                            <option value="Thailand" {{$Guest->Country == "Thailand" ? 'selected' : ''}}>ประเทศไทย</option>
-                                            <option value="Other_countries" {{$Guest->Country == "Other_countries" ? 'selected' : ''}}>ประเทศอื่นๆ</option>
+                                            @foreach($country as $item)
+                                                <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == $Guest->Country ? 'selected' : '' }}>
+                                                    {{ $item->ct_nameENG }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-sm-6 col-6">
@@ -182,7 +185,7 @@
                                         @foreach($phoneDataArray as $phone)
                                         <div class="col-lg-4 col-md-6 col-sm-12 mt-3">
                                             <div class="input-group show">
-                                                <input type="text" name="phoneCom[]" class="form-control" maxlength="10" value="{{ $phone['Phone_number'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
+                                                <input type="text" name="phoneCom[]" class="form-control phone" maxlength="12" value="{{ formatPhoneNumber($phone['Phone_number']) }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
                                                 <button type="button" class="btn btn-outline-danger remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                             </div>
                                         </div>
@@ -207,7 +210,7 @@
 
     @include('script.script')
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
-
+    <script type="text/javascript" src="{{ asset('assets/js/formatNumber.js')}}"></script>
     <script>
         $(document).ready(function() {
             var TaxSelectA = $('#TaxSelectA');
@@ -390,13 +393,29 @@
         }
     </script>
     <script>
+        function formatPhoneNumber(value) {
+            value = value.replace(/\D/g, ""); // เอาตัวอักษรที่ไม่ใช่ตัวเลขออก
+            let formattedValue = "";
+
+            if (value.length > 0) {
+                formattedValue += value.substring(0, 3); // xxx
+            }
+            if (value.length > 3) {
+                formattedValue += "-" + value.substring(3, 6); // xxx-xxx
+            }
+            if (value.length > 6) {
+                formattedValue += "-" + value.substring(6, 10); // xxx-xxx-xxxx
+            }
+
+            return formattedValue;
+        }
         document.getElementById('add-phone').addEventListener('click', function() {
             var phoneContainer = document.getElementById('phone-container');
             var newCol = document.createElement('div');
             newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12');
             newCol.innerHTML = `
                 <div class="input-group mt-3">
-                    <input type="text" name="phoneCom[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                    <input type="text" name="phoneCom[]" class="form-control" maxlength="12" oninput="formatAndUpdate(this)" required>
                     <button type="button" class="btn btn-outline-danger remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                 </div>
             `;
@@ -410,6 +429,10 @@
             attachRemoveEvent(newCol.querySelector('.remove-phone'));
         });
 
+        function formatAndUpdate(input) {
+            const formattedValue = formatPhoneNumber(input.value);
+            input.value = formattedValue;
+        }
         function attachRemoveEvent(button) {
             button.addEventListener('click', function() {
                 var phoneContainer = document.getElementById('phone-container');

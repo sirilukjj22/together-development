@@ -14,6 +14,7 @@ use App\Models\log_company;
 use App\Models\guest_tax;
 use App\Models\guest_tax_phone;
 use App\Models\Quotation;
+use App\Models\country;
 use Auth;
 class GuestController extends Controller
 {
@@ -190,7 +191,8 @@ class GuestController extends Controller
         $provinceNames = province::select('name_th','id')->get();
         $booking_channel = master_document::select('name_en', 'id')->where('status', 1)->Where('Category','Mbooking_channel')->get();
         $prefix = master_document::select('name_th','id')->Where('Category','Mprename')->where('status',1)->get();
-        return view('guest.create',compact('provinceNames','booking_channel','prefix','N_Profile'));
+        $country = country::select('ct_nameENG')->get();
+        return view('guest.create',compact('provinceNames','booking_channel','prefix','N_Profile','country'));
     }
     public function amphures($id)
     {
@@ -470,9 +472,9 @@ class GuestController extends Controller
         ->paginate($perPage);
         $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
         $Mprefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
-
+        $country = country::select('ct_nameENG')->get();
         return view('guest.edit',compact('Guest','Other_City','provinceNames','amphures','Tambon','Zip_code'
-        ,'booking_channel','prefix','phonecount','phoneDataArray','log','MCompany_type','Mprefix','guesttax','Quotation'));
+        ,'booking_channel','prefix','phonecount','phoneDataArray','log','MCompany_type','Mprefix','guesttax','Quotation','country'));
     }
     public function view($id){
         $Guest = Guest::find($id);
@@ -489,8 +491,9 @@ class GuestController extends Controller
         $phone = phone_guest::where('Profile_ID',$Profile_ID)->get();
         $phonecount = phone_guest::where('Profile_ID',$Profile_ID)->count();
         $phoneDataArray = $phone->toArray();
+        $country = country::select('ct_nameENG')->get();
         return view('guest.view',compact('Guest','Other_City','provinceNames','amphures','Tambon','Zip_code'
-        ,'booking_channel','prefix','phonecount','phoneDataArray'));
+        ,'booking_channel','prefix','phonecount','phoneDataArray','country'));
     }
     public function search_table_log(Request $request)
     {
@@ -1218,7 +1221,8 @@ class GuestController extends Controller
         $Zip_code = districts::where('amphure_id', $Guest->Amphures)->select('zip_code','id')->get();
         $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
-        return view('guest.edittax',compact('MCompany_type','prefix','Zip_code','amphures','Tambon','phoneDataArray','phonecount','phone','Profile_ID','Guest','provinceNames','ID'));
+        $country = country::select('ct_nameENG')->get();
+        return view('guest.edittax',compact('MCompany_type','country','prefix','Zip_code','amphures','Tambon','phoneDataArray','phonecount','phone','Profile_ID','Guest','provinceNames','ID'));
     }
     public function guest_update_tax(Request $request ,$id)
     {
@@ -1475,7 +1479,7 @@ class GuestController extends Controller
         $Profile = 'รหัส : '.$GuestTax_ID;
         $datacompany = '';
 
-        $variables = [$Profile,$Company,$TaxType,$comtypefullname, $EmailTax, $IdentificationTax, $AddressIndividual, $phone ,$phoneA];
+        $variables = [$Profile,$Company,$TaxType,$comtypefullname, $EmailTax, $IdentificationTax, $AddressIndividual, $phoneTax ,$phoneTaxA];
 
         foreach ($variables as $variable) {
             if (!empty($variable)) {
@@ -1485,7 +1489,6 @@ class GuestController extends Controller
                 $datacompany .= $variable;
             }
         }
-
         $userid = Auth::user()->id;
         $save = new log_company();
         $save->Created_by = $userid;
@@ -1597,7 +1600,8 @@ class GuestController extends Controller
         $Zip_code = districts::where('amphure_id', $Guest->Amphures)->select('zip_code','id')->get();
         $prefix = master_document::select('name_th','id')->where('status', 1)->Where('Category','Mprename')->get();
         $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
-        return view('guest.viewtax',compact('MCompany_type','prefix','Zip_code','amphures','Tambon','phoneDataArray','phonecount','phone','Profile_ID','Guest','provinceNames','ID'));
+        $country = country::select('ct_nameENG')->get();
+        return view('guest.viewtax',compact('MCompany_type','prefix','Zip_code','amphures','Tambon','phoneDataArray','phonecount','phone','Profile_ID','country','Guest','provinceNames','ID'));
     }
 
      //-----------------------------------Visit-------------------------------

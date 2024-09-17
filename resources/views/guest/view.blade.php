@@ -84,8 +84,11 @@
                                 <div class="row mt-2">
                                     <div class="col-lg-6 col-md-6 col-sm-12"><label for="country">ประเทศ / Country</label><br>
                                         <select name="countrydata" id="countrySelect" class="form-select" onchange="showcityInput()"disabled>
-                                            <option value="Thailand" {{$Guest->Country == "Thailand" ? 'selected' : ''}}>ประเทศไทย</option>
-                                            <option value="Other_countries" {{$Guest->Country == "Other_countries" ? 'selected' : ''}}>ประเทศอื่นๆ</option>
+                                            @foreach($country as $item)
+                                                <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == $Guest->Country ? 'selected' : '' }}>
+                                                    {{ $item->ct_nameENG }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     @if (($Guest->Country === 'Thailand'))
@@ -181,7 +184,7 @@
                                         @foreach($phoneDataArray as $phone)
                                         <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                                             <div class="input-group show">
-                                                <input type="text" name="phone[]" class="form-control"value="{{ $phone['Phone_number'] }}" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" disabled>
+                                                <input type="text" name="phone[]" class="form-control"value="{{ $phone['Phone_number'] }}" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" disabled>
                                                 <button type="button" class="btn btn-outline-danger remove-phone"disabled><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                             </div>
                                         </div>
@@ -208,7 +211,7 @@
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <label for="identification_number">หมายเลขประจำตัว / Identification Number</label><br>
-                                        <input type="text" class="form-control" id="identification_number" name="identification_number" value="{{$Guest->Identification_Number}}" disabled>
+                                        <input type="text" class="form-control" id="identification_number " name="identification_number" value="{{$Guest->Identification_Number}}" disabled>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -292,7 +295,7 @@
             var zipCodeSelect = document.getElementById("zip_code");
 
             // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
-            if (countrySelect.value === "Other_countries") {
+            if (countrySelect.value !== "Thailand") {
                 // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
                 // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
                 province.disabled = true;
@@ -450,7 +453,7 @@
             newColTax.classList.add('col-lg-4', 'col-md-6', 'col-sm-12');
             newColTax.innerHTML = `
                 <div class="input-group mt-2">
-                    <input type="text" name="phoneTax[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                    <input type="text" name="phoneTax[]" class="form-control" maxlength="12" oninput="formatAndUpdate(this)" required>
                     <button type="button" class="btn btn-outline-danger remove-phoneTax"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                 </div>
             `;
@@ -462,7 +465,10 @@
 
             attachRemoveEventPhoneTax(newColTax.querySelector('.remove-phoneTax'));
         });
-
+        function formatAndUpdate(input) {
+            const formattedValue = formatPhoneNumber(input.value);
+            input.value = formattedValue;
+        }
         function attachRemoveEventPhoneTax(button) {
             button.addEventListener('click', function() {
                 var phoneContainerTax = document.getElementById('phone-containerTax');
