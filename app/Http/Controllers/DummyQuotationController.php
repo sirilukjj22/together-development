@@ -637,8 +637,8 @@ class DummyQuotationController extends Controller
                 $quantity = master_quantity::where('status',1)->get();
                 $settingCompany = Master_company::orderBy('id', 'desc')->first();
                 if ($Checkin) {
-                    $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                    $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                    $checkin = $Checkin;
+                    $checkout = $Checkout;
                 }else{
                     $checkin = '-';
                     $checkout = '-';
@@ -880,8 +880,8 @@ class DummyQuotationController extends Controller
                     }
                     $Time =null;
                     if ($Checkin) {
-                        $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                        $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                        $checkin = $Checkin;
+                        $checkout = $Checkout;
                         $Time = 'วันเข้าที่พัก : '.$checkin.' '.'วันออกที่พัก : '.$checkout.' '.'จำนวน : '.$Day.' วัน '.' '.$Night.' คืน ';
                     }
 
@@ -1405,8 +1405,8 @@ class DummyQuotationController extends Controller
             $quantity = master_quantity::where('status',1)->get();
             $settingCompany = Master_company::orderBy('id', 'desc')->first();
             if ($Checkin) {
-                $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                $checkin = $Checkin;
+                $checkout = $Checkout;
             }else{
                 $checkin = '-';
                 $checkout = '-';
@@ -5161,8 +5161,8 @@ class DummyQuotationController extends Controller
         $quantity = master_quantity::where('status',1)->get();
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         if ($Checkin) {
-            $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-            $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+            $checkin = $Checkin;
+            $checkout = $Checkout;
         }else{
             $checkin = '-';
             $checkout = '-';

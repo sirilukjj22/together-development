@@ -557,8 +557,8 @@ a:hover {
   }
 
   .input-g span input,
-  select,
-  textarea {
+  .input-g span select,
+  .input-g span textarea {
     width: 100%;
     border: 1px solid rgb(143, 158, 159);
     padding: 0.5rem 0.7rem;

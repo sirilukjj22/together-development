@@ -149,6 +149,43 @@
         cursor: not-allowed;
         opacity: 0.5;
     }
+    div.PROPOSAL {
+        padding: 10px ;
+        border: 3px solid #2D7F7B;
+        border-radius: 10px;
+        background-color: #109699;
+    }
+    div.PROPOSALfirst {
+        padding: 10px ;
+        border: 3px solid #2D7F7B;
+        border-radius: 10px;
+        background-color: #109699;
+    }
+    .readonly-input {
+        background-color: #ffffff !important;/* สีพื้นหลังขาว */
+    }
+
+    .readonly-input:focus {
+        background-color: #ffffff !important;/* ให้สีพื้นหลังขาวเมื่ออยู่ในสถานะโฟกัส */
+        box-shadow: none; /* ลบเงาเมื่อโฟกัส */
+        border-color: #ced4da; /* ให้เส้นขอบมีสีเทาอ่อนเพื่อให้เหมือนกับการไม่ได้โฟกัส */
+    }
+    .disabled-input {
+        background-color: #E8ECEF !important; /* Light gray background */
+        color: #6c757d; /* Gray text color */
+        border-color: #ced4da; /* Gray border */
+        cursor: not-allowed; /* Change cursor to indicate disabled state */
+    }
+
+    /* Style for enabled inputs */
+    .table-custom-borderless {
+        border-collapse: collapse;
+    }
+
+    .table-custom-borderless th,
+    .table-custom-borderless td {
+        border: none !important;
+    }
 </style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
@@ -186,16 +223,25 @@
                                     </div>
                                     <div class="col-lg-4 col-md-12 col-sm-12">
                                         <div class="row">
-                                            <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Proposal</b>
-                                            <span class="titleQuotation">{{$Quotation_ID}}</span>
-                                            <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
+                                            <div class="col-lg-4"></div>
+                                            <div class="PROPOSAL col-lg-7" style="margin-left: 5px">
+                                                <div class="row">
+                                                    <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">Proposal</b>
+                                                    <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$Quotation_ID}}</b>
+                                                </div>
+                                                <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-lg-4"></div>
+                                            <div class="PROPOSALfirst col-lg-7" style="background-color: #ffffff;">
                                                 <div class="col-12 col-md-12 col-sm-12">
                                                     <div class="row">
                                                         <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
                                                             <span>Issue Date:</span>
                                                         </div>
                                                         <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
-                                                            <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;"value="{{$Quotation->issue_date}}" @disabled(true)>
+                                                            <input type="text" id="datestart" class="form-control " name="IssueDate" style="text-align: left;" value="{{$Quotation->issue_date}}"readonly>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -205,7 +251,7 @@
                                                             <span>Expiration Date:</span>
                                                         </div>
                                                         <div class="col-lg-6 col-md-12 col-sm-12">
-                                                            <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly  value="{{$Quotation->Expirationdate}}">
+                                                            <input type="text" id="dateex" class="form-control " name="Expiration" style="text-align: left;"value="{{$Quotation->Expirationdate}}"readonly>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -260,19 +306,19 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-lg-2 col-md-6 col-sm-12">
-                                        <span for="chekin">Check In Date
-                                        <input type="date" name="Checkin" id="Checkin" class="form-control" onchange="CheckDate()"value="{{$Quotation->checkin}}" disabled>
+                                        <span for="chekin">Check In Date </span>
+                                        <input type="text" name="Checkin" id="Checkin" class="form-control " value="{{$Quotation->checkin}}" readonly onchange="CheckDate()" disabled>
                                     </div>
                                     <div class="col-lg-2 col-md-6 col-sm-12">
                                         <span for="chekin">Check Out Date </span>
-                                        <input type="date" name="Checkout" id="Checkout" class="form-control" onchange="CheckDate()"value="{{$Quotation->checkout}}"  disabled>
+                                        <input type="text" name="Checkout" id="Checkout" class="form-control"value="{{$Quotation->checkout}}" onchange="CheckDate()"  readonly disabled>
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <span for="">จำนวน</span>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="Day" id="Day" placeholder="จำนวนวัน"value="{{$Quotation->day}}"disabled>
+                                            <input type="text" class="form-control" name="Day" id="Day" placeholder="จำนวนวัน"value="{{$Quotation->day}}"readonly disabled @disabled(true)>
                                             <span class="input-group-text">Day</span>
-                                            <input type="text" class="form-control" name="Night" id="Night" placeholder="จำนวนคืน"value="{{$Quotation->night}}"disabled>
+                                            <input type="text" class="form-control" name="Night" id="Night" placeholder="จำนวนคืน"value="{{$Quotation->night}}"readonly disabled  @disabled(true)>
                                             <span class="input-group-text">Night</span>
                                         </div>
                                     </div>
@@ -617,7 +663,7 @@
                                             <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea">{{$Quotation->comment}}</textarea>
                                         </div>
                                         <div class="col-lg-3 col-md-4 col-sm-12 " >
-                                            <table class="table table-borderless" id="PRICE_INCLUDE_VAT" style="display: none;">
+                                            <table class="table table-custom-borderless" id="PRICE_INCLUDE_VAT" style="display: none;">
                                                 <tbody>
                                                     <tr >
                                                         <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
@@ -643,7 +689,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                            <table class="table table-borderless" id="PRICE_EXCLUDE_VAT" style="display: none;">
+                                            <table class="table table-custom-borderless" id="PRICE_EXCLUDE_VAT" style="display: none;">
                                                 <tbody>
                                                     <tr >
                                                         <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
@@ -661,7 +707,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                            <table class="table table-borderless "id="PRICE_PLUS_VAT" style="display: none;">
+                                            <table class="table table-custom-borderless "id="PRICE_PLUS_VAT" style="display: none;">
                                                 <tbody>
                                                     <tr >
                                                         <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
@@ -688,7 +734,7 @@
                                     <div class="col-12 row">
                                         <div class="col-9"></div>
                                         <div class="col-lg-3 col-md-3 col-sm-12">
-                                            <table class="table table-borderless1" >
+                                            <table class="table table-custom-borderless" >
                                                 <tbody>
                                                     <tr>
                                                         <td colspan="2" style="text-align:center;">
@@ -710,7 +756,7 @@
                                         <div class="col-9">
                                         </div>
                                         <div class="col-lg-3 col-md-3 col-sm-12" id="Pax" style="display: block">
-                                            <table class="table table-borderless" >
+                                            <table class="table table-custom-borderless" >
                                                 <tbody>
                                                     <tr>
                                                         <td style="text-align:right;width: 55%;font-size: 14px;"><b>Number of Guests :</b></td>
@@ -957,20 +1003,12 @@
                     var Contactemail =response.data.Email;
 
                     console.log(response.data.First_name);
-                    function formatPhoneNumber(phoneNumber) {
-                        if (phoneNumber.length === 10) {
-                            return phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 3) + '-' + phoneNumber.substr(6);
-                        }
-                    }
 
-                    var formattedPhoneNumber = formatPhoneNumber(companyphone);
-                    function formatPhoneNumberContact(phoneNumber) {
-                        if (phoneNumber.length === 10) {
-                            return phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 3) + '-' + phoneNumber.substr(6);
-                        }
-                    }
 
-                    var formattedContactphones = formatPhoneNumberContact(Contactphones);
+                    var formattedPhoneNumber = companyphone;
+
+
+                    var formattedContactphones = Contactphones;
                     $('#Company_Contact').val(fullName).prop('disabled', true);
                     $('#Company_Discount').val(Discount_Contract_Rate);
                     $('#Company_Contactname').val(fullid);
@@ -1013,12 +1051,7 @@
                     var Identification = response.data.Identification_Number;
                     var phone = response.phone.Phone_number;
 
-                    function formatPhoneNumber(phoneNumber) {
-                        if (phoneNumber.length === 10) {
-                            return phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 3) + '-' + phoneNumber.substr(6);
-                        }
-                    }
-                    var formattedPhoneNumber = formatPhoneNumber(phone);
+                    var formattedPhoneNumber = phone;
 
 
                     $('#guest_name').text(fullName);
