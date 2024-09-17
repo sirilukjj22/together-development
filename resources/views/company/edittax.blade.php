@@ -129,7 +129,7 @@
                                         </div>
                                         <div class="col-sm-6 col-6 mt-2">
                                             <span for="Taxpayer_Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</span><br>
-                                            <input type="text" id="Taxpayer_Identification" class="form-control" name="Taxpayer_Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" value="{{$viewTax->Taxpayer_Identification}}" >
+                                            <input type="text" id="Taxpayer_Identification" class="form-control idcard" name="Taxpayer_Identification" maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี" value="{{ formatIdCard($viewTax->Taxpayer_Identification) }}" >
                                         </div>
                                     </div>
                                 </div>
@@ -154,7 +154,7 @@
                                         </div>
                                         <div class="col-sm-6 col-6 mt-2">
                                             <span for="Taxpayer_Identification">เลขบัตรประจำตัวประชาชน / Identification number</span><br>
-                                            <input type="text" id="Taxpayer_Identification" class="form-control" name="Taxpayer_Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี"  value="{{$viewTax->Taxpayer_Identification}}">
+                                            <input type="text" id="Taxpayer_Identification" class="form-control" name="Taxpayer_Identification idcard" maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี"  value="{{ formatIdCard($viewTax->Taxpayer_Identification) }}">
                                         </div>
                                     </div>
                                 </div>
@@ -162,8 +162,11 @@
                                     <div class="col-sm-4 col-4">
                                         <span for="Country">ประเทศ / Country</span>
                                         <select name="Country" id="countrySelectA" class="select2" onchange="showcityAInput()">
-                                            <option value="Thailand" {{$viewTax->Country == "Thailand" ? 'selected' : ''}}>ประเทศไทย</option>
-                                            <option value="Other_countries" {{$viewTax->Country == "Other_countries" ? 'selected' : ''}}>ประเทศอื่นๆ</option>
+                                            @foreach($country as $item)
+                                                <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == $viewTax->Country ? 'selected' : '' }}>
+                                                    {{ $item->ct_nameENG }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-sm-4 col-4">
@@ -220,7 +223,7 @@
                                         @foreach($phonetaxDataArray as $phone)
                                         <div class="col-lg-4 col-md-6 col-sm-12 mt-3">
                                             <div class="input-group show">
-                                                <input type="text" name="phoneCom[]" class="form-control" maxlength="10" value="{{ $phone['Phone_number'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
+                                                <input type="text" name="phoneCom[]" class="form-control phone" maxlength="14" value="{{ formatPhoneNumber($phone['Phone_number']) }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
                                                 <button type="button" class="btn btn-outline-danger remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                             </div>
                                         </div>
@@ -243,6 +246,7 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/formatNumber.js')}}"></script>
     <script>
         $(document).ready(function() {
             $('.select2').select2({
@@ -296,7 +300,7 @@
             var tambonSelect = document.getElementById("TambonA");
             var zipCodeSelect = document.getElementById("zip_codeA");
             var provinceAgent = document.getElementById("provinceAgent");
-            if (countrySelectA == "Other_countries") {
+            if (countrySelectA != "Thailand") {
                 amphuresSelect.disabled = true;
                 tambonSelect.disabled = true;
                 zipCodeSelect.disabled = true;
@@ -347,7 +351,7 @@
             var tambonSelect = document.getElementById("TambonA");
             var zipCodeSelect = document.getElementById("zip_codeA");
             var provinceAgent = document.getElementById("provinceAgent");
-            if (countrySelectA.value === "Other_countries") {
+            if (countrySelectA.value !== "Thailand") {
                 amphuresSelect.disabled = true;
                 tambonSelect.disabled = true;
                 zipCodeSelect.disabled = true;
@@ -424,13 +428,33 @@
                 },
             })
         }
+        function formatPhoneNumber(value) {
+            value = value.replace(/\D/g, ""); // Remove non-numeric characters
+            let formattedValue = "";
+
+            if (value.length > 0) {
+                formattedValue += value.substring(0, 3); // xxx
+            }
+            if (value.length > 3) {
+                formattedValue += "-" + value.substring(3, 6); // xxx-xxx
+            }
+            if (value.length > 6) {
+                formattedValue += "-" + value.substring(6, 10); // xxx-xxx-xxxx
+            }
+
+            return formattedValue;
+        }
+
         document.getElementById('add-phone').addEventListener('click', function() {
+            // Function to format phone number
+
+
             var phoneContainer = document.getElementById('phone-container');
             var newCol = document.createElement('div');
             newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12');
             newCol.innerHTML = `
-                <div class="input-group mt-3">
-                    <input type="text" name="phoneCom[]" class="form-control" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                <div class="input-group mt-3 show">
+                    <input type="text" name="phoneCom[]" class="form-control phone" maxlength="12" oninput="formatAndUpdate(this)" required>
                     <button type="button" class="btn btn-outline-danger remove-phone"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                 </div>
             `;
@@ -441,18 +465,33 @@
                 newCol.querySelector('.input-group').classList.add('show');
             }, 10);
 
+            // Attach the remove event to the new button
             attachRemoveEvent(newCol.querySelector('.remove-phone'));
         });
+
+        // Function to format and update the input field as the user types
+        function formatAndUpdate(input) {
+            const formattedValue = formatPhoneNumber(input.value);
+            input.value = formattedValue;
+        }
+
+        // Function to attach the remove event to a button
         function attachRemoveEvent(button) {
             button.addEventListener('click', function() {
                 var phoneContainer = document.getElementById('phone-container');
                 if (phoneContainer.childElementCount > 1) {
-                    phoneContainer.removeChild(button.closest('.col-lg-4, .col-md-6, .col-sm-12'));
+                    var colDiv = button.closest('.col-lg-4, .col-md-6, .col-sm-12'); // Correct container selector
+                    if (colDiv) {
+                        phoneContainer.removeChild(colDiv);
+                    }
                 }
             });
         }
+
+        // Attach the remove event to existing buttons on page load
         document.querySelectorAll('.remove-phone').forEach(function(button) {
             attachRemoveEvent(button);
         });
+
     </script>
 @endsection

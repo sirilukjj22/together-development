@@ -584,7 +584,7 @@ class CompanyController extends Controller
         $fax = company_fax::where('Profile_ID', 'like', "%{$Profile_ID}%")->get();
         $faxcount = company_fax::where('Profile_ID', 'like', "%{$Profile_ID}%")->count();
         $faxArray = $fax->toArray();
-
+        $country = country::select('ct_nameENG')->get();
         $representative = representative::where('Company_ID', 'like', "%{$Company_ID}%")->where('status',1)->first();
         $representative_ID = $representative->Profile_ID;
         $repCompany_ID = $representative->Company_ID;
@@ -600,7 +600,7 @@ class CompanyController extends Controller
         return view('company.view',compact('Company','booking_channel','provinceNames','Tambon','amphures',
         'Zip_code','faxArray','phoneDataArray','Company_Contact','Mmarket',
         'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID','representative','Mprefix','provinceNames'
-        ,'phoneArray','count'));
+        ,'phoneArray','count','country'));
 
     }
     public function edit($id)
@@ -668,14 +668,10 @@ class CompanyController extends Controller
                 'Company_Email' => $datarequest['Company_Email'] ?? null,
                 'Tambon' => $datarequest['Tambon'] ?? null,
                 'Company_Website' => $datarequest['Company_Website'] ?? null,
-                'Taxpayer_Identification' => str_replace('-', '', $datarequest['Taxpayer_Identification']) ?? null,
+                'Taxpayer_Identification' => $datarequest['Taxpayer_Identification'] ?? null,
                 'Lastest_Introduce_By' => $datarequest['Lastest_Introduce_By'] ?? null,
-                'phone' => isset($datarequest['phone']) ? array_map(function($phone) {
-                    return str_replace('-', '', $phone);
-                }, $datarequest['phone']) : null,
-                'fax' => isset($datarequest['fax']) ? array_map(function($fax) {
-                    return str_replace('-', '', $fax);
-                }, $datarequest['fax']) : null,
+                'phone' => $datarequest['phone'] ?? null,
+                'fax' => $datarequest['fax'] ?? null,
             ];
 
 
@@ -764,7 +760,7 @@ class CompanyController extends Controller
 
             $Identification = null;
             if ($Taxpayer_Identification) {
-                $Identification = 'เลขบัตรประจำตัว : ' . formatIdCard($Taxpayer_Identification);
+                $Identification = 'เลขบัตรประจำตัว : ' . $Taxpayer_Identification;
             }
             $Branch = null;
             if ($Branch) {
@@ -772,26 +768,23 @@ class CompanyController extends Controller
             }
             $phone = null;
             if ($phoneCom) {
-                $formattedPhoneCom = array_map('formatPhoneNumber', $phoneCom);
-                $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $formattedPhoneCom);
+                $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phoneCom);
             }
 
             $phoneA = null;
             if ($phoneComA) {
-                $formattedPhoneComA = array_map('formatPhoneNumber', $phoneComA);
-                $phoneA = 'ลบเบอร์โทรศัพท์ : ' . implode(', ', $formattedPhoneComA);
+
+                $phoneA = 'ลบเบอร์โทรศัพท์ : ' . implode(', ', $phoneComA);
             }
 
             $fax = null;
             if ($faxCom) {
-                $formattedFaxCom = array_map('formatPhoneNumber', $faxCom); // Use the same function if fax has the same format
-                $fax = 'เพิ่มเบอร์แฟกซ์ : ' . implode(', ', $formattedFaxCom);
+                $fax = 'เพิ่มเบอร์แฟกซ์ : ' . implode(', ', $faxCom);
             }
 
             $faxA = null;
             if ($faxComA) {
-                $formattedFaxComA = array_map('formatPhoneNumber', $faxComA); // Use the same function if fax has the same format
-                $faxA = 'ลบเบอร์แฟกซ์ : ' . implode(', ', $formattedFaxComA);
+                $faxA = 'ลบเบอร์แฟกซ์ : ' . implode(', ', $faxComA);
             }
 
             $AddressIndividual = null;
@@ -888,7 +881,7 @@ class CompanyController extends Controller
             $save->Branch = $request->Branch;
             $save->Company_Email = $request->Company_Email;
             $save->Company_Website = $request->Company_Website;
-            $save->Taxpayer_Identification = str_replace('-', '', $request->Taxpayer_Identification);
+            $save->Taxpayer_Identification = $request->Taxpayer_Identification;
             $save->Contract_Rate_Start_Date = $request->contract_rate_start_date;
             $save->Contract_Rate_End_Date = $request->contract_rate_end_date;
             $save->Lastest_Introduce_By =$request->Lastest_Introduce_By;
@@ -901,10 +894,7 @@ class CompanyController extends Controller
             company_fax::where('Profile_ID', $Profile_ID)->delete();
             if ($request->phone !== null) {
                 $phone = $request->phone;
-                $cleanedphoneNumbers = array_map(function($phone) {
-                    return str_replace('-', '', $phone);
-                }, $phone);
-                foreach ($cleanedphoneNumbers as $index => $phoneNumber) {
+                foreach ($phone as $index => $phoneNumber) {
                     if ($phoneNumber !== null) {
                         $savephone = new company_phone();
                         $savephone->Profile_ID = $Profile_ID;
@@ -916,11 +906,7 @@ class CompanyController extends Controller
             }
             if ($request->fax !== null) {
                 $fax = $request->fax;
-                $cleanedfaxNumbers = array_map(function($fax) {
-                    return str_replace('-', '', $fax);
-                }, $fax);
-                foreach ($cleanedfaxNumbers as $index => $faxNumber) {
-
+                foreach ($fax as $index => $faxNumber) {
                     if ($faxNumber !== null) {
                         $savefax = new company_fax();
                         $savefax->Profile_ID = $Profile_ID;
@@ -1136,6 +1122,7 @@ class CompanyController extends Controller
             if ($BranchTax) {
                 $Branch = 'สาขา : '.$BranchTax;
             }
+
             $phone = null;
             if ($phoneCom) {
                 $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phoneCom);
@@ -1155,6 +1142,7 @@ class CompanyController extends Controller
                     $datacompany .= $variable;
                 }
             }
+
             $userid = Auth::user()->id;
             $save = new log_company();
             $save->Created_by = $userid;
@@ -1259,8 +1247,9 @@ class CompanyController extends Controller
         $amphures = amphures::where('province_id', $viewTax->City)->select('name_th','id')->get();
         $Zip_code = districts::where('amphure_id', $viewTax->Amphures)->select('zip_code','id')->get();
         $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
+        $country = country::select('ct_nameENG')->get();
         return view('company.viewtax',compact('viewTax','phonetaxDataArray','provinceNames','Tambon','amphures',
-            'Zip_code','phonetax','phonetaxcount','MCompany_type','Mprefix','CompanyID','ComTax_ID'));
+            'Zip_code','phonetax','phonetaxcount','MCompany_type','Mprefix','CompanyID','ComTax_ID','country'));
     }
     public function editTax($id) {
         $viewTax = company_tax::where('id',$id)->first();
@@ -1277,9 +1266,10 @@ class CompanyController extends Controller
         $Tambon = districts::where('amphure_id', $viewTax->Amphures)->select('name_th','id')->get();
         $amphures = amphures::where('province_id', $viewTax->City)->select('name_th','id')->get();
         $Zip_code = districts::where('amphure_id', $viewTax->Amphures)->select('zip_code','id')->get();
+        $country = country::select('ct_nameENG')->get();
         $MCompany_type = master_document::select('name_th', 'id')->where('status', 1)->Where('Category','Mcompany_type')->get();
         return view('company.edittax',compact('viewTax','phonetaxDataArray','provinceNames','Tambon','amphures',
-            'Zip_code','phonetax','phonetaxcount','MCompany_type','Mprefix','CompanyID','Profile_ID','ComTax_ID'));
+            'Zip_code','phonetax','phonetaxcount','MCompany_type','Mprefix','CompanyID','Profile_ID','ComTax_ID','country'));
     }
     public function updatetax(Request $request ,$Comid, $id){
         try {
@@ -1379,6 +1369,7 @@ class CompanyController extends Controller
 
                 $comtypefullname = null;
 
+
                 // ตรวจสอบค่าต่างๆ ตามลำดับเงื่อนไข
                 if ($Company_type && $first_name && $last_name) {
                     $Mprefix = master_document::where('id', $Company_type)->where('Category', 'Mprename')->first();
@@ -1432,7 +1423,9 @@ class CompanyController extends Controller
                 if ($Tax_Type == 'Individual') {
                     $Branch = 'สาขา : -';
                 }else{
-                    $Branch = 'สาขา : ' . $BranchTax;
+                    if ($BranchTax) {
+                        $Branch = 'สาขา : ' . $BranchTax;
+                    }
                 }
                 $Identification = null;
                 if ($Taxpayer_Identification) {
@@ -1459,23 +1452,25 @@ class CompanyController extends Controller
                 if ($Address) {
                     $AddressCheck = 'ที่อยู่ : '.$Address;
                 }
-                if ($City) {
-                    $provinceNames = province::where('id', $City)->first();
-                    $provinceNames = $provinceNames->name_th;
-                    $provinceNames = ' จังหวัด : '.$provinceNames;
-                }
-                if ($Tambon) {
-                    $TambonID = districts::where('id',$Tambon)->select('name_th','id')->first();
-                    $TambonName = $TambonID->name_th;
-                    $TambonCheck = ' ตำบล : '.$TambonName;
-                }
-                if ($Amphures) {
-                    $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
-                    $amphures = $amphuresID->name_th;
-                    $AmphuresCheck = ' อำเภอ : '.$TambonName;
-                }
-                if ($Zip_Code) {
-                    $Zip_CodeCheck = ' รหัสไปรษณีย์ : '.$Zip_Code;
+                if ($datarequest['Country'] == 'Thailand') {
+                    if ($City) {
+                        $provinceNames = province::where('id', $City)->first();
+                        $provinceNames = $provinceNames->name_th;
+                        $provinceNames = ' จังหวัด : '.$provinceNames;
+                    }
+                    if ($Tambon) {
+                        $TambonID = districts::where('id',$Tambon)->select('name_th','id')->first();
+                        $TambonName = $TambonID->name_th;
+                        $TambonCheck = ' ตำบล : '.$TambonName;
+                    }
+                    if ($Amphures) {
+                        $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
+                        $amphures = $amphuresID->name_th;
+                        $AmphuresCheck = ' อำเภอ : '.$TambonName;
+                    }
+                    if ($Zip_Code) {
+                        $Zip_CodeCheck = ' รหัสไปรษณีย์ : '.$Zip_Code;
+                    }
                 }
                 $AddressIndividual = $CountryCheck.'+'.$AddressCheck.' '.$TambonCheck.' '.$AmphuresCheck.'+'.$provinceNames.' '.$Zip_CodeCheck;
                 $datacompany = '';
@@ -1509,17 +1504,13 @@ class CompanyController extends Controller
                 $save->BranchTax = $request->BranchTax;
                 $save->first_name =$request->first_name;
                 $save->last_name =$request->last_name;
-                if ($Country == "Other_countries") {
-                    if ($city === null) {
-                        return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
-                    }else {
-                        $save->City = $request->City;
-                        $save->Country =$request->Country;
-                        $save->Amphures =null;
-                        $save->Tambon =null;
-                        $save->Address =$request->Address;
-                        $save->Zip_Code = null;
-                    }
+                if ($Country != "Thailand") {
+                    $save->City = null;
+                    $save->Country =$request->Country;
+                    $save->Amphures =null;
+                    $save->Tambon =null;
+                    $save->Address =$request->Address;
+                    $save->Zip_Code = null;
                 }else {
                     $save->Country =$request->Country;
                     $save->City =$request->City;
@@ -1551,17 +1542,13 @@ class CompanyController extends Controller
                 $save->Tax_Type = 'Individual';
                 $save->BranchTax = $request->BranchTax;
                 $save->Companny_name =$request->Companny_name;
-                if ($Country == "Other_countries") {
-                    if ($city === null) {
-                        return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
-                    }else {
-                        $save->City = $request->City;
-                        $save->Country =$request->Country;
-                        $save->Amphures =null;
-                        $save->Tambon =null;
-                        $save->Address =$request->Address;
-                        $save->Zip_Code = null;
-                    }
+                if ($Country != "Thailand") {
+                    $save->City = null;
+                    $save->Country =$request->Country;
+                    $save->Amphures =null;
+                    $save->Tambon =null;
+                    $save->Address =$request->Address;
+                    $save->Zip_Code = null;
                 }else {
                     $save->Country =$request->Country;
                     $save->City =$request->City;
@@ -1585,6 +1572,7 @@ class CompanyController extends Controller
                 }
                 $save->save();
             }
+
             return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
             return redirect()->route('Company.edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
@@ -1998,9 +1986,12 @@ class CompanyController extends Controller
             $saveC->prefix = $request->prefix;
             $saveC->First_name = $request->first_nameContact;
             $saveC->Last_name = $request->last_nameContact;
-            if ($request->countrydataC == "Other_countries") {
+            if ($request->countrydataC != "Thailand") {
                 $saveC->Country = $request->countrydataC;
-                $saveC->City = $request->cityC;
+                $saveC->City = null;
+                $saveC->Amphures = null;
+                $saveC->Tambon = null;
+                $saveC->Zip_Code = null;
             }else{
                 $saveC->Country = $request->countrydataC;
                 $saveC->City = $request->cityC;
@@ -2044,8 +2035,9 @@ class CompanyController extends Controller
         $phone = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID',$repCompany_ID)->get();
         $phonecount = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID',$repCompany_ID)->count();
         $phoneDataArray = $phone->toArray();
+        $country = country::select('ct_nameENG')->get();
         return view('company.editcontact',compact('representative','Mprefix','provinceNames','CompanyID'
-        ,'provinceNames','Tambon','amphures','Zip_code','phoneDataArray','phonecount','representative_ID'));
+        ,'provinceNames','Tambon','amphures','Zip_code','phoneDataArray','phonecount','representative_ID','country'));
     }
     public function contactview($id){
 
@@ -2062,8 +2054,9 @@ class CompanyController extends Controller
         $phone = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID',$repCompany_ID)->get();
         $phonecount = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID',$repCompany_ID)->count();
         $phoneDataArray = $phone->toArray();
+        $country = country::select('ct_nameENG')->get();
         return view('company.viewcontact',compact('representative','Company','Mprefix','provinceNames'
-        ,'provinceNames','Tambon','amphures','Zip_code','phoneDataArray','phonecount','representative_ID','CompanyID'));
+        ,'provinceNames','Tambon','amphures','Zip_code','phoneDataArray','phonecount','representative_ID','CompanyID','country'));
     }
     public function contactupdate(Request $request, $id)
     {
@@ -2190,6 +2183,7 @@ class CompanyController extends Controller
             if ($Address) {
                 $AddressCheck = 'ที่อยู่ : '.$Address;
             }
+
             if ($City) {
                 $provinceNames = province::where('id', $City)->first();
                 $provinceNames = $provinceNames->name_th;
@@ -2251,9 +2245,12 @@ class CompanyController extends Controller
             $saveC->prefix = $request->Company_type;
             $saveC->First_name = $request->first_name;
             $saveC->Last_name = $request->last_name;
-            if ($request->countrydataC == "Other_countries") {
+            if ($request->Country != "Thailand") {
                 $saveC->Country = $request->Country;
-                $saveC->City = $request->City;
+                $saveC->City = null;
+                $saveC->Amphures = null;
+                $saveC->Tambon = null;
+                $saveC->Zip_Code = null;
             }else{
                 $saveC->Country = $request->Country;
                 $saveC->City = $request->City;
@@ -2263,19 +2260,21 @@ class CompanyController extends Controller
             }
             $saveC->Address = $request->Address;
             $saveC->Email = $request->Company_Email;
-            $Profile_last = representative_phone::where('Profile_ID',$Profile_ID_phone)
-                            ->where('Company_ID',$Company_ID)->delete();
-            foreach ($request->phoneCom as $index => $phoneNumber) {
-                if ($phoneNumber !== null) {
-                    $savephoneA = new representative_phone();
-                    $savephoneA->Profile_ID = $Profile_ID_phone;
-                    $savephoneA->Phone_number = $phoneNumber;
-                    $savephoneA->Company_ID = $Company_ID;
-                    $savephoneA->sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                    $savephoneA->save();
+            $saveC->save();
+            $deletedRows = representative_phone::where('Profile_ID', $Profile_ID_phone)
+                ->where('Company_ID', $Company_ID)
+                ->delete();
+            $phone = $request->phoneCom;
+            if ($phone !== null) {
+                foreach ($phone as $index => $phoneNumber) {
+                        $savephoneA = new representative_phone();
+                        $savephoneA->Profile_ID = $Profile_ID_phone;
+                        $savephoneA->Phone_number = $phoneNumber;
+                        $savephoneA->Company_ID = $Company_ID;
+                        $savephoneA->sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                        $savephoneA->save();
                 }
             }
-            $saveC->save();
             return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
             return redirect()->route('Company.edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');

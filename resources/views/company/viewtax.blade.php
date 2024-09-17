@@ -101,8 +101,11 @@
                                 <div class="col-sm-4 col-4">
                                     <span for="Country">Add Tax</span>
                                     <select name="TaxSelectA" id="TaxSelectA" class="select2" onchange="showTaxInput()" disabled>
-                                        <option value="Company"{{$viewTax->Tax_Type == "Company" ? 'selected' : ''}}>Company</option>
-                                        <option value="Individual"{{$viewTax->Tax_Type == "Individual" ? 'selected' : ''}}>Individual</option>
+                                        @foreach($country as $item)
+                                            <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == $viewTax->Country ? 'selected' : '' }}>
+                                                {{ $item->ct_nameENG }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -215,7 +218,7 @@
                                     @foreach($phonetaxDataArray as $phone)
                                     <div class="col-lg-4 col-md-6 col-sm-12 mt-3">
                                         <div class="input-group show">
-                                            <input type="text" name="phone[]" class="form-control" maxlength="10" value="{{ $phone['Phone_number'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" disabled>
+                                            <input type="text" name="phone[]" class="form-control" maxlength="12" value="{{ formatPhoneNumber($phone['Phone_number']) }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" disabled>
                                             <button type="button" class="btn btn-outline-danger remove-phone"disabled><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                         </div>
                                     </div>

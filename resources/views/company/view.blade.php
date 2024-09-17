@@ -139,8 +139,7 @@
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                     <label for="country">ประเทศ / Country</label>
                                     <select name="countrydata" id="countrySelect" class="form-select" onchange="showcityInput()"disabled>
-                                        <option value="Thailand" {{$Company->Country == "Thailand" ? 'selected' : ''}}>ประเทศไทย</option>
-                                        <option value="Other_countries" {{$Company->Country == "Other_countries" ? 'selected' : ''}}>ประเทศอื่นๆ</option>
+                                        <option value="Thailand" {{$Company->Country == "Thailand" ? 'selected' : ''}}>{{$Company->Country}}</option>
                                     </select>
                                 </div>
                             </div>
@@ -151,17 +150,7 @@
                                 </div>
                             </div>
                             <div class="row mt-2">
-                                @if ($Company->Country === 'Other_countries')
-                                    <div class="col-lg-3 col-md-6 col-sm-12" id="cityInput"disabled>
-                                        <label for="city">จังหวัด / Province</label>
-                                        <input type="text" id="city" name="city" value="{{$Other_City}}">
-                                    </div>
-                                @else
-                                    <div class="col-lg-3 col-md-6 col-sm-12" id="cityInput" style="display:none;"disabled>
-                                        <label for="city">จังหวัด / Province</label>
-                                        <input type="text" id="city" name="city">
-                                    </div>
-                                @endif
+
                                 @if (($Company->Country === 'Thailand'))
                                     <div class="col-lg-3 col-md-6 col-sm-12" id="citythai" style="display:block;">
                                         <label for="city">จังหวัด / Province</label>
@@ -321,21 +310,9 @@
                                             <div class="col-lg-4 col-md-6 col-sm-12">
                                                 <label for="Country">Country</label><br>
                                                 <select name="countrydataA" id="countrySelectA" class="form-select" onchange="showcityAInput()"disabled>
-                                                    <option value="Thailand" {{$representative->Country == "Thailand" ? 'selected' : ''}}>ประเทศไทย</option>
-                                                    <option value="Other_countries" {{$representative->Country == "Other_countries" ? 'selected' : ''}}>ประเทศอื่นๆ</option>
+                                                    <option value="Thailand" {{$representative->Country == "Thailand" ? 'selected' : ''}}>{{$representative->Country}}</option>
                                                 </select>
                                             </div>
-                                            @if ($representative->Country !== 'thailand')
-                                                <div class="col-lg-4 col-md-6 col-sm-12" id="cityInput">
-                                                    <label for="city">City</label><br>
-                                                    <input type="text" id="city" name="city" value="{{$Other_City}}"disabled>
-                                                </div>
-                                            @else
-                                                <div class="col-lg-4 col-md-6 col-sm-12" id="cityInput" style="display:none;">
-                                                    <label for="city">City</label><br>
-                                                    <input type="text" id="city" name="city"disabled>
-                                                </div>
-                                            @endif
                                             @if (($representative->Country === 'Thailand'))
                                                 <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:block;">
                                                     <label for="city">City</label><br>

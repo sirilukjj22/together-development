@@ -231,7 +231,7 @@
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <label for="Taxpayer_Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</label><br>
-                                        <input type="text" id="Taxpayer_Identification" class="form-control idcard" name="Taxpayer_Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required value="{{ formatIdCard($Company->Taxpayer_Identification) }}">
+                                        <input type="text" id="Taxpayer_Identification" class="form-control idcard" name="Taxpayer_Identification" maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี" required value="{{ formatIdCard($Company->Taxpayer_Identification) }}">
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -415,7 +415,7 @@
                                                                     </div>
                                                                     <div class="col-sm-6 col-6 mt-2">
                                                                         <label for="Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</label><br>
-                                                                        <input type="text" id="IdentificationCompany" class="form-control idcard" name="Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required >
+                                                                        <input type="text" id="IdentificationCompany" class="form-control idcard" name="Identification" maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี" required >
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -507,7 +507,7 @@
                                                                     <!-- Initial input fields -->
                                                                     <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                                                                         <div class="input-group show">
-                                                                            <input type="text" name="phoneTax[]" class="form-control phone" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                                            <input type="text" name="phoneTax[]" class="form-control phone" maxlength="14" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
                                                                             <button type="button" class="btn btn-outline-danger remove-phoneTax"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                                                         </div>
                                                                     </div>
@@ -1022,7 +1022,7 @@
                                                                     <!-- Initial input fields -->
                                                                     <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
                                                                         <div class="input-group show">
-                                                                            <input type="text" name="phoneContact[]" class="form-control phone" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                                            <input type="text" name="phoneContact[]" class="form-control phone" maxlength="14" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
                                                                             <button type="button" class="btn btn-outline-danger remove-phoneContact"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                                                         </div>
                                                                     </div>

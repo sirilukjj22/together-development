@@ -123,8 +123,11 @@
                                 <div class="col-sm-4 col-4">
                                     <span for="Country">ประเทศ / Country</span>
                                     <select name="countrydataA" id="countrySelectA" class="select2" onchange="showcityAInput()"disabled>
-                                        <option value="Thailand" {{$representative->Country == "Thailand" ? 'selected' : ''}}>ประเทศไทย</option>
-                                        <option value="Other_countries" {{$representative->Country == "Other_countries" ? 'selected' : ''}}>ประเทศอื่นๆ</option>
+                                        @foreach($country as $item)
+                                            <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == $representative->Country ? 'selected' : '' }}>
+                                                {{ $item->ct_nameENG }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-4 col-4" id="citythaiA" style="display:block;">
@@ -179,7 +182,7 @@
                                     @foreach($phoneDataArray as $phone)
                                     <div class="col-lg-4 col-md-6 col-sm-12 mt-3">
                                         <div class="input-group show">
-                                            <input type="text" name="phone[]" class="form-control" maxlength="10" value="{{ $phone['Phone_number'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" disabled>
+                                            <input type="text" name="phone[]" class="form-control" maxlength="12" value="{{ formatPhoneNumber($phone['Phone_number']) }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" disabled>
                                             <button type="button" class="btn btn-outline-danger remove-phone"disabled><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                         </div>
                                     </div>
