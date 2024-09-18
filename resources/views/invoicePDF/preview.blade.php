@@ -258,14 +258,14 @@
                         </tr>
                         <tr>
                             <td><b style="margin-left: 10px;">Company Number :</b></td>
-                            <td>{{ substr($phone->Phone_number, 0, 3) }}-{{ substr($phone->Phone_number, 3, 3) }}-{{ substr($phone->Phone_number, 6) }}
+                            <td>{{ $phone->Phone_number }}
                                 <b style="margin-left: 10px;">Company Fax : </b><span>{{$Fax_number}}</span>
                             </td>
                             <td>
 
                             </td>
                         </tr>
-                       <tr>
+                        <tr>
                             <td><b style="margin-left: 10px;">Company Email :</b></td>
                             <td>{{$Email}}</td>
                         </tr>
@@ -443,16 +443,16 @@
                 </table>
             </footer>
             <main>
-                <b class="com" style="font-size:18px">Company Information</b>
+                <b class="com" style="font-size:18px">Guest Information</b>
                 <div style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#2D7F7B; width:55%">
                     <table style="line-height:12px;" >
                         <tr>
-                            <td ><b style="margin-left: 10px; width:30%">Company Name :</b></td>
+                            <td ><b style="margin-left: 10px; width:30%">Guest Name :</b></td>
                             <td>{{$fullName}}</td>
                             <td></td>
                         </tr>
                         <tr>
-                            <td><b style="margin-left: 10px;">Company Address :</b></td>
+                            <td><b style="margin-left: 10px;">Guest Address :</b></td>
                             <td>{{$Address}}
                                 @if ($TambonID)
                                     {{'ตำบล' . $TambonID->name_th}}
@@ -468,16 +468,16 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><b style="margin-left: 10px;">Company Number :</b></td>
-                            <td>{{ substr($phone->Phone_number, 0, 3) }}-{{ substr($phone->Phone_number, 3, 3) }}-{{ substr($phone->Phone_number, 6) }}
-                                <b style="margin-left: 10px;">Company Fax : </b><span>{{$Fax_number}}</span>
+                            <td><b style="margin-left: 10px;">Guest Number :</b></td>
+                            <td>{{ $phone->Phone_number }}
+                                <b style="margin-left: 10px;">Guest Fax : </b><span>{{$Fax_number}}</span>
                             </td>
                             <td>
 
                             </td>
                         </tr>
                         <tr>
-                            <td><b style="margin-left: 10px;">Company Email :</b></td>
+                            <td><b style="margin-left: 10px;">Guest Email :</b></td>
                             <td>{{$Email}}</td>
                         </tr>
                         <tr>

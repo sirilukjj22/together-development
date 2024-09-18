@@ -539,7 +539,7 @@ class Document_invoice extends Controller
                 $Children = $Quotation->children;
                 $Checkin = $checkin;
                 $Checkout = $checkout;
-                $valid = Carbon::parse($valid)->format('d/m/Y');
+                $valid = $valid;
                 $Deposit = $datarequest['Deposit'];
                 $payment=$datarequest['Payment'];
                 $Nettotal = floatval(str_replace(',', '', $datarequest['Nettotal']));
@@ -657,8 +657,71 @@ class Document_invoice extends Controller
 
             }else{
                 {
-                    dd($data);
-                    //pdf
+                    $datarequest = [
+                        'Proposal_ID' => $data['QuotationID'] ?? null,
+                        'InvoiceID' => $data['InvoiceID'] ?? null,
+                        'Refler_ID' => $data['Refler_ID'] ?? null,
+                        'IssueDate' => $data['IssueDate'] ?? null,
+                        'Expiration' => $data['Expiration'] ?? null,
+                        'Selectdata' => $data['selecttype'] ?? null,
+                        'Valid' => $data['valid'] ?? null,
+                        'Deposit' => $data['Deposit'] ?? null,
+                        'Payment' => $data['Payment'] ?? null,
+                        'Mevent' => $data['eventformat'] ?? null,
+                        'Nettotal' => $data['Nettotal'] ?? null,
+                        'Company' => $data['company'] ?? null,
+                        'Balance' => $data['balance'] ?? null,
+                        'Sum' => $data['sum'] ?? null,
+                    ];
+
+                    //log
+                    $Proposal_ID = $datarequest['Proposal_ID'] ?? null;
+                    $InvoiceID = $datarequest['InvoiceID'] ?? null;
+                    $Valid = $datarequest['Valid'] ?? null;
+                    $Deposit = $datarequest['Deposit'] ?? null;
+                    $Nettotal = $datarequest['Nettotal'] ?? null;
+                    $Payment = $datarequest['Payment'] ?? null;
+                    $Sum = $datarequest['Sum'] ?? null;
+                    $Balance = $datarequest['Balance'] ?? null;
+
+
+                    $Validcheck = null;
+                    if ($Valid) {
+                        $Validcheck = 'วันที่ใช้งาน : '.$Valid;
+                    }
+
+                    $Nettotalcheck = null;
+                    if ($Nettotal) {
+                        $Nettotalcheck = 'ยอดเงินเต็ม : '.number_format($Nettotal). ' บาท';
+                    }
+
+                    $Paymentcheck = null;
+                    if ($Payment) {
+                        $Paymentcheck = 'ยอดเงินที่ชำระ : '. number_format($Payment). ' บาท';
+                    }
+
+                    $Balancecheck = null;
+                    if ($Balance) {
+                        $Balancecheck = 'ยอดเงินคงเหลือชำระ : '.number_format($Balance). ' บาท';
+                    }
+                    $fullname = null;
+                    if ($InvoiceID) {
+                        $fullname = 'รหัส : '.$InvoiceID.' + '.'อ้างอิงจาก : '.$Proposal_ID;
+                    }
+
+                    $datacompany = '';
+
+                    $variables = [$fullname, $Nettotalcheck, $Paymentcheck, $Balancecheck, $Validcheck];
+
+                    foreach ($variables as $variable) {
+                        if (!empty($variable)) {
+                            if (!empty($datacompany)) {
+                                $datacompany .= ' + ';
+                            }
+                            $datacompany .= $variable;
+                        }
+                    }
+                    dd($datacompany);
                 }
                 {
                     //save

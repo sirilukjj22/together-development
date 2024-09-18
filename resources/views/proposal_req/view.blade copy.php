@@ -68,9 +68,24 @@
                     <div class="col-lg-6 col-md-12 col-sm-12">
                         <div class="card mb-4" style="height: 830px;  overflow-x: hidden; overflow-y: auto;">
                             <div class='card-body'>
+                                <h5 class="com">รหัสใบข้อเสนอ : {{$item->DummyNo}}</h5>
+                                <input type="hidden" name="DummyNo[]" id="DummyNo" class="DummyNo" value="{{$item->DummyNo}}">
                                 <div class="row">
-                                    <h5 class="com">รหัสใบข้อเสนอ : {{$item->DummyNo}}</h5>
-                                    <input type="hidden" name="DummyNo[]" id="DummyNo" class="DummyNo" value="{{$item->DummyNo}}">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <span>จำนวนผู้เข้าพัก : {{$item->adult}} ผู้ใหญ่ {{$item->children}} เด็ก</span>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <span>Special Discount :  {{ $item->SpecialDiscount ?? 0 }}%</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        @if ($item->type_Proposal == 'Company')
+                                            <span>นามบริษัท : {{ @$item->company->Company_Name}}</span>
+                                        @else
+                                            <span>นามบุคคล : {{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</span>
+                                        @endif
+                                    </div>
                                     <div class="col-lg-6 col-md-6 col-sm-12">
                                         @php
                                             $Company = $item->Company_ID;
@@ -81,35 +96,33 @@
                                                     ->where('Company_ID', $Company)
                                                     ->first();
                                                 $fullname = $quotation->First_name . ' ' . $quotation->Last_name;
-                                                $company = DB::table('companys')
-                                                    ->where('Profile_ID', $Company)
-                                                    ->first();
-                                                $CityID=$Company->City;
-                                                $amphuresID = $Company->Amphures;
-                                                $TambonID = $Company->Tambon;
                                             }else{
                                                 $quotation = DB::table('guests')
                                                     ->where('Profile_ID', $Company)
                                                     ->first();
                                                 $fullname = $quotation->First_name . ' ' . $quotation->Last_name;
-
                                             }
-
                                         @endphp
-                                        @if ($item->type_Proposal == 'Company')
-                                            <span> <b>นามบริษัท : </b>{{ @$item->company->Company_Name}}</span>
-                                        @else
-                                            <span> <b>นามบุคคล :</b> {{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</span>
-                                        @endif
-                                        <br>
-                                        <span><b>ตัวแทน :</b> {{ $fullname }}</span>
+                                        <span>ตัวแทน : {{ $fullname }}</span>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <span>วันที่เข้าพัก : {{$item->checkin}}</span>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <span> <b>วันที่เข้าพัก : </b>{{$item->checkin ?? '-'}}</span><br>
-                                        <span> <b>วันที่ออก : </b>{{$item->checkout ?? '-'}}</span>
+                                        <span>วันที่ออก : {{$item->checkout}}</span>
                                     </div>
                                 </div>
-
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <span>วันที่สร้างเอกสาร : {{@$item->issue_date}}</span>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <span>วันที่หมดอายุเอกสาร : {{@$item->Expirationdate}}</span>
+                                    </div>
+                                </div>
                                 <table class="example ui striped table nowrap unstackable hover" style="width:100%;overflow-x: hidden; overflow-y: auto;" >
                                     <thead>
                                         <tr>

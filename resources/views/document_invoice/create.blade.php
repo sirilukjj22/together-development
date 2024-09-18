@@ -317,7 +317,7 @@
                                             <tr>
                                                 <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Number :</b></td>
                                                 <td>
-                                                    <span id="guest_Number">{{ substr($company_phone->Phone_number, 0, 3) }}-{{ substr($company_phone->Phone_number, 3, 3) }}-{{ substr($company_phone->Phone_number, 6) }}</span>
+                                                    <span id="guest_Number">{{ $company_phone->Phone_number}}</span>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -366,7 +366,8 @@
                                             <tr>
                                                 <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Valid :</b></td>
                                                 <td>
-                                                    <input type="date" class="form-control" name="valid" id="valid" required>
+                                                    <input type="text" name="valid" id="valid" class="form-control "required>
+
                                                 </td>
                                             </tr>
                                         </table>
@@ -557,6 +558,21 @@
         });
     </script>
     <script>
+         $(function() {
+            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
+            $('#valid').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                locale: {
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                }
+            });
+            $('#valid').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+            });
+
+        });
         function validateInput(input) {
             if (input.value > 100) {
                 input.value = 100;
