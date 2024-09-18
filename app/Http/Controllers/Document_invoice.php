@@ -393,8 +393,8 @@ class Document_invoice extends Controller
         $Checkin = $Quotation->checkin;
         $Checkout = $Quotation->checkout;
         if ($Checkin) {
-            $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-            $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+            $checkin = $Checkin;
+            $checkout = $Checkout;
         }else{
             $checkin = '-';
             $checkout = '-';
@@ -537,8 +537,8 @@ class Document_invoice extends Controller
                 $Night = $Quotation->night;
                 $Adult = $Quotation->adult;
                 $Children = $Quotation->children;
-                $Checkin = Carbon::parse($checkin)->format('d/m/Y');
-                $Checkout = Carbon::parse($checkout)->format('d/m/Y');
+                $Checkin = $checkin;
+                $Checkout = $checkout;
                 $valid = Carbon::parse($valid)->format('d/m/Y');
                 $Deposit = $datarequest['Deposit'];
                 $payment=$datarequest['Payment'];

@@ -384,16 +384,13 @@ class CompanyController extends Controller
                 }
                 $save->Company_Email = $request->Company_Email;
                 $save->Company_Website = $request->Company_Website;
-                $save->Taxpayer_Identification = str_replace('-', '', $request->Taxpayer_Identification);
+                $save->Taxpayer_Identification = $request->Taxpayer_Identification;
                 // $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
                 $save->Contract_Rate_Start_Date = $contract_rate_start_date;
                 $save->Contract_Rate_End_Date = $contract_rate_end_date;
                 $save->Lastest_Introduce_By =$Lastest_Introduce_By;
                 if ($phone_company !== null) {
-                    $cleanedPhoneNumbers = array_map(function($phone_company) {
-                        return str_replace('-', '', $phone_company);
-                    }, $phone_company);
-                    foreach ($cleanedPhoneNumbers as $index => $phoneNumber) {
+                    foreach ($phone_company as $index => $phoneNumber) {
                         if ($phoneNumber !== null) {
                             $savephone = new company_phone();
                             $savephone->Profile_ID = $N_Profile;
@@ -404,10 +401,7 @@ class CompanyController extends Controller
                     }
                 }
                 if ($fax !== null) {
-                    $cleanedfaxNumbers = array_map(function($fax) {
-                        return str_replace('-', '', $fax);
-                    }, $fax);
-                    foreach ($cleanedfaxNumbers as $index => $faxNumber) {
+                    foreach ($fax as $index => $faxNumber) {
                         if ($faxNumber !== null) {
                             $savefax = new company_fax();
                             $savefax->Profile_ID = $N_Profile;
@@ -542,10 +536,7 @@ class CompanyController extends Controller
 
 
                     foreach ($phoneC as $index => $phoneNumber) {
-                        $cleanedphoneCNumbers = array_map(function($phoneC) {
-                            return str_replace('-', '', $phoneC);
-                        }, $phoneC);
-                        if ($cleanedphoneCNumbers !== null) {
+                        if ($phoneC !== null) {
                             $savephoneA = new representative_phone();
                             $savephoneA->Profile_ID = $A_Profile;
                             $savephoneA->Company_ID = $NProfile_ID;
