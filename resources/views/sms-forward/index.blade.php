@@ -2404,14 +2404,14 @@
         };
         var options1 = {
             scales: {
-                yAxes: [{
+                y: {
                     ticks: {
-                        beginAtZero: true,
-                        callback: function(value) {
-                            return formatNumber(value);
-                        },
+                    beginAtZero: true,
+                    callback: function(value) {
+                        return formatNumber(value);
                     },
-                }, ],
+                    },
+                }, 
             },
         };
         var data2 = {
@@ -2428,14 +2428,14 @@
         };
         var options2 = {
             scales: {
-                yAxes: [{
+                y: {
                     ticks: {
                         beginAtZero: true,
                         callback: function(value) {
                             return formatNumber(value);
                         },
                     },
-                }, ],
+                },
             },
         };
         // Function to format numbers as 100K, 2M, etc.
