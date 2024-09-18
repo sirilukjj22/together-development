@@ -226,7 +226,7 @@
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <label for="Taxpayer_Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</label><br>
-                                        <input type="text" class="form-control  idcard" id="Taxpayer_Identification" name="Taxpayer_Identification" maxlength="13" placeholder="เลขประจำตัวผู้เสียภาษี" required>
+                                        <input type="text" class="form-control  idcard" id="Taxpayer_Identification" name="Taxpayer_Identification" maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี" required>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
