@@ -31,6 +31,7 @@ class dummy_quotation extends Model
         'Operated_by',
         'Confirm',
         'Confirm_by',
+        'type_Proposal',
     ];
     public function  company()
     {
