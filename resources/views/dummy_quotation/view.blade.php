@@ -226,7 +226,7 @@
                                             <div class="col-lg-4"></div>
                                             <div class="PROPOSAL col-lg-7" style="margin-left: 5px">
                                                 <div class="row">
-                                                    <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">Proposal</b>
+                                                    <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">Dummy Proposal</b>
                                                     <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$Quotation_ID}}</b>
                                                 </div>
                                                 <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
