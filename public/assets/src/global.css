@@ -946,3 +946,17 @@ a:hover {
 .w-100 {
   width: 100%;
 }
+
+.box-sm-circle-red {
+    background-color: rgb(175, 8, 8);
+    width: 20px;
+    height: 20px;
+    border-radius: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 0.5rem;
+    padding: 0 0.2rem;
+    padding-right: 0.3rem;
+    font-size: 12px;
+  }

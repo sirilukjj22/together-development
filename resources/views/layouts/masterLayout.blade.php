@@ -165,7 +165,21 @@
                                             <li><a class="ms-link" href="{{ route('DummyQuotation.index') }}">Dummy Proposal</a></li>
                                         @endif
                                         @if (Auth::user()->roleMenu->document_request == 1)
-                                            <li><a class="ms-link" href="{{ route('ProposalReq.index') }}">Document Request</a></li>
+                                            @php
+                                                $quotation = DB::table('quotation')
+                                                ->where('status_document', 2)
+                                                    ->groupBy('Company_ID', 'Operated_by')
+                                                    ->select('id', 'DummyNo', 'type_Proposal', 'Company_ID', 'Operated_by', 'QuotationType', DB::raw("COUNT(DummyNo) as COUNTDummyNo"));
+
+                                                $proposalCount =  DB::table('dummy_quotation')->where('status_document', 2)
+                                                    ->groupBy('Company_ID', 'Operated_by')
+                                                    ->select('id', 'DummyNo', 'type_Proposal', 'Company_ID', 'Operated_by', 'QuotationType', DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
+                                                    ->union($quotation)
+                                                    ->count();  // นับจำนวนผลลัพธ์ทั้งหมด
+                                            @endphp
+                                            <li>
+                                                <a class="ms-link" href="{{ route('ProposalReq.index') }}" style="position: relative;">Document Request <span class="box-sm-circle-red">{{$proposalCount}}</span></a>
+                                            </li>
                                         @endif
                                         @if (Auth::user()->roleMenu->proposal == 1)
                                             <li><a class="ms-link" href="{{ route('Proposal.index') }}">Proposal</a></li>

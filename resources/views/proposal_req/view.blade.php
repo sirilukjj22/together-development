@@ -65,44 +65,44 @@
                         $sp52=0;
                         $sp = 0;
                     @endphp
-                    <div class="col-6">
+                    <div class="col-lg-6 col-md-12 col-sm-12">
                         <div class="card mb-4" style="height: 830px;  overflow-x: hidden; overflow-y: auto;">
                             <div class='card-body'>
                                 <h5 class="com">รหัสใบข้อเสนอ : {{$item->DummyNo}}</h5>
                                 <input type="hidden" name="DummyNo[]" id="DummyNo" class="DummyNo" value="{{$item->DummyNo}}">
                                 <div class="row">
-                                    <div class="col-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
                                         <span>จำนวนผู้เข้าพัก : {{$item->adult}} ผู้ใหญ่ {{$item->children}} เด็ก</span>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
                                         <span>Special Discount :  {{ $item->SpecialDiscount ?? 0 }}%</span>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
                                         @if ($item->type_Proposal == 'Company')
                                             <span>นามบริษัท : {{ @$item->company->Company_Name}}</span>
                                         @else
                                             <span>นามบุคคล : {{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</span>
                                         @endif
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
                                         <span>ตัวแทน : {{@$item->contact2->First_name ?? '-'}} {{@$item->contact2->Last_name}}</span>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
                                         <span>วันที่เข้าพัก : {{$item->checkin}}</span>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
                                         <span>วันที่ออก : {{$item->checkout}}</span>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
                                         <span>วันที่สร้างเอกสาร : {{@$item->issue_date}}</span>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
                                         <span>วันที่หมดอายุเอกสาร : {{@$item->Expirationdate}}</span>
                                     </div>
                                 </div>
@@ -153,12 +153,26 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+
+                                <style>
+
+                                    .d-grid-2column {
+                                        display:grid;
+                                        grid-template-columns: auto auto;
+                                    }
+
+                                    .d-grid-2column :nth-child(2) {
+                                        text-align: end;
+                                    }
+
+
+                                </style>
                                 <div class="row mt-2">
                                     @if ($item->vat_type = 50)
-                                        <div class="col-6"></div>
-                                        <div class="col-6">
-                                            <div class="row">
-                                                <div class="col-8">
+                                        <div class="col-lg-6 col-md-6 col-sm-6 "></div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6 ">
+                                            <div class="d-grid-2column" >
+                                                <div class="" >
                                                     <span id="Subtotal">Subtotal : </span><br>
                                                     <span id="Special">Special Discount : </span><br>
                                                     <span id="less">Subtotal less Discount : </span><br>
@@ -166,7 +180,7 @@
                                                     <span id="Added">Value Added Tax : </span><br>
                                                     <span id="Net">Net Total : </span><br>
                                                 </div>
-                                                <div class="col-4">
+                                                <div class="">
                                                     {{ number_format($price50, 2, '.', ',') }} <br>
                                                     {{ number_format($sp, 2, '.', ',') }}<br>
                                                     {{ number_format($sp50, 2, '.', ',') }}<br>
@@ -177,16 +191,16 @@
                                             </div>
                                         </div>
                                     @elseif ($item->vat_type = 51)
-                                        <div class="col-6"></div>
-                                        <div class="col-6">
-                                            <div class="row">
-                                                <div class="col-8">
+                                    <div class="col-6 col-md-12 col-sm-12"></div>
+                                    <div class="col-6 col-md-12 col-sm-12">
+                                        <div class="row">
+                                            <div class="col-lg-8 col-md-4 col-sm-4">
                                                     <span id="Subtotal">Subtotal : </span><br>
                                                     <span id="Special">Special Discount : </span><br>
                                                     <span id="less">Subtotal less Discount : </span><br>
                                                     <span id="Net">Net Total : </span><br>
                                                 </div>
-                                                <div class="col-4">
+                                                <div class="col-4 col-md-8 col-sm-8">
                                                     {{ number_format($price51, 2, '.', ',') }} <br>
                                                     {{ number_format($sp, 2, '.', ',') }}<br>
                                                     {{ number_format($sp51, 2, '.', ',') }}<br>

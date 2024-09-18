@@ -372,44 +372,44 @@ class GuestController extends Controller
             $save->save();
         }
 
-        $save = new Guest();
-        $save->Profile_ID = $N_Profile;
-        $save->preface =$request->Preface;
-        $save->First_name =$First_name;
-        $save->Last_name =$Last_name;
-        $save->Booking_Channel =$Booking_Channel;
-        if ($CountryOther == "Other_countries") {
-            $save->Address = $Address;
-            $save->Country = $CountryOther;
-        }else {
-            $save->Country = $CountryOther;
-            $save->City = $request->province;
-            $save->Amphures = $request->amphures;
-            $save->Address = $Address;
-            $save->Tambon = $request->Tambon;
-            $save->Zip_Code = $request->zip_code;
-        }
-        $save->Email = $Email;
-        $save->Identification_Number = $identificationnumber;
-        $save->Contract_Rate_Start_Date = $Contract_Rate_Start_Date;
-        $save->Contract_Rate_End_Date = $Contract_Rate_End_Date;
-        $save->Discount_Contract_Rate =$Discount_Contract_Rate;
-        $save->Lastest_Introduce_By = $Lastest_Introduce_By;
-
-        foreach ($phones as $index => $phoneNumber) {
-            if ($phoneNumber !== null) {
-                $phoneGuest = new phone_guest();
-                $phoneGuest->Profile_ID = $N_Profile;
-                $phoneGuest->Phone_number = $phoneNumber;
-                $phoneGuest->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                $phoneGuest->save();
+        try {
+            $save = new Guest();
+            $save->Profile_ID = $N_Profile;
+            $save->preface =$request->Preface;
+            $save->First_name =$First_name;
+            $save->Last_name =$Last_name;
+            $save->Booking_Channel =$Booking_Channel;
+            if ($CountryOther == "Other_countries") {
+                $save->Address = $Address;
+                $save->Country = $CountryOther;
+            }else {
+                $save->Country = $CountryOther;
+                $save->City = $request->province;
+                $save->Amphures = $request->amphures;
+                $save->Address = $Address;
+                $save->Tambon = $request->Tambon;
+                $save->Zip_Code = $request->zip_code;
             }
-        }
+            $save->Email = $Email;
+            $save->Identification_Number = $identificationnumber;
+            $save->Contract_Rate_Start_Date = $Contract_Rate_Start_Date;
+            $save->Contract_Rate_End_Date = $Contract_Rate_End_Date;
+            $save->Discount_Contract_Rate =$Discount_Contract_Rate;
+            $save->Lastest_Introduce_By = $Lastest_Introduce_By;
 
-        $save->save();
-        if ($save->save()) {
+            foreach ($phones as $index => $phoneNumber) {
+                if ($phoneNumber !== null) {
+                    $phoneGuest = new phone_guest();
+                    $phoneGuest->Profile_ID = $N_Profile;
+                    $phoneGuest->Phone_number = $phoneNumber;
+                    $phoneGuest->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                    $phoneGuest->save();
+                }
+            }
+
+            $save->save();
             return redirect()->route('guest','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-        } else {
+        } catch (\Throwable $th) {
             return redirect()->route('guest','index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
