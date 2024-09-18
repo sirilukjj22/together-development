@@ -641,13 +641,25 @@ class CompanyController extends Controller
             $repCompany_ID = $representative->Company_ID;
             $phone = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID',$repCompany_ID)->get();
             $phoneArray = $phone->toArray();
+            $TambonA =null;
+            $amphuresA =null;
+            $Zip_codeA =null;
+            $provinceNamesA =null;
+            $provinceNamesAs = province::where('id',$representative->City)->first();
+            $TambonAs = districts::where('amphure_id', $representative->Amphures)->select('name_th','id')->first();
+            $amphuresAs = amphures::where('province_id', $representative->City)->select('name_th','id')->first();
+            $Zip_codeAs = districts::where('amphure_id', $representative->Amphures)->select('zip_code','id')->first();
+            $TambonA = $TambonAs->name_th;
+            $amphuresA = $amphuresAs->name_th;
+            $Zip_codeA = $Zip_codeAs->zip_code;
+            $provinceNamesA = $provinceNamesAs->name_th;
             $log = log_company::where('Company_ID', $Company_ID)
             ->orderBy('updated_at', 'desc')
             ->paginate($perPage);
             return view('company.edit',compact('Company','booking_channel','provinceNames','Tambon','amphures',
             'Zip_code','faxArray','phoneDataArray','Company_Contact','Mmarket',
-            'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID','representative','Mprefix','provinceNames','Quotation','company_tax',
-            'log','country','phoneArray'));
+            'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID','representative','Mprefix','Quotation','company_tax',
+            'log','country','phoneArray','provinceNamesA','TambonA','amphuresA','Zip_codeA'));
     }
     public function update(Request $request, $id) {
         {
