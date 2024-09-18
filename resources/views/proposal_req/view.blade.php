@@ -92,6 +92,14 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
+                                        <span>วันที่เข้าพัก : {{$item->checkin}}</span>
+                                    </div>
+                                    <div class="col-6">
+                                        <span>วันที่ออก : {{$item->checkout}}</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
                                         <span>วันที่สร้างเอกสาร : {{@$item->issue_date}}</span>
                                     </div>
                                     <div class="col-6">

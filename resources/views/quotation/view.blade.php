@@ -149,6 +149,43 @@
         cursor: not-allowed;
         opacity: 0.5;
     }
+    div.PROPOSAL {
+        padding: 10px ;
+        border: 3px solid #2D7F7B;
+        border-radius: 10px;
+        background-color: #109699;
+    }
+    div.PROPOSALfirst {
+        padding: 10px ;
+        border: 3px solid #2D7F7B;
+        border-radius: 10px;
+        background-color: #109699;
+    }
+    .readonly-input {
+        background-color: #ffffff !important;/* สีพื้นหลังขาว */
+    }
+
+    .readonly-input:focus {
+        background-color: #ffffff !important;/* ให้สีพื้นหลังขาวเมื่ออยู่ในสถานะโฟกัส */
+        box-shadow: none; /* ลบเงาเมื่อโฟกัส */
+        border-color: #ced4da; /* ให้เส้นขอบมีสีเทาอ่อนเพื่อให้เหมือนกับการไม่ได้โฟกัส */
+    }
+    .disabled-input {
+        background-color: #E8ECEF !important; /* Light gray background */
+        color: #6c757d; /* Gray text color */
+        border-color: #ced4da; /* Gray border */
+        cursor: not-allowed; /* Change cursor to indicate disabled state */
+    }
+
+    /* Style for enabled inputs */
+    .table-custom-borderless {
+        border-collapse: collapse;
+    }
+
+    .table-custom-borderless th,
+    .table-custom-borderless td {
+        border: none !important;
+    }
 </style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
@@ -186,16 +223,25 @@
                                     </div>
                                     <div class="col-lg-4 col-md-12 col-sm-12">
                                         <div class="row">
-                                            <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Proposal</b>
-                                            <span class="titleQuotation">{{$Quotation_ID}}</span>
-                                            <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
+                                            <div class="col-lg-4"></div>
+                                            <div class="PROPOSAL col-lg-7" style="margin-left: 5px">
+                                                <div class="row">
+                                                    <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">Proposal</b>
+                                                    <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$Quotation_ID}}</b>
+                                                </div>
+                                                <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-lg-4"></div>
+                                            <div class="PROPOSALfirst col-lg-7" style="background-color: #ffffff;">
                                                 <div class="col-12 col-md-12 col-sm-12">
                                                     <div class="row">
                                                         <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
                                                             <span>Issue Date:</span>
                                                         </div>
                                                         <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
-                                                            <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;"value="{{$Quotation->issue_date}}" disabled>
+                                                            <input type="text" class="form-control readonly-input" name="IssueDate" style="text-align: left;" value="{{$Quotation->issue_date}}"  @disabled(true)>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -205,7 +251,7 @@
                                                             <span>Expiration Date:</span>
                                                         </div>
                                                         <div class="col-lg-6 col-md-12 col-sm-12">
-                                                            <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly  value="{{$Quotation->Expirationdate}}" disabled>
+                                                            <input type="text"class="form-control readonly-input" name="Expiration" style="text-align: left;" value="{{$Quotation->Expirationdate}}" @disabled(true)>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -260,12 +306,12 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-lg-2 col-md-6 col-sm-12">
-                                        <span for="chekin">Check In Date
-                                        <input type="date" name="Checkin" id="Checkin" class="form-control" onchange="CheckDate()"value="{{$Quotation->checkin}}" disabled>
+                                        <span for="chekin">Check In Date </span>
+                                        <input type="text"  class="form-control " value="{{$Quotation->checkin}}"  disabled>
                                     </div>
                                     <div class="col-lg-2 col-md-6 col-sm-12">
                                         <span for="chekin">Check Out Date </span>
-                                        <input type="date" name="Checkout" id="Checkout" class="form-control" onchange="CheckDate()"value="{{$Quotation->checkout}}"  disabled>
+                                        <input type="text"class="form-control "value="{{$Quotation->checkout}}" disabled >
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <span for="">จำนวน</span>
@@ -548,8 +594,8 @@
                                             <span >Notes or Special Comment</span>
                                             <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea"disabled>{{$Quotation->comment}}</textarea>
                                         </div>
-                                        <div class="col-lg-3 col-md-4 col-sm-12 " >
-                                            <table class="table table-borderless" id="PRICE_INCLUDE_VAT" style="display: none;">
+                                        <div class="col-lg-3 col-md-3 col-sm-12 " >
+                                            <table class="table  table-custom-borderless" id="PRICE_INCLUDE_VAT" style="display: none;">
                                                 <tbody>
                                                     <tr >
                                                         <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
@@ -575,7 +621,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                            <table class="table table-borderless" id="PRICE_EXCLUDE_VAT" style="display: none;">
+                                            <table class="table  table-custom-borderless" id="PRICE_EXCLUDE_VAT" style="display: none;">
                                                 <tbody>
                                                     <tr >
                                                         <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
@@ -593,7 +639,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                            <table class="table table-borderless "id="PRICE_PLUS_VAT" style="display: none;">
+                                            <table class="table  table-custom-borderless"id="PRICE_PLUS_VAT" style="display: none;">
                                                 <tbody>
                                                     <tr >
                                                         <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
@@ -620,7 +666,7 @@
                                     <div class="col-12 row">
                                         <div class="col-9"></div>
                                         <div class="col-lg-3 col-md-3 col-sm-12">
-                                            <table class="table table-borderless1" >
+                                            <table class="table  table-custom-borderless" >
                                                 <tbody>
                                                     <tr>
                                                         <td colspan="2" style="text-align:center;">
@@ -642,7 +688,7 @@
                                         <div class="col-9">
                                         </div>
                                         <div class="col-lg-3 col-md-3 col-sm-12" id="Pax" style="display: block">
-                                            <table class="table table-borderless" >
+                                            <table class="table  table-custom-borderless" >
                                                 <tbody>
                                                     <tr>
                                                         <td style="text-align:right;width: 55%;font-size: 14px;"><b>Number of Guests :</b></td>
@@ -983,11 +1029,15 @@
                     Day.disabled = true;
                     Night.disabled = true;
                     flexCheckChecked.checked = true;
+                    dateInput.classList.add('disabled-input');
+                    dateout.classList.add('disabled-input');
                     $('#checkinpo').text('No Check in date');// ตั้งค่า flexCheckChecked เป็น checked
                     $('#checkoutpo').text('-');
                     $('#daypo').text('-');
                     $('#nightpo').text(' ');
                 } else {
+                    dateInput.classList.remove('disabled-input');
+                    dateout.classList.remove('disabled-input');
                     dateInput.disabled = false;
                     dateout.disabled = false;
                     Day.disabled = false;
@@ -1009,6 +1059,8 @@
                     dateout.disabled = true;
                     Day.disabled = true;
                     Night.disabled = true;
+                    dateInput.classList.add('disabled-input');
+                    dateout.classList.add('disabled-input');
                     $('#checkinpo').text('No Check in date');
                     $('#checkoutpo').text('-');
                     $('#daypo').text('-');
@@ -1022,6 +1074,8 @@
                     dateout.disabled = false;
                     Day.disabled = false;
                     Night.disabled = false;
+                    dateInput.classList.remove('disabled-input');
+                    dateout.classList.remove('disabled-input');
                     $('#Checkin').val('');
                     $('#Checkout').val('');
                     $('#Day').val('');
@@ -1121,54 +1175,79 @@
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         });
-        function CheckDate() {
-            const checkoutDateValue = document.getElementById('Checkout').value;
-            const checkinDateValue = document.getElementById('Checkin').value;
+        $(function() {
+            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
+            $('#Checkin').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                locale: {
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                }
+            });
+            $('#Checkin').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                CheckDate();
+            });
 
+        });
+        $(function() {
+            $('#Checkout').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                locale: {
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                }
+            });
+            $('#Checkout').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                CheckDate();
+            });
+
+        });
+        function CheckDate() {
+            const checkinDateValue = moment(document.getElementById('Checkin').value, 'DD/MM/YYYY').format('YYYY-MM-DD');
+            const checkoutDateValue = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY').format('YYYY-MM-DD');
             const checkinDate = new Date(checkinDateValue);
             const checkoutDate = new Date(checkoutDateValue);
             if (checkoutDate > checkinDate) {
-
                 const timeDiff = checkoutDate - checkinDate;
                 const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-                // เนื่องจาก Check-in นับเป็นวันแรกด้วย
-                const totalDays = diffDays + 1;
+                const totalDays = diffDays + 1; // รวม Check-in เป็นวันแรก
                 const nights = diffDays;
 
                 $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
                 $('#Night').val(isNaN(nights) ? '0' : nights);
 
-                console.log(`จำนวนวัน: ${totalDays} วัน`);
-                console.log(`จำนวนคืน: ${nights} คืน`);
                 $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text(nights + ' คืน');
             } else if (checkoutDate.getTime() === checkinDate.getTime()) {
-                // กรณีที่ Check-in Date เท่ากับ Check-out Date
                 const totalDays = 1;
                 $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
                 $('#Night').val('0');
 
                 $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#daypo').text(isNaN(totalDays) ? '0' : totalDays + ' วัน');
+                $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text('0 คืน');
-                console.log(`จำนวนวัน: ${totalDays} วัน`);
-                console.log(`จำนวนคืน: 0 คืน`);
             } else {
-                // กรณีที่ Check-out Date น้อยกว่าหรือเท่ากับ Check-in Date
                 console.log("วัน Check-out ต้องมากกว่าวัน Check-in");
                 $('#Day').val('0');
                 $('#Night').val('0');
             }
         }
+
         function setMinDate() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('Checkin').setAttribute('min', today);
             document.getElementById('Checkout').setAttribute('min', today);
         }
+
+        // เรียกใช้เมื่อโหลดหน้า
+        setMinDate();
         document.addEventListener('DOMContentLoaded', setMinDate);
     </script>
     <script>

@@ -3944,8 +3944,8 @@ class QuotationController extends Controller
                 $quantity = master_quantity::where('status',1)->get();
                 $settingCompany = Master_company::orderBy('id', 'desc')->first();
                 if ($Checkin) {
-                    $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                    $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                    $checkin = $Checkin;
+                    $checkout = $Checkout;
                 }else{
                     $checkin = '-';
                     $checkout = '-';
@@ -4795,8 +4795,8 @@ class QuotationController extends Controller
         $quantity = master_quantity::where('status',1)->get();
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         if ($Checkin) {
-            $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-            $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+            $checkin =$Checkin;
+            $checkout = $Checkout;
         }else{
             $checkin = '-';
             $checkout = '-';

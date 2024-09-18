@@ -864,7 +864,11 @@
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
             });
-            CheckDate();
+            $('#Checkin').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                CheckDate();
+            });
+
         });
         $(function() {
             $('#Checkout').daterangepicker({
@@ -875,7 +879,11 @@
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
             });
-            CheckDate();
+            $('#Checkout').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                CheckDate();
+            });
+
         });
         function CheckDate() {
             const checkinDateValue = moment(document.getElementById('Checkin').value, 'DD/MM/YYYY').format('YYYY-MM-DD');
