@@ -911,21 +911,11 @@
                     var Contactphones =response.Contact_phones.Phone_number;
                     var Contactemail =response.data.Email;
 
-                    console.log(response.data.First_name);
-                    function formatPhoneNumber(phoneNumber) {
-                        if (phoneNumber.length === 10) {
-                            return phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 3) + '-' + phoneNumber.substr(6);
-                        }
-                    }
 
-                    var formattedPhoneNumber = formatPhoneNumber(companyphone);
-                    function formatPhoneNumberContact(phoneNumber) {
-                        if (phoneNumber.length === 10) {
-                            return phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 3) + '-' + phoneNumber.substr(6);
-                        }
-                    }
 
-                    var formattedContactphones = formatPhoneNumberContact(Contactphones);
+                    var formattedPhoneNumber = companyphone;
+
+                    var formattedContactphones = Contactphones;
                     $('#Company_Contact').val(fullName).prop('disabled', true);
                     $('#Company_Discount').val(Discount_Contract_Rate);
                     $('#Company_Contactname').val(fullid);
@@ -962,12 +952,7 @@
                     var Identification = response.data.Identification_Number;
                     var phone = response.phone.Phone_number;
 
-                    function formatPhoneNumber(phoneNumber) {
-                        if (phoneNumber.length === 10) {
-                            return phoneNumber.substr(0, 3) + '-' + phoneNumber.substr(3, 3) + '-' + phoneNumber.substr(6);
-                        }
-                    }
-                    var formattedPhoneNumber = formatPhoneNumber(phone);
+                    var formattedPhoneNumber = phone;
 
                     $('#guest_name').text(fullName);
                     $('#guestAddress').text(Address);

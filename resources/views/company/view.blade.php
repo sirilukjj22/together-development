@@ -150,7 +150,6 @@
                                 </div>
                             </div>
                             <div class="row mt-2">
-
                                 @if (($Company->Country === 'Thailand'))
                                     <div class="col-lg-3 col-md-6 col-sm-12" id="citythai" style="display:block;">
                                         <label for="city">จังหวัด / Province</label>
@@ -281,144 +280,149 @@
                             </div>
                             <div style="border: 1px solid #2D7F7B;" class="mt-5"></div>
                             <div class="card border-0">
-                                <div class="card-body" id="heading3">
-                                    <h6 class="mb-0 py-2" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="true" aria-controls="faq3"><span <span class="fw-bold"><i class="fa fa-caret-down float-end"></i></span>รายละเอียดตัวแทนองค์กร</h6>
-                                </div>
-                                <div id="faq3" class="collapse" aria-labelledby="heading3" data-parent="#accordionExample">
-                                    <div class="card-body border-top">
-                                        <div class="row mt-2">
-                                            <div class="col-lg-3 col-md-6 col-sm-12">
-                                                <label class="labelcontact" for="">Title</label>
-                                                <select name="Mprefix" id="Mprefix" class="form-select"disabled>
-                                                    <option value=""></option>
-                                                    @foreach($Mprefix as $item)
-                                                    <option value="{{ $item->id }}" {{$representative->prefix == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
+                                <div class="row mt-3">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <div class="custom-accordion">
+                                            <input type="checkbox" id="trigger1" />
+                                            <label for="trigger1">ติดต่อ / Contact</label>
+                                            <div class="custom-accordion-content">
+                                                <div class="row mt-2">
+                                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                                        <span class="labelcontact" for="">Title</span>
+                                                        <select name="Mprefix" id="Mprefix" class="form-select"disabled>
+                                                            <option value=""></option>
+                                                            @foreach($Mprefix as $item)
+                                                            <option value="{{ $item->id }}" {{$representative->prefix == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-2">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                                        <span for="first_name">First Name</span><br>
+                                                        <input type="text" id="first_nameAgent"class="form-control" name="first_nameAgent" maxlength="70" disabled value="{{$representative->First_name}}">
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12"><span for="last_name">Last Name</span><br>
+                                                        <input type="text" id="last_nameAgent"class="form-control" name="last_nameAgent" maxlength="70" disabled value="{{$representative->Last_name}}">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-2">
+                                                    <div class="col-12">
+                                                        <span for="Address">Address</span><br>
+                                                        <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" disabled>{{$representative->Address}}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-2">
+                                                    <div class="col-lg-4 col-md-6 col-sm-12">
+                                                        <span for="Country">Country</span><br>
+                                                        <select name="countrydataA" id="countrySelectA" class="form-select" onchange="showcityAInput()"disabled>
+                                                            <option value="Thailand" {{$representative->Country == "Thailand" ? 'selected' : ''}}>{{$representative->Country}}</option>
+                                                        </select>
+                                                    </div>
+                                                    @if (($representative->Country === 'Thailand'))
+                                                        <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:block;">
+                                                            <span for="city">City</span><br>
+                                                            <select name="province" id="province" class="select2" onchange="select_province()"disabled>
+                                                                @foreach($provinceNames as $item)
+                                                                <option value="{{ $item->id }}" {{$representative->City == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    @else
+                                                        <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:none;">
+                                                            <span for="city">City</span><br>
+                                                            <select name="province" id="province" class="select2" onchange="select_province()"disabled>
+                                                                <option value=""></option>
+                                                                @foreach($provinceNames as $item)
+                                                                <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    @endif
+                                                    @if ($representative->Country === 'Thailand')
+                                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                                            <span for="Amphures">Amphures</span><br>
+                                                            <select name="amphures" id="amphures" class="select2" onchange="select_amphures()"disabled>
+                                                                @foreach($amphures as $item)
+                                                                <option value="{{ $item->id }}" {{ $representative->Amphures == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    @else
+                                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                                            <span for="Amphures">Amphures</span><br>
+                                                            <select name="amphures" id="amphures" class="select2" onchange="select_amphures()" disabled>
+                                                                <option value=""></option>
+                                                            </select>
+                                                        </div>
+                                                    @endif
+                                                    @if ($representative->Country === 'Thailand')
+                                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                                            <span for="Tambon">Tambon </span><br>
+                                                            <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()"disabled>
+                                                            @foreach($Tambon as $item)
+                                                            <option value="{{ $item->id }}" {{ $representative->Tambon == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        </div>
+                                                    @else
+                                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                                            <span for="Tambon">Tambon </span><br>
+                                                            <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()" disabled>
+                                                                <option value=""></option>
+                                                            </select>
+                                                        </div>
+                                                    @endif
+                                                    @if ($representative->Country === 'Thailand')
+                                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                                            <span for="zip_code">Zip Code</span><br>
+                                                            <select name="zip_code" id="zip_code" class="select2"  disabled>
+                                                                @foreach($Zip_code as $item)
+                                                                <option value="{{ $item->id }}" {{ $representative->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    @else
+                                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                                            <span for="zip_code">Zip Code</span><br>
+                                                            <select name="zip_code" id="zip_code" class="select2" disabled>
+                                                                <option value=""></option>
+                                                            </select>
+                                                        </div>
+                                                    @endif
+                                                    <div class="col-lg-4 col-md-6 col-sm-12">
+                                                        <span for="Email">Email</span><br>
+                                                        <input type="text" id="EmailAgent" class="form-control" name="EmailAgent" maxlength="70" required value="{{$representative->Email}}"disabled>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mt-2">
+                                                    <div class="col-12">
+                                                        <span for="Phone_number">หมายเลขโทรศัพท์ / Phone Number</span>
+                                                    </div>
+                                                </div>
+                                                <div id="phone-container" class="flex-container row">
+                                                    <!-- Initial input fields -->
+                                                    @foreach($phoneArray as $phone)
+                                                    <div class="col-lg-4 col-md-6 col-sm-12">
+                                                        <div class="phone-group show mt-2">
+                                                            <input type="text" name="phone[]" class="form-control" maxlength="10" value="{{ $phone['Phone_number'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required disabled>
+                                                        </div>
+                                                    </div>
                                                     @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-lg-6 col-md-6 col-sm-12">
-                                                <label for="first_name">First Name</label><br>
-                                                <input type="text" id="first_nameAgent"class="form-control" name="first_nameAgent" maxlength="70" disabled value="{{$representative->First_name}}">
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-12"><label for="last_name">Last Name</label><br>
-                                                <input type="text" id="last_nameAgent"class="form-control" name="last_nameAgent" maxlength="70" disabled value="{{$representative->Last_name}}">
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                                <label for="Country">Country</label><br>
-                                                <select name="countrydataA" id="countrySelectA" class="form-select" onchange="showcityAInput()"disabled>
-                                                    <option value="Thailand" {{$representative->Country == "Thailand" ? 'selected' : ''}}>{{$representative->Country}}</option>
-                                                </select>
-                                            </div>
-                                            @if (($representative->Country === 'Thailand'))
-                                                <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:block;">
-                                                    <label for="city">City</label><br>
-                                                    <select name="province" id="province" class="select2" onchange="select_province()"disabled>
-                                                        @foreach($provinceNames as $item)
-                                                        <option value="{{ $item->id }}" {{$representative->City == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
-                                                        @endforeach
-                                                    </select>
                                                 </div>
-                                            @else
-                                                <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:none;">
-                                                    <label for="city">City</label><br>
-                                                    <select name="province" id="province" class="select2" onchange="select_province()"disabled>
-                                                        <option value=""></option>
-                                                        @foreach($provinceNames as $item)
-                                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            @endif
-                                            @if ($representative->Country === 'Thailand')
-                                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label for="Amphures">Amphures</label><br>
-                                                    <select name="amphures" id="amphures" class="select2" onchange="select_amphures()"disabled>
-                                                        @foreach($amphures as $item)
-                                                        <option value="{{ $item->id }}" {{ $representative->Amphures == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            @else
-                                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label for="Amphures">Amphures</label><br>
-                                                    <select name="amphures" id="amphures" class="select2" onchange="select_amphures()" disabled>
-                                                        <option value=""></option>
-                                                    </select>
-                                                </div>
-                                            @endif
-                                            @if ($representative->Country === 'Thailand')
-                                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label for="Tambon">Tambon </label><br>
-                                                    <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()"disabled>
-                                                    @foreach($Tambon as $item)
-                                                    <option value="{{ $item->id }}" {{ $representative->Tambon == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
-                                                    @endforeach
-                                                </select>
-                                                </div>
-                                            @else
-                                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label for="Tambon">Tambon </label><br>
-                                                    <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()" disabled>
-                                                        <option value=""></option>
-                                                    </select>
-                                                </div>
-                                            @endif
-                                            @if ($representative->Country === 'Thailand')
-                                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label for="zip_code">Zip Code</label><br>
-                                                    <select name="zip_code" id="zip_code" class="select2"  disabled>
-                                                        @foreach($Zip_code as $item)
-                                                        <option value="{{ $item->id }}" {{ $representative->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            @else
-                                                <div class="col-lg-4 col-md-6 col-sm-12">
-                                                    <label for="zip_code">Zip Code</label><br>
-                                                    <select name="zip_code" id="zip_code" class="select2" disabled>
-                                                        <option value=""></option>
-                                                    </select>
-                                                </div>
-                                            @endif
-                                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                                <label for="Email">Email</label><br>
-                                                <input type="text" id="EmailAgent" class="form-control" name="EmailAgent" maxlength="70" required value="{{$representative->Email}}"disabled>
+
                                             </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-12">
-                                                <label for="Address">Address</label><br>
-                                                <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" disabled>{{$representative->Address}}</textarea>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-12">
-                                                <label for="Phone_number">หมายเลขโทรศัพท์ / Phone Number</label>
-                                            </div>
-                                        </div>
-                                        <div id="phone-container" class="flex-container row">
-                                            <!-- Initial input fields -->
-                                            @foreach($phoneArray as $phone)
-                                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                                <div class="phone-group show mt-2">
-                                                    <input type="text" name="phone[]" class="form-control" maxlength="10" value="{{ $phone['Phone_number'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required disabled>
-                                                </div>
-                                            </div>
-                                            @endforeach
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-4"></div>
-                                            <div class="col-4" style="display:flex; justify-content:center; align-items:center;">
-                                                <button type="button" class="btn btn-secondary lift " onclick="window.location.href='{{ route('Company','index') }}'" >{{ __('ย้อนกลับ') }}</button>
-                                            </div>
-                                            <div class="col-4"></div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-4"></div>
+                                <div class="col-4" style="display:flex; justify-content:center; align-items:center;">
+                                    <button type="button" class="btn btn-secondary lift " onclick="window.location.href='{{ route('Company','index') }}'" >{{ __('ย้อนกลับ') }}</button>
+                                </div>
+                                <div class="col-4"></div>
                             </div>
                         </div>
                     </div>

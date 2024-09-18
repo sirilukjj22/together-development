@@ -118,6 +118,10 @@
                                         <input type="text" id="last_nameCom" class="form-control" name="last_name"maxlength="70"  value="{{$representative->Last_name}}">
                                     </div>
                                 </div>
+                                <div class="mt-2">
+                                    <span for="Address">ที่อยู่ / Address</span>
+                                    <textarea type="text" id="addressAgent" name="Address" rows="3" cols="25" class="form-control" aria-label="With textarea" >{{$representative->Address}}</textarea>
+                                </div>
                                 <div class="row mt-2">
                                     <div class="col-sm-4 col-4">
                                         <span for="Country">ประเทศ / Country</span>
@@ -169,10 +173,7 @@
                                         <input type="text" id="EmailAgent" class="form-control" name="Company_Email"maxlength="70"  value="{{$representative->Email}}">
                                     </div>
                                 </div>
-                                <div class="mt-2">
-                                    <span for="Address">ที่อยู่ / Address</span>
-                                    <textarea type="text" id="addressAgent" name="Address" rows="3" cols="25" class="form-control" aria-label="With textarea" >{{$representative->Address}}</textarea>
-                                </div>
+
                                 <div class="row mt-2">
                                     <div class="col-sm-8 col-8">
                                         <label for="Phone_number">หมายเลขโทรศัพท์ / Phone Number</label>

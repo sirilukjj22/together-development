@@ -213,8 +213,8 @@
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkin}}</td>
+                                                    <td style="text-align: center;">{{ $item->checkout }}</td>
                                                     @else
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
@@ -416,8 +416,8 @@
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkin}}</td>
+                                                    <td style="text-align: center;">{{ $item->checkout}}</td>
                                                     @else
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
@@ -577,8 +577,8 @@
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkin }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkout }}</td>
                                                     @else
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
@@ -716,8 +716,8 @@
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkin }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkout }}</td>
                                                     @else
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
@@ -874,8 +874,8 @@
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkin }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkout }}</td>
                                                     @else
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
@@ -1023,8 +1023,8 @@
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkin}}</td>
+                                                    <td style="text-align: center;">{{ $item->checkout}}</td>
                                                     @else
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>

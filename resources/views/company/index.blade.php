@@ -107,7 +107,7 @@
                                                 <td>{{ $item->Company_Name }}</td>
                                                 <td style="text-align: center;">{{ $item->Branch }}</td>
                                                 <td style="text-align: center;">
-                                                    {{ substr($item->Phone_number, 0, 3) }}-{{ substr($item->Phone_number, 3, 3) }}-{{ substr($item->Phone_number, 6) }}
+                                                    {{ $item->Phone_numbers }}
                                                 </td>
                                                 <td style="text-align: center;">
                                                     @if ($item->status == 1)

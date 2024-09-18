@@ -159,7 +159,7 @@
                                 <div class="row mt-2">
                                     <div class="col-lg-3 col-md-6 col-sm-12">
                                         <label for="city">จังหวัด / Province</label>
-                                        <select name="City" id="province" class="select2" onchange="select_province()">
+                                        <select name="City" id="province" class="select22" onchange="select_province()">
                                             @foreach($provinceNames as $item)
                                             <option value="{{ $item->id }}" {{$Company->City == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
                                             @endforeach
@@ -167,7 +167,7 @@
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-12">
                                         <label for="Amphures">อำเภอ / District</label>
-                                        <select name="Amphures" id="amphures" class="select2" onchange="select_amphures()">
+                                        <select name="Amphures" id="amphures" class="select22" onchange="select_amphures()">
                                             @foreach($amphures as $item)
                                             <option value="{{ $item->id }}" {{ $Company->Amphures == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
                                             @endforeach
@@ -175,7 +175,7 @@
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-12">
                                         <label for="Tambon">ตำบล / Subdistrict </label>
-                                        <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()">
+                                        <select name="Tambon" id="Tambon" class="select22" onchange="select_Tambon()">
                                             @foreach($Tambon as $item)
                                             <option value="{{ $item->id }}" {{ $Company->Tambon == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
                                             @endforeach
@@ -183,7 +183,7 @@
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-12">
                                         <label for="zip_code">รหัสไปรษณีย์ / Postal Code</label><br>
-                                        <select name="Zip_Code" id="zip_code" class="select2">
+                                        <select name="Zip_Code" id="zip_code" class="select22">
                                             @foreach($Zip_code as $item)
                                             <option value="{{ $item->zip_code }}" {{ $Company->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
                                             @endforeach
@@ -254,6 +254,161 @@
                                         <input type="text" id="Lastest_Introduce_By" class="form-control" name="Lastest_Introduce_By" maxlength="70" required value="{{$Company->Lastest_Introduce_By}}">
                                     </div>
                                 </div>
+                                <div class="card border-0">
+                                    <div class="row mt-3">
+                                        <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <div class="custom-accordion">
+                                                <input type="checkbox" id="trigger1" />
+                                                <label for="trigger1">ติดต่อ / Contact</label>
+                                                <div class="custom-accordion-content">
+                                                    <div class="row my-3">
+                                                        <div class="col-lg-10"></div>
+                                                        <div class="col-lg-2  d-flex justify-content-end align-items-end">
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                    ทำรายการ &nbsp;
+                                                                </button>
+                                                                <ul class="dropdown-menu border-0 shadow p-3">
+                                                                    <li>
+                                                                        <a class="dropdown-item py-2 rounded" data-bs-toggle="modal" data-bs-target="#CreateAgent">เพิ่มตัวแทนบริษัท</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="dropdown-item py-2 rounded" href="{{ url('/Company/edit/contact/'.$representative->id) }}">แก้ไขตัวแทนบริษัท</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-2">
+                                                        <div class="col-lg-3 col-md-6 col-sm-12">
+                                                            <span class="labelcontact" for="">Title</span>
+                                                            <select name="Mprefix" id="Mprefix" class="form-select"disabled>
+                                                                <option value=""></option>
+                                                                @foreach($Mprefix as $item)
+                                                                <option value="{{ $item->id }}" {{$representative->prefix == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-2">
+                                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                                            <span for="first_name">First Name</span><br>
+                                                            <input type="text" id="first_nameAgent"class="form-control" name="first_nameAgent" maxlength="70" disabled value="{{$representative->First_name}}">
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-6 col-sm-12"><span for="last_name">Last Name</span><br>
+                                                            <input type="text" id="last_nameAgent"class="form-control" name="last_nameAgent" maxlength="70" disabled value="{{$representative->Last_name}}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-2">
+                                                        <div class="col-12">
+                                                            <span for="Address">Address</span><br>
+                                                            <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" disabled>{{$representative->Address}}</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-2">
+                                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                                            <span for="Country">Country</span><br>
+                                                            <select name="countrydataA" id="countrySelectA" class="form-select" onchange="showcityAInput()"disabled>
+                                                                <option value="Thailand" {{$representative->Country == "Thailand" ? 'selected' : ''}}>{{$representative->Country}}</option>
+                                                            </select>
+                                                        </div>
+                                                        @if (($representative->Country === 'Thailand'))
+                                                            <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:block;">
+                                                                <span for="city">City</span><br>
+                                                                <select name="province" id="province" class="select2" onchange="select_province()"disabled>
+                                                                    @foreach($provinceNames as $item)
+                                                                    <option value="{{ $item->id }}" {{$representative->City == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        @else
+                                                            <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:none;">
+                                                                <span for="city">City</span><br>
+                                                                <select name="province" id="province" class="select2" onchange="select_province()"disabled>
+                                                                    <option value=""></option>
+                                                                    @foreach($provinceNames as $item)
+                                                                    <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        @endif
+                                                        @if ($representative->Country === 'Thailand')
+                                                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                                                <span for="Amphures">Amphures</span><br>
+                                                                <select name="amphures" id="amphures" class="select2" onchange="select_amphures()"disabled>
+                                                                    @foreach($amphures as $item)
+                                                                    <option value="{{ $item->id }}" {{ $representative->Amphures == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        @else
+                                                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                                                <span for="Amphures">Amphures</span><br>
+                                                                <select name="amphures" id="amphures" class="select2" onchange="select_amphures()" disabled>
+                                                                    <option value=""></option>
+                                                                </select>
+                                                            </div>
+                                                        @endif
+                                                        @if ($representative->Country === 'Thailand')
+                                                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                                                <span for="Tambon">Tambon </span><br>
+                                                                <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()"disabled>
+                                                                @foreach($Tambon as $item)
+                                                                <option value="{{ $item->id }}" {{ $representative->Tambon == $item->id ? 'selected' : '' }}>{{ $item->name_th }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                            </div>
+                                                        @else
+                                                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                                                <span for="Tambon">Tambon </span><br>
+                                                                <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()" disabled>
+                                                                    <option value=""></option>
+                                                                </select>
+                                                            </div>
+                                                        @endif
+                                                        @if ($representative->Country === 'Thailand')
+                                                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                                                <span for="zip_code">Zip Code</span><br>
+                                                                <select name="zip_code" id="zip_code" class="select2"  disabled>
+                                                                    @foreach($Zip_code as $item)
+                                                                    <option value="{{ $item->id }}" {{ $representative->Zip_Code == $item->zip_code ? 'selected' : '' }}>{{ $item->zip_code }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        @else
+                                                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                                                <span for="zip_code">Zip Code</span><br>
+                                                                <select name="zip_code" id="zip_code" class="select2" disabled>
+                                                                    <option value=""></option>
+                                                                </select>
+                                                            </div>
+                                                        @endif
+                                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                                            <span for="Email">Email</span><br>
+                                                            <input type="text" id="EmailAgent" class="form-control" name="EmailAgent" maxlength="70" required value="{{$representative->Email}}"disabled>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mt-2">
+                                                        <div class="col-12">
+                                                            <span for="Phone_number">หมายเลขโทรศัพท์ / Phone Number</span>
+                                                        </div>
+                                                    </div>
+                                                    <div id="phone-container" class="flex-container row">
+                                                        <!-- Initial input fields -->
+                                                        @foreach($phoneArray as $phone)
+                                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                                            <div class="phone-group show mt-2">
+                                                                <input type="text" name="phone[]" class="form-control" maxlength="10" value="{{ $phone['Phone_number'] }}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required disabled>
+                                                            </div>
+                                                        </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row mt-3">
                                     <div class="col-lg-3 col-sm-12"></div>
                                     <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
@@ -263,6 +418,278 @@
                                     <div class="col-lg-3 col-sm-12"></div>
                                 </div>
                             </form>
+                            <div class="modal fade" id="CreateAgent" tabindex="-1" aria-labelledby="PrenameModalCenterTitle" style="display: none;" aria-hidden="true">
+                                <div class="modal-dialog  modal-lg modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-color-green">
+                                            <h5 class="modal-title text-white" id="PrenameModalCenterTitle">Add Contact</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{url('/Company/edit/contact/create/'.$Company->id)}}" method="POST">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <div class="col-sm-12 col-12">
+                                                    <div id="TitleContact" >
+                                                        <div class="col-sm-12 mt-2">
+                                                            <div class="row">
+                                                                <div class="col-sm-4 col-4" >
+                                                                    <span for="prefix">คำนำหน้า / Title</span>
+                                                                    <select name="prefix" id="PrefaceSelectContact" class="select22" required>
+                                                                            <option value=""></option>
+                                                                            @foreach($Mprefix as $item)
+                                                                                <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                                            @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-sm-4 col-4">
+                                                                    <span for="first_name">ชื่อ / First Name</span>
+                                                                    <input type="text" id="first_nameContact" class="form-control" placeholder="ชื่อ" name="first_nameContact"maxlength="70"  required>
+                                                                </div>
+                                                                <div class="col-sm-4 col-4 ">
+                                                                    <span for="last_name" >นามสกุล / Last Name</span>
+                                                                    <input type="text" id="last_nameContact" class="form-control" placeholder="นามสกุล" name="last_nameContact"maxlength="70"  required>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12 mt-2">
+                                                        <span for="Address">ที่อยู่ / Address</span>
+                                                        <textarea type="text" id="addressContact" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
+                                                    </div>
+                                                    <div class="col-sm-12 col-12">
+                                                        <div class="row mt-2">
+                                                            <div class="col-sm-4 col-4">
+                                                                <span for="Country">ประเทศ / Country</span>
+                                                                <select name="countrydataC" id="countrySelectContact" class="select22" onchange="showcityAInputContact()">
+                                                                    @foreach($country as $item)
+                                                                        <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == 'Thailand' ? 'selected' : '' }}>
+                                                                            {{ $item->ct_nameENG }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-sm-4 col-4" >
+                                                                <span for="City">จังหวัด / Province</span>
+                                                                <select name="cityC" id="provinceC" class="select22" onchange="provinceContact()" style="width: 100%;">
+                                                                    <option value=""></option>
+                                                                    @foreach($provinceNames as $item)
+                                                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-sm-4 col-4">
+                                                                <span for="Amphures">อำเภอ / District</span>
+                                                                <select name="amphuresC" id="amphuresC" class="select22" onchange="amphuresContact()" >
+                                                                    <option value=""></option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-2">
+                                                            <div class="col-sm-4 col-4">
+                                                                <span for="Tambon">ตำบล / Subdistrict</span>
+                                                                <select name="TambonC" id ="TambonC" class="select22" onchange="TambonContact()" style="width: 100%;">
+                                                                    <option value=""></option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-sm-4 col-4">
+                                                                <span for="zip_code">รหัสไปรษณีย์ / Postal Code</span>
+                                                                <select name="zip_codeC" id ="zip_codeC" class="select22"  style="width: 100%;">
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-sm-4 col-4">
+                                                                <span for="Email">อีเมล์ / Email</span>
+                                                                <input type="text" id="EmailContact" class="form-control"placeholder="อีเมล์" name="EmailAgent"maxlength="70" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-2">
+                                                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                                                <span for="Company_Phone" class="flex-container">
+                                                                    โทรศัพท์/ Phone number
+                                                                </span>
+                                                                <button type="button" class="btn btn-color-green my-2" id="add-phoneContact">เพิ่มหมายเลขโทรศัพท์</button>
+                                                            </div>
+                                                            <div id="phone-containerContact" class="flex-container row">
+                                                                <!-- Initial input fields -->
+                                                                <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                                                                    <div class="input-group show">
+                                                                        <input type="text" name="phoneContact[]" class="form-control phone" maxlength="14" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                                                        <button type="button" class="btn btn-outline-danger remove-phoneContact"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <script>
+                                                            function showcityAInputContact() {
+                                                                var countrySelectA = document.getElementById("countrySelectContact");
+                                                                var province = document.getElementById("provinceC");
+                                                                var amphuresSelect = document.getElementById("amphuresC");
+                                                                var tambonSelect = document.getElementById("TambonC");
+                                                                var zipCodeSelect = document.getElementById("zip_codeC");
+                                                                // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
+                                                                if (countrySelectA.value !== "Thailand") {
+                                                                    province.disabled = true;
+                                                                    // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                    amphuresSelect.disabled = true;
+                                                                    tambonSelect.disabled = true;
+                                                                    zipCodeSelect.disabled = true;
+                                                                } else if (countrySelectA.value === "Thailand"){
+                                                                    // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
+                                                                    // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
+                                                                    province.disabled = false;
+                                                                    // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                    amphuresSelect.disabled = false;
+                                                                    tambonSelect.disabled = false;
+                                                                    zipCodeSelect.disabled = false;
+
+                                                                    // เรียกใช้ฟังก์ชัน select_amphures() เพื่อเปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
+                                                                    amphuresContact();
+                                                                    provinceContact();
+                                                                    TambonContact();
+                                                                    $('#zip_codeContact').empty();
+                                                                }
+                                                            }
+                                                            function provinceContact(){
+                                                                var provinceAgentT = $('#provinceC').val();
+                                                                console.log(provinceAgentT);
+
+                                                                jQuery.ajax({
+                                                                    type:   "GET",
+                                                                    url:    "{!! url('/Company/amphures/Contact/"+provinceAgentT+"') !!}",
+                                                                    datatype:   "JSON",
+                                                                    async:  false,
+                                                                    success: function(result) {
+                                                                        jQuery('#amphuresC').children().remove().end();
+                                                                        console.log(result);
+                                                                        $('#amphuresC').append(new Option('', ''));
+                                                                        jQuery.each(result.data, function(key, value) {
+                                                                            var amphuresA = new Option(value.name_th,value.id);
+                                                                            //console.log(amphuresA);
+                                                                            $('#amphuresC').append(amphuresA);
+                                                                        });
+                                                                    },
+                                                                })
+
+                                                            }
+                                                            function amphuresContact(){
+                                                                var amphuresAgent  = $('#amphuresC').val();
+                                                                console.log(amphuresAgent);
+                                                                $.ajax({
+                                                                    type:   "GET",
+                                                                    url:    "{!! url('/Company/Tambon/Contact/"+amphuresAgent+"') !!}",
+                                                                    datatype:   "JSON",
+                                                                    async:  false,
+                                                                    success: function(result) {
+                                                                    console.log(result);
+                                                                        jQuery('#TambonC').children().remove().end();
+                                                                        $('#TambonC').append(new Option('', ''));
+                                                                        jQuery.each(result.data, function(key, value) {
+                                                                            var TambonA  = new Option(value.name_th,value.id);
+                                                                            $('#TambonC').append(TambonA );
+                                                                        console.log(TambonA);
+                                                                        });
+                                                                    },
+                                                                })
+                                                            }
+                                                            function TambonContact(){
+                                                                var TambonAgent  = $('#TambonC').val();
+                                                                console.log(TambonAgent);
+                                                                $.ajax({
+                                                                    type:   "GET",
+                                                                    url:    "{!! url('/Company/districts/Contact/"+TambonAgent+"') !!}",
+                                                                    datatype:   "JSON",
+                                                                    async:  false,
+                                                                    success: function(result) {
+                                                                        console.log(result);
+                                                                        jQuery('#zip_codeC').children().remove().end();
+                                                                        //console.log(result);
+                                                                        $('#zip_codeC').append(new Option('', ''));
+                                                                        jQuery.each(result.data, function(key, value) {
+                                                                            var zip_codeA  = new Option(value.zip_code,value.zip_code);
+                                                                            $('#zip_codeC').append(zip_codeA);
+                                                                            //console.log(zip_codeA);
+                                                                        });
+                                                                    },
+                                                                })
+                                                            }
+                                                            { //phone tax
+                                                                function formatPhoneNumberCon(value) {
+                                                                    value = value.replace(/\D/g, ""); // เอาตัวอักษรที่ไม่ใช่ตัวเลขออก
+                                                                    let formattedValue = "";
+
+                                                                    if (value.length > 0) {
+                                                                        formattedValue += value.substring(0, 3); // xxx
+                                                                    }
+                                                                    if (value.length > 3) {
+                                                                        formattedValue += "-" + value.substring(3, 6); // xxx-xxx
+                                                                    }
+                                                                    if (value.length > 6) {
+                                                                        formattedValue += "-" + value.substring(6, 10); // xxx-xxx-xxxx
+                                                                    }
+
+                                                                    return formattedValue;
+                                                                }
+                                                                document.getElementById('add-phoneContact').addEventListener('click', function() {
+                                                                    var phoneContainer = document.getElementById('phone-containerContact');
+                                                                    var newCol = document.createElement('div');
+                                                                    newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12', 'mt-2');
+                                                                    newCol.innerHTML = `
+                                                                        <div class="input-group show">
+                                                                            <input type="text" name="phoneContact[]" class="form-control" maxlength="12" oninput="formatAndUpdate(this)" required>
+                                                                            <button type="button" class="btn btn-outline-danger remove-phoneContact"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+                                                                        </div>
+                                                                    `;
+                                                                    phoneContainer.appendChild(newCol);
+
+                                                                    // Add the show class after a slight delay to trigger the transition
+                                                                    setTimeout(function() {
+                                                                        newCol.querySelector('.input-group').classList.add('show');
+                                                                    }, 10);
+
+                                                                    attachRemoveEvent(newCol.querySelector('.remove-phoneContact'));
+                                                                });
+                                                                function formatAndUpdate(input) {
+                                                                    const formattedValue = formatPhoneNumberCon(input.value);
+                                                                    input.value = formattedValue;
+                                                                }
+                                                                // Function to attach the remove event to the remove buttons
+                                                                function attachRemoveEvent(button) {
+                                                                    button.addEventListener('click', function() {
+                                                                        var phoneContainer = document.getElementById('phone-containerContact');
+                                                                        if (phoneContainer.childElementCount > 1) {
+                                                                            phoneContainer.removeChild(button.closest('.col-lg-4, .col-md-6, .col-sm-12'));
+                                                                        }
+                                                                    });
+                                                                }
+
+                                                                // Attach the remove event to the initial remove buttons
+                                                                document.querySelectorAll('.remove-phoneContact').forEach(function(button) {
+                                                                    attachRemoveEvent(button);
+                                                                });
+                                                            }
+                                                            { //Branch
+                                                                document.addEventListener('DOMContentLoaded', function() {
+                                                                    // Get the radio buttons
+                                                                    const Branch = document.getElementById('flexRadioDefaultContact');
+
+                                                                    Branch.addEventListener('change', function() {
+                                                                        if (Branch.checked) {
+                                                                            $('#BranchContact').val('สำนักงานใหญ่');
+                                                                        }
+                                                                    });
+                                                                });
+                                                            }
+                                                        </script>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
+                                                <button type="submit" class="btn btn-color-green lift" id="btn-save">สร้าง</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -448,6 +875,10 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-12 col-12">
+                                                            <span for="Address">ที่อยู่ / Address</span>
+                                                            <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
+                                                        </div>
+                                                        <div class="col-sm-12 col-12">
                                                             <div class="row mt-2">
                                                                 <div class="col-sm-4 col-4">
                                                                     <span for="Country">ประเทศ / Country</span>
@@ -492,10 +923,7 @@
                                                                     <input type="text" id="EmailAgent" class="form-control"placeholder="อีเมล์" name="EmailAgent"maxlength="70" required>
                                                                 </div>
                                                             </div>
-                                                            <div>
-                                                                <span for="Address">ที่อยู่ / Address</span>
-                                                                <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
-                                                            </div>
+
                                                             <div class="row mt-2">
                                                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                                                     <span for="Company_Phone" class="flex-container">
@@ -778,8 +1206,8 @@
                                                     <td style="text-align: center;">{{ $item->issue_date }}</td>
                                                     <td style="text-align: center;">{{ $item->Expirationdate }}</td>
                                                     @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkin }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkout }}</td>
                                                     @else
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
@@ -838,368 +1266,7 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade "id="nav-Contract" role="tabpanel" rel="0">
-                                <div class="row my-3">
-                                    <div class="col-lg-10"></div>
-                                    <div class="col-lg-2  d-flex justify-content-end align-items-end">
-                                        <button type="button" class="btn btn-color-green lift btn_modal"  data-bs-toggle="modal" data-bs-target="#CreateAgent"><i class="fa fa-plus"></i> เพิ่มตัวแทนบริษัท</button>
-                                    </div>
-                                </div>
-                                <div style="min-height: 70vh;" class="mt-2">
-                                    <table id="company-ContactTable" class="example ui striped table nowrap unstackable hover">
-                                        <caption class="caption-top">
-                                            <div>
-                                                <div class="flex-end-g2">
-                                                    <label class="entriespage-label">entries per page :</label>
-                                                    <select class="entriespage-button" id="search-per-page-company-Contact" onchange="getPageContact(1, this.value, 'company-Contact')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>10</option>
-                                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>25</option>
-                                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>50</option>
-                                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>100</option>
-                                                    </select>
-                                                    <input class="search-button search-data-company-Contact" id="company-Contact" style="text-align:left;" placeholder="Search" />
-                                                </div>
-                                        </caption>
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center" data-priority="1">No</th>
-                                                <th class="text-center" data-priority="1">Profile ID</th>
-                                                <th  data-priority="1">Company ID</th>
-                                                <th class="text-center">Branch</th>
-                                                <th class="text-center">Name</th>
-                                                <th class="text-center">Status</th>
-                                                <th class="text-center">Order</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if(!empty($representative))
-                                                @foreach ($representative as $key => $item)
-                                                <tr>
-                                                    <td style="text-align: center;">{{ $key + 1 }}</td>
-                                                    <td style="text-align: center;">{{ $item->Profile_ID }}</td>
-                                                    <td>{{ $item->Company_Name }}</td>
-                                                    <td style="text-align: center;">{{ $item->Branch }}</td>
-                                                    <td style="text-align: center;">คุณ {{ $item->First_name }} {{ $item->Last_name }}</td>
-                                                    <td style="text-align: center;">
-                                                        <input type="hidden" id="status" value="{{ $item->status }}">
-                                                        @if ($item->status == 1)
-                                                        <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatusContact({{ $item->id }})">ใช้งาน</button>
-                                                        @else
-                                                            <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatusContact({{ $item->id }})">ปิดใช้งาน</button>
-                                                        @endif
-                                                    </td>
-                                                    @php
-                                                        $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                        $canViewProposal = @Auth::user()->roleMenuView('Company / Agent', Auth::user()->id);
-                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Company / Agent', Auth::user()->id);
-                                                    @endphp
-                                                    <td style="text-align: center;">
-                                                        <div class="btn-group">
-                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
-                                                            <ul class="dropdown-menu border-0 shadow p-3">
-                                                                @if ($rolePermission > 0)
-                                                                    @if ($canViewProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/view/contact/'.$item->id) }}">ดูรายละเอียด</a></li>
-                                                                    @endif
-                                                                    @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/edit/contact/'.$item->id) }}">แก้ไขรายการ</a></li>
-                                                                    @endif
-                                                                @else
-                                                                    @if ($canViewProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/view/contact/'.$item->id) }}">ดูรายละเอียด</a></li>
-                                                                    @endif
-                                                                @endif
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            @endif
-                                        </tbody>
-                                        <input type="hidden" id="profile-company-Contact" name="profile-company" value="{{$Company->Profile_ID}}">
-                                        <input type="hidden" id="get-total-company-Contact" value="{{ $representative->total() }}">
-                                        <input type="hidden" id="currentPage-company-Contact" value="1">
-                                        <caption class="caption-bottom">
-                                            <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="company-Contact-showingEntries">{{ showingEntriesTableContact($representative, 'company-Contact') }}</p>
-                                                    <div id="company-Contact-paginate">
-                                                        {!! paginateTableContact($representative, 'company-Contact') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                                    </div>
-                                            </div>
-                                        </caption>
-                                    </table>
-                                </div>
-                                <div class="modal fade" id="CreateAgent" tabindex="-1" aria-labelledby="PrenameModalCenterTitle" style="display: none;" aria-hidden="true">
-                                    <div class="modal-dialog  modal-lg modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-color-green">
-                                                <h5 class="modal-title text-white" id="PrenameModalCenterTitle">Add Contact</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <form action="{{url('/Company/edit/contact/create/'.$Company->id)}}" method="POST">
-                                                @csrf
-                                                <div class="modal-body">
-                                                    <div class="col-sm-12 col-12">
-                                                        <div id="TitleContact" >
-                                                            <div class="col-sm-12 mt-2">
-                                                                <div class="row">
-                                                                    <div class="col-sm-4 col-4" >
-                                                                        <span for="prefix">คำนำหน้า / Title</span>
-                                                                        <select name="prefix" id="PrefaceSelectContact" class="select22" required>
-                                                                                <option value=""></option>
-                                                                                @foreach($Mprefix as $item)
-                                                                                    <option value="{{ $item->id }}">{{ $item->name_th }}</option>
-                                                                                @endforeach
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-sm-4 col-4">
-                                                                        <span for="first_name">ชื่อ / First Name</span>
-                                                                        <input type="text" id="first_nameContact" class="form-control" placeholder="ชื่อ" name="first_nameContact"maxlength="70"  required>
-                                                                    </div>
-                                                                    <div class="col-sm-4 col-4 ">
-                                                                        <span for="last_name" >นามสกุล / Last Name</span>
-                                                                        <input type="text" id="last_nameContact" class="form-control" placeholder="นามสกุล" name="last_nameContact"maxlength="70"  required>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12 col-12">
-                                                            <div class="row mt-2">
-                                                                <div class="col-sm-4 col-4">
-                                                                    <span for="Country">ประเทศ / Country</span>
-                                                                    <select name="countrydataC" id="countrySelectContact" class="select22" onchange="showcityAInputContact()">
-                                                                        @foreach($country as $item)
-                                                                            <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == 'Thailand' ? 'selected' : '' }}>
-                                                                                {{ $item->ct_nameENG }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-sm-4 col-4" >
-                                                                    <span for="City">จังหวัด / Province</span>
-                                                                    <select name="cityC" id="provinceC" class="select22" onchange="provinceContact()" style="width: 100%;">
-                                                                        <option value=""></option>
-                                                                        @foreach($provinceNames as $item)
-                                                                            <option value="{{ $item->id }}">{{ $item->name_th }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-sm-4 col-4">
-                                                                    <span for="Amphures">อำเภอ / District</span>
-                                                                    <select name="amphuresC" id="amphuresC" class="select22" onchange="amphuresContact()" >
-                                                                        <option value=""></option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row mt-2">
-                                                                <div class="col-sm-4 col-4">
-                                                                    <span for="Tambon">ตำบล / Subdistrict</span>
-                                                                    <select name="TambonC" id ="TambonC" class="select22" onchange="TambonContact()" style="width: 100%;">
-                                                                        <option value=""></option>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-sm-4 col-4">
-                                                                    <span for="zip_code">รหัสไปรษณีย์ / Postal Code</span>
-                                                                    <select name="zip_codeC" id ="zip_codeC" class="select22"  style="width: 100%;">
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-sm-4 col-4">
-                                                                    <span for="Email">อีเมล์ / Email</span>
-                                                                    <input type="text" id="EmailContact" class="form-control"placeholder="อีเมล์" name="EmailAgent"maxlength="70" required>
-                                                                </div>
-                                                            </div>
-                                                            <div>
-                                                                <span for="Address">ที่อยู่ / Address</span>
-                                                                <textarea type="text" id="addressContact" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
-                                                            </div>
-                                                            <div class="row mt-2">
-                                                                <div class="col-lg-12 col-md-12 col-sm-12">
-                                                                    <span for="Company_Phone" class="flex-container">
-                                                                        โทรศัพท์/ Phone number
-                                                                    </span>
-                                                                    <button type="button" class="btn btn-color-green my-2" id="add-phoneContact">เพิ่มหมายเลขโทรศัพท์</button>
-                                                                </div>
-                                                                <div id="phone-containerContact" class="flex-container row">
-                                                                    <!-- Initial input fields -->
-                                                                    <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
-                                                                        <div class="input-group show">
-                                                                            <input type="text" name="phoneContact[]" class="form-control phone" maxlength="14" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
-                                                                            <button type="button" class="btn btn-outline-danger remove-phoneContact"><i class="bi bi-x-circle" style="width:100%;"></i></button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <script>
-                                                                function showcityAInputContact() {
-                                                                    var countrySelectA = document.getElementById("countrySelectContact");
-                                                                    var province = document.getElementById("provinceC");
-                                                                    var amphuresSelect = document.getElementById("amphuresC");
-                                                                    var tambonSelect = document.getElementById("TambonC");
-                                                                    var zipCodeSelect = document.getElementById("zip_codeC");
-                                                                    // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
-                                                                    if (countrySelectA.value !== "Thailand") {
-                                                                        province.disabled = true;
-                                                                        // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
-                                                                        amphuresSelect.disabled = true;
-                                                                        tambonSelect.disabled = true;
-                                                                        zipCodeSelect.disabled = true;
-                                                                    } else if (countrySelectA.value === "Thailand"){
-                                                                        // เช็คค่าที่ถูกเลือกใน dropdown list เมือง
-                                                                        // ถ้าเลือก "Other_countries" แสดง input field สำหรับเมืองอื่นๆ และซ่อน input field สำหรับเมืองไทย
-                                                                        province.disabled = false;
-                                                                        // ปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
-                                                                        amphuresSelect.disabled = false;
-                                                                        tambonSelect.disabled = false;
-                                                                        zipCodeSelect.disabled = false;
 
-                                                                        // เรียกใช้ฟังก์ชัน select_amphures() เพื่อเปิดการใช้งาน select box ที่มี id เป็น amphures, Tambon, และ zip_code
-                                                                        amphuresContact();
-                                                                        provinceContact();
-                                                                        TambonContact();
-                                                                        $('#zip_codeContact').empty();
-                                                                    }
-                                                                }
-                                                                function provinceContact(){
-                                                                    var provinceAgentT = $('#provinceC').val();
-                                                                    console.log(provinceAgentT);
-
-                                                                    jQuery.ajax({
-                                                                        type:   "GET",
-                                                                        url:    "{!! url('/Company/amphures/Contact/"+provinceAgentT+"') !!}",
-                                                                        datatype:   "JSON",
-                                                                        async:  false,
-                                                                        success: function(result) {
-                                                                            jQuery('#amphuresC').children().remove().end();
-                                                                            console.log(result);
-                                                                            $('#amphuresC').append(new Option('', ''));
-                                                                            jQuery.each(result.data, function(key, value) {
-                                                                                var amphuresA = new Option(value.name_th,value.id);
-                                                                                //console.log(amphuresA);
-                                                                                $('#amphuresC').append(amphuresA);
-                                                                            });
-                                                                        },
-                                                                    })
-
-                                                                }
-                                                                function amphuresContact(){
-                                                                    var amphuresAgent  = $('#amphuresC').val();
-                                                                    console.log(amphuresAgent);
-                                                                    $.ajax({
-                                                                        type:   "GET",
-                                                                        url:    "{!! url('/Company/Tambon/Contact/"+amphuresAgent+"') !!}",
-                                                                        datatype:   "JSON",
-                                                                        async:  false,
-                                                                        success: function(result) {
-                                                                        console.log(result);
-                                                                            jQuery('#TambonC').children().remove().end();
-                                                                            $('#TambonC').append(new Option('', ''));
-                                                                            jQuery.each(result.data, function(key, value) {
-                                                                                var TambonA  = new Option(value.name_th,value.id);
-                                                                                $('#TambonC').append(TambonA );
-                                                                            console.log(TambonA);
-                                                                            });
-                                                                        },
-                                                                    })
-                                                                }
-                                                                function TambonContact(){
-                                                                    var TambonAgent  = $('#TambonC').val();
-                                                                    console.log(TambonAgent);
-                                                                    $.ajax({
-                                                                        type:   "GET",
-                                                                        url:    "{!! url('/Company/districts/Contact/"+TambonAgent+"') !!}",
-                                                                        datatype:   "JSON",
-                                                                        async:  false,
-                                                                        success: function(result) {
-                                                                            console.log(result);
-                                                                            jQuery('#zip_codeC').children().remove().end();
-                                                                            //console.log(result);
-                                                                            $('#zip_codeC').append(new Option('', ''));
-                                                                            jQuery.each(result.data, function(key, value) {
-                                                                                var zip_codeA  = new Option(value.zip_code,value.zip_code);
-                                                                                $('#zip_codeC').append(zip_codeA);
-                                                                                //console.log(zip_codeA);
-                                                                            });
-                                                                        },
-                                                                    })
-                                                                }
-                                                                { //phone tax
-                                                                    function formatPhoneNumberCon(value) {
-                                                                        value = value.replace(/\D/g, ""); // เอาตัวอักษรที่ไม่ใช่ตัวเลขออก
-                                                                        let formattedValue = "";
-
-                                                                        if (value.length > 0) {
-                                                                            formattedValue += value.substring(0, 3); // xxx
-                                                                        }
-                                                                        if (value.length > 3) {
-                                                                            formattedValue += "-" + value.substring(3, 6); // xxx-xxx
-                                                                        }
-                                                                        if (value.length > 6) {
-                                                                            formattedValue += "-" + value.substring(6, 10); // xxx-xxx-xxxx
-                                                                        }
-
-                                                                        return formattedValue;
-                                                                    }
-                                                                    document.getElementById('add-phoneContact').addEventListener('click', function() {
-                                                                        var phoneContainer = document.getElementById('phone-containerContact');
-                                                                        var newCol = document.createElement('div');
-                                                                        newCol.classList.add('col-lg-4', 'col-md-6', 'col-sm-12', 'mt-2');
-                                                                        newCol.innerHTML = `
-                                                                            <div class="input-group show">
-                                                                                <input type="text" name="phoneContact[]" class="form-control" maxlength="12" oninput="formatAndUpdate(this)" required>
-                                                                                <button type="button" class="btn btn-outline-danger remove-phoneContact"><i class="bi bi-x-circle" style="width:100%;"></i></button>
-                                                                            </div>
-                                                                        `;
-                                                                        phoneContainer.appendChild(newCol);
-
-                                                                        // Add the show class after a slight delay to trigger the transition
-                                                                        setTimeout(function() {
-                                                                            newCol.querySelector('.input-group').classList.add('show');
-                                                                        }, 10);
-
-                                                                        attachRemoveEvent(newCol.querySelector('.remove-phoneContact'));
-                                                                    });
-                                                                    function formatAndUpdate(input) {
-                                                                        const formattedValue = formatPhoneNumberCon(input.value);
-                                                                        input.value = formattedValue;
-                                                                    }
-                                                                    // Function to attach the remove event to the remove buttons
-                                                                    function attachRemoveEvent(button) {
-                                                                        button.addEventListener('click', function() {
-                                                                            var phoneContainer = document.getElementById('phone-containerContact');
-                                                                            if (phoneContainer.childElementCount > 1) {
-                                                                                phoneContainer.removeChild(button.closest('.col-lg-4, .col-md-6, .col-sm-12'));
-                                                                            }
-                                                                        });
-                                                                    }
-
-                                                                    // Attach the remove event to the initial remove buttons
-                                                                    document.querySelectorAll('.remove-phoneContact').forEach(function(button) {
-                                                                        attachRemoveEvent(button);
-                                                                    });
-                                                                }
-                                                                { //Branch
-                                                                    document.addEventListener('DOMContentLoaded', function() {
-                                                                        // Get the radio buttons
-                                                                        const Branch = document.getElementById('flexRadioDefaultContact');
-
-                                                                        Branch.addEventListener('change', function() {
-                                                                            if (Branch.checked) {
-                                                                                $('#BranchContact').val('สำนักงานใหญ่');
-                                                                            }
-                                                                        });
-                                                                    });
-                                                                }
-                                                            </script>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
-                                                    <button type="submit" class="btn btn-color-green lift" id="btn-save">สร้าง</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                             <div class="tab-pane fade" id="nav-User" role="tabpanel" rel="0">
                                 <div style="min-height: 70vh;" class="mt-2">
@@ -1445,104 +1512,102 @@
     </script>
     <script>
     document.addEventListener("DOMContentLoaded", function() {
-    function formatPhoneNumber(value) {
-        // ลบตัวอักษรที่ไม่ใช่ตัวเลขออก
-        value = value.replace(/\D/g, "");
-        let formattedValue = "";
+        function formatPhoneNumber(value) {
+            // ลบตัวอักษรที่ไม่ใช่ตัวเลขออก
+            value = value.replace(/\D/g, "");
+            let formattedValue = "";
 
-        // ฟอร์แมตหมายเลขโทรศัพท์
-        if (value.length > 0) {
-            formattedValue += value.substring(0, 3); // xxx
+            // ฟอร์แมตหมายเลขโทรศัพท์
+            if (value.length > 0) {
+                formattedValue += value.substring(0, 3); // xxx
+            }
+            if (value.length > 3) {
+                formattedValue += "-" + value.substring(3, 6); // xxx-xxx
+            }
+            if (value.length > 6) {
+                formattedValue += "-" + value.substring(6, 10); // xxx-xxx-xxxx
+            }
+
+            return formattedValue;
         }
-        if (value.length > 3) {
-            formattedValue += "-" + value.substring(3, 6); // xxx-xxx
+
+        function updatePhoneInput(event) {
+            const input = event.target;
+            input.value = formatPhoneNumber(input.value);
         }
-        if (value.length > 6) {
-            formattedValue += "-" + value.substring(6, 10); // xxx-xxx-xxxx
-        }
 
-        return formattedValue;
-    }
-
-    function updatePhoneInput(event) {
-        const input = event.target;
-        input.value = formatPhoneNumber(input.value);
-    }
-
-    // ฟังก์ชันที่ใช้ในการเพิ่มฟิลด์ใหม่
-    document.getElementById('add-input').addEventListener('click', function() {
-        var container = document.getElementById('phone-inputs-container');
-        var index = container.querySelectorAll('.input-group').length;
-        var newInputGroup = document.createElement('div');
-        newInputGroup.classList.add('input-group', 'mb-3');
-        newInputGroup.innerHTML = `
-            <input type="text" name="phone[]" class="form-control phone-input" maxlength="12" data-index="${index}" data-old-value="">
-            <button type="button" class="btn btn-outline-danger remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
-        `;
-        container.appendChild(newInputGroup);
-        addRemoveButtonListener(newInputGroup.querySelector('.remove-input'));
-        addInputChangeListener(newInputGroup.querySelector('.phone-input'));
-        updateIndices();
-    });
-
-    // ฟังก์ชันที่ใช้ในการเพิ่มฟิลด์แฟกซ์
-    document.getElementById('add-fax').addEventListener('click', function() {
-        var container = document.getElementById('fax-inputs-container');
-        var index = container.querySelectorAll('.input-group').length;
-        var newInputGroup = document.createElement('div');
-        newInputGroup.classList.add('input-group', 'mb-3');
-        newInputGroup.innerHTML = `
-            <input type="text" name="fax[]" class="form-control fax-input" maxlength="11" data-index="${index}" data-old-value="">
-            <button type="button" class="btn btn-outline-danger remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
-        `;
-        container.appendChild(newInputGroup);
-        addRemoveButtonListener(newInputGroup.querySelector('.remove-input'));
-        addInputChangeListener(newInputGroup.querySelector('.fax-input'));
-        updateIndices();
-    });
-
-    // เพิ่ม event listener ให้กับปุ่มลบที่มีอยู่
-    document.querySelectorAll('.remove-input').forEach(function(button) {
-        addRemoveButtonListener(button);
-    });
-
-    // เพิ่ม event listener ให้กับ input field ที่มีอยู่
-    document.querySelectorAll('.phone-input').forEach(function(input) {
-        addInputChangeListener(input);
-    });
-
-    // ฟังก์ชันที่ใช้ในการเพิ่ม event listener ให้กับปุ่มลบ
-    function addRemoveButtonListener(button) {
-        button.addEventListener('click', function() {
-            var container = button.closest('.input-group');
-            container.parentElement.removeChild(container);
+        // ฟังก์ชันที่ใช้ในการเพิ่มฟิลด์ใหม่
+        document.getElementById('add-input').addEventListener('click', function() {
+            var container = document.getElementById('phone-inputs-container');
+            var index = container.querySelectorAll('.input-group').length;
+            var newInputGroup = document.createElement('div');
+            newInputGroup.classList.add('input-group', 'mb-3');
+            newInputGroup.innerHTML = `
+                <input type="text" name="phone[]" class="form-control phone-input" maxlength="12" data-index="${index}" data-old-value="">
+                <button type="button" class="btn btn-outline-danger remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+            `;
+            container.appendChild(newInputGroup);
+            addRemoveButtonListener(newInputGroup.querySelector('.remove-input'));
+            addInputChangeListener(newInputGroup.querySelector('.phone-input'));
             updateIndices();
         });
-    }
 
-    // ฟังก์ชันที่ใช้ในการเพิ่ม event listener ให้กับ input field
-    function addInputChangeListener(input) {
-        input.addEventListener('input', updatePhoneInput);
-    }
-
-    // ฟังก์ชันที่ใช้ในการอัปเดตดัชนีของ input fields
-    function updateIndices() {
-        var phoneInputs = document.querySelectorAll('.phone-input');
-        phoneInputs.forEach(function(input, index) {
-            input.setAttribute('data-index', index);
-            input.setAttribute('name', `phone[${index}]`);
+        // ฟังก์ชันที่ใช้ในการเพิ่มฟิลด์แฟกซ์
+        document.getElementById('add-fax').addEventListener('click', function() {
+            var container = document.getElementById('fax-inputs-container');
+            var index = container.querySelectorAll('.input-group').length;
+            var newInputGroup = document.createElement('div');
+            newInputGroup.classList.add('input-group', 'mb-3');
+            newInputGroup.innerHTML = `
+                <input type="text" name="fax[]" class="form-control fax-input" maxlength="11" data-index="${index}" data-old-value="">
+                <button type="button" class="btn btn-outline-danger remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+            `;
+            container.appendChild(newInputGroup);
+            addRemoveButtonListener(newInputGroup.querySelector('.remove-input'));
+            addInputChangeListener(newInputGroup.querySelector('.fax-input'));
+            updateIndices();
         });
 
-        var faxInputs = document.querySelectorAll('.fax-input');
-        faxInputs.forEach(function(input, index) {
-            input.setAttribute('data-index', index);
-            input.setAttribute('name', `fax[${index}]`);
+        // เพิ่ม event listener ให้กับปุ่มลบที่มีอยู่
+        document.querySelectorAll('.remove-input').forEach(function(button) {
+            addRemoveButtonListener(button);
         });
-    }
-});
 
+        // เพิ่ม event listener ให้กับ input field ที่มีอยู่
+        document.querySelectorAll('.phone-input').forEach(function(input) {
+            addInputChangeListener(input);
+        });
 
-    </script>
+        // ฟังก์ชันที่ใช้ในการเพิ่ม event listener ให้กับปุ่มลบ
+        function addRemoveButtonListener(button) {
+            button.addEventListener('click', function() {
+                var container = button.closest('.input-group');
+                container.parentElement.removeChild(container);
+                updateIndices();
+            });
+        }
+
+        // ฟังก์ชันที่ใช้ในการเพิ่ม event listener ให้กับ input field
+        function addInputChangeListener(input) {
+            input.addEventListener('input', updatePhoneInput);
+        }
+
+        // ฟังก์ชันที่ใช้ในการอัปเดตดัชนีของ input fields
+        function updateIndices() {
+            var phoneInputs = document.querySelectorAll('.phone-input');
+            phoneInputs.forEach(function(input, index) {
+                input.setAttribute('data-index', index);
+                input.setAttribute('name', `phone[${index}]`);
+            });
+
+            var faxInputs = document.querySelectorAll('.fax-input');
+            faxInputs.forEach(function(input, index) {
+                input.setAttribute('data-index', index);
+                input.setAttribute('name', `fax[${index}]`);
+            });
+        }
+    });
+</script>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <!-- dataTable -->
 <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
@@ -1646,7 +1711,7 @@
 
     </script>
     <script>
-        const table_name = ['company-VisitTable', 'company-TaxTable','company-ContactTable','company-LogTable'];
+        const table_name = ['company-VisitTable', 'company-TaxTable','company-LogTable'];
         $(document).ready(function() {
             for (let index = 0; index < table_name.length; index++) {
                 new DataTable('#'+table_name[index], {
@@ -1765,74 +1830,7 @@
             document.getElementById(id).focus();
         });
 
-        $(document).on('keyup', '.search-data-company-Contact', function () {
-            var id = $(this).attr('id');
-            var search_value = $(this).val();
-            var table_name = id+'Table';
-            var guest_profile = $('#profile-company-Contact').val();
-            var type_status = $('#status').val();
-            var total = parseInt($('#get-total-'+id).val());
-            var getUrl = window.location.pathname;
-            console.log(guest_profile);
 
-
-                $('#'+table_name).DataTable().destroy();
-                var table = $('#'+table_name).dataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    ajax: {
-                    url: '/Contact-company-search-table',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    data: {
-                        search_value: search_value,
-                        table_name: table_name,
-                        guest_profile: guest_profile,
-                        status: type_status,
-                    },
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                },
-                    "initComplete": function (settings,json){
-
-                        if ($('#'+id+'Table .dataTable_empty').length == 0) {
-                            var count = $('#'+id+'Table tr').length - 1;
-                        }else{
-                            var count = 0;
-                        }
-                        if (search_value == '') {
-                            count_total = total;
-                        }else{
-                            count_total = count;
-                        }
-                        $('#'+id+'-paginate').children().remove().end();
-                        $('#'+id+'-showingEntries').text(showingEntriesSearchContact(1,count_total, id));
-                        $('#'+id+'-paginate').append(paginateSearchContact(count_total, id, getUrl));
-                    },
-                    columnDefs: [
-                                { targets: [0, 1, 3,4,5,6], className: 'dt-center td-content-center' },
-                    ],
-                    order: [0, 'asc'],
-                    responsive: {
-                        details: {
-                            type: 'column',
-                            target: 'tr'
-                        }
-                    },
-                    columns: [
-                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Profile_ID_TAX' },
-                        { data: 'Company' },
-                        { data: 'Branch' },
-                        { data: 'Name' },
-                        { data: 'Status' },
-                        { data: 'Order' },
-                    ],
-
-                });
-            document.getElementById(id).focus();
-        });
 
 
         $(document).on('keyup', '.search-data-company-Log', function () {

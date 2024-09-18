@@ -27,9 +27,12 @@ class CompanyController extends Controller
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $Company = companys::query()
-            ->leftJoin('company_phones', 'companys.Profile_ID', '=', 'company_phones.Profile_ID')
+            ->leftJoin('company_phones', function($join) {
+                $join->on('companys.Profile_ID', '=', 'company_phones.Profile_ID')
+                    ->where('company_phones.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
+            })
             ->where('companys.status', 1)
-            ->select('companys.*', DB::raw('GROUP_CONCAT(company_phones.Phone_number) as Phone_numbers')) // รวมหมายเลขโทรศัพท์เป็นสตริงเดียว
+            ->select('companys.*', DB::raw('GROUP_CONCAT(company_phones.Phone_number) as Phone_numbers')) // รวมหมายเลขโทรศัพท์ที่มี Sequence = 'main'
             ->groupBy('companys.id') // จัดกลุ่มข้อมูลตาม ID ของบริษัท
             ->orderBy('companys.id', 'asc')
             ->paginate($perPage);
@@ -633,14 +636,18 @@ class CompanyController extends Controller
             $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
             $Quotation = Quotation::where('Company_ID',$Company_ID)->paginate($perPage);
             $company_tax = company_tax::where('Company_ID',$Company_ID)->paginate($perPage);
-            $representative = representative::where('Company_ID',$Company_ID)->paginate($perPage);
+            $representative = representative::where('Company_ID', $Company_ID)->where('status',1)->first();
+            $representative_ID = $representative->Profile_ID;
+            $repCompany_ID = $representative->Company_ID;
+            $phone = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID',$repCompany_ID)->get();
+            $phoneArray = $phone->toArray();
             $log = log_company::where('Company_ID', $Company_ID)
             ->orderBy('updated_at', 'desc')
             ->paginate($perPage);
             return view('company.edit',compact('Company','booking_channel','provinceNames','Tambon','amphures',
             'Zip_code','faxArray','phoneDataArray','Company_Contact','Mmarket',
             'MCompany_type','Mprefix','phonecount','faxcount','Profile_ID','representative','Mprefix','provinceNames','Quotation','company_tax',
-            'log','country'));
+            'log','country','phoneArray'));
     }
     public function update(Request $request, $id) {
         {
@@ -1752,8 +1759,8 @@ class CompanyController extends Controller
                 $btn_date_out = "";
                 $btn_action = "";
                 if ($value->checkin) {
-                    $btn_date_in =   \Carbon\Carbon::parse($value->checkin)->format('d/m/Y');
-                    $btn_date_out =   \Carbon\Carbon::parse($value->checkout)->format('d/m/Y');
+                    $btn_date_in =   $value->checkin;
+                    $btn_date_out =  $value->checkout;
                 }else {
                     $btn_date_in = '-';
                     $btn_date_out = '-';
@@ -1828,8 +1835,8 @@ class CompanyController extends Controller
                 $btn_action = "";
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
                     if ($value->checkin) {
-                        $btn_date_in =   \Carbon\Carbon::parse($value->checkin)->format('d/m/Y');
-                        $btn_date_out =   \Carbon\Carbon::parse($value->checkout)->format('d/m/Y');
+                        $btn_date_in =   $value->checkin;
+                        $btn_date_out =  $value->checkout;
                     }else {
                         $btn_date_in = '-';
                         $btn_date_out = '-';

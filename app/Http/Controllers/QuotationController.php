@@ -2110,8 +2110,8 @@ class QuotationController extends Controller
                 $quantity = master_quantity::where('status',1)->get();
                 $settingCompany = Master_company::orderBy('id', 'desc')->first();
                 if ($Checkin) {
-                    $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                    $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                    $checkin = $Checkin;
+                    $checkout = $Checkout;
                 }else{
                     $checkin = '-';
                     $checkout = '-';
@@ -2355,8 +2355,8 @@ class QuotationController extends Controller
                     }
                     $Time =null;
                     if ($Checkin) {
-                        $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                        $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                        $checkin = $Checkin;
+                        $checkout = $Checkout;
                         $Time = 'วันเข้าที่พัก : '.$checkin.' '.'วันออกที่พัก : '.$checkout.' '.'จำนวน : '.$Day.' วัน '.' '.$Night.' คืน ';
                     }
                     $Pax = null;
@@ -2706,8 +2706,8 @@ class QuotationController extends Controller
                         $quantity = master_quantity::where('status',1)->get();
                         $settingCompany = Master_company::orderBy('id', 'desc')->first();
                         if ($Checkin) {
-                            $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                            $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                            $checkin = $Checkin;
+                            $checkout = $Checkout;
                         }else{
                             $checkin = '-';
                             $checkout = '-';
@@ -4092,8 +4092,8 @@ class QuotationController extends Controller
         $Checkin = $quotation->checkin;
         $Checkout = $quotation->checkout;
         if ($Checkin) {
-            $checkin = Carbon::parse($Checkin)->format('d/m/Y').' '.'-'.'';
-            $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+            $checkin = $Checkin.' '.'-'.'';
+            $checkout = $Checkout;
         }else{
             $checkin = 'No Check in date';
             $checkout = ' ';

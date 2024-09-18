@@ -1274,7 +1274,7 @@
             $('#Checkin').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
-                autoUpdateInput: true,
+                autoUpdateInput: false,
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -1285,7 +1285,7 @@
             $('#Checkout').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
-                autoUpdateInput: true,
+                autoUpdateInput: false,
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -1689,13 +1689,13 @@
                                     if (SpecialDiscount >= 1) {
                                         if (roleMenuDiscount == 1) {
                                             discountInput = '<div class="input-group">' +
-                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="" rel="' + number + '" style="text-align:center;" ' +
                                                 'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + SpecialDiscount + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
                                                 '<span class="input-group-text">%</span>' +
                                                 '</div>';
                                         } else {
                                             discountInput = '<div class="input-group">' +
-                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" ' +
+                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
                                                 'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
                                                 '<span class="input-group-text">%</span>' +
                                                 '</div>';
@@ -1704,14 +1704,14 @@
                                     else{
                                         if (roleMenuDiscount == 1) {
                                             discountInput = '<div class="input-group">' +
-                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" ' +
+                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
                                                 'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
                                                 '<span class="input-group-text">%</span>' +
                                                 '</div>';
                                         }
                                     }
                                     quantity = '<div class="input-group">' +
-                                                '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="0" rel="' + number + '" style="text-align:center;" ' +
+                                                '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="" rel="' + number + '" style="text-align:center;" ' +
                                                 'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.NumberRoom + ') this.value = ' + val.NumberRoom + ';">' +
                                                 '</div>';
 

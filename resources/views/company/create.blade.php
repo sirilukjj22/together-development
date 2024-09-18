@@ -284,6 +284,12 @@
                                                         <input type="text" class="form-control" id="last_nameAgent" name="last_nameAgent" maxlength="70" required>
                                                     </div>
                                                 </div>
+                                                <div class="row mt-2">
+                                                    <div class="col">
+                                                        <span class="labelcontact" for="">Address</span>
+                                                        <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
+                                                    </div>
+                                                </div>
                                                 <div  class="row mt-2">
                                                     <div class="col-lg-4 col-md-4 col-sm-12">
                                                         <div class="form-check">
@@ -339,12 +345,7 @@
                                                         <input class="form-control" type="email" class="form-control" id="EmailAgent" name="EmailAgent" style="width: 100%;" maxlength="70" required>
                                                     </div>
                                                 </div>
-                                                <div class="row mt-2">
-                                                    <div class="col">
-                                                        <span class="labelcontact" for="">Address</span>
-                                                        <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
-                                                    </div>
-                                                </div>
+
                                                 <div class="row mt-2">
                                                     <div class="col-lg-6 col-md-6 col-sm-12">
                                                         <span for="Company_Phone" class="flex-container">
