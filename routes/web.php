@@ -612,6 +612,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('invoice-pendind-search-table', 'search_table_invoice_pending');
         Route::post('invoice-pending-paginate-table', 'paginate_table_invoice_pending');
+
+         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
+         Route::get('/Proposal/cover/document/PDF/{id}', 'sheetpdf')->name('invoice.sheet');
     });
 
     ##-------------------------------document receipt-----------------

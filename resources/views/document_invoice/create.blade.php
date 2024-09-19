@@ -317,7 +317,7 @@
                                             <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Name :</b></td>
                                             <td>
                                                 <span id="Company_contact">{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span>
-                                                <b style="margin-left: 10px;color:#000;">Contact Number : </b><span id="Contact_Phone">{{ $Contact_phone->Phone_number}}<</span>
+                                                <b style="margin-left: 10px;color:#000;">Contact Number : </b><span id="Contact_Phone">{{ $Contact_phone->Phone_number}}</span>
                                             </td>
                                         </tr>
                                         <tr>

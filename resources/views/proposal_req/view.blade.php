@@ -325,7 +325,7 @@
         }
         function Reject() {
             Swal.fire({
-                title: "คุณต้องการ Reject เอกสารช่หรือไม่?",
+                title: "คุณต้องการ Reject เอกสารใช่หรือไม่?",
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "บันทึกข้อมูล",
