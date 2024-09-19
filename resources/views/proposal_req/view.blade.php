@@ -10,6 +10,10 @@
         padding-bottom: 5px;
         font-size: 20px;
     }
+    .styled-hr {
+        border: none; /* เอาขอบออก */
+        border: 1px solid #2D7F7B; /* กำหนดระยะห่างด้านล่าง */
+    }
 </style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
@@ -34,22 +38,21 @@
                     </ol>
                 </div>
                 <div class="col-auto">
-                    <div class="dropdown">
-                        <form id="myForm" action="{{route('DummyQuotation.Reject')}}" method="POST">
-                            @csrf
-                            @foreach($proposal as  $key => $item )
-                                <input type="hidden" name="DummyNo[]" value="{{$item->DummyNo}}">
-                                <input type="hidden" name="QuotationType" value="{{$item->QuotationType}}">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
+                        <ul class="dropdown-menu border-0 shadow p-3">
+                            @foreach($Data as $key =>$itemdataid)
+                                <li><a class="dropdown-item py-2 rounded" onclick="Approve('{{ $itemdataid->DummyNo }}')">Approve ID {{$itemdataid->DummyNo}}</a></li>
                             @endforeach
-                            <button type="submit" class="btn btn-secondary lift btn_modal"style="float: right" >Reject</button>
-                        </form>
+                            <li><a class="dropdown-item py-2 rounded" onclick="Reject()">Reject</a></li>
+                        </ul>
                     </div>
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
         <div class="container-xl">
             <div class="col-md-12 col-12 row">
-                @foreach($proposal as  $key => $item )
+                @foreach($datarequest as  $key => $item )
                     @php
                         $priceless50 =0;
                         $price50=0;
@@ -69,204 +72,217 @@
                         <div class="card mb-4" style="height: 830px;  overflow-x: hidden; overflow-y: auto;">
                             <div class='card-body'>
                                 <div class="row">
-                                    <h5 class="com">รหัสใบข้อเสนอ : {{$item->DummyNo}}</h5>
-                                    <input type="hidden" name="DummyNo[]" id="DummyNo" class="DummyNo" value="{{$item->DummyNo}}">
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        @php
-                                            $Company = $item->Company_ID;
-                                            $type_Proposal = $item->type_Proposal;
-                                            if ($type_Proposal == 'Company') {
-                                                $quotation = DB::table('representatives')
-                                                    ->where('status', 1)
-                                                    ->where('Company_ID', $Company)
-                                                    ->first();
-                                                $fullname = $quotation->First_name . ' ' . $quotation->Last_name;
-                                                $company = DB::table('companys')
-                                                    ->where('Profile_ID', $Company)
-                                                    ->first();
-                                                $CityID=$Company->City;
-                                                $amphuresID = $Company->Amphures;
-                                                $TambonID = $Company->Tambon;
-                                            }else{
-                                                $quotation = DB::table('guests')
-                                                    ->where('Profile_ID', $Company)
-                                                    ->first();
-                                                $fullname = $quotation->First_name . ' ' . $quotation->Last_name;
+                                    <h5 class="com">รหัสใบข้อเสนอ : {{ $item['Proposal'] }}</h5>
+                                    <input type="hidden" name="DummyNo[]" id="DummyNo" class="DummyNo" value="">
+                                    @if ($item['type_Proposal'] == 'Company')
+                                        <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <b>Company Name : </b><label> {{$item['fullName']}}</label><br>
+                                            <b>Company Address : </b><label> {{$item['Adress']}} {{$item['TambonNames']}}{{$item['amphuresNames']}} {{$item['provinceNames']}} {{$item['Zip_Code']}} </label><br>
+                                            <b>Company Number : </b><label> {{$item['phone']}}</label><br>
+                                            <b>Company Fax : </b><label> {{$item['fax']}}</label><br>
+                                            <b>Company Email : </b><label> {{$item['email']}}</label><br>
+                                            <b>Taxpayer Identification : </b><label> {{$item['Identification']}}</label><br>
+                                            <div class="styled-hr"></div>
 
-                                            }
-
-                                        @endphp
-                                        @if ($item->type_Proposal == 'Company')
-                                            <span> <b>นามบริษัท : </b>{{ @$item->company->Company_Name}}</span>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-12 mt-2">
+                                            <b>Contact Name : </b><label> {{$item['fullNameCon']}}</label><br>
+                                            <b>Contact Email : </b><label> {{$item['phonecontact']}}</label><br>
+                                            <b>Contact Number : </b><label> {{$item['emailcontact']}}</label><br>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-12 mt-2">
+                                            @if ($item['checkin'])
+                                                <b>Check in : </b><label> {{$item['checkin']}}</label><b style="margin-left: 20px"> Check out : </b><label> {{$item['checkout']}}</label><br>
+                                            @else
+                                                <b>Check in : </b><label> {{$item['checkin'] ?? 'No Check in date'}}</label><br>
+                                            @endif
+                                            <b>Length of Stay : </b>
+                                            <label> {{ isset($item['day']) ? $item['day'].' วัน' : ' - ' }}
+                                                {{ isset($item['night']) ? $item['night'].' คืน' : ' ' }}
+                                            </label><br>
+                                            <b>Number of Guests : </b>
+                                            <label> {{$item['adult'].' Adult'}} {{$item['children'].' Children'}}
+                                            </label>
+                                        </div>
+                                    @else
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <b>Guest Name : </b><label> {{$item['fullName']}}</label><br>
+                                        <b>Guest Address : </b><label> {{$item['Adress']}} {{$item['TambonNames']}}{{$item['amphuresNames']}} {{$item['provinceNames']}} {{$item['Zip_Code']}} </label><br>
+                                        <b>Guest Number : </b><label> {{$item['phone']}}</label><br>
+                                        <b>Guest Fax : </b><label> {{$item['fax']}}</label><br>
+                                        <b>Guest Email : </b><label> {{$item['email']}}</label><br>
+                                        <b>Identification_Number : </b><label> {{$item['Identification']}}</label><br>
+                                        <div class="styled-hr"></div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mt-2">
+                                        @if ($item['checkin'])
+                                            <b>Check in : </b><label> {{$item['checkin']}}</label><b style="margin-left: 20px"> Check out : </b><label> {{$item['checkout']}}</label><br>
                                         @else
-                                            <span> <b>นามบุคคล :</b> {{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</span>
+                                            <b>Check in : </b><label> {{$item['checkin'] ?? 'No Check in date'}}</label><br>
                                         @endif
-                                        <br>
-                                        <span><b>ตัวแทน :</b> {{ $fullname }}</span>
+                                        <b>Length of Stay : </b>
+                                        <label> {{ isset($item['day']) ? $item['day'].' วัน' : ' - ' }}
+                                            {{ isset($item['night']) ? $item['night'].' คืน' : ' ' }}
+                                        </label><br>
+                                        <b>Number of Guests : </b>
+                                        <label> {{$item['adult'].' Adult'}} {{$item['children'].' Children'}}
+                                        </label>
                                     </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <span> <b>วันที่เข้าพัก : </b>{{$item->checkin ?? '-'}}</span><br>
-                                        <span> <b>วันที่ออก : </b>{{$item->checkout ?? '-'}}</span>
-                                    </div>
-                                </div>
-
-                                <table class="example ui striped table nowrap unstackable hover" style="width:100%;overflow-x: hidden; overflow-y: auto;" >
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 5%">No</th>
-                                            <th>DESCRIPTION</th>
-                                            <th style="width: 5%">QUANTITY</th>
-                                            <th style="width: 5%">DISCOUNT</th>
-                                            <th style="width: 5%">AMOUNT</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach(@$item->document as $key =>$itemproduct)
-                                                <tr>
-                                                    <td style="text-align: center;">{{ $key+1}}</td>
-                                                    <td>{{@$itemproduct->product->name_th}}</td>
-                                                    <td style="text-align: center;">
-
-                                                        {{@$itemproduct->Quantity }}
-                                                    </td>
-                                                    <td style="text-align: center;">
-
-                                                        {{@$itemproduct->discount }}
-                                                    </td>
-                                                    <td style="text-align: center;">
-
-                                                        {{ number_format(@$itemproduct->netpriceproduct) }}
-
-                                                    </td>
-                                                </tr>
-                                                @php
-                                                    $price50 += @$itemproduct->netpriceproduct;
-                                                    $sp = $item->SpecialDiscountBath;
-                                                    $sp50 = $price50-$item->SpecialDiscountBath;
-                                                    $priceless50 = $sp50/1.07;
-                                                    $Add50 = $sp50-$priceless50;
-                                                    $Net50 = $priceless50+$Add50;
-
-                                                    $price51 += @$itemproduct->netpriceproduct;
-                                                    $sp51 = $price51-$item->SpecialDiscountBath;
-                                                    $price52 += @$itemproduct->netpriceproduct;
-                                                    $sp52 = $price52-$item->SpecialDiscountBath;
-                                                    $Add52 = $sp52*7/100;
-                                                    $pricebefore52 = $price52+$Add52;
-                                                @endphp
-                                        @endforeach
-                                    </tbody>
-                                </table>
-
-                                <style>
-
-                                    .d-grid-2column {
-                                        display:grid;
-                                        grid-template-columns: auto auto;
-                                    }
-
-                                    .d-grid-2column :nth-child(2) {
-                                        text-align: end;
-                                    }
-
-
-                                </style>
-                                <div class="row mt-2">
-                                    @if ($item->vat_type = 50)
-                                        <div class="col-lg-6 col-md-6 col-sm-6 "></div>
-                                        <div class="col-lg-6 col-md-6 col-sm-6 ">
-                                            <div class="d-grid-2column" >
-                                                <div class="" >
-                                                    <span id="Subtotal">Subtotal : </span><br>
-                                                    <span id="Special">Special Discount : </span><br>
-                                                    <span id="less">Subtotal less Discount : </span><br>
-                                                    <span id="Before">Price Before Tax :</span><br>
-                                                    <span id="Added">Value Added Tax : </span><br>
-                                                    <span id="Net">Net Total : </span><br>
-                                                </div>
-                                                <div class="">
-                                                    {{ number_format($price50, 2, '.', ',') }} <br>
-                                                    {{ number_format($sp, 2, '.', ',') }}<br>
-                                                    {{ number_format($sp50, 2, '.', ',') }}<br>
-                                                    {{ number_format($priceless50, 2, '.', ',') }}<br>
-                                                    {{ number_format($Add50, 2, '.', ',') }}<br>
-                                                    {{ number_format($Net50, 2, '.', ',') }}<br>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @elseif ($item->vat_type = 51)
-                                    <div class="col-6 col-md-12 col-sm-12"></div>
-                                    <div class="col-6 col-md-12 col-sm-12">
-                                        <div class="row">
-                                            <div class="col-lg-8 col-md-4 col-sm-4">
-                                                    <span id="Subtotal">Subtotal : </span><br>
-                                                    <span id="Special">Special Discount : </span><br>
-                                                    <span id="less">Subtotal less Discount : </span><br>
-                                                    <span id="Net">Net Total : </span><br>
-                                                </div>
-                                                <div class="col-4 col-md-8 col-sm-8">
-                                                    {{ number_format($price51, 2, '.', ',') }} <br>
-                                                    {{ number_format($sp, 2, '.', ',') }}<br>
-                                                    {{ number_format($sp51, 2, '.', ',') }}<br>
-                                                    {{ number_format($sp51, 2, '.', ',') }} <br>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    @elseif ($item->vat_type = 52)
-                                        <div class="col-6"></div>
-                                        <div class="col-6">
-                                            <div class="row">
-                                                <div class="col-8">
-                                                    <span id="Subtotal">Subtotal : </span><br>
-                                                    <span id="Special">Special Discount : </span><br>
-                                                    <span id="less">Subtotal less Discount : </span><br>
-                                                    <span id="Added">Value Added Tax : </span><br>
-                                                    <span id="Net">Net Total : </span><br>
-                                                </div>
-                                                <div class="col-4">
-                                                    {{ number_format($price52, 2, '.', ',') }} <br>
-                                                    {{ number_format($sp, 2, '.', ',') }}<br>
-                                                    {{ number_format($sp52, 2, '.', ',') }} <br>
-                                                    {{ number_format($Add52, 2, '.', ',') }} <br>
-                                                    {{ number_format($pricebefore52, 2, '.', ',') }} <br>
-                                                </div>
-                                            </div>
-                                        </div>
                                     @endif
                                 </div>
+                                @foreach($Data as $key =>$itemdata)
+                                    @if ($itemdata->id == $item['id'])
+                                        <table class="example ui striped table nowrap unstackable hover" style="width:100%;overflow-x: hidden; overflow-y: auto;" >
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 5%">No</th>
+                                                    <th>DESCRIPTION</th>
+                                                    <th style="width: 5%">QUANTITY</th>
+                                                    <th style="width: 5%">DISCOUNT</th>
+                                                    <th style="width: 5%">AMOUNT</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach(@$itemdata->document as $key =>$itemproduct)
+                                                    <tr>
+                                                        <td style="text-align: center;">{{ $key+1}}</td>
+                                                        <td>{{@$itemproduct->product->name_th}}</td>
+                                                        <td style="text-align: center;">
+
+                                                            {{@$itemproduct->Quantity }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+
+                                                            {{@$itemproduct->discount }}
+                                                        </td>
+                                                        <td style="text-align: center;">
+
+                                                            {{ number_format(@$itemproduct->netpriceproduct) }}
+
+                                                        </td>
+                                                    </tr>
+                                                    @php
+                                                        $price50 += @$itemproduct->netpriceproduct;
+                                                        $sp = $itemdata->SpecialDiscountBath;
+                                                        $sp50 = $price50-$itemdata->SpecialDiscountBath;
+                                                        $priceless50 = $sp50/1.07;
+                                                        $Add50 = $sp50-$priceless50;
+                                                        $Net50 = $priceless50+$Add50;
+
+                                                        $price51 += @$itemproduct->netpriceproduct;
+                                                        $sp51 = $price51-$itemdata->SpecialDiscountBath;
+                                                        $price52 += @$itemproduct->netpriceproduct;
+                                                        $sp52 = $price52-$itemdata->SpecialDiscountBath;
+                                                        $Add52 = $sp52*7/100;
+                                                        $pricebefore52 = $price52+$Add52;
+                                                    @endphp
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                        <style>
+
+                                            .d-grid-2column {
+                                                display:grid;
+                                                grid-template-columns: auto auto;
+                                            }
+
+                                            .d-grid-2column :nth-child(2) {
+                                                text-align: end;
+                                            }
+
+
+                                        </style>
+                                        <div class="row mt-2">
+                                            @if ($itemdata->vat_type = 50)
+                                                <div class="col-lg-6 col-md-6 col-sm-6 "></div>
+                                                <div class="col-lg-6 col-md-6 col-sm-6 ">
+                                                    <div class="d-grid-2column" >
+                                                        <div class="" >
+                                                            <span id="Subtotal">Subtotal : </span><br>
+                                                            <span id="Special">Special Discount : </span><br>
+                                                            <span id="less">Subtotal less Discount : </span><br>
+                                                            <span id="Before">Price Before Tax :</span><br>
+                                                            <span id="Added">Value Added Tax : </span><br>
+                                                            <span id="Net">Net Total : </span><br>
+                                                        </div>
+                                                        <div class="">
+                                                            {{ number_format($price50, 2, '.', ',') }} <br>
+                                                            {{ number_format($sp, 2, '.', ',') }}<br>
+                                                            {{ number_format($sp50, 2, '.', ',') }}<br>
+                                                            {{ number_format($priceless50, 2, '.', ',') }}<br>
+                                                            {{ number_format($Add50, 2, '.', ',') }}<br>
+                                                            {{ number_format($Net50, 2, '.', ',') }}<br>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @elseif ($itemdata->vat_type = 51)
+                                            <div class="col-6 col-md-12 col-sm-12"></div>
+                                            <div class="col-6 col-md-12 col-sm-12">
+                                                <div class="row">
+                                                    <div class="col-lg-8 col-md-4 col-sm-4">
+                                                            <span id="Subtotal">Subtotal : </span><br>
+                                                            <span id="Special">Special Discount : </span><br>
+                                                            <span id="less">Subtotal less Discount : </span><br>
+                                                            <span id="Net">Net Total : </span><br>
+                                                        </div>
+                                                        <div class="col-4 col-md-8 col-sm-8">
+                                                            {{ number_format($price51, 2, '.', ',') }} <br>
+                                                            {{ number_format($sp, 2, '.', ',') }}<br>
+                                                            {{ number_format($sp51, 2, '.', ',') }}<br>
+                                                            {{ number_format($sp51, 2, '.', ',') }} <br>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            @elseif ($itemdata->vat_type = 52)
+                                                <div class="col-6"></div>
+                                                <div class="col-6">
+                                                    <div class="row">
+                                                        <div class="col-8">
+                                                            <span id="Subtotal">Subtotal : </span><br>
+                                                            <span id="Special">Special Discount : </span><br>
+                                                            <span id="less">Subtotal less Discount : </span><br>
+                                                            <span id="Added">Value Added Tax : </span><br>
+                                                            <span id="Net">Net Total : </span><br>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            {{ number_format($price52, 2, '.', ',') }} <br>
+                                                            {{ number_format($sp, 2, '.', ',') }}<br>
+                                                            {{ number_format($sp52, 2, '.', ',') }} <br>
+                                                            {{ number_format($Add52, 2, '.', ',') }} <br>
+                                                            {{ number_format($pricebefore52, 2, '.', ',') }} <br>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                    @endif
+                                @endforeach
+                                <form id="myFormApprove" action="{{route('DummyQuotation.Approve')}}" method="POST">
+                                    @csrf
+                                    @foreach($Data as $item)
+                                        <input type="hidden" name="QuotationType" value="{{$item->QuotationType}}">
+                                        <!-- ฟิลด์ซ่อนเพื่อเก็บ id -->
+                                    @endforeach
+                                    <input type="hidden" name="approved_id" id="approved_id">
+                                </form>
+                                <form id="myForm" action="{{ route('DummyQuotation.Reject') }}" method="POST">
+                                    @csrf
+                                    @foreach($Data as $item)
+                                        <input type="hidden" name="DummyNo[]" value="{{ $item->DummyNo }}">
+                                        <input type="hidden" name="QuotationType" value="{{ $item->QuotationType }}">
+                                    @endforeach
+                                </form>
                             </div>
-                            <form id="myForm" action="{{route('DummyQuotation.Approve')}}" method="POST">
-                                @csrf
-                                <div class="row mt-2 my-4">
-                                    <div class="col-3"></div>
-                                    <input type="hidden" name="DummyNo" value="{{$item->DummyNo}}">
-                                    <input type="hidden" name="QuotationType" value="{{$item->QuotationType}}">
-                                    <div class="col-6" style="display:flex; justify-content:center; align-items:center;">
-                                        <button type="submit" class="btn btn-success lift btn_modal" >
-                                            <i class="fa fa-check"></i> Approve
-                                        </button>
-                                    </div>
-                                    <div class="col-3">
-                                    </div>
-                                </div>
-                            </form>
                         </div>
                     </div>
                 @endforeach
-                <div class="col-12 row mt-5">
-                    <div class="col-4"></div>
-                    <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
-                        <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('ProposalReq.index') }}'">
-                            Back
-                        </button>
-                    </div>
-                    <div class="col-4"></div>
-                </div>
             </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @include('script.script')
     <script>
         $(document).ready(function() {
@@ -288,6 +304,40 @@
                 }
             });
         });
+        function Approve(id) {
+            document.getElementById('approved_id').value = id; // ตั้งค่า id
+            console.log("Approved ID:", document.getElementById('approved_id').value);
+            Swal.fire({
+                title: `คุณต้องการ Approve รหัส ${id} เอกสารใช่หรือไม่?`,
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "บันทึกข้อมูล",
+                cancelButtonText: "ยกเลิก",
+                confirmButtonColor: "#2C7F7A",
+                dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log("Submitting form with Approved ID:", document.getElementById('approved_id').value);
+                    document.getElementById('myFormApprove').submit();
+                }
+            });
+        }
+        function Reject() {
+            Swal.fire({
+                title: "คุณต้องการ Reject เอกสารช่หรือไม่?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "บันทึกข้อมูล",
+                cancelButtonText: "ยกเลิก",
+                confirmButtonColor: "#2C7F7A",
+                dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    document.getElementById('myForm').submit();
+                }
+            });
+        }
     </script>
 
 @endsection

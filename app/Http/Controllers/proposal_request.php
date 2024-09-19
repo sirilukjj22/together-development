@@ -26,6 +26,8 @@ use App\Models\master_quantity;
 use App\Models\master_unit;
 use App\Models\Quotation_main_confirm;
 use App\Models\Master_company;
+use App\Models\phone_guest;
+use App\Models\Guest;
 use Auth;
 use App\Models\User;
 use PDF;
@@ -63,16 +65,131 @@ class proposal_request extends Controller
     public function view($id,$Type)
     {
         if ($Type == 'DummyProposal') {
-            $proposal = dummy_quotation::where('Company_ID', $id)->where('status_document', 2)->get();
+            $Data = dummy_quotation::where('Company_ID', $id)->where('status_document', 2)->get();
         } else if ($Type == 'Proposal') {
-            $proposal = Quotation::where('Company_ID', $id)->where('status_document', 2)->get();
+            $Data = Quotation::where('Company_ID', $id)->where('status_document', 2)->get();
         }
+        $myData = [];
+            foreach ($Data as $item) {
+                $Company_ID = $item->Company_ID;
+                $type_Proposal = $item->type_Proposal;
+                if ($type_Proposal == 'Company') {
+                    $contact = representative::where('status', 1)
+                                ->where('Company_ID', $Company_ID)
+                                ->first();
+                    $representative_ID = $contact->Profile_ID;
+                    $repCompany_ID = $contact->Company_ID;
+                    $phone = representative_phone::where('Profile_ID',$representative_ID)->where('Company_ID',$repCompany_ID)->where('Sequence','main')->first();
+                    $phonecontact = $phone->Phone_number;
+                    $company_fax = company_fax::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
+                    if ($company_fax) {
+                        $fax = $company_fax->Fax_number;
+                    }else {
+                        $fax = '-';
+                    }
+                    $company_phone = company_phone::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
+                    $phone = $company_phone->Phone_number;
+                    $company = companys::where('Profile_ID', $Company_ID)->first();
+                    $CityID=$company->City;
+                    $provinceNames =null;
+                    $amphuresNames =null;
+                    $TambonNames =null;
+                    $Zip_Code =null;
+                    if ($CityID) {
+                        $amphuresID = $company->Amphures;
+                        $TambonID = $company->Tambon;
+                        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                        //----------------------------------------
+                        $provinceNames = ' จังหวัด : '.$provinceNames->name_th;
+                        $amphuresNames = ' อำเภอ : '.$amphuresID->name_th;
+                        $TambonNames = ' ตำบล : '.$TambonID->name_th;
+                        $Zip_Code = $TambonID->Zip_Code;
+                    }
+                    $fullName = $company->Company_Name;
+                    $Adress = $company->Address;
+                    $email = $company->Company_Email;
+                    $Identification = $company->Taxpayer_Identification;
+                    //----------------------------------
 
-        return view('proposal_req.view', compact('proposal'));
+                    $fullNameCon = $contact->First_name.' '.$contact->Last_name;
+                    $emailcontact = $contact->Email;
+                }else {
+                    $guest = Guest::where('Profile_ID', $Company_ID)->first();
+                    $fullName = $guest->First_name.' '.$guest->Last_name;
+                    $CityID=$guest->City;
+                    $provinceNames =null;
+                    $amphuresNames =null;
+                    $TambonNames =null;
+                    $Zip_Code =null;
+                    if ($CityID) {
+                        $amphuresID = $guest->Amphures;
+                        $TambonID = $guest->Tambon;
+                        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                        //----------------------------------------
+                        $provinceNames = ' จังหวัด : '.$provinceNames->name_th;
+                        $amphuresNames = ' อำเภอ : '.$amphuresID->name_th;
+                        $TambonNames = ' ตำบล : '.$TambonID->name_th;
+                        $Zip_Code = $TambonID->Zip_Code;
+                    }
+
+                    $Adress = $guest->Address;
+                    $email = $guest->Email;
+                    $Identification = $guest->Identification_Number;
+                    //-------------------------------------
+                    $phone = phone_guest::where('Profile_ID',$Company_ID)->where('Sequence','main')->first();
+                    $phonecontact = $phone->Phone_number;
+                    $phone = $phone->Phone_number;
+                    $fullNameCon = $guest->First_name.' '.$guest->Last_name;
+                    $emailcontact = $guest->Email;
+                    $fax = '-';
+                }
+                $checkin = $item->checkin;
+                $checkout = $item->checkout;
+                $day = $item->day;
+                $night = $item->night;
+                $adult = $item->adult;
+                $children = $item->children;
+                $DummyNo = $item->DummyNo;
+                $issue_date = $item->issue_date;
+                $Expirationdate = $item->Expirationdate;
+                $myData[] = [
+                    'id' => $item->id,
+                    'Proposal' => $DummyNo,
+                    'type_Proposal'=>$type_Proposal,
+                    'fullName'=>$fullName,
+                    'Adress'=>$Adress,
+                    'email'=>$email,
+                    'Identification'=>$Identification,
+                    'amphuresNames'=>$amphuresNames,
+                    'provinceNames'=>$provinceNames,
+                    'TambonNames'=>$TambonNames,
+                    'Zip_Code'=>$Zip_Code,
+                    'phonecontact'=>$phonecontact,
+                    'fax'=>$fax,
+                    'phone'=>$phone,
+                    'fullNameCon'=>$fullNameCon,
+                    'emailcontact'=>$emailcontact,
+                    'checkin'=>$checkin,
+                    'checkout'=>$checkout,
+                    'day'=>$day,
+                    'night'=>$night,
+                    'adult'=>$adult,
+                    'children'=>$children,
+                    'issue_date'=>$issue_date,
+                    'Expirationdate'=>$Expirationdate,
+                ];
+            }
+            $datarequest = collect($myData);
+        return view('proposal_req.view', compact('datarequest','Data'));
     }
     public function Approve(Request $request){
         try {
-            $id = $request->DummyNo;
+            $data=$request->all();
+            $id = $request->approved_id;
             $QuotationType = $request->QuotationType;
             if ($QuotationType == 'DummyProposal') {
                 $proposal = dummy_quotation::where('DummyNo',$id)->first();
@@ -355,8 +472,8 @@ class proposal_request extends Controller
                     $quantity = master_quantity::where('status',1)->get();
                     $settingCompany = Master_company::orderBy('id', 'desc')->first();
                     if ($Checkin) {
-                        $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                        $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                        $checkin = $Checkin;
+                        $checkout = $Checkout;
                     }else{
                         $checkin = '-';
                         $checkout = '-';

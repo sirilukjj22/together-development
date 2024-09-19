@@ -198,19 +198,11 @@
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Company Address :</b></td>
-                        <td>{{$Address}}
-                            @if ($TambonID)
-                                {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}
-                            @endif
-                        </td>
+                        <td>{{$Address}} {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}</td>
                     </tr>
                     <tr>
                         <td></td>
-                    <td>
-                        @if ($TambonID)
-                            {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
-                        @endif
-                    </td>
+                    <td> {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Company Email :</b></td>
@@ -419,7 +411,7 @@
                         </table>
                     </footer>
                     <main>
-                        <b class="com" style="font-size:18px">Guest Information</b>
+                        <b class="com" style="font-size:18px">Company Information</b>
                         <div style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#2D7F7B; width:55%">
                             <table style="line-height:12px;" >
                                 <tr>
@@ -445,7 +437,7 @@
                                 </tr>
                                 <tr>
                                     <td><b style="margin-left: 10px;">Company Number :</b></td>
-                                    <td>{{ substr($phone->Phone_number, 0, 3) }}-{{ substr($phone->Phone_number, 3, 3) }}-{{ substr($phone->Phone_number, 6) }}
+                                    <td>{{ $phone->Phone_number}}
                                         <b style="margin-left: 10px;">Company Fax : </b><span>{{$Fax_number}}</span>
                                     </td>
                                     <td>
@@ -466,7 +458,7 @@
                         <span style="position: absolute;top: 120px; right: 30;width: 280px;height: 145px;line-height:14px;">
                             <b class="com" style=" font-size:18px">Personal Information</b><br>
                             <b style="margin-left: 10px;">Contact Name : </b><span >คุณ {{$Contact_Name}} </span><br>
-                            <b style="margin-left: 10px;">Contact Number : </b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span><br>
+                            <b style="margin-left: 10px;">Contact Number : </b><span>{{ $Contact_phone->Phone_number}}</span><br>
                             @if ($Checkin == '-')
                                 <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">No Check in date</span><br>
                             @else
@@ -961,17 +953,17 @@
                         <td><b style="margin-left: 30px;">Guest Address :</b></td>
                         <td>{{$Address}}
                             @if ($TambonID)
-                                {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}
+                                {{'ตำบล' . $TambonID->name_th}}  {{'อำเภอ' .$amphuresID->name_th}}
                             @endif
                         </td>
                     </tr>
                     <tr>
                         <td></td>
-                        <td>
-                            @if ($TambonID)
-                                {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
-                            @endif
-                        </td>
+                    <td>
+                        @if ($TambonID)
+                            {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
+                        @endif
+                    </td>
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Guest Email :</b></td>
@@ -979,7 +971,7 @@
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Guest Number :</b></td>
-                        <td>{{ substr($phone->Phone_number, 0, 3) }}-{{ substr($phone->Phone_number, 3, 3) }}-{{ substr($phone->Phone_number, 6) }}</td>
+                        <td>{{ $phone->Phone_number }}</td>
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Guest Fax :</b></td>
@@ -1199,7 +1191,7 @@
                                 </tr>
                                 <tr>
                                     <td><b style="margin-left: 10px;">Guest Number :</b></td>
-                                    <td>{{ substr($phone->Phone_number, 0, 3) }}-{{ substr($phone->Phone_number, 3, 3) }}-{{ substr($phone->Phone_number, 6) }}
+                                    <td>{{ $phone->Phone_number}}
                                         <b style="margin-left: 10px;">Guest Fax : </b><span>{{$Fax_number}}</span>
                                     </td>
                                     <td>
