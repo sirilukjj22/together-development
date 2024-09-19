@@ -88,8 +88,8 @@
                                         </div>
                                         <div class="col-lg-6 col-md-6 col-sm-12 mt-2">
                                             <b>Contact Name : </b><label> {{$item['fullNameCon']}}</label><br>
-                                            <b>Contact Email : </b><label> {{$item['phonecontact']}}</label><br>
-                                            <b>Contact Number : </b><label> {{$item['emailcontact']}}</label><br>
+                                            <b>Contact Email : </b><label> {{$item['emailcontact']}}</label><br>
+                                            <b>Contact Number : </b><label> {{$item['phonecontact']}}</label><br>
                                         </div>
                                         <div class="col-lg-6 col-md-6 col-sm-12 mt-2">
                                             @if ($item['checkin'])
