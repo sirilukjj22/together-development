@@ -576,6 +576,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('Proposal-LogDoc-request-search-table', 'search_table_paginate_log_doc');
         Route::post('Proposal-LogDoc-request-paginate-table', 'paginate_log_doc_table_proposal');
+
     });
 
     ##-------------------------------TemplateController-----------------
@@ -608,6 +609,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('invoice-search-table', 'search_table_invoice');
         Route::post('invoice-paginate-table', 'paginate_table_invoice');
+
+        Route::post('invoice-pendind-search-table', 'search_table_invoice_pending');
+        Route::post('invoice-pending-paginate-table', 'paginate_table_invoice_pending');
     });
 
     ##-------------------------------document receipt-----------------

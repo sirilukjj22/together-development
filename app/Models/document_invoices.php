@@ -24,4 +24,8 @@ class document_invoices extends Model
     {
         return $this->hasOne(document_receipt::class, 'sequence_re','sequence_re');
     }
+    public function  guest()
+    {
+        return $this->hasOne(Guest::class, 'Profile_ID', 'company');
+    }
 }

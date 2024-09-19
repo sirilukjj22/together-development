@@ -131,7 +131,43 @@
       font-size: 10px;
       color: #fff;
     }
+    div.PROPOSAL {
+        padding: 10px ;
+        border: 3px solid #2D7F7B;
+        border-radius: 10px;
+        background-color: #109699;
+    }
+    div.PROPOSALfirst {
+        padding: 10px ;
+        border: 3px solid #2D7F7B;
+        border-radius: 10px;
+        background-color: #109699;
+    }
+    .readonly-input {
+        background-color: #ffffff !important;/* สีพื้นหลังขาว */
+    }
 
+    .readonly-input:focus {
+        background-color: #ffffff !important;/* ให้สีพื้นหลังขาวเมื่ออยู่ในสถานะโฟกัส */
+        box-shadow: none; /* ลบเงาเมื่อโฟกัส */
+        border-color: #ced4da; /* ให้เส้นขอบมีสีเทาอ่อนเพื่อให้เหมือนกับการไม่ได้โฟกัส */
+    }
+    .disabled-input {
+        background-color: #E8ECEF !important; /* Light gray background */
+        color: #6c757d; /* Gray text color */
+        border-color: #ced4da; /* Gray border */
+        cursor: not-allowed; /* Change cursor to indicate disabled state */
+    }
+
+    /* Style for enabled inputs */
+    .table-custom-borderless {
+        border-collapse: collapse;
+    }
+
+    .table-custom-borderless th,
+    .table-custom-borderless td {
+        border: none !important;
+    }
 
 
 </style>
@@ -190,16 +226,25 @@
                                 </div>
                                 <div class="col-lg-4 col-md-12 col-sm-12">
                                     <div class="row">
-                                        <b class="titleQuotation" style="font-size: 24px;color:rgba(45, 127, 123, 1);">Profoma Invoice</b>
-                                        <span class="titleQuotation">Profoma Invoice ID :{{$InvoiceID}}</span>
-                                        <div  style="background: #fff; cursor: pointer; padding: 5px 10px; width: 100%;" >
+                                        <div class="col-lg-4"></div>
+                                        <div class="PROPOSAL col-lg-7" style="margin-left: 5px">
+                                            <div class="row">
+                                                <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">Profoma Invoice</b>
+                                                <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$InvoiceID}}</b>
+                                            </div>
+                                            <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$InvoiceID}}">
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-lg-4"></div>
+                                        <div class="PROPOSALfirst col-lg-7" style="background-color: #ffffff;">
                                             <div class="col-12 col-md-12 col-sm-12">
                                                 <div class="row">
                                                     <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
                                                         <span>Issue Date:</span>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
-                                                        <input type="text" id="datestart" class="form-control" name="IssueDate" style="text-align: left;"readonly>
+                                                        <input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" style="text-align: left;"readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -209,7 +254,7 @@
                                                         <span>Expiration Date:</span>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <input type="text" id="dateex" class="form-control" name="Expiration" style="text-align: left;"readonly>
+                                                        <input type="text" id="dateex" class="form-control readonly-input" name="Expiration" style="text-align: left;"readonly>
                                                     </div>
                                                 </div>
                                             </div>

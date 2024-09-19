@@ -92,7 +92,7 @@
                 top: 50px;
                 right: 6;
                 width: 180px;
-                height: 40px;
+                height: 60px;
                 border: 2px solid #2D7F7B;
                 border-radius: 10px;
             }
@@ -159,18 +159,14 @@
             .wrapper-page:last-child {
                 page-break-after: avoid;
             }
-            .tlaoi{
-                display: flex;
-                justify-content: center;
-            }
         </style>
     </head>
     <body>
-        <div class="wrapper-page">
+        @if ($Selectdata == 'Company')
             <header>
                 <div id="logo">
 
-                    <img src="logo_crop.png">
+                    <img src="{{$settingCompany->image}}">
 
                 </div>
 
@@ -178,13 +174,13 @@
 
                     <div class="add-text" style="line-height:12px;margin-left:10px;">
 
-                        <b style="font-size:20px;">Together Resort Limited Partnership</b>
+                        <b style="font-size:20px;">{{$settingCompany->name}}</b>
 
-                        <br> <b> 168 Moo 2 Kaengkrachan Phetchaburi 76170</b>
+                        <br> <b> {{$settingCompany->address}}</b>
 
-                        <br> <b>Tel : 032-708-888, 098-393-944-4 Fax :</b></br>
+                        <br> <b>Tel : {{$settingCompany->tel}} Fax : {{$settingCompany->fax}}</b></br>
 
-                        <b> Email : reservation@together-resort.com Website : www.together-resort.com</b>
+                        <b> Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</b>
 
                     </div>
 
@@ -207,9 +203,11 @@
 
                     <div style="padding: 4%">
 
-                        <b >Invoice ID : </b><span style="margin-left: 10px;">{{ $Invoice_ID }}</span><br>
+                        <b >Proposal ID : </b><span style="margin-left: 10px;">{{ $Invoice_ID }}</span><br>
 
-                        <b >Proposal ID : </b><span style="margin-left: 10px;">{{ $Quotation->Quotation_ID }}</span><br>
+                        <b >Issue Date : </b><span >{{ $IssueDate }}</span><br>
+
+                        <b>Expiration Date : </b><span>{{ $Expiration }}</span>
 
                     </div>
 
@@ -234,33 +232,34 @@
                 </table>
             </footer>
             <main>
-                <br>
                 <b class="com" style="font-size:18px">Company Information</b>
                 <div style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#2D7F7B; width:55%">
                     <table style="line-height:12px;" >
                         <tr>
                             <td ><b style="margin-left: 10px; width:30%">Company Name :</b></td>
-                            <td>{{$comtypefullname}}</td>
+                            <td>{{$fullName}}</td>
                             <td></td>
                         </tr>
-                        <tr>
+                         <tr>
                             <td><b style="margin-left: 10px;">Company Address :</b></td>
-                            <td>{{$Company_ID->Address}} {{'ตำบล' . $TambonID->name_th}}</td>
+                            <td>{{$Address}}
+                                @if ($TambonID)
+                                    {{'ตำบล' . $TambonID->name_th}}
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td> {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
+                            <td>
+                                @if ($TambonID)
+                                    {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <td><b style="margin-left: 10px;">Company Number :</b></td>
-                            <td>{{ substr($company_phone->Phone_number, 0, 3) }}-{{ substr($company_phone->Phone_number, 3, 3) }}-{{ substr($company_phone->Phone_number, 6) }}
-                                <b style="margin-left: 10px;">Company Fax : </b><span>
-                                    @if (is_object($company_fax) && property_exists($company_fax, 'Fax_number'))
-                                        <span id="Company_Fax">{{ $company_fax->Fax_number }}</span>
-                                    @else
-                                        <span id="Company_Fax">-</span>
-                                    @endif
-                                </span>
+                            <td>{{ $phone->Phone_number }}
+                                <b style="margin-left: 10px;">Company Fax : </b><span>{{$Fax_number}}</span>
                             </td>
                             <td>
 
@@ -268,43 +267,257 @@
                         </tr>
                         <tr>
                             <td><b style="margin-left: 10px;">Company Email :</b></td>
-                            <td>{{$Company_ID->Company_Email}}</td>
+                            <td>{{$Email}}</td>
                         </tr>
                         <tr>
                             <td><b style="margin-left: 10px;">Taxpayer Identification : </b></td>
-                            <td>{{$Company_ID->Taxpayer_Identification}}</td>
+                            <td>{{$Taxpayer_Identification}}</td>
                         </tr>
-
+                        <tr>
+                            <td><br></td>
+                            <td><br></td>
+                        </tr>
                     </table>
-
                     <div style="margin-top: 2px"></div>
                 </div>
-                <span style="position: absolute;top: 150px; right: 30;width: 280px;height: 145px;line-height:14px;">
+                <span style="position: absolute;top: 120px; right: 30;width: 280px;height: 145px;line-height:14px;">
+                    <br>
                     <b class="com" style=" font-size:18px">Personal Information</b><br>
-                    <b style="margin-left: 10px;">Contact Name : </b><span >คุณ{{$Contact_name->First_name}} {{$Contact_name->Last_name}}</span><br>
-                    <b style="margin-left: 10px;">Contact Number : </b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span><br>
-                        @if ($checkin == '-')
-                            <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">No Check in date</span><br>
-                        @else
-                            <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$checkin}}</span>
-                            <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$checkout}}</span><br>
-                        @endif
-                        <b style="margin-left: 10px">Length of Stay :</b>
-                        <span style="margin-left: 23px;">
-                            @if ($Quotation->day == null)
-                                -
-                            @else
-                                {{$Quotation->day}} วัน {{$Quotation->night}} คืน
-                            @endif
-                        </span><br>
-                    <b style="margin-left: 10px">Number of Guests :</b><span style="margin-left: 10px;">
-                        @if ($Quotation->adult == null)
+                    <b style="margin-left: 10px">Contact Name :  </b><span style="margin-left: 2px;">คุณ {{$Contact_Name}}</span><br>
+                    <b style="margin-left: 10px">Contact Number : </b><span style="margin-left: 2px;">{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span><br>
+                    @if ($Checkin == '-')
+                        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">No Check in date</span><br>
+                    @else
+                        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$Checkin}}</span>
+                        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$Checkout}}</span><br>
+                    @endif
+                    <b style="margin-left: 10px">Length of Stay :</b>
+                    <span style="margin-left: 28px;">
+                        @if ($Day == null)
                             -
                         @else
-                            {{$Quotation->adult}} Adult , {{$Quotation->children}} Children
+                            {{$Day}} วัน {{$Night}} คืน
                         @endif
-                        </span><br>
-                    <b style="margin-left: 10px;">Valid : </b><span style="margin-left: 10px;">{{$valid}}</span><br>
+                    </span><br>
+                    <b style="margin-left: 10px">Number of Guests :</b>
+                    <span style="margin-left: 10px;">
+                            @if ($Adult == null)
+                            -
+                        @else
+                            {{$Adult}} Adult , {{$Children}} Children
+                        @endif
+                    </span><br>
+                    <b style="margin-left: 10px">Valid :</b>
+                    <span style="margin-left: 10px;">{{$valid}}</span>
+                </span>
+                <div style="border: 1px solid #2D7F7B"></div>
+                <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
+                    <thead style="background-color: rgba(45, 127, 123, 1);  color:#fff;">
+                        <tr style="">
+                            <th style="width:1px;color:rgb(61, 150, 145);">.</th>
+                            <th style="line-height: 10px; width:10%; font-weight: bold; text-align:center; ">No.</th>
+                            <th style="line-height: 10px;font-weight: bold; text-align:center;">Description</th>
+                            <th style=" line-height: 10px;width:10%; font-weight: bold; text-align:center;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="display-selected-items">
+                        <tr>
+                            <td style="text-align:center"></td>
+                            <td style="text-align:center">1</td>
+                            <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}}  {{ number_format($payment) }} กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
+                            <td style="text-align:right"><span id="Subtotal">  {{ number_format($Subtotal, 2) }}</span>฿<input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center"></td>
+                            <td><br></td>
+                            <td style="text-align:right">Subtotal :</td>
+                            <td style="text-align:right"><span id="SubtotalAll">{{ number_format($Subtotal, 2) }}</span>฿</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center"></td>
+                            <td><br></td>
+                            <td style="text-align:right">Price Before Tax :</td>
+                            <td style="text-align:right"><span id="Before">{{ number_format($before, 2) }}</span>฿</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center"></td>
+                            <td><br></td>
+                            <td style="text-align:right">Value Added Tax :</td>
+                            <td style="text-align:right"><span id="Added">{{ number_format($addtax, 2) }}</span>฿</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center"></td>
+                            <td><br></td>
+                            <td style="text-align:right">Net Total :</td>
+                            <td style="text-align:right"><span id="Total">{{ number_format($balance, 2) }}</span>฿</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="line-height:10px;">
+                </div>
+                <div>
+                    <br><br><br><br><br><br><br><br><br><br>
+                    <strong class="com" style="font-size: 14px;">FULL PAYMENT AFTER RESERVATION</strong><br>
+                    <span style="line-height:10px;font-size: 13px;">
+                        Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
+                        If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span> @Together-resort</span><br>
+                        pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
+                    </span>
+                    <div style="margin-top: 15px">
+                        <img src="SCB.jpg" style="width: 4%; border-radius: 50%;padding:4px"/>
+                        <div style="float: right;margin-right:490px;line-height:10px;font-size: 13px;">
+                            <strong  style="display: block; text-align: left;">The Siam Commercial Bank Public Company Limited</strong>
+                            <strong  style="display: block; text-align: left;">Bank Account No. 708-226791-3</strong>
+                            <strong  style="display: block; text-align: left;">Tha Yang - Phetchaburi Branch (Savings Account)</strong>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        @else
+            <header>
+                <div id="logo">
+
+                    <img src="{{$settingCompany->image}}">
+
+                </div>
+
+                <div class="txt-head">
+
+                    <div class="add-text" style="line-height:12px;margin-left:10px;">
+
+                        <b style="font-size:20px;">{{$settingCompany->name}}</b>
+
+                        <br> <b> {{$settingCompany->address}}</b>
+
+                        <br> <b>Tel : {{$settingCompany->tel}} Fax : {{$settingCompany->fax}}</b></br>
+
+                        <b> Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</b>
+
+                    </div>
+
+                </div>
+
+
+                <br><br><br>
+                <div class="PROPOSAL">
+
+                    <div  style="text-align: center">
+
+                        <b style="font-size:18px;color:#ffffff;font-weight: bold;">PROFORMA INVOICE</b>
+
+                    </div>
+
+                </div>
+
+
+                <div class="PROPOSALfirst" style="line-height:10px;">
+
+                    <div style="padding: 4%">
+
+                        <b >Proposal ID : </b><span style="margin-left: 10px;">{{ $Invoice_ID }}</span><br>
+
+                        <b >Issue Date : </b><span >{{ $IssueDate }}</span><br>
+
+                        <b>Expiration Date : </b><span>{{ $Expiration }}</span>
+
+                    </div>
+
+                </div>
+            </header>
+            <footer>
+                <div style="border: 1px solid #2D7F7B;margin-top: 10px;"></div>
+                <table style="width: 35%;line-height:10px;margin-top: 10px;float: right;" >
+                    <tr>
+                        <th >สแกนเพื่อเปิดด้วยเว็บไซต์</th>
+                        <th >ผู้ออกเอกสาร </th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;width:10%">
+                            <img src="data:image/png;base64, {!! $qrCodeBase64 !!} " alt="QR Code" width="60" height="60"/>
+                        <td style="text-align: center;">
+                            <img src="test.png" style="width: 40%;"/>
+                            <span style="display: block; text-align: center;">{{@$Quotation->user->name}}</span>
+                            <span style="display: block; text-align: center;">{{ $date }}</span>
+                        </td>
+                    </tr>
+                </table>
+            </footer>
+            <main>
+                <b class="com" style="font-size:18px">Guest Information</b>
+                <div style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#2D7F7B; width:55%">
+                    <table style="line-height:12px;" >
+                        <tr>
+                            <td ><b style="margin-left: 10px; width:30%">Guest Name :</b></td>
+                            <td>{{$fullName}}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><b style="margin-left: 10px;">Guest Address :</b></td>
+                            <td>{{$Address}}
+                                @if ($TambonID)
+                                    {{'ตำบล' . $TambonID->name_th}}
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                @if ($TambonID)
+                                    {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b style="margin-left: 10px;">Guest Number :</b></td>
+                            <td>{{ $phone->Phone_number }}
+                                <b style="margin-left: 10px;">Guest Fax : </b><span>{{$Fax_number}}</span>
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b style="margin-left: 10px;">Guest Email :</b></td>
+                            <td>{{$Email}}</td>
+                        </tr>
+                        <tr>
+                            <td><b style="margin-left: 10px;">Taxpayer Identification : </b></td>
+                            <td>{{$Taxpayer_Identification}}</td>
+                        </tr>
+                        <tr>
+                            <td><br></td>
+                            <td><br></td>
+                        </tr>
+                    </table>
+                    <div style="margin-top: 2px"></div>
+                </div>
+                <span style="position: absolute;top: 120px; right: 30;width: 280px;height: 145px;line-height:14px;">
+                    <br>
+                    <br>
+                    @if ($Checkin == '-')
+                        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">No Check in date</span><br>
+                    @else
+                        <b style="margin-left: 10px">Check In : </b><span style="margin-left: 2px;">{{$Checkin}}</span>
+                        <b style="margin-left: 10px">Check Out : </b><span style="margin-left: 5px;">{{$Checkout}}</span><br>
+                    @endif
+                    <b style="margin-left: 10px">Length of Stay :</b>
+                    <span style="margin-left: 28px;">
+                        @if ($Day == null)
+                            -
+                        @else
+                            {{$Day}} วัน {{$Night}} คืน
+                        @endif
+                    </span><br>
+                    <b style="margin-left: 10px">Number of Guests :</b>
+                    <span style="margin-left: 10px;">
+                            @if ($Adult == null)
+                            -
+                        @else
+                            {{$Adult}} Adult , {{$Children}} Children
+                        @endif
+                    </span><br>
+                    <b style="margin-left: 10px">Valid :</b>
+                    <span style="margin-left: 10px;">{{$valid}}</span>
                 </span>
                 <div style="border: 1px solid #2D7F7B"></div>
                 <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
@@ -349,7 +562,6 @@
                         </tr>
                     </tbody>
                 </table>
-                {{-- <b style="float: right">*** NINETY FIVE THOUSAND EIGHT HUNDRED NINETY BAHT ONLY ***</b> --}}
                 <div style="line-height:10px;">
                 </div>
                 <div>
@@ -370,6 +582,6 @@
                     </div>
                 </div>
             </main>
-        </div>
+        @endif
     </body>
 </html>

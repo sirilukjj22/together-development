@@ -533,7 +533,7 @@
                         <tr>
                             <td style="text-align:center"></td>
                             <td style="text-align:center">1</td>
-                            <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}}  {{ number_format($payment) }} กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
+                            <td style="text-align:left">Proposal ID : {{$Quotation->Quotation_ID}}  {{ $payment }} กรุณาชำระมัดจำ งวดที่ {{$Deposit}}</td>
                             <td style="text-align:right"><span id="Subtotal">  {{ number_format($Subtotal, 2) }}</span>฿<input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
                         </tr>
                         <tr>
