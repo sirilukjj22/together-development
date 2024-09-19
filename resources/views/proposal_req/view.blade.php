@@ -45,6 +45,7 @@
                                 <li><a class="dropdown-item py-2 rounded" onclick="Approve('{{ $itemdataid->DummyNo }}')">Approve ID {{$itemdataid->DummyNo}}</a></li>
                             @endforeach
                             <li><a class="dropdown-item py-2 rounded" onclick="Reject()">Reject</a></li>
+                            <li><a class="dropdown-item py-2 rounded" onclick="Back()">Back</a></li>
                         </ul>
                     </div>
                 </div>
@@ -335,6 +336,24 @@
                 if (result.isConfirmed) {
 
                     document.getElementById('myForm').submit();
+                }
+            });
+        }
+        function Back(){
+            event.preventDefault();
+            Swal.fire({
+                title: "คุณต้องการยกเลิกใช่หรือไม่?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "ตกลง",
+                cancelButtonText: "ยกเลิก",
+                confirmButtonColor: "#28a745",
+                dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log(1);
+                    // If user confirms, submit the form
+                    window.location.href = "{{ route('ProposalReq.index') }}";
                 }
             });
         }
