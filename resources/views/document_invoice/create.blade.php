@@ -458,7 +458,7 @@
                                                 <td style="text-align:center">1</td>
                                                 <td style="text-align:left">
                                                         Proposal ID : {{$QuotationID}} <span id="Amount" style="display: none;"></span>
-                                                        <span id="Amount1" style="display: none;"></span> กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit"  style="width:2%;border-radius:5px;padding:2px 5px"  id="Deposit" value="{{$Deposit}}" disabled>
+                                                        <span id="Amount1" style="display: none;"></span> กรุณาชำระมัดจำ งวดที่ <input type="hidden" name="Deposit"  style="width:2%;border-radius:5px;padding:2px 5px"  id="Deposit" value="{{$Deposit}}" disabled>{{$Deposit}}
                                                 </td>
                                                 <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
                                             </tr>
@@ -467,7 +467,7 @@
                                             <tr>
                                                 <td style="text-align:center">1</td>
                                                 <td style="text-align:left">Proposal ID : {{$QuotationID}}  <span id="Amount" style="display: none;"></span>
-                                                    <span id="Amount1" style="display: none;"></span> กรุณาชำระมัดจำ งวดที่ <input type="text" name="Deposit" style="width:2%;border-radius:5px;padding:2px 5px"  id="Deposit" value="{{$Deposit}}" disabled></td>
+                                                    <span id="Amount1" style="display: none;"></span> กรุณาชำระมัดจำ งวดที่ <input type="hidden" name="Deposit" style="width:2%;border-radius:5px;padding:2px 5px"  id="Deposit" value="{{$Deposit}}" disabled>{{$Deposit}}</td>
                                                 <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Quotation->Nettotal}}"></td>
                                             </tr>
                                         @endif
