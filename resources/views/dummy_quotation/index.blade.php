@@ -205,7 +205,7 @@
                                                             </div>
                                                         @else
                                                             <div class="form-check form-check-inline">
-                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" checked type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
                                                                 <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
                                                             </div>
                                                         @endif
@@ -404,7 +404,7 @@
                                                             </div>
                                                         @else
                                                             <div class="form-check form-check-inline">
-                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}"checked type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
                                                                 <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
                                                             </div>
                                                         @endif
@@ -580,7 +580,7 @@
                                                             </div>
                                                         @else
                                                             <div class="form-check form-check-inline">
-                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}"checked type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
                                                                 <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
                                                             </div>
                                                         @endif
@@ -705,7 +705,7 @@
                                                             </div>
                                                         @else
                                                             <div class="form-check form-check-inline">
-                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" checked type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
                                                                 <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
                                                             </div>
                                                         @endif
@@ -899,7 +899,7 @@
                                                             </div>
                                                         @else
                                                             <div class="form-check form-check-inline">
-                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" checked type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
                                                                 <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
                                                             </div>
                                                         @endif
@@ -1026,7 +1026,7 @@
                                                             </div>
                                                         @else
                                                             <div class="form-check form-check-inline">
-                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" checked type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
                                                                 <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
                                                             </div>
                                                         @endif
@@ -1189,7 +1189,7 @@
                                                             </div>
                                                         @else
                                                             <div class="form-check form-check-inline">
-                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
+                                                                <input class="form-check-input checkbox-select checkbox-{{$key + 1}}" checked type="checkbox" name="checkbox[]" value="{{ $item->id }}" id="checkbox-{{$key + 1}}" rel="{{ $item->vat }}" disabled>
                                                                 <label class="form-check-label" for="checkbox-{{$key + 1}}"></label>
                                                             </div>
                                                         @endif
