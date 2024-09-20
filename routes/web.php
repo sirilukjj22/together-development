@@ -595,7 +595,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/Request/document/Approve/invoice/{id}', 'Approve')->name('invoice.Approve');
         Route::get('/Document/invoice/Delete/{id}','Delete')->name('invoice.Delete');
         Route::get('/Document/invoice/view/{id}','view')->name('invoice.view');
-        Route::get('/Document/invoice/revised/{id}','revised')->name('invoice.revised');
+        Route::get('/Document/invoice/revised/{id}','edit')->name('invoice.edit');
         Route::post('/Document/invoice/update/revised/{id}', 'update')->name('invoice.revised');
         Route::get('/Document/invoice/receive/{id}','receive')->name('invoice.receive');
         Route::post('/Document/invoice/receive/check/payment/{id}', 'payment')->name('invoice.payment');

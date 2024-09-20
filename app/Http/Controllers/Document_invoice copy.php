@@ -702,6 +702,7 @@ class Document_invoice extends Controller
         $Quotation =  Quotation::where('Refler_ID',$Refler_ID)->first();
         $QuotationID = $Quotation->Quotation_ID;
         $CompanyID = $Quotation->Company_ID;
+
         $contact = $Quotation->company_contact;
         $Company = companys::where('Profile_ID',$CompanyID)->first();
         $Company_typeID=$Company->Company_type;

@@ -207,7 +207,7 @@
             <div class="col-sm-12 col-12">
                 <div class="card mb-3">
                     <div class="card-body">
-                        <form id="myForm" action="{{ route('invoice.save') }}" method="POST">
+                        <form id="myForm" action="{{url('/Document/invoice/update/revised/'.$invoice->id)}}" method="POST">
                             @csrf
                             <div class="row">
                                 <div class="col-lg-8 col-md-12 col-sm-12 image-container">
@@ -244,7 +244,7 @@
                                                         <span>Issue Date:</span>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
-                                                        <input type="text" id="datestart" class="form-control" name="IssueDate" value="{{$IssueDate}}" style="text-align: left;"readonly disabled>
+                                                        <input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" value="{{$IssueDate}}" style="text-align: left;"readonly >
                                                     </div>
                                                 </div>
                                             </div>
@@ -254,7 +254,7 @@
                                                         <span>Expiration Date:</span>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
-                                                        <input type="text" id="dateex" class="form-control " name="Expiration"value="{{$Expiration}}" style="text-align: left;"readonly disabled>
+                                                        <input type="text" id="dateex" class="form-control readonly-input" name="Expiration"value="{{$Expiration}}" style="text-align: left;"readonly >
                                                     </div>
                                                 </div>
                                             </div>
@@ -411,8 +411,7 @@
                                             <tr>
                                                 <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Valid :</b></td>
                                                 <td>
-                                                    <input type="text" name="valid" id="valid" class="form-control " value="{{$valid}}"@disabled(true)>
-
+                                                    <input type="text" name="valid" id="valid" class="form-control " value="{{$valid}}" required>
                                                 </td>
                                             </tr>
                                         </table>
@@ -421,6 +420,27 @@
                             </div>
                             <div class="styled-hr"></div>
                             <input type="hidden" name="eventformat" id="eventformat" value="{{$Quotation->eventformat}}">
+                            <div class="row mt-2">
+                                <div class="col-lg-6">
+                                    <label for="Payment">Payment by (%) Remaining 100%</label>
+                                    <div class="input-group">
+                                        <div class="input-group-text">
+                                            <input class="custom-radio mt-0" type="radio" value="0" id="radio0" name="paymentRadio" onclick="togglePaymentFields()">
+                                        </div>
+                                        <input type="number" class="form-control" id="Payment0" name="PaymentPercent" min="1" max="100" disabled oninput="validateInput(this)"value="{{$invoice->paymentPercent}}">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label for="Payment by (THB)">Payment by (THB)</label>
+                                    <div class="input-group">
+                                        <div class="input-group-text">
+                                            <input class="custom-radio mt-0" type="radio" value="1" id="radio1" name="paymentRadio"  onclick="togglePaymentFields()">
+                                        </div>
+                                        <input type="text" class="form-control" id="Payment1" name="Payment" disabled oninput="validateInput1(this)" value="{{$invoice->payment}}">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row mt-4">
                                 <table class=" table table-hover align-middle mb-0" style="width:100%">
                                     <thead >
@@ -433,34 +453,29 @@
                                     <tbody id="display-selected-items">
                                         <tr>
                                             <td style="text-align:center">1</td>
-                                            <td style="text-align:left">Proposal ID : {{$QuotationID}}
-                                            @if ($payment)
-                                                {{ number_format((float) $payment, 2, '.', ',') }}
-                                            @else
-                                                {{$paymentPercent}}%
-                                            @endif
-                                            กรุณาชำระมัดจำ งวดที่ <input type="hidden" name="Deposit"  style="width: 2%"  id="Deposit" value="{{$Deposit}}" disabled>{{$Deposit}}</td>
-                                            <td style="text-align:right"><span id="Subtotal">{{ number_format($Subtotal, 2) }}</span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Nettotal}}"></td>
+                                            <td style="text-align:left">Proposal ID : {{$QuotationID}}  <span id="Amount" style="display: none;"></span>
+                                                <span id="Amount1" style="display: none;"></span> กรุณาชำระมัดจำ งวดที่ <input type="hidden" name="Deposit" style="width:2%;border-radius:5px;padding:2px 5px"  id="Deposit" value="{{$Deposit}}" disabled>{{$Deposit}}</td>
+                                            <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Quotation->Nettotal}}"></td>
                                         </tr>
                                         <tr>
                                             <td><br></td>
                                             <td style="text-align:right">Subtotal :</td>
-                                            <td style="text-align:right"><span id="SubtotalAll">{{ number_format($Subtotal, 2) }}</span>฿</td>
+                                            <td style="text-align:right"><span id="SubtotalAll"></span>฿</td>
                                         </tr>
                                         <tr>
                                             <td><br></td>
                                             <td style="text-align:right">Price Before Tax :</td>
-                                            <td style="text-align:right"><span id="Before">{{ number_format($before, 2) }}</span>฿</td>
+                                            <td style="text-align:right"><span id="Before"></span>฿</td>
                                         </tr>
                                         <tr>
                                             <td><br></td>
                                             <td style="text-align:right">Value Added Tax :</td>
-                                            <td style="text-align:right"><span id="Added">{{ number_format($addtax, 2) }}</span>฿</td>
+                                            <td style="text-align:right"><span id="Added"></span>฿</td>
                                         </tr>
                                         <tr>
                                             <td><br></td>
                                             <td style="text-align:right">Net Total :</td>
-                                            <td style="text-align:right"><span id="Total">{{ $formattedNumber }}</span>฿</td>
+                                            <td style="text-align:right"><span id="Total"></span>฿</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -516,19 +531,28 @@
                                 </div>
                             </div>
                             <div class="col-12 row mt-5">
-                                <div class="col-4">
-                                    <input type="hidden" name="InvoiceID"id="InvoiceID" value="{{$InvoiceID}}">
-                                    <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
-                                    <input type="hidden" name="company"  id="company" value="{{$CompanyID}}">
-                                    <input type="hidden" name="balance"  id="balance">
-                                    <input type="hidden" name="Deposit"  id="Deposit" value="{{$Deposit}}">
+                                <div class="col-12 row mt-5">
+                                    <div class="col-4">
+                                        <input type="hidden" name="InvoiceID"id="InvoiceID" value="{{$InvoiceID}}">
+                                        <input type="hidden" name="QuotationID" id="QuotationID" value="{{$QuotationID}}">
+                                        <input type="hidden" name="company"  id="company" value="{{$CompanyID}}">
+                                        <input type="hidden" name="balance"  id="balance">
+                                        <input type="hidden" name="sum"  id="sum">
+                                        <input type="hidden" name="Deposit"  id="Deposit" value="{{$Deposit}}">
+                                        <input type="hidden" name="selecttype"  id="selecttype" value="{{$Quotation->type_Proposal}}">
+                                        <input type="hidden" name="Refler_ID"  id="Refler_ID" value="{{$Refler_ID}}">
+                                    </div>
+                                    <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
+                                        <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
+                                            Cancel
+                                        </button>
+                                        <button type="button" class="btn btn-primary lift btn_modal btn-space" onclick="submitPreview()">
+                                            Preview
+                                        </button>
+                                        <button type="button" class="btn btn-color-green lift btn_modal"  onclick="submitsave()">save</button>
+                                    </div>
+                                    <div class="col-4"></div>
                                 </div>
-                                <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
-                                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('invoice.index') }}'">
-                                        Back
-                                    </button>
-                                </div>
-                                <div class="col-4"></div>
                             </div>
                         </form>
                     </div>
@@ -672,6 +696,76 @@
                 amount.style.display = 'none';
                 amount1.style.display = 'inline';
                 payment0.value=" ";
+            }
+        }
+        $(document).ready(function() {
+            var radio0 = document.getElementById('radio0');
+            var radio1 = document.getElementById('radio1');
+            var payment0 = document.getElementById('Payment0');
+            var payment1 = document.getElementById('Payment1');
+            var amount = document.getElementById('Amount');
+            var amount1 = document.getElementById('Amount1');
+            if (payment0.value !== "") {
+                document.getElementById('radio0').checked = true;
+                payment0.disabled = false;
+                payment1.disabled = true;
+                amount.style.display = 'inline';
+                amount1.style.display = 'none';
+                payment1.value=" ";
+            } else if (payment1.value !== "") {
+                document.getElementById('radio1').checked = true;
+                payment0.disabled = true;
+                payment1.disabled = false;
+                amount.style.display = 'none';
+                amount1.style.display = 'inline';
+                payment0.value=" ";
+            }
+            payment();
+        });
+        function payment() {
+            var payment0 = document.getElementById('Payment0');
+            var payment1 = document.getElementById('Payment1');
+            if (payment0.value !== "") {
+            var Payment0 =  parseFloat(document.getElementById('Payment0').value);
+            var Nettotal = parseFloat(document.getElementById('Nettotal').value);
+            let Subtotal =0;
+            let total =0;
+            let addtax = 0;
+            let before = 0;
+            let balance =0;
+            Subtotal = (Nettotal*Payment0)/100;
+            total = Subtotal/1.07;
+            addtax = Subtotal-total;
+            before = Subtotal-addtax;
+            balance = Nettotal-Subtotal;
+            $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#balance').val(balance);
+            $('#sum').val(Subtotal);
+            } else if (payment1.value !== "") {
+            var Payment1 =  parseFloat(document.getElementById('Payment1').value);
+            var Nettotal = parseFloat(document.getElementById('Nettotal').value);
+            let Subtotal =0;
+            let total =0;
+            let addtax = 0;
+            let before = 0;
+            let balance =0;
+            Subtotal = Payment1;
+            total = Subtotal;
+            addtax = 0;
+            before = Subtotal;
+            balance = Nettotal-Subtotal;
+            console.log(balance);
+            $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Before').text(isNaN(before) ? '0' : before.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#Total').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+            $('#balance').val(balance);
+            $('#sum').val(Subtotal);
             }
         }
         function submitsave() {

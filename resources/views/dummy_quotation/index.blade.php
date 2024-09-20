@@ -187,6 +187,7 @@
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
                                                 <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
                                                 <th class="text-center">Order</th>
@@ -222,6 +223,13 @@
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if (@$item->userOperated->name == null)
+                                                            -
+                                                        @else
+                                                            {{ @$item->userOperated->name }}
                                                         @endif
                                                     </td>
                                                     <td style="text-align: center;">
@@ -378,6 +386,7 @@
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
                                                 <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
                                                 <th class="text-center">Order</th>
@@ -413,6 +422,13 @@
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if (@$item->userOperated->name == null)
+                                                            -
+                                                        @else
+                                                            {{ @$item->userOperated->name }}
                                                         @endif
                                                     </td>
                                                     <td style="text-align: center;">
@@ -546,6 +562,7 @@
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
                                                 <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
                                                 <th class="text-center">Order</th>
@@ -581,6 +598,13 @@
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if (@$item->userOperated->name == null)
+                                                            -
+                                                        @else
+                                                            {{ @$item->userOperated->name }}
                                                         @endif
                                                     </td>
                                                     <td style="text-align: center;">
@@ -663,6 +687,7 @@
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
                                                 <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
                                                 <th class="text-center">Order</th>
@@ -698,6 +723,13 @@
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if (@$item->userOperated->name == null)
+                                                            -
+                                                        @else
+                                                            {{ @$item->userOperated->name }}
                                                         @endif
                                                     </td>
                                                     <td style="text-align: center;">
@@ -849,6 +881,7 @@
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
                                                 <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
                                                 <th class="text-center">Order</th>
@@ -884,6 +917,13 @@
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if (@$item->userOperated->name == null)
+                                                            -
+                                                        @else
+                                                            {{ @$item->userOperated->name }}
                                                         @endif
                                                     </td>
                                                     <td style="text-align: center;">
@@ -968,6 +1008,7 @@
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
                                                 <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
                                                 <th class="text-center">Order</th>
@@ -1003,6 +1044,13 @@
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if (@$item->userOperated->name == null)
+                                                            -
+                                                        @else
+                                                            {{ @$item->userOperated->name }}
                                                         @endif
                                                     </td>
                                                     <td style="text-align: center;">
@@ -1123,6 +1171,7 @@
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
                                                 <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
                                                 <th class="text-center">Order</th>
@@ -1158,6 +1207,13 @@
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
+                                                        @endif
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        @if (@$item->userOperated->name == null)
+                                                            -
+                                                        @else
+                                                            {{ @$item->userOperated->name }}
                                                         @endif
                                                     </td>
                                                     <td style="text-align: center;">
@@ -1400,7 +1456,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1416,6 +1472,7 @@
                         { data: 'IssueDate' },
                         { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
+                        { data: 'Operated' },
                         { data: 'Approve' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
@@ -1471,7 +1528,7 @@
                     $('#'+id+'-paginate').append(paginateSearchPending(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1487,6 +1544,7 @@
                         { data: 'IssueDate' },
                         { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
+                        { data: 'Operated' },
                         { data: 'Approve' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
@@ -1542,7 +1600,7 @@
                     $('#'+id+'-paginate').append(paginateSearchAwaiting(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1558,6 +1616,7 @@
                         { data: 'IssueDate' },
                         { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
+                        { data: 'Operated' },
                         { data: 'Approve' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
@@ -1613,7 +1672,7 @@
                     $('#'+id+'-paginate').append(paginateSearchApproved(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1629,6 +1688,7 @@
                         { data: 'IssueDate' },
                         { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
+                        { data: 'Operated' },
                         { data: 'Approve' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
@@ -1684,7 +1744,7 @@
                     $('#'+id+'-paginate').append(paginateSearchGenerate(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1700,6 +1760,7 @@
                         { data: 'IssueDate' },
                         { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
+                        { data: 'Operated' },
                         { data: 'Approve' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
@@ -1754,7 +1815,7 @@
                     $('#'+id+'-paginate').append(paginateSearchReject(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1770,6 +1831,7 @@
                         { data: 'IssueDate' },
                         { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
+                        { data: 'Operated' },
                         { data: 'Approve' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
@@ -1824,7 +1886,7 @@
                     $('#'+id+'-paginate').append(paginateSearchCancel(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
+                                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1840,6 +1902,7 @@
                         { data: 'IssueDate' },
                         { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
+                        { data: 'Operated' },
                         { data: 'Approve' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }

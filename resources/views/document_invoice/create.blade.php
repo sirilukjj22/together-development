@@ -227,7 +227,7 @@
                                 <div class="col-lg-4 col-md-12 col-sm-12">
                                     <div class="row">
                                         <div class="col-lg-4"></div>
-                                        <div class="PROPOSAL col-lg-7" style="margin-left: 5px">
+                                        <div class="PROPOSAL col-lg-7" >
                                             <div class="row">
                                                 <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">Profoma Invoice</b>
                                                 <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$InvoiceID}}</b>

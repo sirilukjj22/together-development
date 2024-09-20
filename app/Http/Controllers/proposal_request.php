@@ -851,11 +851,11 @@ class proposal_request extends Controller
         $userid = Auth::user()->id;
         $log = log_company::select(
             'log_company.*',
-            'Quotation.id as quotation_id',
+            'quotation.id as quotation_id',
             'dummy_quotation.id as dummy_quotation_id'
         )
         ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete'])
-        ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
+        ->leftJoin('quotation', 'log_company.Company_ID', '=', 'quotation.Quotation_ID')
         ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
         ->orderBy('log_company.updated_at', 'desc')
         ->paginate($perPage);
