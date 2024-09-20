@@ -15,6 +15,7 @@ class document_invoices extends Model
         'company',
         'Refler_ID',
         'sequence_re',
+        'paymentPercent',
     ];
     public function company00()
     {

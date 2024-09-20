@@ -317,11 +317,26 @@
                                 <div class="row mt-2">
                                     <div class="col-lg-2 col-md-6 col-sm-12">
                                         <span for="chekin">Check In Date
-                                        <input type="text" name="Checkin" id="Checkin" class="form-control readonly-input" readonly onchange="CheckDate()" required>
+                                        <div class="input-group">
+
+                                            <input type="text" name="Checkin" id="Checkin" class="form-control readonly-input" readonly onchange="CheckDate()" required>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
+                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-lg-2 col-md-6 col-sm-12">
                                         <span for="chekin">Check Out Date </span>
-                                        <input type="text" name="Checkout" id="Checkout" class="form-control readonly-input" onchange="CheckDate()"  readonly required>
+                                        <div class="input-group"  >
+                                            <input type="text" name="Checkout" id="Checkout" class="form-control readonly-input" onchange="CheckDate()"  readonly required>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"style="border-radius:  0  5px 5px  0 ">
+                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <span for="">จำนวน</span>
@@ -396,7 +411,7 @@
                                     <div class="col-lg-3 col-md-6 col-sm-12">
                                         <span  for="">Special Discount</span>
                                         <div class="input-group">
-                                            <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"  placeholder="ส่วนลดคิดเป็น %" required>
+                                            <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"  placeholder="ส่วนลดคิดเป็น %" disabled>
                                             <span class="input-group-text">%</span>
                                         </div>
                                     </div>
@@ -861,6 +876,7 @@
                 singleDatePicker: true,
                 showDropdowns: true,
                 autoUpdateInput: false,
+                autoApply: true,
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -876,6 +892,7 @@
                 singleDatePicker: true,
                 showDropdowns: true,
                 autoUpdateInput: false,
+                autoApply: true,
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -1464,22 +1481,7 @@
                                     if (valpax == null) {
                                         valpax = 0;
                                     }
-                                    if (SpecialDiscount >= 1) {
-                                        if (roleMenuDiscount == 1) {
-                                            discountInput = '<div class="input-group">' +
-                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + SpecialDiscount + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + val.maximum_discount + ';"required>' +
-                                                '<span class="input-group-text">%</span>' +
-                                                '</div>';
-                                        } else {
-                                            discountInput = '<div class="input-group">' +
-                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                                '<span class="input-group-text">%</span>' +
-                                                '</div>';
-                                        }
-                                    }
-                                    else{
+                                    if (maximum_discount > 0) {
                                         if (roleMenuDiscount == 1) {
                                             discountInput = '<div class="input-group">' +
                                                 '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
@@ -1487,6 +1489,8 @@
                                                 '<span class="input-group-text">%</span>' +
                                                 '</div>';
                                         }
+                                    }else{
+                                        discountInput="";
                                     }
                                     quantity = '<div class="input-group">' +
                                                 '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="" rel="' + number + '" style="text-align:center;" ' +

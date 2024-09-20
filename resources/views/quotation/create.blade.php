@@ -1458,13 +1458,15 @@
                                     var SpecialDiscount = document.getElementById('SpecialDiscount').value;
                                     var discountuser = document.getElementById('discountuser').value;
                                     var maximum_discount = val.maximum_discount;
+
                                     var valpax = val.pax;
                                     if (valpax == null) {
                                         valpax = 0;
                                     }
                                     if (SpecialDiscount >= 1) {
                                         if (roleMenuDiscount == 1) {
-                                            discountInput = '<div class="input-group">' +
+                                            if (maximum_discount > 0) {
+                                                discountInput = '<div class="input-group">' +
                                                         '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
                                                         'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);' +
                                                         'if (parseFloat(this.value) > ' + SpecialDiscount + ') { this.value = ' + SpecialDiscount + '; }' +
@@ -1472,6 +1474,14 @@
                                                         'required>' +
                                                         '<span class="input-group-text">%</span>' +
                                                         '</div>';
+                                            }else{
+                                                discountInput = '<div class="input-group">' +
+                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value=" " rel="' + number + '" style="text-align:center;" disabled ' +
+                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                                '<span class="input-group-text">%</span>' +
+                                                '</div>';
+                                            }
+
                                         } else {
                                             discountInput = '<div class="input-group">' +
                                                 '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value=" " rel="' + number + '" style="text-align:center;" disabled ' +

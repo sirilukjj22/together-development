@@ -1424,6 +1424,7 @@ class Document_invoice extends Controller
         try {
             $data =$request->all();
             $valid = $request->valid;
+            $ids = $request->id;
             $preview = $request->preview;
             $save = $request->save;
             if ($valid == null) {
@@ -1621,8 +1622,330 @@ class Document_invoice extends Controller
                 $pdf = FacadePdf::loadView('invoicePDF.preview',$data);
                 return $pdf->stream();
 
-            }else{}
-            dd($data,$id);
+            }else{
+                $invoice = document_invoices::where('id',$id)->first();
+                $correct = $invoice->correct;
+                if ($correct >= 1) {
+                    $correctup = $correct + 1;
+                }else{
+                    $correctup = 1;
+                }
+                $dataArray = [
+                    'Valid' => $invoice['valid'] ?? null,
+                    'Sum' => $invoice['sumpayment'] ?? null,
+                    'Balance' => $invoice['balance'] ?? null,
+                    'Nettotal' => $invoice['Nettotal'] ?? null,
+                ];
+                $datarequest = [
+                    'Proposal_ID' => $data['QuotationID'] ?? null,
+                    'InvoiceID' => $data['InvoiceID'] ?? null,
+                    'Refler_ID' => $data['Refler_ID'] ?? null,
+                    'IssueDate' => $data['IssueDate'] ?? null,
+                    'Expiration' => $data['Expiration'] ?? null,
+                    'Selectdata' => $data['selecttype'] ?? null,
+                    'Valid' => $data['valid'] ?? null,
+                    'Deposit' => $data['Deposit'] ?? null,
+                    'Payment' => $data['Payment'] ?? null,
+                    'Mevent' => $data['eventformat'] ?? null,
+                    'Nettotal' => $data['Nettotal'] ?? null,
+                    'Company' => $data['company'] ?? null,
+                    'Balance' => $data['balance'] ?? null,
+                    'Sum' => $data['sum'] ?? null,
+                    'PaymentPercent'=> $data['PaymentPercent'] ?? null,
+                ];
+                $keysToCompare = ['Valid', 'Sum', 'Balance','Nettotal'];
+                $differences = [];
+                foreach ($keysToCompare as $key) {
+                    if (isset($dataArray[$key]) && isset($datarequest[$key])) {
+                        // แปลงค่าของ $dataArray และ $data เป็นชุดข้อมูลเพื่อหาค่าที่แตกต่างกัน
+                        $dataArraySet = collect($dataArray[$key]);
+                        $dataSet = collect($datarequest[$key]);
+
+                        // หาค่าที่แตกต่างกัน
+                        $onlyInDataArray = $dataArraySet->diff($dataSet)->values()->all();
+                        $onlyInRequest = $dataSet->diff($dataArraySet)->values()->all();
+
+                        // ตรวจสอบว่ามีค่าที่แตกต่างหรือไม่
+                        if (!empty($onlyInDataArray) || !empty($onlyInRequest)) {
+                            $differences[$key] = [
+                                'dataArray' => $onlyInDataArray,
+                                'request' => $onlyInRequest
+                            ];
+                        }
+                    }
+                }
+                $extractedData = [];
+
+                // วนลูปเพื่อดึงชื่อคีย์และค่าจาก request
+                foreach ($differences as $key => $value) {
+                    if ($key === 'phone'||$key === 'fax') {
+                        // ถ้าเป็น phoneCom ให้เก็บค่า request ทั้งหมดใน array
+                        $extractedData[$key] = $value['request'];
+                        $extractedDataA[$key] = $value['dataArray'];
+                    } elseif (isset($value['request'][0])) {
+                        // สำหรับคีย์อื่นๆ ให้เก็บค่าแรกจาก array
+                        $extractedData[$key] = $value['request'][0];
+                    }else{
+                        $extractedDataA[$key] = $value['dataArray'][0];
+                    }
+
+                }
+                $Sum = $datarequest['Sum'] ?? null;
+                $Balance = $datarequest['Balance'] ?? null;
+                $Nettotal = $datarequest['Nettotal'] ?? null;
+                $Valid = $datarequest['Valid'] ?? null;
+                $InvoiceID = $datarequest['InvoiceID'] ?? null;
+                $Proposal_ID = $datarequest['Proposal_ID'] ?? null;
+                $Validcheck = null;
+                if ($Valid) {
+                    $Validcheck = 'วันที่ใช้งาน : '.$Valid;
+                }
+
+                $Nettotalcheck = null;
+                if ($Nettotal) {
+                    $Nettotalcheck = 'ยอดเงินเต็ม : '.number_format($Nettotal). ' บาท';
+                }
+
+                $Paymentcheck = null;
+                if ($Sum) {
+                    $Paymentcheck = 'ยอดเงินที่ชำระ : '. number_format($Sum). ' บาท';
+                }
+
+                $Balancecheck = null;
+                if ($Balance) {
+                    $Balancecheck = 'ยอดเงินคงเหลือชำระ : '.number_format($Balance). ' บาท';
+                }
+                $fullname = 'รหัส : '.$InvoiceID.' + '.'อ้างอิงจาก : '.$Proposal_ID;
+                $datacompany = '';
+
+                $variables = [$fullname, $Nettotalcheck, $Paymentcheck, $Balancecheck, $Validcheck];
+
+                foreach ($variables as $variable) {
+                    if (!empty($variable)) {
+                        if (!empty($datacompany)) {
+                            $datacompany .= ' + ';
+                        }
+                        $datacompany .= $variable;
+                    }
+                }
+
+                $userids = Auth::user()->id;
+                $save = new log_company();
+                $save->Created_by = $userids;
+                $save->Company_ID = $InvoiceID;
+                $save->type = 'Edit';
+                $save->Category = 'Edit :: Proposal Invoice'.$InvoiceID;
+                $save->content =$datacompany;
+                // $save->save();
+                {
+                    if ($datarequest['Selectdata'] == 'Company') {
+                        $Data_ID = $datarequest['Company'];
+                        $Company = companys::where('Profile_ID',$Data_ID)->first();
+                        $Company_type = $Company->Company_type;
+                        $Compannyname = $Company->Company_Name;
+                        $Address = $Company->Address;
+                        $Email = $Company->Company_Email;
+                        $Taxpayer_Identification = $Company->Taxpayer_Identification;
+                        $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+                        if ($comtype) {
+                            if ($comtype->name_th == "บริษัทจำกัด") {
+                                $comtypefullname = "บริษัท " . $Compannyname . " จำกัด";
+                            } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                                $comtypefullname = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
+                            } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                                $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                            }
+                        }
+
+                        $representative = representative::where('Company_ID',$Data_ID)->where('status',1)->first();
+                        $prename = $representative->prefix;
+                        $Contact_Email = $representative->Email;
+                        $prefix = master_document::where('id', $prename)->where('Category', 'Mprename')->first();
+                        $name = $prefix->name_th;
+                        $Contact_Name = $representative->First_name.' '.$representative->Last_name;
+                        $CityID=$Company->City;
+                        $amphuresID = $Company->Amphures;
+                        $TambonID = $Company->Tambon;
+                        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                        $company_fax = company_fax::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+                        if ($company_fax) {
+                            $Fax_number =  $company_fax->Fax_number;
+                        }else{
+                            $Fax_number = '-';
+                        }
+                        $company_phone = company_phone::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+                        $Contact_phone = representative_phone::where('Company_ID',$Data_ID)->where('Sequence','main')->first();
+                    }else{
+                        $Data_ID = $datarequest['Company'];
+                        $Company = Guest::where('Profile_ID',$Data_ID)->first();
+                        $prename = $Company->preface;
+                        $First_name = $Company->First_name;
+                        $Last_name = $Company->Last_name;
+                        $Address = $Company->Address;
+                        $Email = $Company->Email;
+                        $Taxpayer_Identification = $Company->Identification_Number;
+                        $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
+                        $name = $prefix->name_th;
+                        $comtypefullname = $name.' '.$First_name.' '.$Last_name;
+                        $profilecontact = 0;
+                        $Contact_phone=0;
+                        $company_fax =0;
+                        $Contact_Name =0;
+                        //-------------ที่อยู่
+                        $CityID=$Company->City;
+                        $amphuresID = $Company->Amphures;
+                        $TambonID = $Company->Tambon;
+                        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                        $Fax_number = '-';
+                        $company_phone = phone_guest::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+                    }
+                    $id = $datarequest['Proposal_ID'];
+                    $protocol = $request->secure() ? 'https' : 'http';
+                    $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+
+                    // Generate the QR code as PNG
+                    $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
+                    $qrCodeBase64 = base64_encode($qrCodeImage);
+                    $Quotation = Quotation::where('Quotation_ID', $datarequest['Proposal_ID'])->first();
+
+                    $settingCompany = Master_company::orderBy('id', 'desc')->first();
+                    $date = Carbon::now();
+                    $date = Carbon::parse($date)->format('d/m/Y');
+                    $vattype= $Quotation->vat_type;
+                    $vat_type = master_document::where('id',$vattype)->first();
+                    $vatname = $vat_type->name_th;
+                    $Mevent =$datarequest['Mevent'];
+                    $eventformat = master_document::where('id',$Mevent)->select('name_th','id')->first();
+                    $checkin  = $Quotation->checkin;
+                    $checkout = $Quotation->checkout;
+                    $Day = $Quotation->day;
+                    $Night = $Quotation->night;
+                    $Adult = $Quotation->adult;
+                    $Children = $Quotation->children;
+                    $Checkin = $checkin;
+                    $Checkout = $checkout;
+                    $valid = $valid;
+                    $Deposit = $datarequest['Deposit'];
+                    $payment=$datarequest['Sum'];
+                    $Nettotal = floatval(str_replace(',', '', $datarequest['Nettotal']));
+                    if ($payment) {
+                        $payment0 = $payment;
+                        $Subtotal =0;
+                        $total =0;
+                        $addtax = 0;
+                        $before = 0;
+                        $balance =0;
+
+                        $Subtotal = $payment;
+                        $total = $payment;
+                        $addtax = 0;
+                        $before = $payment;
+                        // $balance = $Nettotal-$Subtotal;
+                        $balance = $Subtotal;
+                    }
+                    $paymentPercent=$datarequest['PaymentPercent'];
+                    if ($paymentPercent) {
+                        $payment0 = $paymentPercent.'%';
+                        $Subtotal =0;
+                        $total =0;
+                        $addtax = 0;
+                        $before = 0;
+                        $balance =0;
+                        $Nettotal = floatval(str_replace(',', '', $datarequest['Nettotal']));
+                        $paymentPercent = floatval($paymentPercent);
+                        $Subtotal = ($Nettotal*$paymentPercent)/100;
+                        $total = $Subtotal/1.07;
+                        $addtax = $Subtotal-$total;
+                        $before = $Subtotal-$addtax;
+                        $balance = $Nettotal-$Subtotal;
+
+                        $Subtotal = ($Nettotal*$paymentPercent)/100;
+                        $total = $Subtotal/1.07;
+                        $addtax = $Subtotal-$total;
+                        $before = $Subtotal-$addtax;
+                        // $balance = $Nettotal-$Subtotal;
+                        $balance = $Nettotal-$Subtotal;
+
+                    }
+                    $balanceold =$datarequest['Balance'];
+
+                    $data= [
+                        'date'=>$date,
+                        'settingCompany'=>$settingCompany,
+                        'Selectdata'=>$datarequest['Selectdata'],
+                        'Invoice_ID'=>$datarequest['InvoiceID'],
+                        'IssueDate'=>$datarequest['IssueDate'],
+                        'Expiration'=>$datarequest['Expiration'],
+                        'qrCodeBase64'=>$qrCodeBase64,
+                        'Quotation'=>$Quotation,
+                        'fullName'=>$comtypefullname,
+                        'Address'=>$Address,
+                        'TambonID'=>$TambonID,
+                        'amphuresID'=>$amphuresID,
+                        'provinceNames'=>$provinceNames,
+                        'Fax_number'=>$Fax_number,
+                        'phone'=>$company_phone,
+                        'Email'=>$Email,
+                        'Taxpayer_Identification'=>$Taxpayer_Identification,
+                        'Day'=>$Day,
+                        'Night'=>$Night,
+                        'Adult'=>$Adult,
+                        'Children'=>$Children,
+                        'Checkin'=>$Checkin,
+                        'Checkout'=>$Checkout,
+                        'valid'=>$valid,
+                        'Contact_Name'=>$Contact_Name,
+                        'Contact_phone'=>$Contact_phone,
+                        'balance'=>$balance,
+                        'Deposit'=>$Deposit,
+                        'payment'=>$payment0,
+                        'Nettotal'=>$Nettotal,
+                        'Subtotal'=>$Subtotal,
+                        'total'=>$total,
+                        'addtax'=>$addtax,
+                        'before'=>$before,
+                        'balanceold'=>$balanceold,
+                    ];
+                    $template = master_template::query()->latest()->first();
+                    $view= $template->name;
+                    $pdf = FacadePdf::loadView('invoicePDF.'.$view,$data);
+                    $path = 'Log_PDF/invoice/';
+                    $pdf->save($path . $InvoiceID.'-'.$correctup . '.pdf');
+                    $currentDateTime = Carbon::now();
+                    $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
+                    $currentTime = $currentDateTime->toTimeString(); // Format: HH:MM:SS
+
+                    // Optionally, you can format the date and time as per your requirement
+                    $formattedDate = $currentDateTime->format('Y-m-d'); // Custom format for date
+                    $formattedTime = $currentDateTime->format('H:i:s');
+                    $savePDF = new log();
+                    $savePDF->Quotation_ID = $InvoiceID;
+                    $savePDF->QuotationType = 'invoice';
+                    $savePDF->correct = $correctup;
+                    $savePDF->Approve_date = $formattedDate;
+                    $savePDF->Approve_date = $formattedDate;
+                    $savePDF->Approve_time = $formattedTime;
+                    $savePDF->save();
+                }
+                {
+
+                    $save = document_invoices::find($ids);
+                    $save->payment = $request->Payment;
+                    $save->balance = $request->balance;
+                    $save->paymentPercent = $request->PaymentPercent;
+                    $save->sumpayment = $request->sum;
+                    $save->Nettotal = $request->Nettotal;
+                    $save->correct = $correctup;
+                    $save->valid = $request->valid;
+                    $save->save();
+                }
+            }
+
+            return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } catch (\Throwable $e) {
             return response()->json([
                 'error' => $e->getMessage()
