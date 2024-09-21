@@ -139,45 +139,61 @@
                                                     <th style="width: 5%">No</th>
                                                     <th>DESCRIPTION</th>
                                                     <th style="width: 5%">QUANTITY</th>
+                                                    <th style="width: 5%">UNIT</th>
+                                                    <th style="width: 5%">Price / Unit</th>
                                                     <th style="width: 5%">DISCOUNT</th>
                                                     <th style="width: 5%">AMOUNT</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach(@$itemdata->document as $key =>$itemproduct)
+                                                @foreach(@$itemdata->document as $key => $itemproduct)
+                                                @php
+                                                    $productMatch = $product->firstWhere('Product_ID', $itemproduct->Product_ID);
+                                                    $unitMatch = $unit->firstWhere('id', $productMatch->unit);
+                                                    $quantityMatch = $quantity->firstWhere('id', $productMatch->quantity);
+                                                @endphp
+                                                @if($productMatch && $unitMatch && $quantityMatch)
                                                     <tr>
-                                                        <td style="text-align: center;">{{ $key+1}}</td>
-                                                        <td>{{@$itemproduct->product->name_th}}</td>
+                                                        <td style="text-align: center;">{{ $key + 1 }}</td>
+                                                        <td>{{ $productMatch->name_th }}</td>
                                                         <td style="text-align: center;">
-
-                                                            {{@$itemproduct->Quantity }}
+                                                            {{ @$itemproduct->Quantity }} {{ $unitMatch->name_th }}
                                                         </td>
                                                         <td style="text-align: center;">
-
-                                                            {{@$itemproduct->discount }}
+                                                            {{ @$itemproduct->Unit }} {{ $quantityMatch->name_th }}
                                                         </td>
                                                         <td style="text-align: center;">
-
+                                                            {{ number_format($productMatch->normal_price) }}
+                                                        </td>
+                                                        @if (@$itemproduct->discount == 0)
+                                                            <td style="text-align: center;"></td>
+                                                        @else
+                                                            <td style="text-align: center;">
+                                                                {{ @$itemproduct->discount }}%
+                                                            </td>
+                                                        @endif
+                                                        <td style="text-align: center;">
                                                             {{ number_format(@$itemproduct->netpriceproduct) }}
-
                                                         </td>
                                                     </tr>
                                                     @php
                                                         $price50 += @$itemproduct->netpriceproduct;
                                                         $sp = $itemdata->SpecialDiscountBath;
-                                                        $sp50 = $price50-$itemdata->SpecialDiscountBath;
-                                                        $priceless50 = $sp50/1.07;
-                                                        $Add50 = $sp50-$priceless50;
-                                                        $Net50 = $priceless50+$Add50;
+                                                        $sp50 = $price50 - $itemdata->SpecialDiscountBath;
+                                                        $priceless50 = $sp50 / 1.07;
+                                                        $Add50 = $sp50 - $priceless50;
+                                                        $Net50 = $priceless50 + $Add50;
 
                                                         $price51 += @$itemproduct->netpriceproduct;
-                                                        $sp51 = $price51-$itemdata->SpecialDiscountBath;
+                                                        $sp51 = $price51 - $itemdata->SpecialDiscountBath;
                                                         $price52 += @$itemproduct->netpriceproduct;
-                                                        $sp52 = $price52-$itemdata->SpecialDiscountBath;
-                                                        $Add52 = $sp52*7/100;
-                                                        $pricebefore52 = $price52+$Add52;
+                                                        $sp52 = $price52 - $itemdata->SpecialDiscountBath;
+                                                        $Add52 = $sp52 * 7 / 100;
+                                                        $pricebefore52 = $price52 + $Add52;
                                                     @endphp
-                                                @endforeach
+                                                @endif
+                                            @endforeach
+
                                             </tbody>
                                         </table>
                                         <style>

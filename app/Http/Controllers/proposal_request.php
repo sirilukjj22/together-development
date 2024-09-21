@@ -184,7 +184,10 @@ class proposal_request extends Controller
                 ];
             }
             $datarequest = collect($myData);
-        return view('proposal_req.view', compact('datarequest','Data'));
+            $product = master_product_item::where('status',1)->get();
+            $unit = master_unit::where('status',1)->get();
+            $quantity = master_quantity::where('status',1)->get();
+        return view('proposal_req.view', compact('datarequest','Data','product','unit','quantity'));
     }
     public function Approve(Request $request){
         try {

@@ -414,16 +414,19 @@ class DummyQuotationController extends Controller
                     'Checkout' => $data['Checkout'] ?? null,
                     'Day' => $data['Day'] ?? null,
                     'Night' => $data['Night'] ?? null,
+                    'Unitmain' => $data['Unitmain'] ?? null,
                 ];
 
                 $Products = Arr::wrap($datarequest['ProductIDmain']);
                 $quantities = $datarequest['Quantitymain'] ?? [];
                 $discounts = $datarequest['discountmain'] ?? [];
                 $priceUnits = $datarequest['priceproductmain'] ?? [];
+                $Unitmain = $datarequest['Unitmain'] ?? [];
                 $productItems = [];
                 $totaldiscount = [];
+
                 foreach ($Products as $index => $productID) {
-                    if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+                    if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
                         $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
                         $discountedPrices = [];
                         $discountedPricestotal = [];
@@ -431,28 +434,31 @@ class DummyQuotationController extends Controller
                         // คำนวณราคาสำหรับแต่ละรายการ
                         for ($i = 0; $i < count($quantities); $i++) {
                             $quantity = intval($quantities[$i]);
+                            $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
                             $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
                             $discount = floatval($discounts[$i]);
 
                             $totaldiscount0 = (($priceUnit * $discount)/100);
                             $totaldiscount[] = $totaldiscount0;
 
-                            $totalPrice = ($quantity * $priceUnit);
+                            $totalPrice = ($quantity * $unitValue) * $priceUnit;
                             $totalPrices[] = $totalPrice;
 
-                            $discountedPrice = (($totalPrice * $discount )/ 100);
-                            $discountedPrices[] = $priceUnit-$totaldiscount0;
+                            $discountedPrice = (($totalPrice * $discount) / 100);
+                            $discountedPrices[] = $discountedPrice;
 
                             $discountedPriceTotal = $totalPrice - $discountedPrice;
                             $discountedPricestotal[] = $discountedPriceTotal;
                         }
                     }
+                    // dd($discountedPrices);
                     $items = master_product_item::where('Product_ID', $productID)->get();
                     $QuotationVat= $datarequest['Mvat'];
                     $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
                     foreach ($items as $item) {
                         // ตรวจสอบและกำหนดค่า quantity และ discount
                         $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+                        $unitValue = isset($Unitmain[$index]) ? $Unitmain[$index] : 0;
                         $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
                         $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
                         $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
@@ -461,6 +467,7 @@ class DummyQuotationController extends Controller
                         $productItems[] = [
                             'product' => $item,
                             'quantity' => $quantity,
+                            'unit' => $unitValue,
                             'discount' => $discount,
                             'totalPrices'=>$totalPrices,
                             'discountedPrices'=>$discountedPrices,
@@ -723,34 +730,40 @@ class DummyQuotationController extends Controller
                     'Checkout' => $data['Checkout'] ?? null,
                     'Day' => $data['Day'] ?? null,
                     'Night' => $data['Night'] ?? null,
+                    'Unitmain' => $data['Unitmain'] ?? null,
                 ];
                 $quantities = $datarequest['Quantitymain'] ?? [];
                 $discounts = $datarequest['discountmain'] ?? [];
                 $priceUnits = $datarequest['priceproductmain'] ?? [];
+                $Unitmain = $datarequest['Unitmain'] ?? [];
                 $discounts = array_map(function($value) {
                     return ($value !== null) ? $value : "0";
                 }, $discounts);
 
-                if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+                if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
                     $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
                     $discountedPrices = [];
                     $discountedPricestotal = [];
+
                     // คำนวณราคาสำหรับแต่ละรายการ
                     for ($i = 0; $i < count($quantities); $i++) {
                         $quantity = intval($quantities[$i]);
+                        $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
                         $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
                         $discount = floatval($discounts[$i]);
 
-                        $totalPrice = ($quantity * $priceUnit);
+                        $totalPrice = ($quantity * $unitValue) * $priceUnit;
                         $totalPrices[] = $totalPrice;
 
-                        $discountedPrice = (($totalPrice * $discount )/ 100);
+                        $discountedPrice = (($totalPrice * $discount) / 100);
                         $discountedPrices[] = $discountedPrice;
 
                         $discountedPriceTotal = $totalPrice - $discountedPrice;
                         $discountedPricestotal[] = $discountedPriceTotal;
                     }
                 }
+
+
                 foreach ($priceUnits as $key => $price) {
                     $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
                 }
@@ -772,11 +785,13 @@ class DummyQuotationController extends Controller
                         'ExpirationDate' => $datarequest['Expiration'],
                         'freelanceraiffiliate' => $datarequest['FreelancerMember'],
                         'Quantity' => $quantities[$index],
+                        'Unit' => $Unitmain[$index],
                         'Document_issuer' => $userid,
                     ];
 
                     $productsArray[] = $saveProduct;
                 }
+
                 {
                     $Quotation_ID = $datarequest['Proposal_ID'];
                     $IssueDate = $datarequest['IssueDate'];
@@ -803,20 +818,24 @@ class DummyQuotationController extends Controller
 
                             // ค้นหาข้อมูลในฐานข้อมูลจาก Product_ID
                             $productDetails = master_product_item::LeftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
+                                ->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')
                                 ->where('master_product_items.Product_ID', $productID)
-                                ->select('master_product_items.*', 'master_units.name_th as unit_name')
+                                ->select('master_product_items.*', 'master_units.name_th as unit_name','master_quantities.name_th as quantity_name')
                                 ->first();
 
                             $ProductName = $productDetails->name_en;
                             $unitName = $productDetails->unit_name;
+                            $quantity_name = $productDetails->quantity_name;
 
                             if ($productDetails) {
                                 $productData[] = [
                                     'Product_ID' => $productID,
                                     'Quantity' => $product['Quantity'],
+                                    'Unit' => $product['Unit'],
                                     'netpriceproduct' => $product['netpriceproduct'],
                                     'Product_Name' => $ProductName,
-                                    'Product_Unit' => $unitName, // หรือระบุฟิลด์ที่ต้องการจาก $productDetails
+                                    'Product_Quantity' => $unitName,
+                                    'Product_Unit' => $quantity_name,// หรือระบุฟิลด์ที่ต้องการจาก $productDetails
                                 ];
                             }
                         }
@@ -825,7 +844,7 @@ class DummyQuotationController extends Controller
 
                     foreach ($productData as $product) {
                         $formattedPrice = number_format($product['netpriceproduct']).' '.'บาท';
-                        $formattedProductData[] = 'Description : ' . $product['Product_Name'] . ' , ' . 'Quantity : ' . $product['Quantity'] . ' ' . $product['Product_Unit'] . ' , ' . 'Price Product : ' . $formattedPrice;
+                        $formattedProductData[] = 'Description : ' . $product['Product_Name'] . ' , ' . 'Quantity : ' . $product['Quantity'] . ' ' . $product['Product_Quantity'] . ' , '. 'Unit : '. $product['Unit']. ' ' . $product['Product_Unit'] . ' , ' . 'Price Product : ' . $formattedPrice;
                     }
 
                     if ($Quotation_ID) {
@@ -953,6 +972,7 @@ class DummyQuotationController extends Controller
                         $saveProduct->ExpirationDate = $request->Expiration;
                         $saveProduct->freelanceraiffiliate = $request->Freelancer_member;
                         $saveProduct->Quantity = $quantities[$index];
+                        $saveProduct->Unit = $Unitmain[$index];
                         $saveProduct->Document_issuer = $userid;
                         $saveProduct->save();
                     }
@@ -972,6 +992,7 @@ class DummyQuotationController extends Controller
                             'ProductIDmain' => $data['ProductIDmain'] ?? null,
                             'pax' => $data['pax'] ?? null,
                             'Quantitymain' => $data['Quantitymain'] ?? null,
+                            'Unitmain' => $data['Unitmain'] ?? null,
                             'priceproductmain' => $data['priceproductmain'] ?? null,
                             'discountmain' => $data['discountmain'] ?? null,
                             'comment' => $data['comment'] ?? null,
@@ -982,32 +1003,32 @@ class DummyQuotationController extends Controller
                             'Night' => $data['Night'] ?? null,
                         ];
 
-                        $Products = Arr::wrap($datarequestPDF['ProductIDmain']);
-                        $quantities = $datarequestPDF['Quantitymain'] ?? [];
-                        $discounts = $datarequestPDF['discountmain'] ?? [];
-                        $priceUnits = $datarequestPDF['priceproductmain'] ?? [];
-                        $productItems = [];
-                        $totaldiscount = [];
-                        foreach ($Products as $index => $productID) {
-                            if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+                            $Products = Arr::wrap($datarequestPDF['ProductIDmain']);
+                            $quantities = $datarequest['Quantitymain'] ?? [];
+                            $discounts = $datarequest['discountmain'] ?? [];
+                            $priceUnits = $datarequest['priceproductmain'] ?? [];
+                            $Unitmain = $datarequest['Unitmain'] ?? [];
+                            $discounts = array_map(function($value) {
+                                return ($value !== null) ? $value : "0";
+                            }, $discounts);
+
+                            if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
                                 $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
                                 $discountedPrices = [];
                                 $discountedPricestotal = [];
-                                $totaldiscount = [];
+
                                 // คำนวณราคาสำหรับแต่ละรายการ
                                 for ($i = 0; $i < count($quantities); $i++) {
                                     $quantity = intval($quantities[$i]);
+                                    $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
                                     $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
                                     $discount = floatval($discounts[$i]);
 
-                                    $totaldiscount0 = (($priceUnit * $discount)/100);
-                                    $totaldiscount[] = $totaldiscount0;
-
-                                    $totalPrice = ($quantity * $priceUnit);
+                                    $totalPrice = ($quantity * $unitValue) * $priceUnit;
                                     $totalPrices[] = $totalPrice;
 
-                                    $discountedPrice = (($totalPrice * $discount )/ 100);
-                                    $discountedPrices[] = $priceUnit-$totaldiscount0;
+                                    $discountedPrice = (($totalPrice * $discount) / 100);
+                                    $discountedPrices[] = $discountedPrice;
 
                                     $discountedPriceTotal = $totalPrice - $discountedPrice;
                                     $discountedPricestotal[] = $discountedPriceTotal;
@@ -1019,6 +1040,7 @@ class DummyQuotationController extends Controller
                             foreach ($items as $item) {
                                 // ตรวจสอบและกำหนดค่า quantity และ discount
                                 $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+                                $unitValue = isset($Unitmain[$index]) ? $Unitmain[$index] : 0;
                                 $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
                                 $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
                                 $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
@@ -1027,6 +1049,7 @@ class DummyQuotationController extends Controller
                                 $productItems[] = [
                                     'product' => $item,
                                     'quantity' => $quantity,
+                                    'unit' => $unitValue,
                                     'discount' => $discount,
                                     'totalPrices'=>$totalPrices,
                                     'discountedPrices'=>$discountedPrices,
@@ -1034,7 +1057,7 @@ class DummyQuotationController extends Controller
                                     'totaldiscount'=>$totaldiscount,
                                 ];
                             }
-                        }
+
                         {//คำนวน
                             $totalAmount = 0;
                             $totalPrice = 0;
@@ -1139,6 +1162,7 @@ class DummyQuotationController extends Controller
         $SpecialDiscount = $request->SpecialDiscount;
         $SpecialDiscountBath = $request->DiscountAmount;
         $data = $request->all();
+        // dd($data);
         if ($preview == 1) {
             $userid = Auth::user()->id;
             $datarequest = [
@@ -1165,7 +1189,7 @@ class DummyQuotationController extends Controller
                 'Checkout' => $data['Checkout'] ?? null,
                 'Day' => $data['Day'] ?? null,
                 'Night' => $data['Night'] ?? null,
-
+                'Unitmain' => $data['Unitmain'] ?? null,
             ];
             $Products = $datarequest['ProductIDmain'];
             $Productslast = $datarequest['CheckProduct'];
@@ -1188,10 +1212,11 @@ class DummyQuotationController extends Controller
             $quantities = $datarequest['Quantitymain'] ?? [];
             $discounts = $datarequest['discountmain'] ?? [];
             $priceUnits = $datarequest['priceproductmain'] ?? [];
+            $Unitmain = $datarequest['Unitmain'] ?? [];
             $productItems = [];
             $totaldiscount = [];
             foreach ($Products as $index => $productID) {
-                if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+                if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
                     $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
                     $discountedPrices = [];
                     $discountedPricestotal = [];
@@ -1199,17 +1224,18 @@ class DummyQuotationController extends Controller
                     // คำนวณราคาสำหรับแต่ละรายการ
                     for ($i = 0; $i < count($quantities); $i++) {
                         $quantity = intval($quantities[$i]);
+                        $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
                         $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
                         $discount = floatval($discounts[$i]);
 
                         $totaldiscount0 = (($priceUnit * $discount)/100);
                         $totaldiscount[] = $totaldiscount0;
 
-                        $totalPrice = ($quantity * $priceUnit);
+                        $totalPrice = ($quantity * $unitValue) * $priceUnit;
                         $totalPrices[] = $totalPrice;
 
-                        $discountedPrice = (($totalPrice * $discount )/ 100);
-                        $discountedPrices[] = $priceUnit-$totaldiscount0;
+                        $discountedPrice = (($totalPrice * $discount) / 100);
+                        $discountedPrices[] = $discountedPrice;
 
                         $discountedPriceTotal = $totalPrice - $discountedPrice;
                         $discountedPricestotal[] = $discountedPriceTotal;
@@ -1221,6 +1247,7 @@ class DummyQuotationController extends Controller
                 foreach ($items as $item) {
                     // ตรวจสอบและกำหนดค่า quantity และ discount
                     $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+                    $unitValue = isset($Unitmain[$index]) ? $Unitmain[$index] : 0;
                     $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
                     $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
                     $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
@@ -1229,6 +1256,7 @@ class DummyQuotationController extends Controller
                     $productItems[] = [
                         'product' => $item,
                         'quantity' => $quantity,
+                        'unit' => $unitValue,
                         'discount' => $discount,
                         'totalPrices'=>$totalPrices,
                         'discountedPrices'=>$discountedPrices,
@@ -1494,29 +1522,35 @@ class DummyQuotationController extends Controller
                     'Checkout' => $data['Checkout'] ?? null,
                     'Day' => $data['Day'] ?? null,
                     'Night' => $data['Night'] ?? null,
-
+                    'Unitmain' => $data['Unitmain'] ?? null,
                 ];
                 $quantities = $datarequest['Quantitymain'] ?? [];
                 $discounts = $datarequest['discountmain'] ?? [];
                 $priceUnits = $datarequest['priceproductmain'] ?? [];
+                $Unitmain = $datarequest['Unitmain'] ?? [];
                 $discounts = array_map(function($value) {
                     return ($value !== null) ? $value : "0";
                 }, $discounts);
 
-                if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+                if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
                     $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
                     $discountedPrices = [];
                     $discountedPricestotal = [];
+                    $totaldiscount = [];
                     // คำนวณราคาสำหรับแต่ละรายการ
                     for ($i = 0; $i < count($quantities); $i++) {
                         $quantity = intval($quantities[$i]);
+                        $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
                         $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
                         $discount = floatval($discounts[$i]);
 
-                        $totalPrice = ($quantity * $priceUnit);
+                        $totaldiscount0 = (($priceUnit * $discount)/100);
+                        $totaldiscount[] = $totaldiscount0;
+
+                        $totalPrice = ($quantity * $unitValue) * $priceUnit;
                         $totalPrices[] = $totalPrice;
 
-                        $discountedPrice = (($totalPrice * $discount )/ 100);
+                        $discountedPrice = (($totalPrice * $discount) / 100);
                         $discountedPrices[] = $discountedPrice;
 
                         $discountedPriceTotal = $totalPrice - $discountedPrice;
@@ -1559,6 +1593,7 @@ class DummyQuotationController extends Controller
                         'ExpirationDate' => $request->Expiration,
                         'freelanceraiffiliate' => $request->Freelancer_member,
                         'Quantity' => $quantities[$index],
+                        'Unit' => $Unitmain[$index],
                         'Document_issuer' => $userid,
                     ];
                     $productsArray[] = $saveProduct;
@@ -1581,6 +1616,7 @@ class DummyQuotationController extends Controller
                     'checkout' => $data['Checkout'] ?? null,
                     'day' => $data['Day'] ?? null,
                     'night' => $data['Night'] ?? null,
+
                 ];
                 $DataProduct['Products'] = $productsArray;
                 $ProposalData = dummy_quotation::where('id',$id)->first();
@@ -1650,6 +1686,7 @@ class DummyQuotationController extends Controller
                         $item['Product_ID'] ?? '',
                         $item['discount'] ?? '',
                         $item['Quantity'] ?? '',
+                        $item['Unit'] ?? '',
                         $item['netpriceproduct'] ?? ''
                     ]);
                 })->unique();
@@ -1660,6 +1697,7 @@ class DummyQuotationController extends Controller
                         $item['Product_ID'] ?? '',
                         $item['discount'] ?? '',
                         $item['Quantity'] ?? '',
+                        $item['Unit'] ?? '',
                         $item['netpriceproduct'] ?? ''
                     ]);
                 })->unique();
@@ -1674,7 +1712,8 @@ class DummyQuotationController extends Controller
                         'Product_ID' => $parts[0],
                         'discount' => $parts[1],
                         'Quantity' => $parts[2],
-                        'netpriceproduct' => $parts[3]
+                        'Unit' => $parts[3],
+                        'netpriceproduct' => $parts[4]
                     ];
                 })->values()->all();
 
@@ -1684,7 +1723,8 @@ class DummyQuotationController extends Controller
                         'Product_ID' => $parts[0],
                         'discount' => $parts[1],
                         'Quantity' => $parts[2],
-                        'netpriceproduct' => $parts[3]
+                        'Unit' => $parts[3],
+                        'netpriceproduct' => $parts[4]
                     ];
                 })->values()->all();
                 $onlyInDataArray = collect($onlyInDataArray);
@@ -1708,6 +1748,7 @@ class DummyQuotationController extends Controller
                         $extractedDataA[$key] = $value['dataArray'];
                     }
                 }
+
                 $Company_ID = $extractedData['Company_ID'] ?? null;
                 $company_contact = $extractedData['company_contact'] ?? null;
                 $checkin =  $extractedData['checkin'] ?? null;
@@ -1830,26 +1871,34 @@ class DummyQuotationController extends Controller
                         $productID = $product['Product_ID'];
 
                         // ค้นหาข้อมูลในฐานข้อมูลจาก Product_ID
-                        $productDetails = master_product_item::leftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
+                        $productDetails = master_product_item::LeftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
+                            ->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')
                             ->where('master_product_items.Product_ID', $productID)
-                            ->select('master_product_items.name_en as Product_Name', 'master_units.name_th as unit_name')
+                            ->select('master_product_items.*', 'master_units.name_th as unit_name','master_quantities.name_th as quantity_name')
                             ->first();
+
+                        $ProductName = $productDetails->name_en;
+                        $unitName = $productDetails->unit_name;
+                        $quantity_name = $productDetails->quantity_name;
 
                         if ($productDetails) {
                             $productData[] = [
                                 'Product_ID' => $productID,
-                                'Discount' => $product['discount'],
                                 'Quantity' => $product['Quantity'],
+                                'Unit' => $product['Unit'],
                                 'netpriceproduct' => $product['netpriceproduct'],
-                                'Product_Name' => $productDetails->Product_Name,
-                                'Product_Unit' => $productDetails->unit_name,
+                                'Product_Name' => $ProductName,
+                                'Product_Quantity' => $unitName,
+                                'Product_Unit' => $quantity_name,// หรือระบุฟิลด์ที่ต้องการจาก $productDetails
                             ];
                         }
                     }
 
+
                     // จัดรูปแบบข้อมูลของผลิตภัณฑ์
                     foreach ($productData as $product) {
-                        $formattedProductData[] = 'ลบรายการ' . '+ ' . 'Description : ' . $product['Product_Name'] . ' , ' . 'Quantity : ' . $product['Quantity'] . ' ' . $product['Product_Unit'] . ' , ' . 'Discount : ' . $product['Discount'] . '% ' . ' , Price Product : ' . $product['netpriceproduct'];
+                        $formattedPrice = number_format($product['netpriceproduct']).' '.'บาท';
+                        $formattedProductData[] = ' + '.'ลบรายการ' . '+ ' .'Description : ' . $product['Product_Name'] . ' , ' . 'Quantity : ' . $product['Quantity'] . ' ' . $product['Product_Quantity'] . ' , '. 'Unit : '. $product['Unit']. ' ' . $product['Product_Unit'] . ' , ' . 'Price Product : ' . $formattedPrice;
                     }
                 }
 
@@ -1860,38 +1909,42 @@ class DummyQuotationController extends Controller
                         $productID = $product['Product_ID'];
 
                         // ค้นหาข้อมูลในฐานข้อมูลจาก Product_ID
-                        $productDetails = master_product_item::leftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
+                        $productDetails = master_product_item::LeftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
+                            ->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')
                             ->where('master_product_items.Product_ID', $productID)
-                            ->select('master_product_items.name_en as Product_Name', 'master_units.name_th as unit_name')
+                            ->select('master_product_items.*', 'master_units.name_th as unit_name','master_quantities.name_th as quantity_name')
                             ->first();
+
+                        $ProductName = $productDetails->name_en;
+                        $unitName = $productDetails->unit_name;
+                        $quantity_name = $productDetails->quantity_name;
 
                         if ($productDetails) {
                             $productDataA[] = [
                                 'Product_ID' => $productID,
-                                'Discount' => $product['discount'],
                                 'Quantity' => $product['Quantity'],
+                                'Unit' => $product['Unit'],
                                 'netpriceproduct' => $product['netpriceproduct'],
-                                'Product_Name' => $productDetails->Product_Name,
-                                'Product_Unit' => $productDetails->unit_name,
+                                'Product_Name' => $ProductName,
+                                'Product_Quantity' => $unitName,
+                                'Product_Unit' => $quantity_name,// หรือระบุฟิลด์ที่ต้องการจาก $productDetails
                             ];
                         }
                     }
 
                     // จัดรูปแบบข้อมูลของผลิตภัณฑ์
                     foreach ($productDataA as $product) {
-                        $formattedProductDataA[] = 'เพิ่มรายการ' . '+ ' . 'Description : ' . $product['Product_Name'] . ' , ' . 'Quantity : ' . $product['Quantity'] . ' ' . $product['Product_Unit'] . ' , ' . 'Discount : ' . $product['Discount'] . '% ' . ' , Price Product : ' . $product['netpriceproduct'];
+                        $formattedPrice = number_format($product['netpriceproduct']).' '.'บาท';
+                        $formattedProductDataA[] = ' + '.'เพิ่มรายการ' . '+ ' .'Description : ' . $product['Product_Name'] . ' , ' . 'Quantity : ' . $product['Quantity'] . ' ' . $product['Product_Quantity'] . ' , '. 'Unit : '. $product['Unit']. ' ' . $product['Product_Unit'] . ' , ' . 'Price Product : ' . $formattedPrice;
                     }
                 }
+
                 $datacompany = '';
-
-                $variables = [$fullName,$issue_date, $Expirationdate, $Checkin, $DAY,$people,$nameevent,$namevat,$discount
-                            ,$Pax,$Comment];
-
                 // แปลง array ของ $formattedProductData เป็น string เดียวที่มีรายการทั้งหมด
                 $formattedProductDataString = implode(' + ', $formattedProductData);
                 $formattedProductDataStringA = implode(' + ', $formattedProductDataA);
-
-                // รวม $formattedProductDataString เข้าไปใน $variables
+                $variables = [$fullName,$issue_date, $Expirationdate, $Checkin, $DAY,$people,$nameevent,$namevat,$discount
+                ,$Pax,$Comment];
                 $variables[] = $formattedProductDataString;
                 $variables[] = $formattedProductDataStringA;
                 foreach ($variables as $variable) {
@@ -1973,6 +2026,7 @@ class DummyQuotationController extends Controller
                         $saveProduct->ExpirationDate = $request->Expiration;
                         $saveProduct->freelanceraiffiliate = $request->Freelancer_member;
                         $saveProduct->Quantity = $quantities[$index];
+                        $saveProduct->Unit = $Unitmain[$index];
                         $saveProduct->Document_issuer = $userid;
                         $saveProduct->save();
                     }
@@ -2002,6 +2056,7 @@ class DummyQuotationController extends Controller
                         'Checkout' => $data['Checkout'] ?? null,
                         'Day' => $data['Day'] ?? null,
                         'Night' => $data['Night'] ?? null,
+                        'Unitmain' => $data['Unitmain'] ?? null,
                     ];
 
                     $Products = $datarequestPDF['ProductIDmain'];
@@ -2025,10 +2080,11 @@ class DummyQuotationController extends Controller
                     $quantities = $datarequestPDF['Quantitymain'] ?? [];
                     $discounts = $datarequestPDF['discountmain'] ?? [];
                     $priceUnits = $datarequestPDF['priceproductmain'] ?? [];
+                    $Unitmain = $datarequest['Unitmain'] ?? [];
                     $productItems = [];
                     $totaldiscount = [];
                     foreach ($Products as $index => $productID) {
-                        if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+                        if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
                             $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
                             $discountedPrices = [];
                             $discountedPricestotal = [];
@@ -2036,17 +2092,18 @@ class DummyQuotationController extends Controller
                             // คำนวณราคาสำหรับแต่ละรายการ
                             for ($i = 0; $i < count($quantities); $i++) {
                                 $quantity = intval($quantities[$i]);
+                                $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
                                 $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
                                 $discount = floatval($discounts[$i]);
 
                                 $totaldiscount0 = (($priceUnit * $discount)/100);
                                 $totaldiscount[] = $totaldiscount0;
 
-                                $totalPrice = ($quantity * $priceUnit);
+                                $totalPrice = ($quantity * $unitValue) * $priceUnit;
                                 $totalPrices[] = $totalPrice;
 
-                                $discountedPrice = (($totalPrice * $discount )/ 100);
-                                $discountedPrices[] = $priceUnit-$totaldiscount0;
+                                $discountedPrice = (($totalPrice * $discount) / 100);
+                                $discountedPrices[] = $discountedPrice;
 
                                 $discountedPriceTotal = $totalPrice - $discountedPrice;
                                 $discountedPricestotal[] = $discountedPriceTotal;
@@ -2058,6 +2115,7 @@ class DummyQuotationController extends Controller
                         foreach ($items as $item) {
                             // ตรวจสอบและกำหนดค่า quantity และ discount
                             $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+                            $unitValue = isset($Unitmain[$index]) ? $Unitmain[$index] : 0;
                             $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
                             $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
                             $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
@@ -2066,6 +2124,7 @@ class DummyQuotationController extends Controller
                             $productItems[] = [
                                 'product' => $item,
                                 'quantity' => $quantity,
+                                'unit' => $unitValue,
                                 'discount' => $discount,
                                 'totalPrices'=>$totalPrices,
                                 'discountedPrices'=>$discountedPrices,
@@ -2260,6 +2319,7 @@ class DummyQuotationController extends Controller
                 $saveProduct->ExpirationDate = $document->ExpirationDate;
                 $saveProduct->freelanceraiffiliate = $document->freelanceraiffiliate;
                 $saveProduct->Quantity = $document->Quantity;
+                $saveProduct->Unit = $document->Unit;
                 $saveProduct->save();
             }
             $currentDateTime = Carbon::now();
@@ -2301,10 +2361,12 @@ class DummyQuotationController extends Controller
             $quantities = $selectproduct->pluck('Quantity')->toArray();
             $discounts = $selectproduct->pluck('discount')->toArray();
             $priceUnits = $selectproduct->pluck('priceproduct')->toArray();
+            $Unitmain = $selectproduct->pluck('Unit')->toArray();
             $productItems = [];
             $totaldiscount = [];
+
             foreach ($Products as $index => $productID) {
-                if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+                if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
                     $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
                     $discountedPrices = [];
                     $discountedPricestotal = [];
@@ -2312,17 +2374,18 @@ class DummyQuotationController extends Controller
                     // คำนวณราคาสำหรับแต่ละรายการ
                     for ($i = 0; $i < count($quantities); $i++) {
                         $quantity = intval($quantities[$i]);
+                        $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
                         $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
                         $discount = floatval($discounts[$i]);
 
                         $totaldiscount0 = (($priceUnit * $discount)/100);
                         $totaldiscount[] = $totaldiscount0;
 
-                        $totalPrice = ($quantity * $priceUnit);
+                        $totalPrice = ($quantity * $unitValue) * $priceUnit;
                         $totalPrices[] = $totalPrice;
 
-                        $discountedPrice = (($totalPrice * $discount )/ 100);
-                        $discountedPrices[] = $priceUnit-$totaldiscount0;
+                        $discountedPrice = (($totalPrice * $discount) / 100);
+                        $discountedPrices[] = $discountedPrice;
 
                         $discountedPriceTotal = $totalPrice - $discountedPrice;
                         $discountedPricestotal[] = $discountedPriceTotal;
@@ -2334,6 +2397,7 @@ class DummyQuotationController extends Controller
                 foreach ($items as $item) {
                     // ตรวจสอบและกำหนดค่า quantity และ discount
                     $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+                    $unitValue = isset($Unitmain[$index]) ? $Unitmain[$index] : 0;
                     $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
                     $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
                     $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
@@ -2342,6 +2406,7 @@ class DummyQuotationController extends Controller
                     $productItems[] = [
                         'product' => $item,
                         'quantity' => $quantity,
+                        'unit' => $unitValue,
                         'discount' => $discount,
                         'totalPrices'=>$totalPrices,
                         'discountedPrices'=>$discountedPrices,
@@ -2619,21 +2684,25 @@ class DummyQuotationController extends Controller
                     $productID = $product['Product_ID']; // ต้องใช้ $product เพื่อดึงข้อมูล
 
                     // ค้นหาข้อมูลในฐานข้อมูลจาก Product_ID
-                    $productDetails = master_product_item::leftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
+                    $productDetails = master_product_item::LeftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
+                        ->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')
                         ->where('master_product_items.Product_ID', $productID)
-                        ->select('master_product_items.*', 'master_units.name_th as unit_name')
+                        ->select('master_product_items.*', 'master_units.name_th as unit_name','master_quantities.name_th as quantity_name')
                         ->first();
 
-                    if ($productDetails) {
-                        $ProductName = $productDetails->name_en;
-                        $unitName = $productDetails->unit_name;
+                    $ProductName = $productDetails->name_en;
+                    $unitName = $productDetails->unit_name;
+                    $quantity_name = $productDetails->quantity_name;
 
+                    if ($productDetails) {
                         $productData[] = [
                             'Product_ID' => $productID,
                             'Quantity' => $product['Quantity'],
+                            'Unit' => $product['Unit'],
                             'netpriceproduct' => $product['netpriceproduct'],
                             'Product_Name' => $ProductName,
-                            'Product_Unit' => $unitName, // หรือระบุฟิลด์ที่ต้องการจาก $productDetails
+                            'Product_Quantity' => $unitName,
+                            'Product_Unit' => $quantity_name,// หรือระบุฟิลด์ที่ต้องการจาก $productDetails
                         ];
                     }
                 }
@@ -2656,7 +2725,7 @@ class DummyQuotationController extends Controller
 
             foreach ($productData as $product) {
                 $formattedPrice = number_format($product['netpriceproduct']).' '.'บาท';
-                $formattedProductData[] = 'Description : ' . $product['Product_Name'] . ' , ' . 'Quantity : ' . $product['Quantity'] . ' ' . $product['Product_Unit'] . ' , ' . 'Price Product : ' . $formattedPrice;
+                $formattedProductData[] = 'Description : ' . $product['Product_Name'] . ' , ' . 'Quantity : ' . $product['Quantity'] . ' ' . $product['Product_Quantity'] . ' , '. 'Unit : '. $product['Unit']. ' ' . $product['Product_Unit'] . ' , ' . 'Price Product : ' . $formattedPrice;
             }
 
             if ($Quotation_ID) {
@@ -5289,25 +5358,25 @@ class DummyQuotationController extends Controller
         $value = $request->input('value');
         if ($value == 'Room_Type') {
 
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
-            ->where('master_product_items.status',1)->where('master_product_items.Category','Room_Type')->select('master_product_items.*','master_units.name_th as unit_name')->get();
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
+            ->where('master_product_items.status',1)->where('master_product_items.Category','Room_Type')->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
 
         }elseif ($value == 'Banquet') {
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
-            ->where('master_product_items.status',1)->where('master_product_items.Category','Banquet')->select('master_product_items.*','master_units.name_th as unit_name')->get();
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
+            ->where('master_product_items.status',1)->where('master_product_items.Category','Banquet')->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
 
         }elseif ($value == 'Meals') {
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
-            ->where('master_product_items.status',1)->where('master_product_items.Category','Meals')->select('master_product_items.*','master_units.name_th as unit_name')->get();
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
+            ->where('master_product_items.status',1)->where('master_product_items.Category','Meals')->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
 
         }elseif ($value == 'Entertainment') {
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
-            ->where('master_product_items.status',1)->where('master_product_items.Category','Entertainment')->select('master_product_items.*','master_units.name_th as unit_name')->get();
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
+            ->where('master_product_items.status',1)->where('master_product_items.Category','Entertainment')->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
 
         }
         elseif ($value == 'all'){
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
-            ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
+            ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
         }
         return response()->json([
             'products' => $products,
@@ -5319,25 +5388,25 @@ class DummyQuotationController extends Controller
         $value = $request->input('value');
         if ($value == 'Room_Type') {
 
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
-            ->where('master_product_items.status',1)->where('master_product_items.Category','Room_Type')->select('master_product_items.*','master_units.name_th as unit_name')->get();
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
+            ->where('master_product_items.status',1)->where('master_product_items.Category','Room_Type')->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
 
         }elseif ($value == 'Banquet') {
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
-            ->where('master_product_items.status',1)->where('master_product_items.Category','Banquet')->select('master_product_items.*','master_units.name_th as unit_name')->get();
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
+            ->where('master_product_items.status',1)->where('master_product_items.Category','Banquet')->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
 
         }elseif ($value == 'Meals') {
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
-            ->where('master_product_items.status',1)->where('master_product_items.Category','Meals')->select('master_product_items.*','master_units.name_th as unit_name')->get();
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
+            ->where('master_product_items.status',1)->where('master_product_items.Category','Meals')->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
 
         }elseif ($value == 'Entertainment') {
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.Product_ID', 'asc')
-            ->where('master_product_items.status',1)->where('master_product_items.Category','Entertainment')->select('master_product_items.*','master_units.name_th as unit_name')->get();
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
+            ->where('master_product_items.status',1)->where('master_product_items.Category','Entertainment')->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
 
         }
         elseif ($value == 'all'){
-            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
-            ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name')->get();
+            $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
+            ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
 
         }
         return response()->json([
@@ -5348,10 +5417,11 @@ class DummyQuotationController extends Controller
     public function addProductselect($Quotation_ID, Request $request) {
         $value = $request->input('value');
         $products = master_product_item::leftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
+        ->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')
         ->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
         ->where('master_product_items.status', 1)
         ->where('master_product_items.id', $value)
-        ->select('master_product_items.*', 'master_units.name_th as unit_name')
+        ->select('master_product_items.*', 'master_units.name_th as unit_name','master_quantities.name_th as quantity_name')
         ->get();
 
         return response()->json([
@@ -5362,10 +5432,11 @@ class DummyQuotationController extends Controller
     public function addProducttableselect($Quotation_ID, Request $request) {
         $value = $request->input('value');
         $products = master_product_item::leftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
+        ->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')
         ->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
         ->where('master_product_items.status', 1)
         ->where('master_product_items.id', $value)
-        ->select('master_product_items.*', 'master_units.name_th as unit_name')
+        ->select('master_product_items.*', 'master_units.name_th as unit_name','master_quantities.name_th as quantity_name')
         ->get();
 
         return response()->json([

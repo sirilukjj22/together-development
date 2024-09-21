@@ -503,22 +503,25 @@
                             @foreach($productItems as $key => $item)
                                 @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
                                     @foreach ($unit as $singleUnit)
-                                        @if($singleUnit->id == $item['product']->unit)
-
-                                            <tr>
-                                                <td style="text-align:center;">{{$key+1}}</td>
-                                                <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
-                                                <td style="text-align:center;">{{ $item['quantity'] }}</td>
-                                                <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
-                                                @php
-                                                    $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
-                                                @endphp
-                                                <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
-                                                <td style="text-align:center;">{{ $item['totaldiscount'] }}</td>
-                                                <td style="text-align:center;">{{  number_format($item['discountedPrices']) }}</td>
-                                                <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
-                                            </tr>
-                                        @endif
+                                        @foreach ($quantity as $singlequantity)
+                                            @if($singleUnit->id == $item['product']->unit)
+                                                @if($singlequantity->id == $item['product']->quantity)
+                                                    <tr>
+                                                        <td style="text-align:center;">{{$key+1}}</td>
+                                                        <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
+                                                        <td style="text-align:center;">{{ $item['quantity'] }} {{ $singleUnit->name_th }}</td>
+                                                        <td  style="text-align:center;">{{ $item['unit'] }} {{ $singlequantity->name_th }}</td>
+                                                        @php
+                                                            $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
+                                                        @endphp
+                                                        <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
+                                                        <td style="text-align:center;"> {{ $item['totaldiscount'] == 0 ? '' : number_format($item['totaldiscount']) }}</td>
+                                                        <td style="text-align:center;">{{ $item['discountedPrices'] == 0 ? '' : number_format($item['discountedPrices']) }}</td>
+                                                        <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
+                                                    </tr>
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     @endforeach
                                     @php
                                         $num2 +=1;
@@ -1257,22 +1260,25 @@
                             @foreach($productItems as $key => $item)
                                 @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
                                     @foreach ($unit as $singleUnit)
-                                        @if($singleUnit->id == $item['product']->unit)
-
-                                            <tr>
-                                                <td style="text-align:center;">{{$key+1}}</td>
-                                                <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
-                                                <td style="text-align:center;">{{ $item['quantity'] }}</td>
-                                                <td  style="text-align:center;">{{ $singleUnit->name_th }}</td>
-                                                @php
-                                                    $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
-                                                @endphp
-                                                <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
-                                                <td style="text-align:center;">{{ $item['totaldiscount'] }}</td>
-                                                <td style="text-align:center;">{{  number_format($item['discountedPrices']) }}</td>
-                                                <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
-                                            </tr>
-                                        @endif
+                                        @foreach ($quantity as $singlequantity)
+                                            @if($singleUnit->id == $item['product']->unit)
+                                                @if($singlequantity->id == $item['product']->quantity)
+                                                    <tr>
+                                                        <td style="text-align:center;">{{$key+1}}</td>
+                                                        <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
+                                                        <td style="text-align:center;">{{ $item['quantity'] }} {{ $singleUnit->name_th }}</td>
+                                                        <td  style="text-align:center;">{{ $item['unit'] }} {{ $singlequantity->name_th }}</td>
+                                                        @php
+                                                            $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
+                                                        @endphp
+                                                        <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
+                                                        <td style="text-align:center;"> {{ $item['totaldiscount'] == 0 ? '' : number_format($item['totaldiscount']) }}</td>
+                                                        <td style="text-align:center;">{{ $item['discountedPrices'] == 0 ? '' : number_format($item['discountedPrices']) }}</td>
+                                                        <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
+                                                    </tr>
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     @endforeach
                                     @php
                                         $num2 +=1;

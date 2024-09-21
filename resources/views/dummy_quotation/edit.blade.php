@@ -310,12 +310,27 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-lg-2 col-md-6 col-sm-12">
-                                        <span for="chekin">Check In Date </span>
-                                        <input type="text" name="Checkin" id="Checkin" class="form-control readonly-input" value="{{$Quotation->checkin}}" readonly onchange="CheckDate()" required>
+                                        <span for="chekin">Check In Date
+                                        <div class="input-group">
+
+                                            <input type="text" name="Checkin" id="Checkin" class="form-control readonly-input"value="{{$Quotation->checkin}}" readonly onchange="CheckDate()" required>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
+                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-lg-2 col-md-6 col-sm-12">
                                         <span for="chekin">Check Out Date </span>
-                                        <input type="text" name="Checkout" id="Checkout" class="form-control readonly-input"value="{{$Quotation->checkout}}" onchange="CheckDate()"  readonly required>
+                                        <div class="input-group"  >
+                                            <input type="text" name="Checkout" id="Checkout" class="form-control readonly-input"value="{{$Quotation->checkout}}" onchange="CheckDate()"  readonly required>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"style="border-radius:  0  5px 5px  0 ">
+                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <span for="">จำนวน</span>
@@ -390,14 +405,14 @@
                                     <div class="col-lg-3 col-md-6 col-sm-12">
                                         <span  for="">Special Discount</span>
                                         <div class="input-group">
-                                            <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"  placeholder="ส่วนลดคิดเป็น %"value="{{$Quotation->SpecialDiscount}}" required>
+                                            <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"  placeholder="ส่วนลดคิดเป็น %"value="{{$Quotation->SpecialDiscount}}" disabled>
                                             <span class="input-group-text">%</span>
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-12">
                                         <span  for="">Discount Amount</span>
                                         <div class="input-group">
-                                            <input type="number" class="form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท"value="{{$Quotation->SpecialDiscountBath}}" required>
+                                            <input type="number" class="form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท"value="{{$Quotation->SpecialDiscountBath}}" disabled>
                                             <span class="input-group-text">Bath</span>
                                         </div>
                                     </div>
@@ -614,7 +629,7 @@
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;"data-priority="1">Description</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:1%;"></th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Quantity</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Unit</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%">Unit</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price / Unit</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Discount</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Net Price / Unit</th>
@@ -626,9 +641,11 @@
                                             @if (!empty($selectproduct))
                                                 @foreach ($selectproduct as $key => $item)
                                                     @foreach ($unit as $singleUnit)
+                                                    @foreach ($quantity as $singleQuantity)
                                                         @if($singleUnit->id == @$item->product->unit)
+                                                            @if($singleQuantity->id == @$item->product->quantity)
                                                             @php
-                                                            $var = $key+1;
+                                                            $var = $item->Product_ID;
                                                             @endphp
                                                             <tr id="tr-select-main{{$item->Product_ID}}">
                                                                 <input type="hidden" id="CheckProduct" name="CheckProduct[]" value="{{$item->Product_ID}}">
@@ -639,16 +656,31 @@
                                                                     <span id="paxtotal{{$var}}">{{ floatval($item->pax) * floatval($item->Quantity) }}</span>
                                                                 </td>
                                                                 <td class="Quantity" data-value="{{$item->Quantity}}" style="text-align:center;">
-                                                                    <input type="text" id="quantity{{$var}}" name="Quantitymain[]" rel="{{$var}}" style="text-align:center;"class="quantity-input form-control" value="{{$item->Quantity}} "oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="quantity{{$var}}" name="Quantitymain[]" rel="{{$var}}" style="text-align:center;"class="quantity-input form-control" value="{{$item->Quantity}} "oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
+                                                                        <span class="input-group-text">{{ $singleUnit->name_th }}</span>
+                                                                    </div>
                                                                 </td>
-                                                                <td style="text-align:center;">{{ $singleUnit->name_th }}</td>
+                                                                <td class="unit" style="text-align:center;">
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="unit{{$var}}" name="Unitmain[]" rel="{{$var}}" style="text-align:center;"class="unit-input form-control" value="{{$item->Unit}} "oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
+                                                                        <span class="input-group-text">{{ $singleQuantity->name_th }}</span>
+                                                                    </div>
+                                                                </td>
                                                                 <td class="priceproduct" data-value="{{$item->priceproduct}}"style="text-align:center;"><input type="hidden" id="totalprice-unit{{$var}}" name="priceproductmain[]" value="{{$item->priceproduct}}">{{ number_format($item->priceproduct) }}</td>
                                                                 <td class="discount"style="text-align:center;">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="discount{{$var}}" name="discountmain[]" rel="{{$var}}"style="text-align:center;" class="discount-input form-control" value="{{$item->discount}}"oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
-                                                                        <input type="hidden" id="maxdiscount{{$var}}" name="maxdiscount[]" rel="{{$var}}" class=" form-control" value="{{$item->product->maximum_discount}}">
-                                                                        <span class="input-group-text">%</span>
-                                                                    </div>
+                                                                    @if ($item->discount)
+                                                                        <div class="input-group">
+                                                                            <input type="text" id="discount{{$var}}" name="discountmain[]" rel="{{$var}}"style="text-align:center;" class="discount-input form-control" value="{{$item->discount}}"oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
+                                                                            <input type="hidden" id="maxdiscount{{$var}}" name="maxdiscount[]" rel="{{$var}}" class=" form-control" value="{{$item->product->maximum_discount}}">
+                                                                            <span class="input-group-text">%</span>
+                                                                        </div>
+                                                                    @else
+                                                                        <div class="input-group">
+                                                                            <input type="hidden" id="discount{{$var}}" name="discountmain[]" rel="{{$var}}"style="text-align:center;" class="discount-input form-control" value="{{$item->discount}}"oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
+                                                                            <input type="hidden" id="maxdiscount{{$var}}" name="maxdiscount[]" rel="{{$var}}" class=" form-control" value="{{$item->product->maximum_discount}}">
+                                                                        </div>
+                                                                    @endif
                                                                 </td>
                                                                 <td class="net-price"style="text-align:center;" ><span id="net_discount{{$var}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</span></td>
                                                                 <td class="item-total"style="text-align:center;"><span id="all-total{{$var}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</span></td>
@@ -658,7 +690,9 @@
                                                                     </button>
                                                                 </td>
                                                             </tr>
+                                                            @endif
                                                         @endif
+                                                    @endforeach
                                                     @endforeach
                                                 @endforeach
                                             @endif
@@ -1275,6 +1309,7 @@
                 singleDatePicker: true,
                 showDropdowns: true,
                 autoUpdateInput: false,
+                autoApply: true,
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -1290,6 +1325,7 @@
                 singleDatePicker: true,
                 showDropdowns: true,
                 autoUpdateInput: false,
+                autoApply: true,
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -1675,7 +1711,7 @@
                             if ($('#productselect' + val.id).val() !== undefined) {
                                 if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
 
-                                    number += 1;
+                                    number = val.Product_ID;
                                     var name = '';
                                     var price = 0;
                                     var normalPriceString = val.normal_price.replace(/[^0-9.]/g, ''); // ล้างค่าที่ไม่ใช่ตัวเลขและจุดทศนิยม
@@ -1694,22 +1730,7 @@
                                     if (valpax == null) {
                                         valpax = 0;
                                     }
-                                    if (SpecialDiscount >= 1) {
-                                        if (roleMenuDiscount == 1) {
-                                            discountInput = '<div class="input-group">' +
-                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="" rel="' + number + '" style="text-align:center;" ' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + SpecialDiscount + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
-                                                '<span class="input-group-text">%</span>' +
-                                                '</div>';
-                                        } else {
-                                            discountInput = '<div class="input-group">' +
-                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                                '<span class="input-group-text">%</span>' +
-                                                '</div>';
-                                        }
-                                    }
-                                    else{
+                                    if (maximum_discount > 0) {
                                         if (roleMenuDiscount == 1) {
                                             discountInput = '<div class="input-group">' +
                                                 '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
@@ -1717,11 +1738,23 @@
                                                 '<span class="input-group-text">%</span>' +
                                                 '</div>';
                                         }
+                                    }else{
+                                        discountInput='<div class="input-group">' +
+                                                '<input class="discountmain form-control" type="hidden" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" ' +
+                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                                '</div>';;
                                     }
                                     quantity = '<div class="input-group">' +
                                                 '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="" rel="' + number + '" style="text-align:center;" ' +
                                                 'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.NumberRoom + ') this.value = ' + val.NumberRoom + ';">' +
+                                                '<span class="input-group-text">'+ val.unit_name +'</span>' +
                                                 '</div>';
+
+                                    unit = '<div class="input-group">' +
+                                            '<input class="unitmain form-control" type="text" id="unitmain' + number + '" name="Unitmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                            'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);">' +
+                                            '<span class="input-group-text">' + val.quantity_name + '</span>' +
+                                            '</div>';
 
                                     $('#main').DataTable().destroy();
                                     $('#display-selected-items').append(
@@ -1730,12 +1763,12 @@
                                         '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
                                         '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
                                         '<td style="text-align:center;width:10%;">'+ quantity +'</td>' +
-                                        '<td>' + val.unit_name + '</td>' +
+                                        '<td>' + unit + '</td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
-                                        '<td style="text-align:center;width:10%;">' + discountInput + '</td>' +
+                                        '<td>' + discountInput + '</td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value=" ' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
-                                        '<td  style="text-align:center;"><button type="button" class="Btn remove-buttonmain"style=" border: none;"  value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                        '<td  style="text-align:center;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
                                         '</tr>'
                                     );
                                     $('#display-selected-items tr.parent.dt-hasChild.odd').remove();
@@ -1798,20 +1831,30 @@
                     var number_ID = $(this).attr('rel');
                     var quantitymain =  Number($(this).val());
                     var discountmain =  $('#discountmain'+number_ID).val();
-                    var number = Number($('#number-product').val());
-                    var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
-                    var pricediscount =  (price*discountmain /100);
-                    var allcount0 = price - pricediscount;
-                    $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                    var pricenew = price*quantitymain
-                    var pricediscount = pricenew - (pricenew*discountmain /100);
-                    $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    var unitmain =  $('#unitmain'+number_ID).val();
                     var paxmain = parseFloat($('#pax' + number_ID).val());
                     if (isNaN(paxmain)) {
                         paxmain = 0;
                     }
                     var pax = paxmain*quantitymain;
                     $('#paxtotal'+number_ID).text(pax);
+                    var number = Number($('#number-product').val());
+                    var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
+                    var pricenew = quantitymain*unitmain*price
+                    if (discountmain === "" || discountmain == 0) {
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew;
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var allcount0 = price;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
+
+                    // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     totalAmost();
                 }
             });
@@ -1821,6 +1864,7 @@
                     var discountmain =  Number($(this).val());
                     console.log(discountmain);
                     var quantitymain =  $('#quantitymain'+number_ID).val();
+                    var unitmain =  $('#unitmain'+number_ID).val();
                     console.log(quantitymain);
                     var number = Number($('#number-product').val());
                     var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
@@ -1828,9 +1872,40 @@
                     var allcount0 = price - pricediscount;
                     console.log(allcount0);
                     $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                    var pricenew = price*quantitymain
+                    var pricenew = quantitymain*unitmain*price
                     var pricediscount = pricenew - (pricenew*discountmain /100);
                     $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    totalAmost();
+
+                }
+
+            });
+            $(document).on('keyup', '.unitmain', function() {
+                for (let i = 0; i < 50; i++) {
+                    var number_ID = $(this).attr('rel');
+                    var unitmain =  Number($(this).val());
+                    var quantitymain =  $('#quantitymain'+number_ID).val();
+                    var discountmain =  $('#discountmain'+number_ID).val();
+                    var number = Number($('#number-product').val());
+                    var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
+                    console.log(number_ID);
+
+                    var pricenew = quantitymain*unitmain*price
+                    if (discountmain === "" || discountmain == 0) {
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew;
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var allcount0 = price;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
+
+
                     totalAmost();
                 }
             });
@@ -1839,14 +1914,22 @@
                     var number_ID = $(this).attr('rel');
                     var quantitymain =  Number($(this).val());
                     var discountmain =  parseFloat($('#discount'+number_ID).val().replace(/,/g, ''));
+                    var unitmain =  parseFloat($('#unit'+number_ID).val().replace(/,/g, ''));
                     var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
-                    var pricediscount =  (price*discountmain /100);
-                    console.log(quantitymain,discountmain,price,pricediscount);
-                    var allcount0 = price - pricediscount;
-                    $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                    var pricenew = price*quantitymain
-                    var pricediscount = pricenew - (pricenew*discountmain /100);
-                    $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+                    if (discountmain === " " || discountmain == 0) {
+                        var allcount0 = price;
+                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount = pricenew;
+                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;
+                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
                     var paxmain = parseFloat($('#pax' + number_ID).val());
                     if (isNaN(paxmain)) {
                         paxmain = 0;
@@ -1867,22 +1950,37 @@
                         var discountmain = maxdiscount ;
                         var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
                         var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
-                        var pricediscount =  (price*discountmain /100);
-                        var allcount0 = price - pricediscount;
-                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                        var pricenew = price*quantitymain
-                        var pricediscount = pricenew - (pricenew*discountmain /100);
-                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-
+                        var unitmain =  parseFloat($('#unit'+number_ID).val().replace(/,/g, ''));
+                        var pricenew = quantitymain*unitmain*price
+                        if (discountmain === " " || discountmain == 0) {
+                            var allcount0 = price;
+                            $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                            var pricediscount = pricenew;
+                            $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        }else{
+                            var pricediscount = pricenew - (pricenew*discountmain /100);
+                            $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                            var pricediscount =  (price*discountmain /100);
+                            var allcount0 = price - pricediscount;
+                            $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        }
                     }else{
                         var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
                         var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
-                        var pricediscount =  (price*discountmain /100);
-                        var allcount0 = price - pricediscount;
-                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                        var pricenew = price*quantitymain
-                        var pricediscount = pricenew - (pricenew*discountmain /100);
-                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var unitmain =  parseFloat($('#unit'+number_ID).val().replace(/,/g, ''));
+                        var pricenew = quantitymain*unitmain*price;
+                        if (discountmain === " " || discountmain == 0) {
+                            var allcount0 = price;
+                            $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                            var pricediscount = pricenew;
+                            $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        }else{
+                            var pricediscount = pricenew - (pricenew*discountmain /100);
+                            $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                            var pricediscount =  (price*discountmain /100);
+                            var allcount0 = price - pricediscount;
+                            $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        }
                         var paxmain = parseFloat($('#pax' + number_ID).val());
                         if (isNaN(paxmain)) {
                             paxmain = 0;
@@ -1893,8 +1991,36 @@
                     totalAmost();
                 }
             });
+            $(document).on('keyup', '.unit-input', function() {
+                for (let i = 0; i < 50; i++) {
+                    var number_ID = $(this).attr('rel');
+                    var unitmain =  Number($(this).val());
+                    var discountmain =  parseFloat($('#discount'+number_ID).val().replace(/,/g, ''));
+                    var quantitymain  =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
+                    var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
+                    var pricenew = quantitymain*unitmain*price;
+
+                    console.log(discountmain);
+
+                    if (discountmain === " " || discountmain == 0 ||  discountmain == null) {
+                        console.log(1);
+                        var allcount0 = price;
+                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount = pricenew;
+                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;
+                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
+                    totalAmost();
+                }
+            });
             totalAmost();
         });
+        //unit
         function totalAmost() {
             $(document).ready(function() {
                 var typevat  = $('#Mvat').val();
