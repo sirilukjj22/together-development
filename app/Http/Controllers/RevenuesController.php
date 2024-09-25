@@ -2473,7 +2473,7 @@ class RevenuesController extends Controller
 
         ## Filter ##
         $filter_by = $request->filter_by;
-        $search_date = $month_from;
+        $search_date = $request->date;
 
         $exp = explode("_", $request->revenue_type);
 
@@ -2523,8 +2523,8 @@ class RevenuesController extends Controller
             }
 
             $lastday = dayLast($end_month, $year); // หาวันสุดท้ายของเดือน
-            $adate = date('Y-m-d', strtotime($year . '-' . $start_month . '-01'));
-            $adate2 = date('Y-m-d', strtotime($year . '-' . $end_month . '-' . $lastday));
+            $adate = date('Y-m-d', strtotime(date($year . '-' . $start_month . '-01')));
+            $adate2 = date('Y-m-d', strtotime(date($year . '-' . $end_month . '-' . $lastday)));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date($year . '-' . $end_month . '-' . $lastday . ' 20:59:59');

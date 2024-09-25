@@ -120,7 +120,7 @@
     <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableRevenue.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableRevenueManual.js')}}"></script>
 
     <script>
         $(document).ready(function() {
@@ -135,18 +135,6 @@
                         orderable: true,
                         target: null,
                     },
-                    {
-                        width: '7%',
-                        targets: 0
-                    },
-                    {
-                        width: '10%',
-                        targets: 3
-                    },
-                    {
-                        width: '15%',
-                        targets: 4
-                    }
 
                 ],
                 order: [0, 'asc'],

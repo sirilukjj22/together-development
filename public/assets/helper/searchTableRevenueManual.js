@@ -96,7 +96,6 @@ function getPage(page, perPage, table_n) {
     $('#currentPage-' + table_n).val(page);
 
     $('#' + table_name).DataTable().destroy();
-        
         var table = $('#' + table_name).dataTable({
             searching: false,
             paging: false,
@@ -118,7 +117,7 @@ function getPage(page, perPage, table_n) {
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], className: 'dt-center td-content-center' },
+                { targets: [0, 1, 2, 3, 4], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -130,13 +129,9 @@ function getPage(page, perPage, table_n) {
             columns: [
                 { data: 'number' },
                 { data: 'date' },
-                { data: 'time' },
-                { data: 'transfer_bank' },
-                { data: 'into_account' },
-                { data: 'amount' },
-                { data: 'remark' },
+                { data: 'stan' },
                 { data: 'revenue_name' },
-                { data: 'date_into' },
+                { data: 'amount' },
             ],
     
         });
