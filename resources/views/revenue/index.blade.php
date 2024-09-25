@@ -76,7 +76,7 @@
         <div class="container-xl">
             <div class="nav-content">
                 <div class="nav-left">
-                    <h1 class="h-daily" style=" margin:0;" id="button-change">Daily Revenue by Type &nbsp;<i class="theme-toggle"> &#10024;</i></h1>
+                    <h1 class="h-daily" style=" margin:0;" id="button-change">Hotel & Water Park Revenue &nbsp;<i class="theme-toggle"> &#10024;</i></h1>
                 </div>
                 <div class="nav-right">
                     <div class="nav-right-in">
