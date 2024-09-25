@@ -171,7 +171,11 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <!-- dataTable -->
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
@@ -203,6 +207,28 @@
                     });
                 }
             });
+        function nav(id) {
+            for (let index = 0; index < table_name.length; index++) {
+                $('#'+table_name[index]).DataTable().destroy();
+                new DataTable('#'+table_name[index], {
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    columnDefs: [{
+                        className: 'dtr-control',
+                        orderable: true,
+                        target: null,
+                    }],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    }
+                });
+            }
+        }
         $(document).on('keyup', '.search-data-proposalLog', function () {
             var id = $(this).attr('id');
             var search_value = $(this).val();

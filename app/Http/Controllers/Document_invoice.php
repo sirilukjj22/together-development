@@ -62,9 +62,9 @@ class Document_invoice extends Controller
         $invoicecheck = document_invoices::query()->get();
        // ดึงข้อมูลจาก document_invoices รวมถึง Quotation_ID, total และ sumpayment
         $invoicecount = document_invoices::query()->where('document_status',1)->count();
-        $Complete = document_invoices::query()->where('Operated_by',$userid)->where('document_status',2)->where('status_receive',1)->get();
+        $Complete = document_invoices::query()->where('document_status',2)->where('status_receive',1)->paginate($perPage);
 
-        $Completecount = document_invoices::query()->where('Operated_by',$userid)->where('document_status',2)->where('status_receive',1)->count();
+        $Completecount = document_invoices::query()->where('document_status',2)->where('status_receive',1)->count();
         $Cancel = document_invoices::query()->where('Operated_by',$userid)->where('document_status',0)->get();
         $Cancelcount =document_invoices::query()->where('Operated_by',$userid)->where('document_status',0)->count();
         return view('document_invoice.index',compact('Approved','Approvedcount','invoice','invoicecount','Complete','Completecount','Cancel','Cancelcount','invoicecheck'));
@@ -436,10 +436,12 @@ class Document_invoice extends Controller
 
         if ($search_value) {
             $data_query = document_invoices::where('document_status',1)
-            ->where('Invoice_ID', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('Quotation_ID', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('IssueDate', 'LIKE', '%'.$search_value.'%')
-            ->orWhere('Expiration', 'LIKE', '%'.$search_value.'%')
+            ->where(function($query) use ($search_value) {
+                $query->where('Invoice_ID', 'LIKE', '%'.$search_value.'%')
+                      ->orWhere('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                      ->orWhere('IssueDate', 'LIKE', '%'.$search_value.'%')
+                      ->orWhere('Expiration', 'LIKE', '%'.$search_value.'%');
+            })
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
         }else{
@@ -514,6 +516,154 @@ class Document_invoice extends Controller
                         $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $value->id) . '">LOG</a></li>';
                     }
                 }
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+
+                $data[] = [
+                    'number' => $key+1,
+                    'Invoice' => $value->Invoice_ID,
+                    'Proposal'=> $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->IssueDate,
+                    'ExpirationDate' => $value->Expiration,
+                    'Amount' => number_format($value->Nettotal),
+                    'PaymentB'=>number_format($value->payment),
+                    'PaymentP'=>$payment,
+                    'Balance'=>number_format($value->balance),
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+     //------------------tablepending----------------------
+    public function  paginate_table_invoice_generate(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query = document_invoices::query()->where('document_status',2)->where('status_receive',1)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = document_invoices::query()->where('document_status',2)->where('status_receive',1)->paginate($perPage);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                $checkbox = "";
+                $payment = "";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company00->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    if ($value->paymentPercent == null) {
+                        $payment = '<td>' .'0'. '</td>';
+                    }else {
+                        $payment = '<td>' .$value->paymentPercent. '</td>';
+                    }
+
+                    $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
+
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Invoice/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $value->id) . '">LOG</a></li>';
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => $key+1,
+                        'Invoice' => $value->Invoice_ID,
+                        'Proposal'=> $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->IssueDate,
+                        'ExpirationDate' => $value->Expiration,
+                        'Amount' => number_format($value->Nettotal),
+                        'PaymentB'=>number_format($value->payment),
+                        'PaymentP'=>$payment,
+                        'Balance'=>number_format($value->balance),
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_invoice_generate(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+        $permissionid = Auth::user()->permission;
+
+        if ($search_value) {
+            $data_query = document_invoices::where('status_receive', 1)
+                ->where('document_status', 2)
+                ->where(function($query) use ($search_value) {
+                    $query->where('Invoice_ID', 'LIKE', '%'.$search_value.'%')
+                          ->orWhere('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                          ->orWhere('IssueDate', 'LIKE', '%'.$search_value.'%')
+                          ->orWhere('Expiration', 'LIKE', '%'.$search_value.'%');
+                })
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = document_invoices::query()->where('document_status',2)->where('status_receive',1)->paginate($perPageS);
+        }
+
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                $checkbox = "";
+                $payment = "";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company00->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                if ($value->paymentPercent == null) {
+                    $payment = '<td>' .'0'. '</td>';
+                }else {
+                    $payment = '<td>' .$value->paymentPercent. '</td>';
+                }
+
+                $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
+
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $value->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Invoice/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $value->id) . '">LOG</a></li>';
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
 
@@ -930,7 +1080,7 @@ class Document_invoice extends Controller
                     $save->Created_by = $userids;
                     $save->Company_ID = $InvoiceID;
                     $save->type = 'Generate';
-                    $save->Category = 'Generate :: Proposal Invoice'.$InvoiceID;
+                    $save->Category = 'Generate :: Proposal Invoice';
                     $save->content =$datacompany;
                     $save->save();
                 }
@@ -1734,7 +1884,7 @@ class Document_invoice extends Controller
                 $save->Created_by = $userids;
                 $save->Company_ID = $InvoiceID;
                 $save->type = 'Edit';
-                $save->Category = 'Edit :: Proposal Invoice'.$InvoiceID;
+                $save->Category = 'Edit :: Proposal Invoice ';
                 $save->content =$datacompany;
                 // $save->save();
                 {
@@ -2261,5 +2411,251 @@ class Document_invoice extends Controller
         return $pdf->stream();
 
 
+    }
+    public function GenerateRe($id){
+        $document = document_invoices::where('id',$id)->first();
+        $Quotation_ID = $document->Quotation_ID;
+        $InvoiceID = $document->Invoice_ID;
+        $correct = $document->correct;
+        $save = document_invoices::find($id);
+        $save->status_receive = 1;
+        $save->document_status = 2;
+        $save->save();
+
+        $Approvedcount = Quotation::where('Quotation_ID',$Quotation_ID)->first();
+        $ids = $Approvedcount->id;
+        $saveQuotation = Quotation::find($ids);
+        $saveQuotation->status_receive = 1;
+        $saveQuotation->save();
+
+        $userids = Auth::user()->id;
+        $save = new log_company();
+        $save->Created_by = $userids;
+        $save->Company_ID = $InvoiceID;
+        $save->type = 'Generate';
+        $save->Category = 'Generate :: Proforma Invoice ';
+        $save->content = 'Document Proforma Invoice ID : '.$InvoiceID.' to Receipt Payment';
+        $save->save();
+        return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+    }
+    public function Delete($id){
+        $document = document_invoices::where('id',$id)->first();
+        $Quotation_ID = $document->Invoice_ID;
+        $correct = $document->correct;
+        $path = 'Log_PDF/invoice/';
+        log::where('Quotation_ID',$Quotation_ID)->delete();
+        if ($correct == 0) {
+            unlink($path . $Quotation_ID . '.pdf');
+        } else {
+            unlink($path . $Quotation_ID . '-' . $correct . '.pdf');
+        }
+        // ตรวจสอบว่าไฟล์มีอยู่จริงก่อนลบ
+        $quotation = document_invoices::find($id);
+        $quotation->delete();
+        return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+    }
+    public function LOG($id)
+    {
+        $invoice = document_invoices::where('id', $id)->first();
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        if ($invoice) {
+            $Invoice_ID = $invoice->Invoice_ID;
+            $correct = $invoice->correct;
+            // Use a regular expression to capture the part of the string before the first hyphen
+            if (preg_match('/^(PI-\d{8})/', $Invoice_ID, $matches)) {
+                $InvoiceID = $matches[1];
+            }
+        }
+
+        $log = log::where('Quotation_ID',$InvoiceID)->paginate($perPage);
+        $path = 'Log_PDF/invoice/';
+        $loginvoice = log_company::where('Company_ID', $InvoiceID)
+            ->orderBy('updated_at', 'desc')
+            ->paginate($perPage);
+        return view('document_invoice.document',compact('log','path','correct','loginvoice','Invoice_ID'));
+    }
+
+     //-------------------------------Log----------------------------
+    public function search_table_paginate_log_doc (Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+
+        if ($search_value) {
+            $data_query = log_company::where('created_at', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID',$guest_profile)
+                ->orderBy('updated_at', 'desc')
+                ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->paginate($perPageS);
+        }
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $contentArray = explode('+', $value->content);
+                $content = implode('</br>', $contentArray);
+                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                $name = $Category.'</br>'.$content;
+                $data[] = [
+                    'number' => $key + 1,
+                    'Category'=>$value->Category,
+                    'type'=>$value->type,
+                    'Created_by'=>@$value->userOperated->name,
+                    'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                    'Content' => $name,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function  paginate_log_doc_table_proposal (Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+        $data = [];
+        if ($perPage == 10) {
+            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->limit($request->page.'0')->get();
+        } else {
+            $data_query = log_company::where('Company_ID',$guest_profile)->orderBy('updated_at', 'desc')->paginate($perPage);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $contentArray = explode('+', $value->content);
+                $content = implode('</br>', $contentArray);
+                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                $name = $Category.'</br>'.$content;
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    $data[] = [
+                        'number' => $key + 1,
+                        'Category'=>$value->Category,
+                        'type'=>$value->type,
+                        'Created_by'=>@$value->userOperated->name,
+                        'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                        'Content' => $name,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function  paginate_log_pdf_table_proposal(Request $request){
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+        $data = [];
+        if ($perPage == 10) {
+            $data_query = log::where('Quotation_ID',$guest_profile)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query =  log::where('Quotation_ID',$guest_profile)->paginate($perPage);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    $correct = $value->correct;
+                    $path = 'Log_PDF/proposal/';
+                    $pdf_url = asset($path . $value->Quotation_ID. ".pdf");
+                    if ($value->correct == $correct) {
+                        if ($correct == 0) {
+                            $btn_action = '<a href="' . $pdf_url . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                            $btn_action .= '<i class="fa fa-print"></i>';
+                            $btn_action .= '</a>';
+                        } else {
+                            $btn_action = '<a href="' . asset($path . $value->Quotation_ID . '-' . $correct . ".pdf") . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                            $btn_action .= '<i class="fa fa-print"></i> ให้ปรับ ใช้ในcontroller';
+                            $btn_action .= '</a>';
+                        }
+                    } else {
+                        $btn_action = '<a href="' . $pdf_url . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                        $btn_action .= '<i class="fa fa-print"></i>';
+                        $btn_action .= '</a>';
+                    }
+
+                    $data[] = [
+                        'number' => $key + 1,
+                        'Quotation_ID' => $value->Quotation_ID,
+                        'type' => $value->QuotationType,
+                        'Correct' => $value->correct,
+                        'created_at' =>\Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                        'Export' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function  search_table_paginate_log_pdf(Request $request){
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+        $search_value = $request->search_value;
+        $data = [];
+        if ($search_value) {
+            $query = Log::where('Quotation_ID', $guest_profile);
+            $data_query = $query->where('created_at', 'LIKE', '%'.$search_value.'%')->paginate($perPage);
+        } else {
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query =  log::where('Quotation_ID',$guest_profile)->paginate($perPageS);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                // สร้าง dropdown สำหรับการทำรายการ
+                $correct = $value->correct;
+                $path = 'Log_PDF/proposal/';
+                $pdf_url = asset($path . $value->Quotation_ID. ".pdf");
+                if ($value->correct == $correct) {
+                    if ($correct == 0) {
+                        $btn_action = '<a href="' . $pdf_url . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                        $btn_action .= '<i class="fa fa-print"></i>';
+                        $btn_action .= '</a>';
+                    } else {
+                        $btn_action = '<a href="' . asset($path . $value->Quotation_ID . '-' . $correct . ".pdf") . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                        $btn_action .= '<i class="fa fa-print"></i> ให้ปรับ ใช้ในcontroller';
+                        $btn_action .= '</a>';
+                    }
+                } else {
+                    $btn_action = '<a href="' . $pdf_url . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                    $btn_action .= '<i class="fa fa-print"></i>';
+                    $btn_action .= '</a>';
+                }
+
+                $data[] = [
+                    'number' => $key + 1,
+                    'Quotation_ID' => $value->Quotation_ID,
+                    'type' => $value->QuotationType,
+                    'Correct' => $value->correct,
+                    'created_at' =>\Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                    'Export' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
     }
 }

@@ -1015,7 +1015,12 @@ class Document_invoice extends Controller
     public function receive($id){
         $invoice = document_invoices::where('id',$id)->where('document_status',1)->first();
         $company = $invoice->company;
-        $name = companys::where('Profile_ID',$company)->first();
+        $type_Proposal = $invoice->type_Proposal;
+        if ($type_Proposal == 'Company') {
+            $name = companys::where('Profile_ID',$company)->first();
+        }else{
+            $name = Guest::where('Profile_ID',$company)->first();
+        }
         $Invoice_ID = $invoice->Invoice_ID;
         $payment = $invoice->sumpayment;
         $Quotation_ID = $invoice->Quotation_ID;
@@ -1029,6 +1034,7 @@ class Document_invoice extends Controller
     }
     public function payment(Request $request,$id){
         try {
+
             $userid = Auth::user()->id;
             $invoice = document_invoices::where('id',$id)->where('document_status',1)->first();
             $Invoice_ID = $invoice->Invoice_ID;

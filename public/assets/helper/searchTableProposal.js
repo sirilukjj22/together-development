@@ -944,7 +944,7 @@ function getPageLog(page, perPage, table_n)
     var type = $('#status').val();
     var total = parseInt($('#get-total-' + table_n).val());
     var guest_profile = $('#profile-'+ table_n).val();
-    console.log(table_name);
+
 
     $('#currentPage-' + table_n).val(page);
 
@@ -1081,8 +1081,7 @@ function getPageLogDoc(page, perPage, table_n)
     var type = $('#status').val();
     var total = parseInt($('#get-total-' + table_n).val());
     var guest_profile = $('#profile-'+ table_n).val();
-    console.log(table_name);
-
+    console.log(perPage);
     $('#currentPage-' + table_n).val(page);
 
     $('#' + table_name).DataTable().destroy();

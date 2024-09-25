@@ -613,6 +613,16 @@ Route::middleware(['auth'])->group(function () {
         Route::post('invoice-pendind-search-table', 'search_table_invoice_pending');
         Route::post('invoice-pending-paginate-table', 'paginate_table_invoice_pending');
 
+        Route::post('invoice-generate-search-table', 'search_table_invoice_generate');
+        Route::post('invoice-generate-paginate-table', 'paginate_table_invoice_generate');
+
+        //--------------------------LogPdf-----------
+        Route::post('invoice-Log-search-table', 'search_table_paginate_log_pdf');
+        Route::post('invoice-Log-paginate-table', 'paginate_log_pdf_table_proposal');
+        //--------------------------LogDoc-----------
+        Route::post('invoice-LogDoc-search-table', 'search_table_paginate_log_doc');
+        Route::post('invoice-LogDoc-paginate-table', 'paginate_log_doc_table_proposal');
+
          //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
          Route::get('/Proposal/cover/document/PDF/{id}', 'sheetpdf')->name('invoice.sheet');
     });

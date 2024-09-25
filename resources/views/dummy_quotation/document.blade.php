@@ -103,7 +103,7 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableProposal.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTabledummyproposal.js')}}"></script>
     <script>
         const table_name = ['proposal-LogTable'];
             $(document).ready(function() {

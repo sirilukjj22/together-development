@@ -1165,7 +1165,6 @@ class DummyQuotationController extends Controller
         $SpecialDiscount = $request->SpecialDiscount;
         $SpecialDiscountBath = $request->DiscountAmount;
         $data = $request->all();
-        // dd($data);
         if ($preview == 1) {
             $userid = Auth::user()->id;
             $datarequest = [
@@ -3004,36 +3003,20 @@ class DummyQuotationController extends Controller
         $guest_profile = $request->guest_profile;
         $userid = Auth::user()->id;
         $permissionid = Auth::user()->permission;
-        if ($permissionid == 0) {
-            if ($search_value) {
-                $data_query = dummy_quotation::where('Operated_by',$userid)
-                ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query = dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->paginate($perPageS);
-            }
+        if ($search_value) {
+            $data_query = dummy_quotation::where('DummyNo', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
         }else{
-            if ($search_value) {
-                $data_query = dummy_quotation::where('DummyNo', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query = dummy_quotation::query()->orderBy('created_at', 'desc')->paginate($perPageS);
-            }
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = dummy_quotation::query()->orderBy('created_at', 'desc')->paginate($perPageS);
         }
+
 
         $data = [];
         if (isset($data_query) && count($data_query) > 0) {
@@ -3193,21 +3176,14 @@ class DummyQuotationController extends Controller
         $userid = Auth::user()->id;
         $data = [];
         $permissionid = Auth::user()->permission;
-        if ($permissionid == 0) {
-            if ($perPage == 10) {
-                $data_query = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',1)->limit($request->page.'0')
-                ->get();
-            } else {
-                $data_query = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',1)->paginate($perPage);
-            }
-        }else {
-            if ($perPage == 10) {
-                $data_query = dummy_quotation::query()->where('status_document',1)->limit($request->page.'0')
-                ->get();
-            } else {
-                $data_query = dummy_quotation::query()->where('status_document',1)->paginate($perPage);
-            }
+
+        if ($perPage == 10) {
+            $data_query = dummy_quotation::query()->where('status_document',1)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = dummy_quotation::query()->where('status_document',1)->paginate($perPage);
         }
+
 
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';
@@ -3344,38 +3320,21 @@ class DummyQuotationController extends Controller
         $guest_profile = $request->guest_profile;
         $userid = Auth::user()->id;
         $permissionid = Auth::user()->permission;
-        if ($permissionid == 0) {
-            if ($search_value) {
-                $data_query = dummy_quotation::where('status_document',1)
-                ->where('Operated_by',$userid)
-                ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',1)->paginate($perPageS);
-            }
-        }else {
-            if ($search_value) {
-                $data_query = dummy_quotation::where('status_document',1)
-                ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query = dummy_quotation::query()->where('status_document',1)->paginate($perPageS);
-            }
+        if ($search_value) {
+            $data_query = dummy_quotation::where('status_document',1)
+            ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = dummy_quotation::query()->where('status_document',1)->paginate($perPageS);
         }
+
 
         $data = [];
         if (isset($data_query) && count($data_query) > 0) {
@@ -3505,21 +3464,13 @@ class DummyQuotationController extends Controller
         $userid = Auth::user()->id;
         $data = [];
         $permissionid = Auth::user()->permission;
-        if ($permissionid == 0) {
-            if ($perPage == 10) {
-                $data_query = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',2)->limit($request->page.'0')
-                ->get();
-            } else {
-                $data_query = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',2)->paginate($perPage);
-            }
-        }else {
-            if ($perPage == 10) {
-                $data_query = dummy_quotation::query()->where('status_document',2)->limit($request->page.'0')
-                ->get();
-            } else {
-                $data_query = dummy_quotation::query()->where('status_document',2)->paginate($perPage);
-            }
+        if ($perPage == 10) {
+            $data_query = dummy_quotation::query()->where('status_document',2)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = dummy_quotation::query()->where('status_document',2)->paginate($perPage);
         }
+
 
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';
@@ -3617,38 +3568,22 @@ class DummyQuotationController extends Controller
         $guest_profile = $request->guest_profile;
         $userid = Auth::user()->id;
         $permissionid = Auth::user()->permission;
-        if ($permissionid == 0) {
-            if ($search_value) {
-                $data_query = dummy_quotation::where('status_document',2)
-                ->where('Operated_by',$userid)
-                ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query =  dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',2)->paginate($perPageS);
-            }
+
+        if ($search_value) {
+            $data_query = dummy_quotation::where('status_document',2)
+            ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
         }else{
-            if ($search_value) {
-                $data_query = dummy_quotation::where('status_document',2)
-                ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',2)->paginate($perPageS);
-            }
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',2)->paginate($perPageS);
         }
+
 
         $data = [];
         if (isset($data_query) && count($data_query) > 0) {
@@ -3735,21 +3670,14 @@ class DummyQuotationController extends Controller
         $userid = Auth::user()->id;
         $data = [];
         $permissionid = Auth::user()->permission;
-        if ($permissionid == 0) {
-            if ($perPage == 10) {
-                $data_query =  dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',3)->limit($request->page.'0')
-                ->get();
-            } else {
-                $data_query =  dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',3)->paginate($perPage);
-            }
-        }else {
-            if ($perPage == 10) {
-                $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',3)->limit($request->page.'0')
-                ->get();
-            } else {
-                $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',3)->paginate($perPage);
-            }
+
+        if ($perPage == 10) {
+            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',3)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',3)->paginate($perPage);
         }
+
 
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';
@@ -3901,38 +3829,21 @@ class DummyQuotationController extends Controller
         $guest_profile = $request->guest_profile;
         $userid = Auth::user()->id;
         $permissionid = Auth::user()->permission;
-        if ($permissionid == 0) {
-            if ($search_value) {
-                $data_query = dummy_quotation::where('status_document',3)
-                ->where('Operated_by',$userid)
-                ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query =  dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',3)->paginate($perPageS);
-            }
+        if ($search_value) {
+            $data_query = dummy_quotation::where('status_document',3)
+            ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
         }else{
-            if ($search_value) {
-                $data_query = dummy_quotation::where('status_document',3)
-                ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',3)->paginate($perPageS);
-            }
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',3)->paginate($perPageS);
         }
+
 
         $data = [];
         if (isset($data_query) && count($data_query) > 0) {
@@ -4076,21 +3987,13 @@ class DummyQuotationController extends Controller
         $userid = Auth::user()->id;
         $data = [];
         $permissionid = Auth::user()->permission;
-        if ($permissionid == 0) {
-            if ($perPage == 10) {
-                $data_query = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',5)->limit($request->page.'0')
-                ->get();
-            } else {
-                $data_query = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',5)->paginate($perPage);
-            }
-        }else {
-            if ($perPage == 10) {
-                $data_query = dummy_quotation::query()->where('status_document',5)->limit($request->page.'0')
-                ->get();
-            } else {
-                $data_query = dummy_quotation::query()->where('status_document',5)->paginate($perPage);
-            }
+        if ($perPage == 10) {
+            $data_query = dummy_quotation::query()->where('status_document',5)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = dummy_quotation::query()->where('status_document',5)->paginate($perPage);
         }
+
 
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';
@@ -4188,38 +4091,22 @@ class DummyQuotationController extends Controller
         $guest_profile = $request->guest_profile;
         $userid = Auth::user()->id;
         $permissionid = Auth::user()->permission;
-        if ($permissionid == 0) {
-            if ($search_value) {
-                $data_query = dummy_quotation::where('status_document',5)
-                ->where('Operated_by',$userid)
-                ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query =  dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',5)->paginate($perPageS);
-            }
+
+        if ($search_value) {
+            $data_query = dummy_quotation::where('status_document',5)
+            ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
         }else{
-            if ($search_value) {
-                $data_query = dummy_quotation::where('status_document',5)
-                ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',5)->paginate($perPageS);
-            }
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',5)->paginate($perPageS);
         }
+
 
         $data = [];
         if (isset($data_query) && count($data_query) > 0) {
@@ -4309,21 +4196,13 @@ class DummyQuotationController extends Controller
         $userid = Auth::user()->id;
         $data = [];
         $permissionid = Auth::user()->permission;
-        if ($permissionid == 0) {
-            if ($perPage == 10) {
-                $data_query =  dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',4)->limit($request->page.'0')
-                ->get();
-            } else {
-                $data_query =  dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPage);
-            }
-        }else {
-            if ($perPage == 10) {
-                $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',4)->limit($request->page.'0')
-                ->get();
-            } else {
-                $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPage);
-            }
+        if ($perPage == 10) {
+            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',4)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPage);
         }
+
 
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';
@@ -4459,38 +4338,22 @@ class DummyQuotationController extends Controller
         $guest_profile = $request->guest_profile;
         $userid = Auth::user()->id;
         $permissionid = Auth::user()->permission;
-        if ($permissionid == 0) {
-            if ($search_value) {
-                $data_query = dummy_quotation::where('status_document',4)
-                ->where('Operated_by',$userid)
-                ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query =  dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',5)->paginate($perPageS);
-            }
+
+        if ($search_value) {
+            $data_query = dummy_quotation::where('status_document',4)
+            ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
         }else{
-            if ($search_value) {
-                $data_query = dummy_quotation::where('status_document',4)
-                ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPageS);
-            }
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPageS);
         }
+
 
         $data = [];
         if (isset($data_query) && count($data_query) > 0) {
@@ -4616,21 +4479,14 @@ class DummyQuotationController extends Controller
         $userid = Auth::user()->id;
         $data = [];
         $permissionid = Auth::user()->permission;
-        if ($permissionid == 3) {
-            if ($perPage == 10) {
-                $data_query =  dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',0)->limit($request->page.'0')
-                ->get();
-            } else {
-                $data_query =  dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',0)->paginate($perPage);
-            }
-        }else {
+
             if ($perPage == 10) {
                 $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',0)->limit($request->page.'0')
                 ->get();
             } else {
                 $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',0)->paginate($perPage);
             }
-        }
+
 
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';
@@ -4767,23 +4623,7 @@ class DummyQuotationController extends Controller
         $guest_profile = $request->guest_profile;
         $userid = Auth::user()->id;
         $permissionid = Auth::user()->permission;
-        if ($permissionid == 0) {
-            if ($search_value) {
-                $data_query = dummy_quotation::where('status_document',0)
-                ->where('Operated_by',$userid)
-                ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
-                ->where('Company_ID',$guest_profile)
-                ->orderBy('created_at', 'desc')
-                ->paginate($perPage);
-            }else{
-                $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-                $data_query =  dummy_quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',0)->paginate($perPageS);
-            }
-        }else{
+
             if ($search_value) {
                 $data_query = dummy_quotation::where('status_document',0)
                 ->where('DummyNo', 'LIKE', '%'.$search_value.'%')
@@ -4798,7 +4638,7 @@ class DummyQuotationController extends Controller
                 $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
                 $data_query =  dummy_quotation::query()->orderBy('created_at', 'desc')->where('status_document',0)->paginate($perPageS);
             }
-        }
+
 
         $data = [];
         if (isset($data_query) && count($data_query) > 0) {

@@ -597,6 +597,7 @@
                 singleDatePicker: true,
                 showDropdowns: true,
                 autoUpdateInput: false,
+                autoApply: true,
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }

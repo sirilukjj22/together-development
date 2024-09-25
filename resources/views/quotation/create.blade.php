@@ -625,7 +625,7 @@
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;"data-priority="1">Description</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:1%;"></th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Quantity</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Unit</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Unit</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Price / Unit</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Discount</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Net Price / Unit</th>

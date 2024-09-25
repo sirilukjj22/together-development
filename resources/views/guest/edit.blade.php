@@ -705,8 +705,8 @@
                                                     <td style="text-align: center;">{{ $item->issue_date }}</td>
                                                     <td style="text-align: center;">{{ $item->Expirationdate }}</td>
                                                     @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkin)->format('d/m/Y') }}</td>
-                                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($item->checkout)->format('d/m/Y') }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkin }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkout }}</td>
                                                     @else
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
@@ -1063,12 +1063,17 @@
     </script>
 
 
-    <!-- dataTable -->
-    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
-    <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
-    <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableLogGuest.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!-- dataTable -->
+<script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
+<script type="text/javascript" src="{{ asset('assets/helper/searchTableLogGuest.js')}}"></script>
     <script>
        const table_name = ['guest-TaxTable','guestTable','guest-VisitTable'];
         $(document).ready(function() {
