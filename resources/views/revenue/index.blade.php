@@ -24,6 +24,8 @@
             $pickup_time = "01 " . date('M') . " ~ " . date('t M');
         } elseif (isset($filter_by) && $filter_by == 'thisYear') {
             $pickup_time = "01 " . "Jan" . " ~ ". date('d M', strtotime(date('Y-m-01')));
+        } elseif (isset($filter_by) && $filter_by == 'customRang') {
+            $pickup_time = date('d M', strtotime($customRang_start)) . " " . substr(date('Y', strtotime($customRang_start)), -2) . " ~ ". date('d M', strtotime($customRang_end)) . " " . substr(date('Y', strtotime($customRang_end)), -2);
         }
 
     ?>
@@ -79,7 +81,7 @@
                 <div class="nav-right">
                     <div class="nav-right-in">
                         <input type="text" id="select-date" name="" placeholder="{{ !empty($pickup_time) ? $pickup_time : date('d F Y') }}" readonly>
-                                <button data-toggle="modal" data-target="#ModalShowCalendar" type="button" style="border-top: 0px; border-left: 0px">
+                                <button data-toggle="modal" data-target="#ModalShowCalendar" type="button" class="ch-button" style="border-top: 0px; border-left: 0px">
                                     <span class="d-sm-none d-none d-md-inline-block">Search</span>
                                     <i class="fa fa-search" style="font-size: 15px;"></i>
                                 </button>
@@ -1265,8 +1267,8 @@
                         <!-- Input ส่งค่าไป Controller -->
                         <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'date' }}">
                         <input type="hidden" id="date" name="date" value="{{ $date_current }}">
-                        <input type="hidden" name="customRang_start" id="customRang-start2">
-                        <input type="hidden" name="customRang_end" id="customRang-end2">
+                        <input type="hidden" name="customRang_start" id="customRang-start2" value="{{ isset($customRang_start) ? $customRang_start : date('Y-m-d')  }}">
+                        <input type="hidden" name="customRang_end" id="customRang-end2" value="{{ isset($customRang_end) ? $customRang_end : date('Y-m-d')  }}">
                         <!-- ประเภทรายได้ -->
                         <input type="hidden" id="revenue-type" name="revenue_type" value="">
 
@@ -2004,6 +2006,10 @@
             $('#day-'+day_now).addClass('select-day');
         }
 
+    });
+
+    $('.ch-button').on('click', function () {
+        $('#filter-by').val("date");
     });
 
     var acc = document.getElementsByClassName("accordion");
@@ -2923,6 +2929,16 @@
         $('#customRang-end2').val($('#customRang-end').val());
         $('#form-revenue').submit();
     }
+
+    $('#customRang-start').on('change', function () {
+        $('#customRang-start2').val($('#customRang-start').val());
+        $('#filter-by').val("customRang");
+    });
+
+    $('#customRang-end').on('change', function () {
+        $('#customRang-end2').val($('#customRang-end').val());
+        $('#filter-by').val("customRang");
+    });
 
     function export_data(params) {
         document.getElementById("form-revenue").setAttribute("target", "_blank");

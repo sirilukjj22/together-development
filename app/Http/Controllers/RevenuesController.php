@@ -894,7 +894,6 @@ class RevenuesController extends Controller
 
     public function search_calendar(Request $request)
     {
-        // dd($request);
         if ($request->revenue_type != '') {
             return $this->detail($request);
 
@@ -1778,6 +1777,9 @@ class RevenuesController extends Controller
         ## Filter ##
         $filter_by = $request->filter_by;
         $search_date = $request->date;
+        $customRang_start = $request->customRang_start;
+        $customRang_end = $request->customRang_end;
+
         // $day = $request->day;
         // $month = $request->month;
         // $month_to = $request->month_to;
@@ -1840,7 +1842,7 @@ class RevenuesController extends Controller
 
                         'btn_by_page',
 
-                        'filter_by', 'search_date'
+                        'filter_by', 'search_date', 'customRang_start', 'customRang_end'
                     )
                 );
                 return $pdf->stream();
@@ -1914,7 +1916,8 @@ class RevenuesController extends Controller
         
                     'btn_by_page',
         
-                    'filter_by', 'search_date'));
+                    'filter_by', 'search_date', 'customRang_start', 'customRang_end'
+                ));
             }
         }
     }
@@ -2233,6 +2236,8 @@ class RevenuesController extends Controller
         } else {
             $date_now = date('Y-m-d');
         }
+
+        // dd($request);
 
         ## Bank Transfer
         if ($request->revenue_type == "tf_front") {

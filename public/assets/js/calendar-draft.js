@@ -40,7 +40,6 @@ $(document).ready(function () {
     // console.log("Updated lastSelectedValue:", lastSelectedValue); // ตรวจสอบว่าค่าถูกอัปเดต
     $("#combined-selected-box").val(`${value}`);
     $("#date").val(`${value}`);
-    $('#filter-by').val("date");
     
   }
 
@@ -70,7 +69,6 @@ $(document).ready(function () {
     $(".today").addClass("active");
 
     $("#date").val(`${todayString}`);
-    $('#filter-by').val("date");
 
     // alert(`Sending Today's Date: ${todayString}`);
   }
@@ -414,6 +412,7 @@ $(document).ready(function () {
     $("#month-picker-wrapper").show();
     $("#date-picker-wrapper, #year-picker-wrapper").hide();
     $('#filter-by').val("month");
+    
   });
 
   $("#filter-year").on("click", function () {
