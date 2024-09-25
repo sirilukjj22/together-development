@@ -10,9 +10,9 @@
                 if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow') {
                     $pickup_time = date('d F Y', strtotime($search_date));
                 } elseif (isset($filter_by) && $filter_by == 'month') {
-                    $pickup_time = $search_date;
+                    $pickup_time = date('F Y', strtotime($search_date));
                 } elseif (isset($filter_by) && $filter_by == 'year') {
-                    $pickup_time = $search_date;
+                    $pickup_time = date('Y', strtotime($search_date));
                 } elseif (isset($filter_by) && $filter_by == 'week') {
                     $pickup_time = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime($search_date))))." ~ ".date('d M', strtotime("+6 day", strtotime($this_week)));
                 } elseif (isset($filter_by) && $filter_by == 'thisMonth') {
@@ -40,7 +40,7 @@
                             <div>
                                 <input type="text" id="select-date" class="showdate-button" style="width: 100%;" placeholder="{{ !empty($pickup_time) ? $pickup_time : date('d F Y') }}" readonly>
                             </div>
-                            <button type="submit" class="ch-button" data-toggle="modal" data-target="#ModalShowCalendar" style="white-space: nowrap;">
+                            <button type="button" class="ch-button" data-toggle="modal" data-target="#ModalShowCalendar" style="white-space: nowrap;">
                                 <span class="d-sm-none d-none d-md-inline-block">Search</span>
                                 <i class="fa fa-search" style="font-size: 15px;"></i>
                             </button>
