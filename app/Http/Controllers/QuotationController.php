@@ -1839,6 +1839,7 @@ class QuotationController extends Controller
     }
     public function save(Request $request){
         $data = $request->all();
+        // dd($data);
         $preview=$request->preview;
         $ProposalID =$request->Quotation_ID;
         $adult = (int) $request->input('Adult', 0); // ใช้ค่าเริ่มต้นเป็น 0 ถ้าค่าไม่ถูกต้อง
@@ -1887,16 +1888,20 @@ class QuotationController extends Controller
                     'Checkout' => $data['Checkout'] ?? null,
                     'Day' => $data['Day'] ?? null,
                     'Night' => $data['Night'] ?? null,
+                    'Unitmain' => $data['Unitmain'] ?? null,
                 ];
-
                 $Products = Arr::wrap($datarequest['ProductIDmain']);
                 $quantities = $datarequest['Quantitymain'] ?? [];
                 $discounts = $datarequest['discountmain'] ?? [];
                 $priceUnits = $datarequest['priceproductmain'] ?? [];
+                $Unitmain = $datarequest['Unitmain'] ?? [];
                 $productItems = [];
                 $totaldiscount = [];
+
                 foreach ($Products as $index => $productID) {
-                    if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts)) {
+
+                    if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
+
                         $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
                         $discountedPrices = [];
                         $discountedPricestotal = [];
@@ -1904,28 +1909,32 @@ class QuotationController extends Controller
                         // คำนวณราคาสำหรับแต่ละรายการ
                         for ($i = 0; $i < count($quantities); $i++) {
                             $quantity = intval($quantities[$i]);
+                            $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
                             $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
                             $discount = floatval($discounts[$i]);
 
                             $totaldiscount0 = (($priceUnit * $discount)/100);
                             $totaldiscount[] = $totaldiscount0;
 
-                            $totalPrice = ($quantity * $priceUnit);
+                            $totalPrice = ($quantity * $unitValue) * $priceUnit;
                             $totalPrices[] = $totalPrice;
 
-                            $discountedPrice = (($totalPrice * $discount )/ 100);
-                            $discountedPrices[] = $priceUnit-$totaldiscount0;
+                            $discountedPrice = (($totalPrice * $discount) / 100);
+                            $discountedPrices[] = $discountedPrice;
 
                             $discountedPriceTotal = $totalPrice - $discountedPrice;
                             $discountedPricestotal[] = $discountedPriceTotal;
+
                         }
                     }
+
                     $items = master_product_item::where('Product_ID', $productID)->get();
                     $QuotationVat= $datarequest['Mvat'];
                     $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
                     foreach ($items as $item) {
                         // ตรวจสอบและกำหนดค่า quantity และ discount
                         $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+                        $unitValue = isset($Unitmain[$index]) ? $Unitmain[$index] : 0;
                         $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
                         $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
                         $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
@@ -1934,6 +1943,7 @@ class QuotationController extends Controller
                         $productItems[] = [
                             'product' => $item,
                             'quantity' => $quantity,
+                            'unit' => $unitValue,
                             'discount' => $discount,
                             'totalPrices'=>$totalPrices,
                             'discountedPrices'=>$discountedPrices,
@@ -1941,7 +1951,9 @@ class QuotationController extends Controller
                             'totaldiscount'=>$totaldiscount,
                         ];
                     }
+
                 }
+
                 {//คำนวน
                     $totalAmount = 0;
                     $totalPrice = 0;
@@ -1999,6 +2011,7 @@ class QuotationController extends Controller
                             $totalaverage =$Nettotal/$guest;
                         }
                     }
+
                     $pagecount = count($productItems);
                     $page = $pagecount/10;
 

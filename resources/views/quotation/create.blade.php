@@ -316,11 +316,26 @@
                                 <div class="row mt-2">
                                     <div class="col-lg-2 col-md-6 col-sm-12">
                                         <span for="chekin">Check In Date
-                                        <input type="text" name="Checkin" id="Checkin" class="form-control readonly-input" readonly onchange="CheckDate()" required>
+                                        <div class="input-group">
+
+                                            <input type="text" name="Checkin" id="Checkin" class="form-control readonly-input" readonly onchange="CheckDate()" required>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
+                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-lg-2 col-md-6 col-sm-12">
                                         <span for="chekin">Check Out Date </span>
-                                        <input type="text" name="Checkout" id="Checkout" class="form-control readonly-input" onchange="CheckDate()"  readonly required>
+                                        <div class="input-group"  >
+                                            <input type="text" name="Checkout" id="Checkout" class="form-control readonly-input" onchange="CheckDate()"  readonly required>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"style="border-radius:  0  5px 5px  0 ">
+                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <span for="">จำนวน</span>
@@ -860,6 +875,7 @@
                 singleDatePicker: true,
                 showDropdowns: true,
                 autoUpdateInput: false,
+                autoApply: true,
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -875,6 +891,7 @@
                 singleDatePicker: true,
                 showDropdowns: true,
                 autoUpdateInput: false,
+                autoApply: true,
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -927,6 +944,7 @@
 
         // เรียกใช้เมื่อโหลดหน้า
         setMinDate();
+
 
         document.addEventListener('DOMContentLoaded', setMinDate);
         $(function() {
@@ -1458,56 +1476,62 @@
                                     var SpecialDiscount = document.getElementById('SpecialDiscount').value;
                                     var discountuser = document.getElementById('discountuser').value;
                                     var maximum_discount = val.maximum_discount;
-
+                                    let unit;
                                     var valpax = val.pax;
                                     if (valpax == null) {
                                         valpax = 0;
                                     }
-                                    if (SpecialDiscount >= 1) {
-                                        if (roleMenuDiscount == 1) {
-                                            if (maximum_discount > 0) {
-                                                discountInput = '<div class="input-group">' +
-                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
-                                                        'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);' +
-                                                        'if (parseFloat(this.value) > ' + SpecialDiscount + ') { this.value = ' + SpecialDiscount + '; }' +
-                                                        'else if (parseFloat(this.value) > ' + val.maximum_discount + ') { this.value = ' + val.maximum_discount + '; }"' +
-                                                        'required>' +
-                                                        '<span class="input-group-text">%</span>' +
-                                                        '</div>';
-                                            }else{
-                                                discountInput = '<div class="input-group">' +
-                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value=" " rel="' + number + '" style="text-align:center;" disabled ' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                                '<span class="input-group-text">%</span>' +
-                                                '</div>';
+                                    if (maximum_discount > 0) {
+                                        if (SpecialDiscount >= 1) {
+                                            if (roleMenuDiscount == 1) {
+                                                if (maximum_discount > 0) {
+                                                    discountInput = '<div class="input-group">' +
+                                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                                            'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);' +
+                                                            'if (parseFloat(this.value) > ' + SpecialDiscount + ') { this.value = ' + SpecialDiscount + '; }' +
+                                                            'else if (parseFloat(this.value) > ' + val.maximum_discount + ') { this.value = ' + val.maximum_discount + '; }"' +
+                                                            'required>' +
+                                                            '<span class="input-group-text">%</span>' +
+                                                            '</div>';
+                                                }else{
+                                                    discountInput = '<div class="input-group">' +
+                                                    '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value=" " rel="' + number + '" style="text-align:center;" ' +
+                                                    'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                                    '<span class="input-group-text">%</span>' +
+                                                    '</div>';
+                                                }
                                             }
-
-                                        } else {
+                                        }else{
                                             discountInput = '<div class="input-group">' +
-                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value=" " rel="' + number + '" style="text-align:center;" disabled ' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                                '<span class="input-group-text">%</span>' +
-                                                '</div>';
+                                                    '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value=" " rel="' + number + '" style="text-align:center;" ' +
+                                                    'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                                    '<span class="input-group-text">%</span>' +
+                                                    '</div>';
                                         }
-                                    }
-                                    else{
+                                    }else{
                                         discountInput = '<div class="input-group">' +
-                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value=" " rel="' + number + '" style="text-align:center;" ' +
-                                            'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                            '<span class="input-group-text">%</span>' +
-                                            '</div>';
+                                                    '<input class="discountmain form-control" type="hidden" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;"' +
+                                                    'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                                    '</div>';
                                     }
+
                                     quantity = '<div class="input-group">' +
-                                                '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value=" " rel="' + number + '" style="text-align:center;" ' +
+                                                '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="" rel="' + number + '" style="text-align:center;" ' +
                                                 'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.NumberRoom + ') this.value = ' + val.NumberRoom + ';">' +
+                                                '<span class="input-group-text">'+ val.unit_name +'</span>' +
                                                 '</div>';
+                                    unit = '<div class="input-group">' +
+                                            '<input class="unitmain form-control" type="text" id="unitmain' + number + '" name="Unitmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                            'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);">' +
+                                            '<span class="input-group-text">' + val.quantity_name + '</span>' +
+                                            '</div>';
                                     $('#display-selected-items').append(
                                         '<tr id="tr-select-addmain' + val.id + '">' +
                                         '<td style="text-align:center;">' + rowNumbemain + '</td>' +
                                         '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
                                         '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
                                         '<td style="text-align:center;width:10%;">'+ quantity +'</td>' +
-                                        '<td>' + val.unit_name + '</td>' +
+                                        '<td>' + unit + '</td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
                                         '<td>' + discountInput + '</td>' +
                                         '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
@@ -1546,12 +1570,62 @@
             });
         }
         //----------------------------------------รายการ---------------------------
+        // $(document).ready(function() {
+        //     $(document).on('keyup', '.quantitymain', function() {
+        //         for (let i = 0; i < 50; i++) {
+        //             var number_ID = $(this).attr('rel');
+        //             var quantitymain =  Number($(this).val());
+        //             var discountmain =  $('#discountmain'+number_ID).val();
+        //             var paxmain = parseFloat($('#pax' + number_ID).val());
+        //             if (isNaN(paxmain)) {
+        //                 paxmain = 0;
+        //             }
+        //             var pax = paxmain*quantitymain;
+        //             $('#paxtotal'+number_ID).text(pax);
+        //             var number = Number($('#number-product').val());
+        //             var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
+        //             var pricediscount =  (price*discountmain /100);
+        //             var allcount0 = price - pricediscount;
+        //             $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+        //             var pricenew = price*quantitymain
+        //             var pricediscount = pricenew - (pricenew*discountmain /100);
+        //             $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+
+        //             // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+        //             totalAmost();
+        //         }
+        //     });
+        //     $(document).on('keyup', '.discountmain', function() {
+        //         for (let i = 0; i < 50; i++) {
+        //             var number_ID = $(this).attr('rel');
+        //             var discountmain =  Number($(this).val());
+        //             console.log(discountmain);
+        //             var quantitymain =  $('#quantitymain'+number_ID).val();
+        //             console.log(quantitymain);
+        //             var number = Number($('#number-product').val());
+        //             var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
+        //             var pricediscount =  (price*discountmain /100);
+        //             var allcount0 = price - pricediscount;
+        //             console.log(allcount0);
+        //             $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+        //             var pricenew = price*quantitymain
+        //             var pricediscount = pricenew - (pricenew*discountmain /100);
+        //             $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+        //             // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+        //             totalAmost();
+
+        //         }
+
+        //     });
+        // });
+        //----------------------------------------รายการ---------------------------
         $(document).ready(function() {
             $(document).on('keyup', '.quantitymain', function() {
                 for (let i = 0; i < 50; i++) {
                     var number_ID = $(this).attr('rel');
                     var quantitymain =  Number($(this).val());
                     var discountmain =  $('#discountmain'+number_ID).val();
+                    var unitmain =  $('#unitmain'+number_ID).val();
                     var paxmain = parseFloat($('#pax' + number_ID).val());
                     if (isNaN(paxmain)) {
                         paxmain = 0;
@@ -1560,12 +1634,19 @@
                     $('#paxtotal'+number_ID).text(pax);
                     var number = Number($('#number-product').val());
                     var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
-                    var pricediscount =  (price*discountmain /100);
-                    var allcount0 = price - pricediscount;
-                    $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                    var pricenew = price*quantitymain
-                    var pricediscount = pricenew - (pricenew*discountmain /100);
-                    $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    var pricenew = quantitymain*unitmain*price
+                    if (discountmain === "" || discountmain == 0) {
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew;
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var allcount0 = price;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
 
                     // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     totalAmost();
@@ -1577,6 +1658,7 @@
                     var discountmain =  Number($(this).val());
                     console.log(discountmain);
                     var quantitymain =  $('#quantitymain'+number_ID).val();
+                    var unitmain =  $('#unitmain'+number_ID).val();
                     console.log(quantitymain);
                     var number = Number($('#number-product').val());
                     var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
@@ -1584,7 +1666,7 @@
                     var allcount0 = price - pricediscount;
                     console.log(allcount0);
                     $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                    var pricenew = price*quantitymain
+                    var pricenew = quantitymain*unitmain*price
                     var pricediscount = pricenew - (pricenew*discountmain /100);
                     $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
@@ -1592,6 +1674,34 @@
 
                 }
 
+            });
+            $(document).on('keyup', '.unitmain', function() {
+                for (let i = 0; i < 50; i++) {
+                    var number_ID = $(this).attr('rel');
+                    var unitmain =  Number($(this).val());
+                    var quantitymain =  $('#quantitymain'+number_ID).val();
+                    var discountmain =  $('#discountmain'+number_ID).val();
+                    var number = Number($('#number-product').val());
+                    var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
+                    console.log(number_ID);
+
+                    var pricenew = quantitymain*unitmain*price
+                    if (discountmain === "" || discountmain == 0) {
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew;
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var allcount0 = price;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
+
+
+                    totalAmost();
+                }
             });
         });
         function totalAmost() {
