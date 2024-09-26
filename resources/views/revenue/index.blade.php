@@ -1961,6 +1961,12 @@
         </div>
     </div>
 
+    <!-- Moment Date -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
     <!-- Calendar -->
     <script src="{{ asset('assets/js/calendar-draft.js')}}"></script>
 
@@ -2948,8 +2954,8 @@
 
     $('.btn-close-daily').on('click', function () {
         var filter_by = $('#filter-by').val();
-        var date = $('#input-search-year').val()+"-"+$('#input-search-month').val()+"-"+$('#input-search-day').val();
-        var format_date = $('#input-search-day').val()+"/"+$('#input-search-month').val()+"/"+$('#input-search-year').val();
+        var date = $('#date').val();
+        var format_date = moment(date).format('DD/MM/YYYY');
 
         Swal.fire({
         icon: "info",
@@ -2989,8 +2995,8 @@
 
     $('.btn-open-daily').on('click', function () {
         var filter_by = $('#filter-by').val();
-        var date = $('#input-search-year').val()+"-"+$('#input-search-month').val()+"-"+$('#input-search-day').val();
-        var format_date = $('#input-search-day').val()+"/"+$('#input-search-month').val()+"/"+$('#input-search-year').val();
+        var date = $('#date').val();
+        var format_date = moment(date).format('DD/MM/YYYY');
 
         Swal.fire({
         icon: "info",
