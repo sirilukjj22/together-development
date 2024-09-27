@@ -39,9 +39,7 @@ class receiptController extends Controller
     {
         $userid = Auth::user()->id;
         $Proposal = Quotation::query()
-        ->leftJoin('document_receipt', 'quotation.Quotation_ID', '=', 'document_receipt.Quotation_ID')
         ->leftJoin('document_invoice', 'quotation.Quotation_ID', '=', 'document_invoice.Quotation_ID')
-        ->where('quotation.Operated_by', $userid)
         ->where('quotation.status_guest', 1)
         ->select(
             'quotation.*',

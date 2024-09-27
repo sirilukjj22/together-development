@@ -25,7 +25,7 @@ use App\Http\Controllers\Master_Vat;
 use App\Http\Controllers\DummyQuotationController;
 use App\Http\Controllers\proposal_request;
 use App\Http\Controllers\Document_invoice;
-use App\Http\Controllers\receiptController;
+use App\Http\Controllers\BillingFolioController;
 use App\Http\Controllers\Masterpromotion;
 use App\Http\Controllers\UserDepartmentsController;
 use Illuminate\Support\Facades\Artisan;
@@ -628,18 +628,22 @@ Route::middleware(['auth'])->group(function () {
     });
 
     ##-------------------------------document receipt-----------------
-    Route::controller(receiptController::class)->middleware('role:document')->group(function () {
-        Route::get('/Document/receipt/index', 'index')->name('receipt.index');
-        Route::get('/Document/receipt/Proposal/invoice/view/LOG/{id}','LOG')->name('receipt.LOG');
-        Route::get('/Document/receipt/Proposal/invoice/Generate/{id}','Generate')->name('receipt.Generate');
-        Route::get('/Document/receipt/Proposal/invoice/CheckPI/{id}','CheckPI')->name('receipt.CheckPI');
-        Route::get('/Document/receipt/Proposal/invoice/CheckPI/PD/{quotationid}/{id}','CheckPD')->name('receipt.CheckPD');
-        //-------------------------------------save------------------------------------
-        Route::post('/Document/receipt/Proposal/invoice/Generate/save', 'save')->name('receipt.save');
-        //-------------------------------------view------------------------------------
-        Route::get('/Document/receipt/Proposal/invoice/view/{id}','view')->name('receipt.view');
-        Route::get('/Receipt/Quotation/view/quotation/view/{id}','QuotationView')->name('receipt.QuotationView');
-        Route::get('/Receipt/Invice/view/{id}','InvoiceView')->name('receipt.InvoiceView');
+    Route::controller(BillingFolioController::class)->middleware('role:document')->group(function () {
+        Route::get('/Document/BillingFolio/index', 'index')->name('BillingFolio.index');
+        Route::get('/Document/BillingFolio/issuebill', 'issuebill')->name('BillingFolio.issuebill');
+        // Route::get('/Document/receipt/Proposal/invoice/view/LOG/{id}','LOG')->name('receipt.LOG');
+        // Route::get('/Document/receipt/Proposal/invoice/Generate/{id}','Generate')->name('receipt.Generate');
+        Route::get('/Document/BillingFolio/Proposal/invoice/CheckPI/{id}','CheckPI')->name('receipt.CheckPI');
+        // Route::get('/Document/receipt/Proposal/invoice/CheckPI/PD/{quotationid}/{id}','CheckPD')->name('receipt.CheckPD');
+        // //-------------------------------------save------------------------------------
+        // Route::post('/Document/receipt/Proposal/invoice/Generate/save', 'save')->name('receipt.save');
+        // //-------------------------------------view------------------------------------
+        // Route::get('/Document/receipt/Proposal/invoice/view/{id}','view')->name('receipt.view');
+        // Route::get('/Receipt/Quotation/view/quotation/view/{id}','QuotationView')->name('receipt.QuotationView');
+        // Route::get('/Receipt/Invice/view/{id}','InvoiceView')->name('receipt.InvoiceView');
+
+        Route::post('billing-search-table', 'search_table_billing');
+        Route::post('billing-paginate-table', 'paginate_table_billing');
     });
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');

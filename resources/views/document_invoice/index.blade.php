@@ -115,6 +115,7 @@
                                                         <span class="badge rounded-pill bg-success">Proposal</span>
                                                     </td>
                                                     @php
+                                                        $CreateBy = Auth::user()->id;
                                                         $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
                                                         $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                                                         $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
@@ -123,31 +124,60 @@
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
-                                                                @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
-                                                                @endif
-                                                                @if(!empty($invoice) && $invoice->count() == 0)
-                                                                    @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                @if ($rolePermission > 0)
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                     @endif
-                                                                @else
-                                                                    @if ($canEditProposal == 1)
-                                                                        @php
-                                                                            $hasStatusReceiveZero = false;
-                                                                        @endphp
-                                                                        @foreach ($invoicecheck as $key2 => $item2)
-                                                                            @if ($item->QID == $item2->Quotation_ID && $item2->status_receive == 0)
-                                                                                @php
-                                                                                    $hasStatusReceiveZero = true;
-                                                                                    break; // หยุดการลูปทันทีเมื่อพบเงื่อนไขที่ต้องการ
-                                                                                @endphp
-                                                                            @endif
-                                                                        @endforeach
-                                                                        @if ($hasStatusReceiveZero ==null)
+
+                                                                    @if (($rolePermission == 1 || ($rolePermission == 2 && $item->Operated_by == $CreateBy)) && $canEditProposal == 1)
+                                                                        @if(!empty($invoice) && $invoice->count() == 0)
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                        @else
+                                                                            @php
+                                                                                $hasStatusReceiveZero = false;
+                                                                            @endphp
+
+                                                                            @foreach ($invoicecheck as $key2 => $item2)
+                                                                                @if ($item->QID == $item2->Quotation_ID && $item2->status_receive == 0)
+                                                                                    @php
+                                                                                        $hasStatusReceiveZero = true;
+                                                                                        break; // หยุดการลูปทันทีเมื่อพบเงื่อนไขที่ต้องการ
+                                                                                    @endphp
+                                                                                @endif
+                                                                            @endforeach
+
+                                                                            @if (!$hasStatusReceiveZero)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                            @endif
+                                                                        @endif
+                                                                    @elseif ($rolePermission == 3 && $canEditProposal == 1)
+                                                                        @if(!empty($invoice) && $invoice->count() == 0)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                        @else
+                                                                            @php
+                                                                                $hasStatusReceiveZero = false;
+                                                                            @endphp
+
+                                                                            @foreach ($invoicecheck as $key2 => $item2)
+                                                                                @if ($item->QID == $item2->Quotation_ID && $item2->status_receive == 0)
+                                                                                    @php
+                                                                                        $hasStatusReceiveZero = true;
+                                                                                        break; // หยุดการลูปทันทีเมื่อพบเงื่อนไขที่ต้องการ
+                                                                                    @endphp
+                                                                                @endif
+                                                                            @endforeach
+
+                                                                            @if (!$hasStatusReceiveZero)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                            @endif
                                                                         @endif
                                                                     @endif
+                                                                @else
+                                                                    @if ($canViewProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                    @endif
                                                                 @endif
+
                                                             </ul>
                                                         </div>
                                                     </td>

@@ -194,11 +194,9 @@
                                         @if (Auth::user()->roleMenu->proforma_invoice == 1)
                                             <li><a class="ms-link" href="{{ route('invoice.index') }}">Proforma Invoice</a></li>
                                         @endif
-                                        @if (Auth::user()->roleMenu->receipt_payment == 1)
-                                            <li><a class="ms-link" href="{{ route('receipt.index') }}">Receipt Payment</a></li>
-                                        @endif
+
                                         @if (Auth::user()->roleMenu->billing_folio == 1)
-                                            <li><a class="ms-link" href="#">Billing Folio</a></li>
+                                            <li><a class="ms-link"  href="{{ route('BillingFolio.index') }}">Billing Folio</a></li>
                                         @endif
                                     </ul>
                                 </li>
