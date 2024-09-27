@@ -3336,7 +3336,7 @@ class RevenuesController extends Controller
         // dd($request);
 
         if (isset($data_query) && count($data_query) > 0) {
-            if ($status > 0) { ## Manual Charge
+            if ($status > 0 || $request->status == "total_transaction") { ## Manual Charge
                 foreach ($data_query as $key => $value) {
 
                     $img_bank = '';
