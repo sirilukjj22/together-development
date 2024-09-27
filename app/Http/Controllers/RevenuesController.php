@@ -2097,7 +2097,8 @@ class RevenuesController extends Controller
 
     public function daily_close(Request $request)
     {
-        Revenues::where('date', $request->date)->update([
+        $date = Carbon::parse($request->date)->format('Y-m-d');
+        Revenues::where('date', $date)->update([
             'status' => 1
         ]);
 
@@ -2108,7 +2109,8 @@ class RevenuesController extends Controller
 
     public function daily_open(Request $request)
     {
-        Revenues::where('date', $request->date)->update([
+        $date = Carbon::parse($request->date)->format('Y-m-d');
+        Revenues::where('date', $date)->update([
             'status' => 0
         ]);
 
@@ -2473,7 +2475,7 @@ class RevenuesController extends Controller
 
         ## Filter ##
         $filter_by = $request->filter_by;
-        $search_date = $month_from;
+        $search_date = $request->date;
 
         $exp = explode("_", $request->revenue_type);
 
@@ -2523,8 +2525,8 @@ class RevenuesController extends Controller
             }
 
             $lastday = dayLast($end_month, $year); // หาวันสุดท้ายของเดือน
-            $adate = date('Y-m-d', strtotime($year . '-' . $start_month . '-01'));
-            $adate2 = date('Y-m-d', strtotime($year . '-' . $end_month . '-' . $lastday));
+            $adate = date('Y-m-d', strtotime(date($year . '-' . $start_month . '-01')));
+            $adate2 = date('Y-m-d', strtotime(date($year . '-' . $end_month . '-' . $lastday)));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date($year . '-' . $end_month . '-' . $lastday . ' 20:59:59');
@@ -2556,8 +2558,7 @@ class RevenuesController extends Controller
 
         $perPage = (int)$request->perPage;
         $exp = explode("_", $request->status);
-
-        if (is_int($request->status)) { 
+        if ((int)$request->status != 0) { 
             if ($request->table_name == "revenueTable") {
                 $query_sms = SMS_alerts::query()->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status);
     
@@ -2727,9 +2728,9 @@ class RevenuesController extends Controller
         $page_2 = $request->page.'0';
 
         $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-
+        
         if (isset($data_query) && count($data_query) > 0) {
-            if (count($exp) > 1 && $exp[0]."_".$exp[1] != "manual_charge" && $request->status != "mc_agoda_charge" && $request->status != "mc_elexa_charge" && $request->status != "agoda_outstanding" && $request->status != "elexa_outstanding") { ## Manual Charge
+            if (count($exp) > 1 && $exp[0]."_".$exp[1] != "manual_charge" && $request->status != "mc_agoda_charge" && $request->status != "mc_elexa_charge" && $request->status != "agoda_outstanding" && $request->status != "elexa_outstanding" || $request->table_name == "revenueTable") { ## Manual Charge
                 foreach ($data_query as $key => $value) {
                     if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 

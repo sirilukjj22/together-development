@@ -4,7 +4,7 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class=""><span class="span1">Daily Revenue by Type </span><span class="span2"> / {{ $title }}</span></div>
+                    <div class=""><span class="span1">Hotel & Water Park Revenue </span><span class="span2"> / {{ $title }}</span></div>
                     <div class="span3">{{ $title }}</div>
                 </div>
                 <div class="col-auto">

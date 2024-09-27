@@ -4,7 +4,7 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class=""><span class="span1">Daily Revenue by Type </span><span class="span2"> / {{ $title }}</span></div>
+                    <div class=""><span class="span1">Hotel & Water Park Revenue </span><span class="span2"> / {{ $title }}</span></div>
                     <div class="span3">{{ $title }}</div>
                 </div>
                 <div class="col-auto">
@@ -120,7 +120,7 @@
     <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableRevenue.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableRevenueManual.js')}}"></script>
 
     <script>
         $(document).ready(function() {
@@ -135,18 +135,6 @@
                         orderable: true,
                         target: null,
                     },
-                    {
-                        width: '7%',
-                        targets: 0
-                    },
-                    {
-                        width: '10%',
-                        targets: 3
-                    },
-                    {
-                        width: '15%',
-                        targets: 4
-                    }
 
                 ],
                 order: [0, 'asc'],
