@@ -632,8 +632,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/BillingFolio/index', 'index')->name('BillingFolio.index');
         Route::get('/Document/BillingFolio/issuebill', 'issuebill')->name('BillingFolio.issuebill');
         // Route::get('/Document/receipt/Proposal/invoice/view/LOG/{id}','LOG')->name('receipt.LOG');
-        // Route::get('/Document/receipt/Proposal/invoice/Generate/{id}','Generate')->name('receipt.Generate');
-        Route::get('/Document/BillingFolio/Proposal/invoice/CheckPI/{id}','CheckPI')->name('receipt.CheckPI');
+        Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/{id}','PaidInvoice')->name('BillingFolio.PaidInvoice');
+        Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Data/{id}','PaidInvoiceData')->name('BillingFolio.PaidInvoiceData');
+        Route::get('/Document/BillingFolio/Proposal/invoice/CheckPI/{id}','CheckPI')->name('BillingFolio.CheckPI');
         // Route::get('/Document/receipt/Proposal/invoice/CheckPI/PD/{quotationid}/{id}','CheckPD')->name('receipt.CheckPD');
         // //-------------------------------------save------------------------------------
         // Route::post('/Document/receipt/Proposal/invoice/Generate/save', 'save')->name('receipt.save');
@@ -644,6 +645,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('billing-search-table', 'search_table_billing');
         Route::post('billing-paginate-table', 'paginate_table_billing');
+
+        Route::post('billingPD-search-table', 'search_table_billingpd');
+        Route::post('billingPD-paginate-table', 'paginate_table_billingpd');
     });
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');

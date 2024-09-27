@@ -229,7 +229,6 @@ class Document_invoice extends Controller
         if ($search_value) {
             $data_query = Quotation::query()
                 ->leftJoin('document_invoice', 'quotation.Refler_ID', '=', 'document_invoice.Refler_ID')
-                ->where('quotation.Operated_by', $userid)
                 ->where('quotation.status_guest', 1)
                 ->select(
                     'quotation.*',
@@ -240,7 +239,7 @@ class Document_invoice extends Controller
                     DB::raw('MIN(CASE WHEN document_invoice.document_status IN (1, 2) THEN CAST(REPLACE(document_invoice.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
                 )
                 ->where('quotation.Quotation_ID', 'LIKE', '%'.$search_value.'%')
-                ->groupBy('quotation.Quotation_ID', 'quotation.Operated_by', 'quotation.status_guest')
+                ->groupBy('quotation.Quotation_ID',  'quotation.status_guest')
                 ->paginate($perPage);
 
             $invoice = document_invoices::query()->where('Operated_by', $userid)->where('document_status', 1)->get();
@@ -250,7 +249,6 @@ class Document_invoice extends Controller
 
             $data_query = Quotation::query()
                 ->leftJoin('document_invoice', 'quotation.Refler_ID', '=', 'document_invoice.Refler_ID')
-                ->where('quotation.Operated_by', $userid)
                 ->where('quotation.status_guest', 1)
                 ->select(
                     'quotation.*',
@@ -260,7 +258,7 @@ class Document_invoice extends Controller
                     DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (1, 2) THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
                     DB::raw('MIN(CASE WHEN document_invoice.document_status IN (1, 2) THEN CAST(REPLACE(document_invoice.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
                 )
-                ->groupBy('quotation.Quotation_ID', 'quotation.Operated_by', 'quotation.status_guest')
+                ->groupBy('quotation.Quotation_ID',  'quotation.status_guest')
                 ->paginate($perPageS);
 
             $invoice = document_invoices::query()->where('Operated_by', $userid)->where('document_status', 1)->get();
@@ -1375,7 +1373,7 @@ class Document_invoice extends Controller
                     $save->IssueDate= $datarequest['IssueDate'];
                     $save->Expiration= $datarequest['Expiration'];
                     $save->Operated_by = $userid;
-                    $save->type_Proposal = $type_Proposal;
+                    $save->type_Proposal = $datarequest['Selectdata'];
                     $save->Refler_ID = $datarequest['Refler_ID'];
                     $save->sequence = $sequencenumber;
                     $save->sumpayment = $datarequest['Sum'];

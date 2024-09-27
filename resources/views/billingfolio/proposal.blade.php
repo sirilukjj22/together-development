@@ -40,7 +40,7 @@
                             <caption class="caption-top">
                                 <div class="flex-end-g2">
                                     <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-billing" onchange="getPage(1, this.value, 'billing')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                    <select class="entriespage-button" id="search-per-page-billing" onchange="getPagePending(1, this.value, 'billing')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
                                         <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "billing" ? 'selected' : '' }}>10</option>
                                         <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "billing" ? 'selected' : '' }}>25</option>
                                         <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "billing" ? 'selected' : '' }}>50</option>
@@ -107,13 +107,9 @@
                                             <td style="text-align: center;">
                                                 <span class="badge rounded-pill bg-success">Proposal</span>
                                             </td>
-                                            @php
-                                                $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                                                $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                                            @endphp
+
                                             <td style="text-align: center;">
-                                                <button type="button" class="btn btn-light-info" onclick="window.location.href='{{ url('/Receipt/Invice/view/'.$item->id) }}'">
+                                                <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/BillingFolio/Proposal/invoice/CheckPI/'.$item->id) }}'">
                                                     Select
                                                 </button>
                                             </td>
@@ -126,9 +122,9 @@
                             <input type="hidden" id="currentPage-billing" value="1">
                             <caption class="caption-bottom">
                                 <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="billing-showingEntries">{{ showingEntriesTable($Approved, 'billing') }}</p>
+                                    <p class="py2" id="billing-showingEntries">{{ showingEntriesTablePending($Approved, 'billing') }}</p>
                                     <div id="billing-paginate">
-                                        {!! paginateTable($Approved, 'billing') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                        {!! paginateTablePending($Approved, 'billing') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                     </div>
                                 </div>
                             </caption>
@@ -210,7 +206,7 @@
                     paging: false,
                     info: false,
                     ajax: {
-                    url: '/billing-search-table',
+                    url: '/billingPD-search-table',
                     type: 'POST',
                     dataType: "json",
                     cache: false,
