@@ -37,8 +37,9 @@
                                     <tr>
                                         <th style="text-align: center;" data-priority="1">#</th>
                                         <th style="text-align: center;" data-priority="1">Date</th>
-                                        <th style="text-align: center;">Income type</th>
-                                        <th style="text-align: center;" data-priority="1">Fee</th>
+                                        <th style="text-align: center;">Stan</th>
+                                        <th style="text-align: center;">Revenue Type</th>
+                                        <th style="text-align: center;" data-priority="1">Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -46,6 +47,7 @@
                                         <tr style="text-align: center;">
                                             <td class="td-content-center">{{ $key + 1 }}</td>
                                             <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
+                                            <td class="td-content-center">{{ $item->batch }}</td>
                                             <td class="td-content-center">
                                                 @if ($item->status == 0)
                                                     -
@@ -53,23 +55,13 @@
                                                     Guest Deposit Revenue
                                                 @elseif($item->status == 2)
                                                     All Outlet Revenue
-                                                @elseif($item->status == 3)
-                                                    Water Park Revenue
                                                 @elseif($item->status == 4)
                                                     Credit Card Revenue
-                                                @elseif($item->status == 5)
-                                                    Agoda Bank Transfer Revenue
                                                 @elseif($item->status == 6)
                                                     Front Desk Revenue
-                                                @elseif($item->status == 7)
-                                                    Credit Card Water Park Revenue
-                                                @elseif($item->status == 8)
-                                                    Elexa EGAT Revenue
-                                                @elseif($item->status == 9)
-                                                    Other Revenue Bank Transfer
                                                 @endif
                                             </td>
-                                            <td class="td-content-center">{{ number_format($item->fee, 2) }}</td>
+                                            <td style="text-align: left;">{{ number_format($item->credit_amount, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -78,7 +70,7 @@
                         <caption class="caption-bottom">
                             <div class="md-flex-bt-i-c">
                                 <p class="py2" id="fee-showingEntries">{{ showingEntriesTable($data_query, 'fee') }}</p>
-                                <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format(!empty($total_query) ? $item->fee : 0, 2) }} บาท</div>
+                                <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format(!empty($total_query) ? $total_query : 0, 2) }} บาท</div>
                                     <div id="fee-paginate">
                                         {!! paginateTable($data_query, 'fee') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                     </div>
@@ -196,7 +188,7 @@
 
                 },
                 columnDefs: [
-                            { targets: [0, 1, 2, 3], className: 'dt-center td-content-center' },
+                            { targets: [0, 1], className: 'dt-center td-content-center' },
                 ],
                 order: [0, 'asc'],
                 responsive: {
@@ -208,8 +200,9 @@
                 columns: [
                     { data: 'number' },
                     { data: 'date' },
+                    { data: 'stan' },
                     { data: 'revenue_name' },
-                    { data: 'fee' },
+                    { data: 'amount' }
                 ],
 
             });

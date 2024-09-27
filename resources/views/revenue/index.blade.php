@@ -229,7 +229,7 @@
                             <input type="hidden" id="total_cash_dashboard" value="{{ $total_cash + $total_wp_revenue->wp_cash }}">
                         </div>
                         <div class="sub d-grid-r1">
-                            <div class="box-card bg-box">
+                            <div class="box-card bg-box" onclick="revenue_detail('cash_front')">
                                 <div class="">
                                     <img src="./image/front/reception.png" alt="" class="img" />
                                 </div>
@@ -238,7 +238,7 @@
                                     {{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_cash : 0, 2) }}
                                 </div>
                             </div>
-                            <div class="box-card bg-box">
+                            <div class="box-card bg-box" onclick="revenue_detail('cash_all_outlet')">
                                 <div class="">
                                     <img src="./image/front/shop.png" alt="" class="img" />
                                 </div>
@@ -247,14 +247,14 @@
                                     {{ number_format($total_fb_revenue->fb_cash, 2) }}
                                 </div>
                             </div>
-                            <div class="box-card bg-box">
+                            <div class="box-card bg-box" onclick="revenue_detail('cash_guest')">
                                 <div class="">
                                     <img src="./image/front/quest-deposit.png" alt="" class="img" />
                                 </div>
                                 <div>Guest Deposit</div>
                                 <div class="font-semibold">{{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_cash : 0, 2) }}</div>
                             </div>
-                            <div class="box-card bg-box">
+                            <div class="box-card bg-box" onclick="revenue_detail('cash_water_park')">
                                 <div class="">
                                     <img src="./image/front/water-park.png" alt="" class="img" />
                                 </div>
@@ -418,7 +418,7 @@
                             </div>
                         </div>
                         <div class="sub d-grid-r2">
-                            <div class="box-card2 bg-box"> <!-- onclick="revenue_detail('fee_credit_hotel')" -->
+                            <div class="box-card2 bg-box" onclick="revenue_detail('credit_hotel_fee')"> <!-- onclick="revenue_detail('fee_credit_hotel')" -->
                                 <div class="f-ic">
                                     <img src="./image/front/hotel.png" alt="" class="img" />
                                     <div>Credit Card Hotel Fee</div>
@@ -427,21 +427,21 @@
                                     {{ number_format($sum_charge == 0 || $credit_revenue->total_credit == 0 ? 0 : $sum_charge - $credit_revenue->total_credit ?? 0, 2) }}
                                 </div>
                             </div>
-                            <div class="box-card2 bg-box">
+                            <div class="box-card2 bg-box" onclick="revenue_detail('water_park_fee')">
                                 <div class="f-ic">
                                     <img src="./image/front/water-park.png" alt="" class="img" />
                                     <div>Credit Card Water Park Fee</div>
                                 </div>
                                 <div class="t-end">{{ number_format($wp_charge[0]['fee_date'], 2) }}</div>
                             </div>
-                            <div class="box-card2 bg-box">
+                            <div class="box-card2 bg-box" onclick="revenue_detail('agoda_fee')">
                                 <div class="f-ic">
                                     <img src="./image/front/agoda.jpg" alt="" class="img" />
                                     <div>Agoda Fee</div>
                                 </div>
                                 <div class="t-end">{{ number_format($agoda_charge[0]['fee_date'], 2) }}</div>
                             </div>
-                            <div class="box-card2 bg-box">
+                            <div class="box-card2 bg-box" onclick="revenue_detail('elexa_fee')">
                                 <div class="f-ic">
                                     <img src="./image/front/elexa.png" alt="" class="img" />
                                     <div>Elexa EGAT Fee</div>

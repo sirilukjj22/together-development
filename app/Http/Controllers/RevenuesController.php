@@ -130,7 +130,7 @@ class RevenuesController extends Controller
                     }
 
                     if (!isset($credit_array[$i])) {
-                        $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                        $credit_array[$i] = [ 'total_credit' => 0, ];
                     }
 
                     if (!isset($agoda_array[$i])) {
@@ -239,7 +239,7 @@ class RevenuesController extends Controller
                     }
 
                     if (!isset($credit_array[$i])) {
-                        $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                        $credit_array[$i] = [ 'total_credit' => 0, ];
                     }
 
                     if (!isset($agoda_array[$i])) {
@@ -661,7 +661,7 @@ class RevenuesController extends Controller
                     }
 
                     if (!isset($credit_array[$i])) {
-                        $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                        $credit_array[$i] = [ 'total_credit' => 0, ];
                     }
 
                     if (!isset($agoda_array[$i])) {
@@ -770,7 +770,7 @@ class RevenuesController extends Controller
                     }
 
                     if (!isset($credit_array[$i])) {
-                        $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                        $credit_array[$i] = [ 'total_credit' => 0, ];
                     }
 
                     if (!isset($agoda_array[$i])) {
@@ -1090,7 +1090,7 @@ class RevenuesController extends Controller
                         // Credit Card Hotel
                         if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
                             $credit_array[$i] = [
-                                'total_credit' => $check_sms[$key]['amount'],
+                                'total_credit' => $check_sms[$key]['total_amount'],
                             ];
                         }
                         // Agoda
@@ -1144,7 +1144,7 @@ class RevenuesController extends Controller
                         }
 
                         if (!isset($credit_array[$i])) {
-                            $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                            $credit_array[$i] = [ 'total_credit' => 0, ];
                         }
 
                         if (!isset($agoda_array[$i])) {
@@ -1198,7 +1198,7 @@ class RevenuesController extends Controller
                         // Credit Card Hotel
                         if (isset($check_sms[$key]) && $check_sms[$key]['status'] == 4 && $check_sms[$key]['into_account'] == "708-226792-1") {
                             $credit_array[$i] = [
-                                'total_credit' => $check_sms[$key]['amount'],
+                                'total_credit' => $check_sms[$key]['total_amount'],
                             ];
                         }
                         // Agoda
@@ -1252,7 +1252,7 @@ class RevenuesController extends Controller
                         }
 
                         if (!isset($credit_array[$i])) {
-                            $fcredit_array[$i] = [ 'total_credit' => 0, ];
+                            $credit_array[$i] = [ 'total_credit' => 0, ];
                         }
 
                         if (!isset($agoda_array[$i])) {
@@ -2130,11 +2130,33 @@ class RevenuesController extends Controller
     public function detail(Request $request)
     {
 
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+        if ($request->filter_by == "date" || $request->filter_by == "today") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
             $adate = date('Y-m-d 21:00:00', strtotime($req_date));
             $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate));
+
+            // Revenue
+            $month_from = $req_date;
+            $month_to = $req_date;
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime($req_date)));
+
+        } elseif ($request->filter_by == "yesterday") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = date('Y-m-d 21:00:00', strtotime($req_date));
+            $from = date('Y-m-d 21:00:00', strtotime('-2 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime('-1 day', strtotime(date($adate))));
+
+            // Revenue
+            $month_from = $req_date;
+            $month_to = $req_date;
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime($req_date)));
+
+        }  elseif ($request->filter_by == "tomorrow") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = date('Y-m-d 21:00:00', strtotime($req_date));
+            $from = date('Y-m-d 21:00:00');
+            $to = date('Y-m-d 20:59:59', strtotime('+1 day', strtotime(date($adate))));
 
             // Revenue
             $month_from = $req_date;
@@ -2182,7 +2204,7 @@ class RevenuesController extends Controller
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
 
-            $month_from = date('Y-m-d', strtotime(date('Y-m-01')));
+            $month_from = date('Y-m-d', strtotime($from));
             $month_to = date('Y-m-d', strtotime(date($adate2)));
             $date_first_day = $adate;
 
@@ -2239,7 +2261,36 @@ class RevenuesController extends Controller
             $date_now = date('Y-m-d');
         }
 
-        // dd($request);
+        ## Cash
+        if ($request->revenue_type == "cash_front") {
+            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->select('date', 'front_cash as amount')->paginate(10);
+            $total_query = Revenues::whereBetween('date', [$month_from, $month_to])->sum('front_cash');
+            $title = "Front Desk Revenue (Cash)";
+            $status = 'cash_front';
+            $revenue_name = "cash";
+
+        } if ($request->revenue_type == "cash_all_outlet") {
+            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->select('date', 'fb_cash as amount')->paginate(10);
+            $total_query = Revenues::whereBetween('date', [$month_from, $month_to])->sum('fb_cash');
+            $title = "All Outlet Revenue (Cash)";
+            $status = 'cash_all_outlet';
+            $revenue_name = "cash";
+
+        } if ($request->revenue_type == "cash_guest") {
+            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->select('date', 'room_cash as amount')->paginate(10);
+            $total_query = Revenues::whereBetween('date', [$month_from, $month_to])->sum('room_cash');
+            $title = "Guest Deposit Revenue (Cash)";
+            $status = 'cash_guest';
+            $revenue_name = "cash";
+
+        } if ($request->revenue_type == "cash_water_park") {
+            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->select('date', 'wp_cash as amount')->paginate(10);
+            $total_query = Revenues::whereBetween('date', [$month_from, $month_to])->sum('wp_cash');
+            $title = "Water Park Revenue (Cash)";
+            $status = 'cash_water_park';
+            $revenue_name = "cash";
+
+        }
 
         ## Bank Transfer
         if ($request->revenue_type == "tf_front") {
@@ -2295,8 +2346,8 @@ class RevenuesController extends Controller
 
         ## Credit Card
         if($request->revenue_type == "cc_credit_hotel") {
-            $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->where('status', 4)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('into_account', "708-226792-1")->where('status', 4)->paginate(10);
-            $total_query = SMS_alerts::whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->where('status', 4)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('into_account', "708-226792-1")->where('status', 4)->sum('amount');
+            $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 4)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 4)->paginate(10);
+            $total_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 4)->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('status', 4)->sum('amount');
             $title = "Credit Card Hotel Revenue";
             $status = 4;
             $revenue_name = "";
@@ -2371,6 +2422,21 @@ class RevenuesController extends Controller
             $status = "mc_elexa_charge";
             $revenue_name = "";
         } 
+
+        ## Fee
+        if($request->revenue_type == "credit_hotel_fee") {
+            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->whereIn('revenue_credit.status', [1, 2, 4, 6])
+                ->whereBetween('revenue.date', [$month_from, $month_to])
+                ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status')
+                ->paginate(10);
+            $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->whereIn('revenue_credit.status', [1, 2, 4, 6])
+                ->whereBetween('revenue.date', [$month_from, $month_to])->sum('revenue_credit.credit_amount');
+            $title = "Credit Card Hotel Fee";
+            $status = "credit_hotel_fee";
+            $revenue_name = "fee";
+
+        }
+
 
         ## Total Revenue Outstanding
         if($request->revenue_type == "agoda_outstanding") {
@@ -2475,7 +2541,7 @@ class RevenuesController extends Controller
 
         ## Filter ##
         $filter_by = $request->filter_by;
-        $search_date = $request->date;
+        $search_date = $request->filter_by == "customRang" ? $request->customRang_start." ".$request->customRang_end : $request->date;
 
         $exp = explode("_", $request->revenue_type);
 
@@ -2493,10 +2559,11 @@ class RevenuesController extends Controller
             return view('revenue.type_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($revenue_name == "verified") {
             return view('revenue.verified_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
-        }
-        // elseif ($exp[0] == "fee") {
-        //     return view('revenue.fee_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
-        // } 
+        } elseif ($revenue_name == "cash") {
+            return view('revenue.detail_cash', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+        } elseif ($revenue_name == "fee") {
+            return view('revenue.fee_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+        } 
         else {
             return view('revenue.detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         }
@@ -2554,13 +2621,22 @@ class RevenuesController extends Controller
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
+
+        } elseif ($request->filter_by == "customRang") {
+            $exp = explode(' ', $request->date);
+            $adate = date('Y-m-d', strtotime(date($exp[0])));
+            $adate2 = date('Y-m-d', strtotime(date($exp[1])));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
         }
 
         $perPage = (int)$request->perPage;
         $exp = explode("_", $request->status);
         if ((int)$request->status != 0) { 
             if ($request->table_name == "revenueTable") {
-                $query_sms = SMS_alerts::query()->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status);
+                $query_sms = SMS_alerts::query()->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)
+                    ->orWhereBetween('date_into', [$from, $to])->where('status', $request->status);
     
                 if ($perPage == 10) {
                     $data_query = $query_sms->limit($request->page.'0')->get();
@@ -2697,7 +2773,7 @@ class RevenuesController extends Controller
 
                 }
 
-            }  elseif ($request->table_name == "verifiedTable") {
+            } elseif ($request->table_name == "verifiedTable") {
                 $date1 = date('Y-m-d', strtotime(date($request->year.'-'.$request->month.'-01')));
                 $date2 = date('Y-m-d', strtotime('last day of this month', strtotime(date(date($request->year.'-'.$request->month.'-'.$request->day)))));
 
@@ -2719,6 +2795,35 @@ class RevenuesController extends Controller
                         $data_query = $query_sms->paginate($perPage);
                     }
                 }
+            } elseif ($request->table_name == "revenueCashTable") {
+                $query_sms = Revenues::query()->whereBetween('date', [$adate, $adate2]);
+
+                    if ($request->status == "cash_front") {
+                        $query_sms->select('date', 'front_cash as amount');
+                    } elseif ($request->status == "cash_all_outlet") {
+                        $query_sms->select('date', 'fb_cash as amount');
+                    } elseif ($request->status == "cash_all_outlet") {
+                        $query_sms->select('date', 'room_cash as amount');
+                    } elseif ($request->status == "cash_water_park") {
+                        $query_sms->select('date', 'wp_cash as amount');
+                    }
+    
+                    if ($perPage == 10) {
+                        $data_query = $query_sms->limit($request->page.'0')->get();
+                    } else {
+                        $data_query = $query_sms->paginate($perPage);
+                    }
+
+            } elseif ($request->table_name == "feeTable") {
+                $query_sms = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->whereIn('revenue_credit.status', [1, 2, 4, 6])
+                    ->whereBetween('revenue.date', [$adate, $adate2])
+                    ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status');
+
+                    if ($perPage == 10) {
+                        $data_query = $query_sms->limit($request->page.'0')->get();
+                    } else {
+                        $data_query = $query_sms->paginate($perPage);
+                    }
             }
         }
 
@@ -2856,6 +2961,41 @@ class RevenuesController extends Controller
                     }
                 }
 
+            } elseif ($request->table_name == "revenueCashTable") { 
+
+                foreach ($data_query as $key => $value) {
+                    if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                        $data[] = [
+                            'number' => $key + 1,
+                            'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                            'amount' => number_format($value->amount, 2),
+                        ];
+                    }
+                }
+
+            } elseif ($request->table_name == "feeTable") { 
+
+                foreach ($data_query as $key => $value) {
+                    if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                        $revenue_name = '';
+                        // ประเภทรายได้
+                        if ($value->status == 0) { $revenue_name = '-'; } 
+                        if ($value->status == 1) { $revenue_name = 'Guest Deposit Revenue'; } 
+                        if($value->status == 2) { $revenue_name = 'All Outlet Revenue'; } 
+                        if($value->status == 4) { $revenue_name = 'Credit Card Revenue'; } 
+                        if($value->status == 6) { $revenue_name = 'Front Desk Revenue'; } 
+
+                        $data[] = [
+                            'number' => $key + 1,
+                            'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                            'stan' => $value->batch,
+                            'revenue_name' => $revenue_name,
+                            'amount' => number_format($value->credit_amount, 2),
+                        ];
+                    }
+                }
+
             } else {
                 foreach ($data_query as $key => $value) {
                     if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
@@ -2941,6 +3081,14 @@ class RevenuesController extends Controller
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
+
+        } elseif ($request->filter_by == "customRang") {
+            $exp = explode(' ', $request->date);
+            $adate = date('Y-m-d', strtotime(date($exp[0])));
+            $adate2 = date('Y-m-d', strtotime(date($exp[1])));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
         }
 
         $data = [];
@@ -2955,13 +3103,15 @@ class RevenuesController extends Controller
                 if (!empty($request->search_value)) {
                     $data_query = SMS_alerts::whereBetween('date', [$from, $to])
                         ->where('date', 'LIKE', '%'.$search.'%')->whereNull('date_into')->where('status', $request->status)
-                        ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereBetween('date', [$from, $to])
-                        ->whereNull('date_into')->where('status', $request->status)
+                        ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)
+                        ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereBetween('date_into', [$from, $to])->where('status', $request->status)
+                        ->orWhere('date', 'LIKE', '%'.$search.'%')->whereBetween('date_into', [$from, $to])->where('status', $request->status)
                         ->paginate($perPage);
                 } else {
-                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)->orderBy('date', 'asc')->paginate($perPage);
+                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)
+                        ->orWhereBetween('date_into', [$from, $to])->where('status', $request->status)
+                        ->orderBy('date', 'asc')->paginate($perPage);
                 }
-
             }
         } else {
             if ($request->status != "mc_elexa_charge" && $request->status != "mc_agoda_charge" && count($exp) > 1 && $exp[0]."_".$exp[1] == "manual_charge") {
@@ -3159,11 +3309,56 @@ class RevenuesController extends Controller
                         $data_query = Revenues::whereBetween('date', [$date1, $date2])->where('status', 0)->paginate($perPage);
                     }
                 }
+            } elseif ($request->table_name == "revenueCashTable") {
+                if ($request->status == "cash_front") {
+                    $data_query = Revenues::whereBetween('date', [$adate, $adate2])
+                            ->where(function($query) use ($search) {
+                                $query->where('date', 'like', '%' . $search . '%')
+                                    ->orWhere('front_cash', 'like', '%' . $search . '%');
+                            })->select('date', 'front_cash as amount')->paginate($perPage);
+
+                } elseif ($request->status == "cash_all_outlet") {
+                    $data_query = Revenues::whereBetween('date', [$adate, $adate2])
+                            ->where(function($query) use ($search) {
+                                $query->where('date', 'like', '%' . $search . '%')
+                                    ->orWhere('fb_cash', 'like', '%' . $search . '%');
+                            })
+                            ->select('date', 'fb_cash as amount')->paginate($perPage);
+
+                } elseif ($request->status == "cash_guest") {
+                    $data_query = Revenues::whereBetween('date', [$adate, $adate2])
+                            ->where(function($query) use ($search) {
+                                $query->where('date', 'like', '%' . $search . '%')
+                                    ->orWhere('room_cash', 'like', '%' . $search . '%');
+                            })
+                            ->select('date', 'room_cash as amount')->paginate($perPage);
+
+                } elseif ($request->status == "cash_water_park") {
+                    $data_query = Revenues::whereBetween('date', [$adate, $adate2])
+                            ->where(function($query) use ($search) {
+                                $query->where('date', 'like', '%' . $search . '%')
+                                    ->orWhere('wp_cash', 'like', '%' . $search . '%');
+                            })
+                            ->select('date', 'wp_cash as amount')->paginate($perPage);
+                }
+
+            } elseif ($request->table_name == "feeTable") {
+                $data_query = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
+                    ->whereIn('revenue_credit.status', [1, 2, 4, 6])->whereBetween('revenue.date', [$adate, $adate2])
+                    ->where(function($query) use ($search) {
+                        $query->where('date', 'like', '%' . $search . '%')
+                            ->orWhere('batch', 'like', '%' . $search . '%')
+                            ->orWhere('credit_amount', 'like', '%' . $search . '%');
+                    })
+                    ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status')
+                    ->paginate($perPage);
             }
         }
 
+        // dd($request);
+
         if (isset($data_query) && count($data_query) > 0) {
-            if ($status > 0) { ## Manual Charge
+            if ($status > 0 || $request->status == "total_transaction") { ## Manual Charge
                 foreach ($data_query as $key => $value) {
 
                     $img_bank = '';
@@ -3277,6 +3472,36 @@ class RevenuesController extends Controller
                         'revenue_name' => $revenue_name,
                         'ev_revenue' => number_format($value->ev_revenue, 2),
                     ];
+                }
+
+            } elseif ($request->table_name == "revenueCashTable") { 
+
+                    foreach ($data_query as $key => $value) {
+                        $data[] = [
+                            'number' => $key + 1,
+                            'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                            'amount' => number_format($value->amount, 2),
+                        ];
+                    }
+
+            } elseif ($request->table_name == "feeTable") { 
+
+                foreach ($data_query as $key => $value) {
+                        $revenue_name = '';
+                        // ประเภทรายได้
+                        if ($value->status == 0) { $revenue_name = '-'; } 
+                        if ($value->status == 1) { $revenue_name = 'Guest Deposit Revenue'; } 
+                        if($value->status == 2) { $revenue_name = 'All Outlet Revenue'; } 
+                        if($value->status == 4) { $revenue_name = 'Credit Card Revenue'; } 
+                        if($value->status == 6) { $revenue_name = 'Front Desk Revenue'; } 
+
+                        $data[] = [
+                            'number' => $key + 1,
+                            'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                            'stan' => $value->batch,
+                            'revenue_name' => $revenue_name,
+                            'amount' => number_format($value->credit_amount, 2),
+                        ];
                 }
 
             } else {
