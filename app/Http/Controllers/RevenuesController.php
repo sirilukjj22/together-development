@@ -2130,11 +2130,33 @@ class RevenuesController extends Controller
     public function detail(Request $request)
     {
 
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+        if ($request->filter_by == "date" || $request->filter_by == "today") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
             $adate = date('Y-m-d 21:00:00', strtotime($req_date));
             $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate));
+
+            // Revenue
+            $month_from = $req_date;
+            $month_to = $req_date;
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime($req_date)));
+
+        } elseif ($request->filter_by == "yesterday") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = date('Y-m-d 21:00:00', strtotime($req_date));
+            $from = date('Y-m-d 21:00:00', strtotime('-2 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime('-1 day', strtotime(date($adate))));
+
+            // Revenue
+            $month_from = $req_date;
+            $month_to = $req_date;
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime($req_date)));
+
+        }  elseif ($request->filter_by == "tomorrow") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = date('Y-m-d 21:00:00', strtotime($req_date));
+            $from = date('Y-m-d 21:00:00');
+            $to = date('Y-m-d 20:59:59', strtotime('+1 day', strtotime(date($adate))));
 
             // Revenue
             $month_from = $req_date;
@@ -2182,7 +2204,7 @@ class RevenuesController extends Controller
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
 
-            $month_from = date('Y-m-d', strtotime(date('Y-m-01')));
+            $month_from = date('Y-m-d', strtotime($from));
             $month_to = date('Y-m-d', strtotime(date($adate2)));
             $date_first_day = $adate;
 

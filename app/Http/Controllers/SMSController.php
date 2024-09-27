@@ -265,13 +265,33 @@ class SMSController extends Controller
     {
         $role_revenue = Role_permission_revenue::where('user_id', Auth::user()->id)->first();
 
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+        if ($request->filter_by == "date" || $request->filter_by == "today") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
             $adate = $req_date;
             $adate2 = date('Y-m-d', strtotime(date($adate)));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date($adate . ' 20:59:59');
+
+        } elseif ($request->filter_by == "yesterday") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = date('Y-m-d' . ' 21:00:00', strtotime('-2 day', strtotime(date($req_date))));
+            $adate2 = date('Y-m-d', strtotime('-1 day', strtotime($req_date)));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime($adate));
+            $to = date($adate2 . ' 20:59:59');
+
+            $date_current = $adate2;
+
+        } elseif ($request->filter_by == "tomorrow") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = $req_date;
+            $adate2 = date('Y-m-d', strtotime('+1 day', strtotime(date($adate))));
+
+            $from = date('Y-m-d' . ' 21:00:00');
+            $to = date($adate2 . ' 20:59:59');
+
+            $date_current = $adate2;
 
         } elseif ($request->filter_by == "month") {
             $exp = explode('-', $request->date);
@@ -576,13 +596,33 @@ class SMSController extends Controller
     {
         $role_revenue = Role_permission_revenue::where('user_id', Auth::user()->id)->first();
 
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+        if ($request->filter_by == "date" || $request->filter_by == "today") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
             $adate = $req_date;
             $adate2 = date('Y-m-d', strtotime(date($adate)));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date($adate . ' 20:59:59');
+
+        }  elseif ($request->filter_by == "yesterday") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = date('Y-m-d' . ' 21:00:00', strtotime('-2 day', strtotime(date($req_date))));
+            $adate2 = date('Y-m-d', strtotime('-1 day', strtotime($req_date)));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime($adate));
+            $to = date($adate2 . ' 20:59:59');
+
+            $date_current = $adate2;
+
+        } elseif ($request->filter_by == "tomorrow") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = $req_date;
+            $adate2 = date('Y-m-d', strtotime('+1 day', strtotime(date($adate))));
+
+            $from = date('Y-m-d' . ' 21:00:00');
+            $to = date($adate2 . ' 20:59:59');
+
+            $date_current = $adate2;
 
         } elseif ($request->filter_by == "month") {
             $exp = explode('-', $request->date);
@@ -1647,13 +1687,35 @@ class SMSController extends Controller
 
     public function search_filter_date(Request $request)
     {
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+        if ($request->filter_by == "date" || $request->filter_by == "today") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
             $adate = $req_date;
             $adate2 = date('Y-m-d', strtotime(date($adate)));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date($adate . ' 20:59:59');
+
+            $date_current = $adate;
+
+        } elseif ($request->filter_by == "yesterday") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = date('Y-m-d' . ' 21:00:00', strtotime('-2 day', strtotime(date($req_date))));
+            $adate2 = date('Y-m-d', strtotime('-1 day', strtotime($req_date)));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime($adate));
+            $to = date($adate2 . ' 20:59:59');
+
+            $date_current = $adate2;
+
+        } elseif ($request->filter_by == "tomorrow") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = $req_date;
+            $adate2 = date('Y-m-d', strtotime('+1 day', strtotime(date($adate))));
+
+            $from = date('Y-m-d' . ' 21:00:00');
+            $to = date($adate2 . ' 20:59:59');
+
+            $date_current = $adate2;
 
         } elseif ($request->filter_by == "month") {
             $exp = explode('-', $request->date);
@@ -1674,6 +1736,8 @@ class SMSController extends Controller
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date($adate2 . ' 20:59:59');
 
+            $date_current = $request->date;
+
         } elseif ($request->filter_by == "thisMonth") {
             $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
             $adate = date('Y-m-01');
@@ -1681,6 +1745,8 @@ class SMSController extends Controller
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate2));
+
+            $date_current = $adate;
 
         } elseif ($request->filter_by == "year") {
             $year = $request->date;
@@ -1690,6 +1756,8 @@ class SMSController extends Controller
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($year . '-12-31'));
 
+            $date_current = $adate;
+
         } elseif ($request->filter_by == "week") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
             $sundayOfWeek = date('Y-m-d', strtotime('last sunday', strtotime('next sunday', strtotime($req_date))));
@@ -1698,6 +1766,8 @@ class SMSController extends Controller
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d' . ' 20:59:59', strtotime(date($adate2)));
+
+            $date_current = $request->date;
         }
 
         // ตาราง 1
@@ -2092,7 +2162,7 @@ class SMSController extends Controller
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
 
         $filter_by = $request->filter_by;
-        $search_date = $adate;
+        $search_date = $date_current;
 
         $status = $request->status;
         $into_account = $request->into_account;
