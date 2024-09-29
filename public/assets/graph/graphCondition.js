@@ -138,7 +138,7 @@ function get_graphMonthRange($month, $to_month, $year) {
 
     $.ajax({
         type: "GET",
-        url: "sms-graph-monthRange/"+$month+"/"+$to_month+"/"+$year+""+type+"/"+account+"",
+        url: "sms-graph-monthRange/"+$month+"/"+$to_month+"/"+$year+"/"+type+"/"+account+"",
         datatype: "JSON",
         async: false,
         success: function(response) {

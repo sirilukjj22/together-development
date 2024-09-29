@@ -208,6 +208,9 @@ class SMSController extends Controller
         $total_wp_credit = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 7)->whereNull('date_into')
             ->orWhereDate('date_into', date('Y-m-d'))->where('status', 7)
             ->sum('amount');
+        $total_other = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 9)->whereNull('date_into')
+            ->orWhereDate('date_into', date('Y-m-d'))->where('status', 9)
+            ->sum('amount');
         $total_ev = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 8)->whereNull('date_into')
             ->orWhereDate('date_into', date('Y-m-d'))->where('status', 8)
             ->sum('amount');
@@ -223,7 +226,6 @@ class SMSController extends Controller
 
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
 
-        // dd($total_split);
         return view(
             'sms-forward.index',
             compact(
@@ -244,6 +246,7 @@ class SMSController extends Controller
                 'total_fb',
                 'total_wp',
                 'total_ev',
+                'total_other',
                 'total_credit',
                 'total_credit_transaction',
                 'total_transfer',
@@ -320,6 +323,8 @@ class SMSController extends Controller
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate2));
 
+            $date_current = $adate;
+
         } elseif ($request->filter_by == "year") {
             $year = $request->date;
             $adate = date('Y-m-d', strtotime($year . '-01' . '-01'));
@@ -327,6 +332,8 @@ class SMSController extends Controller
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($year . '-12-31'));
+
+            $date_current = $adate2;
 
         } elseif ($request->filter_by == "week") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
@@ -348,8 +355,8 @@ class SMSController extends Controller
             if (!empty($request->search_value)) {
                 $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')
                     ->where(function($query) use ($search) {
-                        $query->where('date', 'LIKE', '%'.$search.'%');
-                        $query->orWhere('amount', 'LIKE', '%'.$search.'%');
+                        $query->where('date', 'LIKE', '%'.$search.'%')
+                        ->orWhere('amount', 'LIKE', '%'.$search.'%');
                     })
                     ->orderBy('date', 'asc')->paginate($perPage);
             } else {
@@ -358,14 +365,64 @@ class SMSController extends Controller
 
         } elseif ($request->table_name == "smsDetailTable") {
             if (!empty($request->search_value)) {
-                $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $status_type)
-                    ->where(function($query) use ($search) {
-                        $query->where('date', 'LIKE', '%'.$search.'%');
-                        $query->orWhere('amount', 'LIKE', '%'.$search.'%');
-                    })
-                    ->orderBy('date', 'asc')->paginate($perPage);
+                if ($request->status == "total_transaction") {
+                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])
+                        ->where('date', 'LIKE', '%'.$search.'%')
+                        ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereBetween('date', [$from, $to])
+                        ->orderBy('date', 'asc')->paginate($perPage);
+
+                } elseif ($request->status == "credit_card_hotel_transfer_transaction") { 
+                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])
+                        ->where('status', 4)->where('date', 'LIKE', '%'.$search.'%')
+                        ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereBetween('date', [$from, $to])->where('status', 4)
+                        ->orderBy('date', 'asc')->paginate($perPage);
+
+                } elseif ($request->status == "transfer_transaction") { 
+                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])
+                        ->where('transfer_status', 1)->where('date', 'LIKE', '%'.$search.'%')
+                        ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereBetween('date', [$from, $to])->where('transfer_status', 1)
+                        ->orderBy('date', 'asc')->paginate($perPage);
+
+                } elseif ($request->status == "split_revenue") {
+                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])
+                        ->where('split_status', 1)->where('date', 'LIKE', '%'.$search.'%')
+                        ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereBetween('date', [$from, $to])->where('split_status', 1)
+                        ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('split_status', 1)
+                        ->orderBy('date', 'asc')->paginate($perPage);
+
+                } elseif ($request->status == "transfer_revenue") {
+                    $data_query = SMS_alerts::where('amount', 'LIKE', '%'.$search.'%')->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)
+                        ->where('transfer_status', 1)
+                        ->orderBy('date', 'asc')->paginate($perPage);
+
+                }else {
+                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')
+                        ->where('status', $status_type)->where('date', 'LIKE', '%'.$search.'%')
+                        ->orWhere('amount', 'LIKE', '%'.$search.'%')->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $status_type)
+                        ->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $status_type)
+                        ->where('amount', 'LIKE', '%'.$search.'%')->where('status', $status_type)
+                        ->orderBy('date', 'asc')->paginate($perPage);
+                }
+
             } else {
-                $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $status_type)->orderBy('date', 'asc')->paginate($perPage);
+                if ($request->status == "total_transaction") {
+                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])->orderBy('date', 'asc')->paginate($perPage);
+                } elseif ($request->status == "credit_card_hotel_transfer_transaction") { 
+                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 4)->orderBy('date', 'asc')->paginate($perPage);
+                } elseif ($request->status == "transfer_transaction") { 
+                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->orderBy('date', 'asc')->paginate($perPage);
+                } elseif ($request->status == "split_revenue") {
+                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])->where('split_status', 1)
+                        ->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('split_status', 1)
+                        ->orderBy('date', 'asc')->paginate($perPage);
+                }  elseif ($request->status == "transfer_revenue") {
+                    $data_query = SMS_alerts::whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)
+                        ->orderBy('date', 'asc')->paginate($perPage);
+                } else {
+                    $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $status_type)
+                        ->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $status_type)
+                        ->orderBy('date', 'asc')->paginate($perPage);
+                }
             }
 
         } elseif ($request->table_name == "transferTable") {
@@ -690,17 +747,33 @@ class SMSController extends Controller
             }
 
         } elseif ($request->table_name == "smsDetailTable") {
-            $query_sms = SMS_alerts::query()->whereBetween('date', [$from, $to])->whereNull('date_into');
+            $query_sms = SMS_alerts::query();
 
-                if ($request->into_account != '') { 
-                    $query_sms->where('into_account', $request->into_account);
-                }
-            $query_sms->where('status', $request->status); 
+            if ($request->status == "transfer_revenue") {
+                $query_sms->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1);
+            } else {
+                $query_sms->whereBetween('date', [$from, $to]);
+            }
+            
+            if ($request->status != "total_transaction" && $request->status != "transfer_transaction" && $request->status != "split_revenue" && $request->status != "transfer_revenue") {
+                $query_sms->whereNull('date_into')->where('status', $request->status);
+            }
+            if ($request->status == "transfer_transaction") {
+                $query_sms->where('transfer_status', 1);
+            }
+            if ($request->status == "split_revenue") {
+                $query_sms->where('split_status', 1);
+                $query_sms->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('split_status', 1);
+            }
+
+            if ($request->into_account != '') { 
+                $query_sms->where('into_account', $request->into_account);
+            }
 
             $query_sms->orderBy('date', 'asc');
 
             if ($perPage == 10) {
-                $data_query = $query_sms->limit($request->page.'0')->get();
+                $data_query = $query_sms->limit($request->page.'0')->get(); 
             } else {
                 $data_query = $query_sms->paginate($perPage);
             }
@@ -1179,13 +1252,11 @@ class SMSController extends Controller
 
         return response()->json([
             'amount' => $amount,
-            // 'date' => $date,
         ]);
     }
 
     public function graphMonthRange($month, $to_month, $year, $type, $account)
     {
-        // $thisYear = $year;
         $months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
         $month = date('m', strtotime(date($year.'-'.$month.'-d')));
         $to_month = date('m', strtotime(date($year.'-'.$to_month.'-d')));
@@ -1193,33 +1264,31 @@ class SMSController extends Controller
         $amount = [];
         $date = [];
 
-        // dd([(int)$month, $to_month]);
-
         foreach ($months as $key => $item) {
 
             if (($key + 1) >= (int)$month && ($key + 1) <= (int)$to_month) {
-                $date_from = date('Y-'.$item.'-01');
+                $date_from = date($year.'-'.$item.'-01');
                 $lastday = date('d', strtotime('last day of this month', strtotime(date($date_from))));
 
-                $from_start = date("Y-m-d 21:00:00", strtotime("-1 day", strtotime('Y-'.$item.'-01')));
-                $to_end = date('Y-'.$item.'-'.$lastday.' 20:59:59');
+                $from_start = date("Y-m-d 21:00:00", strtotime("-1 day", strtotime($year.'-'.$item.'-01')));
+                $to_end = date($year.'-'.$item.'-'.$lastday.' 20:59:59');
                 $adate2 = Carbon::parse($to_end)->format('Y-m-d');
 
                 if (!empty($type)) {
                     if (!empty($account)) {
-                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
-                            ->orWhereDate('date_into', $adate2)->where('status', $type)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->where('into_account', $account)->whereNull('date_into')
+                            ->orWhereDate('date_into', '>=', $date_from)->whereDate('date_into', '<=', $adate2)->where('status', $type)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
                     } else {
-                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->WhereNull('transfer_remark')->where('split_status', 0)
-                            ->orWhereDate('date_into', $adate2)->where('status', $type)->orderBy('date', 'asc')->sum('amount');
+                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('status', $type)->whereNull('date_into')
+                            ->orWhereDate('date_into', '>=', $date_from)->whereDate('date_into', '<=', $adate2)->where('status', $type)->orderBy('date', 'asc')->sum('amount');
                     }
                 } else {
                     if (!empty($account)) {
-                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('into_account', $account)->WhereNull('transfer_remark')->where('split_status', 0)
-                            ->orWhereDate('date_into', $adate2)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
+                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->where('into_account', $account)->whereNull('date_into')
+                            ->orWhereDate('date_into', '>=', $date_from)->whereDate('date_into', '<=', $adate2)->where('into_account', $account)->orderBy('date', 'asc')->sum('amount');
                     } else {
-                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->WhereNull('transfer_remark')->where('split_status', 0)
-                            ->orWhereDate('date_into', $adate2)->orderBy('date', 'asc')->sum('amount');
+                        $sum_amount = SMS_alerts::whereBetween('date', [$from_start, $to_end])->whereNull('date_into')
+                            ->orWhereDate('date_into', '>=', $date_from)->whereDate('date_into', '<=', $adate2)->orderBy('date', 'asc')->sum('amount');
                     }
                 }
                 $amount[] = number_format($sum_amount, 2, '.', '');
@@ -1230,7 +1299,6 @@ class SMSController extends Controller
 
         return response()->json([
             'amount' => $amount,
-            // 'date' => $date,
         ]);
     }
 
@@ -2007,6 +2075,29 @@ class SMSController extends Controller
 
         $total_wp_credit = $query_wp_credit->sum('amount');
 
+        ## Other Revenue
+        $query_other = SMS_alerts::query();
+
+            if ($request->into_account != '') { 
+                if ($request->status != '') { 
+                    $query_other->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 9);
+                    $query_other->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status)->where('status', 9);
+                } else {
+                    $query_other->whereBetween('date', [$from, $to])->whereNull('date_into')->where('into_account', $request->into_account)->where('status', 9);
+                    $query_other->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', 9);
+                }
+            } else {
+                if ($request->status != '') { 
+                    $query_other->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status)->where('status', 9);
+                    $query_other->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status)->where('status', 9);
+                } else {
+                    $query_other->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', 9);
+                    $query_other->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 9);
+                }
+            }
+
+        $total_other = $query_other->sum('amount');
+
         ## Elexa EGAT
         $query_ev = SMS_alerts::query();
 
@@ -2191,6 +2282,7 @@ class SMSController extends Controller
             'total_wp_credit',
             'total_split',
             'total_split_transaction',
+            'total_other',
             'total_ev',
             'filter_by',
             'search_date',
@@ -2232,13 +2324,33 @@ class SMSController extends Controller
 
     public function detail(Request $request)
     {
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+        if ($request->filter_by == "date" || $request->filter_by == "today") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
             $adate = $req_date;
             $adate2 = date('Y-m-d', strtotime(date($adate)));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date($adate . ' 20:59:59');
+
+        }  elseif ($request->filter_by == "yesterday") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = date('Y-m-d' . ' 21:00:00', strtotime('-2 day', strtotime(date($req_date))));
+            $adate2 = date('Y-m-d', strtotime('-1 day', strtotime($req_date)));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime($adate));
+            $to = date($adate2 . ' 20:59:59');
+
+            $date_current = $adate2;
+
+        } elseif ($request->filter_by == "tomorrow") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = $req_date;
+            $adate2 = date('Y-m-d', strtotime('+1 day', strtotime(date($adate))));
+
+            $from = date('Y-m-d' . ' 21:00:00');
+            $to = date($adate2 . ' 20:59:59');
+
+            $date_current = $adate2;
 
         } elseif ($request->filter_by == "month") {
             $exp = explode('-', $request->date);
@@ -2290,70 +2402,72 @@ class SMSController extends Controller
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
 
         if ($request->revenue_type == "front") {
-            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 6)->orWhereDate('date_into', $adate)->where('status', 6)->paginate(10);
-            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 6)->orWhereDate('date_into', $adate)->where('status', 6)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 6)->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 6)->paginate(10);
+            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 6)->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 6)->sum('amount');
             $title = "Front Desk Bank Transfer Revenue";
             $status = 6;
 
         } elseif ($request->revenue_type == "room") {
-            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 1)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 1)->paginate(10);
-            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 1)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 1)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 1)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 1)->paginate(10);
+            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 1)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 1)->sum('amount');
             $title = "Guest Deposit Bank Transfer Revenue";
             $status = 1;
 
         } elseif ($request->revenue_type == "all_outlet") {
-            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 2)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 2)->paginate(10);
-            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 2)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 2)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 2)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 2)->paginate(10);
+            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 2)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 2)->sum('amount');
             $title = "All Outlet Revenue";
             $status = 2;
 
         } elseif ($request->revenue_type == "credit") {
-            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->where('status', 4)
-                ->orWhereDate('date_into', $adate)->where('into_account', "708-226792-1")->where('status', 4)->paginate(10);
-            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->where('status', 4)
-                ->orWhereDate('date_into', $adate)->where('into_account', "708-226792-1")->where('status', 4)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->where('status', 4)->whereNull('date_into')
+                ->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', "708-226792-1")->where('status', 4)->paginate(10);
+            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('into_account', "708-226792-1")->where('status', 4)->whereNull('date_into')
+                ->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', "708-226792-1")->where('status', 4)->sum('amount');
             $title = "Credit Card Hotel Revenue";
             $status = 4;
 
         } elseif ($request->revenue_type == "credit_water") {
-            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 7)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 7)->paginate(10);
-            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 7)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 7)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 7)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 7)->paginate(10);
+            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 7)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 7)->sum('amount');
             $title = "Credit Card Water Park Revenue";
             $status = 7;
 
         } elseif ($request->revenue_type == "water") {
-            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 3)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 3)->paginate(10);
-            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 3)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 3)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 3)->whereNull('date_into')
+                ->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 3)->paginate(10);
+            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 3)->whereNull('date_into')
+                ->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 3)->sum('amount');
             $title = "Water Park Bank Transfer Revenue";
             $status = 3;
 
         } elseif ($request->revenue_type == "elexa_revenue") {
-            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 8)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 8)->paginate(10);
-            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 8)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 8)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 8)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 8)->paginate(10);
+            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 8)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 8)->sum('amount');
             $title = "Elexa EGAT Revenue";
             $status = 8;
 
         } elseif ($request->revenue_type == "other_revenue") {
-            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 9)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 9)->paginate(10);
-            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 9)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 9)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 9)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 9)->paginate(10);
+            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 9)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 9)->sum('amount');
             $title = "Other Bank Transfer Revenue";
             $status = 9;
 
         } elseif ($request->revenue_type == "transfer_revenue") {
-            $data_sms = SMS_alerts::whereDate('date_into', $adate)->where('transfer_status', 1)->paginate(10);
-            $total_sms = SMS_alerts::whereDate('date_into', $adate)->where('transfer_status', 1)->sum('amount');
+            $data_sms = SMS_alerts::whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)->paginate(10);
+            $total_sms = SMS_alerts::whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)->sum('amount');
             $title = "Transfer Revenue";
             $status = 'transfer_revenue';
 
         } elseif ($request->revenue_type == "split_revenue") {
-            $data_sms = SMS_alerts::whereDate('date_into', $adate)->where('split_status', 1)->paginate(10);
-            $total_sms = SMS_alerts::whereDate('date_into', $adate)->where('split_status', 1)->sum('amount');
+            $data_sms = SMS_alerts::whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('split_status', 1)->paginate(10);
+            $total_sms = SMS_alerts::whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('split_status', 1)->sum('amount');
             $title = "Split Credit Card Hotel Revenue";
             $status = 'split_revenue';
 
         } elseif ($request->revenue_type == "transfer_transaction") {
             $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->paginate(10);
-            $total_sms = SMS_alerts::whereDate('date', $adate)->where('transfer_status', 1)->sum('amount');
+            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('transfer_status', 1)->sum('amount');
             $title = "Transfer Transaction";
             $status = 'transfer_transaction';
 
@@ -2370,20 +2484,20 @@ class SMSController extends Controller
             $status = 'split_credit_card_hotel_transaction';
 
         } elseif ($request->revenue_type == "total_transaction") {
-            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->orWhereDate('date_into', $adate)->paginate(10);
-            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->orWhereDate('date_into', $adate)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->paginate(10);
+            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->sum('amount');
             $title = "Total Transaction";
             $status = 'total_transaction';
 
         } elseif ($request->revenue_type == "status") {
-            $data_sms = SMS_alerts::whereDate('date', [$from, $to])->where('status', 0)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 0)->paginate(10);
-            $total_sms = SMS_alerts::whereDate('date', [$from, $to])->where('status', 0)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 0)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 0)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 0)->paginate(10);
+            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 0)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 0)->sum('amount');
             $title = "No Income Type";
-            $status = 'no_income_type';
+            $status = '0';
 
         } elseif ($request->revenue_type == "no_income_revenue") {
-            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 0)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 0)->paginate(10);
-            $total_sms = SMS_alerts::whereDate('date', [$from, $to])->where('status', 0)->whereNull('date_into')->orWhereDate('date_into', $adate)->where('status', 0)->sum('amount');
+            $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 0)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 0)->paginate(10);
+            $total_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 0)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 0)->sum('amount');
             $title = "No Income Revenue";
             $status = 'no_income_revenue';
         }
@@ -2397,13 +2511,33 @@ class SMSController extends Controller
 
     public function agoda_detail(Request $request)
     {
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+        if ($request->filter_by == "date" || $request->filter_by == "today") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
             $adate = $req_date;
             $adate2 = date('Y-m-d', strtotime(date($adate)));
 
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date($adate . ' 20:59:59');
+
+        }  elseif ($request->filter_by == "yesterday") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = date('Y-m-d' . ' 21:00:00', strtotime('-2 day', strtotime(date($req_date))));
+            $adate2 = date('Y-m-d', strtotime('-1 day', strtotime($req_date)));
+
+            $from = date('Y-m-d' . ' 21:00:00', strtotime($adate));
+            $to = date($adate2 . ' 20:59:59');
+
+            $date_current = $adate2;
+
+        } elseif ($request->filter_by == "tomorrow") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = $req_date;
+            $adate2 = date('Y-m-d', strtotime('+1 day', strtotime(date($adate))));
+
+            $from = date('Y-m-d' . ' 21:00:00');
+            $to = date($adate2 . ' 20:59:59');
+
+            $date_current = $adate2;
 
         } elseif ($request->filter_by == "month") {
             $exp = explode('-', $request->date);
@@ -2456,7 +2590,7 @@ class SMSController extends Controller
             ->paginate(10);
 
         $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 5)
-            ->whereNull('date_into')->orWhereDate('date_into', $adate)
+            ->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)
             ->where('status', 5)->paginate(10);
         
         $title = "Agoda bank Transfer Revenue";

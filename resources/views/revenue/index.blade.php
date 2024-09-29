@@ -536,8 +536,7 @@
                             </div>
                             <div class="sub d-grid-r">
                                 <div class="sub-content">
-                                    <div class="box-card3 bg-box"
-                                        style="min-height: 92%;display: flex;justify-content: center;">
+                                    <div class="box-card3 bg-box" style="min-height: 92%;display: flex;justify-content: center;">
                                         <p>{{ number_format($monthly_revenue / $day_sum, 2) }} <span> / Day</span>
                                         </p>
                                     </div>
@@ -552,8 +551,7 @@
                             </div>
                             <div class="sub d-grid-r" onclick="revenue_detail('verified')">
                                 <div class="sub-content">
-                                    <div class="box-card3 bg-box"
-                                        style="min-height: 92%;display: flex;justify-content: center;">
+                                    <div class="box-card3 bg-box" style="min-height: 92%;display: flex;justify-content: center;">
                                         <p>{{ $total_verified ?? 0 }}</p>
                                     </div>
                                 </div>
@@ -565,8 +563,7 @@
                             </div>
                             <div class="sub d-grid-r" onclick="revenue_detail('unverified')">
                                 <div class="sub-content">
-                                    <div class="box-card3 bg-box"
-                                        style="min-height: 92%;display: flex;justify-content: center;">
+                                    <div class="box-card3 bg-box" style="min-height: 92%;display: flex;justify-content: center;">
                                         <p>{{ $total_unverified ?? 0 }}</p>
                                     </div>
                                 </div>

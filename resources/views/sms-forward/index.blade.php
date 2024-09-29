@@ -10,7 +10,7 @@
                 if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow') {
                     $pickup_time = date('d F Y', strtotime($search_date));
                 } elseif (isset($filter_by) && $filter_by == 'month') {
-                    $pickup_time = date('F Y', strtotime($search_date));
+                    $pickup_time = $search_date;
                 } elseif (isset($filter_by) && $filter_by == 'year') {
                     $pickup_time = date('Y', strtotime($search_date));
                 } elseif (isset($filter_by) && $filter_by == 'week') {
@@ -213,7 +213,7 @@
                                                     <p>Transfer Revenue</p>
                                                 </div>
                                                 <div>
-                                                    <div class="fz-15px">{{ number_format(0, 2) }}</div>
+                                                    <div class="fz-15px">{{ number_format($total_other, 2) }}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1264,7 +1264,7 @@
             <div class="modal-content rounded-lg">
                 <div class="modal-header md-header">
                     <h5 class="modal-title text-white" id="exampleModalCenter5Label">Add</h5>
-                    <button type="button" class="close text-white text-2xl" data-bs-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close text-white text-2xl" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -1340,7 +1340,7 @@
                     </div>
                     <input type="hidden" name="id" id="id">
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size: 15px;">Close</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="font-size: 15px;">Close</button>
                         <button type="button" class="btn btn-color-green sa-button-submit">Save changes</button>
                     </div>
                 </form>
@@ -1617,10 +1617,17 @@
             if (filter_by == "month") {
                 var dateString = $('#date').val();
                 var dateSplit = dateString.split('-');
-                var fDate_start = new Date(dateSplit[0]);
-                var fDate_end = new Date(dateSplit[1]);
-                var start_month = fDate_start.getMonth() + 1;
-                var end_month = fDate_end.getMonth() + 1;
+
+                if (dateSplit.length == 1) {
+                    var fDate_start = new Date(dateSplit[0]);
+                    var fDate_end = new Date(dateSplit[0]);
+                } else {
+                    var fDate_start = new Date(dateSplit[0]);
+                    var fDate_end = new Date(dateSplit[1]);
+                }
+                
+                var start_month = (fDate_start.getMonth() + 1).toString().padStart(2, '0');
+                var end_month = (fDate_end.getMonth() + 1).toString().padStart(2, '0');
                 var year = fDate_end.getFullYear();
 
                 chartMonthToMonth(start_month, end_month, year);

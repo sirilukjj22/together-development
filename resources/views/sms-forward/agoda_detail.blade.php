@@ -69,7 +69,7 @@
                 <div class="col-md-12">
                     <div class="card p-4 mb-4">
                         <h4 class="" style="color:rgba(44,127,122,.95);">SMS</h4>
-                        <table id="smsTable" class="example2 ui striped table nowrap unstackable hover">
+                        <table id="smsAgodaTable" class="example2 ui striped table nowrap unstackable hover">
                             <caption class="caption-top mt-2">
                                 <div>
                                     <div class="flex-end-g2">
@@ -98,7 +98,7 @@
                                 <?php $total_sms = 0; ?>
         
                                 @foreach ($data_sms as $key => $item)
-                                <tr style="font-weight: bold; color: black;">
+                                <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->status == 4 || $item->date_into != "" ? $item->date_into : $item->date)->format('d/m/Y') }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->status == 4 || $item->date_into != "" ? $item->date_into : $item->date)->format('H:i:s') }}</td>
@@ -255,12 +255,12 @@
                 
             $('#'+table_name).DataTable().destroy();
             if (id != "revenue") {
-                var table = $('#'+table_name).dataTable({
+                var table = $('#smsAgodaTable').dataTable({
                     searching: false,
                     paging: false,
                     info: false,
                     ajax: {
-                        url: '/sms-search-table',
+                        url: 'sms-search-table',
                         type: 'POST',
                         dataType: "json",
                         cache: false,
@@ -294,7 +294,7 @@
                         $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                     },
                     columnDefs: [
-                                { targets: [0, 1, 2, 3, 4, 5, 6], className: 'dt-center td-content-center' },
+                                { targets: [0, 1, 2, 3, 4, 6], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
