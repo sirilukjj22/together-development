@@ -417,49 +417,77 @@
         </header>
         <hr>
         <main>
+            <?php
+                if (isset($search_date)) {
+                    $date_current = $search_date;
+                } else {
+                    $date_current = date('Y-m-d');
+                }
+
+                $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))); // อาทิตย์ - เสาร์
+                
+                $day_sum = isset($search_date) ? date('j', strtotime($search_date)) : date('j');
+
+                if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow') {
+                    $pickup_time = date('d F Y', strtotime($search_date));
+                } elseif (isset($filter_by) && $filter_by == 'month') {
+                    $pickup_time = $search_date;
+                } elseif (isset($filter_by) && $filter_by == 'year') {
+                    $pickup_time = $search_date;
+                } elseif (isset($filter_by) && $filter_by == 'week') {
+                    $pickup_time = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d')))))." ~ ".date('d M', strtotime("+6 day", strtotime($this_week)));
+                } elseif (isset($filter_by) && $filter_by == 'thisMonth') {
+                    $pickup_time = "01 " . date('M') . " ~ " . date('t M');
+                } elseif (isset($filter_by) && $filter_by == 'thisYear') {
+                    $pickup_time = "01 " . "Jan" . " ~ ". date('d M', strtotime(date('Y-m-01')));
+                } elseif (isset($filter_by) && $filter_by == 'customRang') {
+                    $pickup_time = date('d M', strtotime($customRang_start)) . " " . substr(date('Y', strtotime($customRang_start)), -2) . " ~ ". date('d M', strtotime($customRang_end)) . " " . substr(date('Y', strtotime($customRang_end)), -2);
+                }
+
+            ?>
             <div class="clearfix" style="color: #020202;">
                 <table id="topic" cellpadding="2" style="margin-bottom:0px;">
                     <tr>
                         <td width="10%" align="left"><b>Date : </b></td>
-                        <td width="45%" align="left">{{ $day . '/' . $month . '/' . $year }}</td>
+                        <td width="45%" align="left">{{ $pickup_time }}</td>
                     </tr>
                 </table>
             </div>
             <?php
-            $total_cash_month = $total_front_month->front_cash + $total_guest_deposit_month->room_cash + $total_fb_month->fb_cash;
-            $total_bank_transfer_month = $total_front_month->front_transfer + $total_guest_deposit_month->room_transfer + $total_fb_month->fb_transfer;
-            
-            $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month;
-            
-            $total_charge_month = $credit_revenue_month->total_credit ?? 0;
-            
-            $total_wp_cash_bank_month = $total_wp_month->wp_cash + $total_wp_month->wp_transfer;
-            
-            $total_wp_charge_month = $wp_charge[0]['total_month'];
-            
-            $monthly_revenue = $total_cash_bank_month + $total_charge_month + ($total_wp_cash_bank_month + $total_wp_charge_month) - $agoda_charge[0]['total'];
-            
-            $sum_charge = $front_charge[0]['revenue_credit_date'] + $guest_deposit_charge[0]['revenue_credit_date'] + $fb_charge[0]['revenue_credit_date'];
+                $total_cash_month = $total_front_month->front_cash + $total_guest_deposit_month->room_cash + $total_fb_month->fb_cash;
+                $total_bank_transfer_month = $total_front_month->front_transfer + $total_guest_deposit_month->room_transfer + $total_fb_month->fb_transfer;
+                
+                $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month;
+                
+                $total_charge_month = $credit_revenue_month->total_credit ?? 0;
+                
+                $total_wp_cash_bank_month = $total_wp_month->wp_cash + $total_wp_month->wp_transfer;
+                
+                $total_wp_charge_month = $wp_charge[0]['total_month'];
+                
+                $monthly_revenue = $total_cash_bank_month + $total_charge_month + ($total_wp_cash_bank_month + $total_wp_charge_month) - $agoda_charge[0]['total'];
+                
+                $sum_charge = $front_charge[0]['revenue_credit_date'] + $guest_deposit_charge[0]['revenue_credit_date'] + $fb_charge[0]['revenue_credit_date'];
             ?>
 
             <?php
-            $total_cash = $total_front_revenue->front_cash + $total_guest_deposit->room_cash + $total_fb_revenue->fb_cash;
-            $total_cash_month = $total_front_month->front_cash + $total_guest_deposit_month->room_cash + $total_fb_month->fb_cash;
-            $total_cash_year = $total_front_year->front_cash + $total_guest_deposit_year->room_cash + $total_fb_year->fb_cash;
-            
-            $total_bank_transfer = $total_front_revenue->front_transfer + $total_guest_deposit->room_transfer + $total_fb_revenue->fb_transfer + $today_other_revenue;
-            $total_bank_transfer_month = $total_front_month->front_transfer + $total_guest_deposit_month->room_transfer + $total_fb_month->fb_transfer + $total_other_month;
-            $total_bank_transfer_year = $total_front_year->front_transfer + $total_guest_deposit_year->room_transfer + $total_fb_year->fb_transfer + $total_other_year;
-            
-            $total_wp_cash_bank = $total_wp_revenue->wp_cash + $total_wp_revenue->wp_transfer;
-            $total_wp_cash_bank_month = $total_wp_month->wp_cash + $total_wp_month->wp_transfer;
-            $total_wp_cash_bank_year = $total_wp_year->wp_cash + $total_wp_year->wp_transfer;
-            
-            $total_cash_bank = $total_cash + $total_bank_transfer;
-            $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month;
-            $total_cash_bank_year = $total_cash_year + $total_bank_transfer_year;
-            
-            $total_today_revenue_graph = $total_day + ($credit_revenue->total_credit ?? 0);
+                $total_cash = $total_front_revenue->front_cash + $total_guest_deposit->room_cash + $total_fb_revenue->fb_cash;
+                $total_cash_month = $total_front_month->front_cash + $total_guest_deposit_month->room_cash + $total_fb_month->fb_cash;
+                $total_cash_year = $total_front_year->front_cash + $total_guest_deposit_year->room_cash + $total_fb_year->fb_cash;
+                
+                $total_bank_transfer = $total_front_revenue->front_transfer + $total_guest_deposit->room_transfer + $total_fb_revenue->fb_transfer + $today_other_revenue;
+                $total_bank_transfer_month = $total_front_month->front_transfer + $total_guest_deposit_month->room_transfer + $total_fb_month->fb_transfer + $total_other_month;
+                $total_bank_transfer_year = $total_front_year->front_transfer + $total_guest_deposit_year->room_transfer + $total_fb_year->fb_transfer + $total_other_year;
+                
+                $total_wp_cash_bank = $total_wp_revenue->wp_cash + $total_wp_revenue->wp_transfer;
+                $total_wp_cash_bank_month = $total_wp_month->wp_cash + $total_wp_month->wp_transfer;
+                $total_wp_cash_bank_year = $total_wp_year->wp_cash + $total_wp_year->wp_transfer;
+                
+                $total_cash_bank = $total_cash + $total_bank_transfer;
+                $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month;
+                $total_cash_bank_year = $total_cash_year + $total_bank_transfer_year;
+                
+                $total_today_revenue_graph = $total_day + ($credit_revenue->total_credit ?? 0);
             ?>
             <table id="detail" cellpadding="5" style="line-height: 12px;">
                 <thead>
@@ -700,7 +728,7 @@
                 <table id="topic" cellpadding="2" style="margin-bottom:0px;">
                     <tr>
                         <td width="10%" align="left"><b>Date : </b></td>
-                        <td width="45%" align="left">{{ $day . '/' . $month . '/' . $year }}</td>
+                        <td width="45%" align="left">{{ $pickup_time }}</td>
                     </tr>
                 </table>
             </div>

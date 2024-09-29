@@ -86,7 +86,7 @@
                                             <td class="td-content-center">{{ $item->remark ?? 'Auto' }}</td>
                                             <td class="td-content-center">
                                                 @if ($item->status == 0)
-                                                                -
+                                                    -
                                                 @elseif ($item->status == 1)
                                                     Guest Deposit Revenue
                                                 @elseif($item->status == 2)
