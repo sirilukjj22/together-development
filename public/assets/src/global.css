@@ -876,7 +876,7 @@ textarea {
 
 .receipt-cutomer-detail ul {
   padding: 0;
-  width: 300px;
+
 }
 
 .receipt-cutomer-detail ul:nth-child(1) {
@@ -895,16 +895,13 @@ textarea {
   padding: 0;
 }
 
-.receipt-cutomer-detail li :nth-child(2)::before {
+.receipt-cutomer-detail li :nth-child(1)::after {
   content: ":";
-  margin-right: 10px;
+  float: right;
+  margin-right: 5px;
 }
 
-@media (min-width: 860px) {
-  .receipt-cutomer-detail ul:nth-child(1) {
-    width: 490px;
-  }
-}
+
 
 .receipt-subtotal {
   display: flex;

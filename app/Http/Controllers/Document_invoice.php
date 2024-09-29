@@ -1934,7 +1934,7 @@ class Document_invoice extends Controller
                 $save->type = 'Edit';
                 $save->Category = 'Edit :: Proposal Invoice ';
                 $save->content =$datacompany;
-                // $save->save();
+                $save->save();
                 {
                     if ($datarequest['Selectdata'] == 'Company') {
                         $Data_ID = $datarequest['Company'];

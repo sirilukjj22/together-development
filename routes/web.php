@@ -634,12 +634,13 @@ Route::middleware(['auth'])->group(function () {
         // Route::get('/Document/receipt/Proposal/invoice/view/LOG/{id}','LOG')->name('receipt.LOG');
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/{id}','PaidInvoice')->name('BillingFolio.PaidInvoice');
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Data/{id}','PaidInvoiceData')->name('BillingFolio.PaidInvoiceData');
+        Route::get('/Document/BillingFolio/Proposal/invoice/prewive/{id}/{ids}','PaidInvoiceDataprewive')->name('BillingFolio.PaidInvoiceDataprewive');
         Route::get('/Document/BillingFolio/Proposal/invoice/CheckPI/{id}','CheckPI')->name('BillingFolio.CheckPI');
         // Route::get('/Document/receipt/Proposal/invoice/CheckPI/PD/{quotationid}/{id}','CheckPD')->name('receipt.CheckPD');
         // //-------------------------------------save------------------------------------
-        // Route::post('/Document/receipt/Proposal/invoice/Generate/save', 'save')->name('receipt.save');
+        Route::post('/Document/BillingFolio/Proposal/invoice/Generate/save', 'savere')->name('BillingFolio.savere');
         // //-------------------------------------view------------------------------------
-        // Route::get('/Document/receipt/Proposal/invoice/view/{id}','view')->name('receipt.view');
+        Route::get('/Document/receipt/Proposal/invoice/view/','view')->name('receipt.view');
         // Route::get('/Receipt/Quotation/view/quotation/view/{id}','QuotationView')->name('receipt.QuotationView');
         // Route::get('/Receipt/Invice/view/{id}','InvoiceView')->name('receipt.InvoiceView');
 
