@@ -28,6 +28,7 @@ use App\Http\Controllers\Document_invoice;
 use App\Http\Controllers\BillingFolioController;
 use App\Http\Controllers\Masterpromotion;
 use App\Http\Controllers\UserDepartmentsController;
+use App\Http\Controllers\ReceiveChequeController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -640,7 +641,8 @@ Route::middleware(['auth'])->group(function () {
         // //-------------------------------------save------------------------------------
         Route::post('/Document/BillingFolio/Proposal/invoice/Generate/save', 'savere')->name('BillingFolio.savere');
         // //-------------------------------------view------------------------------------
-        Route::get('/Document/receipt/Proposal/invoice/view/','view')->name('receipt.view');
+        Route::get('/Document/BillingFolio/Proposal/invoice/view/{id}','view')->name('receipt.view');
+        Route::get('/Document/BillingFolio/Proposal/invoice/log/{id}','log')->name('receipt.log');
         // Route::get('/Receipt/Quotation/view/quotation/view/{id}','QuotationView')->name('receipt.QuotationView');
         // Route::get('/Receipt/Invice/view/{id}','InvoiceView')->name('receipt.InvoiceView');
 
@@ -649,6 +651,10 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('billingPD-search-table', 'search_table_billingpd');
         Route::post('billingPD-paginate-table', 'paginate_table_billingpd');
+    });
+
+    Route::controller(ReceiveChequeController::class)->middleware('role:document')->group(function () {
+        Route::get('/Document/ReceiveCheque/index', 'index')->name('ReceiveCheque.index');
     });
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');

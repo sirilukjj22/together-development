@@ -328,41 +328,37 @@
         </footer>
         <main>
             <h3 class="center font-upper">Receipt / tax invoice</h3>
-            <b  style="font-size:18px">Tax invoice no.587 (original)</b>
+            <b  style="font-size:18px">Reservation Deposit TAX INVOICE NO. {{$invoice}} (original)</b>
             <div style="width:70%">
                 <table style="line-height:12px;">
                     <tr>
                         <td ><span >Guest Name <span style="color: #fff">asdsd</span></span></td>
-                        <td >:</td>
+                        <td >: {{$fullname}}</td>
                     </tr>
                     <tr>
-                        <td><span >Room Number</span></td>
-                        <td>:
+                        <td><span >Reservation No</span></td>
+                        <td>: {{$reservationNo}}
                         </td>
                     </tr>
                     <tr>
                         <td><span >Company</span> </td>
-                        <td>:
+                        <td>: {{$fullnameCom}}
 
                         </td>
                     </tr>
                     <tr>
                         <td><span >Tax ID/Gst Pass</span></td>
-                        <td>:
+                        <td>: {{$Identification}}
                         </td>
 
                     </tr>
                     <tr>
-                        <td style="color: #fff">:</td>
-                        <td></td>
-                    </tr>
-                    <tr>
                         <td><span>Adress</span></td>
-                        <td>:</td>
+                        <td>: {{$Address}}  {{$tambon}} </td>
                     </tr>
                     <tr>
                         <td style="color: #fff">:</td>
-                        <td></td>
+                        <td><span style="color: #fff">:</span> {{$amphures}} {{$province}} {{$zip_code}}</td>
                     </tr>
                 </table>
                 <div style="margin-top: 2px"></div>
@@ -371,40 +367,33 @@
                 <table style="line-height:12px;">
                     <tr>
                         <td ><span >Page#<span style="color: #fff">asdsssssssssd</span></span></td>
-                        <td >:</td>
+                        <td >: 1/1</td>
                     </tr>
                     <tr>
-                        <td><span >Folio No.</span></td>
-                        <td>:
-                        </td>
+                        <td><span >Room No.</span></td>
+                        <td>: {{$room}}</td>
                     </tr>
                     <tr>
                         <td><span >Arrival</span> </td>
-                        <td>:
-
-                        </td>
+                        <td>: {{$arrival}}</td>
                     </tr>
                     <tr>
                         <td><span >Departure</span></td>
-                        <td>:
+                        <td>: {{$departure}}
                         </td>
 
                     </tr>
                     <tr>
                         <td><span>No. of Guest</span></td>
-                        <td>:</td>
+                        <td>: {{$numberOfGuests}}</td>
                     </tr>
                     <tr>
                         <td><span>Printed Date</span></td>
-                        <td>:</td>
-                    </tr>
-                    <tr>
-                        <td><span>Print time</span></td>
-                        <td>:</td>
+                        <td>: {{$dateFormatted}} {{$dateTime}}</td>
                     </tr>
                     <tr>
                         <td><span>Tax Invoice Date</span></td>
-                        <td>:</td>
+                        <td>: {{$created_at}}</td>
                     </tr>
                 </table>
             </span><br>
@@ -420,16 +409,16 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td id="displayPaymentDateEditBill">10/04/2024</td>
+                            <td id="displayPaymentDateEditBill">{{$Date}}</td>
                             <td >
-                                SCB Bank Transfer - Together Resort Ltd - Reservation Deposit
-                                </td>
+                                {{$datanamebank}}
+                            </td>
                             <td ></td>
-                            <td style="text-align: right">16,400.00</td>
+                            <td style="text-align: right">{{ number_format($Amount, 2) }}</td>
                         </tr>
                         <tr >
                             <td style="border: none"></td>
-                            <td style="border: none">***รายละเอียดโปรดระบุ</td>
+                            <td style="border: none">***{{$note}}</td>
                             <td style="border: none"></td>
                             <td style="border: none"></td>
                         </tr>
@@ -459,22 +448,22 @@
                     </td>
                     <td>
                         <li>
-                            400
+                            {{ number_format($Amount, 2) }}
                         </li>
                         <li>
-                            400
+                            {{ number_format($Amount/1.07, 2) }}
                         </li>
                         <li>
-                            0
+                            {{ number_format($Amount-$Amount/1.07, 2) }}
                         </li>
                         <li>
                         0
                         </li>
                         <li>
-                            0
+                            {{ number_format($Amount, 2) }}
                         </li>
                         <li class="font-w-600">
-                            0
+                            {{ number_format($Amount, 2) }}
                         </li>
                     </td>
                 </table>

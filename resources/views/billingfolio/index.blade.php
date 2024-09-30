@@ -58,14 +58,13 @@
                                 <thead>
                                     <tr>
                                         <th style="text-align: center;"data-priority="1">No</th>
-                                        <th data-priority="1">Proposal ID</th>
+                                        <th data-priority="1">Receipt ID</th>
                                         <th data-priority="1">Company / Individual</th>
-                                        <th>Issue Date</th>
-                                        <th>Expiration Date</th>
+                                        <th>Room No</th>
+                                        <th>Payment Date</th>
                                         <th class="text-center">Amount</th>
-                                        <th class="text-center">Deposit</th>
-                                        <th class="text-center">Balance</th>
-                                        <th class="text-center">Approve By</th>
+                                        <th class="text-center">Category</th>
+                                        <th class="text-center">Operated By</th>
                                         <th class="text-center">Document status</th>
                                         <th class="text-center">Order</th>
                                     </tr>
@@ -77,45 +76,33 @@
                                             <td style="text-align: center;">
                                                 {{$key +1}}
                                             </td>
-                                            <td>{{ $item->Quotation_ID}}</td>
+                                            <td>{{ $item->Receipt_ID}}</td>
                                             @if ($item->type_Proposal == 'Company')
-                                                <td>{{ @$item->company->Company_Name}}</td>
-                                            @else
-                                                <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                <td>{{ isset($item->company->Company_Name) ? $item->company->Company_Name : '' }}</td>
+                                            @elseif ($item->type_Proposal == 'Guest')
+                                                <td>{{ isset($item->guest->First_name) && isset($item->guest->Last_name) ? $item->guest->First_name.' '.$item->guest->Last_name : '' }}</td>
+                                            @elseif ($item->type_Proposal == 'company_tax')
+                                                <td>{{ isset($item->company_tax->Companny_name) ? $item->company_tax->Companny_name : (isset($item->company_tax->first_name) && isset($item->company_tax->last_name) ? $item->company_tax->first_name.' '.$item->company_tax->last_name : '') }}</td>
+                                            @elseif ($item->type_Proposal == 'guest_tax')
+                                                <td>{{ isset($item->guest_tax->Company_name) ? $item->guest_tax->Company_name : (isset($item->guest_tax->first_name) && isset($item->guest_tax->last_name) ? $item->guest_tax->first_name.' '.$item->guest_tax->last_name : '') }}</td>
                                             @endif
-                                            <td>{{ $item->issue_date }}</td>
-                                            <td>{{ $item->Expirationdate }}</td>
+
+                                            <td>{{ $item->roomNo }}</td>
+                                            <td>{{ $item->paymentDate }}</td>
                                             <td style="text-align: center;">
-                                                {{ number_format($item->Nettotal) }}
+                                                {{ number_format($item->Amount) }}
+                                            </td>
+                                            <td style="text-align: center;">{{ $item->category }}</td>
+                                            <td style="text-align: center;">
+                                                {{ @$item->userOperated->name }}
                                             </td>
                                             <td style="text-align: center;">
-                                                @if ($item->total_payment == 0 )
-                                                    0
-                                                @else
-                                                    {{ number_format($item->total_payment) }}
-                                                @endif
-                                            </td>
-                                            <td style="text-align: center;">
-                                                @if ($item->min_balance == 0 )
-                                                    0
-                                                @else
-                                                {{ number_format($item->min_balance) }}
-                                                @endif
-                                            </td>
-                                            <td style="text-align: center;">
-                                                @if (@$item->userConfirm->name == null)
-                                                    Auto
-                                                @else
-                                                    {{ @$item->userConfirm->name }}
-                                                @endif
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <span class="badge rounded-pill bg-success">Proposal</span>
+                                                <span class="badge rounded-pill bg-success">Confirm</span>
                                             </td>
                                             @php
                                                 $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                                                $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                $canViewProposal = @Auth::user()->roleMenuView('Guest', Auth::user()->id);
+                                                $canEditProposal = @Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
                                             @endphp
                                             <td style="text-align: center;">
                                                 <div class="btn-group">
@@ -123,17 +110,28 @@
                                                     <ul class="dropdown-menu border-0 shadow p-3">
                                                         @if ($rolePermission > 0)
                                                             @if ($canViewProposal == 1)
-                                                                <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item->id) }}">Export</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/log/'.$item->id) }}">LOG</a></li>
                                                             @endif
+                                                            @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
+                                                                @if ($canEditProposal == 1)
 
-                                                            @if (($rolePermission == 1 || ($rolePermission == 2 && $item->Operated_by == $CreateBy)) && $canEditProposal == 1)
-                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/CheckPI/'.$item->id) }}">Generate</a></li>
-                                                            @elseif ($rolePermission == 3 && $canEditProposal == 1)
-                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/CheckPI/'.$item->id) }}">Generate</a></li>
+                                                                @endif
+                                                            @elseif ($rolePermission == 2)
+                                                                @if ($item->Operated_by == $CreateBy)
+                                                                    @if ($canEditProposal == 1)
+
+                                                                    @endif
+                                                                @endif
+                                                            @elseif ($rolePermission == 3)
+                                                                @if ($canEditProposal == 1)
+
+                                                                @endif
                                                             @endif
                                                         @else
                                                             @if ($canViewProposal == 1)
-                                                                <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item->id) }}">Export</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/log/'.$item->id) }}">LOG</a></li>
                                                             @endif
                                                         @endif
                                                     </ul>
@@ -261,7 +259,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,3,4,5,6,7,8,9,10], className: 'dt-center td-content-center' },
+                                { targets: [0,3,4,5,6,7,8,9], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -277,7 +275,6 @@
                         { data: 'IssueDate' },
                         { data: 'ExpirationDate' },
                         { data: 'Amount' },
-                        { data: 'Deposit' },
                         { data: 'Balance' },
                         { data: 'Approve' },
                         { data: 'DocumentStatus' },

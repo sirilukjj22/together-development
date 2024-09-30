@@ -1128,7 +1128,7 @@ class Document_invoice extends Controller
                     $save->Created_by = $userids;
                     $save->Company_ID = $InvoiceID;
                     $save->type = 'Generate';
-                    $save->Category = 'Generate :: Proposal Invoice';
+                    $save->Category = 'Generate :: Proforma Invoice';
                     $save->content =$datacompany;
                     $save->save();
                 }

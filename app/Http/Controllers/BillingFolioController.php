@@ -56,11 +56,11 @@ class BillingFolioController extends Controller
         $data = [];
         $permissionid = Auth::user()->permission;
         if ($perPage == 10) {
-            $data_query = document_receipt::query()
+            $data_query = receive_payment::query()
                 ->limit($request->page.'0')
                 ->get();
         } else {
-            $data_query = document_receipt::query()
+            $data_query = receive_payment::query()
                 ->paginate($perPage);
         }
 
@@ -79,12 +79,17 @@ class BillingFolioController extends Controller
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
                     if ($value->type_Proposal == 'Company') {
-                        $name = '<td>' .@$value->company->Company_Name. '</td>';
-                    }else {
-                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                        $name = '<td>' . (isset($value->company->Company_Name) ? $value->company->Company_Name : '') . '</td>';
+                    } elseif ($value->type_Proposal == 'Guest') {
+                        $name = '<td>' . (isset($value->guest->First_name) && isset($value->guest->Last_name) ? $value->guest->First_name . ' ' . $value->guest->Last_name : '') . '</td>';
+                    } elseif ($value->type_Proposal == 'company_tax') {
+                        $name = '<td>' . (isset($value->company_tax->Companny_name) ? $value->company_tax->Companny_name : (isset($value->company_tax->first_name) && isset($value->company_tax->last_name) ? $value->company_tax->first_name . ' ' . $value->company_tax->last_name : '')) . '</td>';
+                    } elseif ($value->type_Proposal == 'guest_tax') {
+                        $name = '<td>' . (isset($value->guest_tax->Company_name) ? $value->guest_tax->Company_name : (isset($value->guest_tax->first_name) && isset($value->guest_tax->last_name) ? $value->guest_tax->first_name . ' ' . $value->guest_tax->last_name : '')) . '</td>';
                     }
 
-                    $btn_status = '<span class="badge rounded-pill bg-success">Proposal</span>';
+
+                    $btn_status = '<span class="badge rounded-pill bg-success">Confirm</span>';
                     $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                     $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                     $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
@@ -96,52 +101,19 @@ class BillingFolioController extends Controller
                     $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
                     if ($canViewProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/invoice/view/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/invoice/log/' . $value->id) . '">Export</a></li>';
                     }
 
                     if ($rolePermission > 0) {
                         if ($rolePermission == 1 || $rolePermission == 2 && $isOperatedByCreator) {
-                            if (!empty($invoice) && $invoice->count() == 0) {
-                                if ($canEditProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
-                                }
-                            } else {
-                                if ($canEditProposal == 1) {
-                                    $hasStatusReceiveZero = false;
 
-                                    foreach ($invoicecheck as $item2) {
-                                        if ($item->QID == $item2->Quotation_ID && $item2->status_receive == 0) {
-                                            $hasStatusReceiveZero = true;
-                                            break; // หยุดการลูปทันทีเมื่อพบเงื่อนไขที่ต้องการ
-                                        }
-                                    }
+                            if ($canEditProposal) {
 
-                                    if (!$hasStatusReceiveZero) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
-                                    }
-                                }
                             }
+
                         } elseif ($rolePermission == 3) {
-                            if (!empty($invoice) && $invoice->count() == 0) {
-                                if ($canEditProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
-                                }
-                            } else {
-                                if ($canEditProposal == 1) {
-                                    $hasStatusReceiveZero = false;
 
-                                    foreach ($invoicecheck as $item2) {
-                                        if ($item->QID == $item2->Quotation_ID && $item2->status_receive == 0) {
-                                            $hasStatusReceiveZero = true;
-                                            break; // หยุดการลูปทันทีเมื่อพบเงื่อนไขที่ต้องการ
-                                        }
-                                    }
-
-                                    if (!$hasStatusReceiveZero) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
-                                    }
-                                }
-                            }
                         }
                     }
 
@@ -151,14 +123,13 @@ class BillingFolioController extends Controller
 
                     $data[] = [
                         'number' => $key +1,
-                        'Proposal' => $value->Quotation_ID,
+                        'Proposal' => $value->Receipt_ID,
                         'Company_Name' => $name,
-                        'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
-                        'Amount' => number_format($value->Nettotal),
-                        'Deposit' => number_format($value->total_payment ?? 0, 2),
-                        'Balance' => number_format($value->min_balance ?? 0, 2),
-                        'Approve' => $value->Confirm_by == null ? 'Auto' : @$value->userConfirm->name,
+                        'IssueDate' => $value->roomNo,
+                        'ExpirationDate' => $value->paymentDate,
+                        'Amount' => number_format($value->Amount),
+                        'Balance' => $value->category,
+                        'Approve' =>  @$value->userOperated->name,
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
                     ];
@@ -178,44 +149,23 @@ class BillingFolioController extends Controller
         $userid = Auth::user()->id;
 
         if ($search_value) {
-            $data_query = Quotation::query()
-                ->leftJoin('document_invoice', 'quotation.Refler_ID', '=', 'document_invoice.Refler_ID')
-                ->where('quotation.Operated_by', $userid)
-                ->where('quotation.status_guest', 1)
-                ->select(
-                    'quotation.*',
-                    'document_invoice.Quotation_ID as QID',
-                    'document_invoice.document_status',
-                    DB::raw('1 as status'),
-                    DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (1, 2) THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
-                    DB::raw('MIN(CASE WHEN document_invoice.document_status IN (1, 2) THEN CAST(REPLACE(document_invoice.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
-                )
-                ->where('quotation.Quotation_ID', 'LIKE', '%'.$search_value.'%')
-                ->groupBy('quotation.Quotation_ID', 'quotation.Operated_by', 'quotation.status_guest')
-                ->paginate($perPage);
+            $data_query = receive_payment::query()
+            ->where(function ($query) use ($search_value) {
+                // ค้นหาในผู้ใช้ (userOperated) ตามชื่อ
+                $query->whereHas('userOperated', function ($q) use ($search_value) {
+                    $q->where('name', 'LIKE', '%'.$search_value.'%');
+                })
+                // ค้นหาตาม Receipt_ID หรือ Amount
+                ->orWhere('receive_payment.Receipt_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('receive_payment.Amount', 'LIKE', '%'.$search_value.'%');
+            })
+            ->paginate($perPage);
 
-            $invoice = document_invoices::query()->where('Operated_by', $userid)->where('document_status', 1)->get();
-            $invoicecheck = document_invoices::query()->where('Operated_by', $userid)->get();
         } else {
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
 
-            $data_query = Quotation::query()
-                ->leftJoin('document_invoice', 'quotation.Refler_ID', '=', 'document_invoice.Refler_ID')
-                ->where('quotation.Operated_by', $userid)
-                ->where('quotation.status_guest', 1)
-                ->select(
-                    'quotation.*',
-                    'document_invoice.Quotation_ID as QID',
-                    'document_invoice.document_status',
-                    DB::raw('1 as status'),
-                    DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (1, 2) THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
-                    DB::raw('MIN(CASE WHEN document_invoice.document_status IN (1, 2) THEN CAST(REPLACE(document_invoice.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
-                )
-                ->groupBy('quotation.Quotation_ID', 'quotation.Operated_by', 'quotation.status_guest')
+            $data_query = receive_payment::query()
                 ->paginate($perPageS);
-
-            $invoice = document_invoices::query()->where('Operated_by', $userid)->where('document_status', 1)->get();
-            $invoicecheck = document_invoices::query()->where('Operated_by', $userid)->get();
         }
 
 
@@ -227,70 +177,47 @@ class BillingFolioController extends Controller
                 $btn_status = "";
                 $name ="";
                 if ($value->type_Proposal == 'Company') {
-                    $name = '<td>' .@$value->company->Company_Name. '</td>';
-                }else {
-                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    $name = '<td>' . (isset($value->company->Company_Name) ? $value->company->Company_Name : '') . '</td>';
+                } elseif ($value->type_Proposal == 'Guest') {
+                    $name = '<td>' . (isset($value->guest->First_name) && isset($value->guest->Last_name) ? $value->guest->First_name . ' ' . $value->guest->Last_name : '') . '</td>';
+                } elseif ($value->type_Proposal == 'company_tax') {
+                    $name = '<td>' . (isset($value->company_tax->Companny_name) ? $value->company_tax->Companny_name : (isset($value->company_tax->first_name) && isset($value->company_tax->last_name) ? $value->company_tax->first_name . ' ' . $value->company_tax->last_name : '')) . '</td>';
+                } elseif ($value->type_Proposal == 'guest_tax') {
+                    $name = '<td>' . (isset($value->guest_tax->Company_name) ? $value->guest_tax->Company_name : (isset($value->guest_tax->first_name) && isset($value->guest_tax->last_name) ? $value->guest_tax->first_name . ' ' . $value->guest_tax->last_name : '')) . '</td>';
                 }
 
-                $btn_status = '<span class="badge rounded-pill bg-success">Proposal</span>';
+
+                $btn_status = '<span class="badge rounded-pill bg-success">Confirm</span>';
                 $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
                 $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
                 $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
                 $CreateBy = Auth::user()->id;
                 $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
                 $btn_action = '<div class="dropdown">';
                 $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                 $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
                 if ($canViewProposal) {
-                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/invoice/view/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/invoice/log/' . $value->id) . '">Export</a></li>';
                 }
 
                 if ($rolePermission > 0) {
                     if ($rolePermission == 1 || $rolePermission == 2 && $isOperatedByCreator) {
-                        if (!empty($invoice) && $invoice->count() == 0) {
-                            if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
-                            }
-                        } else {
-                            if ($canEditProposal == 1) {
-                                $hasStatusReceiveZero = false;
 
-                                foreach ($invoicecheck as $item2) {
-                                    if ($item->QID == $item2->Quotation_ID && $item2->status_receive == 0) {
-                                        $hasStatusReceiveZero = true;
-                                        break; // หยุดการลูปทันทีเมื่อพบเงื่อนไขที่ต้องการ
-                                    }
-                                }
+                        if ($canEditProposal) {
 
-                                if (!$hasStatusReceiveZero) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
-                                }
-                            }
                         }
+
                     } elseif ($rolePermission == 3) {
-                        if (!empty($invoice) && $invoice->count() == 0) {
-                            if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
-                            }
-                        } else {
-                            if ($canEditProposal == 1) {
-                                $hasStatusReceiveZero = false;
 
-                                foreach ($invoicecheck as $item2) {
-                                    if ($item->QID == $item2->Quotation_ID && $item2->status_receive == 0) {
-                                        $hasStatusReceiveZero = true;
-                                        break; // หยุดการลูปทันทีเมื่อพบเงื่อนไขที่ต้องการ
-                                    }
-                                }
-
-                                if (!$hasStatusReceiveZero) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
-                                }
-                            }
-                        }
                     }
                 }
+
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+
 
 
                 $btn_action .= '</ul>';
@@ -298,14 +225,13 @@ class BillingFolioController extends Controller
 
                 $data[] = [
                     'number' => $key +1,
-                    'Proposal' => $value->Quotation_ID,
+                    'Proposal' => $value->Receipt_ID,
                     'Company_Name' => $name,
-                    'IssueDate' => $value->issue_date,
-                    'ExpirationDate' => $value->Expirationdate,
-                    'Amount' => number_format($value->Nettotal),
-                    'Deposit' => number_format($value->total_payment ?? 0, 2),
-                    'Balance' => number_format($value->min_balance ?? 0, 2),
-                    'Approve' => $value->Confirm_by == null ? 'Auto' : @$value->userConfirm->name,
+                    'IssueDate' => $value->roomNo,
+                    'ExpirationDate' => $value->paymentDate,
+                    'Amount' => number_format($value->Amount),
+                    'Balance' => $value->category,
+                    'Approve' =>  @$value->userOperated->name,
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
                 ];
@@ -752,6 +678,15 @@ class BillingFolioController extends Controller
         $invoice = $request->invoice;
         //bank
         $bank = $request->bank;
+        if ($paymentType == 'cash') {
+            $datanamebank = ' Cash - Together Resort Ltd - Reservation Deposit' ;
+        }else if($paymentType == 'bankTransfer') {
+            $datanamebank = $bank +' Bank Transfer - Together Resort Ltd - Reservation Deposit' ;
+        }else if($paymentType == 'creditCard') {
+            $datanamebank =  ' Credit Card - Together Resort Ltd - Reservation Deposit' ;
+        }else if($paymentType == 'cheque') {
+            $datanamebank =  ' Cheque - Together Resort Ltd - Reservation Deposit' ;
+        }
         //Credit Card Input
         $CardNumber = $request->CardNumber;
         $Expiry = $request->Expiry;
@@ -761,7 +696,25 @@ class BillingFolioController extends Controller
 
         $paymentDate = $request->paymentDate;
         $note = $request->note;
-
+        $parts = explode('-', $guest);
+        $firstPart = $parts[0];
+        if ($firstPart == 'C') {
+            $company =  companys::where('Profile_ID',$guest)->first();
+            if ($company) {
+                $type_Proposal = 'Company';
+            }else{
+                $company =  company_tax::where('ComTax_ID',$guest)->first();
+                $type_Proposal = 'company_tax';
+            }
+        }else{
+            $guestdata =  Guest::where('Profile_ID',$guest)->first();
+            if ($guestdata) {
+                $type_Proposal = 'Guest';
+            }else{
+                $guestdata =  guest_tax::where('GuestTax_ID',$guest)->first();
+                $type_Proposal = 'guest_tax';
+            }
+        }
         $currentDate = Carbon::now();
         $ID = 'RE-';
         $formattedDate = Carbon::parse($currentDate);       // วันที่
@@ -779,11 +732,15 @@ class BillingFolioController extends Controller
         }
         $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
         $REID = $ID.$year.$month.$newRunNumber;
+
         $invoices = document_invoices::where('Invoice_ID', $invoice)->first();
+        $idinvoices = $invoices->id;
         $sumpayment = $invoices->sumpayment;
         $Quotation_ID = $invoices->Quotation_ID;
+        $created_at = Carbon::parse($invoices->created_at)->format('d/m/Y');
         $template = master_template::query()->latest()->first();
         try {
+            $user = Auth::user()->id;
             $save = new receive_payment();
             $save->Receipt_ID = $REID;
             $save->Invoice_ID = $invoice;
@@ -800,23 +757,467 @@ class BillingFolioController extends Controller
             $save->numberOfGuests = $numberOfGuests;
             $save->arrival = $arrival;
             $save->departure = $departure;
+            $save->type_Proposal = $type_Proposal;
             $save->paymentDate = $paymentDate;
+            $save->Operated_by = $user;
             $save->note = $note;
-            // $save->save();
-            $settingCompany = Master_company::orderBy('id', 'desc')->first();
-            $data = [
-                'settingCompany'=>$settingCompany,
-            ];
-            $view= $template->name;
-            $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);
-            return $pdf->stream();
-        } catch (\Throwable $th) {
-            //throw $th;
+            $save->save();
+            {   //PDF
+                $settingCompany = Master_company::orderBy('id', 'desc')->first();
+                $parts = explode('-', $guest);
+                $firstPart = $parts[0];
+                if ($firstPart == 'C') {
+                    $company =  companys::where('Profile_ID',$guest)->first();
+                    if ($company) {
+                        $fullname = "";
+                        $fullnameCom = 'บริษัท ' . $company->Company_Name . ' จำกัด' ;
+                        $Address=$company->Address;
+                        $CityID=$company->City;
+                        $amphuresID = $company->Amphures;
+                        $TambonID = $company->Tambon;
+                        $Identification = $company->Taxpayer_Identification;
+                        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                        if ($provinceNames) {
+                            $province = ' จังหวัด '.$provinceNames->name_th;
+                            $amphures = ' อำเภอ '.$amphuresID->name_th;
+                            $tambon = ' ตำบล '.$TambonID->name_th;
+                            $zip_code = $TambonID->Zip_Code;
+                        }else{
+                            $province ="";
+                            $amphures="";
+                            $tambon="";
+                            $zip_code="";
+                        }
+                    }else{
+                        $company =  company_tax::where('ComTax_ID',$guest)->first();
+                        $fullname = $company && $company->Companny_name
+                                    ? ""
+                                    : 'คุณ ' . $company->first_name . ' ' . $company->last_name;
+                        $fullnameCom = $company && $company->Companny_name
+                                    ? 'บริษัท ' . $company->Companny_name . ' จำกัด'
+                                    : "";
+                        $Address=$company->Address;
+                        $CityID=$company->City;
+                        $amphuresID = $company->Amphures;
+                        $TambonID = $company->Tambon;
+                        $Identification = $company->Taxpayer_Identification;
+                        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                        if ($provinceNames) {
+                            $province = ' จังหวัด '.$provinceNames->name_th;
+                            $amphures = ' อำเภอ '.$amphuresID->name_th;
+                            $tambon = ' ตำบล '.$TambonID->name_th;
+                            $zip_code = $TambonID->Zip_Code;
+                        }else{
+                            $province ="";
+                            $amphures="";
+                            $tambon="";
+                            $zip_code="";
+                        }
+                    }
+                }else{
+                    $guestdata =  Guest::where('Profile_ID',$guest)->first();
+                    if ($guestdata) {
+                        $fullname =  'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
+                        $fullnameCom = "";
+                        $Address=$guestdata->Address;
+                        $CityID=$guestdata->City;
+                        $amphuresID = $guestdata->Amphures;
+                        $TambonID = $guestdata->Tambon;
+                        $Identification = $guestdata->Identification_Number;
+                        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                        if ($provinceNames) {
+                            $province = ' จังหวัด '.$provinceNames->name_th;
+                            $amphures = ' อำเภอ '.$amphuresID->name_th;
+                            $tambon = ' ตำบล '.$TambonID->name_th;
+                            $zip_code = $TambonID->Zip_Code;
+                        }else{
+                            $province ="";
+                            $amphures="";
+                            $tambon="";
+                            $zip_code="";
+                        }
+                    }else{
+                        $guestdata =  guest_tax::where('GuestTax_ID',$guest)->first();
+                        $fullname = $guestdata && $guestdata->Company_name
+                                    ? ""
+                                    : 'คุณ ' . $guestdata->first_name . ' ' . $guestdata->last_name;
+                        $fullnameCom = $guestdata && $guestdata->Company_name
+                                    ? "'บริษัท ' . $guestdata->Company_name . ' จำกัด'"
+                                    : "";
+                        $Address=$guestdata->Address;
+                        $CityID=$guestdata->City;
+                        $amphuresID = $guestdata->Amphures;
+                        $TambonID = $guestdata->Tambon;
+                        $Identification = $guestdata->Identification_Number;
+                        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                        if ($provinceNames) {
+                            $province = ' จังหวัด '.$provinceNames->name_th;
+                            $amphures = ' อำเภอ '.$amphuresID->name_th;
+                            $tambon = ' ตำบล '.$TambonID->name_th;
+                            $zip_code = $TambonID->Zip_Code;
+                        }else{
+                            $province ="";
+                            $amphures="";
+                            $tambon="";
+                            $zip_code="";
+                        }
+
+                    }
+                }
+                $date = Carbon::now();
+                $Date = $date->format('d/m/Y');
+                $dateFormatted = $date->format('d/m/Y').' / ';
+                $dateTime = $date->format('H:i');
+                $Amount = $sumpayment;
+                $data = [
+                    'settingCompany'=>$settingCompany,
+                    'fullname'=>$fullname,
+                    'fullnameCom'=>$fullnameCom,
+                    'Identification'=>$Identification,
+                    'Address'=>$Address,
+                    'province'=>$province,
+                    'amphures'=>$amphures,
+                    'tambon'=>$tambon,
+                    'zip_code'=>$zip_code,
+                    'reservationNo'=>$reservationNo,
+                    'room'=>$room,
+                    'arrival'=>$arrival,
+                    'departure'=>$departure,
+                    'numberOfGuests'=>$numberOfGuests,
+                    'dateFormatted'=>$dateFormatted,
+                    'dateTime'=>$dateTime,
+                    'created_at'=>$created_at,
+                    'Date'=>$Date,
+                    'Amount'=>$Amount,
+                    'note'=>$note,
+                    'datanamebank'=>$datanamebank,
+                    'invoice'=>$REID,
+
+                ];
+                $view= $template->name;
+                $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);
+                $path = 'Log_PDF/billingfolio/';
+                $pdf->save($path . $REID . '.pdf');
+                $currentDateTime = Carbon::now();
+                $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
+                $currentTime = $currentDateTime->toTimeString(); // Format: HH:MM:SS
+
+                // Optionally, you can format the date and time as per your requirement
+                $formattedDate = $currentDateTime->format('Y-m-d'); // Custom format for date
+                $formattedTime = $currentDateTime->format('H:i:s');
+                $savePDF = new log();
+                $savePDF->Quotation_ID = $REID;
+                $savePDF->QuotationType = 'Receipt';
+                $savePDF->Approve_date = $formattedDate;
+                $savePDF->Approve_time = $formattedTime;
+                $savePDF->save();
+            }
+            { //invoice
+                $saveRe = document_invoices::find($idinvoices);
+                $saveRe->status_receive = 2;
+                $saveRe->save();
+            }
+            {
+                $datarequest = [
+                    'InvoiceID' => $data['invoice'] ?? null,
+                    'Guest' => $data['Guest'] ?? null,
+                    'reservationNo' => $data['reservationNo'] ?? null,
+                    'roomNo' => $data['roomNo'] ?? null,
+                    'numberOfGuests' => $data['numberOfGuests'] ?? null,
+                    'arrival' => $data['arrival'] ?? null,
+                    'departure' => $data['departure'] ?? null,
+                    'datanamebank' => $data['datanamebank'] ?? null,
+                    'bank' => $data['bank'] ?? null,
+                    'CardNumber' => $data['CardNumber'] ?? null,
+                    'Expiry' => $data['Expiry'] ?? null,
+                    'cheque' => $data['cheque'] ?? null,
+                    'chequeBank' => $data['chequeBank'] ?? null,
+                    'paymentDate'=> $data['paymentDate'] ?? null,
+                    'note'=> $data['note'] ?? null,
+                ];
+                $invoices = document_invoices::where('id', $idinvoices)->first();
+                $sumpayment = $invoices->sumpayment;
+                $Quotation_ID = $invoices->Quotation_ID;
+                $Invoice_ID = $invoices->Invoice_ID;
+                $REID = $REID;
+
+                $Guest = $datarequest['Guest'] ?? null;
+                $reservationNo = $datarequest['reservationNo'] ?? null;
+                $roomNo = $datarequest['roomNo'] ?? null;
+                $numberOfGuests = $datarequest['numberOfGuests'] ?? null;
+                $arrival = $datarequest['arrival'] ?? null;
+                $departure = $datarequest['departure'] ?? null;
+                $datanamebank = $datarequest['datanamebank'] ?? null;
+                $bank = $datarequest['bank'] ?? null;
+                $CardNumber = $datarequest['CardNumber'] ?? null;
+                $Expiry = $datarequest['Expiry'] ?? null;
+                $cheque = $datarequest['cheque'] ?? null;
+                $chequeBank = $datarequest['chequeBank'] ?? null;
+                $paymentDate = $datarequest['paymentDate'] ?? null;
+                $note = $datarequest['note'] ?? null;
+                $databank = 'รูปแบบการชำระ :'.$datanamebank;
+                $Reservation_No = null;
+                if ($reservationNo) {
+                    $Reservation_No = 'Reservation No : '.$reservationNo;
+                }
+                $Room_No = null;
+                if ($roomNo) {
+                    $Room_No = 'Room No : '.$roomNo;
+                }
+                $NumberOfGuests = null;
+                if ($numberOfGuests) {
+                    $NumberOfGuests = 'No. of guest : '.$numberOfGuests;
+                }
+                $Arrival = null;
+                if ($arrival) {
+                    $Arrival = 'Arrival : '.$arrival;
+                }
+                $Departure = null;
+                if ($departure) {
+                    $Departure = 'Departure : '.$departure;
+                }
+                $PaymentDate = null;
+                if ($paymentDate) {
+                    $PaymentDate = 'วันที่ชำระ : '.$paymentDate;
+                }
+                $Note = null;
+                if ($note) {
+                    $Note = 'รายละเอียด : '.$note;
+                }
+                $fullname = 'รหัส : '.$REID.' + '.'อ้างอิงจาก Proforma Invoice ID : '.$Invoice_ID;
+
+                $datacompany = '';
+
+                $variables = [$fullname, $Reservation_No, $Room_No, $NumberOfGuests, $Arrival,$Departure, $PaymentDate,$databank,$Note];
+
+                foreach ($variables as $variable) {
+                    if (!empty($variable)) {
+                        if (!empty($datacompany)) {
+                            $datacompany .= ' + ';
+                        }
+                        $datacompany .= $variable;
+                    }
+                }
+                $REID = $REID;
+                $userids = Auth::user()->id;
+                $save = new log_company();
+                $save->Created_by = $userids;
+                $save->Company_ID = $REID;
+                $save->type = 'Paid';
+                $save->Category = 'Paid :: Receipt';
+                $save->content =$datacompany;
+                $save->save();
+                return redirect()->route('BillingFolio.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            }
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
 
     }
-    public function view(){
-         return view('billingfolioPDF.templateA1');
+    public function view($id){
+        $receive = receive_payment::where('id',$id)->first();
+        $name_receive = $receive->company;
+        $data = [
+            'Receipt_ID' => $receive['Receipt_ID'] ?? null,
+            'Invoice_ID' => $receive['Invoice_ID'] ?? null,
+            'Quotation_ID' => $receive['Quotation_ID'] ?? null,
+            'company' => $receive['company'] ?? null,
+            'note' => $receive['note'] ?? null,
+            'category' => $receive['category'] ?? null,
+            'Amount' => $receive['Amount'] ?? null,
+            'Bank' => $receive['Bank'] ?? null,
+            'Cheque' => $receive['Cheque'] ?? null,
+            'Credit' => $receive['Credit'] ?? null,
+            'Expire' => $receive['Expire'] ?? null,
+            'reservationNo' => $receive['reservationNo'] ?? null,
+            'roomNo' => $receive['roomNo'] ?? null,
+            'numberOfGuests' => $receive['numberOfGuests'] ?? null,
+            'arrival' => $receive['arrival'] ?? null,
+            'departure' => $receive['departure'] ?? null,
+            'paymentDate' => $receive['paymentDate'] ?? null,
+            'Operated_by' => $receive['Operated_by'] ?? null,
+            'type_Proposal' => $receive['type_Proposal'] ?? null,
+        ];
+        $invoices = document_invoices::where('Invoice_ID', $data['Invoice_ID'])->first();
+        $idinvoices = $invoices->id;
+        $sumpayment = $invoices->sumpayment;
+        $Quotation_ID = $invoices->Quotation_ID;
+        $created_at = Carbon::parse($invoices->created_at)->format('d/m/Y');
+        $template = master_template::query()->latest()->first();
+        $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        if ($data['type_Proposal'] == 'Company') {
+            $company =  companys::where('Profile_ID',$data['company'])->first();
+            $fullname = "";
+            $fullnameCom = 'บริษัท ' . $company->Company_Name . ' จำกัด' ;
+            $Address=$company->Address;
+            $CityID=$company->City;
+            $amphuresID = $company->Amphures;
+            $TambonID = $company->Tambon;
+            $Identification = $company->Taxpayer_Identification;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            if ($provinceNames) {
+                $province = ' จังหวัด '.$provinceNames->name_th;
+                $amphures = ' อำเภอ '.$amphuresID->name_th;
+                $tambon = ' ตำบล '.$TambonID->name_th;
+                $zip_code = $TambonID->Zip_Code;
+            }else{
+                $province ="";
+                $amphures="";
+                $tambon="";
+                $zip_code="";
+            }
+        }elseif ($data['type_Proposal'] == 'company_tax') {
+            $company =  company_tax::where('ComTax_ID',$data['company'])->first();
+            $fullname = $company && $company->Companny_name
+                        ? ""
+                        : 'คุณ ' . $company->first_name . ' ' . $company->last_name;
+            $fullnameCom = $company && $company->Companny_name
+                        ? 'บริษัท ' . $company->Companny_name . ' จำกัด'
+                        : "";
+            $Address=$company->Address;
+            $CityID=$company->City;
+            $amphuresID = $company->Amphures;
+            $TambonID = $company->Tambon;
+            $Identification = $company->Taxpayer_Identification;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            if ($provinceNames) {
+                $province = ' จังหวัด '.$provinceNames->name_th;
+                $amphures = ' อำเภอ '.$amphuresID->name_th;
+                $tambon = ' ตำบล '.$TambonID->name_th;
+                $zip_code = $TambonID->Zip_Code;
+            }else{
+                $province ="";
+                $amphures="";
+                $tambon="";
+                $zip_code="";
+            }
+        }elseif ($data['type_Proposal'] == 'Guest') {
+            $guestdata =  Guest::where('Profile_ID',$data['company'])->first();
+            $fullname =  'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
+            $fullnameCom = "";
+            $Address=$guestdata->Address;
+            $CityID=$guestdata->City;
+            $amphuresID = $guestdata->Amphures;
+            $TambonID = $guestdata->Tambon;
+            $Identification = $guestdata->Identification_Number;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            if ($provinceNames) {
+                $province = ' จังหวัด '.$provinceNames->name_th;
+                $amphures = ' อำเภอ '.$amphuresID->name_th;
+                $tambon = ' ตำบล '.$TambonID->name_th;
+                $zip_code = $TambonID->Zip_Code;
+            }else{
+                $province ="";
+                $amphures="";
+                $tambon="";
+                $zip_code="";
+            }
+        }elseif ($data['type_Proposal'] == 'guest_tax') {
+            $guestdata =  guest_tax::where('GuestTax_ID',$data['company'])->first();
+            $fullname = $guestdata && $guestdata->Company_name
+                        ? ""
+                        : 'คุณ ' . $guestdata->first_name . ' ' . $guestdata->last_name;
+            $fullnameCom = $guestdata && $guestdata->Company_name
+                        ? "'บริษัท ' . $guestdata->Company_name . ' จำกัด'"
+                        : "";
+            $Address=$guestdata->Address;
+            $CityID=$guestdata->City;
+            $amphuresID = $guestdata->Amphures;
+            $TambonID = $guestdata->Tambon;
+            $Identification = $guestdata->Identification_Number;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            if ($provinceNames) {
+                $province = ' จังหวัด '.$provinceNames->name_th;
+                $amphures = ' อำเภอ '.$amphuresID->name_th;
+                $tambon = ' ตำบล '.$TambonID->name_th;
+                $zip_code = $TambonID->Zip_Code;
+            }else{
+                $province ="";
+                $amphures="";
+                $tambon="";
+                $zip_code="";
+            }
+        }
+        $date = Carbon::now();
+        $Date = $date->format('d/m/Y');
+        $dateFormatted = $date->format('d/m/Y').' / ';
+        $dateTime = $date->format('H:i');
+        if ($data['category'] == 'cash') {
+            $datanamebank = ' Cash - Together Resort Ltd - Reservation Deposit' ;
+        }else if($data['category'] == 'bankTransfer') {
+            $datanamebank = $data['Bank'] +' Bank Transfer - Together Resort Ltd - Reservation Deposit' ;
+        }else if($data['category'] == 'creditCard') {
+            $datanamebank =  ' Credit Card - Together Resort Ltd - Reservation Deposit' ;
+        }else if($data['category'] == 'cheque') {
+            $datanamebank =  ' Cheque - Together Resort Ltd - Reservation Deposit' ;
+        }
+        $data = [
+            'settingCompany'=>$settingCompany,
+            'fullname'=>$fullname,
+            'fullnameCom'=>$fullnameCom,
+            'Identification'=>$Identification,
+            'Address'=>$Address,
+            'province'=>$province,
+            'amphures'=>$amphures,
+            'tambon'=>$tambon,
+            'zip_code'=>$zip_code,
+            'reservationNo'=>$data['reservationNo'],
+            'room'=>$data['roomNo'],
+            'arrival'=>$data['arrival'],
+            'departure'=>$data['departure'],
+            'numberOfGuests'=>$data['numberOfGuests'],
+            'dateFormatted'=>$dateFormatted,
+            'dateTime'=>$dateTime,
+            'created_at'=>$created_at,
+            'Date'=>$Date,
+            'Amount'=>$data['Amount'],
+            'note'=>$data['note'],
+            'datanamebank'=>$datanamebank,
+            'invoice'=>$data['Receipt_ID'],
+
+        ];
+        $view= $template->name;
+        $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);
+        return $pdf->stream();
+
     }
 
+    public function log($id){
+        $receive_payment = receive_payment::where('id', $id)->first();
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        if ($receive_payment) {
+            $Receipt_ID = $receive_payment->Receipt_ID;
+            // Use a regular expression to capture the part of the string before the first hyphen
+            if (preg_match('/^(PI-\d{8})/', $Receipt_ID, $matches)) {
+                $Receipt_ID = $matches[1];
+            }
+        }
+
+        $log = log::where('Quotation_ID',$Receipt_ID)->paginate($perPage);
+        $path = 'Log_PDF/billingfolio/';
+        $logReceipt = log_company::where('Company_ID', $Receipt_ID)
+            ->orderBy('updated_at', 'desc')
+            ->paginate($perPage);
+            dd($logReceipt);
+        return view('billingfolio.document',compact('log','path','logReceipt','Receipt_ID'));
+    }
 }

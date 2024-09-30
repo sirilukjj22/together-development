@@ -213,7 +213,7 @@ white-space: nowrap
                                 <input type="text" id="CardNumber" name="CardNumber" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
 
                                 <label for="expiryDate" class="star-red">Expiry Date</label>
-                                <input type="text" name="Expiry" id="Expiry" class="expiryDate form-control" placeholder="DD/MM/YYYY">
+                                <input type="text" name="Expiry" id="Expiry" class="expiryDate form-control" placeholder="MM/YY" maxlength="5">
 
                                 <label for="creditCardAmount" class="star-red">Amount</label>
                                 <input type="text" id="Amount" name="Amount" class="creditCardAmount form-control" value="{{ number_format($sumpayment, 2) }}" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
@@ -432,6 +432,23 @@ white-space: nowrap
 
 
     <script>
+        $(document).ready(function () {
+            // เลือกทุก input ที่มี class 'expiryDate'
+            $('.expiryDate').on('input', function () {
+                let input = $(this).val();
+
+                // ลบเครื่องหมาย / ก่อนที่จะจัดรูปแบบใหม่
+                input = input.replace(/\D/g, '');
+
+                // ใส่ / หลังจากที่พิมพ์เดือน 2 ตัวแรก
+                if (input.length > 2) {
+                input = input.substring(0, 2) + '/' + input.substring(2, 4);
+                }
+
+                // จำกัดความยาวเป็น 5 ตัวอักษร (MM/YY)
+                $(this).val(input.substring(0, 5));
+            });
+        });
         $(document).ready(function() {
             $('.select2').select2({
                 placeholder: "Please select an option"
@@ -617,15 +634,18 @@ white-space: nowrap
                 var nameID = document.getElementById('idfirst').value;
                 var note = $('#note').val();
                 var bank = $('#bank').val();
+                var Expiry = $('#Expiry').val();
+                var CardNumber = $('#CardNumber').val();
                 var paymentType = $('#paymentType').val();
+
                 if (paymentType == 'cash') {
-                    var datanamebank = ' Cash - Together Resort Ltd - Reservation Deposit' ;
+                    var datanamebank = ' Cash ' ;
                 }else if(paymentType == 'bankTransfer') {
-                    var datanamebank = bank +' Bank Transfer - Together Resort Ltd - Reservation Deposit' ;
+                    var datanamebank = bank +' Bank Transfer - Together Resort Ltd ' ;
                 }else if(paymentType == 'creditCard') {
-                    var datanamebank =  ' Credit Card - Together Resort Ltd - Reservation Deposit' ;
+                    var datanamebank =  ' Credit Card No.'+ CardNumber +' Exp. Date : '+Expiry ;
                 }else if(paymentType == 'cheque') {
-                    var datanamebank =  ' Cheque - Together Resort Ltd - Reservation Deposit' ;
+                    var datanamebank =  ' Cheque ธนาคาร เลข' ;
                 }
                 // เลือก id ที่จะใช้
                 var id = idcheck ? idcheck : nameID;
