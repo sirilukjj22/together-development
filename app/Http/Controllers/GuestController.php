@@ -50,15 +50,19 @@ class GuestController extends Controller
         $perPage = (int)$request->perPage;
         $search_value = $request->search_value;
         if ($search_value) {
-            $data_query = Guest::where('Profile_ID', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('First_name', 'LIKE', '%'.$search_value.'%')
-                ->orWhere('Last_name', 'LIKE', '%'.$search_value.'%')
-                ->leftJoin('phone_guests', function($join) {
-                    $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
-                        ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
-                })
-                ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
-                ->paginate($perPage);
+            $data_query = Guest::
+            leftJoin('phone_guests', function($join) {
+                $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
+                    ->where('phone_guests.Sequence', '=', 'main');
+            })
+            ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
+            ->where('guests.Profile_ID', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('guests.First_name', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('guests.Last_name', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('phone_guests.Phone_number', 'LIKE', '%'.$search_value.'%') // เพิ่มการค้นหาด้วยหมายเลขโทรศัพท์
+            ->groupBy('guests.Profile_ID') // ต้องใช้ groupBy เมื่อใช้ GROUP_CONCAT
+            ->paginate($perPage);
+
         }else{
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
             $data_query = Guest::query()
@@ -114,7 +118,7 @@ class GuestController extends Controller
                     'number' => $key + 1,
                     'Profile_ID'=>$value->Profile_ID,
                     'name'=>$value->First_name.' '.$value->Last_name,
-                    'Booking_Channel'=> $booking,
+                    'Booking_Channel'=> $value->Phone_numbers,
                     'status'=>$btn_status,
                     'btn_action' => $btn_action,
                 ];
@@ -195,7 +199,7 @@ class GuestController extends Controller
                         'number' => $key + 1,
                         'Profile_ID'=>$value->Profile_ID,
                         'name'=>$value->First_name.' '.$value->Last_name,
-                        'Booking_Channel'=> $booking,
+                        'Booking_Channel'=> $value->Phone_numbers,
                         'status'=>$btn_status,
                         'btn_action' => $btn_action,
                     ];

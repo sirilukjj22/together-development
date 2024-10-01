@@ -104,14 +104,7 @@
                                                 <td style="text-align: center;">{{ $item->Profile_ID }}</td>
                                                 <td>{{ $item->First_name }} {{ $item->Last_name }}</td>
                                                 <td>
-                                                    @php
-                                                        $Mbooking = explode(',', $item->Booking_Channel);
-
-                                                        foreach ($Mbooking as $key => $value) {
-                                                            $bc = App\Models\master_document::find($value);
-                                                            echo $bc->name_en . '<br>';
-                                                        }
-                                                    @endphp
+                                                    {{$item->Phone_numbers}}
                                                 </td>
                                                 <td style="text-align: center;">
                                                     <input type="hidden" id="status" value="{{ $item->status }}">
