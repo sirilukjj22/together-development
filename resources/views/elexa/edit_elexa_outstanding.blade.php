@@ -148,7 +148,7 @@
     <input type="hidden" id="total_receive_payment" value="{{ $total_debit }}">
     <input type="hidden" id="total_revenue_amount" value="{{ isset($elexa_revenue) ? $elexa_revenue->amount : 0 }}">
 
-    <form action="#" id="form-agoda">
+    <form action="#" id="form-elexa">
         @csrf
         <input type="hidden" id="revenue_id" name="revenue_id" value="{{ isset($elexa_revenue) ? $elexa_revenue->id : 0 }}"> <!-- ID รายได้ที่มาจาก SMS -->
 
@@ -200,7 +200,7 @@
                     $('#balance').text(currencyFormat(Number(total_revenue_amount - $('#total_receive_payment')
                         .val()))); // ยอดคงเหลือ Dashboard
 
-                    $('#form-agoda').append('<input type="hidden" id="receive_id_' + id + '" name="receive_id[]" value="' +
+                    $('#form-elexa').append('<input type="hidden" id="receive_id_' + id + '" name="receive_id[]" value="' +
                         id + '">');
 
                     $('#tr_row_' + id).remove();
@@ -210,39 +210,22 @@
 
                     jQuery.ajax({
                         type: "GET",
-                        url: "{!! url('debit-select-agoda-outstanding/"+id+"') !!}",
+                        url: "{!! url('debit-select-elexa-outstanding/"+id+"') !!}",
                         datatype: "JSON",
                         async: false,
                         success: function(response) {
                             if (response.data) {
                                 var status = "";
                                 var table = new DataTable('#myDataTableAll');
-                                // table.clear().draw();
 
-                                if (response.data.agoda_check_in) {
-                                    var exp = response.data.agoda_check_in.split('-');
-                                    var check_in = exp[2] + "/" + exp[1] + "/" + exp[0];
-                                } else {
-                                    var check_in = "-";
-                                }
-
-                                if (response.data.agoda_check_out) {
-                                    var exp = response.data.agoda_check_out.split('-');
-                                    var check_out = exp[2] + "/" + exp[1] + "/" + exp[0];
-                                } else {
-                                    var check_out = "-";
-                                }
                                 table.rows.add(
                                     [
                                         [
                                             response.data.batch,
-                                            check_in,
-                                            check_out,
-                                            currencyFormat(response.data.agoda_outstanding),
+                                            currencyFormat(response.data.ev_charge),
                                             '<button type="button" class="btn btn-danger rounded-pill close" id="btn-receive-' +
-                                            id + '" value="1"' +
-                                            'onclick="select_receive_payment(this, ' + id + ', ' + response
-                                            .data.agoda_outstanding + ')">ยกเลิก</button>'
+                                            id + '" value="1"' + ' onclick="select_receive_payment(this, ' + id + ', ' + response
+                                            .data.ev_charge + ')">ยกเลิก</button>'
                                         ]
                                     ]
                                 ).draw();
@@ -271,40 +254,22 @@
 
                     jQuery.ajax({
                         type: "GET",
-                        url: "{!! url('debit-select-agoda-outstanding/"+id+"') !!}",
+                        url: "{!! url('debit-select-elexa-outstanding/"+id+"') !!}",
                         datatype: "JSON",
                         async: false,
                         success: function(response) {
                             if (response.data) {
                                 var status = "";
                                 var table = new DataTable('#myDataTableOutstanding');
-                                // table.draw();
-
-                                if (response.data.agoda_check_in) {
-                                    var exp = response.data.agoda_check_in.split('-');
-                                    var check_in = exp[2] + "/" + exp[1] + "/" + exp[0];
-                                } else {
-                                    var check_in = "-";
-                                }
-
-                                if (response.data.agoda_check_out) {
-                                    var exp = response.data.agoda_check_out.split('-');
-                                    var check_out = exp[2] + "/" + exp[1] + "/" + exp[0];
-                                } else {
-                                    var check_out = "-";
-                                }
 
                                 table.rows.add(
                                     [
                                         [
                                             response.data.batch,
-                                            check_in,
-                                            check_out,
-                                            currencyFormat(response.data.agoda_outstanding),
+                                            currencyFormat(response.data.ev_charge),
                                             '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' +
                                             id + '" value="0"' +
-                                            'onclick="select_receive_payment(this, ' + id + ', ' + response
-                                            .data.agoda_outstanding + ')">รับชำระ</button>'
+                                            'onclick="select_receive_payment(this, ' + id + ', ' + response.data.ev_charge + ')">รับชำระ</button>'
                                         ]
                                     ]
                                 ).draw();
@@ -335,7 +300,7 @@
                 return Swal.fire({
                     icon: 'error',
                     title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'ยอด Agoda Outstanding ที่เลือกมียอดน้อยกว่า Agoda Revenue!',
+                    text: 'ยอด Elexa Outstanding ที่เลือกมียอดน้อยกว่า Elexa Revenue!',
                 });
             }
 
@@ -343,16 +308,16 @@
                 return Swal.fire({
                     icon: 'error',
                     title: 'ไม่สามารถบันทึกข้อมูลได้',
-                    text: 'ยอด Agoda Outstanding ที่เลือกมียอดมากกว่า Agoda Revenue!',
+                    text: 'ยอด Elexa Outstanding ที่เลือกมียอดมากกว่า Elexa Revenue!',
                 });
             }
 
             if (total_revenue_amount == total_receive_payment) {
                 jQuery.ajax({
                     type: "POST",
-                    url: "{!! route('debit-agoda-store') !!}",
+                    url: "{!! route('debit-elexa-store') !!}",
                     datatype: "JSON",
-                    data: $('#form-agoda').serialize(),
+                    data: $('#form-elexa').serialize(),
                     async: false,
                     success: function(result) {
                         Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
