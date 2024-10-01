@@ -62,13 +62,6 @@ class CompanyController extends Controller
                     ->paginate($perPage);
             }
         }
-
-        $company = companys::query()->pluck('Profile_ID');
-        $document = representative::whereIn('Profile_ID', $company)->get();
-        $document_IDs = $document->pluck('Profile_ID');
-        $missingQuotationIDs = $company->diff($document_IDs);
-        companys::whereIn('Profile_ID', $missingQuotationIDs)->delete();
-
         return view('company.index',compact('Company','menu'));
     }
     public function company_paginate_table(Request $request)
