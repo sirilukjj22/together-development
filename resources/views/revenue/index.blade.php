@@ -121,7 +121,7 @@
                                 <div class="dropdown-menu dropdown-action" aria-labelledby="dropdownMenuOperation">
                                     @if ($total_revenue_today->status == 0)
                                         @if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow' || !isset($filter_by))
-                                            @if (@Auth::user()->roleMenuAdd('Hotel & Water Park Revenue', Auth::user()->id) == 1)
+                                            @if (@Auth::user()->roleMenuAdd('Hotel & Water Park Revenue', Auth::user()->id) == 1 )
                                                 <a class="dropdown-item" href="#" onclick="Add_data('{{$date_current}}')" data-toggle="modal" data-target="#addIncome" <?php echo $total_revenue_today->status == 1 ? 'disabled' : '' ?>>
                                                     <i class="fa-solid fa-sack-dollar"></i>Add
                                                 </a>
@@ -1294,7 +1294,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content rounded-lg">
                 <div class="modal-header bg-teal-green">
-                    <h5 class="modal-title text-white" id="addIncomeLabel"> Add</h5>
+                    <h5 class="modal-title text-white" id="addIncomeLabel">Add</h5>
                     <button type="button" class="close text-white text-2xl" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1304,7 +1304,7 @@
                 <div class="modal-body bg-green500">
                     <div class="df-jc-ic">
                         <label for="" class="text2xl">Date : &nbsp;&nbsp;</label>
-                        <input type="date" class="input-date" id="date" name="date" value="{{ isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') }}">
+                        <input type="date" class="input-date" id="date_add" name="date" value="{{ date('Y-m-d', strtotime($date_current)) }}" readonly>
                     </div>
                     <br />
                     <div class="box-accordion">
@@ -1741,7 +1741,7 @@
                 <div class="modal-body bg-green500">
                     <div class="df-jc-ic">
                         <label for="" class="text2xl">Date : &nbsp;&nbsp;</label>
-                        <input type="date" class="input-date" id="date_view_detail" value="<?php echo isset($day) ? date($year.'-'.$month.'-'.$day) : date('Y-m-d') ?>">
+                        <input type="date" class="input-date" id="date_view_detail" value="{{ date('Y-m-d', strtotime($date_current)) }}">
                     </div>
                     <br />
                     <div class="box-accordion">
@@ -2102,7 +2102,7 @@
     }
 
     // เลือกวันที่ใน Modal เพิ่มเงินสด/เครดิต
-    $('#date').on('change', function () {
+    $('#date_add').on('change', function () {
         Add_data($(this).val());
     });
 
@@ -2113,7 +2113,8 @@
 
     // Add ข้อมูลเงินสด/เครดิต
     function Add_data($date) {
-        var date = $('#date').val();
+        var date = $('#date_add').val();
+        
         jQuery.ajax({
             type:   "GET",
             url:    "{!! url('revenue-edit/"+date+"') !!}",
