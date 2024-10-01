@@ -78,7 +78,7 @@
                         </tbody>
                         <tfoot>
                             <tr style="font-weight: bold;">
-                                <td style="text-align: right;">ยอดรวมทั้งหมด</td>
+                                <td style="text-align: right;">Total</td>
                                 <td>
                                     <span id="txt_total_received">{{ number_format($total_debit, 2) }}</span>
                                     <input type="hidden" id="total_received" value="{{ $total_debit }}">
@@ -131,7 +131,7 @@
                         </tbody>
                         <tfoot>
                             <tr style="font-weight: bold;">
-                                <td style="text-align: right;">ยอดรวมทั้งหมด</td>
+                                <td style="text-align: right;">Total</td>
                                 <td>
                                     <span id="txt_total_outstanding">{{ number_format($total, 2) }}</span>
                                     <input type="hidden" id="total_outstanding" value="{{ $total }}">

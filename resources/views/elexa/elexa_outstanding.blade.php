@@ -70,12 +70,12 @@
                                                     </li>
                                                 @else
                                                     <li>
-                                                        <a href="{{ route('debit-agoda-update-receive', [$item->id, $month, $year]) }}" type="button" class="dropdown-item py-2 rounded">
+                                                        <a href="{{ route('debit-elexa-update-receive', [$item->id, $month, $year]) }}" type="button" class="dropdown-item py-2 rounded">
                                                             แก้ไข
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="{{ route('debit-agoda-detail', [$item->id, $month, $year]) }}" type="button" class="dropdown-item py-2 rounded">
+                                                        <a href="{{ route('debit-elexa-detail', [$item->id, $month, $year]) }}" type="button" class="dropdown-item py-2 rounded">
                                                             รายละเอียด
                                                         </a>
                                                     </li>
@@ -89,7 +89,7 @@
                         </tbody>
                         <tfoot>
                             <tr style="font-weight: bold;">
-                                <td colspan="2" style="text-align: right;">ยอดรวมทั้งหมด</td>
+                                <td colspan="2" style="text-align: right;">Total</td>
                                 <td>{{ number_format($total, 2) }}</td>
                                 <td></td>
                                 <td></td>

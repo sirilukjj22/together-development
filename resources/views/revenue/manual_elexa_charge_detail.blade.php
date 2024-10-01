@@ -103,7 +103,7 @@
     <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableRevenue.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableManualElexa.js')}}"></script>
 
     <script>
         $(document).ready(function() {

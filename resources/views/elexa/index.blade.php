@@ -160,7 +160,7 @@
                                 <tr id="tr_row_{{ $item->id }}">
                                     <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                     <td>{{ $item->batch }}</td>
-                                    <td>{{ number_format($item->ev_change, 2) }}</td>
+                                    <td>{{ number_format($item->ev_charge, 2) }}</td>
                                     <td>
                                         @if ($item->receive_payment == 0)
                                             <span class="badge bg-danger">Unpaid</span>
@@ -169,12 +169,12 @@
                                         @endif    
                                     </td>
                                 </tr>
-                                <?php $total += $item->ev_change; ?>
+                                <?php $total += $item->ev_charge; ?>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr style="font-weight: bold;">
-                                <td colspan="2" style="text-align: right;">ยอดรวมทั้งหมด</td>
+                                <td colspan="2" style="text-align: right;">Total</td>
                                 <td>
                                     <span id="txt_total_outstanding">{{ number_format($total, 2) }}</span>
                                     <input type="hidden" id="total_outstanding" value="{{ $total }}">
@@ -206,7 +206,7 @@
                                 <tr id="tr_row_{{ $item->id }}">
                                     <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                     <td>{{ $item->batch }}</td>
-                                    <td>{{ number_format($item->ev_change, 2) }}</td>
+                                    <td>{{ number_format($item->ev_charge, 2) }}</td>
                                     <td>
                                         @if ($item->receive_payment == 0)
                                             <span class="badge bg-danger">Unpaid</span>
@@ -215,7 +215,7 @@
                                         @endif    
                                     </td>
                                 </tr>
-                                <?php $total_debit += $item->ev_change; ?>
+                                <?php $total_debit += $item->ev_charge; ?>
                                 @endif
                             @endforeach
                         </tbody>
