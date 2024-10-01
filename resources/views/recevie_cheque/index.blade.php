@@ -352,16 +352,19 @@
                                                                             @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                                 @if ($canEditProposal == 1)
                                                                                     <li><a class="dropdown-item py-2 rounded" onclick="edit({{$item->id}})">Edit</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded" onclick="Approved({{$item->id}})">Approved</a></li>
                                                                                 @endif
                                                                             @elseif ($rolePermission == 2)
                                                                                 @if ($item->Operated_by == $CreateBy)
                                                                                     @if ($canEditProposal == 1)
                                                                                         <li><a class="dropdown-item py-2 rounded" onclick="edit({{$item->id}})">Edit</a></li>
+                                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Approved({{$item->id}})">Approved</a></li>
                                                                                     @endif
                                                                                 @endif
                                                                             @elseif ($rolePermission == 3)
                                                                                 @if ($canEditProposal == 1)
                                                                                     <li><a class="dropdown-item py-2 rounded" onclick="edit({{$item->id}})">Edit</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded" onclick="Approved({{$item->id}})">Approved</a></li>
                                                                                 @endif
                                                                             @endif
                                                                         @else
@@ -511,6 +514,26 @@
                 error: function(xhr, status, error) {
 
                     $('#editModal').modal('show');
+                    console.error("AJAX request failed: ", status, error);
+                }
+            });
+        }
+        function Approved(id) {
+            jQuery.ajax({
+                type: "GET",
+                url: "/Document/ReceiveCheque/Approved/" + id,
+                datatype: "JSON",
+                async: false,
+                success: function(response) {
+                    console.log("AJAX request successful: ", response);
+                    if (response.success) {
+                        // เปลี่ยนไปยังหน้าที่ต้องการ
+                    location.reload();
+                    } else {
+                        alert("An error occurred while processing the request.");
+                    }
+                },
+                error: function(xhr, status, error) {
                     console.error("AJAX request failed: ", status, error);
                 }
             });

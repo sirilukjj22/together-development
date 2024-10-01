@@ -299,4 +299,19 @@ class ReceiveChequeController extends Controller
             return redirect()->route('ReceiveCheque.index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
+    public function Approved($id){
+
+        $cheque = receive_cheque::wheere('id',$id)->first();
+        $cheque->status = 1;
+        $cheque->save();
+        $chequeNumber = $cheque->cheque_number;
+        $userid = Auth::user()->id;
+        $save = new log_company();
+        $save->Created_by = $userid;
+        $save->Company_ID = $chequeNumber;
+        $save->type = 'Approved';
+        $save->Category = 'Approved :: Receive Cheque';
+        $save->content = 'Approved Receive Cheque Number: '.$chequeNumber;
+        $save->save();
+    }
 }
