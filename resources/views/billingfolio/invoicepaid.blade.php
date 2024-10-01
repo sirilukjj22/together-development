@@ -228,7 +228,7 @@ white-space: nowrap
                                     @endforeach
                                 </select>
                                 <label for="chequeNumber" class="star-red">Cheque Number</label>
-                                <input type="text" id="cheque" name="cheque" class="chequeNumber form-control" placeholder="Enter cheque number">
+                                <input type="text" id="cheque" name="cheque" class="chequeNumber form-control" placeholder="Enter cheque number" maxlength="8">
                                 <label for="chequeAmount" class="star-red">Amount</label>
                                 <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="chequeAmount form-control" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
 
@@ -584,7 +584,6 @@ white-space: nowrap
                     $('#taxID').val(TaxpayerIdentification);
                     $('#address').val(Address);
                     $('#address2').val(Address2);
-
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX request failed: ", status, error);

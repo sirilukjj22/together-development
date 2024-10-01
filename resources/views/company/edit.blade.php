@@ -292,29 +292,29 @@
                                                     </div>
                                                     <div class="row mt-2">
                                                         <div class="col-lg-6 col-md-6 col-sm-12">
-                                                            <span for="first_name">First Name</span><br>
+                                                            <span for="first_name">ชื่อ / First Name</span><br>
                                                             <input type="text" id="first_nameAgent"class="form-control" name="first_nameAgent" maxlength="70" disabled value="{{$representative->First_name}}">
                                                         </div>
-                                                        <div class="col-lg-6 col-md-6 col-sm-12"><span for="last_name">Last Name</span><br>
+                                                        <div class="col-lg-6 col-md-6 col-sm-12"><span for="last_name">นามสกุล / Last Name</span><br>
                                                             <input type="text" id="last_nameAgent"class="form-control" name="last_nameAgent" maxlength="70" disabled value="{{$representative->Last_name}}">
                                                         </div>
                                                     </div>
                                                     <div class="row mt-2">
                                                         <div class="col-12">
-                                                            <span for="Address">Address</span><br>
+                                                            <span for="Address">ที่อยู่ / Address</span><br>
                                                             <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" disabled>{{$representative->Address}}</textarea>
                                                         </div>
                                                     </div>
                                                     <div class="row mt-2">
                                                         <div class="col-lg-4 col-md-6 col-sm-12">
-                                                            <span for="Country">Country</span><br>
+                                                            <span for="Country">ประเทศ / Country</span><br>
                                                             <select name="countrydataA" id="countrySelectA" class="form-select" onchange="showcityAInput()"disabled>
                                                                 <option value="Thailand" {{$representative->Country == "Thailand" ? 'selected' : ''}}>{{$representative->Country}}</option>
                                                             </select>
                                                         </div>
                                                         @if (($representative->Country === 'Thailand'))
                                                             <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:block;">
-                                                                <span for="city">City</span><br>
+                                                                <span for="city">จังหวัด / Province</span><br>
                                                                 <select name="province"  class="select22" disabled>
 
                                                                     <option >{{ $provinceNamesA }}</option>
@@ -323,7 +323,7 @@
                                                             </div>
                                                         @else
                                                             <div class="col-lg-4 col-md-6 col-sm-12" id="citythai" style="display:none;">
-                                                                <span for="city">City</span><br>
+                                                                <span for="city">จังหวัด / Province</span><br>
                                                                 <select  class="select22" disabled>
                                                                     <option value=""></option>
 
@@ -334,7 +334,7 @@
                                                         @endif
                                                         @if ($representative->Country === 'Thailand')
                                                             <div class="col-lg-4 col-md-6 col-sm-12">
-                                                                <span for="Amphures">Amphures</span><br>
+                                                                <span for="Amphures">อำเภอ / District</span><br>
                                                                 <select class="select22" disabled>
 
                                                                     <option >{{$amphuresA}}</option>
@@ -343,7 +343,7 @@
                                                             </div>
                                                         @else
                                                             <div class="col-lg-4 col-md-6 col-sm-12">
-                                                                <span for="Amphures">Amphures</span><br>
+                                                                <span for="Amphures">อำเภอ / District</span><br>
                                                                 <select  class="select22"  disabled>
                                                                     <option value=""></option>
                                                                 </select>
@@ -351,14 +351,14 @@
                                                         @endif
                                                         @if ($representative->Country === 'Thailand')
                                                             <div class="col-lg-4 col-md-6 col-sm-12">
-                                                                <span for="Tambon">Tambon </span><br>
+                                                                <span for="Tambon">ตำบล / Subdistrict </span><br>
                                                                 <select class="select22" disabled>
                                                                 <option >{{ $TambonA }}</option>
                                                             </select>
                                                             </div>
                                                         @else
                                                             <div class="col-lg-4 col-md-6 col-sm-12">
-                                                                <span for="Tambon">Tambon </span><br>
+                                                                <span for="Tambon">ตำบล / Subdistrict </span><br>
                                                                 <select class="select22" disabled>
                                                                     <option value=""></option>
                                                                 </select>
@@ -366,21 +366,21 @@
                                                         @endif
                                                         @if ($representative->Country === 'Thailand')
                                                             <div class="col-lg-4 col-md-6 col-sm-12">
-                                                                <span for="zip_code">Zip Code</span><br>
+                                                                <span for="zip_code">รหัสไปรษณีย์ / Postal Code</span><br>
                                                                 <select  class="select22"  disabled>
                                                                     <option >{{ $Zip_codeA }}</option>
                                                                 </select>
                                                             </div>
                                                         @else
                                                             <div class="col-lg-4 col-md-6 col-sm-12">
-                                                                <span for="zip_code">Zip Code</span><br>
+                                                                <span for="zip_code">รหัสไปรษณีย์ / Postal Code</span><br>
                                                                 <select  class="select22" disabled>
                                                                     <option value=""></option>
                                                                 </select>
                                                             </div>
                                                         @endif
                                                         <div class="col-lg-4 col-md-6 col-sm-12">
-                                                            <span for="Email">Email</span><br>
+                                                            <span for="Email">อีเมล / Email</span><br>
                                                             <input type="text" id="EmailAgent" class="form-control" name="EmailAgent" maxlength="70" required value="{{$representative->Email}}"disabled>
                                                         </div>
                                                     </div>
@@ -452,6 +452,16 @@
                                                         <span for="Address">ที่อยู่ / Address</span>
                                                         <textarea type="text" id="addressContact" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
                                                     </div>
+                                                    <div  class="col-sm-12 col-12 row mt-2">
+                                                        <div class="col-lg-4 col-md-4 col-sm-12">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                                                                <span class="form-check-label" for="flexRadioDefault1">
+                                                                    ที่อยู่ตามบริษัท
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     <div class="col-sm-12 col-12">
                                                         <div class="row mt-2">
                                                             <div class="col-sm-4 col-4">
@@ -515,6 +525,97 @@
                                                             </div>
                                                         </div>
                                                         <script>
+                                                            document.addEventListener('DOMContentLoaded', function() {
+                                                            // ส่วนของกดสำนักงานใหญ่
+                                                            const radio1 = document.getElementById('flexRadioDefault2');
+                                                            radio1.addEventListener('change', function() {
+                                                                if (radio1.checked) {
+                                                                    var countrySelect =$('#countrySelect').val();
+                                                                    console.log(countrySelect);
+
+                                                                    $('#countrySelectContact').val(countrySelect).trigger('change');
+                                                                    var province = document.getElementById('province').value;
+                                                                    var amphures = document.getElementById('amphures').value;
+                                                                    var Tambon = document.getElementById('Tambon').value;
+                                                                    var zip_code = document.getElementById('zip_code').value;
+                                                                    var address = document.getElementById('address').value;
+
+                                                                    if (countrySelect === 'Thailand') {
+
+                                                                        jQuery.ajax({
+                                                                            type: "GET",
+                                                                            url: "{!! url('/Company/provinces/" + province + "') !!}",
+                                                                            datatype: "JSON",
+                                                                            async: false,
+                                                                            success: function(result) {
+                                                                                jQuery.each(result.data, function(key, value) {
+                                                                                    var provinceA = new Option(value.name_th, value.id);
+                                                                                    if (value.id == province) {
+                                                                                        provinceA.selected = true;
+                                                                                    }
+                                                                                    $('#provinceC').append(provinceA);
+                                                                                });
+                                                                            },
+                                                                        })
+                                                                        jQuery.ajax({
+                                                                            type: "GET",
+                                                                            url: "{!! url('/Company/amphuresA/" + province + "') !!}",
+                                                                            datatype: "JSON",
+                                                                            async: false,
+                                                                            success: function(result) {
+                                                                                jQuery.each(result.data, function(key, value) {
+                                                                                    var amphuresA = new Option(value.name_th, value.id);
+                                                                                    if (value.id == amphures) {
+                                                                                        amphuresA.selected = true;
+                                                                                    }
+                                                                                    console.log(amphuresA);
+                                                                                    $('#amphuresC').append(amphuresA);
+                                                                                });
+                                                                            },
+                                                                        })
+                                                                        $.ajax({
+                                                                            type: "GET",
+                                                                            url: "{!! url('/Company/TambonA/" + amphures + "') !!}",
+                                                                            datatype: "JSON",
+                                                                            async: false,
+                                                                            success: function(result) {
+                                                                                jQuery.each(result.data, function(key, value) {
+                                                                                    var TambonA = new Option(value.name_th, value.id);
+                                                                                    if (value.id == Tambon) {
+                                                                                        TambonA.selected = true;
+                                                                                    }
+                                                                                    $('#TambonC').append(TambonA);
+                                                                                    // console.log(TambonA);
+                                                                                });
+                                                                            },
+                                                                        })
+                                                                        $.ajax({
+                                                                            type: "GET",
+                                                                            url: "{!! url('/Company/districtsA/" + Tambon + "') !!}",
+                                                                            datatype: "JSON",
+                                                                            async: false,
+                                                                            success: function(result) {
+                                                                                console.log(result);
+                                                                                jQuery.each(result.data, function(key, value) {
+                                                                                    var zip_codeA = new Option(value.zip_code, value.zip_code);
+                                                                                    if (value.zip_code == zip_code) {
+                                                                                        zip_codeA.selected = true;
+                                                                                    }
+                                                                                    $('#zip_codeC').append(zip_codeA);
+                                                                                    console.log(zip_codeA);
+                                                                                });
+                                                                            },
+                                                                        })
+                                                                    } else {
+                                                                        $('#provinceA, #amphuresA, #TambonA, #zip_codeA').empty();
+                                                                        $('#provinceA, #amphuresA, #TambonA, #zip_codeA').prop('disabled', true); // ปิดการใช้งาน
+                                                                    }
+                                                                    $('#addressAgent').val(address);
+
+                                                                }
+                                                            });
+
+                                                        });
                                                             function showcityAInputContact() {
                                                                 var countrySelectA = document.getElementById("countrySelectContact");
                                                                 var province = document.getElementById("provinceC");

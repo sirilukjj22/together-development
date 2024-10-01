@@ -117,8 +117,8 @@
                                                     @php
                                                         $CreateBy = Auth::user()->id;
                                                         $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                        $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                        $canViewProposal = @Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
                                                     @endphp
                                                     <td style="text-align: center;">
                                                         <div class="btn-group">
@@ -262,8 +262,8 @@
                                                     @php
                                                         $CreateBy = Auth::user()->id;
                                                         $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                        $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                        $canViewProposal = @Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
                                                     @endphp
                                                     <td style="text-align: center;">
                                                         <div class="btn-group">
@@ -387,8 +387,8 @@
                                                     @php
                                                         $CreateBy = Auth::user()->id;
                                                         $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                        $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                                                        $canViewProposal = @Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+                                                        $canEditProposal = @Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
                                                     @endphp
                                                     <td style="text-align: center;">
                                                         <div class="btn-group">

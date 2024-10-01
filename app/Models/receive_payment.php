@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class receive_payment extends Model
 {
     use HasFactory;
-    protected $table = 'receive_payment';
+    protected $table = 'document_receive';
     protected $fillable = [
         'Invoice_ID',
         'Receipt_ID',

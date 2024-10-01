@@ -91,8 +91,8 @@ class BillingFolioController extends Controller
 
                     $btn_status = '<span class="badge rounded-pill bg-success">Confirm</span>';
                     $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
                     $CreateBy = Auth::user()->id;
                     $isOperatedByCreator = $value->Operated_by == $CreateBy;
 
@@ -189,8 +189,8 @@ class BillingFolioController extends Controller
 
                 $btn_status = '<span class="badge rounded-pill bg-success">Confirm</span>';
                 $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
                 $CreateBy = Auth::user()->id;
                 $isOperatedByCreator = $value->Operated_by == $CreateBy;
 
@@ -248,12 +248,12 @@ class BillingFolioController extends Controller
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $userid = Auth::user()->id;
         $Approved = Quotation::query()
-        ->leftJoin('receive_payment', 'quotation.Quotation_ID', '=', 'receive_payment.Quotation_ID')
+        ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
         ->where('quotation.status_guest', 1)
         ->select(
             'quotation.*',
-            DB::raw('SUM(receive_payment.Amount) as receive_amount'),
-            DB::raw('MIN(CASE WHEN receive_payment.document_status IN (1, 2) THEN CAST(REPLACE(receive_payment.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
+            DB::raw('SUM(document_receive.Amount) as receive_amount'),
+            DB::raw('MIN(CASE WHEN document_receive.document_status IN (1, 2) THEN CAST(REPLACE(document_receive.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
         )
         ->groupBy('quotation.Quotation_ID', 'quotation.status_guest', 'quotation.status_receive')
         ->paginate($perPage);

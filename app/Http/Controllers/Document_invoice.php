@@ -135,8 +135,8 @@ class Document_invoice extends Controller
 
                     $btn_status = '<span class="badge rounded-pill bg-success">Proposal</span>';
                     $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
                     $CreateBy = Auth::user()->id;
                     $isOperatedByCreator = $value->Operated_by == $CreateBy;
 
@@ -281,8 +281,8 @@ class Document_invoice extends Controller
 
                 $btn_status = '<span class="badge rounded-pill bg-success">Proposal</span>';
                 $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
                 $CreateBy = Auth::user()->id;
                 $isOperatedByCreator = $value->Operated_by == $CreateBy;
                 $btn_action = '<div class="dropdown">';
@@ -406,8 +406,8 @@ class Document_invoice extends Controller
 
 
                     $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
                     $CreateBy = Auth::user()->id;
                     $isOperatedByCreator = $value->Operated_by == $CreateBy;
 
@@ -521,8 +521,8 @@ class Document_invoice extends Controller
 
 
                 $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
-                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Proforma Invoice', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
                 $CreateBy = Auth::user()->id;
                 $isOperatedByCreator = $value->Operated_by == $CreateBy;
 

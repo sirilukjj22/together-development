@@ -655,6 +655,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::controller(ReceiveChequeController::class)->middleware('role:document')->group(function () {
         Route::get('/Document/ReceiveCheque/index', 'index')->name('ReceiveCheque.index');
+        Route::post('/Document/ReceiveCheque/save', 'save')->name('ReceiveCheque.save');
+        Route::get('/Document/ReceiveCheque/view/{id}', 'view')->name('ReceiveCheque.view');
     });
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');

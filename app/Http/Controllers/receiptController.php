@@ -534,4 +534,6 @@ class receiptController extends Controller
         ,'TambonID','amphuresID','CityID','provinceNames','company_fax','company_phone','Contact_phone','unit','quantity','QuotationID','vat_type','TotalPax',
         'subtotal','SpecialDiscountBath','beforeTax','AddTax','Nettotal','totalreceipt','totalaverage','totalAmount','invoice','totalinvoice','receipt_ID','status','receiptdata','selectproduct','totalreceipt'));
     }
+
+
 }
