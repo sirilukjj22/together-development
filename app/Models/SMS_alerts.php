@@ -27,6 +27,7 @@ class SMS_alerts extends Model
         'split_status',
         'status',
         'status_receive_agoda',
+        'status_receive_elexa',
         'remark',
         'date_remark',
         'transfer_remark',

@@ -26,6 +26,7 @@ use App\Http\Controllers\DummyQuotationController;
 use App\Http\Controllers\proposal_request;
 use App\Http\Controllers\Document_invoice;
 use App\Http\Controllers\BillingFolioController;
+use App\Http\Controllers\ElexaController;
 use App\Http\Controllers\Masterpromotion;
 use App\Http\Controllers\UserDepartmentsController;
 use App\Http\Controllers\ReceiveChequeController;
@@ -116,6 +117,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('debit-select-agoda-outstanding/{id}', 'select_agoda_outstanding')->name('debit-select-agoda-outstanding');
         Route::get('debit-select-agoda-received/{id}', 'select_agoda_received')->name('debit-select-agoda-received');
         Route::get('debit-status-agoda-receive/{status}', 'status_agoda_receive')->name('debit-status-agoda-receive');
+    });
+
+    # Debit Elexa
+    Route::controller(ElexaController::class)->middleware('role:elexa')->group(function () {
+        Route::get('debit-elexa', 'index')->name('debit-elexa');
+        Route::get('debit-elexa-revenue/{month}/{year}', 'index_list_days')->name('debit-elexa-revenue');
+        Route::get('debit-elexa-update/{month}/{year}', 'index_update_elexa')->name('debit-elexa-update');
+        Route::get('debit-elexa-update-receive/{id}/{month}/{year}', 'index_receive')->name('debit-elexa-update-receive'); // หน้าเพิ่ม / แก้ไขข้อมูล
+        Route::get('debit-elexa-detail/{id}/{month}/{year}', 'index_detail_receive')->name('debit-elexa-detail'); // แสดงรายละเอียด
+        Route::post('debit-elexa-store', 'receive_payment')->name('debit-elexa-store');
+        Route::get('debit-select-elexa-outstanding/{id}', 'select_elexa_outstanding')->name('debit-select-elexa-outstanding');
+        // Route::get('debit-select-agoda-received/{id}', 'select_agoda_received')->name('debit-select-agoda-received');
+        Route::get('debit-status-elexa-receive/{status}', 'status_elexa_receive')->name('debit-status-elexa-receive');
     });
 
 

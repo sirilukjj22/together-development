@@ -11,11 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class AgodaRevenuesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
         $agoda_revenue = SMS_alerts::where('status', 5)->select('sms_alert.*', DB::raw("Month(date) as month, SUM(amount) as total_sum"))->groupBy('month')->get();

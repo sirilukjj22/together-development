@@ -218,7 +218,7 @@
                                             <li><a class="ms-link" href="{{ route('debit-agoda') }}">Agoda</a></li>
                                         @endif
                                         @if (Auth::user()->roleMenu->elexa == 1)
-                                            <li><a class="ms-link" href="#">Elexa</a></li>
+                                            <li><a class="ms-link" href="{{ route('debit-elexa') }}">Elexa</a></li>
                                         @endif
                                     </ul>
                                 </li>
