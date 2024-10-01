@@ -2415,7 +2415,7 @@ class RevenuesController extends Controller
         } if($request->revenue_type == "mc_elexa_charge") {
             $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                 ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', 8)->whereBetween('revenue.date', [$month_from, $month_to])
-                ->select('revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->paginate(10);
+                ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->paginate(10);
             $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                 ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', 8)->whereBetween('revenue.date', [$month_from, $month_to])->sum('revenue_credit.ev_charge');
             $title = "Elexa EGAT Charge";
@@ -2452,7 +2452,7 @@ class RevenuesController extends Controller
         } if($request->revenue_type == "elexa_outstanding") {
             $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                 ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', 8)->whereBetween('revenue.date', [$month_from, $month_to])
-                ->select('revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->paginate(10);
+                ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->paginate(10);
             $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                 ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', 8)->whereBetween('revenue.date', [$month_from, $month_to])->sum('revenue_credit.ev_revenue');
             $title = "Elexa EGAT Revenue Outstanding";

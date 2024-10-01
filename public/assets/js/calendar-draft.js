@@ -430,6 +430,6 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
   return new bootstrap.Tooltip(tooltipTriggerEl);
 });
 
-$(document).on('click', '.no-select', function () {
+$(document).on('click', 'date .no-select', function () {
   $('#filter-by').val("date");
 });
