@@ -63,12 +63,16 @@ class CompanyController extends Controller
             }
         }
 
-        $DummyNo = companys::query()->pluck('Profile_ID');
+        $DummyNo = representative::query()->pluck('Profile_ID');
+        $DummyNo_phone = representative_phone::query()->pluck('Company_ID');
         $document = companys::whereIn('Profile_ID', $DummyNo)->get();
+
         $document_IDs = $document->pluck('Profile_ID');
         $missingQuotationIDs = $DummyNo->diff($document_IDs);
+        $missingQuotationIDss = $DummyNo_phone->diff($document_IDs);
+
         representative::whereIn('Profile_ID', $missingQuotationIDs)->delete();
-        representative_phone::whereIn('Company_ID', $missingQuotationIDs)->delete();
+        representative_phone::whereIn('Company_ID', $missingQuotationIDss)->delete();
         return view('company.index',compact('Company','menu'));
     }
     public function company_paginate_table(Request $request)
