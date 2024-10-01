@@ -64,7 +64,7 @@ class CompanyController extends Controller
         }
 
         $DummyNo = companys::query()->pluck('Profile_ID');
-        $document = companys::whereIn('Profile_ID', $Profile_ID)->get();
+        $document = companys::whereIn('Profile_ID', $DummyNo)->get();
         $document_IDs = $document->pluck('Profile_ID');
         $missingQuotationIDs = $DummyNo->diff($document_IDs);
         representative::whereIn('Profile_ID', $missingQuotationIDs)->delete();
