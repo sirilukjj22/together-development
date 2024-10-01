@@ -494,9 +494,10 @@
                     var receive_date = response.receive_date;
                     var issue_date = response.issue_date;
 
+                    console.log(bank_cheque);
 
-                    $('#Referedit').val(invoice);
-                    $('#BankChequeview').val(bank_cheque);
+                    $('#Referedit').val(invoice).trigger('change');
+                    $('#bankedit').val(bank_cheque).trigger('change');
                     // $('#Bankreceivedview').val(bank_received);
                     // $('#chequeNumberview').val(cheque_number);
                     // $('#Amountview').val(amount);

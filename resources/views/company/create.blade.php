@@ -284,12 +284,6 @@
                                                         <input type="text" class="form-control" id="last_nameAgent" name="last_nameAgent" maxlength="70" required>
                                                     </div>
                                                 </div>
-                                                <div class="row mt-2">
-                                                    <div class="col">
-                                                        <span class="labelcontact" for="">ประเทศ / Address</span>
-                                                        <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
-                                                    </div>
-                                                </div>
                                                 <div  class="row mt-2">
                                                     <div class="col-lg-4 col-md-4 col-sm-12">
                                                         <div class="form-check">
@@ -300,6 +294,13 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="row mt-2">
+                                                    <div class="col">
+                                                        <span class="labelcontact" for="">ประเทศ / Address</span>
+                                                        <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
+                                                    </div>
+                                                </div>
+
                                                 <div class="row mt-2">
                                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                                         <span class="labelcontact" for="">ประเทศ / Country</span>

@@ -15,13 +15,21 @@ use App\Models\guest_tax;
 use App\Models\guest_tax_phone;
 use App\Models\Quotation;
 use App\Models\country;
+use Illuminate\Support\Facades\DB;
 use Auth;
 class GuestController extends Controller
 {
     public function index($menu)
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-        $Guest = Guest::query()->paginate($perPage);
+        $Guest = Guest::query()
+        ->leftJoin('phone_guests', function($join) {
+            $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
+                ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
+        })
+        ->where('guests.status', 1)
+        ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
+        ->paginate($perPage);
         $Mbooking = master_document::select('name_en','id')->get();
         $exp = explode('.', $menu);
         if (count($exp) > 1) {
@@ -45,10 +53,21 @@ class GuestController extends Controller
             $data_query = Guest::where('Profile_ID', 'LIKE', '%'.$search_value.'%')
                 ->orWhere('First_name', 'LIKE', '%'.$search_value.'%')
                 ->orWhere('Last_name', 'LIKE', '%'.$search_value.'%')
+                ->leftJoin('phone_guests', function($join) {
+                    $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
+                        ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
+                })
+                ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
                 ->paginate($perPage);
         }else{
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $data_query = Guest::query()->paginate($perPageS);
+            $data_query = Guest::query()
+            ->leftJoin('phone_guests', function($join) {
+                $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
+                    ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
+            })
+            ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
+            ->paginate($perPageS);
         }
         $data = [];
         $path = "/guest/edit/";
@@ -111,9 +130,21 @@ class GuestController extends Controller
 
         $data = [];
         if ($perPage == 10) {
-            $data_query = Guest::query()->limit($request->page.'0')->get();
+            $data_query = Guest::query()
+            ->leftJoin('phone_guests', function($join) {
+                $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
+                    ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
+            })
+            ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
+            ->limit($request->page.'0')->get();
         } else {
-            $data_query = Guest::query()->paginate($perPage);
+            $data_query = Guest::query()
+            ->leftJoin('phone_guests', function($join) {
+                $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
+                    ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
+            })
+            ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
+            ->paginate($perPage);
         }
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';

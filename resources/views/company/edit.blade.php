@@ -448,10 +448,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-12 mt-2">
-                                                        <span for="Address">ที่อยู่ / Address</span>
-                                                        <textarea type="text" id="addressContact" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
-                                                    </div>
                                                     <div  class="col-sm-12 col-12 row mt-2">
                                                         <div class="col-lg-4 col-md-4 col-sm-12">
                                                             <div class="form-check">
@@ -462,6 +458,11 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="col-sm-12 mt-2">
+                                                        <span for="Address">ที่อยู่ / Address</span>
+                                                        <textarea type="text" id="addressContact" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
+                                                    </div>
+
                                                     <div class="col-sm-12 col-12">
                                                         <div class="row mt-2">
                                                             <div class="col-sm-4 col-4">
@@ -538,7 +539,7 @@
                                                                     var amphures = document.getElementById('amphures').value;
                                                                     var Tambon = document.getElementById('Tambon').value;
                                                                     var zip_code = document.getElementById('zip_code').value;
-                                                                    var address = document.getElementById('address').value;
+                                                                    var address = document.getElementById('addressAgent').value;
 
                                                                     if (countrySelect === 'Thailand') {
 
@@ -607,10 +608,10 @@
                                                                             },
                                                                         })
                                                                     } else {
-                                                                        $('#provinceA, #amphuresA, #TambonA, #zip_codeA').empty();
-                                                                        $('#provinceA, #amphuresA, #TambonA, #zip_codeA').prop('disabled', true); // ปิดการใช้งาน
+                                                                        $('#provinceC, #amphuresC, #TambonC, #zip_codeC').empty();
+                                                                        $('#provinceC, #amphuresA, #TambonC, #zip_codeC').prop('disabled', true); // ปิดการใช้งาน
                                                                     }
-                                                                    $('#addressAgent').val(address);
+                                                                    $('#addressContact').val(address);
 
                                                                 }
                                                             });
