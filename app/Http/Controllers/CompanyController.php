@@ -62,6 +62,13 @@ class CompanyController extends Controller
                     ->paginate($perPage);
             }
         }
+
+        $DummyNo = companys::query()->pluck('Profile_ID');
+        $document = companys::whereIn('Profile_ID', $Profile_ID)->get();
+        $document_IDs = $document->pluck('Profile_ID');
+        $missingQuotationIDs = $DummyNo->diff($document_IDs);
+        representative::whereIn('Profile_ID', $missingQuotationIDs)->delete();
+        representative_phone::whereIn('Company_ID', $missingQuotationIDs)->delete();
         return view('company.index',compact('Company','menu'));
     }
     public function company_paginate_table(Request $request)
@@ -256,298 +263,305 @@ class CompanyController extends Controller
                 $Id_profile ="C-";
                 $N_Profile = $Id_profile.$Profile_ID;
 
-                {
-                    $CountryOther = $request->countrydata;
-                    $Branch = $request->Branch;
-                    $amphures = $request->amphures;
-                    $Tambon = $request->Tambon;
-                    $zip_code = $request->zip_code;
-                    $city = $request->city;
-                    $Address= $request->address;
-                    $phone_company = $request->phone_company;
-                    $fax = $request->fax;
-                    $contract_rate_start_date = $request->contract_rate_start_date;
-                    $contract_rate_end_date = $request->contract_rate_end_date;
-                    $Lastest_Introduce_By = $request->Lastest_Introduce_By;
-                    $Company_type =$request->Company_type;
-                    $Company_Name = $request->Company_Name;
-                    $Market =$request->Mmarket;
-                    $Company_Email = $request->Company_Email;
-                    $Company_Website = $request->Company_Website;
-                    $address = $request->address;
-                    $Taxpayer_Identification = $request->Taxpayer_Identification;
-                    $booking_channel = $request->booking_channel;
-                    $comtype = master_document::where('id', $Company_type)->first();
-                    if ($comtype->name_th =="บริษัทจำกัด") {
-                        $comtypefullname = "บริษัท ". $Company_Name . " จำกัด";
-                    }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
-                        $comtypefullname = "บริษัท ". $Company_Name . " จำกัด (มหาชน)";
-                    }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
-                        $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company_Name ;
-                    }
-                    if ($CountryOther == 'Thailand') {
-                        $provinceNames = province::where('id', $city)->first();
-                        $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
-                        $amphuresID = amphures::where('id',$amphures)->select('name_th','id')->first();
-                        $provinceNames = $provinceNames->name_th;
-                        $Tambon = $TambonID->name_th;
-                        $amphures = $amphuresID->name_th;
-                        $Zip_code = $TambonID->zip_code;
-                        $AddressIndividual = 'ที่อยู่ : '.$address.' ตำบล : '.$Tambon.' อำเภอ : '.$amphures.' จังหวัด : '.$provinceNames.' '.$Zip_code;
-                    }elseif ($City) {
-                        $AddressIndividual = 'ที่อยู่ : '.$city;
-                    }
-                    if ($Company_Email) {
-                        $Email = 'อีเมล์บริษัท : '.$Company_Email;
-                    }
-                    $Identification = null;
-                    if ($Taxpayer_Identification) {
-                        $Identification = 'เลขบัตรประจำตัว : '.$Taxpayer_Identification;
-                    }
-                    $Branchc = null;
-                    if ($Branch) {
-                        $Branchc = 'สาขา : '.$Branch;
-                    }
-                    $phone = null;
-                    if ($phone_company) {
-                        $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phone_company);
-                    }
-                    $fax = null;
-                    if ($fax) {
-                        $fax = 'เพิ่มแฟกซ์ : ' . implode(', ', $fax);
-                    }
-                    if ($Market) {
-                        $WMarket = master_document::where('id', $Market)->where('Category', 'Mmarket')->first();
-                        $SMarket = $WMarket->name_th;
-                        $Market = 'กลุ่มตลาด : '.$SMarket;
-                    }
-                    if ($booking_channel) {
-                        $Booking = master_document::where('id', $booking_channel)->where('Category', 'Mbooking_channel')->first();
-                        $BookingChannel = $Booking->name_th;
-                        $Booking_Channel = 'ช่องทางการจอง : '.$BookingChannel;
-                    }
-                    if ($Company_Website) {
-                        $Company_Website = 'เว็บไซต์ของบริษัท : '.$Company_Website;
-                    }
-                    if ($Lastest_Introduce_By) {
-                        $Company_Website = 'ผู้แนะนำ : '.$Lastest_Introduce_By;
-                    }
-                    $Profile = 'รหัสบริษัท : '.$N_Profile;
-                    $datacompany = '';
 
-                    $variables = [$Profile,$comtypefullname , $Branchc, $AddressIndividual, $Email, $Identification,$Market ,$Booking_Channel,$Company_Website, $phone, $fax];
-
-                    foreach ($variables as $variable) {
-                        if (!empty($variable)) {
-                            if (!empty($datacompany)) {
-                                $datacompany .= ' + ';
-                            }
-                            $datacompany .= $variable;
+                try {
+                    {
+                        $CountryOther = $request->countrydata;
+                        $Branch = $request->Branch;
+                        $amphures = $request->amphures;
+                        $Tambon = $request->Tambon;
+                        $zip_code = $request->zip_code;
+                        $city = $request->city;
+                        $Address= $request->address;
+                        $phone_company = $request->phone_company;
+                        $fax = $request->fax;
+                        $contract_rate_start_date = $request->contract_rate_start_date;
+                        $contract_rate_end_date = $request->contract_rate_end_date;
+                        $Lastest_Introduce_By = $request->Lastest_Introduce_By;
+                        $Company_type =$request->Company_type;
+                        $Company_Name = $request->Company_Name;
+                        $Market =$request->Mmarket;
+                        $Company_Email = $request->Company_Email;
+                        $Company_Website = $request->Company_Website;
+                        $address = $request->address;
+                        $Taxpayer_Identification = $request->Taxpayer_Identification;
+                        $booking_channel = $request->booking_channel;
+                        $comtype = master_document::where('id', $Company_type)->first();
+                        if ($comtype->name_th =="บริษัทจำกัด") {
+                            $comtypefullname = "บริษัท ". $Company_Name . " จำกัด";
+                        }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                            $comtypefullname = "บริษัท ". $Company_Name . " จำกัด (มหาชน)";
+                        }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                            $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company_Name ;
                         }
+                        if ($CountryOther == 'Thailand') {
+                            $provinceNames = province::where('id', $city)->first();
+                            $TambonID = districts::where('id',$Tambon)->select('name_th','id','zip_code')->first();
+                            $amphuresID = amphures::where('id',$amphures)->select('name_th','id')->first();
+                            $provinceNames = $provinceNames->name_th;
+                            $Tambon = $TambonID->name_th;
+                            $amphures = $amphuresID->name_th;
+                            $Zip_code = $TambonID->zip_code;
+                            $AddressIndividual = 'ที่อยู่ : '.$address.' ตำบล : '.$Tambon.' อำเภอ : '.$amphures.' จังหวัด : '.$provinceNames.' '.$Zip_code;
+                        }elseif ($City) {
+                            $AddressIndividual = 'ที่อยู่ : '.$city;
+                        }
+                        if ($Company_Email) {
+                            $Email = 'อีเมล์บริษัท : '.$Company_Email;
+                        }
+                        $Identification = null;
+                        if ($Taxpayer_Identification) {
+                            $Identification = 'เลขบัตรประจำตัว : '.$Taxpayer_Identification;
+                        }
+                        $Branchc = null;
+                        if ($Branch) {
+                            $Branchc = 'สาขา : '.$Branch;
+                        }
+                        $phone = null;
+                        if ($phone_company) {
+                            $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phone_company);
+                        }
+                        $fax = null;
+                        if ($fax) {
+                            $fax = 'เพิ่มแฟกซ์ : ' . implode(', ', $fax);
+                        }
+                        if ($Market) {
+                            $WMarket = master_document::where('id', $Market)->where('Category', 'Mmarket')->first();
+                            $SMarket = $WMarket->name_th;
+                            $Market = 'กลุ่มตลาด : '.$SMarket;
+                        }
+                        if ($booking_channel) {
+                            $Booking = master_document::where('id', $booking_channel)->where('Category', 'Mbooking_channel')->first();
+                            $BookingChannel = $Booking->name_th;
+                            $Booking_Channel = 'ช่องทางการจอง : '.$BookingChannel;
+                        }
+                        if ($Company_Website) {
+                            $Company_Website = 'เว็บไซต์ของบริษัท : '.$Company_Website;
+                        }
+                        if ($Lastest_Introduce_By) {
+                            $Company_Website = 'ผู้แนะนำ : '.$Lastest_Introduce_By;
+                        }
+                        $Profile = 'รหัสบริษัท : '.$N_Profile;
+                        $datacompany = '';
+
+                        $variables = [$Profile,$comtypefullname , $Branchc, $AddressIndividual, $Email, $Identification,$Market ,$Booking_Channel,$Company_Website, $phone, $fax];
+
+                        foreach ($variables as $variable) {
+                            if (!empty($variable)) {
+                                if (!empty($datacompany)) {
+                                    $datacompany .= ' + ';
+                                }
+                                $datacompany .= $variable;
+                            }
+                        }
+
+                        $userid = Auth::user()->id;
+                        $save = new log_company();
+                        $save->Created_by = $userid;
+                        $save->Company_ID = $N_Profile;
+                        $save->type = 'Create';
+                        $save->Category = 'Create :: Company / Agent';
+                        $save->content =$datacompany;
+                        $save->save();
                     }
-
-                    $userid = Auth::user()->id;
-                    $save = new log_company();
-                    $save->Created_by = $userid;
-                    $save->Company_ID = $N_Profile;
-                    $save->type = 'Create';
-                    $save->Category = 'Create :: Company / Agent';
-                    $save->content =$datacompany;
-                    $save->save();
-                }
-
-                $save = new companys();
-                $save->Profile_ID = $N_Profile;
-                $save->Company_Name = $request->Company_Name;
-                $save->Company_type = $request->Company_type;
-                $save->Market =$request->Mmarket;
-                $save->Booking_Channel = $request->booking_channel;
-                if ($CountryOther != "Thailand") {
-                    if ($city === null) {
-                        return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
+                    $save = new companys();
+                    $save->Profile_ID = $N_Profile;
+                    $save->Company_Name = $request->Company_Name;
+                    $save->Company_type = $request->Company_type;
+                    $save->Market =$request->Mmarket;
+                    $save->Booking_Channel = $request->booking_channel;
+                    if ($CountryOther != "Thailand") {
+                        if ($city === null) {
+                            return redirect()->back()->with('error', 'กรุณากรอกประเทศของคุณ');
+                        }else {
+                            $save->Country = $CountryOther;
+                            $save->City = $city;
+                            $save->Amphures = null;
+                            $save->Address = $Address;
+                            $save->Tambon = null;
+                            $save->Zip_Code = null;
+                        }
                     }else {
                         $save->Country = $CountryOther;
                         $save->City = $city;
-                        $save->Amphures = null;
+                        $save->Amphures = $request->amphures;
                         $save->Address = $Address;
-                        $save->Tambon = null;
-                        $save->Zip_Code = null;
+                        $save->Tambon = $request->Tambon;
+                        $save->Zip_Code = $request->zip_code;
+                        $save->Branch = $Branch;
                     }
-                }else {
-                    $save->Country = $CountryOther;
-                    $save->City = $city;
-                    $save->Amphures = $request->amphures;
-                    $save->Address = $Address;
-                    $save->Tambon = $request->Tambon;
-                    $save->Zip_Code = $request->zip_code;
-                    $save->Branch = $Branch;
-                }
-                $save->Company_Email = $request->Company_Email;
-                $save->Company_Website = $request->Company_Website;
-                $save->Taxpayer_Identification = $request->Taxpayer_Identification;
-                // $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
-                $save->Contract_Rate_Start_Date = $contract_rate_start_date;
-                $save->Contract_Rate_End_Date = $contract_rate_end_date;
-                $save->Lastest_Introduce_By =$Lastest_Introduce_By;
-                if ($phone_company !== null) {
-                    foreach ($phone_company as $index => $phoneNumber) {
-                        if ($phoneNumber !== null) {
-                            $savephone = new company_phone();
-                            $savephone->Profile_ID = $N_Profile;
-                            $savephone->Phone_number = $phoneNumber;
-                            $savephone->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                            $savephone->save();
-                        }
-                    }
-                }
-                if ($fax !== null) {
-                    foreach ($fax as $index => $faxNumber) {
-                        if ($faxNumber !== null) {
-                            $savefax = new company_fax();
-                            $savefax->Profile_ID = $N_Profile;
-                            $savefax->Fax_number = $faxNumber;
-                            $savefax->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                            $savefax->save();
-                        }
-                    }
-                }
-                $save->save();
-                //agent
-                $latestAgent = representative::where('Company_Name', 'like', "%{$Company_Name}%")->where('Branch', 'like', "%{$Branch}%")->first();
-                if ($latestAgent) {
-                    $latestAgent = $latestAgent->Profile_ID + 1;
-                } else {
-                    $latestAgent = 1;
-                }
-                $A_Profile = $latestAgent;
-                {
-                    $countrydataA= $request->countrydataA;
-                    $amphuresA= $request->amphuresA;
-                    $TambonA= $request->TambonA;
-                    $zip_codeA= $request->zip_codeA;
-                    $cityA = $request->cityA;
-                    $addressAgent= $request->addressAgent;
-                    $EmailAgent= $request->EmailAgent;
-                    $NProfile_ID = $N_Profile;
-                    $ABranch = $request->Branch;
-                    $Company_Name = $request->Company_Name;
-                    $phone = $request->phone;
-                    $first_name = $request->first_nameAgent;
-                    $last_name = $request->last_nameAgent;
-                    $Preface = $request->Preface;
-                    if ($Preface && $first_name && $last_name) {
-                        $Mprefix = master_document::where('id', $Preface)->where('Category', 'Mprename')->first();
-                        if ($Mprefix) {
-                            if ($Mprefix->name_th == "นาย") {
-                                $comtypefullname = "นาย " . $first_name . ' ' . $last_name;
-                            } elseif ($Mprefix->name_th == "นาง") {
-                                $comtypefullname = "นาง " . $first_name . ' ' . $last_name;
-                            } elseif ($Mprefix->name_th == "นางสาว") {
-                                $comtypefullname = "นางสาว " . $first_name . ' ' . $last_name;
+                    $save->Company_Email = $request->Company_Email;
+                    $save->Company_Website = $request->Company_Website;
+                    $save->Taxpayer_Identification = $request->Taxpayer_Identification;
+                    // $save->Discount_Contract_Rate = $request->Discount_Contract_Rate;
+                    $save->Contract_Rate_Start_Date = $contract_rate_start_date;
+                    $save->Contract_Rate_End_Date = $contract_rate_end_date;
+                    $save->Lastest_Introduce_By =$Lastest_Introduce_By;
+                    if ($phone_company !== null) {
+                        foreach ($phone_company as $index => $phoneNumber) {
+                            if ($phoneNumber !== null) {
+                                $savephone = new company_phone();
+                                $savephone->Profile_ID = $N_Profile;
+                                $savephone->Phone_number = $phoneNumber;
+                                $savephone->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                                $savephone->save();
                             }
                         }
-                    } elseif ($Preface > 30) {
-                        $Mprefix = master_document::where('id', $Preface)->where('Category', 'Mprename')->first();
-                        if ($Mprefix) {
-                            $prename = $Mprefix->name_th;
-                            $comtypefullname = 'คำนำหน้า : ' . $prename;
-                        }
-                    } elseif ($first_name && $last_name) {
-                        $comtypefullname = 'ชื่อ : ' . $first_name . ' ' . $last_name;
-                    } elseif ($first_name) {
-                        $comtypefullname = 'ชื่อ : ' . $first_name;
-                    } elseif ($last_name) {
-                        $comtypefullname = 'นามสกุล : ' . $last_name;
                     }
-
-                    if ($countrydataA == 'Thailand') {
-                        $provinceNames = province::where('id', $cityA)->first();
-                        $TambonID = districts::where('id',$TambonA)->select('name_th','id','zip_code')->first();
-                        $amphuresID = amphures::where('id',$amphuresA)->select('name_th','id')->first();
-                        $provinceNames = $provinceNames->name_th;
-                        $Tambon = $TambonID->name_th;
-                        $amphures = $amphuresID->name_th;
-                        $Zip_code = $TambonID->zip_code;
-                        $AddressIndividual = 'ที่อยู่ : '.$addressAgent.' ตำบล : '.$Tambon.' อำเภอ : '.$amphures.' จังหวัด : '.$provinceNames.' '.$Zip_code;
-                    }elseif ($cityA) {
-                        $AddressIndividual = 'ที่อยู่ : '.$cityA;
-                    }
-                    if ($EmailAgent) {
-                        $Email = 'อีเมล์ผู้ติดต่อ : '.$EmailAgent;
-                    }
-                    $Branch = null;
-                    if ($Branch) {
-                        $Branch = 'สาขา : '.$Branch;
-                    }
-                    $phone = null;
-                    if ($phone) {
-                        $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phone);
-                    }
-
-                    $Profile = 'รหัสบริษัท : '.$N_Profile;
-                    $ProfileContact = 'รหัสผู้ติดต่อ : '.$A_Profile;
-                    $datacompanycontact = '';
-
-                    $variables = [$Profile,$ProfileContact,$comtypefullname , $Branch, $AddressIndividual, $Email, $Identification, $phone];
-
-                    foreach ($variables as $variable) {
-                        if (!empty($variable)) {
-                            if (!empty($datacompanycontact)) {
-                                $datacompanycontact .= ' + ';
+                    if ($fax !== null) {
+                        foreach ($fax as $index => $faxNumber) {
+                            if ($faxNumber !== null) {
+                                $savefax = new company_fax();
+                                $savefax->Profile_ID = $N_Profile;
+                                $savefax->Fax_number = $faxNumber;
+                                $savefax->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                                $savefax->save();
                             }
-                            $datacompanycontact .= $variable;
                         }
                     }
-
-                    $userid = Auth::user()->id;
-                    $save = new log_company();
-                    $save->Created_by = $userid;
-                    $save->Company_ID = $N_Profile;
-                    $save->type = 'Create';
-                    $save->Category = 'Create :: Contact';
-                    $save->content =$datacompanycontact;
                     $save->save();
+                } catch (\Throwable $th) {
+                    return redirect()->route('Company','index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
                 }
-
-                $saveAgent = new representative();
-                $saveAgent->Profile_ID = $A_Profile;
-                $saveAgent->prefix = $request->Preface;
-                $saveAgent->First_name = $request->first_nameAgent;
-                $saveAgent->Last_name = $request->last_nameAgent;
-                if ($countrydataA != "Thailand") {
-                    $saveAgent->City = $cityA;
-                    $saveAgent->Country = $countrydataA;
-                    $saveAgent->Amphures = null;
-                    $saveAgent->Address = $addressAgent;
-                    $saveAgent->Tambon = null;
-                    $saveAgent->Zip_Code = null;
-                }else {
-                    $saveAgent->Country = $countrydataA;
-                    $saveAgent->City = $cityA;
-                    $saveAgent->Amphures = $amphuresA;
-                    $saveAgent->Address = $addressAgent;
-                    $saveAgent->Tambon = $TambonA;
-                    $saveAgent->Zip_Code = $zip_codeA;
-                    $saveAgent->Email = $EmailAgent;
-                    $saveAgent->Company_ID = $NProfile_ID;
-                    $saveAgent->Company_Name = $Company_Name;
-                    $saveAgent->Branch = $ABranch;
-                    $phoneC = $request->phone;
-
-
-                    foreach ($phoneC as $index => $phoneNumber) {
-                        if ($phoneC !== null) {
-                            $savephoneA = new representative_phone();
-                            $savephoneA->Profile_ID = $A_Profile;
-                            $savephoneA->Company_ID = $NProfile_ID;
-                            $savephoneA->Phone_number = $phoneNumber;
-                            $savephoneA->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
-                            $savephoneA->save();
-                        }
+                try {
+                    $latestAgent = representative::where('Company_Name', 'like', "%{$Company_Name}%")->where('Branch', 'like', "%{$Branch}%")->first();
+                    if ($latestAgent) {
+                        $latestAgent = $latestAgent->Profile_ID + 1;
+                    } else {
+                        $latestAgent = 1;
                     }
-                    $saveAgent->save();
-                }
+                    $A_Profile = $latestAgent;
+                    {
+                        $countrydataA= $request->countrydataA;
+                        $amphuresA= $request->amphuresA;
+                        $TambonA= $request->TambonA;
+                        $zip_codeA= $request->zip_codeA;
+                        $cityA = $request->cityA;
+                        $addressAgent= $request->addressAgent;
+                        $EmailAgent= $request->EmailAgent;
+                        $NProfile_ID = $N_Profile;
+                        $ABranch = $request->Branch;
+                        $Company_Name = $request->Company_Name;
+                        $phone = $request->phone;
+                        $first_name = $request->first_nameAgent;
+                        $last_name = $request->last_nameAgent;
+                        $Preface = $request->Preface;
+                        if ($Preface && $first_name && $last_name) {
+                            $Mprefix = master_document::where('id', $Preface)->where('Category', 'Mprename')->first();
+                            if ($Mprefix) {
+                                if ($Mprefix->name_th == "นาย") {
+                                    $comtypefullname = "นาย " . $first_name . ' ' . $last_name;
+                                } elseif ($Mprefix->name_th == "นาง") {
+                                    $comtypefullname = "นาง " . $first_name . ' ' . $last_name;
+                                } elseif ($Mprefix->name_th == "นางสาว") {
+                                    $comtypefullname = "นางสาว " . $first_name . ' ' . $last_name;
+                                }
+                            }
+                        } elseif ($Preface > 30) {
+                            $Mprefix = master_document::where('id', $Preface)->where('Category', 'Mprename')->first();
+                            if ($Mprefix) {
+                                $prename = $Mprefix->name_th;
+                                $comtypefullname = 'คำนำหน้า : ' . $prename;
+                            }
+                        } elseif ($first_name && $last_name) {
+                            $comtypefullname = 'ชื่อ : ' . $first_name . ' ' . $last_name;
+                        } elseif ($first_name) {
+                            $comtypefullname = 'ชื่อ : ' . $first_name;
+                        } elseif ($last_name) {
+                            $comtypefullname = 'นามสกุล : ' . $last_name;
+                        }
 
+                        if ($countrydataA == 'Thailand') {
+                            $provinceNames = province::where('id', $cityA)->first();
+                            $TambonID = districts::where('id',$TambonA)->select('name_th','id','zip_code')->first();
+                            $amphuresID = amphures::where('id',$amphuresA)->select('name_th','id')->first();
+                            $provinceNames = $provinceNames->name_th;
+                            $Tambon = $TambonID->name_th;
+                            $amphures = $amphuresID->name_th;
+                            $Zip_code = $TambonID->zip_code;
+                            $AddressIndividual = 'ที่อยู่ : '.$addressAgent.' ตำบล : '.$Tambon.' อำเภอ : '.$amphures.' จังหวัด : '.$provinceNames.' '.$Zip_code;
+                        }elseif ($cityA) {
+                            $AddressIndividual = 'ที่อยู่ : '.$cityA;
+                        }
+                        if ($EmailAgent) {
+                            $Email = 'อีเมล์ผู้ติดต่อ : '.$EmailAgent;
+                        }
+                        $Branch = null;
+                        if ($Branch) {
+                            $Branch = 'สาขา : '.$Branch;
+                        }
+                        $phone = null;
+                        if ($phone) {
+                            $phone = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phone);
+                        }
+
+                        $Profile = 'รหัสบริษัท : '.$N_Profile;
+                        $ProfileContact = 'รหัสผู้ติดต่อ : '.$A_Profile;
+                        $datacompanycontact = '';
+
+                        $variables = [$Profile,$ProfileContact,$comtypefullname , $Branch, $AddressIndividual, $Email, $Identification, $phone];
+
+                        foreach ($variables as $variable) {
+                            if (!empty($variable)) {
+                                if (!empty($datacompanycontact)) {
+                                    $datacompanycontact .= ' + ';
+                                }
+                                $datacompanycontact .= $variable;
+                            }
+                        }
+
+                        $userid = Auth::user()->id;
+                        $save = new log_company();
+                        $save->Created_by = $userid;
+                        $save->Company_ID = $N_Profile;
+                        $save->type = 'Create';
+                        $save->Category = 'Create :: Contact';
+                        $save->content =$datacompanycontact;
+                        $save->save();
+                    }
+
+                    $saveAgent = new representative();
+                    $saveAgent->Profile_ID = $A_Profile;
+                    $saveAgent->prefix = $request->Preface;
+                    $saveAgent->First_name = $request->first_nameAgent;
+                    $saveAgent->Last_name = $request->last_nameAgent;
+                    if ($countrydataA != "Thailand") {
+                        $saveAgent->City = $cityA;
+                        $saveAgent->Country = $countrydataA;
+                        $saveAgent->Amphures = null;
+                        $saveAgent->Address = $addressAgent;
+                        $saveAgent->Tambon = null;
+                        $saveAgent->Zip_Code = null;
+                    }else {
+                        $saveAgent->Country = $countrydataA;
+                        $saveAgent->City = $cityA;
+                        $saveAgent->Amphures = $amphuresA;
+                        $saveAgent->Address = $addressAgent;
+                        $saveAgent->Tambon = $TambonA;
+                        $saveAgent->Zip_Code = $zip_codeA;
+                        $saveAgent->Email = $EmailAgent;
+                        $saveAgent->Company_ID = $NProfile_ID;
+                        $saveAgent->Company_Name = $Company_Name;
+                        $saveAgent->Branch = $ABranch;
+                        $phoneC = $request->phone;
+
+
+                        foreach ($phoneC as $index => $phoneNumber) {
+                            if ($phoneC !== null) {
+                                $savephoneA = new representative_phone();
+                                $savephoneA->Profile_ID = $A_Profile;
+                                $savephoneA->Company_ID = $NProfile_ID;
+                                $savephoneA->Phone_number = $phoneNumber;
+                                $savephoneA->Sequence = ($index === 0) ? 'main' : 'secondary'; // กำหนดค่า Sequence
+                                $savephoneA->save();
+                            }
+                        }
+                        $saveAgent->save();
+                    }
+                } catch (\Throwable $th) {
+                    companys::where('Profile_ID',$NProfile_ID)->delete();
+                    return redirect()->route('Company','index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+                }
                 return redirect()->route('Company','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
             }
         } catch (\Exception $e) {
