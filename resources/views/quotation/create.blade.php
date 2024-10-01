@@ -340,9 +340,9 @@
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <span for="">จำนวน</span>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="Day" id="Day" placeholder="จำนวนวัน">
+                                            <input type="text" class="form-control" name="Day" id="Day" placeholder="จำนวนวัน" readonly>
                                             <span class="input-group-text">Day</span>
-                                            <input type="text" class="form-control" name="Night" id="Night" placeholder="จำนวนคืน">
+                                            <input type="text" class="form-control" name="Night" id="Night" placeholder="จำนวนคืน"readonly>
                                             <span class="input-group-text">Night</span>
                                         </div>
                                     </div>
@@ -876,6 +876,7 @@
                 showDropdowns: true,
                 autoUpdateInput: false,
                 autoApply: true,
+                minDate: moment().startOf('day'),
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -892,6 +893,7 @@
                 showDropdowns: true,
                 autoUpdateInput: false,
                 autoApply: true,
+                minDate: moment().startOf('day'),
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }

@@ -274,7 +274,7 @@
 
                                                                         @if ($canEditProposal == 1)
                                                                             @if ($item->status_document !== 2 && $item->status_document !== 5)
-                                                                                @if ($item->status_document == 3 ||$item->status_document == 1 && $item->SpecialDiscountBath == 0 && $item->SpecialDiscount == 0)
+                                                                                @if ($item->status_document == 3 )
                                                                                     <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Generate({{ $item->id }})">Generate</a></li>
                                                                                 @else
                                                                                     <li><a class="dropdown-item py-2 rounded" href="{{ url('/Dummy/Proposal/edit/quotation/'.$item->id) }}">Edit</a></li>

@@ -78,6 +78,7 @@
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Amount</label>
                                                         <input type="text" class="form-control" id="Amount" name="Amount" required>
+
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="receive">Receive Date</label>
@@ -191,7 +192,7 @@
                                     <div class="modal-body">
                                         <div class="col-12">
                                             <div class="card-body">
-                                                <form action="{{route('ReceiveCheque.save')}}" method="GET" enctype="multipart/form-data" class="row g-3 basic-form">
+                                                <form action="{{route('ReceiveCheque.update')}}" method="GET" enctype="multipart/form-data" class="row g-3 basic-form">
                                                     @csrf
                                                     <div class="col-sm-12 col-12">
                                                         <label for="Status">Refer Invoice</label>
@@ -224,6 +225,7 @@
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Amount</label>
                                                         <input type="text" class="form-control" id="Amountedit" name="Amount" required>
+                                                        <input type="hidden" class="form-control" id="ids" name="ids" required>
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="receive">Receive Date</label>
@@ -496,13 +498,14 @@
 
                     console.log(bank_cheque);
 
+                    $('#ids').val(id);
                     $('#Referedit').val(invoice).trigger('change');
                     $('#bankedit').val(bank_cheque).trigger('change');
                     // $('#Bankreceivedview').val(bank_received);
-                    // $('#chequeNumberview').val(cheque_number);
-                    // $('#Amountview').val(amount);
-                    // $('#receive_dateview').val(receive_date);
-                    // $('#Issue_Dateview').val(issue_date);
+                    $('#chequeNumberedit').val(cheque_number);
+                    $('#Amountedit').val(amount);
+                    $('#receive_dateedit').val(receive_date);
+                    $('#Issue_Dateedit').val(issue_date);
                     $('#editModal').modal('show');
                 },
                 error: function(xhr, status, error) {

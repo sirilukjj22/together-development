@@ -59,7 +59,7 @@ class ReceiveChequeController extends Controller
 
             $cheque_number = 'เลขเช็ค : '.$request->chequeNumber;
 
-            $amount = 'ยอดเงิน : ' . number_format($request->Amount);
+            $amount = 'ยอดเงิน : ' . number_format($request->Amount).' บาท';
 
             $receive_date = 'วันที่รับ : '.$request->receive_date;
 
@@ -162,5 +162,141 @@ class ReceiveChequeController extends Controller
             'receive_date' => $receive_date,
             'issue_date'=>$issue_date,
         ]);
+    }
+
+    public function update(Request $request){
+        $data = $request->all();
+
+
+        $datacheque = receive_cheque::where('refer_invoice',$request->Refer)->first();
+        $dataArray = [
+            'Refer' => $datacheque['refer_invoice'] ?? null,
+            'bank'=>$datacheque['bank_cheque'] ?? null,
+            'chequeNumber'=>$datacheque['cheque_number'] ?? null,
+            'Amount'=>$datacheque['amount'] ?? null,
+            'receive_date'=>$datacheque['receive_date'] ?? null,
+            'Issue_Date'=>$datacheque['issue_date'] ?? null,
+
+        ];
+        $keysToCompare = ['Refer', 'bank', 'chequeNumber','Amount','receive_date','Issue_Date'];
+        $differences = [];
+        foreach ($keysToCompare as $key) {
+            if (isset($dataArray[$key]) && isset($data[$key])) {
+                // แปลงค่าของ $dataArray และ $data เป็นชุดข้อมูลเพื่อหาค่าที่แตกต่างกัน
+                $dataArraySet = collect($dataArray[$key]);
+                $dataSet = collect($data[$key]);
+
+                // หาค่าที่แตกต่างกัน
+                $onlyInDataArray = $dataArraySet->diff($dataSet)->values()->all();
+                $onlyInRequest = $dataSet->diff($dataArraySet)->values()->all();
+
+                // ตรวจสอบว่ามีค่าที่แตกต่างหรือไม่
+                if (!empty($onlyInDataArray) || !empty($onlyInRequest)) {
+                    $differences[$key] = [
+                        'dataArray' => $onlyInDataArray,
+                        'request' => $onlyInRequest
+                    ];
+                }
+            }
+        }
+        $extractedData = [];
+
+        // วนลูปเพื่อดึงชื่อคีย์และค่าจาก request
+        foreach ($differences as $key => $value) {
+            if ($key === 'phone'||$key === 'fax') {
+                // ถ้าเป็น phoneCom ให้เก็บค่า request ทั้งหมดใน array
+                $extractedData[$key] = $value['request'];
+                $extractedDataA[$key] = $value['dataArray'];
+            } elseif (isset($value['request'][0])) {
+                // สำหรับคีย์อื่นๆ ให้เก็บค่าแรกจาก array
+                $extractedData[$key] = $value['request'][0];
+            }else{
+                $extractedDataA[$key] = $value['dataArray'][0];
+            }
+
+        }
+
+        $Refer = $extractedData['Refer'] ?? null;
+        $Bank = $extractedData['bank'] ?? null;
+        $chequeNumber =  $extractedData['chequeNumber'] ?? null;
+        $Amount =  $extractedData['Amount'] ?? null;
+        $Receive_date =  $extractedData['receive_date'] ?? null;
+        $Issue_Date =  $extractedData['Issue_Date'] ?? null;
+        try {
+            $refer = null;
+            if ($Refer) {
+                $refer = 'อ้างอิงจาก : '.$Refer;
+            }
+            $bank = null;
+            if ($Bank) {
+                $data_bank = Masters::where('id',$Bank)->first();
+
+                $bank = $data_bank->name_th.' '.'('.$data_bank->name_en.')';
+            }
+
+            $cheque_number = null;
+            if ($chequeNumber) {
+                $cheque_number = 'เลขเช็ค : '.$chequeNumber;
+            }
+
+            $amount = null;
+            if ($Amount) {
+                $amount = 'ยอดเงิน : ' . number_format($Amount).' บาท';
+            }
+
+            $receive_date = null;
+            if ($Receive_date) {
+                $receive_date = 'วันที่รับ : '.$Receive_date;
+            }
+
+            $issue_date = null;
+            if ($Issue_Date) {
+                $issue_date = 'วันที่ตีเช็ค : '.$Issue_Date;
+            }
+
+            $datacompany = '';
+
+            $variables = [$refer, $bank, $cheque_number, $amount, $receive_date,$issue_date];
+
+            // แปลง array ของ $formattedProductData เป็น string เดียวที่มีรายการทั้งหมด
+
+
+            foreach ($variables as $variable) {
+                if (!empty($variable)) {
+                    if (!empty($datacompany)) {
+                        $datacompany .= ' + ';
+                    }
+                    $datacompany .= $variable;
+                }
+            }
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $request->chequeNumber;
+            $save->type = 'Edit';
+            $save->Category = 'Edit :: Recevie Cheque';
+            $save->content =$datacompany;
+            $save->save();
+        } catch (\Throwable $th) {
+            return redirect()->route('ReceiveCheque.index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        }
+        try {
+            $invoice = $request->Refer;
+            $proposal = document_invoices::where('Invoice_ID',$invoice)->first();
+            $Quotation_ID = $proposal->Quotation_ID;
+            $save = receive_cheque::find($request->ids);
+            $save->refer_invoice = $invoice;
+            $save->refer_proposal = $Quotation_ID;
+            $save->bank_cheque = $request->bank;
+            $save->bank_received = $request->received;
+            $save->cheque_number = $request->chequeNumber;
+            $save->amount = $request->Amount;
+            $save->receive_date = $request->receive_date;
+            $save->issue_date = $request->Issue_Date;
+            $save->save();
+            return redirect()->route('ReceiveCheque.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        } catch (\Throwable $th) {
+            return redirect()->route('ReceiveCheque.index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        }
     }
 }

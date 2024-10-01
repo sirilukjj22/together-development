@@ -501,33 +501,33 @@
                                 <th style="text-align:center;font-weight: bold;">AMOUNT</th>
                             </tr>
                             @foreach($productItems as $key => $item)
-                            @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
-                                @foreach ($unit as $singleUnit)
-                                    @foreach ($quantity as $singlequantity)
-                                        @if($singleUnit->id == $item['product']->unit)
-                                            @if($singlequantity->id == $item['product']->quantity)
-                                                <tr>
-                                                    <td style="text-align:center;">{{$key+1}}</td>
-                                                    <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
-                                                    <td style="text-align:center;">{{ $item['quantity'] }} {{ $singleUnit->name_th }}</td>
-                                                    <td  style="text-align:center;">{{ $item['unit'] }} {{ $singlequantity->name_th }}</td>
-                                                    @php
-                                                        $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
-                                                    @endphp
-                                                    <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
-                                                    <td style="text-align:center;"> {{ $item['totaldiscount'] == 0 ? '' : number_format($item['totaldiscount']) }}</td>
-                                                    <td style="text-align:center;">{{ $item['discountedPrices'] == 0 ? '' : number_format($item['discountedPrices']) }}</td>
-                                                    <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
-                                                </tr>
+                                @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
+                                    @foreach ($unit as $singleUnit)
+                                        @foreach ($quantity as $singlequantity)
+                                            @if($singleUnit->id == $item['product']->unit)
+                                                @if($singlequantity->id == $item['product']->quantity)
+                                                    <tr>
+                                                        <td style="text-align:center;">{{$key+1}}</td>
+                                                        <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
+                                                        <td style="text-align:center;">{{ $item['quantity'] }} {{ $singleUnit->name_th }}</td>
+                                                        <td  style="text-align:center;">{{ $item['unit'] }} {{ $singlequantity->name_th }}</td>
+                                                        @php
+                                                            $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
+                                                        @endphp
+                                                        <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
+                                                        <td style="text-align:center;"> {{ $item['totaldiscount'] == 0 ? '' : number_format($item['totaldiscount']) }}</td>
+                                                        <td style="text-align:center;">{{ $item['discountedPrices'] == 0 ? '' : number_format($item['discountedPrices']) }}</td>
+                                                        <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
+                                                    </tr>
+                                                @endif
                                             @endif
-                                        @endif
+                                        @endforeach
                                     @endforeach
-                                @endforeach
-                                @php
-                                    $num2 +=1;
-                                @endphp
-                            @endif
-                        @endforeach
+                                    @php
+                                        $num2 +=1;
+                                    @endphp
+                                @endif
+                            @endforeach
                         </table>
                         @if ($page_item == $i )
                             @if ($Mvat == 50)
@@ -703,183 +703,6 @@
                                     <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                         <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
                                         <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                    </tr>
-                                </table>
-                            @endif
-                        @else
-                            @if ($Mvat == 50)
-                                <table  id="customers" class="table" style="width: 25%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"></strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>THB</td>
-                                    </tr>
-                                </table>
-                            @elseif ($Mvat == 51)
-                                <table  id="customers" class="table" style="width: 25%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"></strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>THB</td>
-                                    </tr>
-
-                                </table>
-                            @elseif ($Mvat == 52)
-                                <table  id="customers" class="table" style="width: 25%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"></strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>THB</td>
-                                    </tr>
-                                </table>
-                            @else
-                                <table  id="customers" class="table" style="width: 25%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"></strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>THB</td>
                                     </tr>
                                 </table>
                             @endif
@@ -1460,183 +1283,6 @@
                                     <tr  style="border: 1px solid #ffffff;background-color: #fff;">
                                         <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
                                         <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                    </tr>
-                                </table>
-                            @endif
-                        @else
-                            @if ($Mvat == 50)
-                                <table  id="customers" class="table" style="width: 25%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"></strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>THB</td>
-                                    </tr>
-                                </table>
-                            @elseif ($Mvat == 51)
-                                <table  id="customers" class="table" style="width: 25%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"></strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>THB</td>
-                                    </tr>
-
-                                </table>
-                            @elseif ($Mvat == 52)
-                                <table  id="customers" class="table" style="width: 25%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"></strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>THB</td>
-                                    </tr>
-                                </table>
-                            @else
-                                <table  id="customers" class="table" style="width: 25%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price"></strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"></strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> 0 </strong>THB</td>
                                     </tr>
                                 </table>
                             @endif
