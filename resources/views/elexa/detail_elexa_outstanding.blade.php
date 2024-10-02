@@ -56,6 +56,7 @@
                     <table id="myDataTableAll" class="exampleTable table display dataTable table-hover fw-bold">
                         <thead>
                             <tr>
+                                <th>Date</th>
                                 <th>Order ID</th>
                                 <th>Amount</th>
                                 <th>Action</th>
@@ -66,6 +67,7 @@
                             @foreach ($elexa_outstanding as $key => $item)
                                 @if ($item->receive_payment == 1 && $item->sms_revenue == $elexa_revenue->id)
                                 <tr id="tr_row_{{ $item->id }}">
+                                    <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                     <td>{{ $item->batch }}</td>
                                     <td>{{ number_format($item->ev_charge, 2) }}</td>
                                     <td>
@@ -98,6 +100,7 @@
                     <table id="myDataTableOutstanding" class="exampleTable table display dataTable table-hover fw-bold">
                         <thead>
                             <tr>
+                                <th>Date</th>
                                 <th>Order ID</th>
                                 <th>Amount</th>
                                 <th>Action</th>
@@ -108,6 +111,7 @@
                             @foreach ($elexa_outstanding as $key => $item)
                                 @if ($item->receive_payment == 0)
                                 <tr id="tr_row_{{ $item->id }}">
+                                    <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                     <td>{{ $item->batch }}</td>
                                     <td>{{ number_format($item->ev_charge, 2) }}</td>
                                     <td>
