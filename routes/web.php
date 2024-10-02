@@ -130,6 +130,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('debit-select-elexa-outstanding/{id}', 'select_elexa_outstanding')->name('debit-select-elexa-outstanding');
         // Route::get('debit-select-agoda-received/{id}', 'select_agoda_received')->name('debit-select-agoda-received');
         Route::get('debit-status-elexa-receive/{status}', 'status_elexa_receive')->name('debit-status-elexa-receive');
+        Route::get('debit-elexa-search/{month}', 'search_month')->name('debit-elexa-search');
     });
 
 

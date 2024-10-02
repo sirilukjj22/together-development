@@ -469,23 +469,6 @@
 
             });
 
-            $('#myDataTableOutstanding').dataTable({
-
-                responsive: false,
-                searching: true,
-                paging: true,
-                ordering: false,
-                info: true,
-                scrollX: true,
-                columnDefs: [
-                    { 
-                        "order": [[0, "asc"]], 
-                        "orderable": false, "targets": [0] 
-                    }
-                ]
-
-            });
-
             $('.myDataTableProductItem').addClass('nowrap').dataTable({
                 responsive: false,
                 searching: true,

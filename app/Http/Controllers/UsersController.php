@@ -235,6 +235,7 @@ class UsersController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'discount' => $request->discount ?? 0,
+                'additional_discount' => $request->additional_discount ?? 0,
                 'permission' => $request->permission,
                 'permission_edit' => $request->permission_edit ?? 0,
                 'edit_close_day' => $request->close_day ?? 0,

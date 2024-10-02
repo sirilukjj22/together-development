@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'discount',
+        'additional_discount',
         'status',
         'permission',
         'permission_edit',
