@@ -457,12 +457,14 @@
                 responsive: false,
                 searching: true,
                 paging: true,
-                ordering: true,
+                ordering: false,
                 info: true,
                 scrollX: true,
                 columnDefs: [
-                    // className: 'bolded'
-                    // { targets: [-1, -3], className: 'dt-body-right' }
+                    { 
+                        "order": [[0, "asc"]], 
+                        "orderable": false, "targets": [0] 
+                    }
                 ]
 
             });
@@ -472,11 +474,15 @@
                 responsive: false,
                 searching: true,
                 paging: true,
-                ordering: true,
+                ordering: false,
                 info: true,
                 scrollX: true,
-                // "order": [[ 1, "asc" ]],
-                // columnDefs: [{"targets":1, "type":"date-eu"}],
+                columnDefs: [
+                    { 
+                        "order": [[0, "asc"]], 
+                        "orderable": false, "targets": [0] 
+                    }
+                ]
 
             });
 
