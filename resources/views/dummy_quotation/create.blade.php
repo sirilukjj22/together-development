@@ -348,11 +348,12 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <span for="">จำนวนผู้เข้าพัก (ผู้ใหญ่/เด็ก)</span>
+                                        <span class="star-red" style="display:none" id="Adultred" for="">จำนวนผู้เข้าพัก (ผู้ใหญ่/เด็ก) </span>
+                                        <span  style="display:block" id="Adultblack" for="">จำนวนผู้เข้าพัก (ผู้ใหญ่/เด็ก) </span>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่">
+                                            <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่" @required(true)>
                                             <span class="input-group-text">ผู้ใหญ่</span>
-                                            <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก">
+                                            <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก"@required(true)>
                                             <span class="input-group-text">เด็ก</span>
                                         </div>
                                     </div>
@@ -1817,31 +1818,48 @@
         function confirmSubmit(event) {
             event.preventDefault(); // Prevent the form from submitting
             var Quotation_ID = $('#Quotation_ID').val();
+            var Adult = $('#Adult').val();
+            var Children = $('#Children').val();
             var title = `คุณต้องการบันทึกข้อมูลรหัส ${Quotation_ID} ใช่หรือไม่?`;
-            Swal.fire({
-                title: title,
-                // text: message,
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "บันทึกข้อมูล",
-                cancelButtonText: "ยกเลิก",
-                confirmButtonColor: "#2C7F7A",
-                dangerMode: true
-            }).then((result) => {
-                if (result.isConfirmed) {
+            if (!Adult || !Children) {
+                // Display error message using Swal
+                Swal.fire({
+                    title: "ข้อมูลไม่ครบถ้วน",
+                    text: "กรุณากรอกข้อมูลให้ครบถ้วน",
+                    icon: "error",
+                    confirmButtonText: "ตกลง",
+                    confirmButtonColor: "#dc3545"
+                });
+                $('#Adultred').css('display', 'block');
+                $('#Adultblack').css('display', 'none');
+                return; // Stop further execution
+            }else{
+                Swal.fire({
+                    title: title,
+                    // text: message,
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "บันทึกข้อมูล",
+                    cancelButtonText: "ยกเลิก",
+                    confirmButtonColor: "#2C7F7A",
+                    dangerMode: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
 
-                    // สร้าง input แบบ hidden ใหม่
-                    var input = document.createElement("input");
-                    input.type = "hidden";
-                    input.name = "preview";
-                    input.value = 0;
+                        // สร้าง input แบบ hidden ใหม่
+                        var input = document.createElement("input");
+                        input.type = "hidden";
+                        input.name = "preview";
+                        input.value = 0;
 
-                    // เพิ่ม input ลงในฟอร์ม
-                    document.getElementById("myForm").appendChild(input);
-                    document.getElementById("myForm").removeAttribute('target');
-                    document.getElementById("myForm").submit();
-                }
-            });
+                        // เพิ่ม input ลงในฟอร์ม
+                        document.getElementById("myForm").appendChild(input);
+                        document.getElementById("myForm").removeAttribute('target');
+                        document.getElementById("myForm").submit();
+                    }
+                });
+            }
+
         }
         function submitPreview() {
             var previewValue = document.getElementById("preview").value;

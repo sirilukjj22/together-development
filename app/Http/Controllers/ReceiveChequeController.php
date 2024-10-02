@@ -45,7 +45,7 @@ class ReceiveChequeController extends Controller
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $invoice = document_invoices::query()->select('id','Invoice_ID','Quotation_ID')->get();
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
-        $cheque = receive_cheque::query()->paginate($perPage);
+        $cheque = receive_cheque::query()->orderBy('created_at', 'desc')->paginate($perPage);
         return view('recevie_cheque.index',compact('invoice','data_bank','cheque'));
     }
     public function save(Request $request)
@@ -93,6 +93,7 @@ class ReceiveChequeController extends Controller
             return redirect()->route('ReceiveCheque.index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
         try {
+            $userid = Auth::user()->id;
             $invoice = $request->Refer;
             $proposal = document_invoices::where('Invoice_ID',$invoice)->first();
             $Quotation_ID = $proposal->Quotation_ID;
@@ -105,6 +106,7 @@ class ReceiveChequeController extends Controller
             $save->amount = $request->Amount;
             $save->receive_date = $request->receive_date;
             $save->issue_date = $request->Issue_Date;
+            $save->Operated_by = $userid;
             $save->save();
             return redirect()->route('ReceiveCheque.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } catch (\Throwable $th) {
@@ -293,6 +295,7 @@ class ReceiveChequeController extends Controller
             $save->amount = $request->Amount;
             $save->receive_date = $request->receive_date;
             $save->issue_date = $request->Issue_Date;
+            $save->Operated_by = $userid;
             $save->save();
             return redirect()->route('ReceiveCheque.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } catch (\Throwable $th) {
@@ -313,5 +316,88 @@ class ReceiveChequeController extends Controller
         $save->Category = 'Approved :: Receive Cheque';
         $save->content = 'Approved Receive Cheque Number: '.$chequeNumber;
         $save->save();
+    }
+
+    public function search_table_cheque(Request $request){
+
+    }
+    public function paginate_table_cheque(Request $request){
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query = receive_cheque::query()->orderBy('created_at', 'desc')
+            ->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = receive_cheque::query()->orderBy('created_at', 'desc')->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                $checkbox = "";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    if ($value->status == 0) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status == 1) {
+                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                    } elseif ($value->status == 2) {
+                        $btn_status = '<span class="badge rounded-pill "style="background-color: #0ea5e9">Generate</span>';
+                    }
+
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $CreateBy = Auth::user()->id;
+                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    if ($value->status == 1 || $value->status == 2) {
+                        if ($canViewProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="view(' . $value->id . ')">View</a></li>';
+                        }
+                    }else{
+                        if ($value->status == 0) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="view(' . $value->id . ')">View</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="edit(' . $value->id . ')">Edit</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Approved(' . $value->id . ')">Approved</a></li>';
+                        }
+                    }
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => $key + 1,
+                        'Invoice' => $value->refer_invoice,
+                        'Bank' => @$value->bank->name_th.' '.(@$value->bank->name_en),
+                        'Cheque_Number' => $value->cheque_number,
+                        'Amount' => number_format($value->amount),
+                        'Receive_Date' => $value->receive_date,
+                        'Issue_Date' => $value->issue_date,
+                        'Operated' => @$value->userOperated->name,
+                        'status' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
     }
 }

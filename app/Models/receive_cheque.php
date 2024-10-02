@@ -24,4 +24,8 @@ class receive_cheque extends Model
     {
         return $this->hasOne(Masters::class, 'id', 'bank_cheque');
     }
+    public function  userOperated()
+    {
+        return $this->hasOne(User::class, 'id','Operated_by');
+    }
 }

@@ -349,9 +349,9 @@
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <span for="">จำนวนผู้เข้าพัก (ผู้ใหญ่/เด็ก)</span>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่">
+                                            <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่" required>
                                             <span class="input-group-text">ผู้ใหญ่</span>
-                                            <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก">
+                                            <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก"required>
                                             <span class="input-group-text">เด็ก</span>
                                         </div>
                                     </div>

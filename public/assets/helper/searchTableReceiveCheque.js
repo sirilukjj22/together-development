@@ -88,13 +88,13 @@ function getPage(page, perPage, table_n)
     $('#currentPage-' + table_n).val(page);
 
     $('#' + table_name).DataTable().destroy();
-    if (table_n == "proposal") {
+    if (table_n == "cheque") {
         var table = $('#' + table_name).dataTable({
             searching: false,
             paging: false,
             info: false,
             ajax: {
-                url: '/Proposal-paginate-table',
+                url: '/cheque-paginate-table',
                 type: 'POST',
                 dataType: "json",
                 cache: false,
@@ -107,7 +107,7 @@ function getPage(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
+                { targets: [0,3,4,5,6,7,8,9], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -118,19 +118,15 @@ function getPage(page, perPage, table_n)
             },
             columns: [
                 { data: 'number' },
-                { data: 'DummyNo' },
-                { data: 'Proposal_ID' },
-                { data: 'Company_Name' },
-                { data: 'IssueDate' },
-                { data: 'ExpirationDate' },
-                { data: 'CheckIn' },
-                { data: 'CheckOut' },
-                { data: 'DiscountP' },
-                { data: 'DiscountB' },
-                { data: 'Approve' },
+                { data: 'Invoice' },
+                { data: 'Bank' },
+                { data: 'Cheque_Number' },
+                { data: 'Amount' },
+                { data: 'Receive_Date' },
+                { data: 'Issue_Date' },
                 { data: 'Operated' },
-                { data: 'DocumentStatus' },
-                { data: 'btn_action' }
+                { data: 'status' },
+                { data: 'btn_action' },
             ],
 
         });

@@ -297,6 +297,7 @@
                                                     <th class="text-center">Amount</th>
                                                     <th class="text-center">Receive Date</th>
                                                     <th class="text-center">Issue Date</th>
+                                                    <th class="text-center">Operated By</th>
                                                     <th class="text-center">Document status</th>
                                                     <th class="text-center">Action</th>
                                                 </tr>
@@ -327,52 +328,28 @@
                                                             {{$item->issue_date}}
                                                         </td>
                                                         <td style="text-align: center;">
+                                                            {{ @$item->userOperated->name }}
+                                                        </td>
+                                                        <td style="text-align: center;">
                                                             @if ($item->status == 0)
                                                                 <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
-                                                            @else
+                                                            @elseif ($item->status == 1)
                                                                 <span class="badge rounded-pill bg-success">Approved</span>
+                                                            @elseif ($item->status == 2)
+                                                                <span class="badge rounded-pill "style="background-color: #0ea5e9">Use</span>
                                                             @endif
                                                         </td>
-                                                        @php
-                                                            $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                            $canViewProposal = @Auth::user()->roleMenuView('Proposal', Auth::user()->id);
-                                                            $canEditProposal = @Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
-                                                            $CreateBy = Auth::user()->id;
-                                                        @endphp
                                                         {{-- Receive Cheque --}}
                                                         <td style="text-align: center;">
                                                             <div class="btn-group">
                                                                 <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                                 <ul class="dropdown-menu border-0 shadow p-3">
-                                                                    @if ($rolePermission > 0)
-                                                                        @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" onclick="view({{$item->id}})">View</a></li>
-                                                                        @endif
-                                                                        @if ($item->status == 0)
-                                                                            @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
-                                                                                @if ($canEditProposal == 1)
-                                                                                    <li><a class="dropdown-item py-2 rounded" onclick="edit({{$item->id}})">Edit</a></li>
-                                                                                    <li><a class="dropdown-item py-2 rounded" onclick="Approved({{$item->id}})">Approved</a></li>
-                                                                                @endif
-                                                                            @elseif ($rolePermission == 2)
-                                                                                @if ($item->Operated_by == $CreateBy)
-                                                                                    @if ($canEditProposal == 1)
-                                                                                        <li><a class="dropdown-item py-2 rounded" onclick="edit({{$item->id}})">Edit</a></li>
-                                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Approved({{$item->id}})">Approved</a></li>
-                                                                                    @endif
-                                                                                @endif
-                                                                            @elseif ($rolePermission == 3)
-                                                                                @if ($canEditProposal == 1)
-                                                                                    <li><a class="dropdown-item py-2 rounded" onclick="edit({{$item->id}})">Edit</a></li>
-                                                                                    <li><a class="dropdown-item py-2 rounded" onclick="Approved({{$item->id}})">Approved</a></li>
-                                                                                @endif
-                                                                            @endif
-                                                                        @else
-                                                                        @endif
-                                                                    @else
-                                                                        @if ($canViewProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" onclick="view({{$item->id}})">View</a></li>
-                                                                        @endif
+                                                                    @if ($item->status == 1 || $item->status == 2)
+                                                                        <li><a class="dropdown-item py-2 rounded" onclick="view({{$item->id}})">View</a></li>
+                                                                    @endif
+                                                                    @if ($item->status == 0)
+                                                                        <li><a class="dropdown-item py-2 rounded" onclick="edit({{$item->id}})">Edit</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" onclick="Approved({{$item->id}})">Approved</a></li>
                                                                     @endif
                                                                 </ul>
                                                             </div>
@@ -601,7 +578,7 @@
                     paging: false,
                     info: false,
                     ajax: {
-                    url: '/Proposal-request-search-table',
+                    url: '/cheque-search-table',
                     type: 'POST',
                     dataType: "json",
                     cache: false,
@@ -630,7 +607,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,2,3,4,5,6], className: 'dt-center td-content-center' },
+                                { targets: [0,3,4,5,6,7,8,9], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -641,10 +618,13 @@
                     },
                     columns: [
                         { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Company_Name' },
-                        { data: 'QuotationType' },
-                        { data: 'Operated_by' },
-                        { data: 'Count' },
+                        { data: 'Invoice' },
+                        { data: 'Bank' },
+                        { data: 'Cheque_Number' },
+                        { data: 'Amount' },
+                        { data: 'Receive_Date' },
+                        { data: 'Issue_Date' },
+                        { data: 'Operated' },
                         { data: 'status' },
                         { data: 'btn_action' },
                     ],
