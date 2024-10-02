@@ -683,7 +683,7 @@
                                                                     @endif
                                                                 </td>
                                                                 <td class="net-price"style="text-align:center;" ><span id="net_discount{{$var}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</span></td>
-                                                                <td class="item-total"style="text-align:center;"><span id="all-total{{$var}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</span></td>
+                                                                <td class="item-total"style="text-align:center;"><span id="all-total{{$var}}">{{ number_format($item->totaldiscount, 2, '.', ',') }}</span></td>
                                                                 <td style="text-align:center;">
                                                                     <button type="button" class="Btn remove-button1"style=" border: none;"   id="remove-button1{{$var}}" value="{{$item->Product_ID}}">
                                                                         <i class="fa fa-minus-circle text-danger fa-lg"></i>
@@ -1843,6 +1843,8 @@
                     var number = Number($('#number-product').val());
                     var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
                     var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+
                     if (discountmain === "" || discountmain == 0) {
                         var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
@@ -1850,12 +1852,11 @@
                         var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }else{
-                        var pricediscount = pricenew;
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                        var allcount0 = price;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        var allcount0 = price-(price*discountmain /100);// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }
-
                     // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     totalAmost();
                 }
@@ -1864,20 +1865,29 @@
                 for (let i = 0; i < 50; i++) {
                     var number_ID = $(this).attr('rel');
                     var discountmain =  Number($(this).val());
-                    console.log(discountmain);
+
                     var quantitymain =  $('#quantitymain'+number_ID).val();
                     var unitmain =  $('#unitmain'+number_ID).val();
-                    console.log(quantitymain);
+
                     var number = Number($('#number-product').val());
                     var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
-                    var pricediscount =  (price*discountmain /100);
-                    var allcount0 = price - pricediscount;
-                    console.log(allcount0);
-                    $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                    var pricenew = quantitymain*unitmain*price
-                    var pricediscount = pricenew - (pricenew*discountmain /100);
-                    $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                    // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+
+
+                   var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+
+                    if (discountmain === "" || discountmain == 0) {
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var allcount0 = price-(price*discountmain /100);// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
                     totalAmost();
 
                 }
@@ -1894,6 +1904,8 @@
                     console.log(number_ID);
 
                     var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+
                     if (discountmain === "" || discountmain == 0) {
                         var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
@@ -1901,9 +1913,9 @@
                         var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }else{
-                        var pricediscount = pricenew;
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                        var allcount0 = price;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        var allcount0 = price-(price*discountmain /100);// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }
 

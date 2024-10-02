@@ -682,7 +682,7 @@
                                                                     @endif
                                                                 </td>
                                                                 <td class="net-price"style="text-align:center;" ><span id="net_discount{{$var}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</span></td>
-                                                                <td class="item-total"style="text-align:center;"><span id="all-total{{$var}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</span></td>
+                                                                <td class="item-total"style="text-align:center;"><span id="all-total{{$var}}">{{ number_format($item->totaldiscount, 2, '.', ',') }}</span></td>
                                                                 <td style="text-align:center;">
                                                                     <button type="button" class="Btn remove-button1"style=" border: none;"   id="remove-button1{{$var}}" value="{{$item->Product_ID}}">
                                                                         <i class="fa fa-minus-circle text-danger fa-lg"></i>
@@ -1719,31 +1719,76 @@
                                         valpax = 0;
                                     }
                                     if (maximum_discount > 0) {
-                                        if (SpecialDiscount >= 1) {
-                                            if (roleMenuDiscount == 1) {
-                                                if (maximum_discount > 0) {
-                                                    discountInput = '<div class="input-group">' +
+                                        if (roleMenuDiscount == 1) {
+                                            if (discountuser > 0) {
+                                                if (SpecialDiscount > 0) {
+                                                    if (SpecialDiscount > maximum_discount) {
+                                                        discountInput = '<div class="input-group">' +
                                                             '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
                                                             'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);' +
-                                                            'if (parseFloat(this.value) > ' + SpecialDiscount + ') { this.value = ' + SpecialDiscount + '; }' +
-                                                            'else if (parseFloat(this.value) > ' + val.maximum_discount + ') { this.value = ' + val.maximum_discount + '; }"' +
+                                                            'if (parseFloat(this.value) > ' + val.maximum_discount  + ') { this.value = ' +  val.maximum_discount  + '; }"' +
                                                             'required>' +
                                                             '<span class="input-group-text">%</span>' +
                                                             '</div>';
+                                                    }else{
+                                                        discountInput = '<div class="input-group">' +
+                                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                                            'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);' +
+                                                            'if (parseFloat(this.value) > ' + SpecialDiscount + ') { this.value = ' +  SpecialDiscount  + '; }"' +
+                                                            'required>' +
+                                                            '<span class="input-group-text">%</span>' +
+                                                            '</div>';
+                                                    }
+                                                }else{
+                                                    if (discountuser > maximum_discount) {
+                                                        discountInput = '<div class="input-group">' +
+                                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                                                'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);' +
+                                                                'if (parseFloat(this.value) > ' + val.maximum_discount + ' ) { this.value = ' + val.maximum_discount + '; }"' +
+                                                                'required>' +
+                                                                '<span class="input-group-text">%</span>' +
+                                                            '</div>';
+                                                    }else{
+                                                        discountInput = '<div class="input-group">' +
+                                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                                                'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);' +
+                                                                'if (parseFloat(this.value) > ' + discountuser + ') { this.value = ' + discountuser + '; }"' +
+                                                                'required>' +
+                                                                '<span class="input-group-text">%</span>' +
+                                                            '</div>';
+                                                    }
+
+                                                }
+                                            } else {
+                                                if (SpecialDiscount > 0) {
+                                                    if (SpecialDiscount > maximum_discount) {
+                                                        discountInput = '<div class="input-group">' +
+                                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                                            'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);' +
+                                                            'if (parseFloat(this.value) > ' + val.maximum_discount  + ') { this.value = ' +  val.maximum_discount  + '; }"' +
+                                                            'required>' +
+                                                            '<span class="input-group-text">%</span>' +
+                                                            '</div>';
+                                                    }else{
+                                                        discountInput = '<div class="input-group">' +
+                                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                                            'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);' +
+                                                            'if (parseFloat(this.value) > ' + SpecialDiscount + ') { this.value = ' +  SpecialDiscount  + '; }"' +
+                                                            'required>' +
+                                                            '<span class="input-group-text">%</span>' +
+                                                            '</div>';
+                                                    }
                                                 }else{
                                                     discountInput = '<div class="input-group">' +
-                                                    '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value=" " rel="' + number + '" style="text-align:center;" ' +
-                                                    'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                                    '<span class="input-group-text">%</span>' +
-                                                    '</div>';
+                                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
+                                                            'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);' +
+                                                            'if (parseFloat(this.value) > ' + val.maximum_discount  + ') { this.value = ' +  val.maximum_discount  + '; }"' +
+                                                            'required>' +
+                                                            '<span class="input-group-text">%</span>' +
+                                                            '</div>';
                                                 }
+
                                             }
-                                        }else{
-                                            discountInput = '<div class="input-group">' +
-                                                    '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value=" " rel="' + number + '" style="text-align:center;" ' +
-                                                    'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                                    '<span class="input-group-text">%</span>' +
-                                                    '</div>';
                                         }
                                     }else{
                                         discountInput = '<div class="input-group">' +
@@ -1847,6 +1892,8 @@
                     var number = Number($('#number-product').val());
                     var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
                     var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+
                     if (discountmain === "" || discountmain == 0) {
                         var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
@@ -1854,12 +1901,11 @@
                         var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }else{
-                        var pricediscount = pricenew;
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                        var allcount0 = price;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        var allcount0 = price-(price*discountmain /100);// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }
-
                     // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     totalAmost();
                 }
@@ -1868,20 +1914,29 @@
                 for (let i = 0; i < 50; i++) {
                     var number_ID = $(this).attr('rel');
                     var discountmain =  Number($(this).val());
-                    console.log(discountmain);
+
                     var quantitymain =  $('#quantitymain'+number_ID).val();
                     var unitmain =  $('#unitmain'+number_ID).val();
-                    console.log(quantitymain);
+
                     var number = Number($('#number-product').val());
                     var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
-                    var pricediscount =  (price*discountmain /100);
-                    var allcount0 = price - pricediscount;
-                    console.log(allcount0);
-                    $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                    var pricenew = quantitymain*unitmain*price
-                    var pricediscount = pricenew - (pricenew*discountmain /100);
-                    $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                    // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+
+
+                   var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+
+                    if (discountmain === "" || discountmain == 0) {
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var allcount0 = price-(price*discountmain /100);// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
                     totalAmost();
 
                 }
@@ -1898,6 +1953,8 @@
                     console.log(number_ID);
 
                     var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+
                     if (discountmain === "" || discountmain == 0) {
                         var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
@@ -1905,9 +1962,9 @@
                         var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }else{
-                        var pricediscount = pricenew;
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                        var allcount0 = price;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        var allcount0 = price-(price*discountmain /100);// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }
 

@@ -444,10 +444,12 @@ class DummyQuotationController extends Controller
                             $totalPrice = ($quantity * $unitValue) * $priceUnit;
                             $totalPrices[] = $totalPrice;
 
-                            $discountedPrice = (($totalPrice * $discount) / 100);
-                            $discountedPrices[] = $discountedPrice;
+                            $discountedPrice = (($priceUnit * $discount) / 100);
+                            $discountedPrices[] =  $priceUnit - $discountedPrice;
 
-                            $discountedPriceTotal = $totalPrice - $discountedPrice;
+                            $total = ($quantity * $unitValue);
+
+                            $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
                             $discountedPricestotal[] = $discountedPriceTotal;
 
                         }
@@ -755,14 +757,20 @@ class DummyQuotationController extends Controller
                         $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
                         $discount = floatval($discounts[$i]);
 
+                        $totaldiscount0 = (($priceUnit * $discount)/100);
+                        $totaldiscount[] = $totaldiscount0;
+
                         $totalPrice = ($quantity * $unitValue) * $priceUnit;
                         $totalPrices[] = $totalPrice;
 
-                        $discountedPrice = (($totalPrice * $discount) / 100);
-                        $discountedPrices[] = $discountedPrice;
+                        $discountedPrice = (($priceUnit * $discount) / 100);
+                        $discountedPrices[] =  $priceUnit - $discountedPrice;
 
-                        $discountedPriceTotal = $totalPrice - $discountedPrice;
+                        $total = ($quantity * $unitValue);
+
+                        $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
                         $discountedPricestotal[] = $discountedPriceTotal;
+
                     }
                 }
 
@@ -783,8 +791,8 @@ class DummyQuotationController extends Controller
                         'Issue_date' => $datarequest['IssueDate'],
                         'discount' => $discounts[$index],
                         'priceproduct' => $priceUnits[$index],
-                        'netpriceproduct' => $discountedPricestotal[$index],
-                        'totaldiscount' => $discountedPrices[$index],
+                        'netpriceproduct' => $discountedPrices[$index],
+                        'totaldiscount' => $discountedPricestotal[$index],
                         'ExpirationDate' => $datarequest['Expiration'],
                         'freelanceraiffiliate' => $datarequest['FreelancerMember'],
                         'Quantity' => $quantities[$index],
@@ -794,7 +802,6 @@ class DummyQuotationController extends Controller
 
                     $productsArray[] = $saveProduct;
                 }
-
                 {
                     $Quotation_ID = $datarequest['Proposal_ID'];
                     $IssueDate = $datarequest['IssueDate'];
@@ -835,7 +842,7 @@ class DummyQuotationController extends Controller
                                     'Product_ID' => $productID,
                                     'Quantity' => $product['Quantity'],
                                     'Unit' => $product['Unit'],
-                                    'netpriceproduct' => $product['netpriceproduct'],
+                                    'netpriceproduct' => $product['totaldiscount'],
                                     'Product_Name' => $ProductName,
                                     'Product_Quantity' => $unitName,
                                     'Product_Unit' => $quantity_name,// หรือระบุฟิลด์ที่ต้องการจาก $productDetails
@@ -844,7 +851,6 @@ class DummyQuotationController extends Controller
                         }
                     }
                     $formattedProductData = [];
-
                     foreach ($productData as $product) {
                         $formattedPrice = number_format($product['netpriceproduct']).' '.'บาท';
                         $formattedProductData[] = 'Description : ' . $product['Product_Name'] . ' , ' . 'Quantity : ' . $product['Quantity'] . ' ' . $product['Product_Quantity'] . ' , '. 'Unit : '. $product['Unit']. ' ' . $product['Product_Unit'] . ' , ' . 'Price Product : ' . $formattedPrice;
@@ -970,8 +976,8 @@ class DummyQuotationController extends Controller
                         $saveProduct->Issue_date = $request->IssueDate;
                         $saveProduct->discount =$discounts[$index];
                         $saveProduct->priceproduct =$priceUnits[$index];
-                        $saveProduct->netpriceproduct =$discountedPricestotal[$index];
-                        $saveProduct->totaldiscount =$discountedPrices[$index];
+                        $saveProduct->netpriceproduct =$discountedPrices[$index];
+                        $saveProduct->totaldiscount =$discountedPricestotal[$index];
                         $saveProduct->ExpirationDate = $request->Expiration;
                         $saveProduct->freelanceraiffiliate = $request->Freelancer_member;
                         $saveProduct->Quantity = $quantities[$index];
@@ -1027,14 +1033,20 @@ class DummyQuotationController extends Controller
                                     $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
                                     $discount = floatval($discounts[$i]);
 
+                                    $totaldiscount0 = (($priceUnit * $discount)/100);
+                                    $totaldiscount[] = $totaldiscount0;
+
                                     $totalPrice = ($quantity * $unitValue) * $priceUnit;
                                     $totalPrices[] = $totalPrice;
 
-                                    $discountedPrice = (($totalPrice * $discount) / 100);
-                                    $discountedPrices[] = $discountedPrice;
+                                    $discountedPrice = (($priceUnit * $discount) / 100);
+                                    $discountedPrices[] =  $priceUnit - $discountedPrice;
 
-                                    $discountedPriceTotal = $totalPrice - $discountedPrice;
+                                    $total = ($quantity * $unitValue);
+
+                                    $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
                                     $discountedPricestotal[] = $discountedPriceTotal;
+
                                 }
                             }
                             $items = master_product_item::where('Product_ID', $productID)->get();
@@ -1236,11 +1248,14 @@ class DummyQuotationController extends Controller
                         $totalPrice = ($quantity * $unitValue) * $priceUnit;
                         $totalPrices[] = $totalPrice;
 
-                        $discountedPrice = (($totalPrice * $discount) / 100);
-                        $discountedPrices[] = $discountedPrice;
+                        $discountedPrice = (($priceUnit * $discount) / 100);
+                        $discountedPrices[] =  $priceUnit - $discountedPrice;
 
-                        $discountedPriceTotal = $totalPrice - $discountedPrice;
+                        $total = ($quantity * $unitValue);
+
+                        $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
                         $discountedPricestotal[] = $discountedPriceTotal;
+
                     }
                 }
                 $items = master_product_item::where('Product_ID', $productID)->get();
@@ -1552,11 +1567,14 @@ class DummyQuotationController extends Controller
                         $totalPrice = ($quantity * $unitValue) * $priceUnit;
                         $totalPrices[] = $totalPrice;
 
-                        $discountedPrice = (($totalPrice * $discount) / 100);
-                        $discountedPrices[] = $discountedPrice;
+                        $discountedPrice = (($priceUnit * $discount) / 100);
+                        $discountedPrices[] =  $priceUnit - $discountedPrice;
 
-                        $discountedPriceTotal = $totalPrice - $discountedPrice;
+                        $total = ($quantity * $unitValue);
+
+                        $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
                         $discountedPricestotal[] = $discountedPriceTotal;
+
                     }
                 }
                 foreach ($priceUnits as $key => $price) {
@@ -1590,8 +1608,8 @@ class DummyQuotationController extends Controller
                         'Issue_date' => $request->IssueDate,
                         'discount' => $discounts[$index],
                         'priceproduct' => $priceUnits[$index],
-                        'netpriceproduct' => $discountedPricestotal[$index],
-                        'totaldiscount' => $discountedPrices[$index],
+                        'netpriceproduct' => $discountedPrices[$index],
+                        'totaldiscount' => $discountedPricestotal[$index],
                         'ExpirationDate' => $request->Expiration,
                         'freelanceraiffiliate' => $request->Freelancer_member,
                         'Quantity' => $quantities[$index],
@@ -1630,6 +1648,7 @@ class DummyQuotationController extends Controller
                     unset($item['id'], $item['created_at'], $item['updated_at'], $item['SpecialDiscount']);
                     return $item;
                 })->toArray();
+
                 $keysToCompare = ['Quotation_ID', 'issue_date', 'Expirationdate', 'type_Proposal','Company_ID', 'company_contact', 'checkin', 'checkout', 'day', 'night', 'adult', 'children', 'comment', 'eventformat', 'vat_type', 'SpecialDiscountBath', 'TotalPax', 'Products'];
                 $differences = [];
                 foreach ($keysToCompare as $key) {
@@ -1689,7 +1708,7 @@ class DummyQuotationController extends Controller
                         $item['discount'] ?? '',
                         $item['Quantity'] ?? '',
                         $item['Unit'] ?? '',
-                        $item['netpriceproduct'] ?? ''
+                        $item['totaldiscount'] ?? ''
                     ]);
                 })->unique();
 
@@ -1700,7 +1719,7 @@ class DummyQuotationController extends Controller
                         $item['discount'] ?? '',
                         $item['Quantity'] ?? '',
                         $item['Unit'] ?? '',
-                        $item['netpriceproduct'] ?? ''
+                        $item['totaldiscount'] ?? ''
                     ]);
                 })->unique();
 
@@ -1715,7 +1734,7 @@ class DummyQuotationController extends Controller
                         'discount' => $parts[1],
                         'Quantity' => $parts[2],
                         'Unit' => $parts[3],
-                        'netpriceproduct' => $parts[4]
+                        'totaldiscount' => $parts[4]
                     ];
                 })->values()->all();
 
@@ -1726,7 +1745,7 @@ class DummyQuotationController extends Controller
                         'discount' => $parts[1],
                         'Quantity' => $parts[2],
                         'Unit' => $parts[3],
-                        'netpriceproduct' => $parts[4]
+                        'totaldiscount' => $parts[4]
                     ];
                 })->values()->all();
                 $onlyInDataArray = collect($onlyInDataArray);
@@ -1888,7 +1907,7 @@ class DummyQuotationController extends Controller
                                 'Product_ID' => $productID,
                                 'Quantity' => $product['Quantity'],
                                 'Unit' => $product['Unit'],
-                                'netpriceproduct' => $product['netpriceproduct'],
+                                'netpriceproduct' => $product['totaldiscount'],
                                 'Product_Name' => $ProductName,
                                 'Product_Quantity' => $unitName,
                                 'Product_Unit' => $quantity_name,// หรือระบุฟิลด์ที่ต้องการจาก $productDetails
@@ -1926,7 +1945,7 @@ class DummyQuotationController extends Controller
                                 'Product_ID' => $productID,
                                 'Quantity' => $product['Quantity'],
                                 'Unit' => $product['Unit'],
-                                'netpriceproduct' => $product['netpriceproduct'],
+                                'netpriceproduct' => $product['totaldiscount'],
                                 'Product_Name' => $ProductName,
                                 'Product_Quantity' => $unitName,
                                 'Product_Unit' => $quantity_name,// หรือระบุฟิลด์ที่ต้องการจาก $productDetails
@@ -1957,6 +1976,7 @@ class DummyQuotationController extends Controller
                         $datacompany .= $variable;
                     }
                 }
+
                 $userids = Auth::user()->id;
                 $save = new log_company();
                 $save->Created_by = $userids;
@@ -2023,8 +2043,8 @@ class DummyQuotationController extends Controller
                         $saveProduct->pax = $paxValue;
                         $saveProduct->discount =$discounts[$index];
                         $saveProduct->priceproduct =$priceUnits[$index];
-                        $saveProduct->netpriceproduct =$discountedPricestotal[$index];
-                        $saveProduct->totaldiscount =$discountedPrices[$index];
+                        $saveProduct->netpriceproduct =$discountedPrices[$index];
+                        $saveProduct->totaldiscount =$discountedPricestotal[$index];
                         $saveProduct->ExpirationDate = $request->Expiration;
                         $saveProduct->freelanceraiffiliate = $request->Freelancer_member;
                         $saveProduct->Quantity = $quantities[$index];
