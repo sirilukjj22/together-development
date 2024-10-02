@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Revenue_credit;
 use App\Models\SMS_alerts;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -92,6 +93,42 @@ class ElexaController extends Controller
             return response()->json([
                 'data' => $elexa_outstanding,
                 'status' => 200,
+            ]);
+    }
+
+    public function search_month($month) {
+
+        $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+            ->whereMonth('revenue.date', $month)->where('revenue_credit.status', 8)
+            ->where('revenue_credit.receive_payment', 0)
+            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
+                'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')->orderBy('revenue.date', 'asc')->get();
+
+
+        $data = [];
+        $total_amount = 0;
+
+        foreach ($elexa_outstanding as $key => $value) {
+            $checkbox = '<div class="form-check form-check-inline">
+                            <input class="form-check-input checkbox-item" id="checkbox-outstanding'.($key + 1).'" type="checkbox" name="checkbox" value="'.$value->id.'">
+                            <label class="form-check-label"></label>
+                        </div>';
+
+            $btn = '<button type="button" class="btn btn-color-green text-white lift rounded-pill btn-receive-pay btn-outstanding'.($key + 1).'" id="btn-receive-'.$value->id.'" value="0"
+                                            onclick="select_receive_payment(this, '.$value->id.', '.$value->ev_charge.')">รับชำระ</button>';
+            
+            $total_amount += $value->ev_charge;
+            $data[] = [
+                'id' => $value->id,
+                'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                'orderID' => $value->batch,
+                'ev_charge' => number_format($value->ev_charge, 2),
+            ];
+        }
+
+            return response()->json([
+                'data' => $data,
+                'total_amount' => $total_amount
             ]);
     }
 

@@ -24,7 +24,7 @@
                     <!-- section card ข้างบน -->
                     <section class="">
                         <h1 class="form-title-top">Edit User</h1>
-                        <form action="{{ route('user-update') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('user-update') }}" method="POST" enctype="multipart/form-data" style="display: grid;gap: 1rem;">
                             @csrf
                             <input type="hidden" name="id" value="{{ $user->id }}">
                             <div class="wrap-permissoion-create-user">
@@ -64,9 +64,15 @@
                                             <option value="3" {{ $user->permission_edit == 3 ? 'selected' : '' }}>สามารถแก้ไขข้อมูลตัวเอง และแก้ไขข้อมูลคนอื่นได้</option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="discount">Discount (%)</label>
-                                        <input type="text" min="0" max="100" class="form-control" name="discount" value="{{ $user->discount }}">
+                                    <div  class="d-grid-2column" >
+                                        <div class="form-group" style="height: 4.7em;">
+                                            <label for="discount">Discount (%)</label>
+                                            <input type="text" min="0" max="100" class="form-control" name="discount" value="{{ $user->discount }}">
+                                        </div>
+                                        <div class="form-group" style="height: 4.7em;" >
+                                            <label >Additional Discount (%)</label>
+                                            <input type="number" name="additional_discount" value="{{ $user->additional_discount }}" min="0" max="100" />
+                                        </div>
                                     </div>
                                 </section>
                             </div>
