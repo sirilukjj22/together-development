@@ -84,9 +84,10 @@ class ElexaController extends Controller
 
     public function select_elexa_outstanding($id) {
 
-        $elexa_outstanding = Revenue_credit::where('id', $id)->where('revenue_credit.status', 8)
+        $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+            ->where('revenue_credit.id', $id)->where('revenue_credit.status', 8)
             ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
-                'revenue_credit.receive_payment', 'revenue_credit.sms_revenue')->first();
+                'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')->first();
 
             return response()->json([
                 'data' => $elexa_outstanding,

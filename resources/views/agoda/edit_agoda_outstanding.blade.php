@@ -196,6 +196,23 @@
 
 
     <script>
+
+        $(document).ready(function() {
+            $('#myDataTableOutstanding').dataTable({
+                responsive: false,
+                searching: true,
+                paging: true,
+                ordering: false,
+                info: true,
+                scrollX: true,
+                columnDefs: [
+                    { 
+                        "order": [[0, "asc"]], 
+                        "orderable": true, "targets": [0] 
+                    }
+                ]
+            });
+        });
         // Number Format
         function currencyFormat(num) {
             return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
