@@ -68,13 +68,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $total_debit = 0; ?>
+                            <?php 
+                                $total_debit = 0;
+                                $debit_amount = 0;
+                                $key_num = 0;
+                            ?>
                             @foreach ($elexa_outstanding as $key => $item)
                                 @if ($item->receive_payment == 1 && $item->sms_revenue == $elexa_revenue->id)
-                                <tr id="tr_row_{{ $item->id }}" class="checkbox-debit-outstanding{{ $key + 1 }}">
+                                <tr id="tr_row_{{ $item->id }}" class="checkbox-debit-outstanding{{ $key_num += 1 }}">
                                     <td>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input checkbox-debit-item" id="checkbox-debit-outstanding{{ $key + 1 }}" type="checkbox" name="checkbox" value="{{ $item->id }}">
+                                            <input class="form-check-input checkbox-debit-item" id="checkbox-debit-outstanding{{ $key_num }}" type="checkbox" name="checkbox" value="{{ $item->id }}">
                                             <label class="form-check-label"></label>
                                         </div>
                                     </td>
@@ -85,8 +89,12 @@
                                         <button type="button" class="btn btn-danger rounded-pill close lift" id="btn-receive-{{ $item->id}}" value="1"
                                         onclick="select_receive_payment(this, {{ $item->id}}, {{ $item->ev_charge }})">ยกเลิก</button>
                                     </td>
+                                    <input type="hidden" name="" id="ev_charge{{ $item->id }}" value="{{ $item->ev_charge }}">
                                 </tr>
-                                <?php $total_debit += $item->ev_charge; ?>
+                                <?php 
+                                    $total_debit += $item->ev_charge; 
+                                    $debit_amount += 1;
+                                ?>
                                 @endif
                             @endforeach
                         </tbody>
@@ -150,13 +158,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $total = 0; ?>
+                            <?php 
+                                $total = 0; 
+                                $outstanding_amount = 0;
+                            ?>
                             @foreach ($elexa_outstanding as $key => $item)
                                 @if ($item->receive_payment == 0)
-                                <tr id="tr_row_{{ $item->id }}" class="checkbox-outstanding{{ $key + 1 }}">
+                                <tr id="tr_row_{{ $item->id }}" class="checkbox-outstanding{{ $outstanding_amount += 1 }}">
                                     <td>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input checkbox-item" id="checkbox-outstanding{{ $key + 1 }}" type="checkbox" name="checkbox" value="{{ $item->id }}">
+                                            <input class="form-check-input checkbox-item" id="checkbox-outstanding{{ $outstanding_amount }}" type="checkbox" name="checkbox" value="{{ $item->id }}">
                                             <label class="form-check-label"></label>
                                         </div>
                                     </td>
@@ -165,18 +176,20 @@
                                     <td>{{ number_format($item->ev_charge, 2) }}</td>
                                     <td>
                                         @if ($item->receive_payment == 0)
-                                            <button type="button" class="btn btn-color-green text-white lift rounded-pill btn-receive-pay btn-outstanding{{ $key + 1 }}"
+                                            <button type="button" class="btn btn-color-green text-white lift rounded-pill btn-receive-pay btn-outstanding{{ $outstanding_amount }}"
                                             id="btn-receive-{{ $item->id }}" value="0"
                                             onclick="select_receive_payment(this, {{ $item->id }}, {{ $item->ev_charge }})">รับชำระ</button>
                                         @else
-                                            <button type="button" class="btn btn-color-green text-white lift rounded-pill btn-receive-pay btn-outstanding{{ $key + 1 }}"
+                                            <button type="button" class="btn btn-color-green text-white lift rounded-pill btn-receive-pay btn-outstanding{{ $outstanding_amount }}"
                                             id="btn-receive-{{ $item->id }}" value="0"
                                             onclick="select_receive_payment(this, {{ $item->id }}, {{ $item->ev_charge }})" disabled>รับชำระ</button>
                                         @endif
                                     </td>
                                     <input type="hidden" name="" id="ev_charge{{ $item->id }}" value="{{ $item->ev_charge }}">
                                 </tr>
-                                <?php $total += $item->ev_charge; ?>
+                                <?php 
+                                    $total += $item->ev_charge; 
+                                ?>
                                 @endif
                             @endforeach
                         </tbody>
@@ -198,6 +211,8 @@
 
     <input type="hidden" id="total_receive_payment" value="{{ $total_debit }}">
     <input type="hidden" id="total_revenue_amount" value="{{ isset($elexa_revenue) ? $elexa_revenue->amount : 0 }}">
+    <input type="hidden" id="debit_amount" value="{{ $debit_amount }}">
+    <input type="hidden" id="outstanding_amount" value="{{ $outstanding_amount }}">
 
     <form action="#" id="form-elexa">
         @csrf
@@ -260,96 +275,28 @@
                 }
             ]
         });
-
-        var table = $('#myDataTableOutstanding').DataTable();
-        var table2 = $('#myDataTableDebit').DataTable();
-
-        // Object to hold the checkbox states
-        var checkedRows = {};
-        var checkedRows2 = {};
-
-        // Handle check all functionality for Outstanding
-        $('#checkAll').on('click', function() {
-            var isChecked = this.checked;
-            $('.checkbox-item').each(function() {
-                $(this).prop('checked', isChecked);
-                var rowId = $(this).val();
-                checkedRows[rowId] = isChecked;
-            });
-        });
-
-        // Handle check all functionality for Debit
-        $('#checkDebitAll').on('click', function() {
-            var isChecked2 = this.checked;
-            $('.checkbox-debit-item').each(function() {
-                $(this).prop('checked', isChecked2);
-                var rowId2 = $(this).val();
-                checkedRows2[rowId2] = isChecked2;
-            });
-        });
-
-        // Handle individual checkbox click for Outstanding
-        $('#myDataTableOutstanding tbody').on('click', '.checkbox-item', function() {
-            var rowId = $(this).val();
-            checkedRows[rowId] = $(this).prop('checked');
-
-            // Check if all checkboxes in the current page are selected
-            if ($('.checkbox-item:checked').length === $('.checkbox-item').length) {
-                $('#checkAll').prop('checked', true);
-            } else {
-                $('#checkAll').prop('checked', false);
-            }
-        });
-
-        // Handle individual checkbox click for Debit
-        $('#myDataTableDebit tbody').on('click', '.checkbox-debit-item', function() {
-            var rowId2 = $(this).val();
-            checkedRows2[rowId2] = $(this).prop('checked');
-
-            // Check if all checkboxes in the current page are selected
-            if ($('.checkbox-debit-item:checked').length === $('.checkbox-debit-item').length) {
-                $('#checkDebitAll').prop('checked', true);
-            } else {
-                $('#checkDebitAll').prop('checked', false);
-            }
-        });
-
-        // Restore checkbox state when redrawing the table for Outstanding
-        table.on('draw', function() {
-            var allChecked = true;
-
-            $('.checkbox-item').each(function() {
-                var rowId = $(this).val();
-                if (checkedRows[rowId]) {
-                    $(this).prop('checked', true);
-                } else {
-                    $(this).prop('checked', false);
-                    allChecked = false;
-                }
-            });
-
-            // If all checkboxes in the current page are checked, check "Check All"
-            $('#checkAll').prop('checked', allChecked);
-        });
-
-        // Restore checkbox state when redrawing the table for Debit
-        table2.on('draw', function() {
-            var allChecked2 = true;
-
-            $('.checkbox-debit-item').each(function() {
-                var rowId2 = $(this).val();
-                if (checkedRows2[rowId2]) {
-                    $(this).prop('checked', true);
-                } else {
-                    $(this).prop('checked', false);
-                    allChecked2 = false;
-                }
-            });
-
-            // If all checkboxes in the current page are checked, check "Check All"
-            $('#checkDebitAll').prop('checked', allChecked2);
-        });
     });
+
+    $('#checkDebitAll').on('click', function() {
+        for (let index = 1; index <= 100; index++) {
+            if ($('#checkbox-debit-outstanding'+index).is(':checked')) {
+                $('#checkbox-debit-outstanding'+index).prop('checked', false);
+            } else {
+                $('#checkbox-debit-outstanding'+index).prop('checked', true);
+            }
+        }
+    });
+
+    $('#checkAll').on('click', function() {
+        for (let index = 1; index <= 100; index++) {
+            if ($('#checkbox-outstanding'+index).is(':checked')) {
+                $('#checkbox-outstanding'+index).prop('checked', false);
+            } else {
+                $('#checkbox-outstanding'+index).prop('checked', true);
+            }
+        }
+    });
+
 
 
         // Number Format
@@ -376,62 +323,67 @@
                         table.clear().draw();
 
                         $.each(response.data, function(index, value) {
-                            table.rows.add(
-                                [
-                                    [
-                                        '<div class="form-check form-check-inline">'+
-                                            '<input class="form-check-input checkbox-item" id="checkbox-outstanding'+ (index + 1) +'" type="checkbox" name="checkbox" value="'+ value.id +'">'+
-                                            '<label class="form-check-label"></label>'+
-                                        '</div>',
-                                        value.date,
-                                        value.orderID,
-                                        value.ev_charge,
-                                        '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' +
-                                        value.id + '" value="0"' +
-                                        'onclick="select_receive_payment(this, ' + value.id + ', ' + value.ev_charge + ')">รับชำระ</button>'
-                                    ]
-                                ]
-                            ).draw();
+                            $('#myDataTableOutstanding').DataTable().destroy();
+                            var table = $('#myDataTableOutstanding').DataTable({
+                                            responsive: false,
+                                            searching: true,
+                                            paging: true,
+                                            ordering: false,
+                                            info: true,
+                                            scrollX: true,
+                                            columnDefs: [
+                                                { 
+                                                    "order": [[0, "asc"]], 
+                                                    "orderable": true, "targets": [0] 
+                                                }
+                                            ]
+                                        });
+
+                            var newRowData = [
+                                        [
+                                            '<div class="form-check form-check-inline">'+
+                                                '<input class="form-check-input checkbox-item" id="checkbox-outstanding'+ (index + 1) +'" type="checkbox" name="checkbox" value="'+ value.id +'">'+
+                                                '<label class="form-check-label"></label>'+
+                                            '</div>',
+                                            value.date,
+                                            value.orderID,
+                                            value.ev_charge,
+                                            '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' + value.id + '" value="0"' + 'onclick="select_receive_payment(this, ' + value.id + ', ' + value.ev_charge + ')">รับชำระ</button>'
+                                        ]
+                                    ];
+
+                            // เพิ่มแถวใหม่
+                            var addedRow = table.rows.add(newRowData).draw();
+
+                            // เข้าถึงแถวที่เพิ่มและเพิ่ม class
+                            var rowNode = table.row(addedRow.indexes()).node();
+                            $(rowNode).attr('id', 'tr_row_' + value.id);
+                            $(rowNode).addClass('checkbox-outstanding' + (index + 1));
 
                             $('#btn-receive-' + value.id).val(0);
                         });
                     }
                 }
             });
-            
-            // $('#myDataTableOutstanding').DataTable().destroy();
-            // $('#myDataTableOutstanding').dataTable({
-            //     responsive: true,
-            //     searching: true,
-            //     paging: true,
-            //     ordering: false,
-            //     info: true,
-            //     scrollX: true,
-            //     columnDefs: [
-            //         { 
-            //             "order": [[0, "asc"]], 
-            //             "orderable": true, "targets": [0] 
-            //         }
-            //     ]
-            // });
         }
 
         function select_receive_payment_multi(type_action) {
             
             var revenueID = $('#revenue_id').val();
             var total_revenue_amount = $('#total_revenue_amount').val(); // ยอด Agoda Revenue (SMS)
-            var total = Number($('#total_outstanding').val());
             var total_receive_payment = Number($('#total_receive_payment').val());
             var SumTotalDebit = total_receive_payment;
 
             if (revenueID != "") {
 
-                for (let index = 1; index <= 60; index++) {
+                for (let index = 1; index <= 200; index++) {
+                    var total = Number($('#total_outstanding').val());
+
                     if ($('#checkbox-outstanding'+index).is(':checked') || $('#checkbox-debit-outstanding'+index).is(':checked')) {
+                        var itemID = $('#checkbox-outstanding'+index).val();
 
-                        if ($('#btn-receive-' + itemID).val() == 0) {
+                        if (type_action == 'receive' && $('#btn-receive-' + itemID).val() == 0) {
 
-                            var itemID = $('#checkbox-outstanding'+index).val();
                             var amount = Number($('#ev_charge'+itemID).val());
                             SumTotalDebit += amount; 
         
@@ -458,30 +410,54 @@
                                 datatype: "JSON",
                                 async: false,
                                 success: function(response) {
+                                    var debit_amount = Number($('#debit_amount').val()) + 1;
+                                    $('#debit_amount').val(debit_amount);
+
                                     if (response.data) {
                                         var status = "";
-                                        var table = new DataTable('#myDataTableDebit');
-        
-                                        table.rows.add(
-                                            [
-                                                [
-                                                    '<div class="form-check form-check-inline">'+
-                                                        '<input class="form-check-input checkbox-item" id="checkbox-outstanding'+ itemID +'" type="checkbox" name="checkbox" value="'+ itemID +'">'+
-                                                        '<label class="form-check-label"></label>'+
-                                                    '</div>',
-                                                    moment( response.data.date).format('DD/MM/YYYY'),
-                                                    response.data.batch,
-                                                    currencyFormat(response.data.ev_charge),
-                                                    '<button type="button" class="btn btn-danger rounded-pill lift close" id="btn-receive-' +
-                                                    itemID + '" value="1"' + ' onclick="select_receive_payment(this, ' + itemID + ', ' + response.data.ev_charge + ')">ยกเลิก</button>'
-                                                ]
-                                            ]
-                                        ).draw();
+                                        $('#myDataTableDebit').DataTable().destroy();
+                                        var table = $('#myDataTableDebit').DataTable(
+                                                {
+                                                    responsive: false,
+                                                    searching: true,
+                                                    paging: true,
+                                                    ordering: false,
+                                                    info: true,
+                                                    scrollX: true,
+                                                    columnDefs: [
+                                                        { 
+                                                            "order": [[0, "asc"]], 
+                                                            "orderable": true, "targets": [0] 
+                                                        }
+                                                    ]
+                                                }
+                                            );
+
+                                        var newRowData = [
+                                                    [
+                                                        '<div class="form-check form-check-inline">'+
+                                                            '<input class="form-check-input checkbox-debit-item" id="checkbox-debit-outstanding'+ debit_amount +'" type="checkbox" name="checkbox" value="'+ itemID +'">'+
+                                                            '<label class="form-check-label"></label>'+
+                                                        '</div>',
+                                                        moment( response.data.date).format('DD/MM/YYYY'),
+                                                        response.data.batch,
+                                                        currencyFormat(response.data.ev_charge),
+                                                        '<button type="button" class="btn btn-danger rounded-pill lift close" id="btn-receive-' + itemID + '" value="1"' + ' onclick="select_receive_payment(this, ' + itemID + ', ' + response.data.ev_charge + ')">ยกเลิก</button>'
+                                                    ]
+                                                ];
+
+                                        // เพิ่มแถวใหม่
+                                        var addedRow = table.rows.add(newRowData).draw();
+
+                                        // เข้าถึงแถวที่เพิ่มและเพิ่ม class
+                                        var rowNode = table.row(addedRow.indexes()).node();
+                                        $(rowNode).attr('id', 'tr_row_' + itemID);
+                                        $(rowNode).addClass('checkbox-debit-outstanding' + debit_amount);
                                     }
         
                                 }
                             });
-                        } else {
+                        } else {                            
                             var itemID = $('#checkbox-debit-outstanding'+index).val();
                             var amount = Number($('#ev_charge'+itemID).val());
                             SumTotalDebit -= amount; 
@@ -498,6 +474,7 @@
 
                             $('#receive_id_' + itemID).remove();
 
+                            $('tr #tr_row_' + itemID).remove();
                             var tb_select = new DataTable('#myDataTableDebit');
                             // var removingRow = $(ele).closest('tr');
                             tb_select.row().remove().draw();
@@ -510,24 +487,45 @@
                                 success: function(response) {
                                     if (response.data) {
                                         var status = "";
-                                        var table = new DataTable('#myDataTableOutstanding');
 
-                                        table.rows.add(
-                                            [
-                                                [
-                                                    '<div class="form-check form-check-inline">'+
-                                                        '<input class="form-check-input checkbox-item" id="checkbox-outstanding'+ itemID +'" type="checkbox" name="checkbox" value="'+ itemID +'">'+
-                                                        '<label class="form-check-label"></label>'+
-                                                    '</div>',
-                                                    moment( response.data.date).format('DD/MM/YYYY'),
-                                                    response.data.batch,
-                                                    currencyFormat(response.data.ev_charge),
-                                                    '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' +
-                                                    itemID + '" value="0"' +
-                                                    'onclick="select_receive_payment(this, ' + itemID + ', ' + response.data.ev_charge + ')">รับชำระ</button>'
-                                                ]
-                                            ]
-                                        ).draw();
+                                        $('#myDataTableOutstanding').DataTable().destroy();
+                                        var table = $('#myDataTableOutstanding').DataTable(
+                                                {
+                                                    responsive: false,
+                                                    searching: true,
+                                                    paging: true,
+                                                    ordering: false,
+                                                    info: true,
+                                                    scrollX: true,
+                                                    columnDefs: [
+                                                        { 
+                                                            "order": [[0, "asc"]], 
+                                                            "orderable": true, "targets": [0] 
+                                                        }
+                                                    ]
+                                                }
+                                            );
+
+                                        var newRowData = [
+                                                    [
+                                                        '<div class="form-check form-check-inline">'+
+                                                            '<input class="form-check-input checkbox-item" id="checkbox-outstanding'+ index +'" type="checkbox" name="checkbox" value="'+ itemID +'">'+
+                                                            '<label class="form-check-label"></label>'+
+                                                        '</div>',
+                                                        moment( response.data.date).format('DD/MM/YYYY'),
+                                                        response.data.batch,
+                                                        currencyFormat(response.data.ev_charge),
+                                                        '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' + itemID + '" value="0"' + 'onclick="select_receive_payment(this, ' + itemID + ', ' + response.data.ev_charge + ')">รับชำระ</button>'
+                                                    ]
+                                                ];
+
+                                        // เพิ่มแถวใหม่
+                                        var addedRow = table.rows.add(newRowData).draw();
+
+                                        // เข้าถึงแถวที่เพิ่มและเพิ่ม class
+                                        var rowNode = table.row(addedRow.indexes()).node();
+                                        $(rowNode).attr('id', 'tr_row_' + itemID);
+                                        $(rowNode).addClass('checkbox-outstanding' + index);
                                     }
 
                                     $('#btn-receive-' + itemID).val(0);
@@ -553,6 +551,8 @@
             var total_revenue_amount = $('#total_revenue_amount').val(); // ยอด Agoda Revenue (SMS)
             var total = Number($('#total_outstanding').val());
             var total_receive_payment = Number($('#total_receive_payment').val());
+            var debit_amount = Number($('#debit_amount').val()) + 1;
+            $('#debit_amount').val(debit_amount);
 
             if (revenueID != "") {
 
@@ -567,11 +567,9 @@
                     $('#total_outstanding').val(total - amount);
                     $('#txt_total_outstanding').text(currencyFormat(Number(total - amount)));
 
-                    $('#balance').text(currencyFormat(Number(total_revenue_amount - $('#total_receive_payment')
-                        .val()))); // ยอดคงเหลือ Dashboard
+                    $('#balance').text(currencyFormat(Number(total_revenue_amount - $('#total_receive_payment').val()))); // ยอดคงเหลือ Dashboard
 
-                    $('#form-elexa').append('<input type="hidden" id="receive_id_' + id + '" name="receive_id[]" value="' +
-                        id + '">');
+                    $('#form-elexa').append('<input type="hidden" id="receive_id_' + id + '" name="receive_id[]" value="' + id + '">');
 
                     $('#tr_row_' + id).remove();
                     var tb_select = new DataTable('#myDataTableOutstanding');
@@ -586,39 +584,61 @@
                         success: function(response) {
                             if (response.data) {
                                 var status = "";
-                                var table = new DataTable('#myDataTableDebit');
+                                $('#myDataTableDebit').DataTable().destroy();
+                                var table = $('#myDataTableDebit').DataTable(
+                                                {
+                                                    responsive: false,
+                                                    searching: true,
+                                                    paging: true,
+                                                    ordering: false,
+                                                    info: true,
+                                                    scrollX: true,
+                                                    columnDefs: [
+                                                        { 
+                                                            "order": [[0, "asc"]], 
+                                                            // "orderable": true, "targets": [0] 
+                                                        }
+                                                    ]
+                                                }
+                                            );
 
-                                table.rows.add(
-                                    [
-                                        [
-                                            '<div class="form-check form-check-inline">'+
-                                                '<input class="form-check-input checkbox-item" id="checkbox-outstanding'+ id +'" type="checkbox" name="checkbox" value="'+ id +'">'+
-                                                '<label class="form-check-label"></label>'+
-                                            '</div>',
-                                            moment( response.data.date).format('DD/MM/YYYY'),
-                                            response.data.batch,
-                                            currencyFormat(response.data.ev_charge),
-                                            '<button type="button" class="btn btn-danger rounded-pill close" id="btn-receive-' +
-                                            id + '" value="1"' + ' onclick="select_receive_payment(this, ' + id + ', ' + response.data.ev_charge + ')">ยกเลิก</button>'
-                                        ]
-                                    ]
-                                ).draw();
+                                var newRowData = [
+                                            [
+                                                '<div class="form-check form-check-inline">'+
+                                                    '<input class="form-check-input checkbox-debit-item" id="checkbox-debit-outstanding'+ debit_amount +'" type="checkbox" name="checkbox" value="'+ id +'">'+
+                                                    '<label class="form-check-label"></label>'+
+                                                '</div>',
+                                                moment(response.data.date).format('DD/MM/YYYY'),
+                                                response.data.batch,
+                                                currencyFormat(response.data.ev_charge),
+                                                '<button type="button" class="btn btn-danger rounded-pill close" id="btn-receive-' + id + '" value="1"' + ' onclick="select_receive_payment(this, ' + id + ', ' + response.data.ev_charge + ')">ยกเลิก</button>'
+                                            ]
+                                        ];
+
+                                // เพิ่มแถวใหม่
+                                var addedRow = table.rows.add(newRowData).draw();
+
+                                // เข้าถึงแถวที่เพิ่มและเพิ่ม class
+                                var rowNode = table.row(addedRow.indexes()).node();
+                                $(rowNode).attr('id', 'tr_row_' + id);
+                                $(rowNode).addClass('checkbox-debit-outstanding' + debit_amount);
                             }
 
                         }
                     });
 
                 } else {
+                    var outstanding_amount = Number($('#outstanding_amount').val()) + 1;
+                    $('#outstanding_amount').val(outstanding_amount);
+
                     $('#total_receive_payment').val(Number(total_receive_payment - amount).toFixed(2)); // ยอดที่รับชำระ
                     $('#txt_total_receive_payment').text(currencyFormat(Number(total_receive_payment - amount))); // ยอดที่รับชำระ แสดงแบบ Text
                     $('#txt_total_received').text(currencyFormat(Number(total_receive_payment - amount)));
 
-                    // console.log(Number(total_receive_payment).toFixed(2) - Number(amount).toFixed(2));
                     $('#total_outstanding').val(total + amount);
                     $('#txt_total_outstanding').text(currencyFormat(Number(total + amount)));
 
-                    $('#balance').text(currencyFormat(Number(total_revenue_amount - (total_receive_payment -
-                        amount)))); // ยอดคงเหลือ Dashboard
+                    $('#balance').text(currencyFormat(Number(total_revenue_amount - (total_receive_payment - amount)))); // ยอดคงเหลือ Dashboard
 
                     $('#receive_id_' + id).remove();
 
@@ -634,24 +654,45 @@
                         success: function(response) {
                             if (response.data) {
                                 var status = "";
-                                var table = new DataTable('#myDataTableOutstanding');
 
-                                table.rows.add(
-                                    [
-                                        [
-                                            '<div class="form-check form-check-inline">'+
-                                                '<input class="form-check-input checkbox-item" id="checkbox-outstanding'+ id +'" type="checkbox" name="checkbox" value="'+ id +'">'+
-                                                '<label class="form-check-label"></label>'+
-                                            '</div>',
-                                            moment( response.data.date).format('DD/MM/YYYY'),
-                                            response.data.batch,
-                                            currencyFormat(response.data.ev_charge),
-                                            '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' +
-                                            id + '" value="0"' +
-                                            'onclick="select_receive_payment(this, ' + id + ', ' + response.data.ev_charge + ')">รับชำระ</button>'
-                                        ]
-                                    ]
-                                ).draw();
+                                $('#myDataTableOutstanding').DataTable().destroy();
+                                var table = $('#myDataTableOutstanding').DataTable(
+                                        {
+                                            responsive: false,
+                                            searching: true,
+                                            paging: true,
+                                            ordering: false,
+                                            info: true,
+                                            scrollX: true,
+                                            columnDefs: [
+                                                { 
+                                                    "order": [[0, "asc"]], 
+                                                    // "orderable": true, "targets": [0] 
+                                                }
+                                            ]
+                                        }
+                                    );
+
+                                var newRowData = [
+                                            [
+                                                '<div class="form-check form-check-inline">'+
+                                                    '<input class="form-check-input checkbox-item" id="checkbox-outstanding'+ outstanding_amount +'" type="checkbox" name="checkbox" value="'+ id +'">'+
+                                                    '<label class="form-check-label"></label>'+
+                                                '</div>',
+                                                moment( response.data.date).format('DD/MM/YYYY'),
+                                                response.data.batch,
+                                                currencyFormat(response.data.ev_charge),
+                                                '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' + id + '" value="0"' + 'onclick="select_receive_payment(this, ' + id + ', ' + response.data.ev_charge + ')">รับชำระ</button>'
+                                            ]
+                                        ];
+
+                                // เพิ่มแถวใหม่
+                                var addedRow = table.rows.add(newRowData).draw();
+
+                                // เข้าถึงแถวที่เพิ่มและเพิ่ม class
+                                var rowNode = table.row(addedRow.indexes()).node();
+                                $(rowNode).attr('id', 'tr_row_' + id);
+                                $(rowNode).addClass('checkbox-outstanding' + outstanding_amount);
                             }
 
                             $('#btn-receive-' + id).val(0);
