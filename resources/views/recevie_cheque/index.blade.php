@@ -33,6 +33,8 @@
                     <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#allSearch">
                         <i class="fa fa-plus"></i> Create Recevie Cheque
                     </button>
+                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('ReceiveCheque.test') }}'">
+                        <i class="fa fa-plus"></i> test</button>
                     <div class="col-md-12 my-2">
                         <div class="modal fade" id="allSearch" tabindex="-1" aria-labelledby="PrenameModalCenterTitle"
                         style="display: none;" aria-hidden="true">
@@ -292,6 +294,7 @@
                                                 <tr>
                                                     <th class="text-center"data-priority="1">No</th>
                                                     <th>Refer Proforma Invoice</th>
+                                                    <th>Refer Proposal</th>
                                                     <th data-priority="1">Bank Cheque</th>
                                                     <th class="text-center" data-priority="1">Cheque Number</th>
                                                     <th class="text-center">Amount</th>
@@ -308,6 +311,9 @@
                                                     <tr>
                                                         <td style="text-align: center;">
                                                             {{$key +1}}
+                                                        </td>
+                                                        <td style="text-align: left;">
+                                                            {{$item->refer_proposal}}
                                                         </td>
                                                         <td style="text-align: left;">
                                                             {{$item->refer_invoice}}
@@ -359,12 +365,12 @@
                                                 @endif
                                             </tbody>
                                         </table>
-                                        <input type="hidden" id="get-total-proposal" value="{{ $cheque->total() }}">
-                                        <input type="hidden" id="currentPage-proposal" value="1">
+                                        <input type="hidden" id="get-total-cheque" value="{{ $cheque->total() }}">
+                                        <input type="hidden" id="currentPage-cheque" value="1">
                                         <caption class="caption-bottom">
                                             <div class="md-flex-bt-i-c">
-                                                <p class="py2" id="proposal-showingEntries">{{ showingEntriesTable($cheque, 'cheque') }}</p>
-                                                    <div id="proposal-paginate">
+                                                <p class="py2" id="cheque-showingEntries">{{ showingEntriesTable($cheque, 'cheque') }}</p>
+                                                    <div id="cheque-paginate">
                                                         {!! paginateTable($cheque, 'cheque') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                                     </div>
                                             </div>
@@ -607,7 +613,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,3,4,5,6,7,8,9], className: 'dt-center td-content-center' },
+                                { targets: [0,4,5,6,7,8,9,10], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -619,6 +625,7 @@
                     columns: [
                         { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
                         { data: 'Invoice' },
+                        { data: 'proposal' },
                         { data: 'Bank' },
                         { data: 'Cheque_Number' },
                         { data: 'Amount' },

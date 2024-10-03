@@ -11,7 +11,7 @@
                 </div>
                 <div class="col-auto">
                     @if (@Auth::user()->roleMenuAdd('proposal',Auth::user()->id) == 1)
-                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Proposal.create') }}'">
+                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('ReceiveCheque.test') }}'">
                         <i class="fa fa-plus"></i> เพิ่มใบเสนอราคา</button>
                     @endif
                     <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#allSearch">

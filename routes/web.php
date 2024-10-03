@@ -678,6 +678,11 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('cheque-search-table', 'search_table_cheque');
         Route::post('cheque-paginate-table', 'paginate_table_cheque');
+
+
+
+
+        Route::get('/Document/ReceiveCheque/test', 'test')->name('ReceiveCheque.test');
     });
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');

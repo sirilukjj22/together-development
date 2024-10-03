@@ -403,21 +403,56 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">User Discount </span>{{--ดึงของuserมาใส่--}}
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                                <span  for="">User Discount </span>{{--ดึงของuserมาใส่--}}
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="User_discount"value="{{@Auth::user()->discount}}" id="User_discount" placeholder="ส่วนลดคิดเป็น %" readonly>
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                                <span  for=""> Additional Discount</span>{{--ดึงของuserมาใส่--}}
+                                                <div class="input-group">
+                                                    <input class="form-control" type="text" name="Add_discount" id="Add_discount" value="" placeholder="ส่วนลดเพิ่มเติมคิดเป็น %"
+                                                            oninput="if (parseFloat(this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)) > {{ Auth::user()->additional_discount }}) this.value = {{ Auth::user()->additional_discount }};"
+                                                            onchange="adddis()">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <span  for="">Total User Discount</span>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" name="Max_discount"  value="{{@Auth::user()->discount}}" placeholder="ส่วนลดคิดเป็น %" disabled>
+                                            <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"   placeholder="ส่วนลดคิดเป็น %" readonly>
                                             <span class="input-group-text">%</span>
                                         </div>
+                                        <script>
+                                            function adddis() {
+                                                // Get the discount values from the input fields
+                                                var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
+                                                var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
+
+                                                // Calculate the total discount
+                                                var total = User_discount + Add_discount;
+
+                                                // Set the total discount to the SpecialDiscount field
+                                                document.getElementById('SpecialDiscount').value = total.toFixed(2); // Keep two decimal places
+                                            }
+                                            $(document).ready(function() {
+
+                                                    var User_discount = document.getElementById('User_discount').value;
+                                                    var Add_discount = document.getElementById('Add_discount').value;
+                                                    var total = User_discount+Add_discount;
+                                                    $('#SpecialDiscount').val(total);
+
+                                            });
+
+                                        </script>
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-12">
                                         <span  for="">Special Discount</span>
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"  placeholder="ส่วนลดคิดเป็น %" disabled>
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Discount Amount</span>
                                         <div class="input-group">
                                             <input type="number" class="form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท" required disabled>
                                             <span class="input-group-text">Bath</span>
@@ -645,7 +680,6 @@
                                 @else
                                     <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="0">
                                 @endif
-                                <input type="hidden" name="discountuser" id="discountuser" value="{{@Auth::user()->discount}}">
                                 <div class="col-12 row ">
                                     <div class="col-lg-9 col-md-9 col-sm-12 mt-2" >
                                         <span >Notes or Special Comment</span>
@@ -655,66 +689,40 @@
                                         <table class="table table-custom-borderless" id="PRICE_INCLUDE_VAT" style="display: none;">
                                             <tbody>
                                                 <tr >
-                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amount">0</span></td>
+                                                    <td scope="row"style="text-align:right;width: 75%;font-size: 14px;"><b>Subtotal</b></td>
+                                                    <td style="text-align:left;width: 25%;font-size: 14px;"><span id="total-amount">0</span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                        <span id="sp">0</span>
-                                                    </td>
+                                                    <td scope="row"style="text-align:right;width: 75%;font-size: 14px;"><b>Price Before Tax</b></td>
+                                                    <td style="text-align:left;width: 25%;font-size: 14px;"><span id="Net-price">0</span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscount">0</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Price Before Tax</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Net-price">0</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td scope="row" style="text-align:right;width: 55%;font-size: 14px;"><b>Value Added Tax</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-Vat">0</span></td>
+                                                    <td scope="row" style="text-align:right;width: 75%;font-size: 14px;"><b>Value Added Tax</b></td>
+                                                    <td style="text-align:left;width: 25%;font-size: 14px;"><span id="total-Vat">0</span></td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                         <table class="table table-custom-borderless" id="PRICE_EXCLUDE_VAT" style="display: none;">
                                             <tbody>
                                                 <tr >
-                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amountEXCLUDE">0</span></td>
+                                                    <td scope="row"style="text-align:right;width: 75%;font-size: 14px;"><b>Subtotal</b></td>
+                                                    <td style="text-align:left;width: 25%;font-size: 14px;"><span id="total-amountEXCLUDE">0</span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                        <span id="spEXCLUDE">0</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscountEXCLUDE">0</span></td>
+                                                    <td scope="row"style="text-align:right;width: 75%;font-size: 14px;"><b>Subtotal less Discount</b></td>
+                                                    <td style="text-align:left;width: 25%;font-size: 14px;"><span id="lessDiscountEXCLUDE">0</span></td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                         <table class="table table-borderless "id="PRICE_PLUS_VAT" style="display: none;">
                                             <tbody>
                                                 <tr >
-                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amountpus">0</span></td>
+                                                    <td scope="row"style="text-align:right;width: 75%;font-size: 14px;"><b>Subtotal</b></td>
+                                                    <td style="text-align:left;width: 25%;font-size: 14px;"><span id="total-amountpus">0</span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                        <span id="sppus">0</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscountpus">0</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td scope="row" style="text-align:right;width: 55%;font-size: 14px;"><b>Value Added Tax</b></td>
-                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-Vatpus">0</span></td>
+                                                    <td scope="row" style="text-align:right;width: 75%;font-size: 14px;"><b>Value Added Tax</b></td>
+                                                    <td style="text-align:left;width: 25%;font-size: 14px;"><span id="total-Vatpus">0</span></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1479,25 +1487,38 @@
                                     let unit;
                                     var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
                                     var SpecialDiscount = document.getElementById('SpecialDiscount').value;
-                                    var discountuser = document.getElementById('discountuser').value;
+                                    var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
+                                    var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
                                     var maximum_discount = val.maximum_discount;
                                     var valpax = val.pax;
                                     if (valpax == null) {
                                         valpax = 0;
                                     }
-                                    if (maximum_discount > 0) {
-                                        if (roleMenuDiscount == 1) {
+                                    if (roleMenuDiscount == 1) {
+                                        if (Add_discount > 0) {
+                                            if (SpecialDiscount > 0 ) {
+                                                if (SpecialDiscount > maximum_discount) {
+                                                    discountInput = '<div class="input-group">' +
+                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                                        'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + maximum_discount + ') this.value = ' + maximum_discount + ';">' +
+                                                        '<span class="input-group-text">%</span>' +
+                                                        '</div>';
+                                                }else{
+                                                    discountInput = '<div class="input-group">' +
+                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                                        'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + SpecialDiscount + ') this.value = ' + SpecialDiscount + ';">' +
+                                                        '<span class="input-group-text">%</span>' +
+                                                        '</div>';
+                                                }
+                                            }
+                                        }else{
                                             discountInput = '<div class="input-group">' +
-                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                                '<span class="input-group-text">%</span>' +
-                                                '</div>';
+                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                                        'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + User_discount + ') this.value = ' + User_discount + ';">' +
+                                                        '<span class="input-group-text">%</span>' +
+                                                        '</div>';
                                         }
-                                    }else{
-                                        discountInput='<div class="input-group">' +
-                                                '<input class="discountmain form-control" type="hidden" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" ' +
-                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-                                                '</div>';;
+
                                     }
                                     quantity = '<div class="input-group">' +
                                                 '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="" rel="' + number + '" style="text-align:center;" ' +

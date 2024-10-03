@@ -186,7 +186,7 @@
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
@@ -219,7 +219,7 @@
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
+                                                        @if ($item->additional_discount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
@@ -385,7 +385,7 @@
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
@@ -418,7 +418,7 @@
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
+                                                        @if ($item->additional_discount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
@@ -561,7 +561,7 @@
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
@@ -594,7 +594,7 @@
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
+                                                        @if ($item->additional_discount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
@@ -686,7 +686,7 @@
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
@@ -719,7 +719,7 @@
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
+                                                        @if ($item->additional_discount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
@@ -880,7 +880,7 @@
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
@@ -913,7 +913,7 @@
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
+                                                        @if ($item->additional_discount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
@@ -1007,7 +1007,7 @@
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
@@ -1040,7 +1040,7 @@
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
+                                                        @if ($item->additional_discount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
@@ -1170,7 +1170,7 @@
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Special Discount</th>
+                                                <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
@@ -1203,7 +1203,7 @@
                                                     <td>{{ $item->issue_date }}</td>
                                                     <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
+                                                        @if ($item->additional_discount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
