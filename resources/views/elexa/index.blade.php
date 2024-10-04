@@ -237,7 +237,6 @@
 
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-        {{-- <script src="../assets/bundles/jquerycounterup.bundle.js"></script> --}}
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
     @else
         <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
@@ -246,6 +245,24 @@
 
 
     <script>
+
+    $(document).ready(function() {
+        // Initialize DataTable for Outstanding
+        $('#myDataTableOutstanding').dataTable({
+            responsive: true,
+            searching: true,
+            paging: true,
+            ordering: false,
+            info: true,
+            scrollX: true,
+            columnDefs: [
+                { 
+                    "order": [[0, "asc"]], 
+                    "orderable": true, "targets": [0] 
+                }
+            ]
+        });
+    });
 
     </script>
 @endsection
