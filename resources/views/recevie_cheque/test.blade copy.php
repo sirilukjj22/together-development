@@ -187,7 +187,6 @@
                 var checkinDate = picker.startDate.toDate();
                 var checkoutDate = picker.endDate.toDate();
 
-
                 if (checkoutDate > checkinDate) {
                     const timeDiff = checkoutDate.getTime() - checkinDate.getTime();
                     const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
