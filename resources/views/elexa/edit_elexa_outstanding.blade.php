@@ -246,7 +246,7 @@
     $(document).ready(function() {
         // Initialize DataTable for Outstanding
         $('#myDataTableOutstanding').dataTable({
-            responsive: true,
+            responsive: false,
             searching: true,
             paging: true,
             ordering: false,
@@ -262,7 +262,7 @@
 
         // Initialize DataTable for Debit
         $('#myDataTableDebit').dataTable({
-            responsive: true,
+            responsive: false,
             searching: true,
             paging: true,
             ordering: false,
