@@ -35,6 +35,8 @@
                     </button>
                     <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('ReceiveCheque.test') }}'">
                         <i class="fa fa-plus"></i> test</button>
+                        <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('ReceiveCheque.testedit') }}'">
+                            <i class="fa fa-plus"></i> test edit</button>
                     <div class="col-md-12 my-2">
                         <div class="modal fade" id="allSearch" tabindex="-1" aria-labelledby="PrenameModalCenterTitle"
                         style="display: none;" aria-hidden="true">

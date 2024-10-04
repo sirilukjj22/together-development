@@ -1,5 +1,9 @@
 @extends('layouts.masterLayout')
-
+<style>
+    td.today {
+    background-color: transparent !important; /* ไม่ให้มีสีพื้นหลัง */
+}
+</style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
         <div class="container-xl">
@@ -47,7 +51,7 @@
                                                 <span>Issue Date:</span>
                                             </div>
                                             <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1Issue">
-                                                <input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" style="text-align: left;"readonly>
+                                                <input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" value="04/10/2024" style="text-align: left;"readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -57,7 +61,7 @@
                                                 <span>Expiration Date:</span>
                                             </div>
                                             <div class="col-lg-6 col-md-12 col-sm-12">
-                                                <input type="text" id="dateex" class="form-control readonly-input" name="Expiration" style="text-align: left;"readonly>
+                                                <input type="text" id="dateex" class="form-control readonly-input" name="Expiration" value="11/10/2024" style="text-align: left;"readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -72,7 +76,7 @@
                                                 <span>Check In Date</span>
                                             </div>
                                             <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange2">
-                                                <input type="text" id="Checkin" class="form-control readonly-input" name="Checkin" style="text-align: left;"readonly>
+                                                <input type="text" id="Checkin" class="form-control readonly-input" name="Checkin" value="24/10/2024" style="text-align: left;"readonly>
                                                 <input type="hidden" id="inputmonth" name="inputmonth" value="">
                                             </div>
                                         </div>
@@ -83,7 +87,7 @@
                                                 <span>Check Out Date</span>
                                             </div>
                                             <div class="col-lg-6 col-md-12 col-sm-12">
-                                                <input type="text" id="Checkout" class="form-control readonly-input" name="Checkout" style="text-align: left;"readonly>
+                                                <input type="text" id="Checkout" class="form-control readonly-input" name="Checkout" value="26/10/2024" style="text-align: left;"readonly>
                                                 <input type="hidden" id="checkmonth" name="checkmonth" value="">
                                             </div>
                                         </div>
@@ -118,6 +122,7 @@
                             <!-- Input field สำหรับแสดงวันที่ที่เลือก -->
 
                             <span id="calendartext">0</span>
+                            <input type="hidden" id="inputcalendartext" name="inputcalendartext" value="">
                             <!-- ปฏิทินที่สร้างขึ้นด้วย JavaScript -->
                             <div id="calendar"></div>
 
@@ -137,11 +142,41 @@
     <script type="text/javascript" src="{{ asset('assets/helper/searchTableReceiveCheque.js')}}"></script>
     @include('script.script')
     <script>
+        $(document).ready(function() {
+            const checkinDate = moment(document.getElementById('Checkin').value, 'DD/MM/YYYY');
+            const checkoutDate = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY');
 
+            var dayName = checkinDate.format('dddd'); // Format to get the day name
+            var enddayName = checkoutDate.format('dddd'); // Format to get the day name
+
+
+            if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
+                if (dayName === 'Thursday' && enddayName === 'Saturday') {
+                    $('#calendartext').text("Weekday-Weekend");
+
+                    $('#inputcalendartext').val("Weekday-Weekend");
+                }else{
+                    $('#calendartext').text("Weekday");
+                    $('#inputcalendartext').val("Weekday");
+                }
+            } else if (['Friday','Saturday','Sunday'].includes(dayName)) {
+                if (dayName === 'Saturday' && enddayName === 'Monday') {
+                    $('#calendartext').text("Weekday-Weekend");
+                    $('#inputcalendartext').val("Weekday-Weekend");
+                }else{
+                    $('#calendartext').text("WeekEnd");
+                    $('#inputcalendartext').val("WeekEnd");
+                }
+            }
+        });
         $(function() {
-            var start = moment();
-            var end = moment();
+            var checkinDate = document.getElementById('inputcalendartext').value
+            var today = moment().startOf('day');
+            var start = moment(document.getElementById('Checkin').value, 'DD/MM/YYYY');
+            var end = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY');
             function cb(start, end) {
+
+
                 var dayName = start.format('dddd');
                 var enddayName = end.format('dddd');
                 var daymonthName = start.format('MMMM'); // ชื่อเดือนเต็ม เช่น January, February
@@ -175,9 +210,67 @@
                 endDate: end,
                 autoApply: true,
                 autoUpdateInput: false,
+                isInvalidDate: function(date) {
+                    const checkinDate = moment(document.getElementById('Checkin').value, 'DD/MM/YYYY');
+                    const checkoutDate = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY');
+
+
+                    var dayName = checkinDate.format('dddd'); // Format to get the day name
+                    var enddayName = checkoutDate.format('dddd'); // Format to get the day name
+                    var dayNameNOW = start.format('dddd');
+                    var enddayNameNOW = end.format('dddd');
+
+
+                    // ตรวจสอบว่าเลือกวันไหน
+                    if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
+                        if (dayName === 'Thursday' && enddayName === 'Saturday') {
+                            checkType = 'Weekday-Weekend';
+                        } else {
+                            checkType = 'Weekday';
+                        }
+                    } else if (['Friday', 'Saturday', 'Sunday'].includes(dayName)) {
+                        if (dayName === 'Saturday' && enddayName === 'Monday') {
+                            checkType = 'Weekday-Weekend';
+                        } else {
+                            checkType = 'Weekend';
+                        }
+                    }
+                    if (checkType == 'Weekday') {
+                        console.log(checkType);
+
+                    }else if (checkType == 'Weekend') {
+                        console.log(checkType);
+                    }else if (checkType == 'Weekday-Weekend') {
+                        // console.log(dayNameNOW);
+
+                        if (checkType === 'Weekday-Weekend' && ['Thursday'].includes(dayNameNOW)) {
+                            if (['Monday'].includes(date.format('dddd'))) {
+                                return true; // ไม่ให้เลือก Monday
+                            }
+                            return false;
+                        }else if (checkType === 'Weekday-Weekend' && ['Saturday'].includes(dayNameNOW)) {
+                            if (['Thursday'].includes(date.format('dddd'))) {
+                                return true; // ไม่ให้เลือก Monday
+                            }
+
+                        }
+                        // if (checkType === 'Weekday-Weekend' && dayName === 'Saturday') {
+                        //     if (['Thursday'].includes(date.format('dddd'))) {
+                        //         return true; // ไม่ให้เลือก Monday
+                        //     }
+                        // }
+                        if (checkType === 'Weekday-Weekend' && ['Sunday', 'Tuesday', 'Wednesday', 'Friday'].includes(date.format('dddd'))) {
+                            return true; // ไม่ให้เลือกวัน
+                        }
+                    }
+                }
             },
             cb);
             $('#reportrange2').on('apply.daterangepicker', function(ev, picker) {
+
+                var firstClickedDate = picker.startDate.format('MM/DD/YYYY');
+                console.log(firstClickedDate);
+
                 var currentMonthIndex = picker.startDate.month(); // จะได้หมายเลขเดือน (0-11)
                 $('#inputmonth').val(currentMonthIndex + 1); // บันทึกใน input โดยเพิ่ม 1 เพื่อให้เป็น 1-12 แทน
 
@@ -232,7 +325,6 @@
             if (monthDiff < 0) {
                 monthDiff += 12; // เพิ่ม 12 เดือนถ้าข้ามปี
             }
-            console.log(monthDiff);
 
             if (monthDiff <= 1) {
                 start = moment(); // เริ่มที่วันนี้

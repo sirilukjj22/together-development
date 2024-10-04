@@ -683,6 +683,7 @@ Route::middleware(['auth'])->group(function () {
 
 
         Route::get('/Document/ReceiveCheque/test', 'test')->name('ReceiveCheque.test');
+        Route::get('/Document/ReceiveCheque/testedit', 'testedit')->name('ReceiveCheque.testedit');
     });
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');

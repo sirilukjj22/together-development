@@ -483,4 +483,7 @@ class ReceiveChequeController extends Controller
     public function test(){
         return view('recevie_cheque.test');
     }
+    public function testedit(){
+        return view('recevie_cheque.testedit');
+    }
 }
