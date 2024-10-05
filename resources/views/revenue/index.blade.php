@@ -68,7 +68,7 @@
         $total_cash_bank_month = $total_cash_month + $total_bank_transfer_month;
         $total_cash_bank_year = $total_cash_year + $total_bank_transfer_year;
         
-        $total_today_revenue_graph = $total_day + $total_agoda_revenue + $total_ev_revenue + $total_other_revenue + ($credit_revenue->total_credit ?? 0);
+        $total_today_revenue_graph = $total_day + $total_ev_revenue + ($credit_revenue->total_credit ?? 0);
 
     ?>
 
