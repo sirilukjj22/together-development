@@ -272,7 +272,7 @@
                                     <div class="row mt-2" >
                                         <div class="col-lg-6 col-md-6 col-sm-12">
                                             <label class="labelcontact" for="">Customer Company</label>
-                                            <select name="Company" id="Company" class="select2" onchange="companyContact()" disabled>
+                                            <select name="Company" id="Company" class="select2" onchange="companyContact()"readonly @disabled(true)>
                                                 <option value=""></option>
                                                 @foreach($Company as $item)
                                                     <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->Company_Name }}</option>
@@ -291,7 +291,7 @@
                                     <div class="row mt-2" >
                                         <div class="col-lg-6 col-md-6 col-sm-12">
                                             <label class="labelcontact" for="">Customer Guest </label>
-                                            <select name="Guest" id="Guest" class="select2" onchange="GuestContact()" disabled>
+                                            <select name="Guest" id="Guest" class="select2" onchange="GuestContact()" readonly @disabled(true)>
                                                 <option value=""></option>
                                                 @foreach($Guest as $item)
                                                     <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->First_name }} {{$item->Last_name}}</option>
@@ -302,7 +302,14 @@
                                 </div>
                                 <hr class="mt-3 my-3" style="border: 1px solid #000">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" disabled> No Check In Date</label>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-12 col-sm-12">
+                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 col-sm-12" style="float: right">
+                                            <span><b> Date Type : </b><span id="calendartext" style="font-size: 16px;color:rgb(0, 0, 0);"></span></span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-lg-2 col-md-6 col-sm-12">
@@ -377,18 +384,53 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">User Discount </span>{{--ดึงของuserมาใส่--}}
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="Max_discount"  value="{{@Auth::user()->discount}}" placeholder="ส่วนลดคิดเป็น %" disabled>
-                                            <span class="input-group-text">%</span>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                                <span  for="">User Discount </span>{{--ดึงของuserมาใส่--}}
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="User_discount"value="{{@Auth::user()->discount}}" id="User_discount" placeholder="ส่วนลดคิดเป็น %" readonly>
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                                <span  for=""> Additional Discount</span>{{--ดึงของuserมาใส่--}}
+                                                <div class="input-group">
+                                                    <input class="form-control" type="text" name="Add_discount" id="Add_discount" value="{{$Quotation->additional_discount}}" placeholder="ส่วนลดเพิ่มเติมคิดเป็น %"
+                                                            oninput="if (parseFloat(this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)) > {{ Auth::user()->additional_discount }}) this.value = {{ Auth::user()->additional_discount }};"
+                                                            onchange="adddis()" disabled>
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Special Discount</span>
+                                        <span  for="">Total User Discount</span>
                                         <div class="input-group">
-                                            <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"  placeholder="ส่วนลดคิดเป็น %"value="{{$Quotation->SpecialDiscount}}" disabled>
+                                            <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"   placeholder="ส่วนลดคิดเป็น %" readonly>
                                             <span class="input-group-text">%</span>
                                         </div>
+                                        <script>
+                                            function adddis() {
+                                                // Get the discount values from the input fields
+                                                var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
+                                                var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
+
+                                                // Calculate the total discount
+                                                var total = User_discount + Add_discount;
+
+
+                                                // Set the total discount to the SpecialDiscount field
+                                                document.getElementById('SpecialDiscount').value = total.toFixed(2); // Keep two decimal places
+                                            }
+                                            $(document).ready(function() {
+
+                                                    var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
+                                                    var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
+                                                    var total = User_discount+Add_discount;
+                                                    $('#SpecialDiscount').val(total);
+
+                                            });
+                                        </script>
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-12">
                                         <span  for="">Discount Amount</span>
@@ -901,6 +943,33 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
     <script type="text/javascript">
         $(document).ready(function() {
+            const checkinDate = moment(document.getElementById('Checkin').value, 'DD/MM/YYYY');
+            const checkoutDate = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY');
+
+            var dayName = checkinDate.format('dddd'); // Format to get the day name
+            var enddayName = checkoutDate.format('dddd'); // Format to get the day name
+
+
+            if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
+                if (dayName === 'Thursday' && enddayName === 'Saturday') {
+                    $('#calendartext').text("Weekday-Weekend");
+
+                    $('#inputcalendartext').val("Weekday-Weekend");
+                }else{
+                    $('#calendartext').text("Weekday");
+                    $('#inputcalendartext').val("Weekday");
+                }
+            } else if (['Friday','Saturday','Sunday'].includes(dayName)) {
+                if (dayName === 'Saturday' && enddayName === 'Monday') {
+                    $('#calendartext').text("Weekday-Weekend");
+                    $('#inputcalendartext').val("Weekday-Weekend");
+                }else{
+                    $('#calendartext').text("Weekend");
+                    $('#inputcalendartext').val("Weekend");
+                }
+            }
+        });
+        $(document).ready(function() {
             $('.select2').select2({
                 placeholder: "Please select an option"
             });
@@ -922,9 +991,9 @@
                 Guestshow.style.display = "none";
                 guestTable.style.display = "none";
                 TiTleguestTable.style.display = "none";
-                Company.disabled = true;
-                Company_Contact.disabled = true;
-                Company_Contactname.disabled = true;
+                Company.disabled = false;
+                Company_Contact.disabled = false;
+                Company_Contactname.disabled = false;
                 Guest.disabled = true;
                 companyTable.style.display = "block";
                 contractTable.style.display = "block";
@@ -943,7 +1012,7 @@
                 Company.disabled = true;
                 Company_Contact.disabled = true;
                 Company_Contactname.disabled = true;
-                Guest.disabled = true;
+                Guest.disabled = false;
                 GuestContact();
             }
         });
@@ -997,6 +1066,7 @@
             }
         }
         function companyContact() {
+            console.log(1);
             var companyID = $('#Company').val();
 
             jQuery.ajax({
@@ -1028,7 +1098,6 @@
                     var Contactemail =response.data.Email;
 
                     console.log(response.data.First_name);
-
 
                     var formattedPhoneNumber = companyphone;
 
@@ -1108,11 +1177,15 @@
                     Day.disabled = true;
                     Night.disabled = true;
                     flexCheckChecked.checked = true;
+                    dateInput.classList.add('disabled-input');
+                    dateout.classList.add('disabled-input');
                     $('#checkinpo').text('No Check in date');// ตั้งค่า flexCheckChecked เป็น checked
                     $('#checkoutpo').text('-');
                     $('#daypo').text('-');
                     $('#nightpo').text(' ');
                 } else {
+                    dateInput.classList.remove('disabled-input');
+                    dateout.classList.remove('disabled-input');
                     dateInput.disabled = false;
                     dateout.disabled = false;
                     Day.disabled = false;
@@ -1134,6 +1207,8 @@
                     dateout.disabled = true;
                     Day.disabled = true;
                     Night.disabled = true;
+                    dateInput.classList.add('disabled-input');
+                    dateout.classList.add('disabled-input');
                     $('#checkinpo').text('No Check in date');
                     $('#checkoutpo').text('-');
                     $('#daypo').text('-');
@@ -1147,6 +1222,8 @@
                     dateout.disabled = false;
                     Day.disabled = false;
                     Night.disabled = false;
+                    dateInput.classList.remove('disabled-input');
+                    dateout.classList.remove('disabled-input');
                     $('#Checkin').val('');
                     $('#Checkout').val('');
                     $('#Day').val('');
@@ -1246,55 +1323,225 @@
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         });
-        function CheckDate() {
-            const checkoutDateValue = document.getElementById('Checkout').value;
-            const checkinDateValue = document.getElementById('Checkin').value;
+        $(function() {
+            var checkinDate = document.getElementById('inputcalendartext').value;
+            const checkoutDate = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY');
 
+            var enddayName = checkoutDate.format('dddd');
+            $('#Checkin').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                autoApply: true,
+                minDate: moment().startOf('day'),
+                locale: {
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น DD/MM/YYYY
+                },
+                isInvalidDate: function(date) {
+                    if (checkinDate == 'Weekday') {
+                        if (checkinDate === 'Weekday' && ['Friday','Saturday','Sunday'].includes(date.format('dddd'))) {
+                            return true; // ไม่ให้เลือกวันในช่วงนี้
+                        }
+                    }else if (checkinDate == 'Weekend') {
+                        if (checkinDate === 'Weekend' && ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(date.format('dddd'))) {
+                            return true; // ไม่ให้เลือกวันในช่วงนี้
+                        }
+                    }else if (checkinDate == 'Weekday-Weekend' && enddayName == 'Saturday'|| enddayName == 'Monday') {
+                        if (checkinDate === 'Weekday-Weekend' && ['Monday','Sunday', 'Tuesday', 'Wednesday', 'Friday'].includes(date.format('dddd'))) {
+                            return true; // ไม่ให้เลือกวัน
+                        }
+                    }
+                }
+            });
+            $('#Checkin').on('apply.daterangepicker', function(ev, picker) {
+                var datefirst = picker.startDate.format('DD/MM/YYYY');
+                $(this).val(datefirst);
+                $('#CheckinNew').val(datefirst);
+                var currentMonthIndex = picker.startDate.month(); // จะได้หมายเลขเดือน (0-11)
+                $('#inputmonth').val(currentMonthIndex + 1);
+                CheckDate();
+            });
+
+        });
+        $(function() {
+            var checkinValue = document.getElementById('Checkin').value;
+            $('#Checkout').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                autoApply: true,
+                minDate: moment().startOf('day'),
+                locale: {
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                },
+                isInvalidDate: function(date) {
+                    var CheckinNew = document.getElementById('CheckinNew').value;
+                    var checkDate = document.getElementById('inputcalendartext').value;
+                    var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
+                    var indayName = momentCheckinNew.format('dddd'); // รับค่าเป็นชื่อวัน
+                    if (checkDate === 'Weekday') {
+                        if (['Friday', 'Saturday', 'Sunday'].includes(date.format('dddd'))) {
+                            return false;
+                        }
+                    } else if (checkDate === 'Weekend') {
+                        if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Saturday'].includes(date.format('dddd'))) {
+                            return false;
+                        }
+                    } else {
+                        if (indayName === 'Thursday') {
+                            if (['Monday', 'Sunday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
+                                return true;
+                            }
+                        } else {
+                            if (['Saturday', 'Sunday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            });
+            $('#Checkout').on('apply.daterangepicker', function(ev, picker) {
+                var dateend = picker.startDate.format('DD/MM/YYYY');
+                $(this).val(dateend);
+                $('#CheckoutNew').val(dateend);
+
+                var checkDate = document.getElementById('inputcalendartext').value;
+                var CheckinNew = document.getElementById('CheckinNew').value;
+
+                // แปลงวันที่ CheckinNew และ dateend เป็น moment object
+                var datefirst = moment(CheckinNew, 'DD/MM/YYYY');
+                var dateendMoment = moment(dateend, 'DD/MM/YYYY');
+
+                // ตรวจสอบว่า checkinDate คือ 'Weekday-Weekend'
+                if (checkDate === 'Weekday-Weekend') {
+                    // ตรวจสอบว่า datefirst และ dateend ถูกต้อง
+                    if (datefirst.isValid() && dateendMoment.isValid()) {
+                        // คำนวณความแตกต่างระหว่าง datefirst และ dateend เป็นจำนวนวัน
+                        var diffDays = dateendMoment.diff(datefirst, 'days');
+
+                        // เช็คว่าห่างกันไม่เกิน 3 วันหรือไม่
+                        if (diffDays <= 3) {
+                            console.log('วันห่างกันไม่เกิน 3 วัน');
+                            // คุณสามารถทำสิ่งที่ต้องการได้ที่นี่ เช่น อนุญาตให้เลือกวันที่
+                        } else {
+                            alert('วันสิ้นสุดไม่สามารถห่างจากวันเริ่มต้นเกิน 3 วันได้');
+                            // เพิ่มโค้ดสำหรับการแสดงข้อผิดพลาด หรือการแจ้งเตือน
+                        }
+                    } else {
+                        console.error('วันที่ไม่ถูกต้อง');
+                    }
+                }
+                var daymonthName = datefirst.format('MMMM'); // ชื่อเดือนเต็ม เช่น January, February
+                var endmonthName = dateendMoment.format('MMMM');   // ชื่อเดือนเต็ม เช่น January, February
+                var monthDiff = dateendMoment.diff(datefirst, 'months');
+                var month;
+
+                if (daymonthName === endmonthName) {
+                    month = monthDiff; // เดือนเดียวกัน
+                } else {
+                    month = monthDiff + 1; // ข้ามเดือน
+                }
+
+                $('#checkmonth').val(month);
+                CheckDate();
+            });
+
+        });
+        function CheckDate() {
+            var CheckinNew = document.getElementById('CheckinNew').value;
+            var CheckoutNew = document.getElementById('CheckoutNew').value;
+            var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
+            var momentCheckoutNew = moment(CheckoutNew, 'DD/MM/YYYY');
+            const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');
+            const checkoutDateValue = momentCheckoutNew.format('YYYY-MM-DD');
             const checkinDate = new Date(checkinDateValue);
             const checkoutDate = new Date(checkoutDateValue);
             if (checkoutDate > checkinDate) {
-
                 const timeDiff = checkoutDate - checkinDate;
                 const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-                // เนื่องจาก Check-in นับเป็นวันแรกด้วย
-                const totalDays = diffDays + 1;
+                const totalDays = diffDays + 1; // รวม Check-in เป็นวันแรก
                 const nights = diffDays;
 
                 $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
                 $('#Night').val(isNaN(nights) ? '0' : nights);
 
-                console.log(`จำนวนวัน: ${totalDays} วัน`);
-                console.log(`จำนวนคืน: ${nights} คืน`);
                 $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text(nights + ' คืน');
             } else if (checkoutDate.getTime() === checkinDate.getTime()) {
-                // กรณีที่ Check-in Date เท่ากับ Check-out Date
                 const totalDays = 1;
                 $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
                 $('#Night').val('0');
 
                 $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
                 $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
-                $('#daypo').text(isNaN(totalDays) ? '0' : totalDays + ' วัน');
+                $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text('0 คืน');
-                console.log(`จำนวนวัน: ${totalDays} วัน`);
-                console.log(`จำนวนคืน: 0 คืน`);
             } else {
-                // กรณีที่ Check-out Date น้อยกว่าหรือเท่ากับ Check-in Date
-                console.log("วัน Check-out ต้องมากกว่าวัน Check-in");
+                // alert('วัน Check-out ต้องมากกว่าวัน Check-in');
                 $('#Day').val('0');
                 $('#Night').val('0');
             }
+
+            month();
         }
+
         function setMinDate() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('Checkin').setAttribute('min', today);
             document.getElementById('Checkout').setAttribute('min', today);
         }
+
+        // เรียกใช้เมื่อโหลดหน้า
+        setMinDate();
         document.addEventListener('DOMContentLoaded', setMinDate);
+    </script>
+    <script>
+        function month() {
+            var checkmonthValue = document.getElementById('checkmonth').value; // ค่าจาก input checkmonth
+            var inputmonth = document.getElementById('inputmonth').value; // ค่าจาก input inputmonth
+            var start = moment(); // เริ่มที่วันที่ปัจจุบัน
+            var end; // ประกาศตัวแปร end
+            var currentMonthIndex = start.month();
+            var monthDiff = inputmonth - currentMonthIndex;
+              // ถ้าเดือนปัจจุบันมากกว่าหรือเท่ากับเป้าหมายเดือน
+            if (monthDiff < 0) {
+                monthDiff += 12; // เพิ่ม 12 เดือนถ้าข้ามปี
+            }
+
+            if (monthDiff <= 1) {
+                start = moment(); // เริ่มที่วันนี้
+                end = moment().add(7, 'days'); // สิ้นสุดอีก 7 วัน
+            } else if (monthDiff >= 2 && monthDiff < 3 ) {
+                start = moment(); // เริ่มที่วันนี้
+                end = moment().add(15, 'days'); // สิ้นสุดอีก 15 วัน
+            } else {
+                start = moment(); // เริ่มที่วันนี้
+                end = moment().add(30, 'days'); // สิ้นสุดอีก 30 วัน
+            }
+
+            function cb(start, end) {
+                $('#datestart').val(start.format('DD/MM/Y')); // แสดงวันที่เริ่มต้น
+                $('#dateex').val(end.format('DD/MM/Y')); // แสดงวันที่สิ้นสุด
+            }
+
+            // ตั้งค่า daterangepicker
+            $('#reportrange1Issue').daterangepicker({
+                start: start,
+                end: end,
+                ranges: {
+                    '3 Days': [moment(), moment().add(3, 'days')],
+                    '7 Days': [moment(), moment().add(7, 'days')],
+                    '15 Days': [moment(), moment().add(15, 'days')],
+                    '30 Days': [moment(), moment().add(30, 'days')],
+                },
+                autoApply: true, // ใช้เพื่อไม่ต้องกด Apply
+            }, cb);
+
+            cb(start, end); // เรียก callback ทันทีหลังจากตั้งค่าเริ่มต้น
+        }
+
     </script>
     <script>
         window.addEventListener('pageshow', function(event) {
@@ -1400,350 +1647,346 @@
                 $('#'+table_name2[index] + ' thead th').removeClass('sorting sorting_asc sorting_desc');
             }
         });
-        // function fetchProducts(status) {
-        //     if (status == 'all' ) {
-        //         $('#ProductName').text('All Product');
-        //     }else if (status == 'Room_Type') {
-        //         $('#ProductName').text('Room');
-        //     }
-        //     else if (status == 'Banquet') {
-        //         $('#ProductName').text('Banquet');
-        //     }
-        //     else if (status == 'Meals') {
-        //         $('#ProductName').text('Meals');
-        //     }
-        //     else if (status == 'Entertainment') {
-        //         $('#ProductName').text('Entertainment');
-        //     }
-        //     $('#ProductName').text();
-        //     var table = $('#mainselect1').DataTable();
-        //     var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
-        //     var clickCounter = 1;
+        function fetchProducts(status) {
+            if (status == 'all' ) {
+                $('#ProductName').text('All Product');
+            }else if (status == 'Room_Type') {
+                $('#ProductName').text('Room');
+            }
+            else if (status == 'Banquet') {
+                $('#ProductName').text('Banquet');
+            }
+            else if (status == 'Meals') {
+                $('#ProductName').text('Meals');
+            }
+            else if (status == 'Entertainment') {
+                $('#ProductName').text('Entertainment');
+            }
+            $('#ProductName').text();
+            var table = $('#mainselect1').DataTable();
+            var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
+            var clickCounter = 1;
 
-        //     let productDataArray = [];
+            let productDataArray = [];
 
-        //     // ดึงข้อมูลจากตาราง
-        //     document.querySelectorAll('tr[id^="tr-select-main"]').forEach(function(row) {
-        //         let productID = row.querySelector('input[name="CheckProduct[]"]').value;
+            // ดึงข้อมูลจากตาราง
+            document.querySelectorAll('tr[id^="tr-select-main"]').forEach(function(row) {
+                let productID = row.querySelector('input[name="CheckProduct[]"]').value;
 
-        //         // เก็บข้อมูลในอาเรย์
-        //         productDataArray.push({
-        //             productID: productID,
-        //         });
-        //     });
-        //     console.log(productDataArray);
+                // เก็บข้อมูลในอาเรย์
+                productDataArray.push({
+                    productID: productID,
+                });
+            });
+            console.log(productDataArray);
 
-        //     document.querySelector('input[name="hiddenProductData"]').value = JSON.stringify(productDataArray);
+            document.querySelector('input[name="hiddenProductData"]').value = JSON.stringify(productDataArray);
 
-        //     $.ajax({
-        //         url: '{{ route("DummyQuotation.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
-        //         method: 'GET',
-        //         data: {
-        //             value: status
-        //         },
-        //         success: function(response) {
+            $.ajax({
+                url: '{{ route("DummyQuotation.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+                method: 'GET',
+                data: {
+                    value: status
+                },
+                success: function(response) {
 
-        //             if (response.products.length > 0) {
-        //                 // Clear the existing rows
-        //                 table.clear();
-        //                 var rowNumbemain = $('#display-selected-items tr').length;
-        //                 console.log(rowNumbemain);
+                    if (response.products.length > 0) {
+                        // Clear the existing rows
+                        table.clear();
+                        var rowNumbemain = $('#display-selected-items tr').length;
+                        console.log(rowNumbemain);
 
-        //                 var pageSize = 10; // กำหนดจำนวนแถวต่อหน้า
-        //                 var currentPage = 1;
-        //                 var totalItems = response.products.length;
-        //                 var totalPages = Math.ceil(totalItems / pageSize);
-        //                 var maxVisibleButtons = 3; // จำนวนปุ่มที่จะแสดง
-        //                 let hiddenProductData = document.getElementById('hiddenProductData').value;
-        //                 let productDataArrayRetrieved = JSON.parse(hiddenProductData);
-        //                 let productIDsArray = productDataArrayRetrieved.map(product => product.productID);
-        //                 function renderPage(page) {
-        //                     table.clear();
-        //                     let num = rowNumbemain + (page - 1) * pageSize + 1;
-        //                     for (let i = (page - 1) * pageSize; i < page * pageSize && i < totalItems; i++) {
-        //                         const data = response.products[i];
-        //                         const productId = data.id;
-        //                         const productCode = data.Product_ID;
-        //                         var existingRowId = $('#tr-select-add' + productId).attr('id');
-        //                         if ($('#' + existingRowId).val() == undefined) {
-        //                             if (!productIDsArray.includes(productCode)) {
-        //                                 table.row.add([
-        //                                     num++,
-        //                                     data.Product_ID,
-        //                                     data.name_th,
-        //                                     Number(data.normal_price).toLocaleString(),
-        //                                     data.unit_name,
-        //                                     `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
-        //                                 ]).node().id = `row-${productId}`;
-        //                             }
-        //                         }
-        //                     }
-        //                     table.draw(false);
-        //                     $('#mainselect1').DataTable().columns.adjust().responsive.recalc();
-        //                     // Update active class for pagination buttons
-        //                     $('.paginate-btn').removeClass('active');
-        //                     $(`[data-page="${page}"]`).addClass('active');
-        //                 }
+                        var pageSize = 10; // กำหนดจำนวนแถวต่อหน้า
+                        var currentPage = 1;
+                        var totalItems = response.products.length;
+                        var totalPages = Math.ceil(totalItems / pageSize);
+                        var maxVisibleButtons = 3; // จำนวนปุ่มที่จะแสดง
+                        let hiddenProductData = document.getElementById('hiddenProductData').value;
+                        let productDataArrayRetrieved = JSON.parse(hiddenProductData);
+                        let productIDsArray = productDataArrayRetrieved.map(product => product.productID);
+                        function renderPage(page) {
+                            table.clear();
+                            let num = rowNumbemain + (page - 1) * pageSize + 1;
+                            for (let i = (page - 1) * pageSize; i < page * pageSize && i < totalItems; i++) {
+                                const data = response.products[i];
+                                const productId = data.id;
+                                const productCode = data.Product_ID;
+                                var existingRowId = $('#tr-select-add' + productId).attr('id');
+                                if ($('#' + existingRowId).val() == undefined) {
+                                    if (!productIDsArray.includes(productCode)) {
+                                        table.row.add([
+                                            num++,
+                                            data.Product_ID,
+                                            data.name_th,
+                                            Number(data.normal_price).toLocaleString(),
+                                            data.unit_name,
+                                            `<button type="button" class="btn btn-color-green lift btn_modal select-button-product" id="product-${data.id}" value="${data.id}"><i class="fa fa-plus"></i></button>`
+                                        ]).node().id = `row-${productId}`;
+                                    }
+                                }
+                            }
+                            table.draw(false);
+                            $('#mainselect1').DataTable().columns.adjust().responsive.recalc();
+                            // Update active class for pagination buttons
+                            $('.paginate-btn').removeClass('active');
+                            $(`[data-page="${page}"]`).addClass('active');
+                        }
 
-        //                 function createPagination(totalPages, currentPage) {
-        //                     $('#paginationContainer').html(`
-        //                         <button class="paginate-btn" data-page="prev">&laquo;</button>
-        //                     `);
+                        function createPagination(totalPages, currentPage) {
+                            $('#paginationContainer').html(`
+                                <button class="paginate-btn" data-page="prev">&laquo;</button>
+                            `);
 
-        //                     var startPage = Math.max(1, currentPage - Math.floor(maxVisibleButtons / 2));
-        //                     var endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
+                            var startPage = Math.max(1, currentPage - Math.floor(maxVisibleButtons / 2));
+                            var endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
 
-        //                     if (startPage > 1) {
-        //                         $('#paginationContainer').append(`<button class="paginate-btn" data-page="1">1</button>`);
-        //                         if (startPage > 2) {
-        //                             $('#paginationContainer').append(`<button class="paginate-btn"  disabled>...</button>`);
-        //                         }
-        //                     }
+                            if (startPage > 1) {
+                                $('#paginationContainer').append(`<button class="paginate-btn" data-page="1">1</button>`);
+                                if (startPage > 2) {
+                                    $('#paginationContainer').append(`<button class="paginate-btn"  disabled>...</button>`);
+                                }
+                            }
 
-        //                     for (let i = startPage; i <= endPage; i++) {
-        //                         $('#paginationContainer').append(`<button class="paginate-btn" data-page="${i}">${i}</button>`);
-        //                     }
+                            for (let i = startPage; i <= endPage; i++) {
+                                $('#paginationContainer').append(`<button class="paginate-btn" data-page="${i}">${i}</button>`);
+                            }
 
-        //                     if (endPage < totalPages) {
-        //                         if (endPage < totalPages - 1) {
-        //                             $('#paginationContainer').append(`<button class="paginate-btn"disabled >...</button>`);
-        //                         }
-        //                         $('#paginationContainer').append(`<button class="paginate-btn" data-page="${totalPages}">${totalPages}</button>`);
-        //                     }
+                            if (endPage < totalPages) {
+                                if (endPage < totalPages - 1) {
+                                    $('#paginationContainer').append(`<button class="paginate-btn"disabled >...</button>`);
+                                }
+                                $('#paginationContainer').append(`<button class="paginate-btn" data-page="${totalPages}">${totalPages}</button>`);
+                            }
 
-        //                     $('#paginationContainer').append(`
-        //                         <button class="paginate-btn" data-page="next">&raquo;</button>
-        //                     `);
-        //                 }
+                            $('#paginationContainer').append(`
+                                <button class="paginate-btn" data-page="next">&raquo;</button>
+                            `);
+                        }
 
-        //                 createPagination(totalPages, currentPage);
-        //                 renderPage(currentPage);
+                        createPagination(totalPages, currentPage);
+                        renderPage(currentPage);
 
-        //                 // Handle page click
-        //                 $(document).on('click', '.paginate-btn', function() {
-        //                     var page = $(this).data('page');
+                        // Handle page click
+                        $(document).on('click', '.paginate-btn', function() {
+                            var page = $(this).data('page');
 
-        //                     if (page === 'prev') {
-        //                         if (currentPage > 1) {
-        //                             currentPage--;
-        //                         }
-        //                     } else if (page === 'next') {
-        //                         if (currentPage < totalPages) {
-        //                             currentPage++;
-        //                         }
-        //                     } else {
-        //                         currentPage = parseInt(page);
-        //                     }
+                            if (page === 'prev') {
+                                if (currentPage > 1) {
+                                    currentPage--;
+                                }
+                            } else if (page === 'next') {
+                                if (currentPage < totalPages) {
+                                    currentPage++;
+                                }
+                            } else {
+                                currentPage = parseInt(page);
+                            }
 
-        //                     createPagination(totalPages, currentPage);
-        //                     renderPage(currentPage);
-        //                 });
-        //             }
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error('Error:', error);
-        //         }
-        //     });
-        //     $(document).ready(function() {
-        //         if (!$.fn.DataTable.isDataTable('.product-list-select')) {
-        //             var table = $('.product-list-select').DataTable();
-        //         } else {
-        //             var table = $('.product-list-select').DataTable();
-        //         }
-        //         $(document).on('click', '.select-button-product', function() {
+                            createPagination(totalPages, currentPage);
+                            renderPage(currentPage);
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+            $(document).ready(function() {
+                if (!$.fn.DataTable.isDataTable('.product-list-select')) {
+                    var table = $('.product-list-select').DataTable();
+                } else {
+                    var table = $('.product-list-select').DataTable();
+                }
+                $(document).on('click', '.select-button-product', function() {
 
-        //             var product = $(this).val();
-        //             $('#row-' + product).prop('hidden',true);
-        //             $('tr .child').prop('hidden',true);
-        //             console.log(product);
-        //             if ($('#productselect' + product).length > 0) {
-        //                 return;
-        //             }
-        //             $.ajax({
-        //                 url: '{{ route("DummyQuotation.addProductselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
-        //                 method: 'GET',
-        //                 data: {
-        //                     value:product
-        //                 },
-        //                 success: function(response) {
-        //                     $.each(response.products, function(index, val) {
-        //                         var name = '';
-        //                         var price = 0;
-        //                         var rowNumber = $('#product-list-select tr:visible').length+1;
-        //                         if ($('#productselect' + val.id).length > 0) {
-        //                             console.log("Product already exists after AJAX call: ", val.id);
-        //                             return;
-        //                         }
-        //                         if ($('#product-list' + val.Product_ID).length > 0) {
-        //                             console.log("Product already exists after AJAX call: ", val.Product_ID);
-        //                         }
+                    var product = $(this).val();
+                    $('#row-' + product).prop('hidden',true);
+                    $('tr .child').prop('hidden',true);
+                    console.log(product);
+                    if ($('#productselect' + product).length > 0) {
+                        return;
+                    }
+                    $.ajax({
+                        url: '{{ route("DummyQuotation.addProductselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+                        method: 'GET',
+                        data: {
+                            value:product
+                        },
+                        success: function(response) {
+                            $.each(response.products, function(index, val) {
+                                var name = '';
+                                var price = 0;
+                                var rowNumber = $('#product-list-select tr:visible').length+1;
+                                if ($('#productselect' + val.id).length > 0) {
+                                    console.log("Product already exists after AJAX call: ", val.id);
+                                    return;
+                                }
+                                if ($('#product-list' + val.Product_ID).length > 0) {
+                                    console.log("Product already exists after AJAX call: ", val.Product_ID);
+                                }
 
-        //                         $('#product-list-select').append(
-        //                             '<tr id="tr-select-add' + val.id + '">' +
-        //                             '<td style="text-align:center;">' + rowNumber + '</td>' +
-        //                             '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + val.Product_ID + '">' + val.Product_ID + '</td>' +
-        //                             '<td style="text-align:left;">' + val.name_en + '</td>' +
-        //                             '<td style="text-align:left;">' + Number(val.normal_price).toLocaleString() + '</td>' +
-        //                             '<td style="text-align:center;">' + val.unit_name + '</td>' +
-        //                             '<td style="text-align:center;"> <button type="button" class="Btn remove-button " style=" border: none;" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
-        //                             '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
-        //                             '</tr>'
-        //                         );
+                                $('#product-list-select').append(
+                                    '<tr id="tr-select-add' + val.id + '">' +
+                                    '<td style="text-align:center;">' + rowNumber + '</td>' +
+                                    '<td><input type="hidden" class="randomKey" name="randomKey" id="randomKey" value="' + val.Product_ID + '">' + val.Product_ID + '</td>' +
+                                    '<td style="text-align:left;">' + val.name_en + '</td>' +
+                                    '<td style="text-align:left;">' + Number(val.normal_price).toLocaleString() + '</td>' +
+                                    '<td style="text-align:center;">' + val.unit_name + '</td>' +
+                                    '<td style="text-align:center;"> <button type="button" class="Btn remove-button " style=" border: none;" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                    '<input type="hidden" id="productselect' + val.id + '" value="' + val.id + '">' +
+                                    '</tr>'
+                                );
 
-        //                     });
-        //                 },
-        //                 error: function(xhr, status, error) {
-        //                     console.error('Error:', error);
-        //                 }
-        //             });
-        //         });
-        //     });
-        //     function renumberRows() {
-        //         $('#product-list-select tr:visible').each(function(index) {
-        //             $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
-        //         });
-        //         $('#display-selected-items tr').each(function(index) {
-        //             $(this).find('td:first-child').text(index +1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
-        //         });
-        //     }
-        //     $(document).on('click', '.remove-button', function() {
-        //         var product = $(this).val();
-        //         $('#tr-select-add' + product).remove();
-        //         $('#row-' + product).prop('hidden',false);
-        //         renumberRows();// ลบแถวที่มี id เป็น 'tr-select-add' + product
-        //     });
-        //     $(document).on('click', '.confirm-button', function() {
-        //         var number = $('#randomKey').val();
-        //         $.ajax({
-        //             url: '{{ route("DummyQuotation.addProducttablecreatemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
-        //             method: 'GET',
-        //             data: {
-        //                 value: "all"
-        //             },
-        //             success: function(response) {
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+            });
+            function renumberRows() {
+                $('#product-list-select tr:visible').each(function(index) {
+                    $(this).find('td:first-child').text(index+1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
+                });
+                $('#display-selected-items tr').each(function(index) {
+                    $(this).find('td:first-child').text(index +1); // เปลี่ยนเลขลำดับในคอลัมน์แรก
+                });
+            }
+            $(document).on('click', '.remove-button', function() {
+                var product = $(this).val();
+                $('#tr-select-add' + product).remove();
+                $('#row-' + product).prop('hidden',false);
+                renumberRows();// ลบแถวที่มี id เป็น 'tr-select-add' + product
+            });
+            $(document).on('click', '.confirm-button', function() {
+                var number = $('#randomKey').val();
+                $.ajax({
+                    url: '{{ route("DummyQuotation.addProducttablecreatemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+                    method: 'GET',
+                    data: {
+                        value: "all"
+                    },
+                    success: function(response) {
 
-        //                 $.each(response.products, function (key, val) {
-        //                     $('#tr-select-add' + val.id).prop('hidden',true);
-        //                     if ($('#productselect' + val.id).val() !== undefined) {
-        //                         if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
+                        $.each(response.products, function (key, val) {
+                            $('#tr-select-add' + val.id).prop('hidden',true);
+                            if ($('#productselect' + val.id).val() !== undefined) {
+                                if ($('#display-selected-items #tr-select-addmain' + val.id).length === 0) {
 
-        //                             number += 1;
-        //                             var name = '';
-        //                             var price = 0;
-        //                             var normalPriceString = val.normal_price.replace(/[^0-9.]/g, ''); // ล้างค่าที่ไม่ใช่ตัวเลขและจุดทศนิยม
-        //                             var normalPrice = parseFloat(normalPriceString);
-        //                             var netDiscount = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        //                             var normalPriceview = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                    number = val.Product_ID;
+                                    var name = '';
+                                    var price = 0;
+                                    var normalPriceString = val.normal_price.replace(/[^0-9.]/g, ''); // ล้างค่าที่ไม่ใช่ตัวเลขและจุดทศนิยม
+                                    var normalPrice = parseFloat(normalPriceString);
+                                    var netDiscount = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                    var normalPriceview = ((normalPrice)).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-        //                             var rowNumbemain = $('#display-selected-items tr').length+1;
-        //                             let discountInput;
-        //                             var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
-        //                             var SpecialDiscount = document.getElementById('SpecialDiscount').value;
-        //                             var discountuser = document.getElementById('discountuser').value;
-        //                             var maximum_discount = val.maximum_discount;
-        //                             var valpax = val.pax;
-        //                             if (valpax == null) {
-        //                                 valpax = 0;
-        //                             }
-        //                             if (SpecialDiscount >= 1) {
-        //                                 if (roleMenuDiscount == 1) {
-        //                                     discountInput = '<div class="input-group">' +
-        //                                         '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
-        //                                         'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + SpecialDiscount + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
-        //                                         '<span class="input-group-text">%</span>' +
-        //                                         '</div>';
-        //                                 } else {
-        //                                     discountInput = '<div class="input-group">' +
-        //                                         '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
-        //                                         'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-        //                                         '<span class="input-group-text">%</span>' +
-        //                                         '</div>';
-        //                                 }
-        //                             }
-        //                             else{
-        //                                 if (roleMenuDiscount == 1) {
-        //                                     discountInput = '<div class="input-group">' +
-        //                                         '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" min="0" rel="' + number + '" style="text-align:center;" ' +
-        //                                         'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + discountuser + '|| parseFloat(this.value) > ' + val.maximum_discount + ' ) this.value = ' + 0 + ';"required>' +
-        //                                         '<span class="input-group-text">%</span>' +
-        //                                         '</div>';
+                                    var rowNumbemain = $('#display-selected-items tr').length+1;
+                                    let discountInput;
+                                    let quantity;
+                                    var roleMenuDiscount = document.getElementById('roleMenuDiscount').value;
+                                    var SpecialDiscount = document.getElementById('SpecialDiscount').value;
+                                    var discountuser = document.getElementById('discountuser').value;
+                                    var maximum_discount = val.maximum_discount;
+                                    var valpax = val.pax;
+                                    if (valpax == null) {
+                                        valpax = 0;
+                                    }
+                                    if (maximum_discount > 0) {
+                                        if (roleMenuDiscount == 1) {
+                                            discountInput = '<div class="input-group">' +
+                                                '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                                '<span class="input-group-text">%</span>' +
+                                                '</div>';
+                                        }
+                                    }else{
+                                        discountInput='<div class="input-group">' +
+                                                '<input class="discountmain form-control" type="hidden" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" ' +
+                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                                '</div>';;
+                                    }
+                                    quantity = '<div class="input-group">' +
+                                                '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                                'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.NumberRoom + ') this.value = ' + val.NumberRoom + ';">' +
+                                                '<span class="input-group-text">'+ val.unit_name +'</span>' +
+                                                '</div>';
 
-        //                                 } else {
-        //                                     discountInput = '<div class="input-group">' +
-        //                                         '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;" disabled ' +
-        //                                         'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
-        //                                         '<span class="input-group-text">%</span>' +
-        //                                         '</div>';
-        //                                 }
-        //                             }
-        //                             $('#main').DataTable().destroy();
-        //                             $('#display-selected-items').append(
-        //                                 '<tr id="tr-select-addmain' + val.id + '">' +
-        //                                 '<td style="text-align:center;">' + rowNumbemain + '</td>' +
-        //                                 '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
-        //                                 '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
-        //                                 '<td style="text-align:center;width:10%;"><input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]"  value="1" min="1" rel="' + number + '" style="text-align:center;" oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);"></td>' +
-        //                                 '<td>' + val.unit_name + '</td>' +
-        //                                 '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
-        //                                 '<td style="text-align:center;width:10%;">' + discountInput + '</td>' +
-        //                                 '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
-        //                                 '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value=" ' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
-        //                                 '<td  style="text-align:center;"><button type="button" class="Btn remove-buttonmain"style=" border: none;"  value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
-        //                                 '</tr>'
-        //                             );
-        //                             $('#display-selected-items tr.parent.dt-hasChild.odd').remove();
-        //                             $('#display-selected-items tr.odd').remove();
-        //                             $('#main').DataTable({
-        //                                 searching: false,
-        //                                 paging: false,
-        //                                 info: false,
-        //                                 language: {
-        //                                     emptyTable: "",
-        //                                     zeroRecords: ""
-        //                                 },
-        //                                 columnDefs: [{
-        //                                     className: 'dtr-control',
-        //                                     orderable: false,
-        //                                     target: null,
-        //                                 }],
-        //                                 order:  false,
-        //                                 responsive: {
-        //                                     details: {
-        //                                         type: 'column',
-        //                                         target: 'tr'
-        //                                     }
-        //                                 }
-        //                             });
-        //                             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        //                             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        //                                 return new bootstrap.Tooltip(tooltipTriggerEl)
-        //                             });
-        //                         }
-        //                     }
-        //                 });
-        //                 totalAmost();
-        //             },
-        //             error: function(xhr, status, error) {
-        //                 console.error('Error:', error);
-        //             }
-        //         });
-        //         $('#exampleModalproduct').modal('hide');
-        //     });
-        //     $(document).ready(function() {
-        //         totalAmost();
-        //         $(document).on('click', '.remove-buttonmain', function() {
-        //             var product = $(this).val();
-        //             $('#tr-select-add' + product + ', #tr-select-addmain' + product).remove();
+                                    unit = '<div class="input-group">' +
+                                            '<input class="unitmain form-control" type="text" id="unitmain' + number + '" name="Unitmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                            'oninput="this.value = this.value.replace(/[^0-9]/g, \'\').slice(0, 10);">' +
+                                            '<span class="input-group-text">' + val.quantity_name + '</span>' +
+                                            '</div>';
 
-        //             $('#display-selected-items tbody tr').each(function(index) {
-        //                 // เปลี่ยนเลขลำดับใหม่
-        //                 $(this).find('td:first').text(index+1);
-        //             });
-        //             renumberRows();
-        //             totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
-        //         });
-        //     });
-        // }
+                                    $('#main').DataTable().destroy();
+                                    $('#display-selected-items').append(
+                                        '<tr id="tr-select-addmain' + val.id + '">' +
+                                        '<td style="text-align:center;">' + rowNumbemain + '</td>' +
+                                        '<td style="text-align:left;"><input type="hidden" id="Product_ID" name="ProductIDmain[]" value="' + val.Product_ID + '">' + val.name_en +' '+'<span class="fa fa-info-circle" data-bs-toggle="tooltip" data-placement="top" title="' + val.maximum_discount +'%'+'"></span></td>' +
+                                        '<td style="text-align:center; color:#fff"><input type="hidden"class="pax" id="pax'+ number +'" name="pax[]" value="' + val.pax + '"rel="' + number + '"><span  id="paxtotal' + number + '">' + valpax + '</span></td>' +
+                                        '<td style="text-align:center;width:10%;">'+ quantity +'</td>' +
+                                        '<td>' + unit + '</td>' +
+                                        '<td style="text-align:center;"><input type="hidden" id="totalprice-unit-' + number + '" name="priceproductmain[]" value="' + val.normal_price + '">' + Number(val.normal_price).toLocaleString() + '</td>' +
+                                        '<td>' + discountInput + '</td>' +
+                                        '<td style="text-align:center;"><input type="hidden" id="net_discount-' + number + '" value="' + val.normal_price + '"><span id="netdiscount' + number + '">' + normalPriceview + '</span></td>' +
+                                        '<td style="text-align:center;"><input type="hidden" id="allcounttotal-' + number + '" value=" ' + val.normal_price + '"><span id="allcount' + number + '">' + normalPriceview + '</span></td>' +
+                                        '<td  style="text-align:center;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                        '</tr>'
+                                    );
+                                    $('#display-selected-items tr.parent.dt-hasChild.odd').remove();
+                                    $('#display-selected-items tr.odd').remove();
+                                    $('#main').DataTable({
+                                        searching: false,
+                                        paging: false,
+                                        info: false,
+                                        language: {
+                                            emptyTable: "",
+                                            zeroRecords: ""
+                                        },
+                                        columnDefs: [{
+                                            className: 'dtr-control',
+                                            orderable: false,
+                                            target: null,
+                                        }],
+                                        order:  false,
+                                        responsive: {
+                                            details: {
+                                                type: 'column',
+                                                target: 'tr'
+                                            }
+                                        }
+                                    });
+                                    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                                    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                                        return new bootstrap.Tooltip(tooltipTriggerEl)
+                                    });
+                                }
+                            }
+                        });
+                        totalAmost();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+                $('#exampleModalproduct').modal('hide');
+            });
+            $(document).ready(function() {
+                totalAmost();
+                $(document).on('click', '.remove-buttonmain', function() {
+                    var product = $(this).val();
+                    $('#tr-select-add' + product + ', #tr-select-addmain' + product).remove();
+
+                    $('#display-selected-items tbody tr').each(function(index) {
+                        // เปลี่ยนเลขลำดับใหม่
+                        $(this).find('td:first').text(index+1);
+                    });
+                    renumberRows();
+                    totalAmost();// ลบแถวที่มี id เป็น 'tr-select-add' + product
+                });
+            });
+        }
         //----------------------------------------รายการ---------------------------
         $(document).ready(function() {
             $(document).on('keyup', '.quantitymain', function() {
@@ -1761,6 +2004,8 @@
                     var number = Number($('#number-product').val());
                     var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
                     var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+
                     if (discountmain === "" || discountmain == 0) {
                         var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
@@ -1768,12 +2013,11 @@
                         var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }else{
-                        var pricediscount = pricenew;
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                        var allcount0 = price;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        var allcount0 = price-(price*discountmain /100);// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }
-
                     // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     totalAmost();
                 }
@@ -1782,20 +2026,29 @@
                 for (let i = 0; i < 50; i++) {
                     var number_ID = $(this).attr('rel');
                     var discountmain =  Number($(this).val());
-                    console.log(discountmain);
+
                     var quantitymain =  $('#quantitymain'+number_ID).val();
                     var unitmain =  $('#unitmain'+number_ID).val();
-                    console.log(quantitymain);
+
                     var number = Number($('#number-product').val());
                     var price = parseFloat($('#totalprice-unit-'+number_ID).val().replace(/,/g, ''));
-                    var pricediscount =  (price*discountmain /100);
-                    var allcount0 = price - pricediscount;
-                    console.log(allcount0);
-                    $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                    var pricenew = quantitymain*unitmain*price
-                    var pricediscount = pricenew - (pricenew*discountmain /100);
-                    $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                    // $('#allcount0'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+
+
+                   var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+
+                    if (discountmain === "" || discountmain == 0) {
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var allcount0 = price-(price*discountmain /100);// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
                     totalAmost();
 
                 }
@@ -1812,6 +2065,8 @@
                     console.log(number_ID);
 
                     var pricenew = quantitymain*unitmain*price
+                    console.log(discountmain);
+
                     if (discountmain === "" || discountmain == 0) {
                         var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
@@ -1819,9 +2074,9 @@
                         var allcount0 = price - pricediscount;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }else{
-                        var pricediscount = pricenew;
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
                         $('#allcount'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                        var allcount0 = price;// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
+                        var allcount0 = price-(price*discountmain /100);// ถ้าเป็นค่าว่างหรือ 0 ให้ค่าเป็น 1
                         $('#netdiscount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
                     }
 
@@ -1863,51 +2118,48 @@
                 for (let i = 0; i < 50; i++) {
                     var number_ID = $(this).attr('rel');
                     var discountmain =  Number($(this).val());
-                    var SpecialDiscount =  parseFloat($('#SpecialDiscount').val().replace(/,/g, ''));
                     var maxdiscount =  parseFloat($('#maxdiscount'+number_ID).val().replace(/,/g, ''));
-                    if (discountmain > SpecialDiscount || discountmain > maxdiscount) {
-                        var discount =  Number($(this).val(maxdiscount));
-                        var discountmain = maxdiscount ;
-                        var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
-                        var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
-                        var unitmain =  parseFloat($('#unit'+number_ID).val().replace(/,/g, ''));
-                        var pricenew = quantitymain*unitmain*price
-                        if (discountmain === " " || discountmain == 0) {
-                            var allcount0 = price;
-                            $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                            var pricediscount = pricenew;
-                            $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                        }else{
-                            var pricediscount = pricenew - (pricenew*discountmain /100);
-                            $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                            var pricediscount =  (price*discountmain /100);
-                            var allcount0 = price - pricediscount;
-                            $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+
+
+                    var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
+                    var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
+                    var SpecialDiscount = User_discount+Add_discount;
+                    if (Add_discount > 0) {
+                        if (SpecialDiscount > 0) {
+                            if (SpecialDiscount > maxdiscount) {
+                                var discount =  Number($(this).val(maxdiscount));
+                            }else{
+                                var discount =  Number($(this).val(SpecialDiscount));
+                            }
                         }
                     }else{
-                        var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
-                        var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
-                        var unitmain =  parseFloat($('#unit'+number_ID).val().replace(/,/g, ''));
-                        var pricenew = quantitymain*unitmain*price;
-                        if (discountmain === " " || discountmain == 0) {
-                            var allcount0 = price;
-                            $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                            var pricediscount = pricenew;
-                            $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                        }else{
-                            var pricediscount = pricenew - (pricenew*discountmain /100);
-                            $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                            var pricediscount =  (price*discountmain /100);
-                            var allcount0 = price - pricediscount;
-                            $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
-                        }
-                        var paxmain = parseFloat($('#pax' + number_ID).val());
-                        if (isNaN(paxmain)) {
-                            paxmain = 0;
-                        }
-                        var pax = paxmain*quantitymain;
-                        $('#paxtotal'+number_ID).text(pax);
+                        var discount =  Number($(this).val(User_discount));
                     }
+
+
+
+                    var quantitymain =  parseFloat($('#quantity'+number_ID).val().replace(/,/g, ''));
+                    var price = parseFloat($('#totalprice-unit'+number_ID).val().replace(/,/g, ''));
+                    var unitmain =  parseFloat($('#unit'+number_ID).val().replace(/,/g, ''));
+                    var pricenew = quantitymain*unitmain*price
+                    if (discountmain === " " || discountmain == 0) {
+                        var allcount0 = price;
+                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount = pricenew;
+                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }else{
+                        var pricediscount = pricenew - (pricenew*discountmain /100);
+                        $('#all-total'+number_ID).text(pricediscount.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                        var pricediscount =  (price*discountmain /100);
+                        var allcount0 = price - pricediscount;
+                        $('#net_discount'+number_ID).text(allcount0.toLocaleString('th-TH', {minimumFractionDigits: 2}));
+                    }
+                    var paxmain = parseFloat($('#pax' + number_ID).val());
+                    if (isNaN(paxmain)) {
+                        paxmain = 0;
+                    }
+                    var pax = paxmain*quantitymain;
+                    $('#paxtotal'+number_ID).text(pax);
                     totalAmost();
                 }
             });
@@ -1940,6 +2192,7 @@
             });
             totalAmost();
         });
+        //unit
         function totalAmost() {
             $(document).ready(function() {
                 var typevat  = $('#Mvat').val();
@@ -2080,7 +2333,7 @@
         function BACKtoEdit(){
             event.preventDefault();
             Swal.fire({
-                title: "คุณต้องการย้อนกลับใช่หรือไม่?",
+                title: "คุณต้องการยกเลิกใช่หรือไม่?",
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "ตกลง",
@@ -2092,6 +2345,35 @@
                     console.log(1);
                     // If user confirms, submit the form
                     window.location.href = "{{ route('DummyQuotation.index') }}";
+                }
+            });
+        }
+        function confirmSubmit(event) {
+            event.preventDefault(); // Prevent the form from submitting
+            var Quotationold = $('#Quotationold').val();
+            var Quotation_ID = $('#Quotation_ID').val();
+            var message = `หากบันทึกข้อมูลใบข้อเสนอรหัส ${Quotationold} ทำการยกเลิกใบข้อเสนอ`;
+            var title = `คุณต้องการบันทึกข้อมูลรหัส ${Quotation_ID} ใช่หรือไม่?`;
+            Swal.fire({
+                title: title,
+                text: message,
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "บันทึกข้อมูล",
+                cancelButtonText: "ยกเลิก",
+                confirmButtonColor: "#2C7F7A",
+                dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "preview";
+                    input.value = 0;
+
+                    // เพิ่ม input ลงในฟอร์ม
+                    document.getElementById("myForm").appendChild(input);
+                    document.getElementById("myForm").removeAttribute('target');
+                    document.getElementById("myForm").submit();
                 }
             });
         }

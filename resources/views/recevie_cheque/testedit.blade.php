@@ -1,8 +1,8 @@
 @extends('layouts.masterLayout')
 <style>
     td.today {
-    background-color: transparent !important; /* ไม่ให้มีสีพื้นหลัง */
-}
+        background-color: transparent !important; /* ไม่ให้มีสีพื้นหลัง */
+    }
 </style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
@@ -330,7 +330,7 @@
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text('0 คืน');
             } else {
-                alert('วัน Check-out ต้องมากกว่าวัน Check-in');
+                // alert('วัน Check-out ต้องมากกว่าวัน Check-in');
                 $('#Day').val('0');
                 $('#Night').val('0');
             }

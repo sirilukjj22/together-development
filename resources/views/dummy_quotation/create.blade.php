@@ -191,6 +191,9 @@
     .table-custom-borderless td {
         border: none !important;
     }
+    td.today {
+        background-color: transparent !important; /* ไม่ให้มีสีพื้นหลัง */
+    }
 </style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
@@ -234,6 +237,7 @@
                                                 <div class="row">
                                                     <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">Dummy Proposal</b>
                                                     <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$Quotation_ID}}</b>
+
                                                 </div>
                                                 <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
                                             </div>
@@ -312,14 +316,23 @@
 
                                 <hr class="mt-3 my-3" style="border: 1px solid #000">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-12 col-sm-12">
+                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 col-sm-12" style="float: right">
+                                            <span><b> Date Type : </b><span id="calendartext" style="font-size: 16px;color:rgb(0, 0, 0);"></span></span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-lg-2 col-md-6 col-sm-12">
                                         <span for="chekin">Check In Date
                                         <div class="input-group">
 
-                                            <input type="text" name="Checkin" id="Checkin" class="form-control readonly-input" readonly onchange="CheckDate()" required>
+                                            <input type="text" name="Checkin" id="Checkin" class="form-control readonly-input" readonly  required>
+                                            <input type="hidden" id="inputmonth" name="inputmonth" value="">
+                                            <input type="hidden" id="Date_type" name="Date_type" value="">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                                     <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
@@ -330,7 +343,8 @@
                                     <div class="col-lg-2 col-md-6 col-sm-12">
                                         <span for="chekin">Check Out Date </span>
                                         <div class="input-group"  >
-                                            <input type="text" name="Checkout" id="Checkout" class="form-control readonly-input" onchange="CheckDate()"  readonly required>
+                                            <input type="text" name="Checkout" id="Checkout" class="form-control readonly-input"   readonly required>
+                                            <input type="hidden" id="checkmonth" name="checkmonth" value="">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"style="border-radius:  0  5px 5px  0 ">
                                                     <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
@@ -873,12 +887,7 @@
     <script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('.select2').select2({
-                placeholder: "Please select an option"
-            });
-        });
+    <script>
         $(function() {
             // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
             $('#Checkin').daterangepicker({
@@ -893,6 +902,8 @@
             });
             $('#Checkin').on('apply.daterangepicker', function(ev, picker) {
                 $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                var currentMonthIndex = picker.startDate.month(); // จะได้หมายเลขเดือน (0-11)
+                $('#inputmonth').val(currentMonthIndex + 1); // บันทึกใน input โดยเพิ่ม 1 เพื่อให้เป็น 1-12 แทน
                 CheckDate();
             });
 
@@ -915,8 +926,50 @@
 
         });
         function CheckDate() {
-            const checkinDateValue = moment(document.getElementById('Checkin').value, 'DD/MM/YYYY').format('YYYY-MM-DD');
-            const checkoutDateValue = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY').format('YYYY-MM-DD');
+            var CheckinNew = document.getElementById('Checkin').value;
+            var CheckoutNew = document.getElementById('Checkout').value;
+
+            var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
+            var momentCheckoutNew = moment(CheckoutNew, 'DD/MM/YYYY');
+
+            // Retrieve the full month names
+            var daymonthName = momentCheckinNew.format('MMMM');  // Full month name like January
+            var endmonthName = momentCheckoutNew.format('MMMM'); // Full month name like January
+
+            // Retrieve the full day names
+            var dayName = momentCheckinNew.format('dddd'); // Full day name like Monday
+            var enddayName = momentCheckoutNew.format('dddd'); // Full day name like Monday
+
+            // Calculate the difference in months
+            var monthDiff = momentCheckoutNew.diff(momentCheckinNew, 'months');
+            $('#checkmonth').val(monthDiff);
+
+            // Weekday or weekend logic
+            if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
+                if (dayName === 'Thursday' && enddayName === 'Saturday') {
+                    $('#calendartext').text("Weekday-Weekend");
+                    $('#Date_type').val("Weekday-Weekend");
+                } else {
+                    $('#calendartext').text("Weekday");
+                    $('#Date_type').val("Weekday");
+                }
+            } else if (['Friday', 'Saturday', 'Sunday'].includes(dayName)) {
+                if (dayName === 'Saturday' && enddayName === 'Monday') {
+                    $('#calendartext').text("Weekday-Weekend");
+                    $('#Date_type').val("Weekday-Weekend");
+                } else {
+                    $('#calendartext').text("Weekend");
+                    $('#Date_type').val("Weekend");
+
+                }
+            }
+
+            const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');
+            const checkoutDateValue = momentCheckoutNew.format('YYYY-MM-DD');
+            console.log(CheckinNew);
+            console.log(CheckoutNew);
+
+
             const checkinDate = new Date(checkinDateValue);
             const checkoutDate = new Date(checkoutDateValue);
             if (checkoutDate > checkinDate) {
@@ -942,10 +995,12 @@
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text('0 คืน');
             } else {
-                console.log("วัน Check-out ต้องมากกว่าวัน Check-in");
+                // alert('วัน Check-out ต้องมากกว่าวัน Check-in');
                 $('#Day').val('0');
                 $('#Night').val('0');
             }
+
+            month();
         }
 
         function setMinDate() {
@@ -959,27 +1014,66 @@
 
 
         document.addEventListener('DOMContentLoaded', setMinDate);
-        $(function() {
-            var start = moment();
-            var end = moment().add(7, 'days');
-            function cb(start, end) {
-                $('#datestart').val(start.format('DD/MM/Y'));
-                $('#dateex').val(end.format('DD/MM/Y'));
-                $('#issue_date_document').text(start.format('DD/MM/Y'));
-                $('#issue_date_document1').text(start.format('DD/MM/Y'));
+    </script>
+    <script>
+        function month() {
+            var checkmonthValue = document.getElementById('checkmonth').value; // ค่าจาก input checkmonth
+            var inputmonth = document.getElementById('inputmonth').value; // ค่าจาก input inputmonth
+            var CheckinNew = document.getElementById('Checkin').value;
+            var CheckoutNew = document.getElementById('Checkout').value;
+            var start = moment(); // เริ่มที่วันที่ปัจจุบัน
+            var end; // ประกาศตัวแปร end
+
+            if (!CheckinNew || !CheckoutNew) {
+                start = moment(); // เริ่มที่วันนี้
+                end = moment().add(7, 'days');
+            }else{
+                var currentMonthIndex = start.month();
+                var monthDiff = inputmonth - currentMonthIndex;
+                // ถ้าเดือนปัจจุบันมากกว่าหรือเท่ากับเป้าหมายเดือน
+                if (monthDiff < 0) {
+                    monthDiff += 12; // เพิ่ม 12 เดือนถ้าข้ามปี
+                }
+                console.log(monthDiff);
+
+                if (monthDiff <= 1) {
+                    start = moment(); // เริ่มที่วันนี้
+                    end = moment().add(7, 'days'); // สิ้นสุดอีก 7 วัน
+                } else if (monthDiff >= 2 && monthDiff < 3 ) {
+                    start = moment(); // เริ่มที่วันนี้
+                    end = moment().add(15, 'days'); // สิ้นสุดอีก 15 วัน
+                } else {
+                    start = moment(); // เริ่มที่วันนี้
+                    end = moment().add(30, 'days'); // สิ้นสุดอีก 30 วัน
+                }
             }
+            function cb(start, end) {
+                $('#datestart').val(start.format('DD/MM/Y')); // แสดงวันที่เริ่มต้น
+                $('#dateex').val(end.format('DD/MM/Y')); // แสดงวันที่สิ้นสุด
+            }
+
+            // ตั้งค่า daterangepicker
             $('#reportrange1').daterangepicker({
-                startDate: start,
-                endDate: end,
+                start: start,
+                end: end,
                 ranges: {
                     '3 Days': [moment(), moment().add(3, 'days')],
                     '7 Days': [moment(), moment().add(7, 'days')],
                     '15 Days': [moment(), moment().add(15, 'days')],
                     '30 Days': [moment(), moment().add(30, 'days')],
-                }
-            },
-            cb);
-            cb(start, end);
+                },
+                autoApply: true, // ใช้เพื่อไม่ต้องกด Apply
+            }, cb);
+
+            cb(start, end); // เรียก callback ทันทีหลังจากตั้งค่าเริ่มต้น
+        }
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Please select an option"
+            });
         });
         function showselectInput() {
             var select = document.getElementById("select");
@@ -1141,6 +1235,8 @@
                 $('#Checkout').val('');
                 $('#Day').val('');
                 $('#Night').val('');
+                $('#calendartext').text('-');
+                month();
             } else {
                 dateInput.disabled = false;
                 dateout.disabled = false;
@@ -1495,30 +1591,36 @@
                                         valpax = 0;
                                     }
                                     if (roleMenuDiscount == 1) {
-                                        if (Add_discount > 0) {
-                                            if (SpecialDiscount > 0 ) {
-                                                if (SpecialDiscount > maximum_discount) {
-                                                    discountInput = '<div class="input-group">' +
-                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                                        'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + maximum_discount + ') this.value = ' + maximum_discount + ';">' +
-                                                        '<span class="input-group-text">%</span>' +
-                                                        '</div>';
-                                                }else{
-                                                    discountInput = '<div class="input-group">' +
-                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                                        'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + SpecialDiscount + ') this.value = ' + SpecialDiscount + ';">' +
-                                                        '<span class="input-group-text">%</span>' +
-                                                        '</div>';
+                                        if (maximum_discount > 0) {
+                                            if (Add_discount > 0) {
+                                                if (SpecialDiscount > 0 ) {
+                                                    if (SpecialDiscount > maximum_discount) {
+                                                        discountInput = '<div class="input-group">' +
+                                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                                            'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + maximum_discount + ') this.value = ' + maximum_discount + ';">' +
+                                                            '<span class="input-group-text">%</span>' +
+                                                            '</div>';
+                                                    }else{
+                                                        discountInput = '<div class="input-group">' +
+                                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                                            'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + SpecialDiscount + ') this.value = ' + SpecialDiscount + ';">' +
+                                                            '<span class="input-group-text">%</span>' +
+                                                            '</div>';
+                                                    }
                                                 }
+                                            }else{
+                                                discountInput = '<div class="input-group">' +
+                                                            '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
+                                                            'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + User_discount + ') this.value = ' + User_discount + ';">' +
+                                                            '<span class="input-group-text">%</span>' +
+                                                            '</div>';
                                             }
                                         }else{
                                             discountInput = '<div class="input-group">' +
-                                                        '<input class="discountmain form-control" type="text" id="discountmain' + number + '" name="discountmain[]" value="" rel="' + number + '" style="text-align:center;" ' +
-                                                        'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + User_discount + ') this.value = ' + User_discount + ';">' +
-                                                        '<span class="input-group-text">%</span>' +
-                                                        '</div>';
+                                                    '<input class="discountmain form-control" type="hidden" id="discountmain' + number + '" name="discountmain[]" value="0" rel="' + number + '" style="text-align:center;"' +
+                                                    'oninput="if (parseFloat(this.value= this.value.replace(/[^0-9]/g, \'\').slice(0, 10)) > ' + val.maximum_discount + ') this.value = ' + val.maximum_discount + ';">' +
+                                                    '</div>';
                                         }
-
                                     }
                                     quantity = '<div class="input-group">' +
                                                 '<input class="quantitymain form-control" type="text" id="quantitymain' + number + '" name="Quantitymain[]" value="" rel="' + number + '" style="text-align:center;" ' +

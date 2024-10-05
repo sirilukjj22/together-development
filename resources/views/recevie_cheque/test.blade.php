@@ -1,5 +1,9 @@
 @extends('layouts.masterLayout')
-
+<style>
+    td.today {
+        background-color: transparent !important; /* ไม่ให้มีสีพื้นหลัง */
+    }
+</style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
         <div class="container-xl">
@@ -136,7 +140,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
     <script type="text/javascript" src="{{ asset('assets/helper/searchTableReceiveCheque.js')}}"></script>
     @include('script.script')
-    <script>
+    {{-- <script>
 
         $(function() {
             var start = moment();
@@ -219,11 +223,136 @@
             });
 
         });
+    </script> --}}
+    <script>
+        $(function() {
+            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
+            $('#Checkin').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                autoApply: true,
+                minDate: moment().startOf('day'),
+                locale: {
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                }
+            });
+            $('#Checkin').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                var currentMonthIndex = picker.startDate.month(); // จะได้หมายเลขเดือน (0-11)
+                $('#inputmonth').val(currentMonthIndex + 1); // บันทึกใน input โดยเพิ่ม 1 เพื่อให้เป็น 1-12 แทน
+                CheckDate();
+            });
+
+        });
+        $(function() {
+            $('#Checkout').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                autoUpdateInput: false,
+                autoApply: true,
+                minDate: moment().startOf('day'),
+                locale: {
+                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                }
+            });
+            $('#Checkout').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                CheckDate();
+            });
+
+        });
+        function CheckDate() {
+            var CheckinNew = document.getElementById('Checkin').value;
+            var CheckoutNew = document.getElementById('Checkout').value;
+
+            var momentCheckinNew = moment(CheckinNew, 'DD/MM/YYYY');
+            var momentCheckoutNew = moment(CheckoutNew, 'DD/MM/YYYY');
+
+            // Retrieve the full month names
+            var daymonthName = momentCheckinNew.format('MMMM');  // Full month name like January
+            var endmonthName = momentCheckoutNew.format('MMMM'); // Full month name like January
+
+            // Retrieve the full day names
+            var dayName = momentCheckinNew.format('dddd'); // Full day name like Monday
+            var enddayName = momentCheckoutNew.format('dddd'); // Full day name like Monday
+
+            // Calculate the difference in months
+            var monthDiff = momentCheckoutNew.diff(momentCheckinNew, 'months');
+            $('#checkmonth').val(monthDiff);
+
+            // Weekday or weekend logic
+            if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
+                if (dayName === 'Thursday' && enddayName === 'Saturday') {
+                    $('#calendartext').text("Weekday-Weekend");
+                } else {
+                    $('#calendartext').text("Weekday");
+                }
+            } else if (['Friday', 'Saturday', 'Sunday'].includes(dayName)) {
+                if (dayName === 'Saturday' && enddayName === 'Monday') {
+                    $('#calendartext').text("Weekday-Weekend");
+                } else {
+                    $('#calendartext').text("Weekend");
+                }
+            }
+
+            const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');
+            const checkoutDateValue = momentCheckoutNew.format('YYYY-MM-DD');
+            console.log(CheckinNew);
+            console.log(CheckoutNew);
+
+
+            const checkinDate = new Date(checkinDateValue);
+            const checkoutDate = new Date(checkoutDateValue);
+            if (checkoutDate > checkinDate) {
+                const timeDiff = checkoutDate - checkinDate;
+                const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                const totalDays = diffDays + 1; // รวม Check-in เป็นวันแรก
+                const nights = diffDays;
+
+                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
+                $('#Night').val(isNaN(nights) ? '0' : nights);
+
+                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#daypo').text(totalDays + ' วัน');
+                $('#nightpo').text(nights + ' คืน');
+            } else if (checkoutDate.getTime() === checkinDate.getTime()) {
+                const totalDays = 1;
+                $('#Day').val(isNaN(totalDays) ? '0' : totalDays);
+                $('#Night').val('0');
+
+                $('#checkinpo').text(moment(checkinDateValue).format('DD/MM/YYYY'));
+                $('#checkoutpo').text(moment(checkoutDateValue).format('DD/MM/YYYY'));
+                $('#daypo').text(totalDays + ' วัน');
+                $('#nightpo').text('0 คืน');
+            } else {
+                // alert('วัน Check-out ต้องมากกว่าวัน Check-in');
+                $('#Day').val('0');
+                $('#Night').val('0');
+            }
+
+            month();
+        }
+
+        function setMinDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('Checkin').setAttribute('min', today);
+            document.getElementById('Checkout').setAttribute('min', today);
+        }
+
+        // เรียกใช้เมื่อโหลดหน้า
+        setMinDate();
+
+
+        document.addEventListener('DOMContentLoaded', setMinDate);
     </script>
     <script>
         function month() {
             var checkmonthValue = document.getElementById('checkmonth').value; // ค่าจาก input checkmonth
             var inputmonth = document.getElementById('inputmonth').value; // ค่าจาก input inputmonth
+            console.log(checkmonthValue);
+            console.log(inputmonth);
             var start = moment(); // เริ่มที่วันที่ปัจจุบัน
             var end; // ประกาศตัวแปร end
 

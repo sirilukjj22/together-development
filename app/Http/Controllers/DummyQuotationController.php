@@ -964,6 +964,7 @@ class DummyQuotationController extends Controller
                 $save->comment = $request->comment;
                 $save->SpecialDiscount = $SpecialDiscount;
                 $save->additional_discount = $request->Add_discount;
+                $save->Date_type = $request->Date_type;
                 $save->status_document = 1;
                 $save->save();
                 if ($Products !== null) {
@@ -2011,6 +2012,7 @@ class DummyQuotationController extends Controller
                 $save->Operated_by = $userid;
                 $save->comment = $request->comment;
                 $save->SpecialDiscount = $SpecialDiscount;
+                $save->additional_discount = $request->Add_discount;
                 $save->status_document = 1;
                 $save->save();
                 $Products = $datarequest['ProductIDmain'];
