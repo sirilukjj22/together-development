@@ -376,7 +376,6 @@
                             var rowNode = table.row(addedRow.indexes()).node();
                             $(rowNode).attr('id', 'tr_row_' + value.id);
                             $(rowNode).addClass('checkbox-outstanding' + (index + 1));
-                            $(rowNode).append('<input type="hidden" name="" id="ev_charge' + value.id + '" value="'+ value.ev_charge +'">');
 
                             $('#btn-receive-' + value.id).val(0);
                         });
