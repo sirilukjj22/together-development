@@ -11,7 +11,7 @@
                 </div>
                 <div class="col-auto">
                     @if (@Auth::user()->roleMenuAdd('proposal',Auth::user()->id) == 1)
-                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('ReceiveCheque.test') }}'">
+                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Proposal.create') }}'">
                         <i class="fa fa-plus"></i> เพิ่มใบเสนอราคา</button>
                     @endif
                     <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#allSearch">
@@ -37,7 +37,12 @@
                                                             <option value="All">ทั้งหมด</option>
                                                             <option value="Nocheckin">No Check in date</option>
                                                             <option value="Checkin">Check in & Check out</option>
+                                                            <option value="Company">Company / Individual</option>
                                                         </select>
+                                                    </div>
+                                                    <div id="inputcompany" class="col-sm-12 col-12" style="display: none">
+                                                        <label for="checkin">Company / Individual</label><br>
+                                                        <input type="text" name="inputcompanyindividual" id="inputcompanyindividual" class="form-control" required>
                                                     </div>
                                                     <div id="checkin" class="col-sm-6 col-12" style="display: none">
                                                         <label for="checkin">Check-in Date</label><br>
@@ -89,6 +94,7 @@
                                                         const User = document.getElementById('User');
                                                         const checkinput = document.getElementById('checkinput');
                                                         const checkinout = document.getElementById('checkinout');
+                                                        const inputcompany = document.getElementById('inputcompany');
                                                         if (selectedValue === 'All') {
                                                             checkinDiv.style.display = 'none';
                                                             checkoutDiv.style.display = 'none';
@@ -110,6 +116,14 @@
                                                             status.style.display = 'block';
                                                             checkinput.disabled = false;
                                                             checkinout.disabled = false;
+                                                        }else if (selectedValue === 'Company') {
+                                                            checkinDiv.style.display = 'none';
+                                                            checkoutDiv.style.display = 'none';
+                                                            User.style.display = 'none';
+                                                            status.style.display = 'none';
+                                                            checkinput.disabled = true;
+                                                            checkinout.disabled = true;
+                                                            inputcompany.style.display = 'block';
                                                         }
                                                     });
                                                 </script>
@@ -182,7 +196,7 @@
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Discount (%)</th>
+                                                <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
                                                 <th class="text-center">Operated By</th>
@@ -220,7 +234,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     @endif
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
+                                                        @if ($item->additional_discount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
@@ -384,7 +398,7 @@
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Discount (%)</th>
+                                                <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
                                                 <th class="text-center">Operated By</th>
@@ -423,7 +437,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     @endif
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
+                                                        @if ($item->additional_discount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
@@ -545,7 +559,7 @@
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Discount (%)</th>
+                                                <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
                                                 <th class="text-center">Operated By</th>
@@ -584,7 +598,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     @endif
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
+                                                        @if ($item->additional_discount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
@@ -684,7 +698,7 @@
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Discount (%)</th>
+                                                <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
                                                 <th class="text-center">Operated By</th>
@@ -723,7 +737,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     @endif
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
+                                                        @if ($item->additional_discount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
@@ -842,7 +856,7 @@
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Discount (%)</th>
+                                                <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
                                                 <th class="text-center">Operated By</th>
@@ -881,7 +895,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     @endif
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
+                                                        @if ($item->additional_discount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
@@ -991,7 +1005,7 @@
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Discount (%)</th>
+                                                <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
                                                 <th class="text-center">Operated By</th>
@@ -1030,7 +1044,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     @endif
                                                     <td style="text-align: center;">
-                                                        @if ($item->SpecialDiscount == 0)
+                                                        @if ($item->additional_discount == 0)
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>

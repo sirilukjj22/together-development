@@ -72,6 +72,7 @@ class QuotationController extends Controller
         $Usercheck = $request->User;
         $status = $request->status;
         $Filter = $request->Filter;
+        $search_value = $request->inputcompanyindividual;
         $user = Auth::user();
         $userid = Auth::user()->id;
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
@@ -142,7 +143,21 @@ class QuotationController extends Controller
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 0 ) {
                     $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',0)->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
                 }
-            }elseif ($Filter == null) {
+            }elseif ($Filter == 'Company') {
+                $nameCom = companys::where('Company_Name', 'LIKE', '%'.$search_value.'%')->first();
+                $nameGuest = Guest::where('First_name', 'LIKE', '%'.$search_value.'%')->orWhere('Last_name', 'LIKE', '%'.$search_value.'%')->first();
+                $porfile= null;
+                if ($nameCom) {
+                    $porfile = $nameCom->Profile_ID;
+                }
+                if ($nameGuest) {
+                    $porfile = $nameGuest->Profile_ID;
+                }
+                if ($porfile) {
+                    $Proposal = Quotation::query()->where('Company_ID',$porfile)->paginate($perPage);
+                }
+            }
+            elseif ($Filter == null) {
                 if ($Usercheck) {
                     if ($Usercheck !== null && $status == null) {
                         $Proposal = Quotation::query()->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->paginate($perPage);
@@ -221,7 +236,21 @@ class QuotationController extends Controller
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 0 ) {
                     $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',0)->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
                 }
-            }elseif ($Filter == null) {
+            }elseif ($Filter == 'Company') {
+                $nameCom = companys::where('Company_Name', 'LIKE', '%'.$search_value.'%')->first();
+                $nameGuest = Guest::where('First_name', 'LIKE', '%'.$search_value.'%')->orWhere('Last_name', 'LIKE', '%'.$search_value.'%')->first();
+                $porfile= null;
+                if ($nameCom) {
+                    $porfile = $nameCom->Profile_ID;
+                }
+                if ($nameGuest) {
+                    $porfile = $nameGuest->Profile_ID;
+                }
+                if ($porfile) {
+                    $Proposal = Quotation::query()->where('Company_ID',$porfile)->paginate($perPage);
+                }
+            }
+            elseif ($Filter == null) {
                 if ($Usercheck) {
                     if ($Usercheck !== null && $status == null) {
                         $Proposal = Quotation::query()->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->paginate($perPage);
@@ -395,7 +424,7 @@ class QuotationController extends Controller
                         'ExpirationDate' => $value->Expirationdate,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                         'Operated' => @$value->userOperated->name,
@@ -565,7 +594,7 @@ class QuotationController extends Controller
                     'ExpirationDate' => $value->Expirationdate,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                     'Operated' => @$value->userOperated->name,
@@ -679,7 +708,7 @@ class QuotationController extends Controller
                         'ExpirationDate' => $value->Expirationdate,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                         'Operated' => @$value->userOperated->name,
@@ -795,7 +824,7 @@ class QuotationController extends Controller
                     'ExpirationDate' => $value->Expirationdate,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                     'Operated' => @$value->userOperated->name,
@@ -885,7 +914,7 @@ class QuotationController extends Controller
                         'ExpirationDate' => $value->Expirationdate,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                         'Operated' => @$value->userOperated->name,
@@ -975,7 +1004,7 @@ class QuotationController extends Controller
                     'ExpirationDate' => $value->Expirationdate,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                     'Operated' => @$value->userOperated->name,
@@ -1093,7 +1122,7 @@ class QuotationController extends Controller
                         'ExpirationDate' => $value->Expirationdate,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                         'Operated' => @$value->userOperated->name,
@@ -1224,7 +1253,7 @@ class QuotationController extends Controller
                     'ExpirationDate' => $value->Expirationdate,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                     'Operated' => @$value->userOperated->name,
@@ -1327,7 +1356,7 @@ class QuotationController extends Controller
                         'ExpirationDate' => $value->Expirationdate,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                         'Operated' => @$value->userOperated->name,
@@ -1432,7 +1461,7 @@ class QuotationController extends Controller
                     'ExpirationDate' => $value->Expirationdate,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                     'Operated' => @$value->userOperated->name,
@@ -1535,7 +1564,7 @@ class QuotationController extends Controller
                         'ExpirationDate' => $value->Expirationdate,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                        'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                         'Operated' => @$value->userOperated->name,
@@ -1640,7 +1669,7 @@ class QuotationController extends Controller
                     'ExpirationDate' => $value->Expirationdate,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
+                    'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                     'Operated' => @$value->userOperated->name,
@@ -1740,13 +1769,15 @@ class QuotationController extends Controller
     }
     public function save(Request $request){
         $data = $request->all();
-        // dd($data);
+
         $preview=$request->preview;
         $ProposalID =$request->Quotation_ID;
         $adult = (int) $request->input('Adult', 0); // ใช้ค่าเริ่มต้นเป็น 0 ถ้าค่าไม่ถูกต้อง
         $children = (int) $request->input('Children', 0);
         $SpecialDiscount = $request->SpecialDiscount;
         $SpecialDiscountBath = $request->DiscountAmount;
+        $SpecialDiscountBath = $request->DiscountAmount;
+        $Add_discount = $request->Add_discount;
         $userid = Auth::user()->id;
         $Proposal_ID = Quotation::where('Quotation_ID',$ProposalID)->first();
         if ($Proposal_ID) {
@@ -2350,15 +2381,18 @@ class QuotationController extends Controller
                     $save->Operated_by = $userid;
                     $save->Refler_ID=$Quotation_ID;
                     $save->comment = $request->comment;
-                    if ($SpecialDiscount == 0 && $SpecialDiscountBath == 0) {
+                    $save->Date_type = $request->Date_type;
+                    if ($Add_discount == 0 && $SpecialDiscountBath == 0) {
                         $save->SpecialDiscount = $SpecialDiscount;
                         $save->SpecialDiscountBath = $SpecialDiscountBath;
+                        $save->additional_discount = $Add_discount;
                         $save->status_document = 1;
                         $save->Confirm_by = 'Auto';
                         $save->save();
                     }else {
                         $save->SpecialDiscount = $SpecialDiscount;
                         $save->SpecialDiscountBath = $SpecialDiscountBath;
+                        $save->additional_discount = $Add_discount;
                         $save->status_document = 2;
                         $save->Confirm_by = '-';
                         $save->save();
@@ -2800,6 +2834,7 @@ class QuotationController extends Controller
         $children=$request->Children;
         $SpecialDiscount = $request->SpecialDiscount;
         $SpecialDiscountBath = $request->DiscountAmount;
+        $Add_discount = $request->Add_discount;
         $data = $request->all();
         // dd($data);
 
@@ -3630,9 +3665,10 @@ class QuotationController extends Controller
                 $save->Operated_by = $userid;
                 $save->Refler_ID=$Quotation_ID;
                 $save->comment = $request->comment;
-                if ($SpecialDiscount == 0 && $SpecialDiscountBath == 0) {
+                if ($Add_discount == 0 && $SpecialDiscountBath == 0) {
                     $save->SpecialDiscount = $SpecialDiscount;
                     $save->SpecialDiscountBath = $SpecialDiscountBath;
+                    $save->additional_discount = $Add_discount;
                     $save->status_document = 1;
                     $save->status_guest = 0;
                     $save->correct = $correctup;
@@ -3641,6 +3677,7 @@ class QuotationController extends Controller
                 }else {
                     $save->SpecialDiscount = $SpecialDiscount;
                     $save->SpecialDiscountBath = $SpecialDiscountBath;
+                    $save->additional_discount = $Add_discount;
                     $save->status_document = 2;
                     $save->status_guest = 0;
                     $save->correct = $correctup;

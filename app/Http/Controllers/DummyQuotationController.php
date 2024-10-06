@@ -258,7 +258,21 @@ class DummyQuotationController extends Controller
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 0 ) {
                     $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
                 }
-            }elseif ($Filter == null) {
+            }elseif ($Filter == 'Company') {
+                $nameCom = companys::where('Company_Name', 'LIKE', '%'.$search_value.'%')->first();
+                $nameGuest = Guest::where('First_name', 'LIKE', '%'.$search_value.'%')->orWhere('Last_name', 'LIKE', '%'.$search_value.'%')->first();
+                $porfile= null;
+                if ($nameCom) {
+                    $porfile = $nameCom->Profile_ID;
+                }
+                if ($nameGuest) {
+                    $porfile = $nameGuest->Profile_ID;
+                }
+                if ($porfile) {
+                    $Proposal = dummy_quotation::query()->where('Company_ID',$porfile)->paginate($perPage);
+                }
+            }
+            elseif ($Filter == null) {
                 if ($Usercheck) {
                     if ($Usercheck !== null && $status == null) {
                         $Proposal = dummy_quotation::query()->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->paginate($perPage);

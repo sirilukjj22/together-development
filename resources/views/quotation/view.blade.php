@@ -302,7 +302,14 @@
                                 </div>
                                 <hr class="mt-3 my-3" style="border: 1px solid #000">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" disabled> No Check In Date</label>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-12 col-sm-12">
+                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 col-sm-12" style="float: right">
+                                            <span><b> Date Type : </b><span id="calendartext" style="font-size: 16px;color:rgb(0, 0, 0);"></span></span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-lg-2 col-md-6 col-sm-12">
@@ -377,23 +384,58 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">User Discount </span>{{--ดึงของuserมาใส่--}}
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="Max_discount"  value="{{@Auth::user()->discount}}" placeholder="ส่วนลดคิดเป็น %" disabled>
-                                            <span class="input-group-text">%</span>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                                <span  for="">User Discount </span>{{--ดึงของuserมาใส่--}}
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="User_discount"value="{{@Auth::user()->discount}}" id="User_discount" placeholder="ส่วนลดคิดเป็น %" readonly>
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                                <span  for=""> Additional Discount</span>{{--ดึงของuserมาใส่--}}
+                                                <div class="input-group">
+                                                    <input class="form-control" type="text" name="Add_discount" id="Add_discount" value="{{$Quotation->additional_discount}}" placeholder="ส่วนลดเพิ่มเติมคิดเป็น %"
+                                                            oninput="if (parseFloat(this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)) > {{ Auth::user()->additional_discount }}) this.value = {{ Auth::user()->additional_discount }};"
+                                                            onchange="adddis()" disabled>
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Special Discount</span>
+                                        <span  for="">Total User Discount</span>
                                         <div class="input-group">
-                                            <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"  placeholder="ส่วนลดคิดเป็น %"value="{{$Quotation->SpecialDiscount}}" disabled>
+                                            <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"   placeholder="ส่วนลดคิดเป็น %" readonly disabled>
                                             <span class="input-group-text">%</span>
                                         </div>
+                                        <script>
+                                            function adddis() {
+                                                // Get the discount values from the input fields
+                                                var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
+                                                var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
+
+                                                // Calculate the total discount
+                                                var total = User_discount + Add_discount;
+
+
+                                                // Set the total discount to the SpecialDiscount field
+                                                document.getElementById('SpecialDiscount').value = total.toFixed(2); // Keep two decimal places
+                                            }
+                                            $(document).ready(function() {
+
+                                                    var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
+                                                    var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
+                                                    var total = User_discount+Add_discount;
+                                                    $('#SpecialDiscount').val(total);
+
+                                            });
+                                        </script>
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-12">
                                         <span  for="">Discount Amount</span>
                                         <div class="input-group">
-                                            <input type="number" class="form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท"value="{{$Quotation->SpecialDiscountBath}}" disabled>
+                                            <input type="number" class="form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท"value="{{$Quotation->SpecialDiscountBath}}" disabled required>
                                             <span class="input-group-text">Bath</span>
                                         </div>
                                     </div>

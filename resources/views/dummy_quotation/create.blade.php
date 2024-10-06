@@ -989,9 +989,13 @@
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text('0 คืน');
             } else {
-                alert('วัน Check-out ต้องมากกว่าวัน Check-in');
-                $('#Day').val('0');
-                $('#Night').val('0');
+                if (CheckoutNew) {
+                    alert('วัน Check-out ต้องมากกว่าวัน Check-in');
+                    $('#Day').val('0');
+                    $('#Night').val('0');
+                    $('#Checkin').val('');
+                    $('#Checkout').val('');
+                }
             }
 
             month();
