@@ -269,7 +269,7 @@ class SMSController extends Controller
         $role_revenue = Role_permission_revenue::where('user_id', Auth::user()->id)->first();
 
         if ($request->filter_by == "date" || $request->filter_by == "today") {
-            $req_date = Carbon::parse($request->date)->format('Y-m-d');
+            $req_date = $request->filter_by == "today" ? date('Y-m-d') : Carbon::parse($request->date)->format('Y-m-d');
             $adate = $req_date;
             $adate2 = date('Y-m-d', strtotime(date($adate)));
 
@@ -654,7 +654,7 @@ class SMSController extends Controller
         $role_revenue = Role_permission_revenue::where('user_id', Auth::user()->id)->first();
 
         if ($request->filter_by == "date" || $request->filter_by == "today") {
-            $req_date = Carbon::parse($request->date)->format('Y-m-d');
+            $req_date = $request->filter_by == "today" ? date('Y-m-d') : Carbon::parse($request->date)->format('Y-m-d');
             $adate = $req_date;
             $adate2 = date('Y-m-d', strtotime(date($adate)));
 
@@ -1756,7 +1756,7 @@ class SMSController extends Controller
     public function search_filter_date(Request $request)
     {
         if ($request->filter_by == "date" || $request->filter_by == "today") {
-            $req_date = Carbon::parse($request->date)->format('Y-m-d');
+            $req_date = $request->filter_by == "today" ? date('Y-m-d') : Carbon::parse($request->date)->format('Y-m-d');
             $adate = $req_date;
             $adate2 = date('Y-m-d', strtotime(date($adate)));
 
@@ -2325,7 +2325,7 @@ class SMSController extends Controller
     public function detail(Request $request)
     {
         if ($request->filter_by == "date" || $request->filter_by == "today") {
-            $req_date = Carbon::parse($request->date)->format('Y-m-d');
+            $req_date = $request->filter_by == "today" ? date('Y-m-d') : Carbon::parse($request->date)->format('Y-m-d');
             $adate = $req_date;
             $adate2 = date('Y-m-d', strtotime(date($adate)));
 
@@ -2512,7 +2512,7 @@ class SMSController extends Controller
     public function agoda_detail(Request $request)
     {
         if ($request->filter_by == "date" || $request->filter_by == "today") {
-            $req_date = Carbon::parse($request->date)->format('Y-m-d');
+            $req_date = $request->filter_by == "today" ? date('Y-m-d') : Carbon::parse($request->date)->format('Y-m-d');
             $adate = $req_date;
             $adate2 = date('Y-m-d', strtotime(date($adate)));
 
