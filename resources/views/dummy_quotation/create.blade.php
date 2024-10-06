@@ -722,10 +722,6 @@
                                                     <td scope="row"style="text-align:right;width: 75%;font-size: 14px;"><b>Subtotal</b></td>
                                                     <td style="text-align:left;width: 25%;font-size: 14px;"><span id="total-amountEXCLUDE">0</span></td>
                                                 </tr>
-                                                <tr>
-                                                    <td scope="row"style="text-align:right;width: 75%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                    <td style="text-align:left;width: 25%;font-size: 14px;"><span id="lessDiscountEXCLUDE">0</span></td>
-                                                </tr>
                                             </tbody>
                                         </table>
                                         <table class="table table-borderless "id="PRICE_PLUS_VAT" style="display: none;">
@@ -966,8 +962,6 @@
 
             const checkinDateValue = momentCheckinNew.format('YYYY-MM-DD');
             const checkoutDateValue = momentCheckoutNew.format('YYYY-MM-DD');
-            console.log(CheckinNew);
-            console.log(CheckoutNew);
 
 
             const checkinDate = new Date(checkinDateValue);
@@ -995,7 +989,7 @@
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text('0 คืน');
             } else {
-                // alert('วัน Check-out ต้องมากกว่าวัน Check-in');
+                alert('วัน Check-out ต้องมากกว่าวัน Check-in');
                 $('#Day').val('0');
                 $('#Night').val('0');
             }

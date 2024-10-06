@@ -737,16 +737,6 @@
                                                         <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amount">0</span></td>
                                                     </tr>
                                                     <tr>
-                                                        <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
-                                                        <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                            <span id="sp">0</span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                        <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscount">0</span></td>
-                                                    </tr>
-                                                    <tr>
                                                         <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Price Before Tax</b></td>
                                                         <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Net-price">0</span></td>
                                                     </tr>
@@ -762,16 +752,6 @@
                                                         <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
                                                         <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amountEXCLUDE">0</span></td>
                                                     </tr>
-                                                    <tr>
-                                                        <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
-                                                        <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                            <span id="spEXCLUDE">0</span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                        <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscountEXCLUDE">0</span></td>
-                                                    </tr>
                                                 </tbody>
                                             </table>
                                             <table class="table table-custom-borderless "id="PRICE_PLUS_VAT" style="display: none;">
@@ -779,16 +759,6 @@
                                                     <tr >
                                                         <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal</b></td>
                                                         <td style="text-align:left;width: 45%;font-size: 14px;"><span id="total-amountpus">0</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Special Discount</b></td>
-                                                        <td style="text-align:left;width: 45%;font-size: 14px;">
-                                                            <span id="sppus">0</span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td scope="row"style="text-align:right;width: 55%;font-size: 14px;"><b>Subtotal less Discount</b></td>
-                                                        <td style="text-align:left;width: 45%;font-size: 14px;"><span id="lessDiscountpus">0</span></td>
                                                     </tr>
                                                     <tr>
                                                         <td scope="row" style="text-align:right;width: 55%;font-size: 14px;"><b>Value Added Tax</b></td>
@@ -1479,7 +1449,7 @@
                 $('#daypo').text(totalDays + ' วัน');
                 $('#nightpo').text('0 คืน');
             } else {
-                // alert('วัน Check-out ต้องมากกว่าวัน Check-in');
+                alert('วัน Check-out ต้องมากกว่าวัน Check-in');
                 $('#Day').val('0');
                 $('#Night').val('0');
             }

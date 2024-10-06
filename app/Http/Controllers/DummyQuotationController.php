@@ -76,6 +76,7 @@ class DummyQuotationController extends Controller
         $Usercheck = $request->User;
         $status = $request->status;
         $Filter = $request->Filter;
+        $search_value = $request->inputcompanyindividual;
         $user = Auth::user();
         $userid = Auth::user()->id;
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
@@ -153,6 +154,19 @@ class DummyQuotationController extends Controller
                     $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',5)->orderBy('created_at', 'desc')->paginate($perPage);
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 0 ) {
                     $Proposal = dummy_quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                }
+            }elseif ($Filter == 'Company') {
+                $nameCom = companys::where('Company_Name', 'LIKE', '%'.$search_value.'%')->first();
+                $nameGuest = Guest::where('First_name', 'LIKE', '%'.$search_value.'%')->orWhere('Last_name', 'LIKE', '%'.$search_value.'%')->first();
+                $porfile= null;
+                if ($nameCom) {
+                    $porfile = $nameCom->Profile_ID;
+                }
+                if ($nameGuest) {
+                    $porfile = $nameGuest->Profile_ID;
+                }
+                if ($porfile) {
+                    $Proposal = dummy_quotation::query()->where('Company_ID',$porfile)->paginate($perPage);
                 }
             }elseif ($Filter == null) {
                 if ($Usercheck) {
@@ -277,7 +291,7 @@ class DummyQuotationController extends Controller
             $Generatecount = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document',5)->count();
             $Generate = dummy_quotation::query()->where('Operated_by',$userid)->where('status_document', 5 )->paginate($perPage);
         }
-        return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount'
+        return view('dummy_quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount'
         ,'User','Generate','Generatecount'));
     }
     //---------------------------create-------------------
@@ -3005,6 +3019,8 @@ class DummyQuotationController extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin,
+                        'CheckOut'=> $value->checkout,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                         'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -3179,6 +3195,8 @@ class DummyQuotationController extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin,
+                        'CheckOut'=> $value->checkout,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                         'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -3322,6 +3340,8 @@ class DummyQuotationController extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin,
+                        'CheckOut'=> $value->checkout,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                         'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -3467,6 +3487,8 @@ class DummyQuotationController extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin,
+                        'CheckOut'=> $value->checkout,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                         'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -3570,6 +3592,8 @@ class DummyQuotationController extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin,
+                        'CheckOut'=> $value->checkout,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                         'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -3674,6 +3698,8 @@ class DummyQuotationController extends Controller
                     'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
                     'ExpirationDate' => $value->Expirationdate,
+                    'CheckIn' => $value->checkin,
+                    'CheckOut'=> $value->checkout,
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                     'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -3831,6 +3857,8 @@ class DummyQuotationController extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin,
+                        'CheckOut'=> $value->checkout,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                         'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -3991,6 +4019,8 @@ class DummyQuotationController extends Controller
                     'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
                     'ExpirationDate' => $value->Expirationdate,
+                    'CheckIn' => $value->checkin,
+                    'CheckOut'=> $value->checkout,
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                     'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -4093,6 +4123,8 @@ class DummyQuotationController extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin,
+                        'CheckOut'=> $value->checkout,
                         'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                         'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -4200,6 +4232,8 @@ class DummyQuotationController extends Controller
                     'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
                     'ExpirationDate' => $value->Expirationdate,
+                    'CheckIn' => $value->checkin,
+                    'CheckOut'=> $value->checkout,
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                     'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -4340,6 +4374,8 @@ class DummyQuotationController extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin,
+                        'CheckOut'=> $value->checkout,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                         'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -4484,6 +4520,8 @@ class DummyQuotationController extends Controller
                     'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
                     'ExpirationDate' => $value->Expirationdate,
+                    'CheckIn' => $value->checkin,
+                    'CheckOut'=> $value->checkout,
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                     'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -4625,6 +4663,8 @@ class DummyQuotationController extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
+                        'CheckIn' => $value->checkin,
+                        'CheckOut'=> $value->checkout,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                         'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -4768,6 +4808,8 @@ class DummyQuotationController extends Controller
                     'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
                     'ExpirationDate' => $value->Expirationdate,
+                    'CheckIn' => $value->checkin,
+                    'CheckOut'=> $value->checkout,
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                     'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,

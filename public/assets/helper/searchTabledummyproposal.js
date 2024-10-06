@@ -107,7 +107,7 @@ function getPage(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
+                { targets: [0,4,5,6,7,8,9,10,11], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -122,6 +122,8 @@ function getPage(page, perPage, table_n)
                 { data: 'Company_Name' },
                 { data: 'IssueDate' },
                 { data: 'ExpirationDate' },
+                { data: 'CheckIn' },
+                { data: 'CheckOut' },
                 { data: 'DiscountP' },
                 { data: 'Operated' },
                 { data: 'Approve' },
@@ -247,7 +249,7 @@ function getPagePending(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
+                { targets: [0,4,5,6,7,8,9,10,11], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -262,6 +264,8 @@ function getPagePending(page, perPage, table_n)
                 { data: 'Company_Name' },
                 { data: 'IssueDate' },
                 { data: 'ExpirationDate' },
+                { data: 'CheckIn' },
+                { data: 'CheckOut' },
                 { data: 'DiscountP' },
                 { data: 'Operated' },
                 { data: 'Approve' },
@@ -386,7 +390,7 @@ function getPageAwaiting(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
+                { targets: [0,4,5,6,7,8,9,10,11], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -401,6 +405,8 @@ function getPageAwaiting(page, perPage, table_n)
                 { data: 'Company_Name' },
                 { data: 'IssueDate' },
                 { data: 'ExpirationDate' },
+                { data: 'CheckIn' },
+                { data: 'CheckOut' },
                 { data: 'DiscountP' },
                 { data: 'Operated' },
                 { data: 'Approve' },
@@ -525,7 +531,7 @@ function getPageApproved(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
+                { targets: [0,4,5,6,7,8,9,10,11], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -540,6 +546,8 @@ function getPageApproved(page, perPage, table_n)
                 { data: 'Company_Name' },
                 { data: 'IssueDate' },
                 { data: 'ExpirationDate' },
+                { data: 'CheckIn' },
+                { data: 'CheckOut' },
                 { data: 'DiscountP' },
                 { data: 'Operated' },
                 { data: 'Approve' },
@@ -665,7 +673,7 @@ function getPageGenerate(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
+                { targets: [0,4,5,6,7,8,9,10,11], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -680,6 +688,8 @@ function getPageGenerate(page, perPage, table_n)
                 { data: 'Company_Name' },
                 { data: 'IssueDate' },
                 { data: 'ExpirationDate' },
+                { data: 'CheckIn' },
+                { data: 'CheckOut' },
                 { data: 'DiscountP' },
                 { data: 'Operated' },
                 { data: 'Approve' },
@@ -804,7 +814,7 @@ function getPageReject(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
+                { targets: [0,4,5,6,7,8,9,10,11], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -819,6 +829,8 @@ function getPageReject(page, perPage, table_n)
                 { data: 'Company_Name' },
                 { data: 'IssueDate' },
                 { data: 'ExpirationDate' },
+                { data: 'CheckIn' },
+                { data: 'CheckOut' },
                 { data: 'DiscountP' },
                 { data: 'Operated' },
                 { data: 'Approve' },
@@ -944,7 +956,7 @@ function getPageCancel(page, perPage, table_n)
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             },
             columnDefs: [
-                { targets: [0,4,5,6,7,8,9], className: 'dt-center td-content-center' },
+                { targets: [0,4,5,6,7,8,9,10,11], className: 'dt-center td-content-center' },
             ],
             order: [0, 'asc'],
             responsive: {
@@ -959,6 +971,8 @@ function getPageCancel(page, perPage, table_n)
                 { data: 'Company_Name' },
                 { data: 'IssueDate' },
                 { data: 'ExpirationDate' },
+                { data: 'CheckIn' },
+                { data: 'CheckOut' },
                 { data: 'DiscountP' },
                 { data: 'Operated' },
                 { data: 'Approve' },
