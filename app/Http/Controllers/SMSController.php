@@ -68,6 +68,38 @@ class SMSController extends Controller
                     SMS_forwards::where('id', $value->id)->update([
                         'is_status' => 1
                     ]);
+                }  elseif (count($exp_form) == 5) {
+                    if ($exp_form[1] == "บ.จากxBorder") {
+
+                        $data_qr = mb_substr($exp_form[3], 4);
+                        $into = "none";
+
+                        switch ($data_qr) {
+                            case '076355900016901':
+                                $into = "708-227357-4";
+                                break;
+                            case '076355900016902':
+                                $into = "708-226791-3";
+                                break;
+                            case '076355900016911':
+                                $into = "708-226792-1";
+                                break;
+                        }
+
+                        SMS_alerts::create([
+                            'date' => $value->created_at,
+                            'transfer_from' => 22,
+                            'into_account' => $into,
+                            'into_qr' => $data_qr,
+                            'amount' => str_replace(",", "", $exp_form[0]),
+                            'remark' => "Auto",
+                            'status' => 0
+                        ]);
+
+                        SMS_forwards::where('id', $value->id)->update([
+                            'is_status' => 1
+                        ]);
+                    }
                 } elseif (count($exp_form) == 6) {
                     if ($exp_form[0] == "เงินเข้าบ/ช") {
                         SMS_alerts::create([
@@ -525,7 +557,7 @@ class SMSController extends Controller
                     $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
                 }
 
-                $transfer_bank = '<div class="flex-jc p-left-4 center">'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
+                $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
 
                 // เข้าบัญชี
                 $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';
@@ -867,7 +899,7 @@ class SMSController extends Controller
                         $img_bank = '<img class="img-bank" src="../image/bank/'.@$value->transfer_bank->name_en.'.png">';
                     }
     
-                    $transfer_bank = '<div class="flex-jc p-left-4 center">'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
+                    $transfer_bank = '<div>'.$img_bank.''.@$value->transfer_bank->name_en.'</div>';
     
                     // เข้าบัญชี
                     $into_account = '<div class="flex-jc p-left-4 center"><img class="img-bank" src="../image/bank/SCB.jpg">SCB '.$value->into_account.'</div>';

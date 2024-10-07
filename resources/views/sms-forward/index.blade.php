@@ -73,7 +73,7 @@
                             </div>
                             @if ($close_day == 0 || Auth::user()->edit_close_day == 1)
                                 @if (@Auth::user()->roleMenuAdd('Bank Transaction Revenue', Auth::user()->id) == 1)
-                                    <button type="button" class="ch-button" data-toggle="modal" data-target="#exampleModalCenter5" style="white-space: nowrap;">Add</button>
+                                    <button type="button" class="ch-button" id="add-data" style="white-space: nowrap;">Add</button>
                                 @endif
                             @endif
                         </div>
@@ -476,8 +476,14 @@
                                             <input class="search-button search-data" id="sms" style="text-align:left;" placeholder="Search" />
                                         </div>
                                     </caption>
+                                    <style>
+                                        .example td:nth-child(4) {
+                                            text-align: left !important;
+                                            vertical-align: center !important;
+                                        }
+                                        </style>
                                     <div style="min-height: 70vh;">
-                                        <table id="smsTable" class="example ui striped table nowrap unstackable hover">
+                                        <table id="smsTable" class="example ui striped table nowrap unstackable hover" >
                                             <thead>
                                                 <tr>
                                                     <th style="text-align: center;" data-priority="1">#</th>
@@ -508,7 +514,7 @@
                                                             $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                                                             $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
                                                         ?>
-                                                        <div class="flex-jc p-left-4 center">
+                                                        <div>
                                                             @if (file_exists($filename))
                                                                 <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
                                                             @elseif (file_exists($filename2))
@@ -710,7 +716,7 @@
                                                                 $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                                                                 $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
                                                             ?>
-                                                            <div class="flex-jc p-left-4 center">
+                                                            <div>
                                                                 @if (file_exists($filename))
                                                                     <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
                                                                 @elseif (file_exists($filename2))
@@ -909,7 +915,7 @@
                                                                 $filename = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.jpg';
                                                                 $filename2 = base_path() . '/public/image/bank/' . @$item->transfer_bank->name_en . '.png';
                                                             ?>
-                                                            <div class="flex-jc p-left-4 center">
+                                                            <div>
                                                                 @if (file_exists($filename))
                                                                     <img class="img-bank" src="../image/bank/{{ @$item->transfer_bank->name_en }}.jpg">
                                                                 @elseif (file_exists($filename2))
@@ -1264,7 +1270,7 @@
             <div class="modal-content rounded-lg">
                 <div class="modal-header md-header">
                     <h5 class="modal-title text-white" id="exampleModalCenter5Label">Add</h5>
-                    <button type="button" class="close text-white text-2xl" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close text-white text-2xl" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -1311,7 +1317,7 @@
                             <div class="wf-py2 ">
                                 <label for="">โอนจากบัญชี <sup class="text-danger">*</sup></label>
                                 <br>
-                                <select class="form-control select2" id="transfer_from" name="transfer_from" data-placeholder="Select">
+                                <select class="form-control select2" id="transfer_from" name="transfer_from">
                                     <option value="0">เลือกข้อมูล</option>
                                     @foreach ($data_bank as $item)
                                         <option value="{{ $item->id }}">{{ $item->name_th }}
@@ -1340,7 +1346,7 @@
                     </div>
                     <input type="hidden" name="id" id="id">
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="font-size: 15px;">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size: 15px;">Close</button>
                         <button type="button" class="btn btn-color-green sa-button-submit">Save changes</button>
                     </div>
                 </form>
@@ -1577,7 +1583,6 @@
     </script>
 
     <script type="text/javascript">
-
         const monthName = [
             "January",
             "February",
@@ -2083,6 +2088,13 @@
 
             $('#exampleModalCenter5').modal('show');
 
+            $('#transfer_from').select2({
+                dropdownParent: $('#exampleModalCenter5')
+            });
+
+            $('#add_into_account').select2({
+                dropdownParent: $('#exampleModalCenter5')
+            });
         });
 
         function select_type() {
