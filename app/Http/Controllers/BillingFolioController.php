@@ -39,6 +39,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Master_company;
 use App\Models\phone_guest;
 use App\Models\Guest;
+use App\Models\receive_cheque;
 class BillingFolioController extends Controller
 {
     public function index()
@@ -253,7 +254,6 @@ class BillingFolioController extends Controller
         ->select(
             'quotation.*',
             DB::raw('SUM(document_receive.Amount) as receive_amount'),
-            DB::raw('MIN(CASE WHEN document_receive.document_status IN (1, 2) THEN CAST(REPLACE(document_receive.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
         )
         ->groupBy('quotation.Quotation_ID', 'quotation.status_guest', 'quotation.status_receive')
         ->paginate($perPage);
@@ -268,26 +268,24 @@ class BillingFolioController extends Controller
         $permissionid = Auth::user()->permission;
         if ($perPage == 10) {
             $data_query = Quotation::query()
-                ->leftJoin('receive_payment', 'quotation.Quotation_ID', '=', 'receive_payment.Quotation_ID')
+                ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
                 ->where('quotation.status_guest', 1)
                 ->select(
                     'quotation.*',
-                    DB::raw('SUM(receive_payment.Amount) as receive_amount'),
-                    DB::raw('MIN(CASE WHEN receive_payment.document_status IN (1, 2) THEN CAST(REPLACE(receive_payment.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
+                    DB::raw('SUM(document_receive.Amount) as receive_amount'),
                 )
-                ->groupBy('quotation.Quotation_ID', 'quotation.status_guest', 'quotation.status_receive')
+                ->groupBy('quotation.Quotation_ID', 'quotation.status_guest')
                 ->limit($request->page.'0')
                 ->get();
         } else {
             $data_query = Quotation::query()
-                ->leftJoin('receive_payment', 'quotation.Quotation_ID', '=', 'receive_payment.Quotation_ID')
+                ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
                 ->where('quotation.status_guest', 1)
                 ->select(
                     'quotation.*',
-                    DB::raw('SUM(receive_payment.Amount) as receive_amount'),
-                    DB::raw('MIN(CASE WHEN receive_payment.document_status IN (1, 2) THEN CAST(REPLACE(receive_payment.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
+                    DB::raw('SUM(document_receive.Amount) as receive_amount'),
                 )
-                ->groupBy('quotation.Quotation_ID', 'quotation.status_guest', 'quotation.status_receive')
+                ->groupBy('quotation.Quotation_ID', 'quotation.status_guest')
                 ->paginate($perPage);
         }
 
@@ -318,8 +316,6 @@ class BillingFolioController extends Controller
                     $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" href="' . url('/Document/BillingFolio/Proposal/invoice/CheckPI/' . $value->id) . '" >
                                                     Select
                                                 </button>';
-
-
                     $data[] = [
                         'number' => $key +1,
                         'Proposal' => $value->Quotation_ID,
@@ -328,8 +324,7 @@ class BillingFolioController extends Controller
                         'ExpirationDate' => $value->Expirationdate,
                         'Amount' => number_format($value->Nettotal),
                         'Deposit' => number_format($value->receive_amount ?? 0, 2),
-                        'Balance' => number_format($value->min_balance ?? 0, 2),
-                        'Approve' => $value->Confirm_by == null ? 'Auto' : @$value->userConfirm->name,
+                        'Approve' => empty($value->Confirm_by) ? 'Auto' : ($value->userConfirm->name ?? 'Auto'),
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
                     ];
@@ -350,12 +345,11 @@ class BillingFolioController extends Controller
 
         if ($search_value) {
             $data_query = Quotation::query()
-                ->leftJoin('receive_payment', 'quotation.Quotation_ID', '=', 'receive_payment.Quotation_ID')
+                ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
                 ->where('quotation.status_guest', 1)
                 ->select(
                     'quotation.*',
-                    DB::raw('SUM(receive_payment.Amount) as receive_amount'),
-                    DB::raw('MIN(CASE WHEN receive_payment.document_status IN (1, 2) THEN CAST(REPLACE(receive_payment.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
+                    DB::raw('SUM(document_receive.Amount) as receive_amount'),
                 )
                 ->where('quotation.Quotation_ID', 'LIKE', '%'.$search_value.'%')
                 ->groupBy('quotation.Quotation_ID', 'quotation.status_guest', 'quotation.status_receive')
@@ -364,12 +358,11 @@ class BillingFolioController extends Controller
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
 
             $data_query = Quotation::query()
-                ->leftJoin('receive_payment', 'quotation.Quotation_ID', '=', 'receive_payment.Quotation_ID')
+                ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
                 ->where('quotation.status_guest', 1)
                 ->select(
                     'quotation.*',
-                    DB::raw('SUM(receive_payment.Amount) as receive_amount'),
-                    DB::raw('MIN(CASE WHEN receive_payment.document_status IN (1, 2) THEN CAST(REPLACE(receive_payment.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
+                    DB::raw('SUM(document_receive.Amount) as receive_amount'),
                 )
                 ->where('quotation.Quotation_ID', 'LIKE', '%'.$search_value.'%')
                 ->groupBy('quotation.Quotation_ID', 'quotation.status_guest', 'quotation.status_receive')
@@ -401,8 +394,7 @@ class BillingFolioController extends Controller
                     'ExpirationDate' => $value->Expirationdate,
                     'Amount' => number_format($value->Nettotal),
                     'Deposit' => number_format($value->receive_amount ?? 0, 2),
-                    'Balance' => number_format($value->min_balance ?? 0, 2),
-                    'Approve' => $value->Confirm_by == null ? 'Auto' : @$value->userConfirm->name,
+                    'Approve' => empty($value->Confirm_by) ? 'Auto' : ($value->userConfirm->name ?? 'Auto'),
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
                 ];
@@ -436,8 +428,9 @@ class BillingFolioController extends Controller
         $Nettotal = $subtotal;
 
 
-        $invoices = document_invoices::where('Quotation_ID', $Proposal_ID)->get();
-        if ($invoices->contains('status_receive', 0)) {
+        $invoices = document_invoices::where('Quotation_ID', $Proposal_ID)->where('Paid',0)->get();
+        $Receipt = receive_payment::where('Quotation_ID', $Proposal_ID)->get();
+        if ($invoices->contains('Paid', 0)) {
             // ถ้า status มีค่าเป็น 0 อย่างน้อยหนึ่งรายการ
             $status = 0;
         } else {
@@ -467,7 +460,7 @@ class BillingFolioController extends Controller
             $totalentertainment +=  $item->netpriceproduct;
         }
         return view('billingfolio.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','invoices','status','Proposal','ProposalID',
-                    'totalnetpriceproduct','room','unit','quantity','totalnetMeals','Meals','Banquet','totalnetBanquet','totalentertainment','entertainment'));
+                    'totalnetpriceproduct','room','unit','quantity','totalnetMeals','Meals','Banquet','totalnetBanquet','totalentertainment','entertainment','Receipt'));
     }
 
     public function PaidInvoice($id){
@@ -510,7 +503,17 @@ class BillingFolioController extends Controller
         $REID = $ID.$year.$month.$newRunNumber;
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
-        return view('billingfolio.invoicepaid',compact('invoices','Proposal','name','name_ID','datasub','type','REID','Invoice_ID','settingCompany','data_bank','sumpayment'));
+        $chequeRe =receive_cheque::where('refer_proposal',$proposalid)->where('refer_invoice',$Invoice_ID)->first();
+        $bank_cheque = $chequeRe->bank_cheque;
+        $databank= Masters::where('id', $bank_cheque)->first();
+        $databankname = $databank->name_en;
+        if ($chequeRe->status == '1') {
+            // ถ้า status มีค่าเป็น 0 อย่างน้อยหนึ่งรายการ
+            $chequeRestatus = 0;
+        } else {
+            $chequeRestatus = 1;
+        }
+        return view('billingfolio.invoicepaid',compact('invoices','Proposal','name','name_ID','datasub','type','REID','Invoice_ID','settingCompany','databankname','data_bank','sumpayment','chequeRe','chequeRestatus','bank_cheque'));
     }
 
     public function PaidInvoiceData($id)
@@ -673,29 +676,39 @@ class BillingFolioController extends Controller
         $numberOfGuests = $request->numberOfGuests;
         $arrival = $request->arrival;
         $departure = $request->departure;
-        $paymentType = $request->paymentType;
+        $paymentType = $request->paymentTypecheque ?? $request->paymentType;
 
         $invoice = $request->invoice;
         //bank
         $bank = $request->bank;
-        if ($paymentType == 'cash') {
-            $datanamebank = ' Cash - Together Resort Ltd - Reservation Deposit' ;
-        }else if($paymentType == 'bankTransfer') {
-            $datanamebank = $bank +' Bank Transfer - Together Resort Ltd - Reservation Deposit' ;
-        }else if($paymentType == 'creditCard') {
-            $datanamebank =  ' Credit Card - Together Resort Ltd - Reservation Deposit' ;
-        }else if($paymentType == 'cheque') {
-            $datanamebank =  ' Cheque - Together Resort Ltd - Reservation Deposit' ;
-        }
         //Credit Card Input
         $CardNumber = $request->CardNumber;
         $Expiry = $request->Expiry;
         //Cheque
         $chequeBank = $request->chequeBank;
+        $chequeBankReceived = $request->chequeBankReceived;
+        $chequeBankReceivedname= Masters::where('name_en', $chequeBankReceived)->first();
+        $bank_received = $chequeBankReceivedname->id;
+        if ($chequeBank == null) {
+            $chequeRe =receive_cheque::where('refer_invoice',$invoice)->where('status',1)->first();
+            $bank_cheque = $chequeRe->bank_cheque;
+            $databank= Masters::where('id', $bank_cheque)->first();
+            $databankname = $databank->name_en;
+        }else{
+            $databankname = $chequeBank;
+        }
         $cheque = $request->cheque;
-
         $paymentDate = $request->paymentDate;
         $note = $request->note;
+        if ($paymentType == 'cash') {
+            $datanamebank = ' Cash ' ;
+        }else if($paymentType == 'bankTransfer') {
+            $datanamebank = $bank +' Bank Transfer - Together Resort Ltd - Reservation Deposit' ;
+        }else if($paymentType == 'creditCard') {
+            $datanamebank =  ' Credit Card No. '.$CardNumber +' Exp. Date : '.$Expiry ;
+        }else if($paymentType == 'cheque') {
+            $datanamebank =  ' Cheque Bank '.$databankname.' Cheque Number '.$cheque;
+        }
         $parts = explode('-', $guest);
         $firstPart = $parts[0];
         if ($firstPart == 'C') {
@@ -748,10 +761,15 @@ class BillingFolioController extends Controller
             $save->company = $guest;
             $save->category =  $paymentType;
             $save->Amount = $sumpayment;
-            $save->Bank = $bank;
-            $save->Cheque = $cheque;
-            $save->Credit = $CardNumber;
-            $save->Expire = $Expiry;
+            if($paymentType == 'bankTransfer') {
+                $save->Bank = $bank;
+            }else if($paymentType == 'creditCard') {
+                $save->Credit = $CardNumber;
+                $save->Expire = $Expiry;
+            }else if($paymentType == 'cheque') {
+                $save->Cheque = $cheque;
+                $save->Bank = $databankname;
+            }
             $save->reservationNo = $reservationNo;
             $save->roomNo = $room;
             $save->numberOfGuests = $numberOfGuests;
@@ -762,6 +780,11 @@ class BillingFolioController extends Controller
             $save->Operated_by = $user;
             $save->note = $note;
             $save->save();
+            $chequeRe =receive_cheque::where('refer_invoice',$invoice)->where('status',1)->first();
+            $id_cheque = $chequeRe->id;
+            $savecheque = receive_cheque::find($id_cheque);
+            $savecheque->bank_received =$bank_received;
+            $savecheque->save();
             {   //PDF
                 $settingCompany = Master_company::orderBy('id', 'desc')->first();
                 $parts = explode('-', $guest);
@@ -906,6 +929,37 @@ class BillingFolioController extends Controller
                 $pdf = FacadePdf::loadView('billingfolioPDF.'.$view,$data);
                 $path = 'Log_PDF/billingfolio/';
                 $pdf->save($path . $REID . '.pdf');
+                $parts = explode('-', $guest);
+                $firstPart = $parts[0];
+
+                $fullname = '';
+                $fullnameCom = '';
+
+                if ($firstPart == 'C') {
+                    $company = companys::where('Profile_ID', $guest)->first();
+                    if ($company) {
+                        $fullnameCom = 'บริษัท ' . $company->Company_Name . ' จำกัด';
+                    } else {
+                        $company = company_tax::where('ComTax_ID', $guest)->first();
+                        if ($company) {
+                            $fullnameCom = 'บริษัท ' . $company->Companny_name . ' จำกัด';
+                        } else {
+                            $fullname = 'คุณ ' . $company->first_name . ' ' . $company->last_name;
+                        }
+                    }
+                } else {
+                    $guestdata = Guest::where('Profile_ID', $guest)->first();
+                    if ($guestdata) {
+                        $fullname = 'คุณ ' . $guestdata->First_name . ' ' . $guestdata->Last_name;
+                    } else {
+                        $guestdata = guest_tax::where('GuestTax_ID', $guest)->first();
+                        if ($guestdata && $guestdata->Company_name) {
+                            $fullnameCom = 'บริษัท ' . $guestdata->Company_name . ' จำกัด';
+                        } else {
+                            $fullname = 'คุณ ' . $guestdata->first_name . ' ' . $guestdata->last_name;
+                        }
+                    }
+                }
                 $currentDateTime = Carbon::now();
                 $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
                 $currentTime = $currentDateTime->toTimeString(); // Format: HH:MM:SS
@@ -916,6 +970,7 @@ class BillingFolioController extends Controller
                 $savePDF = new log();
                 $savePDF->Quotation_ID = $REID;
                 $savePDF->QuotationType = 'Receipt';
+                $savePDF->Company_Name = !empty($fullnameCom) ? $fullnameCom : $fullname;
                 $savePDF->Approve_date = $formattedDate;
                 $savePDF->Approve_time = $formattedTime;
                 $savePDF->save();
@@ -923,6 +978,7 @@ class BillingFolioController extends Controller
             { //invoice
                 $saveRe = document_invoices::find($idinvoices);
                 $saveRe->status_receive = 2;
+                $saveRe->Paid = 1;
                 $saveRe->save();
             }
             {
@@ -1162,13 +1218,13 @@ class BillingFolioController extends Controller
         $dateFormatted = $date->format('d/m/Y').' / ';
         $dateTime = $date->format('H:i');
         if ($data['category'] == 'cash') {
-            $datanamebank = ' Cash - Together Resort Ltd - Reservation Deposit' ;
+            $datanamebank = ' Cash ' ;
         }else if($data['category'] == 'bankTransfer') {
             $datanamebank = $data['Bank'] +' Bank Transfer - Together Resort Ltd - Reservation Deposit' ;
         }else if($data['category'] == 'creditCard') {
-            $datanamebank =  ' Credit Card - Together Resort Ltd - Reservation Deposit' ;
+            $datanamebank =  'Credit Card No. '.$data['Credit'] +' Exp. Date : '.$data['Expire'] ;
         }else if($data['category'] == 'cheque') {
-            $datanamebank =  ' Cheque - Together Resort Ltd - Reservation Deposit' ;
+            $datanamebank =  ' Cheque Bank '.$data['Bank'].' Cheque Number '.$data['Cheque'];
         }
         $data = [
             'settingCompany'=>$settingCompany,
@@ -1217,7 +1273,324 @@ class BillingFolioController extends Controller
         $logReceipt = log_company::where('Company_ID', $Receipt_ID)
             ->orderBy('updated_at', 'desc')
             ->paginate($perPage);
-            dd($logReceipt);
+            dd($log);
         return view('billingfolio.document',compact('log','path','logReceipt','Receipt_ID'));
+    }
+
+    public function QuotationView(Request $request ,$id){
+        $Quotation = Quotation::where('id', $id)->first();
+        $Quotation_ID = $Quotation->Quotation_ID;
+        $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+        $datarequest = [
+            'Proposal_ID' => $Quotation['Quotation_ID'] ?? null,
+            'IssueDate' => $Quotation['issue_date'] ?? null,
+            'Expiration' => $Quotation['Expirationdate'] ?? null,
+            'Selectdata' => $Quotation['type_Proposal'] ?? null,
+            'Data_ID' => $Quotation['Company_ID'] ?? null,
+            'Adult' => $Quotation['adult'] ?? null,
+            'Children' => $Quotation['children'] ?? null,
+            'Mevent' => $Quotation['eventformat'] ?? null,
+            'Mvat' => $Quotation['vat_type'] ?? null,
+            'DiscountAmount' => $Quotation['SpecialDiscountBath'] ?? null,
+            'comment' => $Quotation['comment'] ?? null,
+            'PaxToTalall' => $Quotation['TotalPax'] ?? null,
+            'Checkin' => $Quotation['checkin'] ?? null,
+            'Checkout' => $Quotation['checkout'] ?? null,
+            'Day' => $Quotation['day'] ?? null,
+            'Night' => $Quotation['night'] ?? null,
+            'userid'=> $Quotation['Operated_by'] ?? null,
+        ];
+        $Products = Arr::wrap($selectproduct->pluck('Product_ID')->toArray());
+        $quantities = $selectproduct->pluck('Quantity')->toArray();
+        $discounts = $selectproduct->pluck('discount')->toArray();
+        $priceUnits = $selectproduct->pluck('priceproduct')->toArray();
+        $Unitmain = $selectproduct->pluck('Unit')->toArray();
+        $productItems = [];
+        $totaldiscount = [];
+        foreach ($Products as $index => $productID) {
+            if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
+                $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
+                $discountedPrices = [];
+                $discountedPricestotal = [];
+                $totaldiscount = [];
+                // คำนวณราคาสำหรับแต่ละรายการ
+                for ($i = 0; $i < count($quantities); $i++) {
+                    $quantity = intval($quantities[$i]);
+                    $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
+                    $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
+                    $discount = floatval($discounts[$i]);
+
+                    $totaldiscount0 = (($priceUnit * $discount)/100);
+                    $totaldiscount[] = $totaldiscount0;
+
+                    $totalPrice = ($quantity * $unitValue) * $priceUnit;
+                    $totalPrices[] = $totalPrice;
+
+                    $discountedPrice = (($totalPrice * $discount) / 100);
+                    $discountedPrices[] = $discountedPrice;
+
+                    $discountedPriceTotal = $totalPrice - $discountedPrice;
+                    $discountedPricestotal[] = $discountedPriceTotal;
+
+                }
+            }
+
+            $items = master_product_item::where('Product_ID', $productID)->get();
+            $QuotationVat= $datarequest['Mvat'];
+            $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
+            foreach ($items as $item) {
+                // ตรวจสอบและกำหนดค่า quantity และ discount
+                $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+                $unitValue = isset($Unitmain[$index]) ? $Unitmain[$index] : 0;
+                $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
+                $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
+                $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
+                $discountedPricestotal = isset($discountedPricestotal[$index]) ? $discountedPricestotal[$index] : 0;
+                $totaldiscount = isset($totaldiscount[$index]) ? $totaldiscount[$index] : 0;
+                $productItems[] = [
+                    'product' => $item,
+                    'quantity' => $quantity,
+                    'unit' => $unitValue,
+                    'discount' => $discount,
+                    'totalPrices'=>$totalPrices,
+                    'discountedPrices'=>$discountedPrices,
+                    'discountedPricestotal'=>$discountedPricestotal,
+                    'totaldiscount'=>$totaldiscount,
+                ];
+            }
+
+        }
+        {//คำนวน
+            $totalAmount = 0;
+            $totalPrice = 0;
+            $subtotal = 0;
+            $beforeTax = 0;
+            $AddTax = 0;
+            $Nettotal =0;
+            $totalaverage=0;
+
+            $SpecialDistext = $datarequest['DiscountAmount'];
+            $SpecialDis = floatval($SpecialDistext);
+            $totalguest = 0;
+            $totalguest = $datarequest['Adult'] + $datarequest['Children'];
+            $guest = $datarequest['PaxToTalall'];
+            if ($Mvat->id == 50) {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $beforeTax = $subtotal/1.07;
+                    $AddTax = $subtotal-$beforeTax;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$guest;
+
+                }
+            }
+            elseif ($Mvat->id == 51) {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$guest;
+
+                }
+            }
+            elseif ($Mvat->id == 52) {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $AddTax = $subtotal*7/100;
+                    $Nettotal = $subtotal+$AddTax;
+                    $totalaverage =$Nettotal/$guest;
+                }
+            }else
+            {
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['totalPrices'];
+                    $totalAmount += $item['discountedPricestotal'];
+                    $subtotal = $totalAmount-$SpecialDis;
+                    $beforeTax = $subtotal/1.07;
+                    $AddTax = $subtotal-$beforeTax;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$guest;
+                }
+            }
+            $pagecount = count($productItems);
+            $page = $pagecount/10;
+
+            $page_item = 1;
+            if ($page > 1.1 && $page < 2.1) {
+                $page_item += 1;
+
+            } elseif ($page > 1.1) {
+            $page_item = 1 + $page > 1.1 ? ceil($page) : 1;
+            }
+        }
+        {//QRCODE
+            $id = $datarequest['Proposal_ID'];
+            $protocol = $request->secure() ? 'https' : 'http';
+            $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+            $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
+            $qrCodeBase64 = base64_encode($qrCodeImage);
+        }
+        $userid = $datarequest['userid'];
+        $Proposal_ID = $datarequest['Proposal_ID'];
+        $IssueDate = $datarequest['IssueDate'];
+        $Expiration = $datarequest['Expiration'];
+        $Selectdata = $datarequest['Selectdata'];
+        $Data_ID = $datarequest['Data_ID'];
+        $Adult = $datarequest['Adult'];
+        $Children = $datarequest['Children'];
+        $Mevent = $datarequest['Mevent'];
+        $Mvat = $datarequest['Mvat'];
+        $DiscountAmount = $datarequest['DiscountAmount'];
+        $Checkin = $datarequest['Checkin'];
+        $Checkout = $datarequest['Checkout'];
+        $Day = $datarequest['Day'];
+        $Night = $datarequest['Night'];
+        $comment = $datarequest['comment'];
+        $user = User::where('id',$userid)->select('id','name')->first();
+        $fullName = null;
+        $Contact_Name = null;
+        $Contact_phone =null;
+        $Contact_Email = null;
+        if ($Selectdata == 'Guest') {
+            $Data = Guest::where('Profile_ID',$Data_ID)->first();
+            $prename = $Data->preface;
+            $First_name = $Data->First_name;
+            $Last_name = $Data->Last_name;
+            $Address = $Data->Address;
+            $Email = $Data->Email;
+            $Taxpayer_Identification = $Data->Identification_Number;
+            $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
+            $name = $prefix->name_th;
+            $fullName = $name.' '.$First_name.' '.$Last_name;
+            //-------------ที่อยู่
+            $CityID=$Data->City;
+            $amphuresID = $Data->Amphures;
+            $TambonID = $Data->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $Fax_number = '-';
+            $phone = phone_guest::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+        }else{
+            $Company = companys::where('Profile_ID',$Data_ID)->first();
+            $Company_type = $Company->Company_type;
+            $Compannyname = $Company->Company_Name;
+            $Address = $Company->Address;
+            $Email = $Company->Company_Email;
+            $Taxpayer_Identification = $Company->Taxpayer_Identification;
+            $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+            if ($comtype) {
+                if ($comtype->name_th == "บริษัทจำกัด") {
+                    $fullName = "บริษัท " . $Compannyname . " จำกัด";
+                } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                    $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
+                } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                    $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                }
+            }
+            $representative = representative::where('Company_ID',$Data_ID)->first();
+            $prename = $representative->prefix;
+            $Contact_Email = $representative->Email;
+            $prefix = master_document::where('id', $prename)->where('Category', 'Mprename')->first();
+            $name = $prefix->name_th;
+            $Contact_Name = $representative->First_name.' '.$representative->Last_name;
+            $CityID=$Company->City;
+            $amphuresID = $Company->Amphures;
+            $TambonID = $Company->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $company_fax = company_fax::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+            if ($company_fax) {
+                $Fax_number =  $company_fax->Fax_number;
+            }else{
+                $Fax_number = '-';
+            }
+            $phone = company_phone::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+            $Contact_phone = representative_phone::where('Company_ID',$Data_ID)->where('Sequence','main')->first();
+        }
+        $eventformat = master_document::where('id',$Mevent)->select('name_th','id')->first();
+        $template = master_template::query()->latest()->first();
+        $CodeTemplate = $template->CodeTemplate;
+        $sheet = master_document_sheet::select('topic','name_th','id','CodeTemplate')->get();
+        $Reservation_show = $sheet->where('topic', 'Reservation')->where('CodeTemplate',$CodeTemplate)->first();
+        $Paymentterms = $sheet->where('topic', 'Paymentterms')->where('CodeTemplate',$CodeTemplate)->first();
+        $note = $sheet->where('topic', 'note')->where('CodeTemplate',$CodeTemplate)->first();
+        $Cancellations = $sheet->where('topic', 'Cancellations')->where('CodeTemplate',$CodeTemplate)->first();
+        $Complimentary = $sheet->where('topic', 'Complimentary')->where('CodeTemplate',$CodeTemplate)->first();
+        $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->where('CodeTemplate',$CodeTemplate)->first();
+        $date = Carbon::now();
+        $unit = master_unit::where('status',1)->get();
+        $quantity = master_quantity::where('status',1)->get();
+        $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        if ($Checkin) {
+            $checkin =$Checkin;
+            $checkout = $Checkout;
+        }else{
+            $checkin = '-';
+            $checkout = '-';
+        }
+        $data = [
+            'settingCompany'=>$settingCompany,
+            'page_item'=>$page_item,
+            'page'=>$pagecount,
+            'Selectdata'=>$Selectdata,
+            'date'=>$date,
+            'fullName'=>$fullName,
+            'provinceNames'=>$provinceNames,
+            'Address'=>$Address,
+            'amphuresID'=>$amphuresID,
+            'TambonID'=>$TambonID,
+            'Email'=>$Email,
+            'phone'=>$phone,
+            'Fax_number'=>$Fax_number,
+            'Day'=>$Day,
+            'Night'=>$Night,
+            'Checkin'=>$checkin,
+            'Checkout'=>$checkout,
+            'eventformat'=>$eventformat,
+            'totalguest'=>$totalguest,
+            'Reservation_show'=>$Reservation_show,
+            'Paymentterms'=>$Paymentterms,
+            'note'=>$note,
+            'Cancellations'=>$Cancellations,
+            'Complimentary'=>$Complimentary,
+            'All_rights_reserved'=>$All_rights_reserved,
+            'Proposal_ID'=>$Proposal_ID,
+            'IssueDate'=>$IssueDate,
+            'Expiration'=>$Expiration,
+            'qrCodeBase64'=>$qrCodeBase64,
+            'user'=>$user,
+            'Taxpayer_Identification'=>$Taxpayer_Identification,
+            'Adult'=>$Adult,
+            'Children'=>$Children,
+            'totalAmount'=>$totalAmount,
+            'SpecialDis'=>$SpecialDis,
+            'subtotal'=>$subtotal,
+            'beforeTax'=>$beforeTax,
+            'Nettotal'=>$Nettotal,
+            'totalguest'=>$totalguest,
+            'guest'=>$guest,
+            'totalaverage'=>$totalaverage,
+            'AddTax'=>$AddTax,
+            'productItems'=>$productItems,
+            'unit'=>$unit,
+            'quantity'=>$quantity,
+            'Mvat'=>$Mvat,
+            'comment'=>$comment,
+            'Mevent'=>$Mevent,
+            'Contact_Name'=>$Contact_Name,
+            'Contact_phone'=>$Contact_phone,
+            'Contact_Email'=>$Contact_Email,
+        ];
+        $view= $template->name;
+        $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
+        return $pdf->stream();
+
     }
 }

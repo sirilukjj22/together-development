@@ -180,60 +180,86 @@ white-space: nowrap
                         <h3>
                             <span>Payment Details</span>
                         </h3>
-
-                        <div class="payment-container">
-                            <label for="paymentType" class="star-red">Payment Type</label>
-                            <select name="paymentType" id="paymentType" class="paymentType select2">
-                                <option value="" disabled selected>Select Payment Type</option>
-                                <option value="cash">Cash</option>
-                                <option value="bankTransfer">Bank Transfer</option>
-                                <option value="creditCard">Credit Card</option>
-                                <option value="cheque">Cheque</option>
-                            </select>
-                            <!-- Cash Input -->
-                            <div class="cashInput" style="display: none;">
-                                <label for="cashAmount" class="star-red">Cash Amount</label>
-                                <input type="text" id="Amount" value="{{ number_format($sumpayment, 2) }}" name="Amount" class="cashAmount form-control" placeholder="Enter cash amount" disabled style="background-color: #59a89e81;">
-
-                            </div>
-                            <!-- Bank Transfer Input -->
-                            <div class="bankTransferInput" style="display: none;">
-                                <label for="bankName" class="star-red">Bank</label>
-                                    <select  id="bank" name="bank" class="bankName select2">
+                        @if ($chequeRestatus == '0')
+                            <div class="payment-container">
+                                <label for="paymentType" class="star-red">Payment Type</label>
+                                <input type="hidden" name="paymentTypecheque" value="cheque">
+                                <select name="paymentType" id="paymentType" class="paymentType select2" disabled>
+                                    <option value="cheque">Cheque</option>
+                                </select>
+                                <div class="chequeInput" style="display: block;">
+                                    <label for="chequeBank" class="star-red">Bank</label>
+                                    <select  id="chequeBank" name="chequeBank" class="chequeBank select2" disabled>
                                         @foreach ($data_bank as $item)
-                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }} Bank Transfer - Together Resort Ltd - Reservation Deposit </option>
+                                            <option value="{{ $item->name_en }}"{{$databankname == $item->name_en ? 'selected' : ''}} >{{ $item->name_th }} </option>
                                         @endforeach
                                     </select>
-                                <label for="bankTransferAmount" class="star-red">Amount</label>
-                                <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="bankTransferAmount form-control"  placeholder="Enter transfer amount"disabled  style="background-color: #59a89e81;">
+                                    <label for="chequeNumber" class="star-red">Cheque Number</label>
+                                    <input type="text" id="cheque" name="cheque" class="chequeNumber form-control" placeholder="Enter cheque number" maxlength="8" value="{{$chequeRe->cheque_number}}" @readonly(true) style="background-color: #59a89e81;">
+                                    <label for="chequeAmount" class="star-red">Amount</label>
+                                    <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="chequeAmount form-control" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
+                                    <label for="chequeBank" class="star-red">Bank Received</label>
+                                    <select  id="chequeBankReceived" name="chequeBankReceived" class="chequeBank select2">
+                                        @foreach ($data_bank as $item)
+                                            <option value=""></option>
+                                            <option value="{{ $item->name_en }}" >{{ $item->name_th }} </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                            <!-- Credit Card Input -->
-                            <div class="creditCardInput" style="display: none;">
-                                <label for="creditCardNumber" class="star-red">Credit Card Number</label>
-                                <input type="text" id="CardNumber" name="CardNumber" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
-
-                                <label for="expiryDate" class="star-red">Expiry Date</label>
-                                <input type="text" name="Expiry" id="Expiry" class="expiryDate form-control" placeholder="MM/YY" maxlength="5">
-
-                                <label for="creditCardAmount" class="star-red">Amount</label>
-                                <input type="text" id="Amount" name="Amount" class="creditCardAmount form-control" value="{{ number_format($sumpayment, 2) }}" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
-
-                            </div>
-                            <!-- Cheque Input -->
-                            <div class="chequeInput" style="display: none;">
-                                <label for="chequeBank" class="star-red">Bank</label>
-                                <select  id="chequeBank" name="chequeBank" class="chequeBank select2">
-                                    @foreach ($data_bank as $item)
-                                        <option value="{{ $item->name_en }}">{{ $item->name_th }} </option>
-                                    @endforeach
+                        @else
+                            <div class="payment-container">
+                                <label for="paymentType" class="star-red">Payment Type</label>
+                                <select name="paymentType" id="paymentType" class="paymentType select2">
+                                    <option value="" disabled selected>Select Payment Type</option>
+                                    <option value="cash">Cash</option>
+                                    <option value="bankTransfer">Bank Transfer</option>
+                                    <option value="creditCard">Credit Card</option>
+                                    <option value="cheque">Cheque</option>
                                 </select>
-                                <label for="chequeNumber" class="star-red">Cheque Number</label>
-                                <input type="text" id="cheque" name="cheque" class="chequeNumber form-control" placeholder="Enter cheque number" maxlength="8">
-                                <label for="chequeAmount" class="star-red">Amount</label>
-                                <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="chequeAmount form-control" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
+                                <!-- Cash Input -->
+                                <div class="cashInput" style="display: none;">
+                                    <label for="cashAmount" class="star-red">Cash Amount</label>
+                                    <input type="text" id="Amount" value="{{ number_format($sumpayment, 2) }}" name="Amount" class="cashAmount form-control" placeholder="Enter cash amount" disabled style="background-color: #59a89e81;">
+                                </div>
+                                <!-- Bank Transfer Input -->
+                                <div class="bankTransferInput" style="display: none;">
+                                    <label for="bankName" class="star-red">Bank</label>
+                                        <select  id="bank" name="bank" class="bankName select2">
+                                            @foreach ($data_bank as $item)
+                                                <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }} Bank Transfer - Together Resort Ltd - Reservation Deposit </option>
+                                            @endforeach
+                                        </select>
+                                    <label for="bankTransferAmount" class="star-red">Amount</label>
+                                    <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="bankTransferAmount form-control"  placeholder="Enter transfer amount"disabled  style="background-color: #59a89e81;">
+                                </div>
+                                <!-- Credit Card Input -->
+                                <div class="creditCardInput" style="display: none;">
+                                    <label for="creditCardNumber" class="star-red">Credit Card Number</label>
+                                    <input type="text" id="CardNumber" name="CardNumber" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
 
+                                    <label for="expiryDate" class="star-red">Expiry Date</label>
+                                    <input type="text" name="Expiry" id="Expiry" class="expiryDate form-control" placeholder="MM/YY" maxlength="5">
+
+                                    <label for="creditCardAmount" class="star-red">Amount</label>
+                                    <input type="text" id="Amount" name="Amount" class="creditCardAmount form-control" value="{{ number_format($sumpayment, 2) }}" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
+
+                                </div>
+                                <!-- Cheque Input -->
+                                <div class="chequeInput" style="display: none;">
+                                    <label for="chequeBank" class="star-red">Bank</label>
+                                    <select  id="chequeBank" name="chequeBank" class="chequeBank select2">
+                                        @foreach ($data_bank as $item)
+                                            <option value="{{ $item->name_en }}">{{ $item->name_th }} </option>
+                                        @endforeach
+                                    </select>
+                                    <label for="chequeNumber" class="star-red">Cheque Number</label>
+                                    <input type="text" id="cheque" name="cheque" class="chequeNumber form-control" placeholder="Enter cheque number" maxlength="8">
+                                    <label for="chequeAmount" class="star-red">Amount</label>
+                                    <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="chequeAmount form-control" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
+                                </div>
                             </div>
-                        </div>
+                        @endif
                         <div class="d-grid" style="height: max-content;">
                             <label class="star-red" for="paymentDate">Date</label>
                             <div class="input-group">
@@ -636,6 +662,8 @@ white-space: nowrap
                 var Expiry = $('#Expiry').val();
                 var CardNumber = $('#CardNumber').val();
                 var paymentType = $('#paymentType').val();
+                var chequeBank = $('#chequeBank').val();
+                var cheque = $('#cheque').val();
 
                 if (paymentType == 'cash') {
                     var datanamebank = ' Cash ' ;
@@ -644,11 +672,13 @@ white-space: nowrap
                 }else if(paymentType == 'creditCard') {
                     var datanamebank =  ' Credit Card No.'+ CardNumber +' Exp. Date : '+Expiry ;
                 }else if(paymentType == 'cheque') {
-                    var datanamebank =  ' Cheque ธนาคาร เลข' ;
+                    var datanamebank =  ' Cheque Bank '+ chequeBank + ' Cheque Number '+ cheque +'' ;
                 }
                 // เลือก id ที่จะใช้
                 var id = idcheck ? idcheck : nameID;
                 var ids = InvoiceID;
+                console.log(id);
+
                 // AJAX เรียกข้อมูลจากเซิร์ฟเวอร์
                 jQuery.ajax({
                     type: "GET",
@@ -675,7 +705,7 @@ white-space: nowrap
                         $('#displayNumberOfGuestsEditBill').text(numberOfGuests);
                         $('#date').text(date);
                         $('#dateM').text(Time);
-                        $('Invoicedate').text(valid);
+                        $('#Invoicedate').text(valid);
                         $('#displayPaymentDateEditBill').text(date);
                         $('#displayReferenceEditBill').text(reservationNo);
                         $('#displayNoteEditBill').text(note);

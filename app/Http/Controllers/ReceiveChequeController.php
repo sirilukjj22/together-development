@@ -303,8 +303,7 @@ class ReceiveChequeController extends Controller
         }
     }
     public function Approved($id){
-
-        $cheque = receive_cheque::wheere('id',$id)->first();
+        $cheque = receive_cheque::where('id',$id)->first();
         $cheque->status = 1;
         $cheque->save();
         $chequeNumber = $cheque->cheque_number;

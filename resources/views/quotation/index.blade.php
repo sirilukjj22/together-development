@@ -196,6 +196,7 @@
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
+                                                <th class="text-center">Date type</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -233,6 +234,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
+                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -398,6 +400,7 @@
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
+                                                <th class="text-center">Date type</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -436,6 +439,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
+                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -559,6 +563,7 @@
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
+                                                <th class="text-center">Date type</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -597,6 +602,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
+                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -698,6 +704,7 @@
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
+                                                <th class="text-center">Date type</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -736,6 +743,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
+                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -856,6 +864,7 @@
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
+                                                <th class="text-center">Date type</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -894,6 +903,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
+                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -1005,6 +1015,7 @@
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
+                                                <th class="text-center">Date type</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -1043,6 +1054,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
+                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -1240,7 +1252,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1258,6 +1270,7 @@
                         { data: 'ExpirationDate' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
+                        { data: 'Type' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
@@ -1316,7 +1329,7 @@
                     $('#'+id+'-paginate').append(paginateSearchPending(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1334,6 +1347,7 @@
                         { data: 'ExpirationDate' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
+                        { data: 'Type' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
@@ -1392,7 +1406,7 @@
                     $('#'+id+'-paginate').append(paginateSearchAwaiting(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1410,6 +1424,7 @@
                         { data: 'ExpirationDate' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
+                        { data: 'Type' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
@@ -1468,7 +1483,7 @@
                     $('#'+id+'-paginate').append(paginateSearchApproved(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1486,6 +1501,7 @@
                         { data: 'ExpirationDate' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
+                        { data: 'Type' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
@@ -1543,7 +1559,7 @@
                     $('#'+id+'-paginate').append(paginateSearchReject(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1561,6 +1577,7 @@
                         { data: 'ExpirationDate' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
+                        { data: 'Type' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
@@ -1618,7 +1635,7 @@
                     $('#'+id+'-paginate').append(paginateSearchCancel(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1636,6 +1653,7 @@
                         { data: 'ExpirationDate' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
+                        { data: 'Type' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },

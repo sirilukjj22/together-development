@@ -307,10 +307,10 @@
                                 <hr class="mt-3 my-3" style="border: 1px solid #000">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <div class="row">
-                                        <div class="col-lg-6 col-md-12 col-sm-12">
+                                        <div class="col-lg-2 col-md-12 col-sm-12">
                                             <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
                                         </div>
-                                        <div class="col-lg-6 col-md-12 col-sm-12" style="float: right">
+                                        <div class="col-lg-10 col-md-12 col-sm-12" style="float: right">
                                             <span><b> Date Type : </b><span id="calendartext" style="font-size: 16px;color:rgb(0, 0, 0);"></span></span>
                                         </div>
                                     </div>

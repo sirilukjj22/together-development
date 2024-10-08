@@ -78,7 +78,7 @@
                                             </td>
                                             <td>{{ $item->Receipt_ID}}</td>
                                             @if ($item->type_Proposal == 'Company')
-                                                <td>{{ isset($item->company->Company_Name) ? $item->company->Company_Name : '' }}</td>
+                                                <td>{{ isset($item->company00->Company_Name) ? $item->company00->Company_Name : '' }}</td>
                                             @elseif ($item->type_Proposal == 'Guest')
                                                 <td>{{ isset($item->guest->First_name) && isset($item->guest->Last_name) ? $item->guest->First_name.' '.$item->guest->Last_name : '' }}</td>
                                             @elseif ($item->type_Proposal == 'company_tax')

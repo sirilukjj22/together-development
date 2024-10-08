@@ -59,7 +59,6 @@
                                         <th>Expiration Date</th>
                                         <th class="text-center">Amount</th>
                                         <th class="text-center">Paid</th>
-                                        <th class="text-center">Balance</th>
                                         <th class="text-center">Approve By</th>
                                         <th class="text-center">Document status</th>
                                         <th class="text-center">Order</th>
@@ -88,13 +87,6 @@
                                                     0
                                                 @else
                                                     {{ number_format($item->receive_amount) }}
-                                                @endif
-                                            </td>
-                                            <td style="text-align: center;">
-                                                @if ($item->min_balance == 0 )
-                                                    0
-                                                @else
-                                                {{ number_format($item->min_balance) }}
                                                 @endif
                                             </td>
                                             <td style="text-align: center;">
@@ -235,7 +227,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,3,4,5,6,7,8,9,10], className: 'dt-center td-content-center' },
+                                { targets: [0,3,4,5,6,7,8,9], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -252,7 +244,6 @@
                         { data: 'ExpirationDate' },
                         { data: 'Amount' },
                         { data: 'Deposit' },
-                        { data: 'Balance' },
                         { data: 'Approve' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }

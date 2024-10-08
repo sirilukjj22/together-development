@@ -510,13 +510,7 @@
                 datatype: "JSON",
                 async: false,
                 success: function(response) {
-                    console.log("AJAX request successful: ", response);
-                    if (response.success) {
-                        // เปลี่ยนไปยังหน้าที่ต้องการ
                     location.reload();
-                    } else {
-                        alert("An error occurred while processing the request.");
-                    }
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX request failed: ", status, error);

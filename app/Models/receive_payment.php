@@ -30,7 +30,7 @@ class receive_payment extends Model
     {
         return $this->hasOne(Guest::class, 'Profile_ID', 'company');
     }
-    public function company()
+    public function company00()
     {
         return $this->hasOne(companys::class, 'Profile_ID', 'company');
     }

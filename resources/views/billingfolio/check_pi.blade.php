@@ -294,6 +294,7 @@
                         </div>
                     </div>
                     <div class="card-body">
+                        <b>Proposal</b>
                         <table id="ProposalTable" class="example1 ui striped table nowrap unstackable hover" style="width:100%">
                             <thead >
                                 <tr>
@@ -317,15 +318,16 @@
                                     <th style="text-align:center;">{{ number_format($AddTax, 2, '.', ',') }}</th>
                                     <th style="text-align:center;">{{ number_format($Nettotal, 2, '.', ',') }}</th>
                                     <th style="text-align:left;">
-                                        <button type="button" class="btn btn-light-info" onclick="window.location.href='{{ url('/Receipt/Quotation/view/quotation/view/'.$ProposalID) }}'">
-                                           View
-                                        </button>
+                                        <a type="button" class="btn btn-light-info" target="_blank" href="{{ url('/Receipt/Quotation/view/quotation/view/'.$ProposalID) }}">
+                                            View
+                                        </a>
                                     </th>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="card-body">
+                        <b>Invoice</b>
                         <table id="InvoiceTable" class="example1 ui striped table nowrap unstackable hover" style="width:100%">
                             <thead >
                                 <tr>
@@ -345,23 +347,13 @@
                                                 <th style="text-align:center;">{{ number_format($item2->sumpayment, 2, '.', ',') }}</th>
                                                 <th style="text-align:center;">{{$item2->valid}}</th>
                                                 <th style="text-align:center;">
-                                                    @if ($item2->status_receive == 1 )
-                                                        <span class="badge rounded-pill bg-success">Generate</span>
-                                                    @else
-                                                        <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
-                                                    @endif
+                                                    <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
                                                 </th>
                                                 <th style="text-align:center;">{{ number_format($item2->sumpayment, 2, '.', ',') }}</th>
                                                 <th style="text-align:left;">
-                                                    @if ($item2->Paid == 0)
-                                                        <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$item2->id) }}'">
-                                                            Paid
-                                                        </button>
-                                                    @else
-                                                        <button type="button" class="btn btn-light-info" onclick="window.location.href='{{ url('/Receipt/Invice/view/'.$item2->id) }}'">
-                                                            View
-                                                        </button>
-                                                    @endif
+                                                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/'.$item2->id) }}'">
+                                                        Paid
+                                                    </button>
                                                 </th>
                                             </tr>
                                     @endforeach
@@ -369,6 +361,54 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="card-body">
+                        <b>Receipt</b>
+                        <table id="ReceiptTable" class="example1 ui striped table nowrap unstackable hover" style="width:100%">
+                            <thead >
+                                <tr>
+                                    <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Receive ID</th>
+                                    <th style="background-color: rgba(45, 127, 123, 1); color:#fff;">Proforma Invoice ID</th>
+                                    <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Category</th>
+                                    <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">paymentDate</th>
+                                    <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Status</th>
+                                    <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;">Total Amount</th>
+                                    <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:5%;">List</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(!empty($Receipt))
+                                    @foreach ($Receipt as $key => $item3)
+                                        <tr>
+                                            <th style="text-align:left;">{{$item3->Receipt_ID}}</th>
+                                            <th style="text-align:left;">{{$item3->Invoice_ID}}</th>
+                                            <th style="text-align:center;">{{ $item3->category}}</th>
+                                            <th style="text-align:center;">{{$item3->paymentDate}}</th>
+                                            <th style="text-align:center;">
+                                                <span class="badge rounded-pill bg-success">Approved</span>
+                                            </th>
+                                            <th style="text-align:center;">{{ number_format($item3->Amount, 2, '.', ',') }}</th>
+                                            <th style="text-align:left;">
+                                                <a type="button" class="btn btn-light-info" target="_blank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item3->id) }}">
+                                                    View
+                                                </a>
+                                            </th>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 col-ml-12 col-sm-12">
+            <div class="col-lg-1 col-ml-1 col-sm-4" style="float: right">
+                <div class="row">
+                    @if ($status == '1')
+                        <button type="button" class="btn btn-color-green lift btn_modal">
+                            Next
+                        </button>
+                    @endif
                 </div>
             </div>
         </div>
@@ -404,7 +444,7 @@
         }
     </script>
     <script>
-        const table_name = ['roomTable','fbTable','banquetTable','entertainmentTable','ProposalTable','InvoiceTable'];
+        const table_name = ['roomTable','fbTable','banquetTable','entertainmentTable','ProposalTable','InvoiceTable','ReceiptTable'];
         $(document).ready(function() {
             for (let index = 0; index < table_name.length; index++) {
                 new DataTable('#'+table_name[index], {
