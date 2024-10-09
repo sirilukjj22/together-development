@@ -4142,7 +4142,7 @@ class QuotationController extends Controller
                     }
                 }
             }
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             return response()->json([
                 'error' => $e->getMessage()
             ], 500);
