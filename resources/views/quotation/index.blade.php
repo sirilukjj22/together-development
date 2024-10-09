@@ -193,7 +193,7 @@
                                                 <th class="text-center" data-priority="1">Proposal ID</th>
                                                 <th class="text-center" data-priority="1">Company / Individual</th>
                                                 <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Date Type</th>
+                                                <th class="text-center">Day Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Expiration Date</th>
@@ -400,7 +400,7 @@
                                                 <th class="text-center" data-priority="1">Proposal ID</th>
                                                 <th class="text-center" data-priority="1">Company</th>
                                                 <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Date Type</th>
+                                                <th class="text-center">Day Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Expiration Date</th>
@@ -436,16 +436,16 @@
                                                     @endif
 
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
                                                     @if ($item->checkin)
                                                     <td style="text-align: center;">{{ $item->checkin}}</td>
-                                                    <td style="text-align: center;">{{ $item->checkout}}</td>
+                                                    <td style="text-align: center;">{{ $item->checkout }}</td>
                                                     @else
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
-                                                    <td style="text-align: center;"> <span class="days-count"></span>วัน</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -566,12 +566,11 @@
                                                 <th class="text-center" data-priority="1">Proposal ID</th>
                                                 <th class="text-center" data-priority="1">Company</th>
                                                 <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Date Type</th>
+                                                <th class="text-center">Day Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Period</th>
-                                                <th class="text-center">Document Period</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -603,15 +602,15 @@
                                                     @endif
 
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
                                                     @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ $item->checkin }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkin}}</td>
                                                     <td style="text-align: center;">{{ $item->checkout }}</td>
                                                     @else
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
@@ -711,11 +710,11 @@
                                                 <th class="text-center" data-priority="1">Proposal ID</th>
                                                 <th class="text-center" data-priority="1">Company</th>
                                                 <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Day Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Date type</th>
-                                                <th class="text-center">Document Period</th>
+                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Period</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -747,16 +746,16 @@
                                                     @endif
 
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
                                                     @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ $item->checkin }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkin}}</td>
                                                     <td style="text-align: center;">{{ $item->checkout }}</td>
                                                     @else
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
-                                                    <td style="text-align: center;"> <span class="days-count"></span>วัน</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -874,11 +873,11 @@
                                                 <th class="text-center" data-priority="1">Proposal ID</th>
                                                 <th class="text-center" data-priority="1">Company</th>
                                                 <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Day Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Date type</th>
-                                                <th class="text-center">Document Period</th>
+                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Period</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -910,15 +909,15 @@
                                                     @endif
 
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
                                                     @if ($item->checkin)
-                                                    <td style="text-align: center;">{{ $item->checkin }}</td>
+                                                    <td style="text-align: center;">{{ $item->checkin}}</td>
                                                     <td style="text-align: center;">{{ $item->checkout }}</td>
                                                     @else
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
@@ -1028,11 +1027,11 @@
                                                 <th class="text-center" data-priority="1">Proposal ID</th>
                                                 <th class="text-center" data-priority="1">Company</th>
                                                 <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Day Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Date type</th>
-                                                <th class="text-center">Document Period</th>
+                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Period</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -1271,7 +1270,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14,15], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1286,10 +1285,11 @@
                         { data: 'Proposal_ID' },
                         { data: 'Company_Name' },
                         { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
+                        { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'Type' },
+                        { data: 'ExpirationDate' },
+                        { data: 'Period' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
@@ -1348,7 +1348,7 @@
                     $('#'+id+'-paginate').append(paginateSearchPending(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14,15], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1363,10 +1363,11 @@
                         { data: 'Proposal_ID' },
                         { data: 'Company_Name' },
                         { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
+                        { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'Type' },
+                        { data: 'ExpirationDate' },
+                        { data: 'Period' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
@@ -1425,7 +1426,7 @@
                     $('#'+id+'-paginate').append(paginateSearchAwaiting(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14,15], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1440,10 +1441,11 @@
                         { data: 'Proposal_ID' },
                         { data: 'Company_Name' },
                         { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
+                        { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'Type' },
+                        { data: 'ExpirationDate' },
+                        { data: 'Period' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
@@ -1502,7 +1504,7 @@
                     $('#'+id+'-paginate').append(paginateSearchApproved(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14,15], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1517,10 +1519,11 @@
                         { data: 'Proposal_ID' },
                         { data: 'Company_Name' },
                         { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
+                        { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'Type' },
+                        { data: 'ExpirationDate' },
+                        { data: 'Period' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
@@ -1578,7 +1581,7 @@
                     $('#'+id+'-paginate').append(paginateSearchReject(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14,15], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1593,10 +1596,11 @@
                         { data: 'Proposal_ID' },
                         { data: 'Company_Name' },
                         { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
+                        { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'Type' },
+                        { data: 'ExpirationDate' },
+                        { data: 'Period' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
@@ -1654,7 +1658,7 @@
                     $('#'+id+'-paginate').append(paginateSearchCancel(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14], className: 'dt-center td-content-center' },
+                                { targets: [0,1,2,4,5,6,7,8,9,10,11,12,13,14,15], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -1669,10 +1673,11 @@
                         { data: 'Proposal_ID' },
                         { data: 'Company_Name' },
                         { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
+                        { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'Type' },
+                        { data: 'ExpirationDate' },
+                        { data: 'Period' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
@@ -1744,8 +1749,6 @@
         $(document).ready(function() {
             // รายการ ID ของตารางทั้งหมด
             const tableNames = ['proposalTable','proposalPendingTable','proposalAwaitingTable','proposalApprovedTable','proposalRejectTable','proposalCancelTable'];
-
-            // วนลูปผ่านแต่ละตารางตาม ID ที่กำหนด
             tableNames.forEach(function (tableName) {
                 const table = document.getElementById(tableName);
                 if (table) {
@@ -1753,7 +1756,9 @@
                     table.querySelectorAll('#update_date').forEach(function (input) {
                         // แปลงวันที่ใน `<input>` เป็นรูปแบบ Date ของ JavaScript
                         const issueDate = new Date(input.value);
-                        // วันที่ปัจจุบัน
+                        // วันที่ปัจจุบัน-
+
+
                         const currentDate = new Date();
                         // คำนวณความแตกต่างของเวลาระหว่างสองวันที่ (ในหน่วยมิลลิวินาที)
                         const timeDifference = currentDate - issueDate;
@@ -1775,6 +1780,7 @@
                                 console.error('ไม่พบแถว <tr> ที่เกี่ยวข้อง');
                             }
                     });
+
                 }
             });
         });

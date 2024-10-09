@@ -307,6 +307,8 @@ class QuotationController extends Controller
                 $btn_action = "";
                 $btn_status = "";
                 $name ="";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
                 // สร้าง dropdown สำหรับการทำรายการ
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
@@ -416,15 +418,16 @@ class QuotationController extends Controller
                     $btn_action .= '</div>';
 
                     $data[] = [
-                        'number' => $key + 1,
+                        'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->updated_at . '">',
                         'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                         'Proposal_ID' => $value->Quotation_ID,
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
+                        'Type'=>$value->Date_type,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'Type'=>$value->Date_type,
+                        'ExpirationDate' => $value->Expirationdate,
+                        'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
@@ -484,6 +487,8 @@ class QuotationController extends Controller
                 $btn_action = "";
                 $btn_status = "";
                 $name = "";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
                 if ($value->type_Proposal == 'Company') {
                     $name = '<td>' .@$value->company->Company_Name. '</td>';
                 }else {
@@ -592,10 +597,11 @@ class QuotationController extends Controller
                     'Proposal_ID' => $value->Quotation_ID,
                     'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
-                    'ExpirationDate' => $value->Expirationdate,
+                    'Type'=>$value->Date_type,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'Type'=>$value->Date_type,
+                    'ExpirationDate' => $value->Expirationdate,
+                    'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
@@ -634,6 +640,8 @@ class QuotationController extends Controller
                 $btn_action = "";
                 $btn_status = "";
                 $name ="";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
                 // สร้าง dropdown สำหรับการทำรายการ
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
@@ -707,10 +715,11 @@ class QuotationController extends Controller
                         'Proposal_ID' => $value->Quotation_ID,
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
+                        'Type'=>$value->Date_type,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'Type'=>$value->Date_type,
+                        'ExpirationDate' => $value->Expirationdate,
+                        'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
@@ -756,6 +765,8 @@ class QuotationController extends Controller
                 $btn_action = "";
                 $btn_status = "";
                 $name = "";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
                 if ($value->type_Proposal == 'Company') {
                     $name = '<td>' .@$value->company->Company_Name. '</td>';
                 }else {
@@ -824,10 +835,11 @@ class QuotationController extends Controller
                     'Proposal_ID' => $value->Quotation_ID,
                     'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
-                    'ExpirationDate' => $value->Expirationdate,
+                    'Type'=>$value->Date_type,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'Type'=>$value->Date_type,
+                    'ExpirationDate' => $value->Expirationdate,
+                    'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
@@ -866,6 +878,8 @@ class QuotationController extends Controller
                 $btn_action = "";
                 $btn_status = "";
                 $name ="";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
                 // สร้าง dropdown สำหรับการทำรายการ
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
@@ -915,10 +929,11 @@ class QuotationController extends Controller
                         'Proposal_ID' => $value->Quotation_ID,
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
+                        'Type'=>$value->Date_type,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'Type'=>$value->Date_type,
+                        'ExpirationDate' => $value->Expirationdate,
+                        'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
@@ -962,6 +977,8 @@ class QuotationController extends Controller
                 $btn_action = "";
                 $btn_status = "";
                 $name = "";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
                 if ($value->type_Proposal == 'Company') {
                     $name = '<td>' .@$value->company->Company_Name. '</td>';
                 }else {
@@ -1006,10 +1023,11 @@ class QuotationController extends Controller
                     'Proposal_ID' => $value->Quotation_ID,
                     'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
-                    'ExpirationDate' => $value->Expirationdate,
+                    'Type'=>$value->Date_type,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'Type'=>$value->Date_type,
+                    'ExpirationDate' => $value->Expirationdate,
+                    'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
@@ -1056,6 +1074,8 @@ class QuotationController extends Controller
                 $btn_action = "";
                 $btn_status = "";
                 $name ="";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
                 // สร้าง dropdown สำหรับการทำรายการ
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
@@ -1125,10 +1145,11 @@ class QuotationController extends Controller
                         'Proposal_ID' => $value->Quotation_ID,
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
+                        'Type'=>$value->Date_type,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'Type'=>$value->Date_type,
+                        'ExpirationDate' => $value->Expirationdate,
+                        'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
@@ -1192,6 +1213,8 @@ class QuotationController extends Controller
                 $btn_action = "";
                 $btn_status = "";
                 $name = "";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
                 if ($value->type_Proposal == 'Company') {
                     $name = '<td>' .@$value->company->Company_Name. '</td>';
                 }else {
@@ -1257,10 +1280,11 @@ class QuotationController extends Controller
                     'Proposal_ID' => $value->Quotation_ID,
                     'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
-                    'ExpirationDate' => $value->Expirationdate,
+                    'Type'=>$value->Date_type,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'Type'=>$value->Date_type,
+                    'ExpirationDate' => $value->Expirationdate,
+                    'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
@@ -1299,6 +1323,8 @@ class QuotationController extends Controller
                 $btn_action = "";
                 $btn_status = "";
                 $name ="";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
                 // สร้าง dropdown สำหรับการทำรายการ
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
@@ -1361,10 +1387,11 @@ class QuotationController extends Controller
                         'Proposal_ID' => $value->Quotation_ID,
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
+                        'Type'=>$value->Date_type,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'Type'=>$value->Date_type,
+                        'ExpirationDate' => $value->Expirationdate,
+                        'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
@@ -1410,6 +1437,8 @@ class QuotationController extends Controller
                 $btn_action = "";
                 $btn_status = "";
                 $name = "";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
                 if ($value->type_Proposal == 'Company') {
                     $name = '<td>' .@$value->company->Company_Name. '</td>';
                 }else {
@@ -1467,10 +1496,11 @@ class QuotationController extends Controller
                     'Proposal_ID' => $value->Quotation_ID,
                     'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
-                    'ExpirationDate' => $value->Expirationdate,
+                    'Type'=>$value->Date_type,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'Type'=>$value->Date_type,
+                    'ExpirationDate' => $value->Expirationdate,
+                    'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
@@ -1509,6 +1539,8 @@ class QuotationController extends Controller
                 $btn_action = "";
                 $btn_status = "";
                 $name ="";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
                 // สร้าง dropdown สำหรับการทำรายการ
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
@@ -1571,10 +1603,11 @@ class QuotationController extends Controller
                         'Proposal_ID' => $value->Quotation_ID,
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
-                        'ExpirationDate' => $value->Expirationdate,
+                        'Type'=>$value->Date_type,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'Type'=>$value->Date_type,
+                        'ExpirationDate' => $value->Expirationdate,
+                        'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
@@ -1620,6 +1653,8 @@ class QuotationController extends Controller
                 $btn_action = "";
                 $btn_status = "";
                 $name = "";
+                $issueDate = Carbon::parse($value->updated_at); // แปลงเป็น Carbon
+                $daysPassed = $issueDate->diffInDays(now());
                 if ($value->type_Proposal == 'Company') {
                     $name = '<td>' .@$value->company->Company_Name. '</td>';
                 }else {
@@ -1677,10 +1712,11 @@ class QuotationController extends Controller
                     'Proposal_ID' => $value->Quotation_ID,
                     'Company_Name' => $name,
                     'IssueDate' => $value->issue_date,
-                    'ExpirationDate' => $value->Expirationdate,
+                    'Type'=>$value->Date_type,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'Type'=>$value->Date_type,
+                    'ExpirationDate' => $value->Expirationdate,
+                    'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,

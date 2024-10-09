@@ -194,7 +194,7 @@ class proposal_request extends Controller
             $data=$request->all();
             $id = $request->approved_id;
             $QuotationType = $request->QuotationType;
-            dd($data);
+
             if ($QuotationType == 'DummyProposal') {
                 $proposal = dummy_quotation::where('DummyNo',$id)->first();
                 $status = $proposal->status_document;
