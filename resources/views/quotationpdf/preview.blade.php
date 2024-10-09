@@ -536,14 +536,18 @@
                                         <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
                                     </tr>
+                                    @if ($SpecialDistext)
                                     <tr>
+
                                         <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
+                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }}</strong></td>
                                     </tr>
                                     <tr>
                                         <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
                                         <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
                                     </tr>
+
+                                    @endif
                                     <tr>
                                         <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
@@ -584,14 +588,17 @@
                                         <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
                                     </tr>
+                                    @if ($SpecialDistext)
                                     <tr>
                                         <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
                                     </tr>
+
                                     <tr>
                                         <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
                                         <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
                                     </tr>
+                                    @endif
                                     <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
 
                                     <tr style="background-color: #ffffff">
@@ -623,6 +630,7 @@
                                         <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
                                     </tr>
+                                    @if ($SpecialDistext)
                                     <tr>
                                         <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
@@ -631,6 +639,7 @@
                                         <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
                                         <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
                                     </tr>
+                                    @endif
                                     <tr>
                                         <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
@@ -664,14 +673,17 @@
                                         <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
                                     </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
-                                    </tr>
+                                    @if ($SpecialDistext)
+                                        <tr>
+                                            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
+                                            <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
+                                            <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
+                                        </tr>
+                                    @endif
+
                                     <tr>
                                         <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
@@ -1117,15 +1129,17 @@
                                         <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
                                     </tr>
-                                    @if ($SpecialDis)
+                                    @if ($SpecialDistext)
                                     <tr>
+
                                         <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
+                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }}</strong></td>
                                     </tr>
                                     <tr>
                                         <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
                                         <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
                                     </tr>
+
                                     @endif
                                     <tr>
                                         <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
@@ -1167,16 +1181,17 @@
                                         <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
                                     </tr>
-                                    @if ($SpecialDis)
+                                    @if ($SpecialDistext)
                                     <tr>
                                         <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
                                     </tr>
-                                    @endif
+
                                     <tr>
                                         <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
                                         <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
                                     </tr>
+                                    @endif
                                     <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
 
                                     <tr style="background-color: #ffffff">
@@ -1208,7 +1223,7 @@
                                         <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
                                     </tr>
-                                    @if ($SpecialDis)
+                                    @if ($SpecialDistext)
                                     <tr>
                                         <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
@@ -1251,14 +1266,17 @@
                                         <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
                                     </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
-                                    </tr>
+                                    @if ($SpecialDistext)
+                                        <tr>
+                                            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
+                                            <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
+                                            <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
+                                        </tr>
+                                    @endif
+
                                     <tr>
                                         <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
                                         <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>

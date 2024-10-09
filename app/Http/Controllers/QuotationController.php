@@ -2127,6 +2127,7 @@ class QuotationController extends Controller
                     'Contact_Name'=>$Contact_Name,
                     'Contact_phone'=>$Contact_phone,
                     'Contact_Email'=>$Contact_Email,
+                    'SpecialDistext'=>$SpecialDistext,
                 ];
                 $view= $template->name;
                 $pdf = FacadePdf::loadView('quotationpdf.preview',$data);
@@ -2794,6 +2795,7 @@ class QuotationController extends Controller
                             'Contact_Name'=>$Contact_Name,
                             'Contact_phone'=>$Contact_phone,
                             'Contact_Email'=>$Contact_Email,
+                            'SpecialDistext'=>$SpecialDistext,
                         ];
                         $view= $template->name;
                         $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
@@ -3182,6 +3184,7 @@ class QuotationController extends Controller
                     'Contact_Name'=>$Contact_Name,
                     'Contact_phone'=>$Contact_phone,
                     'Contact_Email'=>$Contact_Email,
+                    'SpecialDistext'=>$SpecialDistext,
                 ];
                 $view= $template->name;
                 $pdf = FacadePdf::loadView('quotationpdf.preview',$data);
@@ -4066,6 +4069,7 @@ class QuotationController extends Controller
                         'Contact_Name'=>$Contact_Name,
                         'Contact_phone'=>$Contact_phone,
                         'Contact_Email'=>$Contact_Email,
+                        'SpecialDistext'=>$SpecialDistext,
                     ];
                     $view= $template->name;
                     $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
@@ -4929,6 +4933,7 @@ class QuotationController extends Controller
             'Contact_Name'=>$Contact_Name,
             'Contact_phone'=>$Contact_phone,
             'Contact_Email'=>$Contact_Email,
+            'SpecialDistext'=>$SpecialDistext,
         ];
         $view= $template->name;
         $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
