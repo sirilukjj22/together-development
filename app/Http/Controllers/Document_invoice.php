@@ -761,6 +761,8 @@ class Document_invoice extends Controller
         $InvoiceID = $ID.$year.$month.$newRunNumber;
         $Quotation = Quotation::where('id', $id)->first();
         $QuotationID = $Quotation->Quotation_ID;
+        $Nettotal = $Quotation->Nettotal;
+
         if ($Quotation->type_Proposal == 'Company') {
             $CompanyID = $Quotation->Company_ID;
             $Company = companys::where('Profile_ID',$CompanyID)->first();
@@ -826,10 +828,16 @@ class Document_invoice extends Controller
 
         $invoices =document_invoices::where('Quotation_ID',$QuotationID)->whereIn('document_status',[1,2])->latest()->first();
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        $totalreceiptre = 0;
+        $receipt = receive_payment::where('Quotation_ID', $QuotationID)->get();
+        foreach ($receipt as $item) {
+            $totalreceiptre +=  $item->Amount;
+        }
+        $totalreceipt = $Nettotal-$totalreceiptre;
         if ($invoices) {
             $deposit = $invoices->deposit;
             $Deposit =$deposit+ 1;
-            $balance = $invoices->balance;
+            $balance = $totalreceipt;
             $parts = explode('-', $QuotationID);
             $cleanedID = $parts[0] . '-' . $parts[1];
             $Refler_ID = $cleanedID;
