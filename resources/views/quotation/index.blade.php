@@ -193,11 +193,11 @@
                                                 <th class="text-center" data-priority="1">Proposal ID</th>
                                                 <th class="text-center" data-priority="1">Company / Individual</th>
                                                 <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Date Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Date type</th>
-                                                <th class="text-center">Document Period</th>
+                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Period</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -228,7 +228,7 @@
                                                         <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                     @endif
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
                                                     @if ($item->checkin)
                                                     <td style="text-align: center;">{{ $item->checkin}}</td>
                                                     <td style="text-align: center;">{{ $item->checkout }}</td>
@@ -236,8 +236,8 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
-                                                    <td style="text-align: center;"> <span class="days-count"></span>วัน</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -400,11 +400,11 @@
                                                 <th class="text-center" data-priority="1">Proposal ID</th>
                                                 <th class="text-center" data-priority="1">Company</th>
                                                 <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Date Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Date type</th>
-                                                <th class="text-center">Document Period</th>
+                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Period</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -419,6 +419,7 @@
                                                 <tr>
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
+                                                        <input type="hidden" id="update_date" value="{{$item->updated_at}}">
                                                     </td>
                                                     <td  style="text-align: center;">
                                                         @if ($item->DummyNo == $item->Quotation_ID )
@@ -444,7 +445,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     @endif
                                                     <td style="text-align: center;">{{$item->Date_type}}</td>
-
+                                                    <td style="text-align: center;"> <span class="days-count"></span>วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -565,10 +566,11 @@
                                                 <th class="text-center" data-priority="1">Proposal ID</th>
                                                 <th class="text-center" data-priority="1">Company</th>
                                                 <th class="text-center">Issue Date</th>
-                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Date Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Date type</th>
+                                                <th class="text-center">Expiration Date</th>
+                                                <th class="text-center">Period</th>
                                                 <th class="text-center">Document Period</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
@@ -584,6 +586,7 @@
                                                 <tr>
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
+                                                        <input type="hidden" id="update_date" value="{{$item->updated_at}}">
                                                     </td>
                                                     <td  style="text-align: center;">
                                                         @if ($item->DummyNo == $item->Quotation_ID )
@@ -609,6 +612,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     @endif
                                                     <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -726,6 +730,7 @@
                                                 <tr>
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
+                                                        <input type="hidden" id="update_date" value="{{$item->updated_at}}">
                                                     </td>
                                                     <td  style="text-align: center;">
                                                         @if ($item->DummyNo == $item->Quotation_ID )
@@ -751,6 +756,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     @endif
                                                     <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td style="text-align: center;"> <span class="days-count"></span>วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -887,6 +893,7 @@
                                                 <tr>
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
+                                                        <input type="hidden" id="update_date" value="{{$item->updated_at}}">
                                                     </td>
                                                     <td  style="text-align: center;">
                                                         @if ($item->DummyNo == $item->Quotation_ID )
@@ -912,6 +919,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     @endif
                                                     <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -1024,6 +1032,7 @@
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Date type</th>
+                                                <th class="text-center">Document Period</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -1038,6 +1047,7 @@
                                                 <tr>
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
+                                                        <input type="hidden" id="update_date" value="{{$item->updated_at}}">
                                                     </td>
                                                     <td  style="text-align: center;">
                                                         @if ($item->DummyNo == $item->Quotation_ID )
@@ -1063,6 +1073,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     @endif
                                                     <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -1732,7 +1743,7 @@
     <script>
         $(document).ready(function() {
             // รายการ ID ของตารางทั้งหมด
-            const tableNames = ['proposalTable', 'proposalPendingTable', 'proposalAwaitingTable', 'proposalApprovedTable', 'proposalRejectTable', 'proposalCancelTable'];
+            const tableNames = ['proposalTable','proposalPendingTable','proposalAwaitingTable','proposalApprovedTable','proposalRejectTable','proposalCancelTable'];
 
             // วนลูปผ่านแต่ละตารางตาม ID ที่กำหนด
             tableNames.forEach(function (tableName) {
@@ -1752,11 +1763,16 @@
 
 
                         // แสดงผลลัพธ์ใน `<span>` ที่อยู่ในแถวเดียวกัน
-                            const nextCell = input.parentElement.nextElementSibling;
-                            if (nextCell && nextCell.querySelector('.days-count')) {
-                                nextCell.querySelector('.days-count').innerText = daysPassed;
+                            const row = input.closest('tr');
+                            if (row) {
+                                const daysCountSpan = row.querySelector('.days-count');
+                                if (daysCountSpan) {
+                                    daysCountSpan.innerText = daysPassed;
+                                } else {
+                                    console.error('ไม่พบ .days-count ในแถวเดียวกัน');
+                                }
                             } else {
-                                console.error('ไม่พบ .days-count ในเซลล์ถัดไป');
+                                console.error('ไม่พบแถว <tr> ที่เกี่ยวข้อง');
                             }
                     });
                 }

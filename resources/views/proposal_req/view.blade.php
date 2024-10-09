@@ -216,16 +216,20 @@
                                                     <div class="d-grid-2column" >
                                                         <div class="" >
                                                             <span id="Subtotal">Subtotal : </span><br>
-                                                            <span id="Special">Special Discount : </span><br>
-                                                            <span id="less">Subtotal less Discount : </span><br>
+                                                            @if ($itemdata->SpecialDiscountBath)
+                                                                <span id="Special">Special Discount : </span><br>
+                                                                <span id="less">Subtotal less Discount : </span><br>
+                                                            @endif
                                                             <span id="Before">Price Before Tax :</span><br>
                                                             <span id="Added">Value Added Tax : </span><br>
                                                             <span id="Net">Net Total : </span><br>
                                                         </div>
                                                         <div class="">
                                                             {{ number_format($price50, 2, '.', ',') }} <br>
+                                                            @if ($itemdata->SpecialDiscountBath)
                                                             {{ number_format($sp, 2, '.', ',') }}<br>
                                                             {{ number_format($sp50, 2, '.', ',') }}<br>
+                                                            @endif
                                                             {{ number_format($priceless50, 2, '.', ',') }}<br>
                                                             {{ number_format($Add50, 2, '.', ',') }}<br>
                                                             {{ number_format($Net50, 2, '.', ',') }}<br>
@@ -238,14 +242,18 @@
                                                 <div class="row">
                                                     <div class="col-lg-8 col-md-4 col-sm-4">
                                                             <span id="Subtotal">Subtotal : </span><br>
+                                                            @if ($itemdata->SpecialDiscountBath)
                                                             <span id="Special">Special Discount : </span><br>
                                                             <span id="less">Subtotal less Discount : </span><br>
+                                                            @endif
                                                             <span id="Net">Net Total : </span><br>
                                                         </div>
                                                         <div class="col-4 col-md-8 col-sm-8">
                                                             {{ number_format($price51, 2, '.', ',') }} <br>
+                                                            @if ($itemdata->SpecialDiscountBath)
                                                             {{ number_format($sp, 2, '.', ',') }}<br>
                                                             {{ number_format($sp51, 2, '.', ',') }}<br>
+                                                            @endif
                                                             {{ number_format($sp51, 2, '.', ',') }} <br>
                                                         </div>
                                                     </div>
@@ -257,15 +265,19 @@
                                                     <div class="row">
                                                         <div class="col-8">
                                                             <span id="Subtotal">Subtotal : </span><br>
+                                                            @if ($itemdata->SpecialDiscountBath)
                                                             <span id="Special">Special Discount : </span><br>
                                                             <span id="less">Subtotal less Discount : </span><br>
+                                                            @endif
                                                             <span id="Added">Value Added Tax : </span><br>
                                                             <span id="Net">Net Total : </span><br>
                                                         </div>
                                                         <div class="col-4">
                                                             {{ number_format($price52, 2, '.', ',') }} <br>
+                                                            @if ($itemdata->SpecialDiscountBath)
                                                             {{ number_format($sp, 2, '.', ',') }}<br>
                                                             {{ number_format($sp52, 2, '.', ',') }} <br>
+                                                            @endif
                                                             {{ number_format($Add52, 2, '.', ',') }} <br>
                                                             {{ number_format($pricebefore52, 2, '.', ',') }} <br>
                                                         </div>
