@@ -2353,6 +2353,7 @@ class DummyQuotationController extends Controller
             $save->eventformat = $dummy->eventformat;
             $save->vat_type = $dummy->vat_type;
             $save->issue_date = $dummy->issue_date;
+            $save->Date_type = $dummy->Date_type;
             $save->Expirationdate = $dummy->Expirationdate;
             $save->Document_issuer = $dummy->Document_issuer;
             $save->type_Proposal = $dummy->type_Proposal;
@@ -2707,6 +2708,7 @@ class DummyQuotationController extends Controller
             $pdf->save($path . $Quotation_ID . '.pdf');
             $ProposalData = Quotation::where('Quotation_ID',$Quotation_ID)->first();
             $ProposalID = $ProposalData->Quotation_ID;
+            $ProposalIDS = $ProposalData->id;
             $ProposalProducts = document_quotation::where('Quotation_ID',$ProposalID)->get();
             $dataArray = $ProposalData->toArray();
             $datarequest = [
@@ -2868,7 +2870,7 @@ class DummyQuotationController extends Controller
             $save->Category = 'Create :: Proposal';
             $save->content =$datacompany;
             $save->save();
-            return redirect()->route('DummyQuotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            return redirect()->route('Proposal.email', ['id' => $ProposalIDS])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -3037,10 +3039,10 @@ class DummyQuotationController extends Controller
                         'DummyNo' => $value->DummyNo,
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
+                        'Type'=>$value->Date_type ?? '-',
+                        'CheckIn' => $value->checkin ?? '-',
+                        'CheckOut'=> $value->checkout ?? '-',
                         'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin,
-                        'CheckOut'=> $value->checkout,
-                        'Type'=>$value->Date_type,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
                         'Approve' => $value->Confirm_by == null ? '-' : @$value->userConfirm->name,
@@ -3215,8 +3217,8 @@ class DummyQuotationController extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin,
-                        'CheckOut'=> $value->checkout,
+                        'CheckIn' => $value->checkin ?? '-',
+                        'CheckOut'=> $value->checkout ?? '-',
                         'Type'=>$value->Date_type,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
@@ -3361,8 +3363,8 @@ class DummyQuotationController extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin,
-                        'CheckOut'=> $value->checkout,
+                        'CheckIn' => $value->checkin ?? '-',
+                        'CheckOut'=> $value->checkout ?? '-',
                         'Type'=>$value->Date_type,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
@@ -3507,10 +3509,10 @@ class DummyQuotationController extends Controller
                         'number' => $checkbox,
                         'DummyNo' => $value->DummyNo,
                         'Company_Name' => $name,
-                        'IssueDate' => $value->issue_date,
+                       'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin,
-                        'CheckOut'=> $value->checkout,
+                        'CheckIn' => $value->checkin ?? '-',
+                        'CheckOut'=> $value->checkout ?? '-',
                         'Type'=>$value->Date_type,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
@@ -3613,10 +3615,10 @@ class DummyQuotationController extends Controller
                         'number' => $checkbox,
                         'DummyNo' => $value->DummyNo,
                         'Company_Name' => $name,
-                        'IssueDate' => $value->issue_date,
+                       'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin,
-                        'CheckOut'=> $value->checkout,
+                        'CheckIn' => $value->checkin ?? '-',
+                        'CheckOut'=> $value->checkout ?? '-',
                         'Type'=>$value->Date_type,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
@@ -3880,10 +3882,10 @@ class DummyQuotationController extends Controller
                         'number' => $checkbox,
                         'DummyNo' => $value->DummyNo,
                         'Company_Name' => $name,
-                        'IssueDate' => $value->issue_date,
+                       'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin,
-                        'CheckOut'=> $value->checkout,
+                        'CheckIn' => $value->checkin ?? '-',
+                        'CheckOut'=> $value->checkout ?? '-',
                         'Type'=>$value->Date_type,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
@@ -4148,10 +4150,10 @@ class DummyQuotationController extends Controller
                         'number' => $checkbox,
                         'DummyNo' => $value->DummyNo,
                         'Company_Name' => $name,
-                        'IssueDate' => $value->issue_date,
+                       'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin,
-                        'CheckOut'=> $value->checkout,
+                        'CheckIn' => $value->checkin ?? '-',
+                        'CheckOut'=> $value->checkout ?? '-',
                         'Type'=>$value->Date_type,
                         'DiscountP' => $value->SpecialDiscount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
@@ -4401,10 +4403,10 @@ class DummyQuotationController extends Controller
                         'number' => $checkbox,
                         'DummyNo' => $value->DummyNo,
                         'Company_Name' => $name,
-                        'IssueDate' => $value->issue_date,
+                       'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin,
-                        'CheckOut'=> $value->checkout,
+                        'CheckIn' => $value->checkin ?? '-',
+                        'CheckOut'=> $value->checkout ?? '-',
                         'Type'=>$value->Date_type,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,
@@ -4692,10 +4694,10 @@ class DummyQuotationController extends Controller
                         'number' => $checkbox,
                         'DummyNo' => $value->DummyNo,
                         'Company_Name' => $name,
-                        'IssueDate' => $value->issue_date,
+                       'IssueDate' => $value->issue_date,
                         'ExpirationDate' => $value->Expirationdate,
-                        'CheckIn' => $value->checkin,
-                        'CheckOut'=> $value->checkout,
+                        'CheckIn' => $value->checkin ?? '-',
+                        'CheckOut'=> $value->checkout ?? '-',
                         'Type'=>$value->Date_type,
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'Operated' => $value->userOperated == null ? '-' : @$value->userOperated->name,

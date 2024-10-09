@@ -3314,7 +3314,6 @@ class QuotationController extends Controller
                         } else {
                             $Products = array_merge($Productslast,$Products);
                         }
-
                     }else{
                         $Products = $Productslast;
                     }

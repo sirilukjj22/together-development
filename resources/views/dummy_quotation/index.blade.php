@@ -234,7 +234,7 @@
                                                         <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                     @endif
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{$item->Date_type ?? '-'}}</td>
                                                     @if ($item->checkin)
                                                     <td style="text-align: center;">{{ $item->checkin}}</td>
                                                     <td style="text-align: center;">{{ $item->checkout }}</td>
@@ -242,7 +242,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -409,10 +409,10 @@
                                                 <th>ID</th>
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
-                                                <th>Expiration Date</th>
+                                                <th class="text-center">Date type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Date type</th>
+                                                <th>Expiration Date</th>
                                                 <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
@@ -444,7 +444,7 @@
                                                         <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                     @endif
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{$item->Date_type ?? '-'}}</td>
                                                     @if ($item->checkin)
                                                     <td style="text-align: center;">{{ $item->checkin}}</td>
                                                     <td style="text-align: center;">{{ $item->checkout }}</td>
@@ -452,7 +452,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -596,10 +596,10 @@
                                                 <th>ID</th>
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
-                                                <th>Expiration Date</th>
+                                                <th class="text-center">Date type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Date type</th>
+                                                <th>Expiration Date</th>
                                                 <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
@@ -631,7 +631,7 @@
                                                         <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                     @endif
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{$item->Date_type ?? '-'}}</td>
                                                     @if ($item->checkin)
                                                     <td style="text-align: center;">{{ $item->checkin}}</td>
                                                     <td style="text-align: center;">{{ $item->checkout }}</td>
@@ -639,7 +639,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -732,10 +732,10 @@
                                                 <th>ID</th>
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
-                                                <th>Expiration Date</th>
+                                                <th class="text-center">Date type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Date type</th>
+                                                <th>Expiration Date</th>
                                                 <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
@@ -767,7 +767,7 @@
                                                         <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                     @endif
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{$item->Date_type ?? '-'}}</td>
                                                     @if ($item->checkin)
                                                     <td style="text-align: center;">{{ $item->checkin}}</td>
                                                     <td style="text-align: center;">{{ $item->checkout }}</td>
@@ -775,7 +775,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -937,10 +937,10 @@
                                                 <th>ID</th>
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
-                                                <th>Expiration Date</th>
+                                                <th class="text-center">Date type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Date type</th>
+                                                <th>Expiration Date</th>
                                                 <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
@@ -972,7 +972,7 @@
                                                         <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                     @endif
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{$item->Date_type ?? '-'}}</td>
                                                     @if ($item->checkin)
                                                     <td style="text-align: center;">{{ $item->checkin}}</td>
                                                     <td style="text-align: center;">{{ $item->checkout }}</td>
@@ -980,7 +980,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -1075,10 +1075,10 @@
                                                 <th>ID</th>
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
-                                                <th>Expiration Date</th>
+                                                <th class="text-center">Date type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Date type</th>
+                                                <th>Expiration Date</th>
                                                 <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
@@ -1110,7 +1110,7 @@
                                                         <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                     @endif
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{$item->Date_type ?? '-'}}</td>
                                                     @if ($item->checkin)
                                                     <td style="text-align: center;">{{ $item->checkin}}</td>
                                                     <td style="text-align: center;">{{ $item->checkout }}</td>
@@ -1118,7 +1118,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -1249,10 +1249,10 @@
                                                 <th>ID</th>
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
-                                                <th>Expiration Date</th>
+                                                <th class="text-center">Date type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Date type</th>
+                                                <th>Expiration Date</th>
                                                 <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
@@ -1284,7 +1284,7 @@
                                                         <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                     @endif
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{$item->Date_type ?? '-'}}</td>
                                                     @if ($item->checkin)
                                                     <td style="text-align: center;">{{ $item->checkin}}</td>
                                                     <td style="text-align: center;">{{ $item->checkout }}</td>
@@ -1292,7 +1292,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -1561,10 +1561,10 @@
                         { data: 'DummyNo' },
                         { data: 'Company_Name' },
                         { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
+                        { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'Type' },
+                        { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
                         { data: 'Operated' },
                         { data: 'Approve' },
@@ -1635,11 +1635,11 @@
                         { data: 'number'},
                         { data: 'DummyNo' },
                         { data: 'Company_Name' },
-                        { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
+                         { data: 'IssueDate' },
+                        { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'Type' },
+                        { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
                         { data: 'Operated' },
                         { data: 'Approve' },
@@ -1711,10 +1711,10 @@
                         { data: 'DummyNo' },
                         { data: 'Company_Name' },
                         { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
+                        { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'Type' },
+                        { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
                         { data: 'Operated' },
                         { data: 'Approve' },
@@ -1785,11 +1785,11 @@
                         { data: 'number' },
                         { data: 'DummyNo' },
                         { data: 'Company_Name' },
-                        { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
+                         { data: 'IssueDate' },
+                        { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'Type' },
+                        { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
                         { data: 'Operated' },
                         { data: 'Approve' },
@@ -1860,11 +1860,11 @@
                         { data: 'number' },
                         { data: 'DummyNo' },
                         { data: 'Company_Name' },
-                        { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
+                         { data: 'IssueDate' },
+                        { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'Type' },
+                        { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
                         { data: 'Operated' },
                         { data: 'Approve' },
@@ -1934,11 +1934,11 @@
                         { data: 'number' },
                         { data: 'DummyNo' },
                         { data: 'Company_Name' },
-                        { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
+                         { data: 'IssueDate' },
+                        { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'Type' },
+                        { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
                         { data: 'Operated' },
                         { data: 'Approve' },
@@ -2008,11 +2008,11 @@
                         { data: 'number' },
                         { data: 'DummyNo' },
                         { data: 'Company_Name' },
-                        { data: 'IssueDate' },
-                        { data: 'ExpirationDate' },
+                         { data: 'IssueDate' },
+                        { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'Type' },
+                        { data: 'ExpirationDate' },
                         { data: 'DiscountP' },
                         { data: 'Operated' },
                         { data: 'Approve' },
