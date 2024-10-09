@@ -197,6 +197,7 @@
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Date type</th>
+                                                <th class="text-center">Document Period</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -211,6 +212,7 @@
                                                 <tr>
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
+                                                        <input type="hidden" id="update_date" value="{{$item->updated_at}}">
                                                     </td>
                                                     <td  style="text-align: center;">
                                                         @if ($item->DummyNo == $item->Quotation_ID )
@@ -235,6 +237,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     @endif
                                                     <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                    <td style="text-align: center;"> <span class="days-count"></span>วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -401,6 +404,7 @@
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Date type</th>
+                                                <th class="text-center">Document Period</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -440,6 +444,7 @@
                                                     <td style="text-align: center;">-</td>
                                                     @endif
                                                     <td style="text-align: center;">{{$item->Date_type}}</td>
+
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
                                                             -
@@ -564,6 +569,7 @@
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Date type</th>
+                                                <th class="text-center">Document Period</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -705,6 +711,7 @@
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Date type</th>
+                                                <th class="text-center">Document Period</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -865,6 +872,7 @@
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Date type</th>
+                                                <th class="text-center">Document Period</th>
                                                 <th class="text-center">Additional Discount (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
@@ -1667,6 +1675,7 @@
 
             document.getElementById(id).focus();
         });
+
     </script>
     <script>
         function Cancel(id){
@@ -1720,6 +1729,38 @@
             });
         }
     </script>
+    <script>
+        $(document).ready(function() {
+            // รายการ ID ของตารางทั้งหมด
+            const tableNames = ['proposalTable', 'proposalPendingTable', 'proposalAwaitingTable', 'proposalApprovedTable', 'proposalRejectTable', 'proposalCancelTable'];
+
+            // วนลูปผ่านแต่ละตารางตาม ID ที่กำหนด
+            tableNames.forEach(function (tableName) {
+                const table = document.getElementById(tableName);
+                if (table) {
+                    // ดึงข้อมูลทุกแถวที่มีวันที่ออกมาในแต่ละตาราง
+                    table.querySelectorAll('#update_date').forEach(function (input) {
+                        // แปลงวันที่ใน `<input>` เป็นรูปแบบ Date ของ JavaScript
+                        const issueDate = new Date(input.value);
+                        // วันที่ปัจจุบัน
+                        const currentDate = new Date();
+                        // คำนวณความแตกต่างของเวลาระหว่างสองวันที่ (ในหน่วยมิลลิวินาที)
+                        const timeDifference = currentDate - issueDate;
+                        // คำนวณจำนวนวันที่ผ่านมา
+                        const daysPassed = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
 
+
+                        // แสดงผลลัพธ์ใน `<span>` ที่อยู่ในแถวเดียวกัน
+                            const nextCell = input.parentElement.nextElementSibling;
+                            if (nextCell && nextCell.querySelector('.days-count')) {
+                                nextCell.querySelector('.days-count').innerText = daysPassed;
+                            } else {
+                                console.error('ไม่พบ .days-count ในเซลล์ถัดไป');
+                            }
+                    });
+                }
+            });
+        });
+    </script>
 @endsection

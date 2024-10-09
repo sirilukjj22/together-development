@@ -659,7 +659,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/BillingFolio/Proposal/invoice/view/{id}','view')->name('receipt.view');
         Route::get('/Document/BillingFolio/Proposal/invoice/log/{id}','log')->name('receipt.log');
         Route::get('/Receipt/Quotation/view/quotation/view/{id}','QuotationView')->name('receipt.QuotationView');
-        // Route::get('/Receipt/Invice/view/{id}','InvoiceView')->name('receipt.InvoiceView');
+        // Route::get('/Receipt/Invice/view/{id}','InvoiceView')->name('receipt.InvoiceView');ReceiptCreate
 
         Route::post('billing-search-table', 'search_table_billing');
         Route::post('billing-paginate-table', 'paginate_table_billing');
@@ -678,12 +678,6 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('cheque-search-table', 'search_table_cheque');
         Route::post('cheque-paginate-table', 'paginate_table_cheque');
-
-
-
-
-        Route::get('/Document/ReceiveCheque/test', 'test')->name('ReceiveCheque.test');
-        Route::get('/Document/ReceiveCheque/testedit', 'testedit')->name('ReceiveCheque.testedit');
     });
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');

@@ -1151,6 +1151,7 @@ class Document_invoice extends Controller
                         'Sum' => $data['sum'] ?? null,
                         'PaymentPercent'=> $data['PaymentPercent'] ?? null,
                     ];
+
                     $valid = $request->valid;
                     $balance = $request->balance;
                     $sum = $request->sum;
@@ -1248,6 +1249,7 @@ class Document_invoice extends Controller
                     $Deposit = $datarequest['Deposit'];
                     $payment=$datarequest['Sum'];
                     $Nettotal = floatval(str_replace(',', '', $datarequest['Nettotal']));
+
                     if ($payment) {
                         $payment0 = number_format($payment);
                         $Subtotal =0;
@@ -1331,6 +1333,7 @@ class Document_invoice extends Controller
                     $pdf = FacadePdf::loadView('invoicePDF.'.$view,$data);
                     $path = 'Log_PDF/invoice/';
                     $pdf->save($path . $InvoiceID . '.pdf');
+
                     $currentDateTime = Carbon::now();
                     $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
                     $currentTime = $currentDateTime->toTimeString(); // Format: HH:MM:SS
@@ -1347,19 +1350,25 @@ class Document_invoice extends Controller
 
                 }
                 {
+
                     //save
                     $count = $datarequest['Proposal_ID'];
-                    $count = document_invoices::where('Quotation_ID',$count)->count();
+
+                    $countin = document_invoices::where('Quotation_ID',$count)->count();
                     $sequence = 1;
-                    if ($count) {
-                        $sequencenumber = $count+$sequence;
+
+                    if ($countin) {
+                        $sequencenumber = $countin+$sequence;
                     }else{
                         $sequencenumber = $sequence;
                     }
+
                     $NettotalQuotation = Quotation::where('Quotation_ID',$count)->first();
                     $NettotalPD = $NettotalQuotation->Nettotal;
+
                     $type_Proposal = $NettotalQuotation->type_Proposal;
                     $userid = Auth::user()->id;
+
                     $save = new document_invoices();
                     $save->deposit =$datarequest['Deposit'];
                     $save->valid =$datarequest['Valid'];
@@ -1383,9 +1392,9 @@ class Document_invoice extends Controller
                 }
             }
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            // return response()->json([
+            //     'error' => $e->getMessage()
+            // ], 500);
         }
     }
     public function view($id){

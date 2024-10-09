@@ -215,7 +215,6 @@ white-space: nowrap
                                     <option value="cash">Cash</option>
                                     <option value="bankTransfer">Bank Transfer</option>
                                     <option value="creditCard">Credit Card</option>
-                                    <option value="cheque">Cheque</option>
                                 </select>
                                 <!-- Cash Input -->
                                 <div class="cashInput" style="display: none;">
@@ -237,26 +236,10 @@ white-space: nowrap
                                 <div class="creditCardInput" style="display: none;">
                                     <label for="creditCardNumber" class="star-red">Credit Card Number</label>
                                     <input type="text" id="CardNumber" name="CardNumber" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
-
                                     <label for="expiryDate" class="star-red">Expiry Date</label>
                                     <input type="text" name="Expiry" id="Expiry" class="expiryDate form-control" placeholder="MM/YY" maxlength="5">
-
                                     <label for="creditCardAmount" class="star-red">Amount</label>
                                     <input type="text" id="Amount" name="Amount" class="creditCardAmount form-control" value="{{ number_format($sumpayment, 2) }}" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
-
-                                </div>
-                                <!-- Cheque Input -->
-                                <div class="chequeInput" style="display: none;">
-                                    <label for="chequeBank" class="star-red">Bank</label>
-                                    <select  id="chequeBank" name="chequeBank" class="chequeBank select2">
-                                        @foreach ($data_bank as $item)
-                                            <option value="{{ $item->name_en }}">{{ $item->name_th }} </option>
-                                        @endforeach
-                                    </select>
-                                    <label for="chequeNumber" class="star-red">Cheque Number</label>
-                                    <input type="text" id="cheque" name="cheque" class="chequeNumber form-control" placeholder="Enter cheque number" maxlength="8">
-                                    <label for="chequeAmount" class="star-red">Amount</label>
-                                    <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="chequeAmount form-control" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
                                 </div>
                             </div>
                         @endif

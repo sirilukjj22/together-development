@@ -504,15 +504,23 @@ class BillingFolioController extends Controller
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
         $chequeRe =receive_cheque::where('refer_proposal',$proposalid)->where('refer_invoice',$Invoice_ID)->first();
-        $bank_cheque = $chequeRe->bank_cheque;
-        $databank= Masters::where('id', $bank_cheque)->first();
-        $databankname = $databank->name_en;
-        if ($chequeRe->status == '1') {
-            // ถ้า status มีค่าเป็น 0 อย่างน้อยหนึ่งรายการ
-            $chequeRestatus = 0;
-        } else {
+
+        if ($chequeRe) {
+            $bank_cheque = $chequeRe->bank_cheque;
+            $databank= Masters::where('id', $bank_cheque)->first();
+            $databankname = $databank->name_en;
+            if ($chequeRe->status == '1') {
+                // ถ้า status มีค่าเป็น 0 อย่างน้อยหนึ่งรายการ
+                $chequeRestatus = 0;
+            } else {
+                $chequeRestatus = 1;
+            }
+        }else{
             $chequeRestatus = 1;
+            $bank_cheque ="";
+            $databankname = "";
         }
+
         return view('billingfolio.invoicepaid',compact('invoices','Proposal','name','name_ID','datasub','type','REID','Invoice_ID','settingCompany','databankname','data_bank','sumpayment','chequeRe','chequeRestatus','bank_cheque'));
     }
 
@@ -1591,6 +1599,10 @@ class BillingFolioController extends Controller
         $view= $template->name;
         $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
         return $pdf->stream();
+
+    }
+
+    public function ReceiptCreate(){
 
     }
 }

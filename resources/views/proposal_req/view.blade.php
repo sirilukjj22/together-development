@@ -173,20 +173,20 @@
                                                             </td>
                                                         @endif
                                                         <td style="text-align: center;">
-                                                            {{ number_format(@$itemproduct->netpriceproduct) }}
+                                                            {{ number_format(@$itemproduct->totaldiscount) }}
                                                         </td>
                                                     </tr>
                                                     @php
-                                                        $price50 += @$itemproduct->netpriceproduct;
+                                                        $price50 += @$itemproduct->totaldiscount;
                                                         $sp = $itemdata->SpecialDiscountBath;
                                                         $sp50 = $price50 - $itemdata->SpecialDiscountBath;
                                                         $priceless50 = $sp50 / 1.07;
                                                         $Add50 = $sp50 - $priceless50;
                                                         $Net50 = $priceless50 + $Add50;
 
-                                                        $price51 += @$itemproduct->netpriceproduct;
+                                                        $price51 += @$itemproduct->totaldiscount;
                                                         $sp51 = $price51 - $itemdata->SpecialDiscountBath;
-                                                        $price52 += @$itemproduct->netpriceproduct;
+                                                        $price52 += @$itemproduct->totaldiscount;
                                                         $sp52 = $price52 - $itemdata->SpecialDiscountBath;
                                                         $Add52 = $sp52 * 7 / 100;
                                                         $pricebefore52 = $price52 + $Add52;
