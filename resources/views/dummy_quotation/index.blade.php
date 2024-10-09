@@ -199,10 +199,10 @@
                                                 <th>ID</th>
                                                 <th>Company / Individual</th>
                                                 <th>Issue Date</th>
-                                                <th>Expiration Date</th>
+                                                <th class="text-center">Date type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Date type</th>
+                                                <th>Expiration Date</th>
                                                 <th class="text-center">Additional Discount</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
