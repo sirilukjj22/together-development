@@ -529,6 +529,7 @@ class proposal_request extends Controller
                         'beforeTax'=>$beforeTax,
                         'Nettotal'=>$Nettotal,
                         'totalguest'=>$totalguest,
+                        'SpecialDistext'=>$SpecialDistext,
                         'guest'=>$guest,
                         'totalaverage'=>$totalaverage,
                         'AddTax'=>$AddTax,

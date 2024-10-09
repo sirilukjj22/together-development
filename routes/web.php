@@ -659,7 +659,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/BillingFolio/Proposal/invoice/view/{id}','view')->name('receipt.view');
         Route::get('/Document/BillingFolio/Proposal/invoice/log/{id}','log')->name('receipt.log');
         Route::get('/Receipt/Quotation/view/quotation/view/{id}','QuotationView')->name('receipt.QuotationView');
-        // Route::get('/Receipt/Invice/view/{id}','InvoiceView')->name('receipt.InvoiceView');ReceiptCreate
+        Route::get('/Document/BillingFolio/Proposal/invoice/CheckPI/ReceiptCreate/{id}','ReceiptCreate')->name('receipt.ReceiptCreate');
 
         Route::post('billing-search-table', 'search_table_billing');
         Route::post('billing-paginate-table', 'paginate_table_billing');

@@ -405,7 +405,7 @@
             <div class="col-lg-1 col-ml-1 col-sm-4" style="float: right">
                 <div class="row">
                     @if ($status == '1')
-                        <button type="button" class="btn btn-color-green lift btn_modal">
+                        <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/BillingFolio/Proposal/invoice/CheckPI/ReceiptCreate/'.$ids)  }}'">
                             Next
                         </button>
                     @endif

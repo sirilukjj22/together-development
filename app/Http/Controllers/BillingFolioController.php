@@ -408,6 +408,7 @@ class BillingFolioController extends Controller
     public function CheckPI($id)
     {
         $userid = Auth::user()->id;
+        $ids = $id;
         $Proposal = Quotation::where('id',$id)->first();
         $ProposalID = $Proposal->id;
         $Proposal_ID = $Proposal->Quotation_ID;
@@ -460,7 +461,7 @@ class BillingFolioController extends Controller
             $totalentertainment +=  $item->netpriceproduct;
         }
         return view('billingfolio.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','invoices','status','Proposal','ProposalID',
-                    'totalnetpriceproduct','room','unit','quantity','totalnetMeals','Meals','Banquet','totalnetBanquet','totalentertainment','entertainment','Receipt'));
+                    'totalnetpriceproduct','room','unit','quantity','totalnetMeals','Meals','Banquet','totalnetBanquet','totalentertainment','entertainment','Receipt','ids'));
     }
 
     public function PaidInvoice($id){
@@ -695,16 +696,18 @@ class BillingFolioController extends Controller
         //Cheque
         $chequeBank = $request->chequeBank;
         $chequeBankReceived = $request->chequeBankReceived;
-        $chequeBankReceivedname= Masters::where('name_en', $chequeBankReceived)->first();
-        $bank_received = $chequeBankReceivedname->id;
-        if ($chequeBank == null) {
-            $chequeRe =receive_cheque::where('refer_invoice',$invoice)->where('status',1)->first();
-            $bank_cheque = $chequeRe->bank_cheque;
-            $databank= Masters::where('id', $bank_cheque)->first();
-            $databankname = $databank->name_en;
-        }else{
-            $databankname = $chequeBank;
+        if ($paymentType == 'cheque') {
+            if ($chequeBank == null) {
+
+                $chequeRe =receive_cheque::where('refer_invoice',$invoice)->where('status',1)->first();
+                $bank_cheque = $chequeRe->bank_cheque;
+                $databank= Masters::where('id', $bank_cheque)->first();
+                $databankname = $databank->name_en;
+            }else{
+                $databankname = $chequeBank;
+            }
         }
+
         $cheque = $request->cheque;
         $paymentDate = $request->paymentDate;
         $note = $request->note;
@@ -788,11 +791,16 @@ class BillingFolioController extends Controller
             $save->Operated_by = $user;
             $save->note = $note;
             $save->save();
-            $chequeRe =receive_cheque::where('refer_invoice',$invoice)->where('status',1)->first();
-            $id_cheque = $chequeRe->id;
-            $savecheque = receive_cheque::find($id_cheque);
-            $savecheque->bank_received =$bank_received;
-            $savecheque->save();
+
+            if ($paymentType == 'cheque') {
+                $chequeRe =receive_cheque::where('refer_invoice',$invoice)->where('status',1)->first();
+                $id_cheque = $chequeRe->id;
+                $chequeBankReceivedname= Masters::where('name_en', $chequeBankReceived)->first();
+                $bank_received = $chequeBankReceivedname->id;
+                $savecheque = receive_cheque::find($id_cheque);
+                $savecheque->bank_received =$bank_received;
+                $savecheque->save();
+            }
             {   //PDF
                 $settingCompany = Master_company::orderBy('id', 'desc')->first();
                 $parts = explode('-', $guest);
@@ -908,6 +916,7 @@ class BillingFolioController extends Controller
                 $dateFormatted = $date->format('d/m/Y').' / ';
                 $dateTime = $date->format('H:i');
                 $Amount = $sumpayment;
+
                 $data = [
                     'settingCompany'=>$settingCompany,
                     'fullname'=>$fullname,
@@ -1083,9 +1092,9 @@ class BillingFolioController extends Controller
             }
 
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            // return response()->json([
+            //     'error' => $e->getMessage()
+            // ], 500);
         }
 
     }
@@ -1602,7 +1611,18 @@ class BillingFolioController extends Controller
 
     }
 
-    public function ReceiptCreate(){
+    public function ReceiptCreate($id){
+        $Proposal = Quotation::where('id',$id)->first();
+        $Proposal_ID = $Proposal->Quotation_ID;
+        $Amount = $Proposal->Nettotal;
+        $Receipt = receive_payment::where('Quotation_ID', $Proposal_ID)->get();
+        $ReceiptCount = receive_payment::where('Quotation_ID', $Proposal_ID)->count();
+        $total = 0; // Initialize the total
 
+        foreach ($Receipt as $value) {
+            $total += $value->Amount; // Add each Amount to the total
+        }
+        $balance = $Amount- $total ;
+        dd($Proposal,$total,$ReceiptCount,$balance);
     }
 }

@@ -43,7 +43,7 @@ class ReceiveChequeController extends Controller
     public function index()
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-        $invoice = document_invoices::query()->select('id','Invoice_ID','Quotation_ID')->get();
+        $invoice = document_invoices::query()->select('id','Invoice_ID','Quotation_ID')->where('Paid',0)->get();
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
         $cheque = receive_cheque::query()->orderBy('created_at', 'desc')->paginate($perPage);
         return view('recevie_cheque.index',compact('invoice','data_bank','cheque'));
