@@ -2345,6 +2345,7 @@ class DummyQuotationController extends Controller
             $save->ComRateCode = $dummy->ComRateCode;
             $save->SpecialDiscount = $dummy->SpecialDiscount;
             $save->Nettotal = $dummy->Nettotal;
+            $save->total = $dummy->Nettotal;
             $save->AddTax = $dummy->AddTax;
             $save->TotalPax = $dummy->TotalPax;
             $save->freelanceraiffiliate = $dummy->freelanceraiffiliate;
@@ -2367,6 +2368,7 @@ class DummyQuotationController extends Controller
                 $saveProduct->Company_ID = $document->Company_ID;
                 $saveProduct->Product_ID = $document->Product_ID;
                 $saveProduct->Issue_date = $document->Issue_date;
+                $saveProduct->pax = $document->pax;
                 $saveProduct->discount =$document->discount;
                 $saveProduct->priceproduct =$document->priceproduct;
                 $saveProduct->netpriceproduct =$document->netpriceproduct;
@@ -2836,8 +2838,8 @@ class DummyQuotationController extends Controller
             }
             $Time =null;
             if ($Checkin) {
-                $checkin = Carbon::parse($Checkin)->format('d/m/Y');
-                $checkout = Carbon::parse($Checkout)->format('d/m/Y');
+                $checkin = $Checkin;
+                $checkout = $Checkout;
                 $Time = 'วันเข้าที่พัก : '.$checkin.' '.'วันออกที่พัก : '.$checkout.' '.'จำนวน : '.$Day.' วัน '.' '.$Night.' คืน ';
             }
 

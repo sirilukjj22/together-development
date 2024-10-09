@@ -2886,7 +2886,7 @@ class QuotationController extends Controller
         $SpecialDiscountBath = $request->DiscountAmount;
         $Add_discount = $request->Add_discount;
         $data = $request->all();
-        // dd($data);
+
 
         try {
             if ($preview == 1) {
