@@ -2846,8 +2846,8 @@ class QuotationController extends Controller
                         $Quotation->save();
                         $Auto = $Quotation->Confirm_by;
                         $id = $Quotation->id;
-                        if ($Auto = 'Auto') {
-                            return redirect()->route('Proposal.email', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+                        if ($SpecialDistext == 0) {
+                            return redirect()->route('Proposal.viewproposal', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
                         }else{
                             return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
                         }
@@ -4177,8 +4177,8 @@ class QuotationController extends Controller
                     $savePDF->Approve_time = $formattedTime;
                     $savePDF->correct = $correctup;
                     $savePDF->save();
-                    if ($Auto = 'Auto') {
-                        return redirect()->route('Proposal.email', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+                    if ($SpecialDistext == 0) {
+                        return redirect()->route('Proposal.viewproposal', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
                     }else{
                         return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
                     }
@@ -4280,7 +4280,7 @@ class QuotationController extends Controller
     }
 
     public function sendemail(Request $request,$id){
-        try {
+        // try {
 
             $file = $request->all();
 
@@ -4356,9 +4356,9 @@ class QuotationController extends Controller
             $save->content = 'Send Email Document Proposal ID : '.$Quotation_ID;
             $save->save();
             return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลและส่งอีเมลเรียบร้อยแล้ว');
-        } catch (\Throwable $th) {
-            return redirect()->route('Proposal.index')->with('error', 'เกิดข้อผิดพลาดในการส่งอีเมล์');
-        }
+        // } catch (\Throwable $th) {
+        //     return redirect()->route('Proposal.index')->with('error', 'เกิดข้อผิดพลาดในการส่งอีเมล์');
+        // }
     }
     //-----------------------------รายการ---------------------
     public function addProduct($Quotation_ID, Request $request) {

@@ -1050,6 +1050,16 @@
                 Guest.disabled = false;
                 GuestContact();
             }
+
+            var countrySelect = $('#DiscountAmount');
+            var select = countrySelect.val();
+            if (select) {
+                $('#Special').css('display', 'table-row');
+                $('#Subtotal').css('display', 'table-row');
+            }else{
+                $('#Special').css('display', 'none');
+                $('#Subtotal').css('display', 'none');
+            }
         });
         function showselectInput() {
             var select = document.getElementById("select");
