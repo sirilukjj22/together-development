@@ -25,9 +25,9 @@ class Masterpromotion extends Controller
         return view('master_promotion.index',compact('promotion','path','menu'));
     }
     public function save(Request $request) {
-        $request->validate([
-            'file.*' => 'required|mimes:png,jpg,pdf,mp4|max:1024000', // max size is 10240 KB which is 10 MB
-        ]);
+        // $request->validate([
+        //     'file.*' => 'required|mimes:png,jpg,pdf,mp4|max:1024000', // ขนาดสูงสุด 1000 MB
+        // ]);
         $files = $request->file('file');
         foreach ($files as $file) {
             $originalName = $file->getClientOriginalName();
