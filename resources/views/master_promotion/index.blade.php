@@ -27,13 +27,13 @@
                                             <form action="{{ route('Mpromotion.save') }}" method="POST" enctype="multipart/form-data" class="row g-3 basic-form" id="form-id">
                                                 @csrf
                                                 <div class="col-sm-12 col-12">
-                                                    <input type="file" class="form-control" name="file[]" id="file" required multiple accept=".png,.jpg,.pdf" onchange="validateFiles()">
+                                                    <input type="file" class="form-control" name="file[]" id="file" required multiple accept=".png,.jpg,.pdf,.mp4" onchange="validateFiles()">
                                                 <span style="color:red">ขนาดไฟล์ไม่เกิน 10 MB ชนิดไฟล์ที่รองรับ PNG JPG PDF</span>
                                                 </div>
                                                 <script>
                                                     function validateFiles() {
                                                         var files = document.getElementById('file').files;
-                                                        var maxSize = 10 * 1024 * 1024; // 10 MB
+                                                        var maxSize = 1000 * 1024 * 1024; // 10 MB
                                                         var valid = true;
 
                                                         for (var i = 0; i < files.length; i++) {
