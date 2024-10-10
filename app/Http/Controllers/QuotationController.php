@@ -4222,11 +4222,14 @@ class QuotationController extends Controller
 
     public function sendemail(Request $request,$id){
         try {
+
             $file = $request->all();
 
             $quotation = Quotation::where('id',$id)->first();
+
             $QuotationID = $quotation->Quotation_ID;
             $correct = $quotation->correct;
+            $type_Proposal = $quotation->type_Proposal;
             $path = 'Log_PDF/proposal/';
             if ($correct > 0) {
                 $pdf = $path.$QuotationID.'-'.$correct;
@@ -4235,13 +4238,20 @@ class QuotationController extends Controller
                 $pdf = $path.$QuotationID;
                 $pdfPath = $path.$QuotationID.'.pdf';
             }
-            $comid = $quotation->Company_ID;
-            $Quotation_ID= $quotation->Quotation_ID;
-            $companys = companys::where('Profile_ID',$comid)->first();
-            $emailCom = $companys->Company_Email;
-            $contact = $quotation->company_contact;
-            $Contact_name = representative::where('id',$contact)->where('status',1)->first();
-            $emailCon = $Contact_name->Email;
+            if ($type_Proposal == 'Company') {
+                $comid = $quotation->Company_ID;
+                $Quotation_ID= $quotation->Quotation_ID;
+                $companys = companys::where('Profile_ID',$comid)->first();
+                $emailCom = $companys->Company_Email;
+                $contact = $quotation->company_contact;
+                $Contact_name = representative::where('id',$contact)->where('status',1)->first();
+                $emailCon = $Contact_name->Email;
+            }else{
+                $comid = $quotation->Company_ID;
+                $Quotation_ID= $quotation->Quotation_ID;
+                $companys = Guest::where('Profile_ID',$comid)->first();
+                $emailCon = $companys->Email;
+            }
             $Title = $request->tital;
             $detail = $request->detail;
             $comment = $request->Comment;
@@ -4266,6 +4276,7 @@ class QuotationController extends Controller
                 // หากไม่มีไฟล์ที่อัปโหลด ให้กำหนด $filePaths เป็นอาร์เรย์ว่าง
                 $filePaths = [];
             }
+
             $Data = [
                 'title' => $Title,
                 'detail' => $detail,
@@ -4289,7 +4300,6 @@ class QuotationController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('Proposal.index')->with('error', 'เกิดข้อผิดพลาดในการส่งอีเมล์');
         }
-
     }
     //-----------------------------รายการ---------------------
     public function addProduct($Quotation_ID, Request $request) {

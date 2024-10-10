@@ -27,19 +27,42 @@ class GuestController extends Controller
             $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
                 ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
         })
-        ->where('guests.status', 1)
         ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
+        ->groupBy('guests.Profile_ID') // เพื่อจัดกลุ่มข้อมูลตาม Profile_ID
         ->paginate($perPage);
         $Mbooking = master_document::select('name_en','id')->get();
         $exp = explode('.', $menu);
         if (count($exp) > 1) {
             $search = $exp[1];
             if ($search == "all") {
-                $Guest = Guest::paginate($perPage);
+                $Guest = Guest::query()
+                ->leftJoin('phone_guests', function($join) {
+                    $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
+                        ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
+                })
+                ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
+                ->groupBy('guests.Profile_ID') // เพื่อจัดกลุ่มข้อมูลตาม Profile_ID
+                ->paginate($perPage);
             }elseif ($search == 'ac') {
-                $Guest = Guest::where('status', 1)->paginate($perPage);
+                $Guest = Guest::query()
+                ->leftJoin('phone_guests', function($join) {
+                    $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
+                        ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
+                })
+                ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
+                ->groupBy('guests.Profile_ID') // เพื่อจัดกลุ่มข้อมูลตาม Profile_ID
+                ->where('status', 1)
+                ->paginate($perPage);
             }else {
-                $Guest = Guest::where('status', 0)->paginate($perPage);
+                $Guest = Guest::query()
+                ->leftJoin('phone_guests', function($join) {
+                    $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
+                        ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
+                })
+                ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
+                ->groupBy('guests.Profile_ID') // เพื่อจัดกลุ่มข้อมูลตาม Profile_ID
+                ->where('status', 0)
+                ->paginate($perPage);
             }
         }
         return view('guest.index',compact('Guest','Mbooking', 'menu'));

@@ -91,7 +91,7 @@
                                             <th style="text-align: center;"data-priority="1">เรียงลำดับ</th>
                                             <th style="text-align: center;"data-priority="1">รหัสลูกค้า</th>
                                             <th data-priority="1">ชื่อและนามสกุลผู้ใช้งาน</th>
-                                            <th>Booking Channel</th>
+                                            <th>Telephone</th>
                                             <th class="text-center">สถานะการใช้งาน</th>
                                             <th class="text-center">คำสั่ง</th>
                                         </tr>
