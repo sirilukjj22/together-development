@@ -158,7 +158,7 @@
                                                 </td>
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
-                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             <li><a href="{{ asset($path.$item->name) }}" class="dropdown-item py-2 rounded" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">View</a></li>
                                                             <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
@@ -323,19 +323,21 @@
                 confirmButtonColor: "#28a745",
                 dangerMode: true
             }).then((result) => {
-                jQuery.ajax({
-                    type: "GET",
-                    url: "/Mpromotion/delete/" + id,
-                    datatype: "JSON",
-                    async: false,
-                    success: function(response) {
-                        console.log("AJAX request successful: ", response);
-                        location.reload();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("AJAX request failed: ", status, error);
-                    }
-                });
+                if (result.isConfirmed) {
+                    jQuery.ajax({
+                        type: "GET",
+                        url: "/Mpromotion/delete/" + id,
+                        datatype: "JSON",
+                        async: false,
+                        success: function(response) {
+                            console.log("AJAX request successful: ", response);
+                            location.reload();
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("AJAX request failed: ", status, error);
+                        }
+                    });
+                }
             });
         }
     </script>

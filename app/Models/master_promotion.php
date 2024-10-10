@@ -12,5 +12,6 @@ class master_promotion extends Model
     protected $fillable = [
         'name',
         'status',
+        'type',
     ];
 }

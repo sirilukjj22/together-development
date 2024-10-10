@@ -4274,8 +4274,12 @@ class QuotationController extends Controller
             $day = '( '.$day.' วัน';
             $night =$night.' คืน'.' )';
         }
-
-        return view('quotation_email.index',compact('emailCom','Quotation_ID','name','comtypefullname','checkin','checkout','night','day',
+        $promotiondata = master_promotion::where('status', 1)->where('type', 1)->select('name','type')->get();
+        $promotions = [];
+        foreach ($promotiondata as $promo) {
+            $promotions[] = 'Link : ' . $promo->name;
+        }
+        return view('quotation_email.index',compact('emailCom','Quotation_ID','name','comtypefullname','checkin','checkout','night','day','promotions',
                         'quotation','type_Proposal'));
     }
 
@@ -4315,11 +4319,15 @@ class QuotationController extends Controller
             $detail = $request->detail;
             $comment = $request->Comment;
             $email = $request->email;
-            $promotiondata = master_promotion::where('status', 1)->select('name')->get();
-            $promotion_path = 'promotion/';
+            $promotiondata = master_promotion::where('status', 1)->select('name','type')->get();
+
+
             $promotions = [];
             foreach ($promotiondata as $promo) {
-                $promotions[] = $promotion_path . $promo->name;
+                if ($promo->type == 0) {
+                    $promotion_path = 'promotion/';
+                    $promotions[] = $promotion_path . $promo->name;
+                }
             }
             $fileUploads = $request->file('files'); // ใช้ 'files' ถ้าฟิลด์ในฟอร์มเป็น 'files[]'
 
@@ -4671,7 +4679,7 @@ class QuotationController extends Controller
                         $btn_action .= '</a>';
                     } else {
                         $btn_action = '<a href="' . asset($path . $value->Quotation_ID . '-' . $correct . ".pdf") . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
-                        $btn_action .= '<i class="fa fa-print"></i> ให้ปรับ ใช้ในcontroller';
+                        $btn_action .= '<i class="fa fa-print"></i>';
                         $btn_action .= '</a>';
                     }
                 } else {
