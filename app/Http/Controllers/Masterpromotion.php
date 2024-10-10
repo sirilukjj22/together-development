@@ -38,7 +38,7 @@ class Masterpromotion extends Controller
             $save->name = $newName;
             $save->save();
         }
-        return redirect()->route('Mpromotion.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        return redirect()->route('Mpromotion','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
     public function delete($id)
     {

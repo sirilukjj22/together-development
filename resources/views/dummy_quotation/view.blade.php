@@ -704,9 +704,7 @@
                                                                 <td class="net-price"style="text-align:center;" ><span id="net_discount{{$var}}">{{ number_format($item->netpriceproduct, 2, '.', ',') }}</span></td>
                                                                 <td class="item-total"style="text-align:center;"><span id="all-total{{$var}}">{{ number_format($item->totaldiscount, 2, '.', ',') }}</span></td>
                                                                 <td style="text-align:center;">
-                                                                    <button type="button" class="Btn remove-button1"style=" border: none;"   id="remove-button1{{$var}}" value="{{$item->Product_ID}}">
-                                                                        <i class="fa fa-minus-circle text-danger fa-lg"></i>
-                                                                    </button>
+
                                                                 </td>
                                                             </tr>
                                                             @endif
