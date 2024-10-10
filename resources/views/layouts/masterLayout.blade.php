@@ -317,6 +317,8 @@
                                             <li><a class="ms-link"
                                                     href="{{ route('Template.TemplateA1') }}">Template</a></li>
                                         @endif
+                                            <li><a class="ms-link" href="{{ route('Mpromotion', 'index') }}">Promotion</a>
+                                            </li>
 
                                     </ul>
                                 </li>
@@ -461,9 +463,9 @@
                 info: true,
                 scrollX: true,
                 columnDefs: [
-                    { 
-                        "order": [[0, "asc"]], 
-                        "orderable": false, "targets": [0] 
+                    {
+                        "order": [[0, "asc"]],
+                        "orderable": false, "targets": [0]
                     }
                 ]
 

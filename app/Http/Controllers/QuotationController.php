@@ -4221,7 +4221,7 @@ class QuotationController extends Controller
     }
 
     public function sendemail(Request $request,$id){
-        try {
+        // try {
 
             $file = $request->all();
 
@@ -4297,9 +4297,9 @@ class QuotationController extends Controller
             $save->content = 'Send Email Document Proposal ID : '.$Quotation_ID;
             $save->save();
             return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลและส่งอีเมลเรียบร้อยแล้ว');
-        } catch (\Throwable $th) {
-            return redirect()->route('Proposal.index')->with('error', 'เกิดข้อผิดพลาดในการส่งอีเมล์');
-        }
+        // } catch (\Throwable $th) {
+        //     return redirect()->route('Proposal.index')->with('error', 'เกิดข้อผิดพลาดในการส่งอีเมล์');
+        // }
     }
     //-----------------------------รายการ---------------------
     public function addProduct($Quotation_ID, Request $request) {

@@ -348,10 +348,8 @@ Route::middleware(['auth'])->group(function () {
 
     #master promotion
     Route::controller(Masterpromotion::class)->group(function() {
-        Route::get('/Mpromotion/index','index')->name('Mpromotion.index');
+        Route::get('/Mpromotion/{menu}', 'index')->name('Mpromotion');
         Route::post('/Mpromotion/Save','save')->name('Mpromotion.save');
-        Route::get('/Mpromotion/ac','ac')->name('Mpromotion.ac');
-        Route::get('/Mpromotion/no','no')->name('Mpromotion.no');
         Route::get('/Mpromotion/delete/{id}','delete')->name('Mpromotion.delete');
     });
 
