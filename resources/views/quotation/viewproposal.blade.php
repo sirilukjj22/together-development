@@ -653,7 +653,7 @@
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:10%;text-align:center">Discount</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Net Price / Unit</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center"data-priority="1">Amount</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center">Order</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center"></th>
                                             </tr>
                                         </thead>
                                         <tbody id="display-selected-items">
