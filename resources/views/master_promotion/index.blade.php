@@ -5,13 +5,60 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Guest.</small>
-                    <div class=""><span class="span1">Guest (ลูกค้า)</span></div>
+                    <small class="text-muted">Welcome to Promotion.</small>
+                    <div class=""><span class="span1">Promotion (เอกสารโปรโมชัน)</span></div>
                 </div>
                 <div class="col-auto">
-                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/guest-create') }}'">
-                        <i class="fa fa-plus"></i> เพิ่มลูกค้า
-                    </button>
+                    <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#PromotionCreate">
+                        <i class="fa fa-plus"></i> เพิ่มเอกสารโปรโมชัน</button>
+                </div>
+                <!-- Prename Modal Center-->
+                <div class="modal fade" id="PromotionCreate" tabindex="-1" aria-labelledby="PrenameModalCenterTitle"
+                style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="PrenameModalCenterTitle">เพิ่มเอกสารโปรโมชัน</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="col-12">
+                                        <div class="card-body">
+                                            <form action="{{ route('Mpromotion.save') }}" method="POST" enctype="multipart/form-data" class="row g-3 basic-form" id="form-id">
+                                                @csrf
+                                                <div class="col-sm-12 col-12">
+                                                    <input type="file" class="form-control" name="file[]" id="file" required multiple accept=".png,.jpg,.pdf" onchange="validateFiles()">
+                                                <span style="color:red">ขนาดไฟล์ไม่เกิน 10 MB ชนิดไฟล์ที่รองรับ PNG JPG PDF</span>
+                                                </div>
+                                                <script>
+                                                    function validateFiles() {
+                                                        var files = document.getElementById('file').files;
+                                                        var maxSize = 10 * 1024 * 1024; // 10 MB
+                                                        var valid = true;
+
+                                                        for (var i = 0; i < files.length; i++) {
+                                                            if (files[i].size > maxSize) {
+                                                                alert('File size must not exceed 10 MB');
+                                                                valid = false;
+                                                                break;
+                                                            }
+                                                        }
+
+                                                        if (!valid) {
+                                                            document.getElementById('file').value = ""; // Clear the file input
+                                                        }
+                                                    }
+                                                </script>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
+                                                    <button type="submit" class="btn btn-color-green lift" >สร้าง</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                </div><!-- Form Validation -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -55,11 +102,11 @@
                                     <div class="top-table-3c_1">
                                         <div class="dropdown">
                                             <button class="bd-button statusbtn enteriespage-button" style="min-width: 100px; text-align: left;" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="text-align: left;">
-                                                @if ($menu == 'Mpromotion.all')
+                                                @if ($menu == 'promotion.all')
                                                     All
-                                                @elseif ($menu == 'Mpromotion.ac')
+                                                @elseif ($menu == 'promotion.ac')
                                                     Active
-                                                @elseif ($menu == 'Mpromotion.no')
+                                                @elseif ($menu == 'promotion.no')
                                                     Disabled
                                                 @else
                                                     Status
@@ -67,45 +114,39 @@
                                         <i class="fas fa-angle-down arrow-dropdown"></i>
                                             </button>
                                             <ul class="dropdown-menu border-0 shadow p-3">
-                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.all') }}">All</a></li>
-                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.ac') }}">Active</a></li>
-                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.no') }}">Disabled</a></li>
+                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('Mpromotion', 'promotion.all') }}">All</a></li>
+                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('Mpromotion', 'promotion.ac') }}">Active</a></li>
+                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('Mpromotion', 'promotion.no') }}">Disabled</a></li>
                                             </ul>
                                         </div>
                                     </div>
                                     <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-guest" onchange="getPage(1, this.value, 'guest')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "guest" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "guest" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "guest" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "guest" ? 'selected' : '' }}>100</option>
+                                    <select class="entriespage-button" id="search-per-page-promotion" onchange="getPage(1, this.value, 'promotion')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "promotion" ? 'selected' : '' }}>10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "promotion" ? 'selected' : '' }}>25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "promotion" ? 'selected' : '' }}>50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "promotion" ? 'selected' : '' }}>100</option>
                                     </select>
-                                    <input class="search-button search-data" id="guest" style="text-align:left;" placeholder="Search" />
+                                    <input class="search-button search-data" id="promotion" style="text-align:left;" placeholder="Search" />
 
                                 </div>
                             </caption>
                             <div style="min-height: 70vh;" class="mt-2">
-                                <table id="guestTable" class="example ui striped table nowrap unstackable hover">
+                                <table id="promotionTable" class="example ui striped table nowrap unstackable hover">
                                     <thead>
                                         <tr>
-                                            <th style="text-align: center;"data-priority="1">เรียงลำดับ</th>
-                                            <th style="text-align: center;"data-priority="1">รหัสลูกค้า</th>
-                                            <th data-priority="1">ชื่อและนามสกุลผู้ใช้งาน</th>
-                                            <th>Telephone</th>
-                                            <th class="text-center">สถานะการใช้งาน</th>
-                                            <th class="text-center">คำสั่ง</th>
+                                            <th style="text-align: center" data-priority="1">No</th>
+                                            <th data-priority="1">Name</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if(!empty($Guest))
-                                            @foreach ($Guest as $key => $item)
+                                        @if(!empty($promotion))
+                                            @foreach ($promotion as $key => $item)
                                             <tr>
-                                                <td style="text-align: center;">{{ $key + 1 }}</td>
-                                                <td style="text-align: center;">{{ $item->Profile_ID }}</td>
-                                                <td>{{ $item->First_name }} {{ $item->Last_name }}</td>
-                                                <td>
-                                                    {{$item->Phone_numbers}}
-                                                </td>
+                                                <td style="text-align: center">{{ $key + 1 }}</td>
+                                                <td>{{ $item->name }}</td>
                                                 <td style="text-align: center;">
                                                     <input type="hidden" id="status" value="{{ $item->status }}">
 
@@ -115,43 +156,28 @@
                                                         <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ปิดใช้งาน</button>
                                                     @endif
                                                 </td>
-                                                @php
-                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                    $canViewProposal = @Auth::user()->roleMenuView('Guest', Auth::user()->id);
-                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
-                                                @endphp
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
-                                                            @if ($rolePermission > 0)
-                                                                @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/view/'.$item->id) }}">ดูรายละเอียด</a></li>
-                                                                @endif
-                                                                @if ($canEditProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
-                                                                @endif
-                                                            @else
-                                                                @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/view/'.$item->id) }}">ดูรายละเอียด</a></li>
-                                                                @endif
-                                                            @endif
+                                                            <li><a href="{{ asset($path.$item->name) }}" class="dropdown-item py-2 rounded" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">View</a></li>
+                                                            <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
                                                         </ul>
                                                     </div>
                                                 </td>
                                             </tr>
                                             @endforeach
-                                            @endif
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
-                            <input type="hidden" id="get-total-guest" value="{{ $Guest->total() }}">
-                            <input type="hidden" id="currentPage-guest" value="1">
+                            <input type="hidden" id="get-total-promotion" value="{{ $promotion->total() }}">
+                            <input type="hidden" id="currentPage-promotion" value="1">
                             <caption class="caption-bottom">
                                 <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="guest-showingEntries">{{ showingEntriesTable($Guest, 'guest') }}</p>
-                                        <div id="guest-paginate">
-                                            {!! paginateTable($Guest, 'guest') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                    <p class="py2" id="promotion-showingEntries">{{ showingEntriesTable($promotion, 'promotion') }}</p>
+                                        <div id="promotion-paginate">
+                                            {!! paginateTable($promotion, 'promotion') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                         </div>
                                 </div>
                             </caption>
@@ -167,7 +193,7 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableGuest.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTablePromotion.js')}}"></script>
 
     <script>
         // Search
@@ -187,7 +213,7 @@
                     paging: false,
                     info: false,
                     ajax: {
-                    url: '/guest-search-table',
+                    url: '/Mpromotion-search-table',
                     type: 'POST',
                     dataType: "json",
                     cache: false,
@@ -216,7 +242,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0, 1, 3, 4, 5], className: 'dt-center td-content-center' },
+                                { targets: [0, 2 , 3], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -227,9 +253,7 @@
                     },
                     columns: [
                         { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Profile_ID' },
                         { data: 'name' },
-                        { data: 'Booking_Channel' },
                         { data: 'status' },
                         { data: 'btn_action' },
                     ],
@@ -279,7 +303,7 @@
         function btnstatus(id) {
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('/guest/change-status/" + id + "') !!}",
+                url: "{!! url('/Mpromotion/change-status/" + id + "') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(result) {
@@ -288,10 +312,10 @@
                 },
             });
         }
-        function BACKtoEdit(){
+        function Delete(id){
             event.preventDefault();
             Swal.fire({
-                title: "คุณต้องการยกเลิกใช่หรือไม่?",
+                title: "คุณต้องการลบใช่หรือไม่?",
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "ตกลง",
@@ -299,11 +323,19 @@
                 confirmButtonColor: "#28a745",
                 dangerMode: true
             }).then((result) => {
-                if (result.isConfirmed) {
-                    console.log(1);
-                    // If user confirms, submit the form
-                    window.location.href = "{{ route('Proposal.index') }}";
-                }
+                jQuery.ajax({
+                    type: "GET",
+                    url: "/Mpromotion/delete/" + id,
+                    datatype: "JSON",
+                    async: false,
+                    success: function(response) {
+                        console.log("AJAX request successful: ", response);
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX request failed: ", status, error);
+                    }
+                });
             });
         }
     </script>

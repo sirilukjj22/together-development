@@ -4126,6 +4126,49 @@ class QuotationController extends Controller
                     // Optionally, you can format the date and time as per your requirement
                     $formattedDate = $currentDateTime->format('Y-m-d'); // Custom format for date
                     $formattedTime = $currentDateTime->format('H:i:s');
+                    {
+                        $Proposal_ID = $datarequest['Proposal_ID'];
+                        $IssueDate = $datarequest['IssueDate'];
+                        $Expiration = $datarequest['Expiration'];
+                        $Selectdata = $datarequest['Selectdata'];
+                        $Data_ID = $datarequest['Data_ID'];
+                        $Adult = $datarequest['Adult'];
+                        $Children = $datarequest['Children'];
+                        $Mevent = $datarequest['Mevent'];
+                        $Mvat = $datarequest['Mvat'];
+                        $DiscountAmount = $datarequest['DiscountAmount'];
+                        $Checkin = $datarequest['Checkin'];
+                        $Checkout = $datarequest['Checkout'];
+                        $Day = $datarequest['Day'];
+                        $Night = $datarequest['Night'];
+                        $comment = $datarequest['comment'];
+                        if ($Selectdata == 'Guest') {
+                            $Data = Guest::where('Profile_ID',$Data_ID)->first();
+                            $prename = $Data->preface;
+                            $First_name = $Data->First_name;
+                            $Last_name = $Data->Last_name;
+                            $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
+                            $name = $prefix->name_th;
+                            $fullName = $name.' '.$First_name.' '.$Last_name;
+                            //-------------ที่อยู่
+
+                        }else{
+                            $Company = companys::where('Profile_ID',$Data_ID)->first();
+                            $Company_type = $Company->Company_type;
+                            $Compannyname = $Company->Company_Name;
+                            $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+                            if ($comtype) {
+                                if ($comtype->name_th == "บริษัทจำกัด") {
+                                    $fullName = "บริษัท " . $Compannyname . " จำกัด";
+                                } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                                    $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
+                                } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                                    $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                                }
+                            }
+
+                        }
+                    }
                     $savePDF = new log();
                     $savePDF->Quotation_ID = $Quotation_ID;
                     $savePDF->QuotationType = 'Proposal';
@@ -4162,6 +4205,22 @@ class QuotationController extends Controller
         $unit = master_unit::where('status',1)->get();
         $quantity = master_quantity::where('status',1)->get();
         return view('quotation.view',compact('settingCompany','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity'));
+    }
+    //------------------------------ดูข้อมูล------------------
+    public function viewproposal($id)
+    {
+        $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        $Quotation = Quotation::where('id', $id)->first();
+        $Quotation_ID = $Quotation->Quotation_ID;
+        $Company = companys::select('Company_Name','id','Profile_ID')->get();
+        $Guest = Guest::select('First_name','Last_name','id','Profile_ID')->get();
+        $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
+        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
+        $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
+        $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+        $unit = master_unit::where('status',1)->get();
+        $quantity = master_quantity::where('status',1)->get();
+        return view('quotation.viewproposal',compact('settingCompany','id','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity'));
     }
     //----------------------------ส่งอีเมล์---------------------
     public function email($id){
@@ -4221,7 +4280,7 @@ class QuotationController extends Controller
     }
 
     public function sendemail(Request $request,$id){
-        // try {
+        try {
 
             $file = $request->all();
 
@@ -4297,9 +4356,9 @@ class QuotationController extends Controller
             $save->content = 'Send Email Document Proposal ID : '.$Quotation_ID;
             $save->save();
             return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลและส่งอีเมลเรียบร้อยแล้ว');
-        // } catch (\Throwable $th) {
-        //     return redirect()->route('Proposal.index')->with('error', 'เกิดข้อผิดพลาดในการส่งอีเมล์');
-        // }
+        } catch (\Throwable $th) {
+            return redirect()->route('Proposal.index')->with('error', 'เกิดข้อผิดพลาดในการส่งอีเมล์');
+        }
     }
     //-----------------------------รายการ---------------------
     public function addProduct($Quotation_ID, Request $request) {

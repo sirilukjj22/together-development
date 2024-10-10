@@ -2870,7 +2870,7 @@ class DummyQuotationController extends Controller
             $save->Category = 'Create :: Proposal';
             $save->content =$datacompany;
             $save->save();
-            return redirect()->route('Proposal.email', ['id' => $ProposalIDS])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            return redirect()->route('Proposal.viewproposal', ['id' => $ProposalIDS])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
             return response()->json([
                 'error' => $e->getMessage()

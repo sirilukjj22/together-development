@@ -351,6 +351,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mpromotion/{menu}', 'index')->name('Mpromotion');
         Route::post('/Mpromotion/Save','save')->name('Mpromotion.save');
         Route::get('/Mpromotion/delete/{id}','delete')->name('Mpromotion.delete');
+        Route::get('/Mpromotion/change-status/{id}', 'status')->name('Mpromotion.status');
+        Route::post('Mpromotion-search-table', 'search_table')->name('Mpromotion-search-table');
+        Route::post('Mpromotion-paginate-table', 'paginate_table')->name('Mpromotion-paginate-table');
     });
 
     #master company type
@@ -488,6 +491,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/Proposal/Search/All', 'SearchAll')->name('Proposal.Search');
 
+        Route::get('/Proposal/viewproposal/{id}','viewproposal')->name('Proposal.viewproposal');
         //----------------------------
         Route::post('Proposal-search-table', 'search_table_proposal');
         Route::post('Proposal-paginate-table', 'paginate_table_proposal');
