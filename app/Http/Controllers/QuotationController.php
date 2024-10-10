@@ -4302,7 +4302,7 @@ class QuotationController extends Controller
                 $Quotation_ID= $quotation->Quotation_ID;
                 $companys = companys::where('Profile_ID',$comid)->first();
                 $emailCom = $companys->Company_Email;
-                $contact = $companys->company_contact;
+                $contact = $companys->Profile_ID;
                 $Contact_name = representative::where('Company_ID',$contact)->where('status',1)->first();
                 $emailCon = $Contact_name->Email;
             }else{
