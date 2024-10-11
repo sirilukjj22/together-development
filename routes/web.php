@@ -344,6 +344,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mprefix/Mprename/edit/{id}','edit')->name('Mproduct.edit.Mprefix');
         Route::get('/Mprefix/Mprename/search-list2/{datakey}','searchMprename')->name('Mproduct.Mprefix.search');
         Route::get('/Mprefix/Mprename/check-edit-name/{id}/{datakey}','dupicateMprename')->name('Mproduct.Mprefix.dupicate');
+
+
     });
 
     #master promotion
@@ -354,6 +356,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mpromotion/change-status/{id}', 'status')->name('Mpromotion.status');
         Route::post('Mpromotion-search-table', 'search_table')->name('Mpromotion-search-table');
         Route::post('Mpromotion-paginate-table', 'paginate_table')->name('Mpromotion-paginate-table');
+        Route::get('/Mpromotion/log/detail', 'log')->name('Mpromotion.Log');
+
+        Route::post('promotion-Log-search-table', 'search_table_paginate_log');
+        Route::post('promotion-Log-paginate-table', 'paginate_log_table');
     });
 
     #master company type

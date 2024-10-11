@@ -64,8 +64,8 @@
                                             Tel : 032-708-888, 098-393-9444<br>
                                             Email : reservation@together-resort.com <br>
                                             Website : www.together-resort.com<br>
-                                            Video Promotion<br>
                                             @foreach ($promotions as $promotion)
+                                                Video Promotion<br>
                                                 {!! $promotion !!} <br>
                                             @endforeach
                                         </textarea>

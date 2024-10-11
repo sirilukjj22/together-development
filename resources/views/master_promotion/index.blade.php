@@ -1,5 +1,20 @@
 @extends('layouts.masterLayout')
+<style>
+    .logo {
+        width: 70px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
 
+    /* สไตล์สำหรับการแสดงรูปกลางหน้าจอ */
+    .logo-expanded {
+        position: fixed; /* ทำให้ภาพติดอยู่กับหน้าจอ */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(10);
+        z-index: 1000; /* ทำให้ภาพอยู่ด้านบนของทุกอย่าง */
+    }
+</style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
         <div class="container-xl">
@@ -26,14 +41,27 @@
                                         <div class="card-body">
                                             <form action="{{ route('Mpromotion.save') }}" method="POST" enctype="multipart/form-data" class="row g-3 basic-form" id="form-id">
                                                 @csrf
-                                                <div class="col-sm-12 col-12">
-                                                    <input type="file" class="form-control" name="file[]" id="file" required multiple accept=".png,.jpg,.pdf,.mp4" onchange="validateFiles()">
-                                                <span style="color:red">ขนาดไฟล์ไม่เกิน 10 MB ชนิดไฟล์ที่รองรับ PNG JPG PDF</span>
+                                                <div>
+                                                    <label for="Status">ตัวเลือก</label>
+                                                    <select name="Filter" id="Filter" class="form-select">
+                                                        <option value="Document">Image / Document </option>
+                                                        <option value="Link">Link</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-12 col-12" id="filedoc" >
+                                                    <input type="file" class="form-control" name="file[]" id="file"  multiple accept=".png,.jpg,.pdf" onchange="validateFiles()">
+                                                    <span style="color:red">ขนาดไฟล์ไม่เกิน 10 MB ชนิดไฟล์ที่รองรับ PNG JPG PDF</span>
+                                                </div>
+                                                <div class="col-sm-12 col-12" id="fileLink" style="display: none">
+                                                    <input type="text" class="form-control" id="link" name="Link" >
+                                                    <span style="color:red">Link shared from video</span>
+                                                    <input type="file" class="form-control" name="image" id="image"  multiple accept=".png,.jpg" >
+                                                    <span style="color:red">ขนาดไฟล์ไม่เกิน 10 MB ชนิดไฟล์ที่รองรับ PNG JPG </span>
                                                 </div>
                                                 <script>
                                                     function validateFiles() {
                                                         var files = document.getElementById('file').files;
-                                                        var maxSize = 1000 * 1024 * 1024; // 10 MB
+                                                        var maxSize = 10 * 1024 * 1024; // 10 MB
                                                         var valid = true;
 
                                                         for (var i = 0; i < files.length; i++) {
@@ -48,6 +76,29 @@
                                                             document.getElementById('file').value = ""; // Clear the file input
                                                         }
                                                     }
+                                                    document.getElementById('Filter').addEventListener('change', function() {
+                                                        const selectedValue = this.value;
+                                                        // ทำสิ่งที่คุณต้องการเมื่อมีการเปลี่ยนแปลง
+                                                        console.log('Selected filter:', selectedValue);
+                                                        const file = document.getElementById('filedoc');
+                                                        const link = document.getElementById('fileLink');
+                                                        const fileinput = document.getElementById('file');
+                                                        const linkinput = document.getElementById('link');
+                                                        const image = document.getElementById('image');
+                                                        if (selectedValue === 'Document') {
+                                                            file.style.display = 'block';
+                                                            link.style.display = 'none';
+                                                            linkinput.disabled = true;
+                                                            fileinput.disabled = false;
+                                                            image.disabled = true;
+                                                        } else if (selectedValue === 'Link') {
+                                                            file.style.display = 'none';
+                                                            link.style.display = 'block';
+                                                            fileinput.disabled = true;
+                                                            linkinput.disabled = false;
+                                                            image.disabled = false;
+                                                        }
+                                                    });
                                                 </script>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">ยกเลิก</button>
@@ -119,7 +170,11 @@
                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('Mpromotion', 'promotion.no') }}">Disabled</a></li>
                                             </ul>
                                         </div>
+                                        <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Mpromotion.Log') }}'">
+                                            LOG
+                                        </button>
                                     </div>
+
                                     <label class="entriespage-label">entries per page :</label>
                                     <select class="entriespage-button" id="search-per-page-promotion" onchange="getPage(1, this.value, 'promotion')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
                                         <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "promotion" ? 'selected' : '' }}>10</option>
@@ -136,6 +191,7 @@
                                     <thead>
                                         <tr>
                                             <th style="text-align: center" data-priority="1">No</th>
+                                            <th  class="text-center" data-priority="1">image</th>
                                             <th data-priority="1">Name</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Action</th>
@@ -146,6 +202,9 @@
                                             @foreach ($promotion as $key => $item)
                                             <tr>
                                                 <td style="text-align: center">{{ $key + 1 }}</td>
+                                                <td >
+                                                    <img src="{{ asset($path . $item->image) }}" alt="Together Resort Logo" class="logo" id="logoImage" />
+                                                </td>
                                                 <td>{{ $item->name }}</td>
                                                 <td style="text-align: center;">
                                                     <input type="hidden" id="status" value="{{ $item->status }}">
@@ -160,7 +219,11 @@
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
-                                                            <li><a href="{{ asset($path.$item->name) }}" class="dropdown-item py-2 rounded" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">View</a></li>
+                                                            @if ($item->type == 'Link' )
+                                                                <li><a href="{{ asset($item->name) }}" class="dropdown-item py-2 rounded" target="_blank" data-toggle="tooltip" data-placement="top">View</a></li>
+                                                            @else
+                                                                <li><a href="{{ asset($path.$item->name) }}" class="dropdown-item py-2 rounded" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">View</a></li>
+                                                            @endif
                                                             <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
                                                         </ul>
                                                     </div>
@@ -194,9 +257,21 @@
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
     <script type="text/javascript" src="{{ asset('assets/helper/searchTablePromotion.js')}}"></script>
-
     <script>
-        // Search
+        $(document).ready(function() {
+            // ใช้ jQuery ในการจัดการการคลิกที่รูปภาพทั้งหมดที่มีคลาส .logo
+            $(document).on('click', '.logo', function() {
+                $(this).toggleClass('logo-expanded'); // สลับคลาสเพื่อขยายและย่อรูป
+            });
+        });
+    </script>
+    <script>
+
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Please select an option"
+            });
+        });
         $(document).on('keyup', '.search-data', function () {
             var id = $(this).attr('id');
             var search_value = $(this).val();
@@ -242,7 +317,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0, 2 , 3], className: 'dt-center td-content-center' },
+                                { targets: [0,1,3,4], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -253,6 +328,7 @@
                     },
                     columns: [
                         { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'image' },
                         { data: 'name' },
                         { data: 'status' },
                         { data: 'btn_action' },

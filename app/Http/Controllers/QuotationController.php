@@ -4324,7 +4324,7 @@ class QuotationController extends Controller
 
             $promotions = [];
             foreach ($promotiondata as $promo) {
-                if ($promo->type == 0) {
+                if ($promo->type == 'Document') {
                     $promotion_path = 'promotion/';
                     $promotions[] = $promotion_path . $promo->name;
                 }
