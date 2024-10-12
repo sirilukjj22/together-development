@@ -312,30 +312,41 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Mproduct/check/Category','Category')->name('Mproduct.Category');
         Route::get('/Mproduct/delete/{id}','delete')->name('Mproduct.delete');
         // ----------------------------------Quantity-----------------------------------------------
-        Route::get('/Mproduct/Quantity/index','index_quantity')->name('Mproduct.index.quantity');
+        Route::get('/Mproduct/Quantity/{menu}','index_quantity')->name('Quantity');
         Route::post('/Mproduct/Quantity/Save','save_quantity')->name('Mproduct.save.quantity');
         Route::get('/Mproduct/Quantity/edit/{id}','edit_quantity')->name('Mproduct.edit.quantity');
         Route::get('/Mproduct/changeStatus_quantity/{id}','changeStatus_quantity')->name('Mproduct.changeStatus_quantity');
-        Route::get('/Mproduct/quantity/ac','ac_quantity')->name('Mproduct.quantity.ac');
-        Route::get('/Mproduct/quantity/no','no_quantity')->name('Mproduct.quantity.no');
         Route::get('/Mproduct/quantity/search-list2/{datakey}','searchquantity')->name('Mproduct.quantity.search');
         Route::get('/Mproduct/quantity/check-edit-name/{id}/{datakey}','dupicatequantity')->name('Mproduct.quantity.dupicate');
         Route::get('/Mproduct/quantity/update/{id}/{datakey}/{dataEN}','update_quantity')->name('Mproduct.update.quantity');
+        Route::get('/Mproduct/Quantity/log/detail', 'quantity_log')->name('Quantity.Log');
+
+        Route::post('quantity-search-table', 'quantity_search_table')->name('quantity-search-table');
+        Route::post('quantity-paginate-table', 'quantity_paginate_table')->name('quantity-paginate-table');
+
+        Route::post('quantity-Log-search-table', 'quantity_search_table_paginate_log');
+        Route::post('quantity-Log-paginate-table', 'quantity_paginate_log_table');
         //----------------------------------Unit-----------------------------------------------------
-        Route::get('/Mproduct/Unit/index','index_unit')->name('Mproduct.index.unit');
+        Route::get('/Mproduct/Unit/{menu}','index_unit')->name('Unit');
         Route::post('/Mproduct/Unit/Save','save_unit')->name('Mproduct.save.unit');
         Route::get('/Mproduct/Unit/edit/{id}','edit_unit')->name('Mproduct.edit.unit');
         Route::get('/Mproduct/changeStatus_unit/{id}','changeStatus_unit')->name('Mproduct.changeStatus_unit');
-        Route::get('/Mproduct/Unit/ac','ac_unit')->name('Mproduct.unit.ac');
-        Route::get('/Mproduct/Unit/no','no_unit')->name('Mproduct.unit.no');
         Route::get('/Mproduct/Unit/search-list2/{datakey}','search')->name('Mproduct.unit.search');
         Route::get('/Mproduct/Unit/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.unit.dupicate');
         Route::get('/Mproduct/Unit/update/{id}/{datakey}/{dataEN}','update_unit')->name('Mproduct.update.unit');
+
+        Route::get('/Mproduct/Unit/log/detail', 'unit_log')->name('Unit.Log');
+
+        Route::post('unit-search-table', 'unit_search_table')->name('unit-search-table');
+        Route::post('unit-paginate-table', 'unit_paginate_table')->name('unit-paginate-table');
+
+        Route::post('unit-Log-search-table', 'unit_search_table_paginate_log');
+        Route::post('unit-Log-paginate-table', 'unit_paginate_log_table');
     });
 
     #master prefix
     Route::controller(Master_prefix::class)->middleware('role:prefix')->group(function() {
-        Route::get('/Mprefix/index','index')->name('Mprefix.index');
+        Route::get('/Mprefix/{menu}','index')->name('Mprefix');
         Route::get('/Mprefix/ac','ac')->name('Mprefix.ac');
         Route::get('/Mprefix/no','no')->name('Mprefix.no');
         Route::post('/Mprefix/Save','save')->name('Mprefix.save');
@@ -344,6 +355,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mprefix/Mprename/edit/{id}','edit')->name('Mproduct.edit.Mprefix');
         Route::get('/Mprefix/Mprename/search-list2/{datakey}','searchMprename')->name('Mproduct.Mprefix.search');
         Route::get('/Mprefix/Mprename/check-edit-name/{id}/{datakey}','dupicateMprename')->name('Mproduct.Mprefix.dupicate');
+
+        Route::get('/Mprefix/log/detail', 'log')->name('Mprefix.Log');
+
+        Route::post('prename-search-table', 'prename_search_table')->name('prename-search-table');
+        Route::post('prename-paginate-table', 'prename_paginate_table')->name('prename-paginate-table');
+
+        Route::post('prename-Log-search-table', 'prename_search_table_paginate_log');
+        Route::post('prename-Log-paginate-table', 'prename_paginate_log_table');
 
 
     });

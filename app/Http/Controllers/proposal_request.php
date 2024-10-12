@@ -588,9 +588,7 @@ class proposal_request extends Controller
                 return redirect()->route('ProposalReq.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
             }
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('ProposalReq.index')->with('error', $e->getMessage());
         }
 
     }
@@ -644,9 +642,7 @@ class proposal_request extends Controller
             }
             return redirect()->route('ProposalReq.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('ProposalReq.index')->with('error', $e->getMessage());
         }
     }
 

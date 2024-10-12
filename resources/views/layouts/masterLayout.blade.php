@@ -290,10 +290,14 @@
                                         @endif
                                         @if (Auth::user()->roleMenu->quantity == 1)
                                             <li><a class="ms-link"
-                                                    href="{{ route('Mproduct.index.quantity') }}">Quantity</a></li>
+                                                    href="{{ route('Quantity','index') }}">Quantity</a></li>
+                                        @endif
+                                        @if (Auth::user()->roleMenu->unit == 1)
+                                            <li><a class="ms-link"
+                                                    href="{{ route('Unit','index') }}">Unit</a></li>
                                         @endif
                                         @if (Auth::user()->roleMenu->prefix == 1)
-                                            <li><a class="ms-link" href="{{ route('Mprefix.index') }}">Prename</a>
+                                            <li><a class="ms-link" href="{{ route('Mprefix','index') }}">Prename</a>
                                             </li>
                                         @endif
 

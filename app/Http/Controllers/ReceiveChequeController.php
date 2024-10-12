@@ -89,8 +89,8 @@ class ReceiveChequeController extends Controller
             $save->Category = 'Create :: Recevie Cheque';
             $save->content =$datacompany;
             $save->save();
-        } catch (\Throwable $th) {
-            return redirect()->route('ReceiveCheque.index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        } catch (\Throwable $e) {
+            return redirect()->route('ReceiveCheque.index')->with('error', $e->getMessage());
         }
         try {
             $userid = Auth::user()->id;
@@ -109,8 +109,8 @@ class ReceiveChequeController extends Controller
             $save->Operated_by = $userid;
             $save->save();
             return redirect()->route('ReceiveCheque.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-        } catch (\Throwable $th) {
-            return redirect()->route('ReceiveCheque.index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        } catch (\Throwable $e) {
+            return redirect()->route('ReceiveCheque.index')->with('error', $e->getMessage());
         }
     }
     public function view($id){
@@ -279,8 +279,8 @@ class ReceiveChequeController extends Controller
             $save->Category = 'Edit :: Recevie Cheque';
             $save->content =$datacompany;
             $save->save();
-        } catch (\Throwable $th) {
-            return redirect()->route('ReceiveCheque.index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        } catch (\Throwable $e) {
+            return redirect()->route('ReceiveCheque.index')->with('error', $e->getMessage());
         }
         try {
             $invoice = $request->Refer;
@@ -298,8 +298,8 @@ class ReceiveChequeController extends Controller
             $save->Operated_by = $userid;
             $save->save();
             return redirect()->route('ReceiveCheque.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-        } catch (\Throwable $th) {
-            return redirect()->route('ReceiveCheque.index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        } catch (\Throwable $e) {
+            return redirect()->route('ReceiveCheque.index')->with('error', $e->getMessage());
         }
     }
     public function Approved($id){

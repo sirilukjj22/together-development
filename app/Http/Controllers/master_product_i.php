@@ -8,6 +8,8 @@ use App\Models\master_product_item;
 use App\Models\master_quantity;
 use App\Models\master_unit;
 use App\Models\master_product_image;
+use App\Models\log_company;
+use Carbon\Carbon;
 use Auth;
 use App\Models\User;
 class master_product_i extends Controller
@@ -393,28 +395,71 @@ class master_product_i extends Controller
     }
     //------------------------------------------------------------------------------------------------
     //-----------------------------------Quantity-----------------------------------------------------
-    public function index_quantity()
+    public function index_quantity($menu)
     {
-        $quantity = master_quantity::query()->get();
-        return view('master_quantity.index',compact('quantity'));
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $quantity = master_quantity::query()->paginate($perPage);
+        $exp = explode('.', $menu);
+        if (count($exp) > 1) {
+            $search = $exp[1];
+            if ($search == "all") {
+                $quantity = master_quantity::query()
+                ->paginate($perPage);
+            }elseif ($search == 'ac') {
+                $quantity = master_quantity::query()
+                ->where('status', 1)
+                ->paginate($perPage);
+            }else {
+                $quantity = master_quantity::query()
+                ->where('status', 0)
+                ->paginate($perPage);
+            }
+        }
+        return view('master_quantity.index',compact('quantity','menu'));
     }
     public function save_quantity(Request $request)
     {
-        $data = $request->all();
-        $userid = Auth::user()->id;
-        $lastProfile = master_quantity::count() + 1;
-        $save = new master_quantity();
-        $save->Product_ID = $lastProfile;
-        $save->name_th = $request->name_th;
-        $save->name_en = $request->name_en;
-        $save->create_by = $userid;
-        $save->save();
-        if ($save->save()) {
-            return redirect()->back()->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        try {
+            $data = $request->all();
+            $userid = Auth::user()->id;
+            $lastProfile = master_quantity::count() + 1;
+            $save = new master_quantity();
+            $save->Product_ID = $lastProfile;
+            $save->name_th = $request->name_th;
+            $save->name_en = $request->name_en;
+            $save->create_by = $userid;
+            $save->save();
+        } catch (\Throwable  $e) {
+            return redirect()->route('Quantity','index')->with('error', $e->getMessage());
         }
-        else {
-            return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        try {
+            //log
+            $nameth = 'ชื่อภาษาไทย : '.$request->name_th;
+            $nameen = 'ชื่อภาษาอังกฤษ : '.$request->name_en;
+            $datacompany = '';
+            $variables = [$nameth, $nameen];
+            // รวม $formattedProductDataString เข้าไปใน $variables
+            foreach ($variables as $variable) {
+                if (!empty($variable)) {
+                    if (!empty($datacompany)) {
+                        $datacompany .= ' + ';
+                    }
+                    $datacompany .= $variable;
+                }
+            }
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = 'Master Quantity';
+            $save->type = 'Create';
+            $save->Category = 'Create :: Master Quantity';
+            $save->content =$datacompany;
+            $save->save();
+
+        } catch (\Throwable  $e) {
+            return redirect()->route('Quantity','index')->with('error', $e->getMessage());
         }
+        return redirect()->route('Quantity','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
 
     public function edit_quantity($id)
@@ -435,25 +480,7 @@ class master_product_i extends Controller
         }
         $quantity->save();
     }
-    public function ac_quantity(Request $request)
-    {
 
-        $ac = $request->value;
-        if ($ac == 1 ) {
-            $query = master_quantity::query();
-            $quantity = $query->where('status', '1')->get();
-        }
-        return view('master_quantity.index',compact('quantity'));
-    }
-    public function no_quantity(Request $request)
-    {
-        $no = $request->value;
-        if ($no == 0 ) {
-            $query = master_quantity::query();
-            $quantity = $query->where('status', '0')->get();
-        }
-        return view('master_quantity.index',compact('quantity'));
-    }
 
     public function  searchquantity($datakey)
     {
@@ -468,27 +495,260 @@ class master_product_i extends Controller
 
     public function  update_quantity($id,$datakey,$dataEN)
     {
-        $userid = Auth::user()->id;
-        $save = master_quantity::find($id);
-        $save->name_th = $datakey;
-        $save->name_en = $dataEN;
-        $save->create_by = $userid;
-        $save->save();
-        if ($save->save()) {
-            return redirect()->back()->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        try {
+            $userid = Auth::user()->id;
+            $save = master_quantity::find($id);
+            $save->name_th = $datakey;
+            $save->name_en = $dataEN;
+            $save->create_by = $userid;
+            $save->save();
+        } catch (\Throwable  $e) {
+            return redirect()->route('Quantity','index')->with('error', $e->getMessage());
         }
-        else {
-            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        try {
+            $nameth = null;
+            if ($datakey) {
+                $nameth = 'ชื่อภาษาไทย : '.$datakey;
+            }
+            $nameen = null;
+            if ($datakey) {
+                $nameen = 'ชื่อภาษาอังกฤษ : '.$dataEN;
+            }
+            $datacompany = '';
+            $variables = [$nameth, $nameen];
+            // รวม $formattedProductDataString เข้าไปใน $variables
+            foreach ($variables as $variable) {
+                if (!empty($variable)) {
+                    if (!empty($datacompany)) {
+                        $datacompany .= ' + ';
+                    }
+                    $datacompany .= $variable;
+                }
+            }
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = 'Master Quantity';
+            $save->type = 'Edit';
+            $save->Category = 'Edit :: Master Quantity';
+            $save->content =$datacompany;
+            $save->save();
+
+        } catch (\Throwable  $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
+        return redirect()->route('Quantity','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+    }
+    public function quantity_log(){
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $log = log_company::where('Company_ID', 'Master Quantity')
+        ->orderBy('updated_at', 'desc')
+        ->paginate($perPage);
+        return view('master_quantity.log',compact('log'));
     }
 
+    public function quantity_search_table(Request $request){
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+        $permissionid = Auth::user()->permission;
+        if ($search_value) {
+            $data_query = master_quantity::where('name_th', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('name_en', 'LIKE', '%'.$search_value.'%')
+            ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = master_quantity::query()->paginate($perPageS);
+        }
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                $view ="";
+                if ($value->status == 1) {
+                    $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                } else {
+                    $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                }
+
+                $path = 'promotion/';
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="view_detail('.$value->id.')" data-bs-toggle="modal" data-bs-target="#QuantityCreate">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="edit('.$value->id.')" data-bs-toggle="modal" data-bs-target="#QuantityCreate">Edit</a></li>';
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+
+                $data[] = [
+                    'number' => ($key + 1) ,
+                    'nameth' => $value->name_th,
+                    'nameen' => $value->name_en,
+                    'status' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function quantity_paginate_table(Request $request){
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query = master_quantity::query()->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = master_quantity::query()->paginate($perPage);
+        }
 
 
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    if ($value->status == 1) {
+                        $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                    } else {
+                        $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                    }
+
+                    $path = 'promotion/';
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="view_detail('.$value->id.')" data-bs-toggle="modal" data-bs-target="#QuantityCreate">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="edit('.$value->id.')" data-bs-toggle="modal" data-bs-target="#QuantityCreate">Edit</a></li>';
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => ($key + 1) ,
+                        'nameth' => $value->name_th,
+                        'nameen' => $value->name_en,
+                        'status' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+    public function quantity_search_table_paginate_log(Request $request){
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+
+        if ($search_value) {
+            $data_query = log_company::where('created_at', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID','Master Quantity')
+                ->orderBy('updated_at', 'desc')
+                ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = log_company::where('Company_ID', 'Master Quantity')->orderBy('updated_at', 'desc')->paginate($perPageS);
+        }
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $contentArray = explode('+', $value->content);
+                $content = implode('</br>', $contentArray);
+                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                $name = $Category.'</br>'.$content;
+                $data[] = [
+                    'number' => $key + 1,
+                    'Category'=>$value->Category,
+                    'type'=>$value->type,
+                    'Created_by'=>@$value->userOperated->name,
+                    'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                    'Content' => $name,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function quantity_paginate_log_table(Request $request){
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+
+
+        if ($perPage == 10) {
+            $data_query = log_company::where('Company_ID', 'Master Quantity')->orderBy('updated_at', 'desc')->limit($request->page.'0')->get();
+        } else {
+            $data_query = log_company::where('Company_ID', 'Master Quantity')->orderBy('updated_at', 'desc')->paginate($perPage);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $contentArray = explode('+', $value->content);
+                $content = implode('</br>', $contentArray);
+                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                $name = $Category.'</br>'.$content;
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    $data[] = [
+                        'number' => $key + 1,
+                        'Category'=>$value->Category,
+                        'type'=>$value->type,
+                        'Created_by'=>@$value->userOperated->name,
+                        'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                        'Content' => $name,
+                    ];
+                }
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+
+    }
+    //------------------------------------------------------------
     //------------------------Unit--------------------------------
-    public function index_unit()
+    public function index_unit($menu)
     {
-        $unit = master_unit::query()->get();
-        return view('master_unit.index',compact('unit'));
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $unit = master_unit::query()->paginate($perPage);
+        $exp = explode('.', $menu);
+        if (count($exp) > 1) {
+            $search = $exp[1];
+            if ($search == "all") {
+                $unit = master_unit::query()
+                ->paginate($perPage);
+            }elseif ($search == 'ac') {
+                $unit = master_unit::query()
+                ->where('status', 1)
+                ->paginate($perPage);
+            }else {
+                $unit = master_unit::query()
+                ->where('status', 0)
+                ->paginate($perPage);
+            }
+        }
+        return view('master_unit.index',compact('unit','menu'));
     }
 
     public function  search($datakey)
@@ -503,36 +763,93 @@ class master_product_i extends Controller
     }
     public function  update_unit($id,$datakey,$dataEN)
     {
-        $userid = Auth::user()->id;
-        $save = master_unit::find($id);
-        $save->name_th = $datakey;
-        $save->name_en = $dataEN;
-        $save->create_by = $userid;
-        $save->save();
-        if ($save->save()) {
-            return redirect()->back()->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        try {
+            $userid = Auth::user()->id;
+            $save = master_unit::find($id);
+            $save->name_th = $datakey;
+            $save->name_en = $dataEN;
+            $save->create_by = $userid;
+            $save->save();
+        } catch (\Throwable  $e) {
+            return redirect()->route('Unit','index')->with('error', $e->getMessage());
         }
-        else {
-            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        try {
+            $nameth = null;
+            if ($datakey) {
+                $nameth = 'ชื่อภาษาไทย : '.$datakey;
+            }
+            $nameen = null;
+            if ($datakey) {
+                $nameen = 'ชื่อภาษาอังกฤษ : '.$dataEN;
+            }
+            $datacompany = '';
+            $variables = [$nameth, $nameen];
+            // รวม $formattedProductDataString เข้าไปใน $variables
+            foreach ($variables as $variable) {
+                if (!empty($variable)) {
+                    if (!empty($datacompany)) {
+                        $datacompany .= ' + ';
+                    }
+                    $datacompany .= $variable;
+                }
+            }
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = 'Master Unit';
+            $save->type = 'Edit';
+            $save->Category = 'Edit :: Master Unit';
+            $save->content =$datacompany;
+            $save->save();
+
+        } catch (\Throwable  $e) {
+            return redirect()->route('Unit','index')->with('error', $e->getMessage());
         }
+        return redirect()->route('Unit','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
     public function save_unit(Request $request)
     {
-        $data = $request->all();
-        $userid = Auth::user()->id;
-        $lastProfile = master_unit::count() + 1;
-        $save = new master_unit();
-        $save->Product_ID = $lastProfile;
-        $save->name_th = $request->name_th;
-        $save->name_en = $request->name_en;
-        $save->create_by = $userid;
-        $save->save();
-        if ($save->save()) {
-            return redirect()->back()->with('success', 'บันทึกข้อมูลเรียบร้อย');
+        try {
+            $data = $request->all();
+            $userid = Auth::user()->id;
+            $lastProfile = master_unit::count() + 1;
+            $save = new master_unit();
+            $save->Product_ID = $lastProfile;
+            $save->name_th = $request->name_th;
+            $save->name_en = $request->name_en;
+            $save->create_by = $userid;
+            $save->save();
+        } catch (\Throwable  $e) {
+            return redirect()->route('Unit','index')->with('error', $e->getMessage());
         }
-        else {
-            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        try {
+            //log
+            $nameth = 'ชื่อภาษาไทย : '.$request->name_th;
+            $nameen = 'ชื่อภาษาอังกฤษ : '.$request->name_en;
+            $datacompany = '';
+            $variables = [$nameth, $nameen];
+            // รวม $formattedProductDataString เข้าไปใน $variables
+            foreach ($variables as $variable) {
+                if (!empty($variable)) {
+                    if (!empty($datacompany)) {
+                        $datacompany .= ' + ';
+                    }
+                    $datacompany .= $variable;
+                }
+            }
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = 'Master Unit';
+            $save->type = 'Create';
+            $save->Category = 'Create :: Master Unit';
+            $save->content =$datacompany;
+            $save->save();
+
+        } catch (\Throwable  $e) {
+            return redirect()->route('Unit','index')->with('error', $e->getMessage());
         }
+        return redirect()->route('Unit','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
 
     public function edit_unit($id)
@@ -554,23 +871,191 @@ class master_product_i extends Controller
         }
         $unit->save();
     }
-    public function ac_unit(Request $request)
-    {
-
-        $ac = $request->value;
-        if ($ac == 1 ) {
-            $query = master_unit::query();
-            $unit = $query->where('status', '1')->get();
-        }
-        return view('master_unit.index',compact('unit'));
+    public function unit_log(){
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $log = log_company::where('Company_ID', 'Master Unit')
+        ->orderBy('updated_at', 'desc')
+        ->paginate($perPage);
+        return view('master_unit.log',compact('log'));
     }
-    public function no_unit(Request $request)
-    {
-        $no = $request->value;
-        if ($no == 0 ) {
-            $query = master_unit::query();
-            $unit = $query->where('status', '0')->get();
+
+    public function unit_search_table(Request $request){
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+        $permissionid = Auth::user()->permission;
+        if ($search_value) {
+            $data_query = master_unit::where('name_th', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('name_en', 'LIKE', '%'.$search_value.'%')
+            ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = master_unit::query()->paginate($perPageS);
         }
-        return view('master_unit.index',compact('unit'));
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                $view ="";
+                if ($value->status == 1) {
+                    $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                } else {
+                    $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                }
+
+                $path = 'promotion/';
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="view_detail('.$value->id.')" data-bs-toggle="modal" data-bs-target="#QuantityCreate">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="edit('.$value->id.')" data-bs-toggle="modal" data-bs-target="#QuantityCreate">Edit</a></li>';
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+
+                $data[] = [
+                    'number' => ($key + 1) ,
+                    'nameth' => $value->name_th,
+                    'nameen' => $value->name_en,
+                    'status' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function unit_paginate_table(Request $request){
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query = master_unit::query()->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = master_unit::query()->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    if ($value->status == 1) {
+                        $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                    } else {
+                        $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                    }
+
+                    $path = 'promotion/';
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="view_detail('.$value->id.')" data-bs-toggle="modal" data-bs-target="#QuantityCreate">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" onclick="edit('.$value->id.')" data-bs-toggle="modal" data-bs-target="#QuantityCreate">Edit</a></li>';
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => ($key + 1) ,
+                        'nameth' => $value->name_th,
+                        'nameen' => $value->name_en,
+                        'status' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+    public function unit_search_table_paginate_log(Request $request){
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+
+        if ($search_value) {
+            $data_query = log_company::where('created_at', 'LIKE', '%'.$search_value.'%')
+                ->where('Company_ID','Master Quantity')
+                ->orderBy('updated_at', 'desc')
+                ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = log_company::where('Company_ID', 'Master Quantity')->orderBy('updated_at', 'desc')->paginate($perPageS);
+        }
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $contentArray = explode('+', $value->content);
+                $content = implode('</br>', $contentArray);
+                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                $name = $Category.'</br>'.$content;
+                $data[] = [
+                    'number' => $key + 1,
+                    'Category'=>$value->Category,
+                    'type'=>$value->type,
+                    'Created_by'=>@$value->userOperated->name,
+                    'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                    'Content' => $name,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function unit_paginate_log_table(Request $request){
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+
+
+        if ($perPage == 10) {
+            $data_query = log_company::where('Company_ID', 'Master Quantity')->orderBy('updated_at', 'desc')->limit($request->page.'0')->get();
+        } else {
+            $data_query = log_company::where('Company_ID', 'Master Quantity')->orderBy('updated_at', 'desc')->paginate($perPage);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $contentArray = explode('+', $value->content);
+                $content = implode('</br>', $contentArray);
+                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                $name = $Category.'</br>'.$content;
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    $data[] = [
+                        'number' => $key + 1,
+                        'Category'=>$value->Category,
+                        'type'=>$value->type,
+                        'Created_by'=>@$value->userOperated->name,
+                        'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                        'Content' => $name,
+                    ];
+                }
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+
     }
 }

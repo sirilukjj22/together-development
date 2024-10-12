@@ -1178,9 +1178,7 @@ class DummyQuotationController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('DummyQuotation.index')->with('error', $e->getMessage());
         }
     }
     //-----------------------------edit-----------------------
@@ -2254,9 +2252,7 @@ class DummyQuotationController extends Controller
                     return redirect()->route('DummyQuotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
                 }
             } catch (\Throwable $e) {
-                return response()->json([
-                    'error' => $e->getMessage()
-                ], 500);
+                return redirect()->route('DummyQuotation.index')->with('error', $e->getMessage());
             }
         }
     }
@@ -2872,9 +2868,7 @@ class DummyQuotationController extends Controller
             $save->save();
             return redirect()->route('Proposal.viewproposal', ['id' => $ProposalIDS])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('DummyQuotation.index')->with('error', $e->getMessage());
         }
     }
 

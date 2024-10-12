@@ -1400,9 +1400,7 @@ class Document_invoice extends Controller
                 }
             }
         } catch (\Throwable $e) {
-            // return response()->json([
-            //     'error' => $e->getMessage()
-            // ], 500);
+            return redirect()->route('invoice.index')->with('error', $e->getMessage());
         }
     }
     public function view($id){
@@ -2162,9 +2160,7 @@ class Document_invoice extends Controller
 
             return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('invoice.index')->with('error', $e->getMessage());
         }
     }
     public function sheetpdf(Request $request ,$id) {

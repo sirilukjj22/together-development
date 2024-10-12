@@ -413,8 +413,8 @@ class CompanyController extends Controller
                         }
                     }
                     $save->save();
-                } catch (\Throwable $th) {
-                    return redirect()->route('Company','index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+                } catch (\Throwable $e) {
+                    return redirect()->route('Company','index')->with('error', $e->getMessage());
                 }
                 try {
                     $latestAgent = representative::where('Company_Name', 'like', "%{$Company_Name}%")->where('Branch', 'like', "%{$Branch}%")->first();
@@ -551,14 +551,14 @@ class CompanyController extends Controller
                         }
                         $saveAgent->save();
                     }
-                } catch (\Throwable $th) {
+                } catch (\Throwable $e) {
                     companys::where('Profile_ID',$NProfile_ID)->delete();
-                    return redirect()->route('Company','index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+                    return redirect()->route('Company','index')->with('error', $e->getMessage());
                 }
                 return redirect()->route('Company','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
             }
         } catch (\Exception $e) {
-            return redirect()->route('Company','index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return redirect()->route('Company','index')->with('error', $e->getMessage());
         }
 
     }
@@ -1241,9 +1241,7 @@ class CompanyController extends Controller
             }
             return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('Company','index')->with('error', $e->getMessage());
         }
 
 
@@ -1592,7 +1590,7 @@ class CompanyController extends Controller
 
             return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
-            return redirect()->route('Company.edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return redirect()->route('Company.edit', ['id' => $ids])->with('error', $e->getMessage());
         }
     }
     public function changeStatustax($id)
@@ -2034,7 +2032,7 @@ class CompanyController extends Controller
             $saveC->save();
             return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
-            return redirect()->route('Company.edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return redirect()->route('Company.edit', ['id' => $ids])->with('error', $e->getMessage());
         }
     }
     public function contactedit(Request $request, $id )
@@ -2294,7 +2292,7 @@ class CompanyController extends Controller
             }
             return redirect()->route('Company.edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
-            return redirect()->route('Company.edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return redirect()->route('Company.edit', ['id' => $ids])->with('error', $e->getMessage());
         }
 
     }

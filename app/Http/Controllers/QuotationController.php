@@ -2855,9 +2855,7 @@ class QuotationController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
         }
     }
     //------------------------------แก้ไข--------------------
@@ -4185,9 +4183,7 @@ class QuotationController extends Controller
                 }
             }
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
         }
     }
     //------------------------------ดูข้อมูล------------------
@@ -4284,7 +4280,7 @@ class QuotationController extends Controller
     }
 
     public function sendemail(Request $request,$id){
-        // try {
+        try {
 
             $file = $request->all();
 
@@ -4364,9 +4360,9 @@ class QuotationController extends Controller
             $save->content = 'Send Email Document Proposal ID : '.$Quotation_ID;
             $save->save();
             return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลและส่งอีเมลเรียบร้อยแล้ว');
-        // } catch (\Throwable $th) {
-        //     return redirect()->route('Proposal.index')->with('error', 'เกิดข้อผิดพลาดในการส่งอีเมล์');
-        // }
+        } catch (\Throwable $e) {
+            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+        }
     }
     //-----------------------------รายการ---------------------
     public function addProduct($Quotation_ID, Request $request) {

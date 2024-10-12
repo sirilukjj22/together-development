@@ -467,8 +467,8 @@ class GuestController extends Controller
 
             $save->save();
             return redirect()->route('guest','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
-        } catch (\Throwable $th) {
-            return redirect()->route('guest','index')->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        } catch (\Throwable $e) {
+            return redirect()->route('guest','index')->with('error', $e->getMessage());
         }
     }
     public function ac(Request $request)
@@ -904,8 +904,8 @@ class GuestController extends Controller
             }
             $save->save();
             return redirect()->route('guest_edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อย');
-        } catch (\Throwable $th) {
-            return redirect()->route('guest_edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        } catch (\Throwable $e) {
+            return redirect()->route('guest_edit', ['id' => $ids])->with('error', $e->getMessage());
         }
     }
     public function guest_cover(Request $request, $id)
@@ -1038,9 +1038,7 @@ class GuestController extends Controller
                 $save->content =$datacompany;
                 $save->save();
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('guest','index')->with('error', $e->getMessage());
         }
 
 
@@ -1112,7 +1110,7 @@ class GuestController extends Controller
             }
             return redirect()->route('guest_edit', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
-            return redirect()->route('guest_edit', ['id' => $id])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return redirect()->route('guest_edit', ['id' => $id])->with('error', $e->getMessage());
         }
     }
     public function guestStatustax($id)
@@ -1638,7 +1636,7 @@ class GuestController extends Controller
             }
             return redirect()->route('guest_edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
-            return redirect()->route('guest_edit', ['id' => $ids])->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            return redirect()->route('guest_edit', ['id' => $ids])->with('error', $e->getMessage());
         }
     }
     public function guest_view_tax($id)

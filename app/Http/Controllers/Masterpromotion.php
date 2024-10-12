@@ -94,8 +94,8 @@ class Masterpromotion extends Controller
                     $save->save();
                 }
             }
-        } catch (\Throwable $th) {
-            return redirect()->route('Mpromotion','index')->with('error', 'เกิดข้อผิดพลาดในการบันทึก');
+        } catch (\Throwable $e) {
+            return redirect()->route('Mpromotion','index')->with('error', $e->getMessage());
         }
         try {
                 {
@@ -140,8 +140,8 @@ class Masterpromotion extends Controller
                     $save->content =$datacompany;
                     $save->save();
                 }
-        } catch (\Throwable $th) {
-            return redirect()->route('Mpromotion','index')->with('error', 'เกิดข้อผิดพลาดในการบันทึก');
+        } catch (\Throwable $e) {
+            return redirect()->route('Mpromotion','index')->with('error', $e->getMessage());
         }
         return redirect()->route('Mpromotion','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }

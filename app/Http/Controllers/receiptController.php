@@ -332,9 +332,7 @@ class receiptController extends Controller
             $invoice = document_invoices::where('Quotation_ID', $QuotationID)->where('sequence_re',0)->update(['sequence_re' => $sequencenumber]);
             return redirect()->route('receipt.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } catch (\Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->route('receipt.index')->with('error', $e->getMessage());
         }
 
     }
