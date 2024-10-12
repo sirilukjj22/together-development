@@ -1277,7 +1277,7 @@
                 <form action="{{ route('sms-store') }}" method="POST" class="" id="form-id">
                     @csrf
                     <div class="modal-body">
-                        <label for="">ประเภทรายได้</label>
+                        <label for="">ประเภทรายได้</label> 
                         <br>
                         <select class="form-control form-select" id="status" name="status" onchange="select_type()">
                             <option value="0">เลือกข้อมูล</option>
