@@ -302,19 +302,19 @@
                                         @endif
 
                                         @if (Auth::user()->roleMenu->company_type == 1)
-                                            <li><a class="ms-link" href="{{ route('Mcomt.index') }}">Company Type</a>
+                                            <li><a class="ms-link" href="{{ route('Mcomt','index') }}">Company Type</a>
                                             </li>
                                         @endif
                                         @if (Auth::user()->roleMenu->company_market == 1)
-                                            <li><a class="ms-link" href="{{ route('Mmarket.index') }}">Company
+                                            <li><a class="ms-link" href="{{ route('Mmarket','index') }}">Company
                                                     Market</a></li>
                                         @endif
                                         @if (Auth::user()->roleMenu->company_event == 1)
-                                            <li><a class="ms-link" href="{{ route('MEvent.index') }}">Company
+                                            <li><a class="ms-link" href="{{ route('MEvent','index') }}">Company
                                                     Event</a></li>
                                         @endif
                                         @if (Auth::user()->roleMenu->booking == 1)
-                                            <li><a class="ms-link" href="{{ route('Mbooking.index') }}">Booking</a>
+                                            <li><a class="ms-link" href="{{ route('Mbooking','index') }}">Booking</a>
                                             </li>
                                         @endif
                                         @if (Auth::user()->roleMenu->document_template_pdf == 1)

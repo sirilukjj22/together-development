@@ -194,15 +194,21 @@ Route::middleware(['auth'])->group(function () {
 
     ## Master Booking Channal
     Route::controller(master_booking::class)->middleware('role:setting')->group(function () {
-        Route::get('/Mbooking/index', 'index')->name('Mbooking.index');
-        Route::get('/Mbooking/ac', 'ac')->name('Mbooking.ac');
-        Route::get('/Mbooking/no', 'no')->name('Mbooking.no');
+        Route::get('/Mbooking/{menu}', 'index')->name('Mbooking');
         Route::post('/Mbooking/master_booking/save', 'Mbookingsave')->name('Mbooking.save');
         Route::get('/Mbooking/update/{id}/{datakey}/{dataEN}/{code}', 'update')->name('Master.Mbooking_update');
         Route::get('/Mbooking/change-Status/{id}', 'changeStatus')->name('Master.changeStatus');
         Route::get('/Mbooking/edit/{id}','edit')->name('Mproduct.Mbooking.unit');
         Route::get('/Mbooking/search-list2/{datakey}','search')->name('Mproduct.Mbooking.search');
         Route::get('/Mbooking/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.Mbooking.dupicate');
+
+        Route::get('/Mbooking/log/detail', 'log')->name('Mbooking.Log');
+
+        Route::post('book-search-table', 'book_search_table')->name('book-search-table');
+        Route::post('book-paginate-table', 'book_paginate_table')->name('book-paginate-table');
+
+        Route::post('book-Log-search-table', 'book_search_table_paginate_log');
+        Route::post('book-Log-paginate-table', 'book_paginate_log_table');
     });
 
     ## Company
@@ -383,9 +389,7 @@ Route::middleware(['auth'])->group(function () {
 
     #master company type
     Route::controller(Master_Company_type::class)->middleware('role:company_type')->group(function() {
-        Route::get('/Mcomt/index','index')->name('Mcomt.index');
-        Route::get('/Mcomt/ac','ac')->name('Mcomt.ac');
-        Route::get('/Mcomt/no','no')->name('Mcomt.no');
+        Route::get('/Mcomt/{menu}','index')->name('Mcomt');
         Route::post('/Mcomt/Save','save')->name('Mcomt.save');
         Route::get('/Mcomt/change-Status/{id}','changeStatus')->name('Mcomt.changeStatus');
         Route::get('/Mcomt/update/{id}/{datakey}/{dataEN}','update')->name('Mcomt.update');
@@ -393,18 +397,31 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Mcomt/search-list2/{datakey}','search')->name('Mproduct.Mcomt.search');
         Route::get('/Mcomt/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.Mcomt.dupicate');
 
+        Route::get('/Mcomt/log/detail', 'log')->name('Mcomt.Log');
+
+        Route::post('Mcomt-search-table', 'mcomt_search_table')->name('mcomt-search-table');
+        Route::post('Mcomt-paginate-table', 'mcomt_paginate_table')->name('mcomt-paginate-table');
+
+        Route::post('Mcomt-Log-search-table', 'mcomt_search_table_paginate_log');
+        Route::post('Mcomt-Log-paginate-table', 'mcomt_paginate_log_table');
     });
     #master market
     Route::controller(Master_market::class)->middleware('role:company_market')->group(function() {
-        Route::get('/Mmarket/index','index')->name('Mmarket.index');
-        Route::get('/Mmarket/ac','ac')->name('Mmarket.ac');
-        Route::get('/Mmarket/no','no')->name('Mmarket.no');
+        Route::get('/Mmarket/{menu}','index')->name('Mmarket');
         Route::post('/Mmarket/Save','save')->name('Mmarket.save');
         Route::get('/Mmarket/change-Status/{id}','changeStatus')->name('Mmarket.changeStatus');
-        Route::post('/Mmarket/update','update')->name('Mmarket.update');
+        Route::post('/Mmarket/update/{id}/{datakey}/{dataEN}','update')->name('Mmarket.update');
         Route::get('/Mmarket/edit/{id}','edit')->name('Mproduct.edit.Mmarket');
         Route::get('/Mmarket/search-list2/{datakey}','search')->name('Mproduct.Mmarket.search');
         Route::get('/Mmarket/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.Mmarket.dupicate');
+
+        Route::get('/Mmarket/log/detail', 'log')->name('Mmarket.Log');
+
+        Route::post('Mmarket-search-table', 'Mmarket_search_table')->name('Mmarket-search-table');
+        Route::post('Mmarket-paginate-table', 'Mmarket_paginate_table')->name('Mmarket-paginate-table');
+
+        Route::post('Mmarket-Log-search-table', 'Mmarket_search_table_paginate_log');
+        Route::post('Mmarket-Log-paginate-table', 'Mmarket_paginate_log_table');
     });
 
     #Freelancer Check
@@ -450,15 +467,21 @@ Route::middleware(['auth'])->group(function () {
 
     # Master Event Formate
     Route::controller(MasterEventFormatController::class)->middleware('role:company_event')->group(function () {
-        Route::get('/MEvent/index', 'index')->name('MEvent.index');
-        Route::get('/MEvent/ac', 'ac')->name('MEvent.ac');
-        Route::get('/MEvent/no', 'no')->name('MEvent.no');
+        Route::get('/MEvent/{menu}', 'index')->name('MEvent');
         Route::post('/MEvent/Event_Formate/save', 'save')->name('MEvent.save');
         Route::get('/MEvent/update/{id}/{datakey}/{dataEN}', 'update')->name('MEvent.update');
         Route::get('/MEvent/change-Status/{id}','changeStatus')->name('MEvent.changeStatus');
         Route::get('/MEvent/edit/{id}','edit')->name('Mproduct.edit.MEvent');
         Route::get('/MEvent/search-list2/{datakey}','search')->name('Mproduct.MEvent.search');
         Route::get('/MEvent/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.MEvent.dupicate');
+
+        Route::get('/MEvent/log/detail', 'log')->name('MEvent.Log');
+
+        Route::post('MEvent-search-table', 'mevent_search_table')->name('mevent-search-table');
+        Route::post('MEvent-paginate-table', 'mevent_paginate_table')->name('mevent-paginate-table');
+
+        Route::post('MEvent-Log-search-table', 'mevent_search_table_paginate_log');
+        Route::post('MEvent-Log-paginate-table', 'mevent_paginate_log_table');
     });
 
     Route::controller(Master_Vat::class)->group(function () {
