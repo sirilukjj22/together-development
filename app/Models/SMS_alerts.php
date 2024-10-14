@@ -49,9 +49,16 @@ class SMS_alerts extends Model
         $query = Masters::where('category', 'bank')->whereNull('deleted_at')->select('id', 'name_en')->get();
 
         $bank_name = '';
-        foreach ($query as $key => $value) {
-            if (strtoupper($value->name_en) == strtoupper($datakey)) {
-                $bank_name = $value->id;
+        if (strtoupper($datakey) == "TMB") {
+            $check = Masters::where('name_en', 'TTB')->select('id')->first();
+            $bank_name = $check->id;
+
+        } else {
+            foreach ($query as $key => $value) {
+                if (strtoupper($value->name_en) == strtoupper($datakey)) {
+                    $bank_name = $value->id;
+                    break;
+                }
             }
         }
 
