@@ -16,7 +16,8 @@ class master_product_i extends Controller
 {
     public function index()
     {
-        $product = master_product_item::query()->get();
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $product = master_product_item::query()->paginate($perPage);
         $Room_Revenue = master_product_item::where('Category','Room_Type')->count();
         $Banquet = master_product_item::where('Category','Banquet')->count();
         $Meals = master_product_item::where('Category','Meals')->count();
@@ -35,10 +36,10 @@ class master_product_i extends Controller
             $CountMeals = 0;
             $CountEntertainment = 0;
         }
-        $productroom = master_product_item::where('Category','Room_Type')->get();
-        $productBanquet = master_product_item::where('Category','Banquet')->get();
-        $productMeals = master_product_item::where('Category','Meals')->get();
-        $productEntertainment = master_product_item::where('Category','Entertainment')->get();
+        $productroom = master_product_item::where('Category','Room_Type')->paginate($perPage);
+        $productBanquet = master_product_item::where('Category','Banquet')->paginate($perPage);
+        $productMeals = master_product_item::where('Category','Meals')->paginate($perPage);
+        $productEntertainment = master_product_item::where('Category','Entertainment')->paginate($perPage);
         return view('master_product.index',compact('product','Room_Revenue','Banquet','Meals','Entertainment','productcount'
         ,'CountRoom','CountBanquet','CountMeals','CountEntertainment','productroom','productBanquet','productMeals','productEntertainment'));
     }
@@ -222,25 +223,6 @@ class master_product_i extends Controller
             return redirect()->back()->with('error_', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
     }
-    public function ac(Request $request)
-    {
-
-        $ac = $request->value;
-        if ($ac == 1 ) {
-            $query = master_product_item::query();
-            $product = $query->where('status', '1')->get();
-        }
-        return view('master_product.index',compact('product'));
-    }
-    public function no(Request $request)
-    {
-        $no = $request->value;
-        if ($no == 0 ) {
-            $query = master_product_item::query();
-            $product = $query->where('status', '0')->get();
-        }
-        return view('master_product.index',compact('product'));
-    }
     public function changeStatus($id)
     {
 
@@ -392,6 +374,687 @@ class master_product_i extends Controller
         $product = master_product_item::find($id);
         $product->delete();
         return redirect()->route('Mproduct.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+    }
+
+    public function paginate_table_product(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query = master_product_item::query()
+            ->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = master_product_item::query()->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    if ($value->status == 1) {
+                        $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                    } else {
+                        $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                    }
+
+                    $path = 'promotion/';
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/edit/' . $value->id) . '">Edit</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+
+                    $data[] = [
+                        'number' => ($key + 1),
+                        'Product' => $value->Product_ID,
+                        'Name' => $value->name_th,
+                        'Detail' => $value->detail_th,
+                        'Room' => $value->room_size ? $value->room_size : '-',
+                        'Normal'=> number_format($value->normal_price),
+                        'Quantity' => @$value->productquantity->name_th,
+                        'Unit' => @$value->productunit->name_th,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_product(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $search_value = $request->search_value;
+        if ($search_value) {
+            $data_query = master_product_item::
+            orWhere('Product_ID', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('name_th', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('name_en', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Category', 'LIKE', '%'.$search_value.'%')
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = master_product_item::query()->paginate($perPageS);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+
+                // สร้าง dropdown สำหรับการทำรายการ
+
+                if ($value->status == 1) {
+                    $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                } else {
+                    $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                }
+
+                $path = 'promotion/';
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/view/' . $value->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/edit/' . $value->id) . '">Edit</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => ($key + 1),
+                    'Product' => $value->Product_ID,
+                    'Name' => $value->name_th,
+                    'Detail' => $value->detail_th,
+                    'Room' => $value->room_size ? $value->room_size : '-',
+                    'Normal'=> number_format($value->normal_price),
+                    'Quantity' => @$value->productquantity->name_th,
+                    'Unit' => @$value->productunit->name_th,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+    public function paginate_table_productroom(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query = master_product_item::query()
+            ->where('Category','Room_Type')
+            ->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = master_product_item::query()->where('Category','Room_Type')->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    if ($value->status == 1) {
+                        $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                    } else {
+                        $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                    }
+
+                    $path = 'promotion/';
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/edit/' . $value->id) . '">Edit</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+
+                    $data[] = [
+                        'number' => ($key + 1),
+                        'Product' => $value->Product_ID,
+                        'Name' => $value->name_th,
+                        'Detail' => $value->detail_th,
+                        'Room' => $value->room_size ? $value->room_size : '-',
+                        'Normal'=> number_format($value->normal_price),
+                        'Quantity' => @$value->productquantity->name_th,
+                        'Unit' => @$value->productunit->name_th,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_productroom(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $search_value = $request->search_value;
+        if ($search_value) {
+            $data_query = master_product_item::where('Category', 'Room_Type')
+            ->where(function($query) use ($search_value) {
+                $query->orWhere('Product_ID', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('name_th', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('name_en', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('Category', 'LIKE', '%' . $search_value . '%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = master_product_item::query()->where('Category','Room_Type')->paginate($perPageS);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+
+                // สร้าง dropdown สำหรับการทำรายการ
+
+                if ($value->status == 1) {
+                    $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                } else {
+                    $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                }
+
+                $path = 'promotion/';
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/view/' . $value->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/edit/' . $value->id) . '">Edit</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => ($key + 1),
+                    'Product' => $value->Product_ID,
+                    'Name' => $value->name_th,
+                    'Detail' => $value->detail_th,
+                    'Room' => $value->room_size ? $value->room_size : '-',
+                    'Normal'=> number_format($value->normal_price),
+                    'Quantity' => @$value->productquantity->name_th,
+                    'Unit' => @$value->productunit->name_th,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+    public function paginate_table_productBanquet(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query = master_product_item::query()
+            ->where('Category','Banquet')
+            ->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = master_product_item::query()->where('Category','Banquet')->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    if ($value->status == 1) {
+                        $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                    } else {
+                        $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                    }
+
+                    $path = 'promotion/';
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/edit/' . $value->id) . '">Edit</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+
+                    $data[] = [
+                        'number' => ($key + 1),
+                        'Product' => $value->Product_ID,
+                        'Name' => $value->name_th,
+                        'Detail' => $value->detail_th,
+                        'Room' => $value->room_size ? $value->room_size : '-',
+                        'Normal'=> number_format($value->normal_price),
+                        'Quantity' => @$value->productquantity->name_th,
+                        'Unit' => @$value->productunit->name_th,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_productBanquet(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $search_value = $request->search_value;
+        if ($search_value) {
+            $data_query = master_product_item::where('Category', 'Banquet')
+            ->where(function($query) use ($search_value) {
+                $query->orWhere('Product_ID', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('name_th', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('name_en', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('Category', 'LIKE', '%' . $search_value . '%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = master_product_item::query()->where('Category','Banquet')->paginate($perPageS);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+
+                // สร้าง dropdown สำหรับการทำรายการ
+
+                if ($value->status == 1) {
+                    $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                } else {
+                    $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                }
+
+                $path = 'promotion/';
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/view/' . $value->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/edit/' . $value->id) . '">Edit</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => ($key + 1),
+                    'Product' => $value->Product_ID,
+                    'Name' => $value->name_th,
+                    'Detail' => $value->detail_th,
+                    'Room' => $value->room_size ? $value->room_size : '-',
+                    'Normal'=> number_format($value->normal_price),
+                    'Quantity' => @$value->productquantity->name_th,
+                    'Unit' => @$value->productunit->name_th,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+    public function paginate_table_productMeals(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query = master_product_item::query()
+            ->where('Category','Meals')
+            ->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = master_product_item::query()->where('Category','Meals')->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    if ($value->status == 1) {
+                        $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                    } else {
+                        $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                    }
+
+                    $path = 'promotion/';
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/edit/' . $value->id) . '">Edit</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+
+                    $data[] = [
+                        'number' => ($key + 1),
+                        'Product' => $value->Product_ID,
+                        'Name' => $value->name_th,
+                        'Detail' => $value->detail_th,
+                        'Room' => $value->room_size ? $value->room_size : '-',
+                        'Normal'=> number_format($value->normal_price),
+                        'Quantity' => @$value->productquantity->name_th,
+                        'Unit' => @$value->productunit->name_th,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_productMeals(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $search_value = $request->search_value;
+        if ($search_value) {
+            $data_query = master_product_item::where('Category', 'Meals')
+            ->where(function($query) use ($search_value) {
+                $query->orWhere('Product_ID', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('name_th', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('name_en', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('Category', 'LIKE', '%' . $search_value . '%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = master_product_item::query()->where('Category','Meals')->paginate($perPageS);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+
+                // สร้าง dropdown สำหรับการทำรายการ
+
+                if ($value->status == 1) {
+                    $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                } else {
+                    $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                }
+
+                $path = 'promotion/';
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/view/' . $value->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/edit/' . $value->id) . '">Edit</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => ($key + 1),
+                    'Product' => $value->Product_ID,
+                    'Name' => $value->name_th,
+                    'Detail' => $value->detail_th,
+                    'Room' => $value->room_size ? $value->room_size : '-',
+                    'Normal'=> number_format($value->normal_price),
+                    'Quantity' => @$value->productquantity->name_th,
+                    'Unit' => @$value->productunit->name_th,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+    public function paginate_table_productEntertainment(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query = master_product_item::query()
+            ->where('Category','Entertainment')
+            ->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = master_product_item::query()->where('Category','Entertainment')->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    if ($value->status == 1) {
+                        $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                    } else {
+                        $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                    }
+
+                    $path = 'promotion/';
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/edit/' . $value->id) . '">Edit</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+
+                    $data[] = [
+                        'number' => ($key + 1),
+                        'Product' => $value->Product_ID,
+                        'Name' => $value->name_th,
+                        'Detail' => $value->detail_th,
+                        'Room' => $value->room_size ? $value->room_size : '-',
+                        'Normal'=> number_format($value->normal_price),
+                        'Quantity' => @$value->productquantity->name_th,
+                        'Unit' => @$value->productunit->name_th,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_productEntertainment(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $search_value = $request->search_value;
+        if ($search_value) {
+            $data_query = master_product_item::where('Category', 'Entertainment')
+            ->where(function($query) use ($search_value) {
+                $query->orWhere('Product_ID', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('name_th', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('name_en', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('Category', 'LIKE', '%' . $search_value . '%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = master_product_item::query()->where('Category','Entertainment')->paginate($perPageS);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+
+                // สร้าง dropdown สำหรับการทำรายการ
+
+                if ($value->status == 1) {
+                    $btn_status = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button>';
+                } else {
+                    $btn_status = '<button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                }
+
+                $path = 'promotion/';
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/view/' . $value->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Mproduct/edit/' . $value->id) . '">Edit</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+                $data[] = [
+                    'number' => ($key + 1),
+                    'Product' => $value->Product_ID,
+                    'Name' => $value->name_th,
+                    'Detail' => $value->detail_th,
+                    'Room' => $value->room_size ? $value->room_size : '-',
+                    'Normal'=> number_format($value->normal_price),
+                    'Quantity' => @$value->productquantity->name_th,
+                    'Unit' => @$value->productunit->name_th,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
     }
     //------------------------------------------------------------------------------------------------
     //-----------------------------------Quantity-----------------------------------------------------

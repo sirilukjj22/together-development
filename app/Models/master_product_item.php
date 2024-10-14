@@ -34,4 +34,8 @@ class master_product_item extends Model
     {
         return $this->hasOne(master_unit::class, 'id', 'unit');
     }
+    public function  productquantity()
+    {
+        return $this->hasOne(master_quantity::class, 'id', 'quantity');
+    }
 }

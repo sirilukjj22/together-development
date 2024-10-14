@@ -28,6 +28,7 @@ use App\Http\Controllers\Document_invoice;
 use App\Http\Controllers\BillingFolioController;
 use App\Http\Controllers\ElexaController;
 use App\Http\Controllers\Masterpromotion;
+use App\Http\Controllers\Master_Address_System;
 use App\Http\Controllers\UserDepartmentsController;
 use App\Http\Controllers\ReceiveChequeController;
 use Illuminate\Support\Facades\Artisan;
@@ -317,6 +318,23 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Mproduct/master_Mproduct/Mproduct_update/{id}','update')->name('Mproduct.update');
         Route::post('/Mproduct/check/Category','Category')->name('Mproduct.Category');
         Route::get('/Mproduct/delete/{id}','delete')->name('Mproduct.delete');
+
+        //----------------------------
+        Route::post('product-search-table', 'search_table_product');
+        Route::post('product-paginate-table', 'paginate_table_product');
+        //----------------------------
+        Route::post('productroom-search-table', 'search_table_productroom');
+        Route::post('productroom-paginate-table', 'paginate_table_productroom');
+        //----------------------------
+        Route::post('productBanquet-search-table', 'search_table_productBanquet');
+        Route::post('productBanquet-paginate-table', 'paginate_table_productBanquet');
+        //----------------------------
+        Route::post('productMeals-search-table', 'search_table_productMeals');
+        Route::post('productMeals-paginate-table', 'paginate_table_productMeals');
+        //----------------------------
+        Route::post('productEntertainment-search-table', 'search_table_productEntertainment');
+        Route::post('productEntertainment-paginate-table', 'paginate_table_productEntertainment');
+
         // ----------------------------------Quantity-----------------------------------------------
         Route::get('/Mproduct/Quantity/{menu}','index_quantity')->name('Quantity');
         Route::post('/Mproduct/Quantity/Save','save_quantity')->name('Mproduct.save.quantity');
@@ -485,15 +503,21 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::controller(Master_Vat::class)->group(function () {
-        Route::get('/Mvat/index', 'index')->name('Mvat.index');
-        Route::get('/Mvat/ac', 'ac')->name('Mvat.ac');
-        Route::get('/Mvat/no', 'no')->name('Mvat.no');
+        Route::get('/Mvat/{menu}', 'index')->name('Mvat');
         Route::post('/Mvat/Event_Formate/save', 'save')->name('Mvat.save');
         Route::get('/Mvat/update/{id}/{datakey}/{dataEN}', 'update')->name('Mvat.update');
         Route::get('/Mvat/change-Status/{id}','changeStatus')->name('Mvat.changeStatus');
         Route::get('/Mvat/edit/{id}','edit')->name('Mproduct.edit.Mvat');
         Route::get('/Mvat/search-list2/{datakey}','search')->name('Mproduct.Mvat.search');
         Route::get('/Mvat/check-edit-name/{id}/{datakey}','dupicate')->name('Mproduct.Mvat.dupicate');
+
+        Route::get('/Mvat/log/detail', 'log')->name('Mvat.Log');
+
+        Route::post('Mvat-search-table', 'mvat_search_table')->name('mvat-search-table');
+        Route::post('Mvat-paginate-table', 'mvat_paginate_table')->name('mvat-paginate-table');
+
+        Route::post('Mvat-Log-search-table', 'mvat_search_table_paginate_log');
+        Route::post('Mvat-Log-paginate-table', 'mvat_paginate_log_table');
     });
 
     #Quotation
@@ -729,6 +753,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('cheque-search-table', 'search_table_cheque');
         Route::post('cheque-paginate-table', 'paginate_table_cheque');
     });
+    Route::controller(Master_Address_System::class)->middleware('role:document')->group(function () {
+        Route::get('/Master/System/index', 'index')->name('System.index');
+        Route::post('/Master/System/edit/{id}', 'edit')->name('System.edit');
+        Route::get('/Master/System/log/detail', 'log')->name('System.Log');
+
+        Route::post('Msys-Log-search-table', 'Msys_search_table_paginate_log');
+        Route::post('Msys-Log-paginate-table', 'Msys_paginate_log_table');
+    });
+
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');
     $exitCode = Artisan::call('cache:clear');
