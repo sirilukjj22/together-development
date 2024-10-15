@@ -13,6 +13,9 @@
                         <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Mproduct.create') }}'">
                         <i class="fa fa-plus"></i> เพิ่มรายการสินค้า</button>
                     @endif
+                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('Mproduct.Log') }}'">
+                        LOG
+                    </button>
                 </div>
             </div> <!-- .row end -->
         </div>

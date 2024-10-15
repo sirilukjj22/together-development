@@ -318,7 +318,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Mproduct/master_Mproduct/Mproduct_update/{id}','update')->name('Mproduct.update');
         Route::post('/Mproduct/check/Category','Category')->name('Mproduct.Category');
         Route::get('/Mproduct/delete/{id}','delete')->name('Mproduct.delete');
-
+        Route::get('/Mproduct/log/detail', 'product_log')->name('Mproduct.Log');
         //----------------------------
         Route::post('product-search-table', 'search_table_product');
         Route::post('product-paginate-table', 'paginate_table_product');
@@ -335,6 +335,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('productEntertainment-search-table', 'search_table_productEntertainment');
         Route::post('productEntertainment-paginate-table', 'paginate_table_productEntertainment');
 
+        Route::post('product-Log-search-table', 'product_search_table_paginate_log');
+        Route::post('product-Log-paginate-table', 'product_paginate_log_table');
         // ----------------------------------Quantity-----------------------------------------------
         Route::get('/Mproduct/Quantity/{menu}','index_quantity')->name('Quantity');
         Route::post('/Mproduct/Quantity/Save','save_quantity')->name('Mproduct.save.quantity');
