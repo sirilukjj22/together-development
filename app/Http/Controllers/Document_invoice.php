@@ -1163,6 +1163,7 @@ class Document_invoice extends Controller
                     $valid = $request->valid;
                     $balance = $request->balance;
                     $sum = $request->sum;
+
                     if ($datarequest['Selectdata'] == 'Company') {
                         $Data_ID = $datarequest['Company'];
                         $Company = companys::where('Profile_ID',$Data_ID)->first();
@@ -1171,7 +1172,8 @@ class Document_invoice extends Controller
                         $Address = $Company->Address;
                         $Email = $Company->Company_Email;
                         $Taxpayer_Identification = $Company->Taxpayer_Identification;
-                        $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+                        $comtype = master_document::where('id', $Company_type)->first();
+
                         if ($comtype) {
                             if ($comtype->name_th == "บริษัทจำกัด") {
                                 $comtypefullname = "บริษัท " . $Compannyname . " จำกัด";

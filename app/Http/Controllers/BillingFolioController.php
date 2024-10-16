@@ -413,6 +413,7 @@ class BillingFolioController extends Controller
         $ProposalID = $Proposal->id;
         $Proposal_ID = $Proposal->Quotation_ID;
         $totalAmount = $Proposal->Nettotal;
+        $nameid = $Proposal->Company_ID;
         $SpecialDiscountBath = $Proposal->SpecialDiscountBath;
         $SpecialDiscount = $Proposal->SpecialDiscount;
         $subtotal = 0;
@@ -428,14 +429,44 @@ class BillingFolioController extends Controller
         $AddTax = $subtotal-$beforeTax;
         $Nettotal = $subtotal;
 
-
+        $parts = explode('-', $nameid);
+        $firstPart = $parts[0];
+        if ($firstPart == 'C') {
+            $company =  companys::where('Profile_ID',$nameid)->first();
+            $fullname = $company->Company_Name;
+            $Address=$company->Address;
+            $CityID=$company->City;
+            $amphuresID = $company->Amphures;
+            $TambonID = $company->Tambon;
+            $Identification = $company->Taxpayer_Identification;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $address = $Address.' '.$TambonID->name_th.' '.$amphuresID->name_th.' '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
+        }else{
+            $guestdata =  Guest::where('Profile_ID',$nameid)->first();
+            $fullname =  'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
+            $Address=$guestdata->Address;
+            $CityID=$guestdata->City;
+            $amphuresID = $guestdata->Amphures;
+            $TambonID = $guestdata->Tambon;
+            $Identification = $guestdata->Identification_Number;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $address = $Address.' '.$TambonID->name_th.' '.$amphuresID->name_th.' '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
+        }
         $invoices = document_invoices::where('Quotation_ID', $Proposal_ID)->where('Paid',0)->get();
-        $Receipt = receive_payment::where('Quotation_ID', $Proposal_ID)->get();
         if ($invoices->contains('Paid', 0)) {
             // ถ้า status มีค่าเป็น 0 อย่างน้อยหนึ่งรายการ
             $status = 0;
         } else {
             $status = 1;
+        }
+        $Receipt = receive_payment::where('Quotation_ID', $Proposal_ID)->get();
+        $totalReceipt = 0;
+        foreach ($Receipt as $item) {
+            $totalReceipt +=  $item->Amount;
         }
         //-----------------------------------------------
         $room = document_quotation::where('Quotation_ID',$Proposal_ID)->where('Product_ID', 'LIKE', 'R' . '%')->get();
@@ -461,7 +492,8 @@ class BillingFolioController extends Controller
             $totalentertainment +=  $item->netpriceproduct;
         }
         return view('billingfolio.check_pi',compact('Proposal_ID','subtotal','beforeTax','AddTax','Nettotal','SpecialDiscountBath','total','invoices','status','Proposal','ProposalID',
-                    'totalnetpriceproduct','room','unit','quantity','totalnetMeals','Meals','Banquet','totalnetBanquet','totalentertainment','entertainment','Receipt','ids'));
+                    'totalnetpriceproduct','room','unit','quantity','totalnetMeals','Meals','Banquet','totalnetBanquet','totalentertainment','entertainment','Receipt','ids','fullname'
+                    ,'firstPart','Identification','address','totalReceipt'));
     }
 
     public function PaidInvoice($id){
@@ -469,21 +501,39 @@ class BillingFolioController extends Controller
         $proposalid = $invoices->Quotation_ID;
         $Invoice_ID = $invoices->Invoice_ID;
         $sumpayment = $invoices->sumpayment;
+        $valid = $invoices->valid;
         $Proposal = Quotation::where('Quotation_ID',$proposalid)->first();
         $guest = $Proposal->Company_ID;
         $type = $Proposal->type_Proposal;
-
+        $Percent = $invoices->paymentPercent;
         if ($type == 'Company') {
-            $data = companys::where('Profile_ID',$guest)->select('Company_Name','id','Profile_ID')->first();
+            $data = companys::where('Profile_ID',$guest)->first();
+            $Identification = $data->Taxpayer_Identification;
             $name =  'บริษัท '.$data->Company_Name.' จำกัด';
             $name_ID = $data->Profile_ID;
             $datasub = company_tax::where('Company_ID',$name_ID)->get();
-
+            $Address=$data->Address;
+            $CityID=$data->City;
+            $amphuresID = $data->Amphures;
+            $TambonID = $data->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $address = $Address.' '.$TambonID->name_th.' '.$amphuresID->name_th.' '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
         }else {
-            $data = Guest::where('Profile_ID',$guest)->select('First_name','Last_name','id','Profile_ID')->first();
+            $data = Guest::where('Profile_ID',$guest)->first();
             $name =  'คุณ '.$data->First_name.' '.$data->Last_name;
+            $Identification = $data->Identification_Number;
             $name_ID = $data->Profile_ID;
             $datasub = guest_tax::where('Company_ID',$name_ID)->get();
+            $Address=$data->Address;
+            $CityID=$data->City;
+            $amphuresID = $data->Amphures;
+            $TambonID = $data->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $address = $Address.' '.$TambonID->name_th.' '.$amphuresID->name_th.' '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
         }
         $currentDate = Carbon::now();
         $ID = 'RE-';
@@ -505,7 +555,6 @@ class BillingFolioController extends Controller
         $settingCompany = Master_company::orderBy('id', 'desc')->first();
         $data_bank = Masters::where('category', "bank")->where('status', 1)->select('id', 'name_th', 'name_en')->get();
         $chequeRe =receive_cheque::where('refer_proposal',$proposalid)->where('refer_invoice',$Invoice_ID)->first();
-
         if ($chequeRe) {
             $bank_cheque = $chequeRe->bank_cheque;
             $databank= Masters::where('id', $bank_cheque)->first();
@@ -522,7 +571,7 @@ class BillingFolioController extends Controller
             $databankname = "";
         }
 
-        return view('billingfolio.invoicepaid',compact('invoices','Proposal','name','name_ID','datasub','type','REID','Invoice_ID','settingCompany','databankname','data_bank','sumpayment','chequeRe','chequeRestatus','bank_cheque'));
+        return view('billingfolio.invoicepaid',compact('invoices','address','Identification','valid','Proposal','name','Percent','name_ID','datasub','type','REID','Invoice_ID','settingCompany','databankname','data_bank','sumpayment','chequeRe','chequeRestatus','bank_cheque'));
     }
 
     public function PaidInvoiceData($id)
