@@ -22,6 +22,10 @@
     color: white;
     min-height: 20rem;
     }
+    .modal-dialog-custom-90p {
+        min-width: 50%;
+    }
+
 </style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
@@ -34,10 +38,10 @@
                 <div class="col-auto">
                     <button class="bt-tg-normal ">
                         <a href="{{ route('invoice.index') }}">Create Invoice</a>
-                      </button>
-                      <button class="bt-tg-normal">
-                        <a href="createBill.html">Normal Bill</a>
-                      </button>
+                    </button>
+                    {{-- <button class="bt-tg-normal">
+                    <a href="createBill.html">Normal Bill</a>
+                    </button> --}}
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -126,7 +130,7 @@
                             <ul class="card-list-between">
                                 <li class="pr-3">
                                     <span>Proposal ({{$Proposal_ID}})</span>
-                                    <span class="hover-effect i text-primary f-w-bold" data-bs-toggle="modal" data-bs-target="#ModalProposalSummary"> {{ number_format($Nettotal, 2, '.', ',') }} <i class="fa fa-file-text-o hover-up"></i></span>
+                                    <span class="hover-effect i  f-w-bold" style="color: #438985;" data-bs-toggle="modal" data-bs-target="#ModalProposalSummary"> {{ number_format($Nettotal, 2, '.', ',') }} <i class="fa fa-file-text-o hover-up"></i></span>
                                 </li>
                                 <li class="pr-3">
                                     <span>Receipt</span>
@@ -217,285 +221,293 @@
             </div>
         </div>
         <div class="modal fade pi" id="ModalProposalSummary" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-custom-80p">
-              <div class="modal-content">
-                <div class="modal-header" style="background-color: #2c7f7a">
-                  <h3 class="modal-title fs-3" id="exampleModalLabel" style="color: white"> Proposal Summary </h3>
-                  <button type="button" class="btn-close light" data-bs-dismiss="modal" aria-label="Close" style="color: white !important"></button>
-                </div>
-                <div class="modal-body">
-                  <div class="">
-                    <div class="d-flex-wrap-at-300">
-                      <section class="card-content2">
-                        <h5 class="card-title">Proposal</h5>
-                        <div class="card-list-between">
-                          <li>
-                            <span>Subtotal</span>
-                            <span>23,200.00</span>
-                          </li>
-                          <li>
-                            <span>Special Discount Bath</span>
-                            <span>0.00</span>
-                          </li>
-                          <li>
-                            <span>Total Balance</span>
-                            <span>23,200.00</span>
-                          </li>
-                          <li>
-                            <span>Price Before Tax</span>
-                            <span>21,682.24</span>
-                          </li>
-                          <li>
-                            <span>Value Added Tax</span>
-                            <span>1,517.76</span>
-                          </li>
-                        </div>
-                        <div class="card-list-between">
-                          <li>
-                            <span>Total Balance</span>
-                            <span>23,200.00</span>
-                          </li>
-                        </div>
-                      </section>
-                      <section class="card-content2">
-                        <h5 class="card-title">Revenue Summary</h5>
-                        <div class="card-list-between">
-                          <li>
-                            <span>Room Revenue</span>
-                            <span>14,400.00</span>
-                          </li>
-                          <li>
-                            <span>F&B Revenue</span>
-                            <span>2,800.00</span>
-                          </li>
-                          <li>
-                            <span>Banquet Revenue</span>
-                            <span>0.00</span>
-                          </li>
-                          <li>
-                            <span>Entertainment Revenue</span>
-                            <span>6,000.00</span>
-                          </li>
-                        </div>
-                        <div class="card-list-between">
-                          <li>
-                            <span>Total Balance</span>
-                            <span>23,200.00</span>
-                          </li>
-                        </div>
-                      </section>
+            <div class="modal-dialog modal-dialog-custom-90p">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #2c7f7a">
+                        <h3 class="modal-title fs-3" id="exampleModalLabel" style="color: white"> Proposal Summary </h3>
+                        <button type="button" class="btn-close light" data-bs-dismiss="modal" aria-label="Close" style="color: white !important"></button>
                     </div>
-                    <div class="container-sub-table-proposal">
-                      <section>
-                        <h4>Room Revenue </h4>
-                        <details>
-                          <div class="wrap-table-together">
-                            <table class="table-together hover striped">
-                              <thead>
-                                <tr>
-                                  <th>Description</th>
-                                  <th>Quantity</th>
-                                  <th>Unit</th>
-                                  <th>Price/Unit</th>
-                                  <th>Discount</th>
-                                  <th>Price Discount</th>
-                                  <th>Amount</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>Deluxe king Mountain View</td>
-                                  <td>20</td>
-                                  <td>ห้อง</td>
-                                  <td>4,000.00</td>
-                                  <td>40%</td>
-                                  <td>1,600.00</td>
-                                  <td>48,000.00</td>
-                                </tr>
-                                <tr>
-                                  <td>Deluxe king Mountain View</td>
-                                  <td>20</td>
-                                  <td>ห้อง</td>
-                                  <td>4,000.00</td>
-                                  <td>40%</td>
-                                  <td>1,600.00</td>
-                                  <td>48,000.00</td>
-                                </tr>
-                                <tr>
-                                  <td>Deluxe king Mountain View</td>
-                                  <td>20</td>
-                                  <td>ห้อง</td>
-                                  <td>4,000.00</td>
-                                  <td>40%</td>
-                                  <td>1,600.00</td>
-                                  <td>48,000.00</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </details>
-                      </section>
-                      <!-- Table2 F&B Revenue -->
-                      <section>
-                        <h4>F&B Revenue</h4>
-                        <details>
-                          <div class="wrap-table-together">
-                            <table class="table-together hover striped">
-                              <thead>
-                                <tr>
-                                  <th>Description</th>
-                                  <th>Quantity</th>
-                                  <th>Unit</th>
-                                  <th>Price/Unit</th>
-                                  <th>Discount</th>
-                                  <th>Price Discount</th>
-                                  <th>Amount</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>Deluxe king Mountain View</td>
-                                  <td>20</td>
-                                  <td>ห้อง</td>
-                                  <td>4,000.00</td>
-                                  <td>40%</td>
-                                  <td>1,600.00</td>
-                                  <td>48,000.00</td>
-                                </tr>
-                                <tr>
-                                  <td>Deluxe king Mountain View</td>
-                                  <td>20</td>
-                                  <td>ห้อง</td>
-                                  <td>4,000.00</td>
-                                  <td>40%</td>
-                                  <td>1,600.00</td>
-                                  <td>48,000.00</td>
-                                </tr>
-                                <tr>
-                                  <td>Deluxe king Mountain View</td>
-                                  <td>20</td>
-                                  <td>ห้อง</td>
-                                  <td>4,000.00</td>
-                                  <td>40%</td>
-                                  <td>1,600.00</td>
-                                  <td>48,000.00</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </details>
-                      </section>
-                      <!-- Table3 Banquet Revenue-->
-                      <section>
-                        <h4>Banquet Revenue</h4>
-                        <details>
-                          <div class="wrap-table-together">
-                            <table class="table-together hover striped">
-                              <thead>
-                                <tr>
-                                  <th>Description</th>
-                                  <th>Quantity</th>
-                                  <th>Unit</th>
-                                  <th>Price/Unit</th>
-                                  <th>Discount</th>
-                                  <th>Price Discount</th>
-                                  <th>Amount</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>Deluxe king Mountain View</td>
-                                  <td>20</td>
-                                  <td>ห้อง</td>
-                                  <td>4,000.00</td>
-                                  <td>40%</td>
-                                  <td>1,600.00</td>
-                                  <td>48,000.00</td>
-                                </tr>
-                                <tr>
-                                  <td>Deluxe king Mountain View</td>
-                                  <td>20</td>
-                                  <td>ห้อง</td>
-                                  <td>4,000.00</td>
-                                  <td>40%</td>
-                                  <td>1,600.00</td>
-                                  <td>48,000.00</td>
-                                </tr>
-                                <tr>
-                                  <td>Deluxe king Mountain View</td>
-                                  <td>20</td>
-                                  <td>ห้อง</td>
-                                  <td>4,000.00</td>
-                                  <td>40%</td>
-                                  <td>1,600.00</td>
-                                  <td>48,000.00</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </details>
-                      </section>
-                      <!-- Table4 Entertainment Revenue -->
-                      <section>
-                        <h4>Entertainment Revenue</h4>
-                        <details>
-                          <div class="wrap-table-together">
-                            <table class="table-together hover striped">
-                              <thead>
-                                <tr>
-                                  <th>Description</th>
-                                  <th>Quantity</th>
-                                  <th>Unit</th>
-                                  <th>Price/Unit</th>
-                                  <th>Discount</th>
-                                  <th>Price Discount</th>
-                                  <th priority="1">Amount</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>Deluxe king Mountain View</td>
-                                  <td>20</td>
-                                  <td>ห้อง</td>
-                                  <td>4,000.00</td>
-                                  <td>40%</td>
-                                  <td>1,600.00</td>
-                                  <td>48,000.00</td>
-                                </tr>
-                                <tr>
-                                  <td>Deluxe king Mountain View</td>
-                                  <td>20</td>
-                                  <td>ห้อง</td>
-                                  <td>4,000.00</td>
-                                  <td>40%</td>
-                                  <td>1,600.00</td>
-                                  <td>48,000.00</td>
-                                </tr>
-                                <tr>
-                                  <td>Deluxe king Mountain View</td>
-                                  <td>20</td>
-                                  <td>ห้อง</td>
-                                  <td>4,000.00</td>
-                                  <td>40%</td>
-                                  <td>1,600.00</td>
-                                  <td>48,000.00</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </details>
-                      </section>
+                    <div class="modal-body">
+                    <div class="">
+                        <div class="d-flex-wrap-at-300">
+                        <section class="card-content2">
+                            <h5 class="card-title">Proposal</h5>
+                            <div class="card-list-between">
+                                @if ($vat == 50)
+                                    <li>
+                                        <span>Subtotal</span>
+                                        <span>{{ number_format($Nettotal+$SpecialDiscountBath, 2, '.', ',') }}</span>
+                                    </li>
+                                    <li>
+                                        <span>Special Discount Bath</span>
+                                        <span>{{ number_format($SpecialDiscountBath, 2, '.', ',') }}</span>
+                                    </li>
+                                    <li>
+                                        <span>Total Balance</span>
+                                        <span>{{ number_format($Nettotal, 2, '.', ',') }}</span>
+                                    </li>
+                                    <li>
+                                        <span>Price Before Tax</span>
+                                        <span>{{ number_format($beforeTax, 2, '.', ',') }}</span>
+                                    </li>
+                                    <li>
+                                        <span>Value Added Tax</span>
+                                        <span>{{ number_format($AddTax, 2, '.', ',') }}</span>
+                                    </li>
+                                    </div>
+                                    <div class="card-list-between">
+                                    <li>
+                                        <span>Total Balance</span>
+                                        <span>{{ number_format($Nettotal, 2, '.', ',') }}</span>
+                                    </li>
+                                @elseif ($vat == 51)
+                                    <li>
+                                        <span>Subtotal</span>
+                                        <span>{{ number_format($Nettotal+$SpecialDiscountBath, 2, '.', ',') }}</span>
+                                    </li>
+                                    <li>
+                                        <span>Special Discount Bath</span>
+                                        <span>{{ number_format($SpecialDiscountBath, 2, '.', ',') }}</span>
+                                    </li>
+                                    <div class="card-list-between">
+                                    <li>
+                                        <span>Total Balance</span>
+                                        <span>{{ number_format($Nettotal, 2, '.', ',') }}</span>
+                                    </li>
+                                @elseif ($vat == 52)
+                                    <li>
+                                        <span>Subtotal</span>
+                                        <span>{{ number_format($Nettotal+$SpecialDiscountBath, 2, '.', ',') }}</span>
+                                    </li>
+                                    <li>
+                                        <span>Special Discount Bath</span>
+                                        <span>{{ number_format($SpecialDiscountBath, 2, '.', ',') }}</span>
+                                    </li>
+                                    <li>
+                                        <span>Value Added Tax</span>
+                                        <span>{{ number_format($AddTax, 2, '.', ',') }}</span>
+                                    </li>
+                                    <div class="card-list-between">
+                                    <li>
+                                        <span>Total Balance</span>
+                                        <span>{{ number_format($Nettotal, 2, '.', ',') }}</span>
+                                    </li>
+                                @endif
+                            </div>
+                        </section>
+                        <section class="card-content2">
+                            <h5 class="card-title">Revenue Summary</h5>
+                            <div class="card-list-between">
+                            <li>
+                                <span>Room Revenue</span>
+                                <span>{{ number_format($totalnetpriceproduct, 2, '.', ',') }}</span>
+                            </li>
+                            <li>
+                                <span>F&B Revenue</span>
+                                <span>{{ number_format($totalnetMeals, 2, '.', ',') }}</span>
+                            </li>
+                            <li>
+                                <span>Banquet Revenue</span>
+                                <span>{{ number_format($totalnetBanquet, 2, '.', ',') }}</span>
+                            </li>
+                            <li>
+                                <span>Entertainment Revenue</span>
+                                <span>{{ number_format($totalentertainment, 2, '.', ',') }}</span>
+                            </li>
+                            </div>
+                            <div class="card-list-between">
+                            <li>
+                                <span>Total Balance</span>
+                                <span>{{ number_format($Nettotal, 2, '.', ',') }}</span>
+                            </li>
+                            </div>
+                        </section>
+                        </div>
+                        <div class="container-sub-table-proposal">
+                        <section>
+                            <h4>Room Revenue </h4>
+                            <details onclick="nav($id='nav1')">
+                                <div class="wrap-table-together">
+                                    <table id="roomTable" class="table-together ui striped table nowrap unstackable hover" >
+                                        <thead>
+                                            <tr>
+                                            <th data-priority="1">Description</th>
+                                            <th >Quantity</th>
+                                            <th>Unit</th>
+                                            <th>Price/Unit</th>
+                                            <th>Discount</th>
+                                            <th>Price Discount</th>
+                                            <th data-priority="1">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(!empty($room))
+                                                @foreach ($room as $key => $item)
+                                                    @foreach ($unit as $singleUnit)
+                                                        @foreach ($quantity as $singleQuantity)
+                                                            @if($singleUnit->id == @$item->product->unit)
+                                                                @if($singleQuantity->id == @$item->product->quantity)
+                                                                    <tr >
+                                                                        <td>{{@$item->product->name_th}}</td>
+                                                                        <td>{{$item->Quantity}} {{ $singleUnit->name_th }}</td>
+                                                                        <td>{{$item->Unit}} {{ $singleQuantity->name_th }}</td>
+                                                                        <td>{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
+                                                                        <td>{{$item->discount}}%</td>
+                                                                        <td>{{ number_format($item->priceproduct * $item->discount /100 * $item->Quantity*$item->Unit , 2, '.', ',') }}</td>
+                                                                        <td>{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                @endif
+                                                            @endif
+                                                        @endforeach
+                                                    @endforeach
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </details>
+                        </section>
+                        <!-- Table2 F&B Revenue -->
+                        <section>
+                            <h4>F&B Revenue</h4>
+                            <details onclick="nav($id='nav2')">
+                            <div class="wrap-table-together">
+                                <table id="fbTable" class="table-together ui striped table nowrap unstackable hover" >
+                                    <thead>
+                                        <tr>
+                                        <th data-priority="1">Description</th>
+                                        <th >Quantity</th>
+                                        <th>Unit</th>
+                                        <th>Price/Unit</th>
+                                        <th>Discount</th>
+                                        <th>Price Discount</th>
+                                        <th data-priority="1">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($Meals))
+                                            @foreach ($Meals as $key => $item)
+                                                @foreach ($unit as $singleUnit)
+                                                    @foreach ($quantity as $singleQuantity)
+                                                        @if($singleUnit->id == @$item->product->unit)
+                                                            @if($singleQuantity->id == @$item->product->quantity)
+                                                                <tr >
+                                                                    <td>{{@$item->product->name_th}}</td>
+                                                                    <td>{{$item->Quantity}} {{ $singleUnit->name_th }}</td>
+                                                                    <td>{{$item->Unit}} {{ $singleQuantity->name_th }}</td>
+                                                                    <td>{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
+                                                                </tr>
+                                                            @endif
+                                                        @endif
+                                                    @endforeach
+                                                @endforeach
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                            </details>
+                        </section>
+                        <!-- Table3 Banquet Revenue-->
+                        <section>
+                            <h4>Banquet Revenue</h4>
+                            <details onclick="nav($id='nav3')">
+                            <div class="wrap-table-together">
+                                <table id="banquetTable" class="table-together ui striped table nowrap unstackable hover" >
+                                    <thead>
+                                        <tr>
+                                        <th data-priority="1">Description</th>
+                                        <th >Quantity</th>
+                                        <th>Unit</th>
+                                        <th>Price/Unit</th>
+                                        <th>Discount</th>
+                                        <th>Price Discount</th>
+                                        <th data-priority="1">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($Banquet))
+                                            @foreach ($Banquet as $key => $item)
+                                                @foreach ($unit as $singleUnit)
+                                                    @foreach ($quantity as $singleQuantity)
+                                                        @if($singleUnit->id == @$item->product->unit)
+                                                            @if($singleQuantity->id == @$item->product->quantity)
+                                                                <tr >
+                                                                    <td>{{@$item->product->name_th}}</td>
+                                                                    <td>{{$item->Quantity}} {{ $singleUnit->name_th }}</td>
+                                                                    <td>{{$item->Unit}} {{ $singleQuantity->name_th }}</td>
+                                                                    <td>{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
+                                                                </tr>
+                                                            @endif
+                                                        @endif
+                                                    @endforeach
+                                                @endforeach
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                            </details>
+                        </section>
+                        <!-- Table4 Entertainment Revenue -->
+                        <section>
+                            <h4>Entertainment Revenue</h4>
+                            <details onclick="nav($id='nav4')">
+                            <div class="wrap-table-together">
+                                <table id="entertainmentTable" class="table-together ui striped table nowrap unstackable hover" >
+                                    <thead>
+                                        <tr>
+                                        <th data-priority="1">Description</th>
+                                        <th >Quantity</th>
+                                        <th>Unit</th>
+                                        <th>Price/Unit</th>
+                                        <th>Discount</th>
+                                        <th>Price Discount</th>
+                                        <th data-priority="1">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($entertainment))
+                                            @foreach ($entertainment as $key => $item)
+                                                @foreach ($unit as $singleUnit)
+                                                    @foreach ($quantity as $singleQuantity)
+                                                        @if($singleUnit->id == @$item->product->unit)
+                                                            @if($singleQuantity->id == @$item->product->quantity)
+                                                                <tr >
+                                                                    <td>{{@$item->product->name_th}}</td>
+                                                                    <td>{{$item->Quantity}} {{ $singleUnit->name_th }}</td>
+                                                                    <td>{{$item->Unit}} {{ $singleQuantity->name_th }}</td>
+                                                                    <td>{{ number_format($item->priceproduct, 2, '.', ',') }}</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td>{{ number_format($item->netpriceproduct, 2, '.', ',') }}</td>
+                                                                </tr>
+                                                            @endif
+                                                        @endif
+                                                    @endforeach
+                                                @endforeach
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                            </details>
+                        </section>
+                        </div>
                     </div>
-                  </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn bt-tg-normal btn-secondary sm" style="background-color: grey; margin-right: 5px" data-bs-dismiss="modal"> Close </button>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn bt-tg-normal btn-secondary" style="background-color: grey; margin-right: 5px" data-bs-dismiss="modal"> Close </button>
-                  <button type="button" class="bt-tg-normal"> Save changes </button>
-                </div>
-              </div>
             </div>
-          </div>
-
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -513,7 +525,7 @@
 
     </script>
     <script>
-        const table_name = ['roomTable','fbTable','banquetTable','entertainmentTable','ProposalTable','InvoiceTable','ReceiptTable'];
+        const table_name = ['ProposalTable','InvoiceTable','ReceiptTable'];
         $(document).ready(function() {
             for (let index = 0; index < table_name.length; index++) {
                 new DataTable('#'+table_name[index], {
@@ -576,16 +588,23 @@
    }
  });
 
- // Function to adjust DataTable
- function adjustDataTable() {
-   table.columns.adjust().responsive.recalc();
- }
- $("#ModalProposalSummary").on("shown.bs.modal", adjustDataTable);
- $('#ModalProposalSummary details').on('toggle', function() {
-   if (this.open) {
-     adjustDataTable();
-   }
- });
+   // Function to adjust DataTable
+   function adjustDataTable() {
+    $.fn.dataTable
+      .tables({
+        visible: true,
+        api: true,
+      })
+      .columns.adjust()
+      .responsive.recalc();
+
+  }
+  $("#ModalProposalSummary").on("shown.bs.modal", adjustDataTable);
+  $('#ModalProposalSummary details').on('toggle', function() {
+    if (this.open) {
+      adjustDataTable();
+    }
+  });
 });
    </script>
 @endsection

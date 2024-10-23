@@ -28,6 +28,13 @@
                     <p class="mb-0">{{ session('success') }}</p>
                 </div>
                 @endif
+                @if (session("error"))
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">บันทึกไม่สำเร็จ!</h4>
+                        <hr>
+                        <p class="mb-0">{{ session('error') }}</p>
+                    </div>
+                @endif
                 <div class="col">
                     <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
                         <li></li>
@@ -115,17 +122,17 @@
                                                             @endif
                                                             @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                 @if ($canEditProposal == 1)
-
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
                                                                 @endif
                                                             @elseif ($rolePermission == 2)
                                                                 @if ($item->Operated_by == $CreateBy)
                                                                     @if ($canEditProposal == 1)
-
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
                                                                     @endif
                                                                 @endif
                                                             @elseif ($rolePermission == 3)
                                                                 @if ($canEditProposal == 1)
-
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
                                                                 @endif
                                                             @endif
                                                         @else

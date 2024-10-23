@@ -725,12 +725,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/BillingFolio/issuebill', 'issuebill')->name('BillingFolio.issuebill');
         // Route::get('/Document/receipt/Proposal/invoice/view/LOG/{id}','LOG')->name('receipt.LOG');
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/{id}','PaidInvoice')->name('BillingFolio.PaidInvoice');
+        Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/{id}','EditPaidInvoice')->name('BillingFolio.EditPaidInvoice');
         Route::get('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Data/{id}','PaidInvoiceData')->name('BillingFolio.PaidInvoiceData');
         Route::get('/Document/BillingFolio/Proposal/invoice/prewive/{id}/{ids}','PaidInvoiceDataprewive')->name('BillingFolio.PaidInvoiceDataprewive');
         Route::get('/Document/BillingFolio/Proposal/invoice/CheckPI/{id}','CheckPI')->name('BillingFolio.CheckPI');
         // Route::get('/Document/receipt/Proposal/invoice/CheckPI/PD/{quotationid}/{id}','CheckPD')->name('receipt.CheckPD');
         // //-------------------------------------save------------------------------------
         Route::post('/Document/BillingFolio/Proposal/invoice/Generate/save', 'savere')->name('BillingFolio.savere');
+        //-----------------------------------------update------------------------------------
+        Route::post('/Document/BillingFolio/Proposal/invoice/Generate/update/{id}', 'update')->name('BillingFolio.update');
         // //-------------------------------------view------------------------------------
         Route::get('/Document/BillingFolio/Proposal/invoice/view/{id}','view')->name('receipt.view');
         Route::get('/Document/BillingFolio/Proposal/invoice/log/{id}','log')->name('receipt.log');
@@ -742,6 +745,13 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('billingPD-search-table', 'search_table_billingpd');
         Route::post('billingPD-paginate-table', 'paginate_table_billingpd');
+
+        //--------------------------LogPdf-----------
+        Route::post('billing-Log-search-table', 'search_table_paginate_log_pdf');
+        Route::post('billing-Log-paginate-table', 'paginate_log_pdf_table_billing');
+        //--------------------------LogDoc-----------
+        Route::post('billing-LogDoc-search-table', 'search_table_paginate_log_doc');
+        Route::post('billing-LogDoc-paginate-table', 'paginate_log_doc_table_billing');
     });
 
     Route::controller(ReceiveChequeController::class)->middleware('role:document')->group(function () {

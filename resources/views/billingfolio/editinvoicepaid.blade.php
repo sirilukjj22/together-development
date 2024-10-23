@@ -62,8 +62,8 @@ white-space: nowrap
                             <span id="proposalAmount" class="proposalAmount">{{ number_format($Proposal->Nettotal, 2) }}</span>
                         </div>
                         <div class="card-d-grid1-2row bg-together">
-                            <span id="totalReceipt">Proforma Invoice ID : {{$invoices->Invoice_ID}}</span>
-                            <span id="receiptAmount" class="receiptAmount">{{ number_format($invoices->sumpayment, 2) }}</span>
+                            <span id="totalReceipt">Billing Folio ID : {{$re->Receipt_ID}}</span>
+                            <span id="receiptAmount" class="receiptAmount">{{ number_format($re->Amount, 2) }}</span>
                         </div>
                     </div>
                     <div>
@@ -99,7 +99,7 @@ white-space: nowrap
                     <span aria-hidden="true">&times;</span>
                     </span>
                 </div>
-                <form id="myForm" action="{{route('BillingFolio.savere')}} " method="POST">
+                <form id="myForm" action="{{url('/Document/BillingFolio/Proposal/invoice/Generate/update/'.$re->id)}}" method="POST">
                     @csrf
                     <input type="hidden" id="invoice" name="invoice" class="form-control" value="{{$Invoice_ID}}">
                     <div class="modal-body">
@@ -112,7 +112,7 @@ white-space: nowrap
                         </h3>
                         <div >
                             <label for="" class="star-red">Guest Name</label>
-                            <select name="Guest" id="Guest" class="select2" onchange="data()" required>
+                            <select name="Guest" id="Guest" class="select2" onchange="data()" >
                                 <option value="{{$name_ID}}">{{$name}}</option>
                                 @foreach($datasub as $item)
                                     @if ($type == 'Company')
@@ -125,7 +125,7 @@ white-space: nowrap
                         </div>
                         <div >
                             <label class="star-red" for="reservationNo">Reservation No </label>
-                            <input type="text" class="form-control" name="reservationNo" id="reservationNo" required />
+                            <input type="text" class="form-control" name="reservationNo" id="reservationNo" value="{{$re->reservationNo}}" required />
                         </div>
                         <div >
                             <label for="company">Company</label>
@@ -149,16 +149,16 @@ white-space: nowrap
                         </h3>
                         <div >
                             <label class="star-red" for="roomNo">Room No.</label>
-                            <input type="text" id="roomNo" name="roomNo" class="form-control" required />
+                            <input type="text" id="roomNo" name="roomNo" class="form-control" value="{{$re->roomNo}}" required />
                         </div>
                         <div >
                             <label class="star-red" for="numberOfGuests">Number of Guests</label>
-                            <input type="text" id="numberOfGuests" name="numberOfGuests" class="form-control" required />
+                            <input type="text" id="numberOfGuests" name="numberOfGuests" class="form-control" value="{{$re->numberOfGuests}}" required />
                         </div>
                         <div >
                             <label for="arrival">Arrival</label>
                             <div class="input-group">
-                                <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" required>
+                                <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" value="{{$re->arrival}}" class="form-control" required>
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                         <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
@@ -169,7 +169,7 @@ white-space: nowrap
                         <div >
                             <label for="departure">Departure</label>
                             <div class="input-group">
-                                <input type="text" name="departure" id="departure" placeholder="DD/MM/YYYY" class="form-control" required>
+                                <input type="text" name="departure" id="departure" placeholder="DD/MM/YYYY" value="{{$re->departure}}" class="form-control" required>
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                         <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
@@ -202,7 +202,7 @@ white-space: nowrap
                                     <select  id="chequeBankReceived" name="chequeBankReceived" class="chequeBank select2">
                                         @foreach ($data_bank as $item)
                                             <option value=""></option>
-                                            <option value="{{ $item->name_en }}" >{{ $item->name_th }} </option>
+                                            <option value="{{ $item->name_en }}" {{$databanknamere == $item->name_en ? 'selected' : ''}}>{{ $item->name_th }} </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -210,14 +210,15 @@ white-space: nowrap
                         @else
                             <div class="payment-container">
                                 <label for="paymentType" class="star-red">Payment Type</label>
+                                <input type="hidden" value="{{$re->category}}" id="payment">
                                 <select name="paymentType" id="paymentType" class="paymentType select2">
                                     <option value="" disabled selected>Select Payment Type</option>
-                                    <option value="cash">Cash</option>
-                                    <option value="bankTransfer">Bank Transfer</option>
-                                    <option value="creditCard">Credit Card</option>
+                                    <option value="cash" {{$re->category == "cash" ? 'selected' : ''}}>Cash</option>
+                                    <option value="bankTransfer"{{$re->category == "bankTransfer" ? 'selected' : ''}}>Bank Transfer</option>
+                                    <option value="creditCard"{{$re->category == "creditCard" ? 'selected' : ''}}>Credit Card</option>
                                 </select>
                                 <!-- Cash Input -->
-                                <div class="cashInput" style="display: none;">
+                                <div class="cashInput" id="cashInput" style="display: none;">
                                     <label for="cashAmount" class="star-red">Cash Amount</label>
                                     <input type="text" id="Amount" value="{{ number_format($sumpayment, 2) }}" name="Amount" class="cashAmount form-control" placeholder="Enter cash amount" disabled style="background-color: #59a89e81;">
                                 </div>
@@ -235,9 +236,9 @@ white-space: nowrap
                                 <!-- Credit Card Input -->
                                 <div class="creditCardInput" style="display: none;">
                                     <label for="creditCardNumber" class="star-red">Credit Card Number</label>
-                                    <input type="text" id="CardNumber" name="CardNumber" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
+                                    <input type="text" id="CardNumber" name="CardNumber" value="{{$re->Credit}}" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
                                     <label for="expiryDate" class="star-red">Expiry Date</label>
-                                    <input type="text" name="Expiry" id="Expiry" class="expiryDate form-control" placeholder="MM/YY" maxlength="5">
+                                    <input type="text" name="Expiry" id="Expiry" value="{{$re->Expire}}" class="expiryDate form-control"  placeholder="MM/YY" maxlength="5">
                                     <label for="creditCardAmount" class="star-red">Amount</label>
                                     <input type="text" id="Amount" name="Amount" class="creditCardAmount form-control" value="{{ number_format($sumpayment, 2) }}" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
                                 </div>
@@ -246,7 +247,7 @@ white-space: nowrap
                         <div class="d-grid" style="height: max-content;">
                             <label class="star-red" for="paymentDate">Date</label>
                             <div class="input-group">
-                                <input type="text" name="paymentDate" id="paymentDate" placeholder="DD/MM/YYYY" class="form-control" required>
+                                <input type="text" name="paymentDate" id="paymentDate" value="{{$re->paymentDate}}" placeholder="DD/MM/YYYY"  class="form-control" required>
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
                                         <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
@@ -255,7 +256,7 @@ white-space: nowrap
                             </div>
                             <div>
                                 <label for="note">Note</label>
-                                <textarea id="note" name="note" style="height: 1px" placeholder="Enter details" class="form-control"></textarea>
+                                <textarea id="note" name="note" style="height: 1px"  placeholder="Enter details" class="form-control">{{$re->note}}</textarea>
                             </div>
                             <div>
                                 <label for="reference">Reference</label>
@@ -466,22 +467,6 @@ white-space: nowrap
         });
         $(function() {
             // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
-            $('#Expiry').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                autoUpdateInput: false,
-                autoApply: true,
-                drops: 'up',
-                locale: {
-                    format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
-                }
-            });
-            $('#Expiry').on('apply.daterangepicker', function(ev, picker) {
-                $(this).val(picker.startDate.format('DD/MM/YYYY'));
-            });
-        });
-        $(function() {
-            // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
             $('#arrival').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
@@ -617,6 +602,7 @@ white-space: nowrap
                     parentContainer.find('.chequeInput').show();
                 }
             });
+
             // Format credit card number on input
             $('.creditCardNumber').on('input', function() {
                 var input = $(this).val().replace(/\D/g, ''); // Remove all non-digit characters
@@ -625,6 +611,93 @@ white-space: nowrap
                 var formattedInput = input.match(/.{1,4}/g)?.join('-') || input;
                 $(this).val(formattedInput);
             });
+        });
+        $(document).ready(function() {
+            var nameID = document.getElementById('payment').value;
+            var parentContainer = $(this).closest('.payment-container'); // Find the parent container
+                // Hide all payment method sections within this specific container
+                parentContainer.find('.cashInput, .bankTransferInput, .creditCardInput, .chequeInput').hide();
+            if (nameID === 'cash') {
+                $('.cashInput').css('display', 'block');
+            } else if (nameID === 'bankTransfer') {
+                $('.bankTransferInput').css('display', 'block');
+            } else if (nameID === 'creditCard') {
+                $('.creditCardInput').css('display', 'block');
+            } else if (nameID === 'cheque') {
+                $('.chequeInput').css('display', 'block');
+            }
+
+        });
+        $(document).ready(function() {
+            // ฟังก์ชัน Preview
+                var InvoiceID = $('#InvoiceID').val();
+                var idcheck = $('#Guest').val();
+                var reservationNo = $('#reservationNo').val();
+                var company = $('#company').val();
+                var numberOfGuests = $('#numberOfGuests').val();
+                var arrival = $('#arrival').val();
+                var roomNo = $('#roomNo').val();
+                var departure = $('#departure').val();
+                var nameID = document.getElementById('idfirst').value;
+                var note = $('#note').val();
+                var bank = $('#bank').val();
+                var Expiry = $('#Expiry').val();
+                var CardNumber = $('#CardNumber').val();
+                var paymentType = $('#paymentType').val();
+                var chequeBank = $('#chequeBank').val();
+                var cheque = $('#cheque').val();
+
+                if (paymentType == 'cash') {
+                    var datanamebank = ' Cash ' ;
+                }else if(paymentType == 'bankTransfer') {
+                    var datanamebank = bank +' Bank Transfer - Together Resort Ltd ' ;
+                }else if(paymentType == 'creditCard') {
+                    var datanamebank =  ' Credit Card No.'+ CardNumber +' Exp. Date : '+Expiry ;
+                }else if(paymentType == 'cheque') {
+                    var datanamebank =  ' Cheque Bank '+ chequeBank + ' Cheque Number '+ cheque +'' ;
+                }
+                // เลือก id ที่จะใช้
+                var id = idcheck ? idcheck : nameID;
+                var ids = InvoiceID;
+                console.log(id);
+
+                // AJAX เรียกข้อมูลจากเซิร์ฟเวอร์
+                jQuery.ajax({
+                    type: "GET",
+                    url: `/Document/BillingFolio/Proposal/invoice/prewive/${id}/${ids}`,  // ใช้ template literal สร้าง URL
+                    datatype: "JSON",
+                    async: false,
+                    success: function(response) {
+                        var fullname = response.fullname;
+                        var Address = response.Address + ' ตำบล' + response.Tambon.name_th + ' อำเภอ' + response.amphures.name_th + ' จังหวัด' + response.province.name_th + ' ' + response.Tambon.Zip_Code;
+                        var TaxpayerIdentification = response.Identification;
+                        var date = response.date;
+                        var valid = response.valid;
+                        var Time = response.Time;
+                        var fullnameCom = response.fullnameCom;
+                        // อัปเดตค่าต่างๆ ลงใน HTML
+                        $('#displayGuestNameEditBill').text(fullname);
+                        $('#displayTaxIDEditBill').text(TaxpayerIdentification);
+                        $('#displayAddressEditBill').text(Address);
+                        $('#displayReservationNoEditBill').text(reservationNo);
+                        $('#displayCompanyEditBill').text(fullnameCom);
+                        $('#displayRoomNoEditBill').text(roomNo); // ต้องตรวจสอบว่าคุณมีข้อมูล roomNo ที่ไหนหรือไม่
+                        $('#displayArrivalEditBill').text(arrival);
+                        $('#displayDepartureEditBill').text(departure);
+                        $('#displayNumberOfGuestsEditBill').text(numberOfGuests);
+                        $('#date').text(date);
+                        $('#dateM').text(Time);
+                        $('#Invoicedate').text(valid);
+                        $('#displayPaymentDateEditBill').text(date);
+                        $('#displayReferenceEditBill').text(reservationNo);
+                        $('#displayNoteEditBill').text(note);
+                        $('#displayDescriptionEditBill').text(datanamebank);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX request failed: ", status, error);
+                    }
+                });
+
         });
     </script>
     <script>
