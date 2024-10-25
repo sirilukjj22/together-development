@@ -10,7 +10,7 @@
                 </div>
                 <div class="col-auto">
                     <button type="button" class="btn btn-color-green lift btn_modal"  onclick="window.location.href='{{ route('Company.create') }}'">
-                        <i class="fa fa-plus"></i> เพิ่มบริษัทและตัวแทน
+                        <i class="fa fa-plus"></i> Create Company / Agent
                     </button>
                 </div>
             </div> <!-- .row end -->
@@ -89,13 +89,13 @@
                                 <table id="CompanyTable" class="example ui striped table nowrap unstackable hover">
                                     <thead>
                                         <tr>
-                                            <th style="text-align: center;"data-priority="1">เรียงลำดับ</th>
-                                            <th style="text-align: center;"data-priority="1">รหัสบริษัท</th>
-                                            <th data-priority="1">ชื่อองค์กร</th>
-                                            <th class="text-center">สาขา</th>
-                                            <th class="text-center">เบอร์โทรศัพท์</th>
-                                            <th class="text-center">สถานะการใช้งาน</th>
-                                            <th class="text-center">คำสั่ง</th>
+                                            <th style="text-align: center;"data-priority="1">No</th>
+                                            <th style="text-align: center;"data-priority="1">Company ID</th>
+                                            <th data-priority="1">Company Name</th>
+                                            <th class="text-center">Branch </th>
+                                            <th class="text-center">Phone Number</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -123,18 +123,18 @@
                                                 @endphp
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
-                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
                                                             @if ($rolePermission > 0)
                                                                 @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/view/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/view/'.$item->id) }}">View</a></li>
                                                                 @endif
                                                                 @if ($canEditProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/edit/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/edit/'.$item->id) }}">Edit</a></li>
                                                                 @endif
                                                             @else
                                                                 @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/view/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/view/'.$item->id) }}">View</a></li>
                                                                 @endif
                                                             @endif
                                                         </ul>

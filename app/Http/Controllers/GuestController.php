@@ -89,11 +89,12 @@ class GuestController extends Controller
         }else{
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
             $data_query = Guest::query()
-            ->leftJoin('phone_guests', function($join) {
-                $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
-                    ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
-            })
-            ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
+                ->leftJoin('phone_guests', function($join) {
+                    $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
+                        ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
+                })
+                ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
+                ->groupBy('guests.Profile_ID') // เพื่อจัดกลุ่มข้อมูลตาม Profile_ID
             ->paginate($perPageS);
         }
         $data = [];
@@ -114,18 +115,18 @@ class GuestController extends Controller
                 $canViewProposal = Auth::user()->roleMenuView('Guest', Auth::user()->id);
                 $canEditProposal = Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
                 $btn_action .='<div class="btn-group">';
-                $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
+                $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                 $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
                 if ($rolePermission > 0) {
                     if ($canViewProposal) {
-                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/view/' . $value->id) . '\'>View</a></li>';
                     }
                     if ($canEditProposal) {
-                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/edit/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/edit/' . $value->id) . '\'>Edit</a></li>';
                     }
                 } else {
                     if ($canViewProposal) {
-                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/view/' . $value->id) . '\'>View</a></li>';
                     }
                 }
                 $btn_action .='</ul>';
@@ -155,7 +156,7 @@ class GuestController extends Controller
     {
         $perPage = (int)$request->perPage;
 
-        $data = [];
+
         if ($perPage == 10) {
             $data_query = Guest::query()
             ->leftJoin('phone_guests', function($join) {
@@ -166,20 +167,22 @@ class GuestController extends Controller
             ->limit($request->page.'0')->get();
         } else {
             $data_query = Guest::query()
-            ->leftJoin('phone_guests', function($join) {
-                $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
-                    ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
-            })
-            ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
-            ->paginate($perPage);
+                ->leftJoin('phone_guests', function($join) {
+                    $join->on('guests.Profile_ID', '=', 'phone_guests.Profile_ID')
+                        ->where('phone_guests.Sequence', '=', 'main'); // เช็คว่า Sequence เป็น 'main'
+                })
+                ->select('guests.*', DB::raw('GROUP_CONCAT(phone_guests.Phone_number) as Phone_numbers'))
+                ->groupBy('guests.Profile_ID') // เพื่อจัดกลุ่มข้อมูลตาม Profile_ID
+                ->paginate($perPage);
+
         }
+
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';
 
         $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-        $path = "/guest/edit/";
 
-        $path_view = "/guest/view/";
+        $data = [];
         if (isset($data_query) && count($data_query) > 0) {
             foreach ($data_query as $key => $value) {
                 $btn_action = "";
@@ -197,18 +200,18 @@ class GuestController extends Controller
                     $canViewProposal = Auth::user()->roleMenuView('Guest', Auth::user()->id);
                     $canEditProposal = Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
                     $btn_action .='<div class="btn-group">';
-                    $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
+                    $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                     $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
                     if ($rolePermission > 0) {
                         if ($canViewProposal) {
-                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/view/' . $value->id) . '\'>View</a></li>';
                         }
                         if ($canEditProposal) {
-                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/edit/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/edit/' . $value->id) . '\'>Edit</a></li>';
                         }
                     } else {
                         if ($canViewProposal) {
-                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/view/' . $value->id) . '\'>View</a></li>';
                         }
                     }
                     $btn_action .='</ul>';
@@ -334,7 +337,7 @@ class GuestController extends Controller
         $Lastest_Introduce_By = $request->latest_introduced_by;
         $phones = $request->input('phone');
 
-        {
+        try{
             if ($Preface && $First_name && $Last_name) {
                 $Mprefix = master_document::where('id', $Preface)->where('Category', 'Mprename')->first();
                 if ($Mprefix) {
@@ -428,6 +431,8 @@ class GuestController extends Controller
             $save->Category = 'Create :: Guest';
             $save->content =$datacompany;
             $save->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('guest','index')->with('error', $e->getMessage());
         }
 
         try {
@@ -466,30 +471,12 @@ class GuestController extends Controller
             }
 
             $save->save();
-            return redirect()->route('guest','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+
         } catch (\Throwable $e) {
             return redirect()->route('guest','index')->with('error', $e->getMessage());
         }
+        return redirect()->route('guest','index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
-    public function ac(Request $request)
-    {
-        $ac = $request->value;
-        if ($ac == 1 ) {
-            $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $Guest = Guest::where('status', '1')->paginate($perPage);
-        }
-        return view('guest.index',compact('Guest'));
-    }
-    public function no(Request $request)
-    {
-        $no = $request->value;
-        if ($no == 0 ) {
-            $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-            $Guest = Guest::where('status', '0')->paginate($perPage);
-        }
-        return view('guest.index',compact('Guest'));
-    }
-
     public function guestStatus($id)
     {
 
@@ -631,7 +618,7 @@ class GuestController extends Controller
     }
     public function guest_update(Request $request, $id)
     {
-        {
+        try {
             $guest = Guest::where('id', $id)->first();
             $guest_id = $guest->Profile_ID;
             $ids = $guest->id;
@@ -837,6 +824,8 @@ class GuestController extends Controller
                     $save->Category = 'Edit :: Guest';
                     $save->content =$datacompany;
                     $save->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('guest_edit', ['id' => $ids])->with('error', $e->getMessage());
         }
 
         $province = $request->province;
@@ -903,10 +892,10 @@ class GuestController extends Controller
                 }
             }
             $save->save();
-            return redirect()->route('guest_edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อย');
         } catch (\Throwable $e) {
             return redirect()->route('guest_edit', ['id' => $ids])->with('error', $e->getMessage());
         }
+        return redirect()->route('guest_edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
     public function guest_cover(Request $request, $id)
     {
@@ -1108,10 +1097,10 @@ class GuestController extends Controller
                 }
                 $save->save();
             }
-            return redirect()->route('guest_edit', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
             return redirect()->route('guest_edit', ['id' => $id])->with('error', $e->getMessage());
         }
+        return redirect()->route('guest_edit', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
     }
     public function guestStatustax($id)
     {
@@ -1159,18 +1148,18 @@ class GuestController extends Controller
                     $canViewProposal = Auth::user()->roleMenuView('Guest', Auth::user()->id);
                     $canEditProposal = Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
                     $btn_action .='<div class="btn-group">';
-                    $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
+                    $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                     $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
                     if ($rolePermission > 0) {
                         if ($canViewProposal) {
-                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/view/' . $value->id) . '\'>View</a></li>';
                         }
                         if ($canEditProposal) {
-                            $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/edit/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                            $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/edit/' . $value->id) . '\'>Edit</a></li>';
                         }
                     } else {
                         if ($canViewProposal) {
-                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                            $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/view/' . $value->id) . '\'>View</a></li>';
                         }
                     }
                     $btn_action .='</ul>';
@@ -1229,18 +1218,18 @@ class GuestController extends Controller
                 $canViewProposal = Auth::user()->roleMenuView('Guest', Auth::user()->id);
                 $canEditProposal = Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
                 $btn_action .='<div class="btn-group">';
-                $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
+                $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                 $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
                 if ($rolePermission > 0) {
                     if ($canViewProposal) {
-                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/view/' . $value->id) . '\'>View</a></li>';
                     }
                     if ($canEditProposal) {
-                        $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/edit/' . $value->id) . '\'>แก้ไขรายการ</a></li>';
+                        $btn_action .= ' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/edit/' . $value->id) . '\'>Edit</a></li>';
                     }
                 } else {
                     if ($canViewProposal) {
-                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/view/' . $value->id) . '\'>ดูรายละเอียด</a></li>';
+                        $btn_action .=' <li><a class="dropdown-item py-2 rounded" href=\'' . url('/guest/Tax/view/' . $value->id) . '\'>View</a></li>';
                     }
                 }
                 $btn_action .='</ul>';
@@ -1309,250 +1298,255 @@ class GuestController extends Controller
             'phone' => $data['phoneCom'] ?? null,
 
         ];
-        $keysToCompare = ['Tax_Type', 'Company_type', 'Company_name', 'BranchTax', 'first_name', 'last_name', 'Taxpayer_Identification', 'Company_Email', 'Address',
-            'Country', 'City', 'Amphures', 'Tambon', 'Zip_Code', 'phone'];
-        $differences = [];
+        try {
+            $keysToCompare = ['Tax_Type', 'Company_type', 'Company_name', 'BranchTax', 'first_name', 'last_name', 'Taxpayer_Identification', 'Company_Email', 'Address',
+                'Country', 'City', 'Amphures', 'Tambon', 'Zip_Code', 'phone'];
+            $differences = [];
 
-        foreach ($keysToCompare as $key) {
-            if (isset($dataArray[$key]) && isset($datarequest[$key])) {
-                // ตรวจสอบชนิดข้อมูลก่อน
-                if (is_array($dataArray[$key]) && is_array($datarequest[$key])) {
-                    // เปรียบเทียบอาร์เรย์
-                    $onlyInDataArray = array_diff($dataArray[$key], $datarequest[$key]);
-                    $onlyInRequest = array_diff($datarequest[$key], $dataArray[$key]);
-                } else {
-                    // เปรียบเทียบค่าสตริงหรือค่าทั่วไป
-                    if ($dataArray[$key] !== $datarequest[$key]) {
-                        $onlyInDataArray = $dataArray[$key] !== null ? [$dataArray[$key]] : [];
-                        $onlyInRequest = $datarequest[$key] !== null ? [$datarequest[$key]] : [];
+            foreach ($keysToCompare as $key) {
+                if (isset($dataArray[$key]) && isset($datarequest[$key])) {
+                    // ตรวจสอบชนิดข้อมูลก่อน
+                    if (is_array($dataArray[$key]) && is_array($datarequest[$key])) {
+                        // เปรียบเทียบอาร์เรย์
+                        $onlyInDataArray = array_diff($dataArray[$key], $datarequest[$key]);
+                        $onlyInRequest = array_diff($datarequest[$key], $dataArray[$key]);
                     } else {
-                        $onlyInDataArray = [];
-                        $onlyInRequest = [];
-                    }
-                }
-
-                // ตรวจสอบว่ามีค่าที่แตกต่างหรือไม่
-                if (!empty($onlyInDataArray) || !empty($onlyInRequest)) {
-                    $differences[$key] = [
-                        'dataArray' => $onlyInDataArray,
-                        'request' => $onlyInRequest
-                    ];
-                }
-            }
-        }
-
-        $extractedData = [];
-        $extractedDataA = [];
-        // วนลูปเพื่อดึงชื่อคีย์และค่าจาก request
-        foreach ($differences as $key => $value) {
-            if ($key === 'phone') {
-                // ถ้าเป็น phoneCom ให้เก็บค่า request ทั้งหมดใน array
-                $extractedData[$key] = $value['request'];
-                $extractedDataA[$key] = $value['dataArray'];
-            } elseif (isset($value['request'][0])) {
-                // สำหรับคีย์อื่นๆ ให้เก็บค่าแรกจาก array
-                $extractedData[$key] = $value['request'][0];
-            }else{
-                $extractedDataA[$key] = $value['dataArray'][0];
-            }
-        }
-        $Tax_Type = $extractedData['Tax_Type'] ?? null;
-        $Company_type = $extractedData['Company_type'] ?? null;
-        $Company_name = $extractedData['Company_name'] ?? null;
-        $Branch = $extractedData['BranchTax'] ?? null;
-        $first_name = $extractedData['first_name'] ?? null;
-        $last_name = $extractedData['last_name'] ?? null;
-        $Identification = $extractedData['Taxpayer_Identification'] ?? null;
-        $Email = $extractedData['Company_Email'] ?? null;
-        $Address = $extractedData['Address'] ?? null;
-        $Country = $extractedData['Country'] ?? null;
-        $City = $extractedData['City'] ?? null;
-        $Amphures = $extractedData['Amphures'] ?? null;
-        $Tambon = $extractedData['Tambon'] ?? null;
-        $Zip_Code = $extractedData['Zip_Code'] ?? null;
-        $phone = $extractedData['phone'] ?? null;
-        $phoneA = $extractedDataA['phone'] ?? null;
-
-
-        $AddressIndividual = null;
-        $CountryCheck = null;
-        $AddressCheck = null;
-        $provinceNames = null;
-        $TambonCheck = null;
-        $AmphuresCheck = null;
-        $Zip_CodeCheck =null;
-        if ($Country) {
-            $CountryCheck = 'ประเทศ : '.$Country;
-        }
-        if ($Address) {
-            $AddressCheck = 'ที่อยู่ : '.$Address;
-        }
-        if ($City) {
-            $provinceNames = province::where('id', $City)->first();
-            $provinceNames = $provinceNames->name_th;
-            $provinceNames = ' จังหวัด : '.$provinceNames;
-        }
-        if ($Tambon) {
-            $TambonID = districts::where('id',$Tambon)->select('name_th','id')->first();
-            $TambonName = $TambonID->name_th;
-            $TambonCheck = ' ตำบล : '.$TambonName;
-        }
-        if ($Amphures) {
-            $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
-            $amphures = $amphuresID->name_th;
-            $AmphuresCheck = ' อำเภอ : '.$TambonName;
-        }
-        if ($Zip_Code) {
-            $Zip_CodeCheck = ' รหัสไปรษณีย์ : '.$Zip_Code;
-        }
-        $AddressIndividual = $CountryCheck.'+'.$AddressCheck.' '.$TambonCheck.' '.$AmphuresCheck.'+'.$provinceNames.' '.$Zip_CodeCheck;
-        $EmailTax = null;
-        if ($Email) {
-            $EmailTax = 'อีเมล์ : '.$Email;
-        }
-        $IdentificationTax = null;
-        if ($Identification) {
-            $IdentificationTax = 'เลขบัตรประจำตัว : '.$Identification;
-        }
-        $phoneTax = null;
-        if ($phone) {
-            $phoneTax = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phone);
-        }
-        $phoneTaxA = null;
-        if ($phoneA) {
-            $phoneTaxA = 'ลบเบอร์โทรศัพท์ : ' . implode(', ', $phoneA);
-        }
-        $TaxType = null;
-        $comtypefullname = null;
-        if ($Tax_Type) {
-            if ($Company_type >= 30) {
-                $Mprefix = master_document::where('id', $Company_type)->where('Category', 'Mprename')->first();
-                if ($Mprefix) {
-                    $prename = $Mprefix->name_th;
-                    $comtypefullname = 'คำนำหน้า : ' . $prename.'+'.' ชื่อ : ' . $request->first_name . ' ' . $request->last_name;
-                }
-            }else{
-                $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
-                if ($comtype && $Company_name) {
-                    if ($comtype->name_th == "บริษัทจำกัด") {
-                        $comtypefullname = "บริษัท " . $request->Company_name . " จำกัด";
-                    } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
-                        $comtypefullname = "บริษัท " . $request->Company_name . " จำกัด (มหาชน)";
-                    } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
-                        $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $request->Company_name;
-                    }
-                }elseif ($request->Branch) {
-                    $comtypefullname = 'สาขา : ' . $request->Branch;
-                }elseif ($comtype) {
-                    $comtypefullname = 'ประเภทบริษัท : ' . $comtype->name_th;
-                }
-            }
-            $TaxType = 'ประเภทภาษี : '.$Tax_Type;
-        }else{
-            if ($request->Tax_Type == 'Individual') {
-                if ($Company_type >= 30 && $first_name && $last_name) {
-                    $Mprefix = master_document::where('id', $Company_type)->where('Category', 'Mprename')->first();
-                    if ($Mprefix) {
-                        if ($Mprefix->name_th == "นาย") {
-                            $comtypefullname = 'ชื่อ : '."นาย " . $first_name . ' ' . $last_name;
-                        } elseif ($Mprefix->name_th == "นาง") {
-                            $comtypefullname = 'ชื่อ : '."นาง " . $first_name . ' ' . $last_name;
-                        } elseif ($Mprefix->name_th == "นางสาว") {
-                            $comtypefullname = 'ชื่อ : '."นางสาว " . $first_name . ' ' . $last_name;
+                        // เปรียบเทียบค่าสตริงหรือค่าทั่วไป
+                        if ($dataArray[$key] !== $datarequest[$key]) {
+                            $onlyInDataArray = $dataArray[$key] !== null ? [$dataArray[$key]] : [];
+                            $onlyInRequest = $datarequest[$key] !== null ? [$datarequest[$key]] : [];
+                        } else {
+                            $onlyInDataArray = [];
+                            $onlyInRequest = [];
                         }
                     }
 
+                    // ตรวจสอบว่ามีค่าที่แตกต่างหรือไม่
+                    if (!empty($onlyInDataArray) || !empty($onlyInRequest)) {
+                        $differences[$key] = [
+                            'dataArray' => $onlyInDataArray,
+                            'request' => $onlyInRequest
+                        ];
+                    }
                 }
-                elseif ($Company_type >= 30 && $first_name) {
+            }
+
+            $extractedData = [];
+            $extractedDataA = [];
+            // วนลูปเพื่อดึงชื่อคีย์และค่าจาก request
+            foreach ($differences as $key => $value) {
+                if ($key === 'phone') {
+                    // ถ้าเป็น phoneCom ให้เก็บค่า request ทั้งหมดใน array
+                    $extractedData[$key] = $value['request'];
+                    $extractedDataA[$key] = $value['dataArray'];
+                } elseif (isset($value['request'][0])) {
+                    // สำหรับคีย์อื่นๆ ให้เก็บค่าแรกจาก array
+                    $extractedData[$key] = $value['request'][0];
+                }else{
+                    $extractedDataA[$key] = $value['dataArray'][0];
+                }
+            }
+            $Tax_Type = $extractedData['Tax_Type'] ?? null;
+            $Company_type = $extractedData['Company_type'] ?? null;
+            $Company_name = $extractedData['Company_name'] ?? null;
+            $Branch = $extractedData['BranchTax'] ?? null;
+            $first_name = $extractedData['first_name'] ?? null;
+            $last_name = $extractedData['last_name'] ?? null;
+            $Identification = $extractedData['Taxpayer_Identification'] ?? null;
+            $Email = $extractedData['Company_Email'] ?? null;
+            $Address = $extractedData['Address'] ?? null;
+            $Country = $extractedData['Country'] ?? null;
+            $City = $extractedData['City'] ?? null;
+            $Amphures = $extractedData['Amphures'] ?? null;
+            $Tambon = $extractedData['Tambon'] ?? null;
+            $Zip_Code = $extractedData['Zip_Code'] ?? null;
+            $phone = $extractedData['phone'] ?? null;
+            $phoneA = $extractedDataA['phone'] ?? null;
+
+
+            $AddressIndividual = null;
+            $CountryCheck = null;
+            $AddressCheck = null;
+            $provinceNames = null;
+            $TambonCheck = null;
+            $AmphuresCheck = null;
+            $Zip_CodeCheck =null;
+            if ($Country) {
+                $CountryCheck = 'ประเทศ : '.$Country;
+            }
+            if ($Address) {
+                $AddressCheck = 'ที่อยู่ : '.$Address;
+            }
+            if ($City) {
+                $provinceNames = province::where('id', $City)->first();
+                $provinceNames = $provinceNames->name_th;
+                $provinceNames = ' จังหวัด : '.$provinceNames;
+            }
+            if ($Tambon) {
+                $TambonID = districts::where('id',$Tambon)->select('name_th','id')->first();
+                $TambonName = $TambonID->name_th;
+                $TambonCheck = ' ตำบล : '.$TambonName;
+            }
+            if ($Amphures) {
+                $amphuresID = amphures::where('id',$Amphures)->select('name_th','id')->first();
+                $amphures = $amphuresID->name_th;
+                $AmphuresCheck = ' อำเภอ : '.$TambonName;
+            }
+            if ($Zip_Code) {
+                $Zip_CodeCheck = ' รหัสไปรษณีย์ : '.$Zip_Code;
+            }
+            $AddressIndividual = $CountryCheck.'+'.$AddressCheck.' '.$TambonCheck.' '.$AmphuresCheck.'+'.$provinceNames.' '.$Zip_CodeCheck;
+            $EmailTax = null;
+            if ($Email) {
+                $EmailTax = 'อีเมล์ : '.$Email;
+            }
+            $IdentificationTax = null;
+            if ($Identification) {
+                $IdentificationTax = 'เลขบัตรประจำตัว : '.$Identification;
+            }
+            $phoneTax = null;
+            if ($phone) {
+                $phoneTax = 'เพิ่มเบอร์โทรศัพท์ : ' . implode(', ', $phone);
+            }
+            $phoneTaxA = null;
+            if ($phoneA) {
+                $phoneTaxA = 'ลบเบอร์โทรศัพท์ : ' . implode(', ', $phoneA);
+            }
+            $TaxType = null;
+            $comtypefullname = null;
+            if ($Tax_Type) {
+                if ($Company_type >= 30) {
                     $Mprefix = master_document::where('id', $Company_type)->where('Category', 'Mprename')->first();
                     if ($Mprefix) {
                         $prename = $Mprefix->name_th;
-                        $comtypefullname = 'คำนำหน้า : ' . $prename.'+'.' ชื่อ : ' . $first_name;
+                        $comtypefullname = 'คำนำหน้า : ' . $prename.'+'.' ชื่อ : ' . $request->first_name . ' ' . $request->last_name;
+                    }
+                }else{
+                    $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+                    if ($comtype && $Company_name) {
+                        if ($comtype->name_th == "บริษัทจำกัด") {
+                            $comtypefullname = "บริษัท " . $request->Company_name . " จำกัด";
+                        } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                            $comtypefullname = "บริษัท " . $request->Company_name . " จำกัด (มหาชน)";
+                        } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                            $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $request->Company_name;
+                        }
+                    }elseif ($request->Branch) {
+                        $comtypefullname = 'สาขา : ' . $request->Branch;
+                    }elseif ($comtype) {
+                        $comtypefullname = 'ประเภทบริษัท : ' . $comtype->name_th;
                     }
                 }
-                elseif ($Company_type >= 30 && $last_name) {
-                    $Mprefix = master_document::where('id', $Company_type)->where('Category', 'Mprename')->first();
-                    if ($Mprefix) {
-                        $prename = $Mprefix->name_th;
-                        $comtypefullname = 'คำนำหน้า : ' . $prename.'+'.' นามสกุล : ' . $last_name;;
-                    }
-                }
-                elseif ($Company_type >= 30) {
-                    $Mprefix = master_document::where('id', $Company_type)->where('Category', 'Mprename')->first();
-                    if ($Mprefix) {
-                        $prename = $Mprefix->name_th;
-                        $comtypefullname = 'คำนำหน้า : ' . $prename;
-                    }
-                }
-                elseif ($first_name && $last_name) {
-                    $comtypefullname = 'ชื่อ : ' . $first_name . ' ' . $last_name;
-                } elseif ($first_name) {
-                    $comtypefullname = 'ชื่อ : ' . $first_name;
-                } elseif ($last_name) {
-                    $comtypefullname = 'นามสกุล : ' . $last_name;
-                }
+                $TaxType = 'ประเภทภาษี : '.$Tax_Type;
             }else{
-                if ($Company_type) {
-                    if ($Company_type < 30 && $Company_name) {
-                        $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
-                        if ($comtype) {
-                            if ($comtype->name_th == "บริษัทจำกัด") {
-                                $comtypefullname = "บริษัท " . $request->Company_name . " จำกัด";
-                            } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
-                                $comtypefullname = "บริษัท " . $request->Company_name . " จำกัด (มหาชน)";
-                            } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
-                                $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $request->Company_name;
+                if ($request->Tax_Type == 'Individual') {
+                    if ($Company_type >= 30 && $first_name && $last_name) {
+                        $Mprefix = master_document::where('id', $Company_type)->where('Category', 'Mprename')->first();
+                        if ($Mprefix) {
+                            if ($Mprefix->name_th == "นาย") {
+                                $comtypefullname = 'ชื่อ : '."นาย " . $first_name . ' ' . $last_name;
+                            } elseif ($Mprefix->name_th == "นาง") {
+                                $comtypefullname = 'ชื่อ : '."นาง " . $first_name . ' ' . $last_name;
+                            } elseif ($Mprefix->name_th == "นางสาว") {
+                                $comtypefullname = 'ชื่อ : '."นางสาว " . $first_name . ' ' . $last_name;
                             }
                         }
-                    }elseif ($Company_type < 30 && $Branch) {
-                        $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
-                        if ($comtype) {
-                            $comtype = $comtype->name_th;
-                            $comtypefullname = 'ประเภทบริษัท : ' . $comtype.'+'.' สาขา : ' . $Branch;
-                        }
-                    }elseif ($Company_type < 30) {
-                        $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
-                        if ($comtype) {
-                            $comtype = $comtype->name_th;
-                            $comtypefullname = 'ประเภทบริษัท : ' . $comtype;
+
+                    }
+                    elseif ($Company_type >= 30 && $first_name) {
+                        $Mprefix = master_document::where('id', $Company_type)->where('Category', 'Mprename')->first();
+                        if ($Mprefix) {
+                            $prename = $Mprefix->name_th;
+                            $comtypefullname = 'คำนำหน้า : ' . $prename.'+'.' ชื่อ : ' . $first_name;
                         }
                     }
-                }
-                elseif ($Company_name && $Branch) {
-                    $comtypefullname = 'ชื่อบริษัท : ' . $Company_name.'+'.' สาขา : ' . $Branch;
-                }
-                elseif ($Company_name) {
-                    $comtypefullname = 'ชื่อบริษัท : ' . $Company_name;
-                }
-                elseif ($Branch) {
-                    $comtypefullname = 'สาขา : ' . $Branch;
+                    elseif ($Company_type >= 30 && $last_name) {
+                        $Mprefix = master_document::where('id', $Company_type)->where('Category', 'Mprename')->first();
+                        if ($Mprefix) {
+                            $prename = $Mprefix->name_th;
+                            $comtypefullname = 'คำนำหน้า : ' . $prename.'+'.' นามสกุล : ' . $last_name;;
+                        }
+                    }
+                    elseif ($Company_type >= 30) {
+                        $Mprefix = master_document::where('id', $Company_type)->where('Category', 'Mprename')->first();
+                        if ($Mprefix) {
+                            $prename = $Mprefix->name_th;
+                            $comtypefullname = 'คำนำหน้า : ' . $prename;
+                        }
+                    }
+                    elseif ($first_name && $last_name) {
+                        $comtypefullname = 'ชื่อ : ' . $first_name . ' ' . $last_name;
+                    } elseif ($first_name) {
+                        $comtypefullname = 'ชื่อ : ' . $first_name;
+                    } elseif ($last_name) {
+                        $comtypefullname = 'นามสกุล : ' . $last_name;
+                    }
+                }else{
+                    if ($Company_type) {
+                        if ($Company_type < 30 && $Company_name) {
+                            $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+                            if ($comtype) {
+                                if ($comtype->name_th == "บริษัทจำกัด") {
+                                    $comtypefullname = "บริษัท " . $request->Company_name . " จำกัด";
+                                } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                                    $comtypefullname = "บริษัท " . $request->Company_name . " จำกัด (มหาชน)";
+                                } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                                    $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $request->Company_name;
+                                }
+                            }
+                        }elseif ($Company_type < 30 && $Branch) {
+                            $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+                            if ($comtype) {
+                                $comtype = $comtype->name_th;
+                                $comtypefullname = 'ประเภทบริษัท : ' . $comtype.'+'.' สาขา : ' . $Branch;
+                            }
+                        }elseif ($Company_type < 30) {
+                            $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+                            if ($comtype) {
+                                $comtype = $comtype->name_th;
+                                $comtypefullname = 'ประเภทบริษัท : ' . $comtype;
+                            }
+                        }
+                    }
+                    elseif ($Company_name && $Branch) {
+                        $comtypefullname = 'ชื่อบริษัท : ' . $Company_name.'+'.' สาขา : ' . $Branch;
+                    }
+                    elseif ($Company_name) {
+                        $comtypefullname = 'ชื่อบริษัท : ' . $Company_name;
+                    }
+                    elseif ($Branch) {
+                        $comtypefullname = 'สาขา : ' . $Branch;
+                    }
                 }
             }
-        }
-        if ($Profile_IDGuest) {
-            $Company = 'รหัสลูกค้า : '.$Profile_IDGuest;
-        }
-        $Profile = 'รหัส : '.$GuestTax_ID;
-        $datacompany = '';
-
-        $variables = [$Profile,$Company,$TaxType,$comtypefullname, $EmailTax, $IdentificationTax, $AddressIndividual, $phoneTax ,$phoneTaxA];
-
-        foreach ($variables as $variable) {
-            if (!empty($variable)) {
-                if (!empty($datacompany)) {
-                    $datacompany .= ' + ';
-                }
-                $datacompany .= $variable;
+            if ($Profile_IDGuest) {
+                $Company = 'รหัสลูกค้า : '.$Profile_IDGuest;
             }
+            $Profile = 'รหัส : '.$GuestTax_ID;
+            $datacompany = '';
+
+            $variables = [$Profile,$Company,$TaxType,$comtypefullname, $EmailTax, $IdentificationTax, $AddressIndividual, $phoneTax ,$phoneTaxA];
+
+            foreach ($variables as $variable) {
+                if (!empty($variable)) {
+                    if (!empty($datacompany)) {
+                        $datacompany .= ' + ';
+                    }
+                    $datacompany .= $variable;
+                }
+            }
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $Profile_IDGuest;
+            $save->type = 'Update';
+            $save->Category = 'Edit :: Additional Guest Tax Invoice';
+            $save->content =$datacompany;
+            $save->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('guest_edit', ['id' => $ids])->with('error', $e->getMessage());
         }
-        $userid = Auth::user()->id;
-        $save = new log_company();
-        $save->Created_by = $userid;
-        $save->Company_ID = $Profile_IDGuest;
-        $save->type = 'Update';
-        $save->Category = 'Edit :: Additional Guest Tax Invoice';
-        $save->content =$datacompany;
-        $save->save();
+
         try {
             if ($request->Tax_Type == 'Company') {
                 $save = guest_tax::find($id);
@@ -1634,10 +1628,10 @@ class GuestController extends Controller
                 }
                 $save->save();
             }
-            return redirect()->route('guest_edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         } catch (\Throwable $e) {
             return redirect()->route('guest_edit', ['id' => $ids])->with('error', $e->getMessage());
         }
+        return redirect()->route('guest_edit', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
     }
     public function guest_view_tax($id)
     {
@@ -1718,7 +1712,7 @@ class GuestController extends Controller
                     }
                 }
                 $btn_action .='<div class="btn-group">';
-                $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
+                $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                 $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
                 $btn_action .=' <li><a class="dropdown-item py-2 rounded" target="_bank" href=\'' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '\'>Export</a></li>';
                 $btn_action .='</ul>';
@@ -1796,7 +1790,7 @@ class GuestController extends Controller
                         }
                     }
                     $btn_action .='<div class="btn-group">';
-                    $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>';
+                    $btn_action .='<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                     $btn_action .='<ul class="dropdown-menu border-0 shadow p-3">';
                     $btn_action .=' <li><a class="dropdown-item py-2 rounded" target="_bank" href=\'' . url('/Proposal/Quotation/cover/document/PDF/' . $value->id) . '\'>Export</a></li>';
                     $btn_action .='</ul>';

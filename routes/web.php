@@ -246,6 +246,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Company/editTax/{id}', 'editTax')->name('Company.viewTax');
         Route::post('/Company/editTax/update/{Comid}/{id}', 'updatetax')->name('Company.updatetax');
 
+        Route::get('/Company/index/contact/{id}', 'contact')->name('Company.contact.index');
         Route::post('/Company/edit/contact/create/{id}', 'contactcreate')->name('contact.update');
         Route::get('/company/change-status/Contact/{id}', 'changeStatuscontact')->name('Company.contact.changeStatus');
         Route::get('/Company/view/contact/{id}', 'contactview')->name('Company.contact.view');

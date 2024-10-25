@@ -5,13 +5,8 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Guest.</small>
-                    <div class=""><span class="span1">Guest (ลูกค้า)</span></div>
-                </div>
-                <div class="col-auto">
-                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/guest-create') }}'">
-                        <i class="fa fa-plus"></i> Create Guest
-                    </button>
+                    <small class="text-muted">Welcome to Company Contact.</small>
+                    <div class=""><span class="span1">Company Contact</span></div>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -42,6 +37,7 @@
                     </ol>
                 </div>
                 <div class="col-auto">
+
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
@@ -51,110 +47,89 @@
                     <div class="card mb-3">
                         <div class="card-body">
                             <caption class="caption-top">
-                                <div class="top-table-3c">
-                                    <div class="top-table-3c_1">
-                                        <div class="dropdown">
-                                            <button class="bd-button statusbtn enteriespage-button" style="min-width: 100px; text-align: left;" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="text-align: left;">
-                                                @if ($menu == 'guest.all')
-                                                    All
-                                                @elseif ($menu == 'guest.ac')
-                                                    Active
-                                                @elseif ($menu == 'guest.no')
-                                                    Disabled
-                                                @else
-                                                    Status
-                                                @endif
-                                        <i class="fas fa-angle-down arrow-dropdown"></i>
-                                            </button>
-                                            <ul class="dropdown-menu border-0 shadow p-3">
-                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.all') }}">All</a></li>
-                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.ac') }}">Active</a></li>
-                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.no') }}">Disabled</a></li>
-                                            </ul>
-                                        </div>
+                                    <div class="flex-end-g2">
+                                        <label class="entriespage-label">entries per page :</label>
+                                        <select class="entriespage-button" id="search-per-page-company-Contact" onchange="getPageContact(1, this.value, 'company-Contact')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>10</option>
+                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>25</option>
+                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>50</option>
+                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>100</option>
+                                        </select>
+                                        <input class="search-button search-data" id="company-Contact" style="text-align:left;" placeholder="Search" />
                                     </div>
-                                    <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-guest" onchange="getPage(1, this.value, 'guest')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "guest" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "guest" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "guest" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "guest" ? 'selected' : '' }}>100</option>
-                                    </select>
-                                    <input class="search-button search-data" id="guest" style="text-align:left;" placeholder="Search" />
-
-                                </div>
                             </caption>
                             <div style="min-height: 70vh;" class="mt-2">
-                                <table id="guestTable" class="example ui striped table nowrap unstackable hover">
+                                <table id="company-ContactTable" class="example ui striped table nowrap unstackable hover">
                                     <thead>
                                         <tr>
                                             <th style="text-align: center;"data-priority="1">No</th>
-                                            <th style="text-align: center;"data-priority="1">Guest ID</th>
-                                            <th data-priority="1">Guest Name</th>
-                                            <th>Telephone</th>
+                                            <th style="text-align: center;"data-priority="1">Contact ID</th>
+                                            <th class="text-center"data-priority="1">Company ID</th>
+                                            <th class="text-center">Branch</th>
+                                            <th class="text-center">Name</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if(!empty($Guest))
-                                            @foreach ($Guest as $key => $item)
+                                        @if(!empty($Company))
+                                            @foreach ($Company as $key => $item)
                                             <tr>
                                                 <td style="text-align: center;">{{ $key + 1 }}</td>
                                                 <td style="text-align: center;">{{ $item->Profile_ID }}</td>
-                                                <td>{{ $item->First_name }} {{ $item->Last_name }}</td>
-                                                <td>
-                                                    {{$item->Phone_numbers}}
+                                                <td style="text-align: center;">{{ $item->Company_ID }}</td>
+                                                <td style="text-align: center;">{{ $item->Branch }}</td>
+                                                <td style="text-align: center;">
+                                                    คุณ {{ $item->First_name.' '.$item->Last_name }}
                                                 </td>
                                                 <td style="text-align: center;">
-                                                    <input type="hidden" id="status" value="{{ $item->status }}">
-
                                                     @if ($item->status == 1)
-                                                        <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
+                                                    <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
                                                     @else
                                                         <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ปิดใช้งาน</button>
                                                     @endif
                                                 </td>
                                                 @php
                                                     $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                    $canViewProposal = @Auth::user()->roleMenuView('Guest', Auth::user()->id);
-                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
+                                                    $canViewProposal = @Auth::user()->roleMenuView('Company / Agent', Auth::user()->id);
+                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Company / Agent', Auth::user()->id);
                                                 @endphp
                                                 <td style="text-align: center;">
                                                     <div class="btn-group">
                                                         <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                         <ul class="dropdown-menu border-0 shadow p-3">
-                                                            @if ($rolePermission > 0)
-                                                                @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/view/'.$item->id) }}">View</a></li>
-                                                                @endif
-                                                                @if ($canEditProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/edit/'.$item->id) }}">Edit</a></li>
-                                                                @endif
-                                                            @else
-                                                                @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/view/'.$item->id) }}">View</a></li>
-                                                                @endif
+                                                            @if ($canViewProposal == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/view/'.$item->id) }}">View</a></li>
                                                             @endif
                                                         </ul>
                                                     </div>
                                                 </td>
                                             </tr>
                                             @endforeach
-                                            @endif
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
-                            <input type="hidden" id="get-total-guest" value="{{ $Guest->total() }}">
-                            <input type="hidden" id="currentPage-guest" value="1">
+                            <input type="hidden" id="profile-company-Contact" value="{{ $Company_ID }}">
+                            <input type="hidden" id="get-total-company-Contact" value="{{ $Company->total() }}">
+                            <input type="hidden" id="currentPage-company-Contact" value="1">
                             <caption class="caption-bottom">
                                 <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="guest-showingEntries">{{ showingEntriesTable($Guest, 'guest') }}</p>
-                                        <div id="guest-paginate">
-                                            {!! paginateTable($Guest, 'guest') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                        </div>
+                                    <p class="py2" id="company-Contact-showingEntries">{{ showingEntriesTableContact($Company, 'company-Contact') }}</p>
+                                    <div id="company-Contact-paginate">
+                                        {!! paginateTableContact($Company, 'company-Contact') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                    </div>
                                 </div>
                             </caption>
+                            @if ($count == 1)
+                                <div class="row mt-2">
+                                    <div class="col-lg-3 col-sm-12"></div>
+                                    <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
+                                        <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{url('/Company/edit/'.$CompanyID)}}'">{{ __('ย้อนกลับ') }}</button>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-12"></div>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -167,7 +142,7 @@
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.semanticui.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableGuest.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableCompany.js')}}"></script>
 
     <script>
         // Search
@@ -179,15 +154,16 @@
             var type_status = $('#status').val();
             var total = parseInt($('#get-total-'+id).val());
             var getUrl = window.location.pathname;
-            console.log(search_value);
 
+            var guest_profile = $('#profile-company-Contact').val();
+            console.log(guest_profile);
                 $('#'+table_name).DataTable().destroy();
                 var table = $('#'+table_name).dataTable({
                     searching: false,
                     paging: false,
                     info: false,
                     ajax: {
-                    url: '/guest-search-table',
+                    url: '/Contact-company-search-table',
                     type: 'POST',
                     dataType: "json",
                     cache: false,
@@ -196,6 +172,7 @@
                         table_name: table_name,
                         filter_by: filter_by,
                         status: type_status,
+                        guest_profile:guest_profile,
                     },
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 },
@@ -212,11 +189,11 @@
                         count_total = count;
                     }
                     $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
+                    $('#'+id+'-showingEntries').text(showingEntriesSearchContact(1,count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearchContact(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0, 1, 3, 4, 5], className: 'dt-center td-content-center' },
+                                { targets: [0, 1, 3, 4, 5,6], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -227,16 +204,14 @@
                     },
                     columns: [
                         { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
-                        { data: 'Profile_ID' },
-                        { data: 'name' },
-                        { data: 'Booking_Channel' },
-                        { data: 'status' },
-                        { data: 'btn_action' },
+                        { data: 'Profile_ID_TAX' },
+                        { data: 'Company' },
+                        { data: 'Branch' },
+                        { data: 'Name' },
+                        { data: 'Status' },
+                        { data: 'Order' },
                     ],
-
                 });
-
-
             document.getElementById(id).focus();
         });
         $(document).ready(function() {
@@ -263,23 +238,11 @@
     @include('script.script')
 
     <script>
-        function fetchStatus(status) {
-            if (status == 'all' ) {
-                $('#StatusName').text('All');
-            }else if (status == 'Active') {
-                $('#StatusName').text('Active');
-            }
-            else if (status == 'Disabled') {
-                $('#StatusName').text('Disabled');
-            }
-            else if (status == ' ') {
-                $('#StatusName').text('สถานะการใช้งาน');
-            }
-        }
+
         function btnstatus(id) {
             jQuery.ajax({
                 type: "GET",
-                url: "{!! url('/guest/change-status/" + id + "') !!}",
+                url: "{!! url('/company/change-status/Contact/" + id + "') !!}",
                 datatype: "JSON",
                 async: false,
                 success: function(result) {

@@ -266,14 +266,17 @@
                                                         <div class="col-lg-2  d-flex justify-content-end align-items-end">
                                                             <div class="btn-group">
                                                                 <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                    ทำรายการ &nbsp;
+                                                                    List &nbsp;
                                                                 </button>
                                                                 <ul class="dropdown-menu border-0 shadow p-3">
                                                                     <li>
-                                                                        <a class="dropdown-item py-2 rounded" data-bs-toggle="modal" data-bs-target="#CreateAgent">เพิ่มตัวแทนบริษัท</a>
+                                                                        <a class="dropdown-item py-2 rounded" href="{{ url('/Company/index/contact/'.$Profile_ID) }}">All Contact</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a class="dropdown-item py-2 rounded" href="{{ url('/Company/edit/contact/'.$representative->id) }}">แก้ไขตัวแทนบริษัท</a>
+                                                                        <a class="dropdown-item py-2 rounded" data-bs-toggle="modal" data-bs-target="#CreateAgent">Create Contact</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="dropdown-item py-2 rounded" href="{{ url('/Company/edit/contact/'.$representative->id) }}">Edit Contact</a>
                                                                     </li>
                                                                 </ul>
                                                             </div>
@@ -836,7 +839,7 @@
                                                 <th  data-priority="1">Company/Individual</th>
                                                 <th class="text-center">Branch</th>
                                                 <th class="text-center">Status</th>
-                                                <th class="text-center">Order</th>
+                                                <th class="text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -866,18 +869,18 @@
                                                             @endphp
                                                             <td style="text-align: center;">
                                                                 <div class="btn-group">
-                                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
+                                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                                     <ul class="dropdown-menu border-0 shadow p-3">
                                                                         @if ($rolePermission > 0)
                                                                             @if ($canViewProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/viewTax/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/viewTax/'.$item->id) }}">View</a></li>
                                                                             @endif
                                                                             @if ($canEditProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/editTax/'.$item->id) }}">แก้ไขรายการ</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/editTax/'.$item->id) }}">Edit</a></li>
                                                                             @endif
                                                                         @else
                                                                             @if ($canViewProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/viewTax/'.$item->id) }}">ดูรายละเอียด</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/viewTax/'.$item->id) }}">View</a></li>
                                                                             @endif
                                                                         @endif
                                                                     </ul>
@@ -1289,7 +1292,7 @@
                                                 <th class="text-center">Discount </th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Document status</th>
-                                                <th class="text-center">Order</th>
+                                                <th class="text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1339,7 +1342,7 @@
                                                     </td>
                                                     <td style="text-align: center;">
                                                         <div class="btn-group">
-                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">ทำรายการ &nbsp;</button>
+                                                            <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
                                                             <ul class="dropdown-menu border-0 shadow p-3">
                                                                 <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                             </ul>
