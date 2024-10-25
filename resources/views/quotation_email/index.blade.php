@@ -65,7 +65,7 @@
                                             Email : reservation@together-resort.com <br>
                                             Website : www.together-resort.com<br>
                                             @foreach ($promotions as $promotion)
-                                                Video Promotion<br>
+                                                Video Presentation / Promotion <br>
                                                 {!! $promotion !!} <br>
                                             @endforeach
                                         </textarea>

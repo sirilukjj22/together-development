@@ -4270,11 +4270,12 @@ class QuotationController extends Controller
             $day = '( '.$day.' วัน';
             $night =$night.' คืน'.' )';
         }
-        $promotiondata = master_promotion::where('status', 1)->where('type', 1)->select('name','type')->get();
+        $promotiondata = master_promotion::where('status', 1)->where('type', 'Link')->select('name','type')->get();
         $promotions = [];
         foreach ($promotiondata as $promo) {
             $promotions[] = 'Link : ' . $promo->name;
         }
+
         return view('quotation_email.index',compact('emailCom','Quotation_ID','name','comtypefullname','checkin','checkout','night','day','promotions',
                         'quotation','type_Proposal'));
     }
