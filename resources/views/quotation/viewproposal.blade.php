@@ -192,8 +192,8 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Edit Proposal.</small>
-                    <div class=""><span class="span1">Edit Proposal (แก้ไขเอกสารใบข้อเสนอ)</span></div>
+                    <small class="text-muted">Welcome to View Proposal to Send Email.</small>
+                    <div class=""><span class="span1">View Proposal to Send Email (ดูเอกสารข้อเสนอเพื่อส่งอีเมล)</span></div>
                 </div>
             </div> <!-- .row end -->
         </div>
