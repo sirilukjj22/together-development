@@ -49,8 +49,9 @@
                                                     @csrf
                                                     <div class="col-sm-12 col-12">
                                                         <label for="Status">Refer Invoice</label>
-                                                        <select name="Refer" id="Refer" class="select2" >
+                                                        <select name="Refer" id="Refer" class="select2"  onchange="data()">
                                                             @foreach($invoice as $item)
+                                                                <option value=""></option>
                                                                 <option value="{{ $item->Invoice_ID }}">
                                                                     {{ $item->Invoice_ID }} Refer Proposal : {{$item->Quotation_ID}}
                                                                 </option>
@@ -77,7 +78,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
                                                         <label for="Status">Amount</label>
-                                                        <input type="text" class="form-control" id="Amount" name="Amount" required>
+                                                        <input type="text" class="form-control" id="Amount" name="Amount" readonly>
 
                                                     </div>
                                                     <div class="col-lg-6 col-md-12 col-sm-12">
@@ -429,6 +430,23 @@
 
             });
         });
+        function data() {
+            var Refer = $('#Refer').val();
+            var id = Refer;
+            jQuery.ajax({
+                type: "GET",
+                url: `/Document/ReceiveCheque/Refer/${id}`,  // ใช้ template literal สร้าง URL
+                datatype: "JSON",
+                async: false,
+                success: function(response) {
+                    var Amount = response.Amount;
+                    $('#Amount').val(Amount);
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX request failed: ", status, error);
+                }
+            });
+        }
         function view(id) {
             var id = id;
             jQuery.ajax({

@@ -165,7 +165,13 @@ class ReceiveChequeController extends Controller
             'issue_date'=>$issue_date,
         ]);
     }
-
+    public function amount($id){
+        $invoice = document_invoices::query()->where('Invoice_ID',$id)->first();
+        $Amount = $invoice->sumpayment;
+        return response()->json([
+            'Amount'=>$Amount,
+        ]);
+    }
     public function update(Request $request){
         $data = $request->all();
 
