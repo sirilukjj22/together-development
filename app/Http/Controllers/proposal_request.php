@@ -33,6 +33,7 @@ use App\Models\User;
 use PDF;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use App\Models\master_document_sheet;
+use App\Models\confirmation_request;
 use Dompdf\Dompdf;
 use App\Models\master_template;
 use Illuminate\Support\Arr;
@@ -59,8 +60,11 @@ class proposal_request extends Controller
         ->select('id', 'DummyNo', 'Company_ID', 'Operated_by', 'QuotationType', DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
         ->union($quotation1);
         $proposalcount = DB::table(DB::raw("({$proposal1->toSql()}) as sub"))->mergeBindings($proposal1->getQuery())->count();
-
-        return view('proposal_req.index',compact('proposal','proposalcount'));
+        $requestcount =confirmation_request::query()->paginate($perPage);
+        $currentDateTime = Carbon::now();
+        confirmation_request::where('expiration_time', '<', $currentDateTime)->delete();
+        $request =confirmation_request::query()->where('status',1)->paginate($perPage);
+        return view('proposal_req.index',compact('proposal','proposalcount','requestcount','request'));
     }
     public function view($id,$Type)
     {
@@ -852,7 +856,54 @@ class proposal_request extends Controller
             'data' => $data,
         ]);
     }
+    public function  paginate_pending_table_request(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $currentDateTime = Carbon::now();
+            confirmation_request::where('expiration_time', '<', $currentDateTime)->delete();
+            $data_query =confirmation_request::query()->limit($request->page.'0')->get();
+        } else {
+            $currentDateTime = Carbon::now();
+            confirmation_request::where('expiration_time', '<', $currentDateTime)->delete();
+            $data_query =confirmation_request::query()->paginate($perPage);
+        }
 
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    $name = '<td>' .@$value->requestername->name. '</td>';
+                    // สร้างสถานะการใช้งาน
+                    $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    $btn_action = '<button type="button" class="btn btn-light-success btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ใช้งาน</button> <button type="button" class="btn btn-light-danger btn-sm" value="'.$value->id.'" onclick="btnstatus('.$value->id.')">ปิดใช้งาน</button>';
+                    $data[] = [
+                        'number' => $key + 1,
+                        'name' => $name,
+                        'time' => $value->expiration_time,
+                        'status' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
     public function LOG()
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;

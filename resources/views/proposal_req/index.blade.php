@@ -38,6 +38,7 @@
                 <div class="col-md-12 col-12">
                     <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
                         <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-proposal" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$proposalcount}}</span> Proposal Request</a></li>{{--ประวัติการแก้ไข--}}
+                        <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending" onclick="nav($id='nav2')" role="tab"><span class="badge" style="background-color:#FF6633">{{$requestcount}}</span> Request OverBill</a></li>{{--QUOTAION--}}
                     </ul>
                     <div class="card mb-3">
                         <div class="card-body">
@@ -111,10 +112,49 @@
                                         </caption>
                                     </div>
                                 </div>
-
-                                {{-- <div class="tab-pane fade" id="nav-cancel" role="tabpanel" rel="0">
-
-                                </div> --}}
+                                <div class="tab-pane fade" id="nav-Pending" role="tabpanel" rel="0">
+                                    <div style="min-height: 70vh;" class="mt-2">
+                                        <table id="requestTable" class="example1 ui striped table nowrap unstackable hover">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"data-priority="1">No</th>
+                                                    <th>Name request</th>
+                                                    <th class="text-center" data-priority="1">Expiration Time</th>
+                                                    <th class="text-center">Status</th>
+                                                    <th class="text-center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(!empty($request))
+                                                    @foreach ($request as $key => $item)
+                                                    <tr>
+                                                        <td style="text-align: center;">
+                                                            {{$key +1}}
+                                                        </td>
+                                                        <td>{{ @$item->requestername->name}}</td>
+                                                        <td style="text-align: center;">{{$item->expiration_time	}}</td>
+                                                        <td style="text-align: center;"> <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span></td>
+                                                        <td style="text-align: center;">
+                                                            <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnConfirm({{ $item->id }})">Confirm</button>
+                                                            <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnCancel({{ $item->id }})">Cancel</button>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                        <input type="hidden" id="get-total-request" value="{{ $request->total() }}">
+                                        <input type="hidden" id="currentPage-request" value="1">
+                                        <caption class="caption-bottom">
+                                            <div class="md-flex-bt-i-c">
+                                                <p class="py2" id="request-showingEntries">{{ showingEntriesTablePending($request, 'request') }}</p>
+                                                <div id="request-paginate">
+                                                    {!! paginateTablePending($request, 'request') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                </div>
+                                            </div>
+                                        </caption>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -131,7 +171,7 @@
     <script type="text/javascript" src="{{ asset('assets/helper/searchTableProposalRequest.js')}}"></script>
 
     <script>
-        const table_name = ['proposalTable','proposal-LogTable'];
+        const table_name = ['proposalTable','proposal-LogTable','requestTable'];
         $(document).ready(function() {
             for (let index = 0; index < table_name.length; index++) {
                 console.log();
@@ -246,6 +286,31 @@
         });
     </script>
     @include('script.script')
-
+    <script>
+        function btnConfirm(id) {
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('/Proposal-request/confirm-request/" + id + "') !!}",
+                datatype: "JSON",
+                async: false,
+                success: function(result) {
+                    Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                    location.reload();
+                },
+            });
+        }
+        function btnCancel(id) {
+            jQuery.ajax({
+                type: "GET",
+                url: "{!! url('/Proposal-request/Cancel-request/" + id + "') !!}",
+                datatype: "JSON",
+                async: false,
+                success: function(result) {
+                    Swal.fire('บันทึกข้อมูลเรียบร้อย!', '', 'success');
+                    location.reload();
+                },
+            });
+        }
+    </script>
 
 @endsection

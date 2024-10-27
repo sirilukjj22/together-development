@@ -31,6 +31,8 @@ use App\Http\Controllers\Masterpromotion;
 use App\Http\Controllers\Master_Address_System;
 use App\Http\Controllers\UserDepartmentsController;
 use App\Http\Controllers\ReceiveChequeController;
+use App\Http\Controllers\confirmationrequest;
+use App\Http\Controllers\BillingFolioOverbill;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -670,6 +672,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('Proposal-LogDoc-request-search-table', 'search_table_paginate_log_doc');
         Route::post('Proposal-LogDoc-request-paginate-table', 'paginate_log_doc_table_proposal');
 
+        Route::post('request-Pending-search-table', 'search_table_paginate_pending');
+        Route::post('request-Pending-paginate-table', 'paginate_pending_table_request');
     });
 
     ##-------------------------------TemplateController-----------------
@@ -754,6 +758,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('billing-LogDoc-search-table', 'search_table_paginate_log_doc');
         Route::post('billing-LogDoc-paginate-table', 'paginate_log_doc_table_billing');
     });
+    Route::controller(BillingFolioOverbill::class)->middleware('role:document')->group(function () {
+        Route::get('/Document/BillingFolio/Over/index', 'index')->name('BillingFolioOver.index');
+    });
 
     Route::controller(ReceiveChequeController::class)->middleware('role:document')->group(function () {
         Route::get('/Document/ReceiveCheque/index', 'index')->name('ReceiveCheque.index');
@@ -775,7 +782,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('Msys-Log-search-table', 'Msys_search_table_paginate_log');
         Route::post('Msys-Log-paginate-table', 'Msys_paginate_log_table');
     });
+    Route::controller(confirmationrequest::class)->group(function () {
+        Route::get('/Proposal-request/confirm-request/{id}', 'showConfirmPage')->name('showConfirmPage');
+        Route::get('/Proposal-request/Cancel-request/{id}', 'showCancelPage')->name('showCancelPage');
+        Route::get('/Cancel-request/{id}', 'cancelRequest')->name('cancelRequest');
+        Route::post('/request-confirmation', 'sendRequest')->name('sendRequest');
+        Route::get('/check-confirmation-status/{id}', 'checkConfirmationStatus')->name('checkConfirmationStatus');
 
+        Route::post('/confirm-request/{id}', 'confirmRequest')->name('confirmRequest');
+    });
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:clear');
     $exitCode = Artisan::call('cache:clear');
