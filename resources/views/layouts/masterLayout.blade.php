@@ -171,11 +171,14 @@
                                                     ->groupBy('Company_ID', 'Operated_by')
                                                     ->select('id', 'DummyNo', 'type_Proposal', 'Company_ID', 'Operated_by', 'QuotationType', DB::raw("COUNT(DummyNo) as COUNTDummyNo"));
 
-                                                $proposalCount =  DB::table('dummy_quotation')->where('status_document', 2)
+                                                $ProposalCount =  DB::table('dummy_quotation')->where('status_document', 2)
                                                     ->groupBy('Company_ID', 'Operated_by')
                                                     ->select('id', 'DummyNo', 'type_Proposal', 'Company_ID', 'Operated_by', 'QuotationType', DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
                                                     ->union($quotation)
                                                     ->count();  // นับจำนวนผลลัพธ์ทั้งหมด
+                                                $requestCount =  DB::table('confirmation_requests')->where('status', 1)
+                                                    ->count();
+                                                $proposalCount = $ProposalCount+$requestCount;
                                             @endphp
                                             <li>
                                                 <a class="ms-link" href="{{ route('ProposalReq.index') }}" style="position: relative;">Document Request <span class="box-sm-circle-red">{{$proposalCount}}</span></a>

@@ -13,8 +13,13 @@
                     <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('BillingFolio.issuebill') }}'">
                         <i class="fa fa-plus"></i> Issue Bill
                     </button>
-                    <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#OverCreate" onclick="requestConfirmation()">
+                    @php
+                        $canEditProposal = @Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
+                    @endphp
+                    @if ($canEditProposal)
+                        <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#OverCreate" onclick="requestConfirmation()">
                         <i class="fa fa-plus"></i> Over Bill</button>
+                    @endif
                 </div>
                 <div class="modal fade" id="OverCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">

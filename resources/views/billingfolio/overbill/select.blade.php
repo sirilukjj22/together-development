@@ -5,13 +5,10 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Billing folio ( Over Bill ).</small>
-                    <div class=""><span class="span1">Billing folio ( Over Bill )</span></div>
+                    <small class="text-muted">Welcome to Select Proposal ( Over Bill ).</small>
+                    <div class=""><span class="span1">Select Proposal ( Over Bill )</span></div>
                 </div>
                 <div class="col-auto">
-                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('BillingFolioOver.select') }}'">
-                        <i class="fa fa-plus"></i> Issue Bill
-                    </button>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -55,7 +52,7 @@
                                 <caption class="caption-top">
                                     <div class="flex-end-g2">
                                         <label class="entriespage-label">entries per page :</label>
-                                        <select class="entriespage-button" id="search-per-page-proposal" onchange="getPage(1, this.value, 'proposal')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                        <select class="entriespage-button" id="search-per-page-proposal" onchange="getPagePending(1, this.value, 'proposal')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
                                             <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>10</option>
                                             <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>25</option>
                                             <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>50</option>
@@ -130,9 +127,9 @@
                                 <input type="hidden" id="currentPage-proposal" value="1">
                                 <caption class="caption-bottom">
                                     <div class="md-flex-bt-i-c">
-                                        <p class="py2" id="proposal-showingEntries">{{ showingEntriesTable($Proposal, 'proposal') }}</p>
+                                        <p class="py2" id="proposal-showingEntries">{{ showingEntriesTablePending($Proposal, 'proposal') }}</p>
                                         <div id="proposal-paginate">
-                                            {!! paginateTable($Proposal, 'proposal') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                            {!! paginateTablePending($Proposal, 'proposal') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                         </div>
                                     </div>
                                 </caption>
@@ -199,7 +196,7 @@
                     paging: false,
                     info: false,
                     ajax: {
-                    url: '/billingover-search-table',
+                    url: '/billingover-proposal-search-table',
                     type: 'POST',
                     dataType: "json",
                     cache: false,

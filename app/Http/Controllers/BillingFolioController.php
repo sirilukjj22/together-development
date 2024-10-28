@@ -314,8 +314,8 @@ class BillingFolioController extends Controller
 
 
                     $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" href="' . url('/Document/BillingFolio/Proposal/invoice/CheckPI/' . $value->id) . '" >
-                                                    Select
-                                                </button>';
+                                    Select
+                                    </button>';
                     $data[] = [
                         'number' => $key +1,
                         'Proposal' => $value->Quotation_ID,

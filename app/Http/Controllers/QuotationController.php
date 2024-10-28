@@ -24,6 +24,7 @@ use App\Models\document_quotation;
 use App\Models\log;
 use App\Models\Master_company;
 use App\Models\phone_guest;
+use App\Models\document_invoices;
 use Auth;
 use App\Models\User;
 use PDF;
@@ -418,7 +419,7 @@ class QuotationController extends Controller
                     $btn_action .= '</div>';
 
                     $data[] = [
-                        'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->updated_at . '">',
+                        'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                         'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                         'Proposal_ID' => $value->Quotation_ID,
                         'Company_Name' => $name,
@@ -592,7 +593,7 @@ class QuotationController extends Controller
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
                 $data[] = [
-                    'number' => $key + 1,
+                    'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                     'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                     'Proposal_ID' => $value->Quotation_ID,
                     'Company_Name' => $name,
@@ -710,7 +711,7 @@ class QuotationController extends Controller
                     $btn_action .= '</div>';
 
                     $data[] = [
-                        'number' => $key + 1,
+                        'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                         'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                         'Proposal_ID' => $value->Quotation_ID,
                         'Company_Name' => $name,
@@ -830,7 +831,7 @@ class QuotationController extends Controller
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
                 $data[] = [
-                    'number' => $key + 1,
+                    'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                     'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                     'Proposal_ID' => $value->Quotation_ID,
                     'Company_Name' => $name,
@@ -924,7 +925,7 @@ class QuotationController extends Controller
                     $btn_action .= '</div>';
 
                     $data[] = [
-                        'number' => $key + 1,
+                        'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                         'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                         'Proposal_ID' => $value->Quotation_ID,
                         'Company_Name' => $name,
@@ -1018,7 +1019,7 @@ class QuotationController extends Controller
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
                 $data[] = [
-                    'number' => $key + 1,
+                    'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                     'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                     'Proposal_ID' => $value->Quotation_ID,
                     'Company_Name' => $name,
@@ -1140,7 +1141,7 @@ class QuotationController extends Controller
                     $btn_action .= '</div>';
 
                     $data[] = [
-                        'number' => $key + 1,
+                        'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                         'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                         'Proposal_ID' => $value->Quotation_ID,
                         'Company_Name' => $name,
@@ -1275,7 +1276,7 @@ class QuotationController extends Controller
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
                 $data[] = [
-                    'number' => $key + 1,
+                    'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                     'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                     'Proposal_ID' => $value->Quotation_ID,
                     'Company_Name' => $name,
@@ -1382,7 +1383,7 @@ class QuotationController extends Controller
                     $btn_action .= '</div>';
 
                     $data[] = [
-                        'number' => $key + 1,
+                        'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                         'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                         'Proposal_ID' => $value->Quotation_ID,
                         'Company_Name' => $name,
@@ -1491,7 +1492,7 @@ class QuotationController extends Controller
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
                 $data[] = [
-                    'number' => $key + 1,
+                    'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                     'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                     'Proposal_ID' => $value->Quotation_ID,
                     'Company_Name' => $name,
@@ -1598,7 +1599,7 @@ class QuotationController extends Controller
                     $btn_action .= '</div>';
 
                     $data[] = [
-                        'number' => $key + 1,
+                        'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                         'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                         'Proposal_ID' => $value->Quotation_ID,
                         'Company_Name' => $name,
@@ -1707,7 +1708,7 @@ class QuotationController extends Controller
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
                 $data[] = [
-                    'number' => $key + 1,
+                    'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                     'DummyNo' => $value->DummyNo == $value->Quotation_ID ? '-' : $value->DummyNo,
                     'Proposal_ID' => $value->Quotation_ID,
                     'Company_Name' => $name,
@@ -3336,7 +3337,6 @@ class QuotationController extends Controller
                         $productsArray[] = $saveProduct;
                     }
                 }
-
                 $DataProduct = [
                     'Quotation_ID' => $data['Quotation_ID'] ?? null,
                     'issue_date' => $data['IssueDate'] ?? null,
@@ -3689,6 +3689,7 @@ class QuotationController extends Controller
                 $save->Category = 'Edit :: Proposal';
                 $save->content =$datacompany;
                 $save->save();
+
                 $save = Quotation::find($id);
                 $save->Quotation_ID = $Quotation_ID;
                 $save->DummyNo = $Quotation_ID;
@@ -3717,21 +3718,28 @@ class QuotationController extends Controller
                     $save->SpecialDiscount = $SpecialDiscount;
                     $save->SpecialDiscountBath = $SpecialDiscountBath;
                     $save->additional_discount = $Add_discount;
-                    $save->status_document = 1;
-                    $save->status_guest = 0;
+                    $count = document_invoices::where('Quotation_ID',$Quotation_ID)->count();
+                    if ($count < 1 ) {
+                        $save->status_document = 1;
+                        $save->status_guest = 0;
+                        $save->Confirm_by = 'Auto';
+                    }
                     $save->correct = $correctup;
-                    $save->Confirm_by = 'Auto';
                     $save->save();
                 }else {
                     $save->SpecialDiscount = $SpecialDiscount;
                     $save->SpecialDiscountBath = $SpecialDiscountBath;
                     $save->additional_discount = $Add_discount;
-                    $save->status_document = 2;
-                    $save->status_guest = 0;
+                    $count = document_invoices::where('Quotation_ID',$Quotation_ID)->count();
+                    if ($count < 1 ) {
+                        $save->status_document = 2;
+                        $save->Confirm_by = '-';
+                        $save->status_guest = 0;
+                    }
                     $save->correct = $correctup;
-                    $save->Confirm_by = '-';
                     $save->save();
                 }
+
                 $Products = $datarequest['ProductIDmain'];
                 $Productslast = $datarequest['CheckProduct'];
                 $pax=$datarequest['pax'];
@@ -4479,6 +4487,7 @@ class QuotationController extends Controller
     public function Approve($id){
         $quotation = Quotation::find($id);
         $quotation->status_guest = 1;
+        $quotation->Approve_at = now();
         $quotation->save();
         $data = Quotation::where('id',$id)->first();
         $Quotation_ID = $data->Quotation_ID;
@@ -4541,7 +4550,7 @@ class QuotationController extends Controller
                 $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
                 $name = $Category.'</br>'.$content;
                 $data[] = [
-                    'number' => $key + 1,
+                    'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                     'Category'=>$value->Category,
                     'type'=>$value->type,
                     'Created_by'=>@$value->userOperated->name,
@@ -4577,7 +4586,7 @@ class QuotationController extends Controller
                 $name = $Category.'</br>'.$content;
                 if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
                     $data[] = [
-                        'number' => $key + 1,
+                        'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                         'Category'=>$value->Category,
                         'type'=>$value->type,
                         'Created_by'=>@$value->userOperated->name,
@@ -4631,7 +4640,7 @@ class QuotationController extends Controller
                     }
 
                     $data[] = [
-                        'number' => $key + 1,
+                        'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                         'Quotation_ID' => $value->Quotation_ID,
                         'type' => $value->QuotationType,
                         'Correct' => $value->correct,
@@ -4686,7 +4695,7 @@ class QuotationController extends Controller
                 }
 
                 $data[] = [
-                    'number' => $key + 1,
+                    'number' => ($key + 1) . '<input type="hidden" id="update_date" value="' . $value->created_at . '">'. '<input type="hidden" id="approve_date" value="' . $value->Approve_at . '">',
                     'Quotation_ID' => $value->Quotation_ID,
                     'type' => $value->QuotationType,
                     'Correct' => $value->correct,

@@ -760,6 +760,15 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::controller(BillingFolioOverbill::class)->middleware('role:document')->group(function () {
         Route::get('/Document/BillingFolio/Over/index', 'index')->name('BillingFolioOver.index');
+        Route::get('/Document/BillingFolio/Over/select', 'select')->name('BillingFolioOver.select');
+        Route::get('/Document/BillingFolio/Proposal/Over/{id}','proposal')->name('BillingFolioOver.proposal');
+        Route::post('/Document/BillingFolio/Proposal/Over/create/{id}', 'create')->name('BillingFolioOver.create');
+        Route::get('/Document/BillingFolio/Proposal/Over/document/PDF/{id}', 'sheetpdf')->name('Proposal.sheet');
+        Route::post('billingover-proposal-search-table', 'search_table_billingover_proposal');
+        Route::post('billingover-proposal-paginate-table', 'paginate_table_billingover_proposal');
+
+        Route::post('billingover-search-table', 'search_table_billingover');
+        Route::post('billingover-paginate-table', 'paginate_table_billingover');
     });
 
     Route::controller(ReceiveChequeController::class)->middleware('role:document')->group(function () {

@@ -212,7 +212,8 @@
                                                 <tr>
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
-                                                        <input type="hidden" id="update_date" value="{{$item->updated_at}}">
+                                                        <input type="hidden" id="update_date" value="{{$item->created_at}}">
+                                                        <input type="hidden" id="approve_date" value="{{$item->Approve_at}}">
                                                     </td>
                                                     <td  style="text-align: center;">
                                                         @if ($item->DummyNo == $item->Quotation_ID )
@@ -419,7 +420,8 @@
                                                 <tr>
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
-                                                        <input type="hidden" id="update_date" value="{{$item->updated_at}}">
+                                                        <input type="hidden" id="update_date" value="{{$item->created_at}}">
+                                                        <input type="hidden" id="approve_date" value="{{$item->Approve_at}}">
                                                     </td>
                                                     <td  style="text-align: center;">
                                                         @if ($item->DummyNo == $item->Quotation_ID )
@@ -585,7 +587,8 @@
                                                 <tr>
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
-                                                        <input type="hidden" id="update_date" value="{{$item->updated_at}}">
+                                                        <input type="hidden" id="update_date" value="{{$item->created_at}}">
+                                                        <input type="hidden" id="approve_date" value="{{$item->Approve_at}}">
                                                     </td>
                                                     <td  style="text-align: center;">
                                                         @if ($item->DummyNo == $item->Quotation_ID )
@@ -729,7 +732,8 @@
                                                 <tr>
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
-                                                        <input type="hidden" id="update_date" value="{{$item->updated_at}}">
+                                                        <input type="hidden" id="update_date" value="{{$item->created_at}}">
+                                                        <input type="hidden" id="approve_date" value="{{$item->Approve_at}}">
                                                     </td>
                                                     <td  style="text-align: center;">
                                                         @if ($item->DummyNo == $item->Quotation_ID )
@@ -892,7 +896,8 @@
                                                 <tr>
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
-                                                        <input type="hidden" id="update_date" value="{{$item->updated_at}}">
+                                                        <input type="hidden" id="update_date" value="{{$item->created_at}}">
+                                                        <input type="hidden" id="approve_date" value="{{$item->Approve_at}}">
                                                     </td>
                                                     <td  style="text-align: center;">
                                                         @if ($item->DummyNo == $item->Quotation_ID )
@@ -1046,7 +1051,8 @@
                                                 <tr>
                                                     <td style="text-align: center;">
                                                         {{$key +1}}
-                                                        <input type="hidden" id="update_date" value="{{$item->updated_at}}">
+                                                        <input type="hidden" id="update_date" value="{{$item->created_at}}">
+                                                        <input type="hidden" id="approve_date" value="{{$item->Approve_at}}">
                                                     </td>
                                                     <td  style="text-align: center;">
                                                         @if ($item->DummyNo == $item->Quotation_ID )
@@ -1754,31 +1760,29 @@
                 if (table) {
                     // ดึงข้อมูลทุกแถวที่มีวันที่ออกมาในแต่ละตาราง
                     table.querySelectorAll('#update_date').forEach(function (input) {
-                        // แปลงวันที่ใน `<input>` เป็นรูปแบบ Date ของ JavaScript
-                        const issueDate = new Date(input.value);
-                        // วันที่ปัจจุบัน-
+                        const row = input.closest('tr');
 
+                        // ตรวจสอบว่าแถวมี `approve_date` อยู่หรือไม่
+                        const approveDateInput = row.querySelector('#approve_date');
+                        const updateDate = new Date(input.value);
+                        const approveDate = approveDateInput && approveDateInput.value ? new Date(approveDateInput.value) : null;
 
-                        const currentDate = new Date();
-                        // คำนวณความแตกต่างของเวลาระหว่างสองวันที่ (ในหน่วยมิลลิวินาที)
-                        const timeDifference = currentDate - issueDate;
-                        // คำนวณจำนวนวันที่ผ่านมา
+                        // ถ้า approveDate ไม่มีค่า ให้ใช้วันที่ปัจจุบันแทน
+                        const endDate = approveDate || new Date();
+                        console.log(updateDate);
+                        console.log(endDate);
+
+                        // คำนวณความแตกต่างของเวลาในหน่วยวัน
+                        const timeDifference = endDate - updateDate;
                         const daysPassed = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
-
-
                         // แสดงผลลัพธ์ใน `<span>` ที่อยู่ในแถวเดียวกัน
-                            const row = input.closest('tr');
-                            if (row) {
-                                const daysCountSpan = row.querySelector('.days-count');
-                                if (daysCountSpan) {
-                                    daysCountSpan.innerText = daysPassed;
-                                } else {
-                                    console.error('ไม่พบ .days-count ในแถวเดียวกัน');
-                                }
-                            } else {
-                                console.error('ไม่พบแถว <tr> ที่เกี่ยวข้อง');
-                            }
+                        const daysCountSpan = row.querySelector('.days-count');
+                        if (daysCountSpan) {
+                            daysCountSpan.innerText = daysPassed;
+                        } else {
+                            console.error('ไม่พบ .days-count ในแถวเดียวกัน');
+                        }
                     });
 
                 }
