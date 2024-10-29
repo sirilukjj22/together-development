@@ -87,7 +87,7 @@ function getPage(page, perPage, table_n) {
     var table_name = table_n + 'Table';
     var filter_by = $('#filter-by').val();
     var dateString = $('#date').val();
-    var type = $('#status').val();
+    var type = $('#search-status').val();
     var account = $('#into_account').val();
     var total = parseInt($('#get-total-' + table_n).val());
     var getUrl = window.location.pathname;

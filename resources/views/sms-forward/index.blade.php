@@ -1281,14 +1281,15 @@
                         <br>
                         <select class="form-control form-select" id="status" name="status" onchange="select_type()">
                             <option value="0">เลือกข้อมูล</option>
-                            <option value="1">Room Revenue</option>
-                            <option value="2">All Outlet Revenue</option>
-                            <option value="3">Water Park Revenue</option>
-                            <option value="4">Credit Revenue</option>
-                            <option value="5">Agoda Revenue</option>
-                            <option value="6">Front Desk Revenue</option>
-                            <option value="8">Elexa EGAT Revenue</option>
-                            <option value="9">Other Revenue Bank Transfer</option>
+                            <option value="6">Front Desk Bank Transfer Revenue</option>
+                            <option value="1">Guest Deposit Bank Transfer Revenue</option>
+                            <option value="2">All Outlet Bank Transfer Revenue</option>
+                            <option value="4">Credit Card Revenue</option>
+                            <option value="5">Credit Card Agoda Revenue</option>
+                            <option value="3">Water Park Bank Transfer Revenue</option>
+                            <option value="7">Credit Card Water Park Revenue</option>
+                            <option value="8">Elexa EGAT Bank Transfer Revenue</option>
+                            <option value="9">Other Bank Transfer Revenue</option>
                         </select>
                         <div class="dg-gc2-g2">
                             <div class="wf-py2 ">
@@ -1296,7 +1297,7 @@
                                 <br>
                                 <div class="flex-container">    
                                     <div class="flex-item">
-                                        <input class="form-control" type="date" name="date" id="sms-date" required>
+                                        <input class="form-control" type="date" name="date" id="sms-date" onkeydown="return false;" required>
                                     </div>
                                 </div>
                             </div>
@@ -1305,7 +1306,7 @@
                                 <br>
                                 <div class="flex-container">    
                                     <div class="flex-item">
-                                        <input class="form-control" type="time" name="time" id="sms-time">
+                                        <input class="form-control" type="time" name="time" id="sms-time" onkeydown="return false;" required>
                                     </div>
                                 </div>
                             </div>
@@ -1334,13 +1335,21 @@
                                     <option value="708-226791-3">ธนาคารไทยพาณิชย์ (SCB) 708-226791-3</option>
                                     <option value="708-226792-1">ธนาคารไทยพาณิชย์ (SCB) 708-226792-1</option>
                                     <option value="708-227357-4">ธนาคารไทยพาณิชย์ (SCB) 708-227357-4</option>
-                                    <option value="076355900016902">ชำระผ่าน QR 076355900016902</option>
                                 </select>
                             </div>
                             <div class="wf-py2 ">
                                 <label for="">จำนวนเงิน (บาท) <sup class="text-danger">*</sup></label>
                                 <br>
                                 <input class="form-control" type="text" id="amount" name="amount" placeholder="0.00" required>
+                            </div>
+                            <div class="wf-py2 ">
+                                <label for="">วันที่โอนย้าย</label>
+                                <br>
+                                <div class="flex-container">    
+                                    <div class="flex-item">
+                                        <input class="form-control" type="date" name="date_transfer" id="sms-date-transfer" onkeydown="return false;" required>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1402,7 +1411,7 @@
                                 </div>
                             </div>
 
-                            <select class="selected-value-box" name="status">
+                            <select class="selected-value-box" name="status" id="search-status">
                                 <option value="" {{ isset($status) && $status == '' ? 'selected' : '' }}>ประเภทรายได้ทั้งหมด</option>
                                 <option value="6" {{ isset($status) && $status == 6 ? 'selected' : '' }}>Front Desk Bank Transfer Revenue</option>
                                 <option value="1" {{ isset($status) && $status == 1 ? 'selected' : '' }}>Guest Deposit Bank Transfer Revenue</option>
@@ -1652,7 +1661,7 @@
                 $('.graph-date').prop('hidden', true);
                 $('#graphChartByMonthOrYear').prop('hidden', false);
 
-            } if (filter_by == "year") {
+            } if (filter_by == "year") { 
                 chartFilterByYear(year);
                 $('.graph-date').prop('hidden', true);
                 $('#graphChartByMonthOrYear').prop('hidden', false);
@@ -2105,6 +2114,21 @@
             } else {
                 $('.agoda').prop('hidden', true);
             }
+
+            if (type == 4) {
+                $('#transfer_from').val(15).trigger('change');
+                $('#add_into_account').val("708-226792-1").trigger('change');
+            } else {
+                $('#transfer_from').val(0).trigger('change');
+                $('#add_into_account').val(0).trigger('change');
+            }
+
+            if (type == 7) {
+                $('#transfer_from').val(15).trigger('change');
+            } else {
+                $('#transfer_from').val(0).trigger('change');
+                $('#add_into_account').val(0).trigger('change');
+            }
         }
 
         function select_account() {
@@ -2160,6 +2184,8 @@
                 success: function(response) {
                     if (response.data) {
                         var myArray = response.data.date.split(" ");
+                        var myArray2 = response.data.date_into.split(" ");
+
                         $('#status').val(response.data.status).trigger('change');
                         $('#sms-date').val(myArray[0]);
                         $('#sms-time').val(myArray[1]);
@@ -2167,6 +2193,7 @@
                         $('#transfer_from').val(response.data.transfer_from).trigger('change');
                         $('#add_into_account').val(response.data.into_account).trigger('change');
                         $('#amount').val(response.data.amount);
+                        $('#sms-date-transfer').val(myArray2[0]);
                     }
                 },
             });
