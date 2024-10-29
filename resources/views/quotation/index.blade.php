@@ -208,7 +208,7 @@
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Period</th>
-                                                <th class="text-center">Additional Discount (%)</th>
+                                                <th class="text-center">Add.Dis (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
                                                 <th class="text-center">Operated By</th>
@@ -416,7 +416,7 @@
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Period</th>
-                                                <th class="text-center">Additional Discount (%)</th>
+                                                <th class="text-center">Add.Dis (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
                                                 <th class="text-center">Operated By</th>
@@ -583,7 +583,7 @@
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Period</th>
-                                                <th class="text-center">Additional Discount (%)</th>
+                                                <th class="text-center">Add.Dis (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
                                                 <th class="text-center">Operated By</th>
@@ -728,7 +728,7 @@
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Period</th>
-                                                <th class="text-center">Additional Discount (%)</th>
+                                                <th class="text-center">Add.Dis (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
                                                 <th class="text-center">Operated By</th>
@@ -892,7 +892,7 @@
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Period</th>
-                                                <th class="text-center">Additional Discount (%)</th>
+                                                <th class="text-center">Add.Dis (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
                                                 <th class="text-center">Operated By</th>
@@ -1047,7 +1047,7 @@
                                                 <th class="text-center">Check Out</th>
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Period</th>
-                                                <th class="text-center">Additional Discount (%)</th>
+                                                <th class="text-center">Add.Dis (%)</th>
                                                 <th class="text-center">Discount (Bath)</th>
                                                 <th class="text-center">Approve  By</th>
                                                 <th class="text-center">Operated By</th>

@@ -203,7 +203,7 @@
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Additional Discount</th>
+                                                <th class="text-center">Add.Dis</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
@@ -413,7 +413,7 @@
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Additional Discount</th>
+                                                <th class="text-center">Add.Dis</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
@@ -600,7 +600,7 @@
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Additional Discount</th>
+                                                <th class="text-center">Add.Dis</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
@@ -736,7 +736,7 @@
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Additional Discount</th>
+                                                <th class="text-center">Add.Dis</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
@@ -941,7 +941,7 @@
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Additional Discount</th>
+                                                <th class="text-center">Add.Dis</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
@@ -1079,7 +1079,7 @@
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Additional Discount</th>
+                                                <th class="text-center">Add.Dis</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
@@ -1253,7 +1253,7 @@
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
                                                 <th>Expiration Date</th>
-                                                <th class="text-center">Additional Discount</th>
+                                                <th class="text-center">Add.Dis</th>
                                                 <th class="text-center">Operated By</th>
                                                 <th class="text-center">Approve By</th>
                                                 <th class="text-center">Document status</th>
