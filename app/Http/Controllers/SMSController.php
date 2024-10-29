@@ -782,23 +782,23 @@ class SMSController extends Controller
         } elseif ($request->table_name == "smsDetailTable") {
             $query_sms = SMS_alerts::query();
 
-            // if ($request->status == "transfer_revenue") {
-            //     $query_sms->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1);
-            // } else {
-                $query_sms->whereBetween('date', [$from, $to])->whereNull('date_into')->where('transfer_status', 1)->where('status', 4);
-                $query_sms->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)->where('status', 4);
-            // }
+            if ($request->status == "transfer_revenue") {
+                $query_sms->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1);
+            } else {
+                $query_sms->whereBetween('date', [$from, $to])->whereNull('date_into')->where('status', $request->status);
+                $query_sms->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status);
+            }
             
             // if ($request->status != "total_transaction" && $request->status != "transfer_transaction" && $request->status != "split_revenue" && $request->status != "transfer_revenue") {
             //     $query_sms->whereNull('date_into')->where('status', $request->status);
             // }
-            // if ($request->status == "transfer_transaction") {
-            //     $query_sms->where('transfer_status', 1);
-            // }
-            // if ($request->status == "split_revenue") {
-            //     $query_sms->where('split_status', 1);
-            //     $query_sms->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('split_status', 1);
-            // }
+            if ($request->status == "transfer_transaction") {
+                $query_sms->where('transfer_status', 1);
+            }
+            if ($request->status == "split_revenue") {
+                $query_sms->where('split_status', 1);
+                $query_sms->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('split_status', 1);
+            }
 
             if ($request->into_account != '') { 
                 $query_sms->where('into_account', $request->into_account);
@@ -2464,9 +2464,6 @@ class SMSController extends Controller
                 ->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', "708-226792-1")->where('status', 4)->sum('amount');
             $title = "Credit Card Hotel Revenue";
             $status = 4;
-
-            dd($total_sms);
-
 
         } elseif ($request->revenue_type == "credit_water") {
             $data_sms = SMS_alerts::whereBetween('date', [$from, $to])->where('status', 7)->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', 7)->paginate(10);
