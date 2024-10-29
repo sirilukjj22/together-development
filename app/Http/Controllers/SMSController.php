@@ -814,9 +814,9 @@ class SMSController extends Controller
             $query_transfer = SMS_alerts::query();
 
                 if ($request->into_account != '') { 
-                    if ($request->status != 0 && is_int($request->status)) { 
+                    if ($request->status != 0 && $request->status != '') { 
                         $query_transfer->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account)->where('status', $request->status);
-                        $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account)->where('status', $request->status);
+                        // $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account)->where('status', $request->status);
                         $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status);
                     } else {
                         $query_transfer->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account);
@@ -824,18 +824,18 @@ class SMSController extends Controller
                         $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account);
                     }
                 } else {
-                    if ($request->status != 0 && is_int($request->status)) { 
+                    if ($request->status != 0 && $request->status != '') { 
                         $query_transfer->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)->where('status', $request->status);
-                        $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1)->where('status', $request->status);
+                        // $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1)->where('status', $request->status);
                         $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status);
                     } else {
                         $query_transfer->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1);
-                        $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1);
+                        // $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1);
                         $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2);
                     }
                 }
 
-            $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('status', 4)->where('split_status', 0);
+            // $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('status', 4)->where('split_status', 0);
             $query_transfer->orderBy('date', 'asc');
 
             if ($perPage == 10) {
@@ -1473,12 +1473,13 @@ class SMSController extends Controller
 
                 SMS_alerts::where('id', $request->id)->update([
                     'date' => $request->date . " " . $request->time  ?? null,
+                    'date_into' => $request->date_transfer ?? null,
                     'transfer_from' => $request->transfer_from ?? 0,
                     'into_account' => $request->into_account == "076355900016902" ? "708-226791-3" : $request->into_account,
                     'amount' => $request->amount ?? null,
                     'into_qr' => $request->into_account == "076355900016902" ? "708-226791-3" : null,
                     'status' => $request->status == 0 ? 0 : $request->status,
-                    'transfer_status' => 0,
+                    'transfer_status' => !empty($request->date_transfer) ? 1 : 0,
                     'split_status' => 0,
                     'remark' => Auth::user()->name,
                     'updated_by' => Auth::user()->id
@@ -1491,13 +1492,14 @@ class SMSController extends Controller
     
                 SMS_alerts::create([
                     'date' => $request->date . " " . $request->time  ?? null,
+                    'date_into' => $request->date_transfer ?? null,
                     'transfer_from' => $request->transfer_from ?? 0,
                     'into_account' => $request->into_account == "076355900016902" ? "708-226791-3" : $request->into_account,
                     'amount' => $request->amount ?? null,
                     'into_qr' => $request->into_account == "076355900016902" ? "708-226791-3" : null,
                     'booking_id' => $request->status == 5 ? $request->booking_id : NULL,
                     'status' => $request->status == 0 ? 0 : $request->status,
-                    'transfer_status' => 0,
+                    'transfer_status' => !empty($request->date_transfer) ? 1 : 0,
                     'split_status' => 0,
                     'remark' => Auth::user()->name,
                     'created_by' => Auth::user()->id
@@ -1888,32 +1890,34 @@ class SMSController extends Controller
         $query_sms_amount->select(DB::raw("SUM(amount) as amount, COUNT(id) as total_sms"));
         $total_sms_amount = $query_sms_amount->first();
 
+        // dd([$adate, $adate2]);
+
         // ตาราง 2
         $query_transfer = SMS_alerts::query();
 
             if ($request->into_account != '') { 
                 if ($request->status != '') { 
                     $query_transfer->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account)->where('status', $request->status);
-                    $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account)->where('status', $request->status);
+                    // $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account)->where('status', $request->status);
                     $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account)->where('status', $request->status);
                 } else {
                     $query_transfer->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account);
-                    $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account);
+                    // $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1)->where('into_account', $request->into_account);
                     $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('into_account', $request->into_account);
                 }
             } else {
                 if ($request->status != '') { 
                     $query_transfer->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)->where('status', $request->status);
-                    $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1)->where('status', $request->status);
+                    // $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1)->where('status', $request->status);
                     $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('status', $request->status);
                 } else {
                     $query_transfer->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1);
-                    $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1);
+                    // $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('transfer_status', 1);
                     $query_transfer->orWhere('status', 4)->where('split_status', 0)->whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2);
                 }
             }
 
-        $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('status', 4)->where('split_status', 0);
+        // $query_transfer->orWhereDate('date', '>=', $adate)->whereDate('date', '<=', $adate2)->where('status', 4)->where('split_status', 0);
         $query_transfer->orderBy('date', 'asc');
 
         $query_transfer_amount = $query_transfer;
@@ -2319,7 +2323,7 @@ class SMSController extends Controller
             'filter_by',
             'search_date',
             'bank_note',
-            'data_bank'
+            'data_bank', 'status'
         ));
     }
 
