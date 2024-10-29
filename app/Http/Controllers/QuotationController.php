@@ -1845,8 +1845,8 @@ class QuotationController extends Controller
         }else{
             $Quotation_ID =$ProposalID;
         }
-        try {
-            if ($preview == 1) {
+        if ($preview == 1) {
+            try {
                 $datarequest = [
                     'Proposal_ID' => $data['Quotation_ID'] ?? null,
                     'IssueDate' => $data['IssueDate'] ?? null,
@@ -2169,313 +2169,171 @@ class QuotationController extends Controller
                 $view= $template->name;
                 $pdf = FacadePdf::loadView('quotationpdf.preview',$data);
                 return $pdf->stream();
-            }else{
-                $datarequest = [
-                    'Proposal_ID' => $data['Quotation_ID'] ?? null,
-                    'IssueDate' => $data['IssueDate'] ?? null,
-                    'Expiration' => $data['Expiration'] ?? null,
-                    'Selectdata' => $data['selectdata'] ?? null,
-                    'Data_ID' => $data['Guest'] ?? $data['Company'] ?? null,
-                    'Adult' => $data['Adult'] ?? null,
-                    'Children' => $data['Children'] ?? null,
-                    'Mevent' => $data['Mevent'] ?? null,
-                    'Mvat' => $data['Mvat'] ?? null,
-                    'DiscountAmount' => $data['DiscountAmount'] ?? null,
-                    'ProductIDmain' => $data['ProductIDmain'] ?? null,
-                    'pax' => $data['pax'] ?? null,
-                    'Quantitymain' => $data['Quantitymain'] ?? null,
-                    'priceproductmain' => $data['priceproductmain'] ?? null,
-                    'discountmain' => $data['discountmain'] ?? null,
-                    'Unitmain' => $data['Unitmain'] ?? null,
-                    'comment' => $data['comment'] ?? null,
-                    'PaxToTalall' => $data['PaxToTalall'] ?? null,
-                    'FreelancerMember' => $data['Freelancer_member'] ?? null,
-                    'Checkin' => $data['Checkin'] ?? null,
-                    'Checkout' => $data['Checkout'] ?? null,
-                    'Day' => $data['Day'] ?? null,
-                    'Night' => $data['Night'] ?? null,
-                ];
-                {   // log
-                    $quantities = $datarequest['Quantitymain'] ?? [];
-                    $discounts = $datarequest['discountmain'] ?? [];
-                    $priceUnits = $datarequest['priceproductmain'] ?? [];
-                    $Unitmain = $datarequest['Unitmain'] ?? [];
-                    $discounts = array_map(function($value) {
-                        return ($value !== null) ? $value : "0";
-                    }, $discounts);
+            } catch (\Throwable $e) {
+                return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+            }
 
-                    if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
-                        $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
-                        $discountedPrices = [];
-                        $discountedPricestotal = [];
+        }else{
+            $datarequest = [
+                'Proposal_ID' => $data['Quotation_ID'] ?? null,
+                'IssueDate' => $data['IssueDate'] ?? null,
+                'Expiration' => $data['Expiration'] ?? null,
+                'Selectdata' => $data['selectdata'] ?? null,
+                'Data_ID' => $data['Guest'] ?? $data['Company'] ?? null,
+                'Adult' => $data['Adult'] ?? null,
+                'Children' => $data['Children'] ?? null,
+                'Mevent' => $data['Mevent'] ?? null,
+                'Mvat' => $data['Mvat'] ?? null,
+                'DiscountAmount' => $data['DiscountAmount'] ?? null,
+                'ProductIDmain' => $data['ProductIDmain'] ?? null,
+                'pax' => $data['pax'] ?? null,
+                'Quantitymain' => $data['Quantitymain'] ?? null,
+                'priceproductmain' => $data['priceproductmain'] ?? null,
+                'discountmain' => $data['discountmain'] ?? null,
+                'Unitmain' => $data['Unitmain'] ?? null,
+                'comment' => $data['comment'] ?? null,
+                'PaxToTalall' => $data['PaxToTalall'] ?? null,
+                'FreelancerMember' => $data['Freelancer_member'] ?? null,
+                'Checkin' => $data['Checkin'] ?? null,
+                'Checkout' => $data['Checkout'] ?? null,
+                'Day' => $data['Day'] ?? null,
+                'Night' => $data['Night'] ?? null,
+            ];
+            try {
+                // log
+                $quantities = $datarequest['Quantitymain'] ?? [];
+                $discounts = $datarequest['discountmain'] ?? [];
+                $priceUnits = $datarequest['priceproductmain'] ?? [];
+                $Unitmain = $datarequest['Unitmain'] ?? [];
+                $discounts = array_map(function($value) {
+                    return ($value !== null) ? $value : "0";
+                }, $discounts);
 
-                        // คำนวณราคาสำหรับแต่ละรายการ
-                        for ($i = 0; $i < count($quantities); $i++) {
-                            $quantity = intval($quantities[$i]);
-                            $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
-                            $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
-                            $discount = floatval($discounts[$i]);
+                if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
+                    $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
+                    $discountedPrices = [];
+                    $discountedPricestotal = [];
 
-                            $totaldiscount0 = (($priceUnit * $discount)/100);
-                            $totaldiscount[] = $totaldiscount0;
+                    // คำนวณราคาสำหรับแต่ละรายการ
+                    for ($i = 0; $i < count($quantities); $i++) {
+                        $quantity = intval($quantities[$i]);
+                        $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
+                        $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
+                        $discount = floatval($discounts[$i]);
 
-                            $totalPrice = ($quantity * $unitValue) * $priceUnit;
-                            $totalPrices[] = $totalPrice;
+                        $totaldiscount0 = (($priceUnit * $discount)/100);
+                        $totaldiscount[] = $totaldiscount0;
 
-                            $discountedPrice = (($priceUnit * $discount) / 100);
-                            $discountedPrices[] =  $priceUnit - $discountedPrice;
+                        $totalPrice = ($quantity * $unitValue) * $priceUnit;
+                        $totalPrices[] = $totalPrice;
 
-                            $total = ($quantity * $unitValue);
+                        $discountedPrice = (($priceUnit * $discount) / 100);
+                        $discountedPrices[] =  $priceUnit - $discountedPrice;
 
-                            $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
-                            $discountedPricestotal[] = $discountedPriceTotal;
+                        $total = ($quantity * $unitValue);
 
-                        }
-                    }
+                        $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
+                        $discountedPricestotal[] = $discountedPriceTotal;
 
-                    foreach ($priceUnits as $key => $price) {
-                        $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
-                    }
-                    $Products = $datarequest['ProductIDmain'];
-                    $pax=$datarequest['pax'];
-                    $productsArray = [];
-
-                    foreach ($Products as $index => $ProductID) {
-                        $saveProduct = [
-                            'Quotation_ID' => $datarequest['Proposal_ID'],
-                            'Company_ID' => $datarequest['Data_ID'],
-                            'Product_ID' => $ProductID,
-                            'pax' => $pax[$index] ?? 0,
-                            'Issue_date' => $datarequest['IssueDate'],
-                            'discount' => $discounts[$index],
-                            'priceproduct' => $priceUnits[$index],
-                            'netpriceproduct' => $discountedPrices[$index],
-                            'totaldiscount' => $discountedPricestotal[$index],
-                            'ExpirationDate' => $datarequest['Expiration'],
-                            'freelanceraiffiliate' => $datarequest['FreelancerMember'],
-                            'Quantity' => $quantities[$index],
-                            'Unit' => $Unitmain[$index],
-                            'Document_issuer' => $userid,
-                        ];
-
-                        $productsArray[] = $saveProduct;
-                    }
-                    {
-                        $Quotation_ID = $datarequest['Proposal_ID'];
-                        $IssueDate = $datarequest['IssueDate'];
-                        $Expiration = $datarequest['Expiration'];
-                        $Selectdata = $datarequest['Selectdata'];
-                        $Data_ID = $datarequest['Data_ID'];
-                        $Adult = $datarequest['Adult'];
-                        $Children = $datarequest['Children'];
-                        $Mevent = $datarequest['Mevent'];
-                        $Mvat = $datarequest['Mvat'];
-                        $DiscountAmount = $datarequest['DiscountAmount'];
-                        $Checkin = $datarequest['Checkin'];
-                        $Checkout = $datarequest['Checkout'];
-                        $Day = $datarequest['Day'];
-                        $Night = $datarequest['Night'];
-                        $TotalPax = $datarequest['PaxToTalall'];
-
-                        $Head = 'รายการ';
-                        if ($productsArray) {
-                            $products['products'] =$productsArray;
-                            $productsArray = $products['products']; // ใช้ array ที่คุณมีอยู่แล้ว
-                            $productData = [];
-
-                            foreach ($productsArray as $product) {
-                                $productID = $product['Product_ID'];
-
-                                // ค้นหาข้อมูลในฐานข้อมูลจาก Product_ID
-                                $productDetails = master_product_item::LeftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
-                                    ->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')
-                                    ->where('master_product_items.Product_ID', $productID)
-                                    ->select('master_product_items.*', 'master_units.name_th as unit_name','master_quantities.name_th as quantity_name')
-                                    ->first();
-
-                                $ProductName = $productDetails->name_en;
-                                $unitName = $productDetails->unit_name;
-                                $quantity_name = $productDetails->quantity_name;
-
-                                if ($productDetails) {
-                                    $productData[] = [
-                                        'Product_ID' => $productID,
-                                        'Quantity' => $product['Quantity'],
-                                        'Unit' => $product['Unit'],
-                                        'netpriceproduct' => $product['totaldiscount'],
-                                        'Product_Name' => $ProductName,
-                                        'Product_Quantity' => $unitName,
-                                        'Product_Unit' => $quantity_name, // หรือระบุฟิลด์ที่ต้องการจาก $productDetails
-                                    ];
-                                }
-                            }
-                        }
-                        $formattedProductData = [];
-
-                        foreach ($productData as $product) {
-                            $formattedPrice = number_format($product['netpriceproduct']).' '.'บาท';
-                            $formattedProductData[] = 'Description : ' . $product['Product_Name'] . ' , ' . 'Quantity : ' . $product['Quantity'] . ' ' . $product['Product_Unit'] . ' , ' . 'Price Product : ' . $formattedPrice;
-                        }
-
-                        if ($Quotation_ID) {
-                            $QuotationID = 'Proposal ID : '.$Quotation_ID;
-                        }
-                        if ($IssueDate) {
-                            $Issue_Date = 'Issue Date : '.$IssueDate;
-                        }
-                        if ($Expiration) {
-                            $Expiration_Date = 'Expiration Date : '.$Expiration;
-                        }
-
-                        $fullName = null;
-                        $Contact_Name = null;
-                        if ($Selectdata == 'Guest') {
-                            $Data = Guest::where('Profile_ID',$Data_ID)->first();
-                            $prename = $Data->preface;
-                            $First_name = $Data->First_name;
-                            $Last_name = $Data->Last_name;
-                            $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
-                            $name = $prefix->name_th;
-                            $fullName = $name.$First_name.' '.$Last_name;
-                        }else{
-                            $Company = companys::where('Profile_ID',$Data_ID)->first();
-                            $Company_type = $Company->Company_type;
-                            $Compannyname = $Company->Company_Name;
-                            $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
-                            if ($comtype) {
-                                if ($comtype->name_th == "บริษัทจำกัด") {
-                                    $fullName = "บริษัท " . $Compannyname . " จำกัด";
-                                } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
-                                    $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
-                                } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
-                                    $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
-                                }
-                            }
-                            $representative = representative::where('Company_ID',$Data_ID)->first();
-                            $prename = $representative->prefix;
-                            $prefix = master_document::where('id', $prename)->where('Category', 'Mprename')->first();
-                            $name = $prefix->name_th;
-                            $Contact_Name = 'ตัวแทน : '.$name.$representative->First_name.' '.$representative->Last_name;
-                        }
-                        $nameevent = null;
-                        if ($Mevent) {
-                            $Mevent = master_document::where('id',$Mevent)->where('status', '1')->where('Category','Mevent')->first();
-                            $nameevent = 'ประเภท : '.$Mevent->name_th;
-                        }
-                        $namevat = null;
-                        if ($Mvat) {
-                            $Mvat = master_document::where('id',$Mvat)->where('status', '1')->where('Category','Mvat')->first();
-                            $namevat = 'ประเภท VAT : '.$Mvat->name_th;
-                        }
-                        $Time =null;
-                        if ($Checkin) {
-                            $checkin = $Checkin;
-                            $checkout = $Checkout;
-                            $Time = 'วันเข้าที่พัก : '.$checkin.' '.'วันออกที่พัก : '.$checkout.' '.'จำนวน : '.$Day.' วัน '.' '.$Night.' คืน ';
-                        }
-                        $Pax = null;
-                        if ($TotalPax) {
-                            $Pax = 'รวมความจุของห้องพัก : '.$TotalPax;
-                        }
-                        $datacompany = '';
-
-                        $variables = [$QuotationID, $Issue_Date, $Expiration_Date, $fullName, $Contact_Name,$Time,$nameevent,$namevat,$Pax,$Head];
-
-                        // แปลง array ของ $formattedProductData เป็น string เดียวที่มีรายการทั้งหมด
-                        $formattedProductDataString = implode(' + ', $formattedProductData);
-
-                        // รวม $formattedProductDataString เข้าไปใน $variables
-                        $variables[] = $formattedProductDataString;
-
-                        foreach ($variables as $variable) {
-                            if (!empty($variable)) {
-                                if (!empty($datacompany)) {
-                                    $datacompany .= ' + ';
-                                }
-                                $datacompany .= $variable;
-                            }
-                        }
-
-                        $userid = Auth::user()->id;
-                        $save = new log_company();
-                        $save->Created_by = $userid;
-                        $save->Company_ID = $Quotation_ID;
-                        $save->type = 'Create';
-                        $save->Category = 'Create :: Proposal';
-                        $save->content =$datacompany;
-                        $save->save();
                     }
                 }
-                {   //save
-                    $save = new Quotation();
-                    $save->Quotation_ID = $Quotation_ID;
-                    $save->DummyNo = $Quotation_ID;
-                    $save->Company_ID = $datarequest['Data_ID'];
-                    $save->company_contact = $datarequest['Data_ID'];
-                    $save->checkin = $request->Checkin;
-                    $save->checkout = $request->Checkout;
-                    $save->TotalPax = $request->PaxToTalall;
-                    $save->day = $request->Day;
-                    $save->night = $request->Night;
-                    $save->adult = $request->Adult;
-                    $save->children = $request->Children;
-                    $save->ComRateCode = $request->Company_Rate_Code;
-                    $save->freelanceraiffiliate = $request->Freelancer_member;
-                    $save->commissionratecode = $request->Company_Commission_Rate_Code;
-                    $save->eventformat = $request->Mevent;
-                    $save->vat_type = $request->Mvat;
-                    $save->type_Proposal = $Selectdata;
-                    $save->issue_date = $request->IssueDate;
-                    $save->ComRateCode = $request->Company_Discount;
-                    $save->Expirationdate = $request->Expiration;
-                    $save->Operated_by = $userid;
-                    $save->Refler_ID=$Quotation_ID;
-                    $save->comment = $request->comment;
-                    $save->Date_type = $request->Date_type;
-                    if ($Add_discount == 0 && $SpecialDiscountBath == 0) {
-                        $save->SpecialDiscount = $SpecialDiscount;
-                        $save->SpecialDiscountBath = $SpecialDiscountBath;
-                        $save->additional_discount = $Add_discount;
-                        $save->status_document = 1;
-                        $save->Confirm_by = 'Auto';
-                        $save->save();
-                    }else {
-                        $save->SpecialDiscount = $SpecialDiscount;
-                        $save->SpecialDiscountBath = $SpecialDiscountBath;
-                        $save->additional_discount = $Add_discount;
-                        $save->status_document = 2;
-                        $save->Confirm_by = '-';
-                        $save->save();
-                    }
-                    if ($Products !== null) {
-                        foreach ($Products as $index => $ProductID) {
-                            $saveProduct = new document_quotation();
-                            $saveProduct->Quotation_ID = $Quotation_ID;
-                            $saveProduct->Company_ID = $datarequest['Data_ID'];
-                            $saveProduct->Product_ID = $ProductID;
-                            $paxValue = $pax[$index] ?? 0;
-                            $saveProduct->pax = $paxValue;
-                            $saveProduct->Issue_date = $request->IssueDate;
-                            $saveProduct->discount =$discounts[$index];
-                            $saveProduct->priceproduct =$priceUnits[$index];
-                            $saveProduct->netpriceproduct =$discountedPrices[$index];
-                            $saveProduct->totaldiscount =$discountedPricestotal[$index];
-                            $saveProduct->ExpirationDate = $request->Expiration;
-                            $saveProduct->freelanceraiffiliate = $request->Freelancer_member;
-                            $saveProduct->Quantity = $quantities[$index];
-                            $saveProduct->Unit = $Unitmain[$index];
-                            $saveProduct->Document_issuer = $userid;
-                            $saveProduct->save();
-                        }
-                    }else{
-                        $delete = Quotation::find($id);
-                        $delete->delete();
-                        return redirect()->route('Proposal.index')->with('success', 'ใบเสนอราคายังไม่ถูกสร้าง');
-                    }
+
+                foreach ($priceUnits as $key => $price) {
+                    $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
                 }
-                {   //PDF
+                $Products = $datarequest['ProductIDmain'];
+                $pax=$datarequest['pax'];
+                $productsArray = [];
+
+                foreach ($Products as $index => $ProductID) {
+                    $saveProduct = [
+                        'Quotation_ID' => $datarequest['Proposal_ID'],
+                        'Company_ID' => $datarequest['Data_ID'],
+                        'Product_ID' => $ProductID,
+                        'pax' => $pax[$index] ?? 0,
+                        'Issue_date' => $datarequest['IssueDate'],
+                        'discount' => $discounts[$index],
+                        'priceproduct' => $priceUnits[$index],
+                        'netpriceproduct' => $discountedPrices[$index],
+                        'totaldiscount' => $discountedPricestotal[$index],
+                        'ExpirationDate' => $datarequest['Expiration'],
+                        'freelanceraiffiliate' => $datarequest['FreelancerMember'],
+                        'Quantity' => $quantities[$index],
+                        'Unit' => $Unitmain[$index],
+                        'Document_issuer' => $userid,
+                    ];
+
+                    $productsArray[] = $saveProduct;
+                }
+                {
+                    $Quotation_ID = $datarequest['Proposal_ID'];
+                    $IssueDate = $datarequest['IssueDate'];
+                    $Expiration = $datarequest['Expiration'];
                     $Selectdata = $datarequest['Selectdata'];
                     $Data_ID = $datarequest['Data_ID'];
+                    $Adult = $datarequest['Adult'];
+                    $Children = $datarequest['Children'];
+                    $Mevent = $datarequest['Mevent'];
+                    $Mvat = $datarequest['Mvat'];
+                    $DiscountAmount = $datarequest['DiscountAmount'];
+                    $Checkin = $datarequest['Checkin'];
+                    $Checkout = $datarequest['Checkout'];
+                    $Day = $datarequest['Day'];
+                    $Night = $datarequest['Night'];
+                    $TotalPax = $datarequest['PaxToTalall'];
+
+                    $Head = 'รายการ';
+                    if ($productsArray) {
+                        $products['products'] =$productsArray;
+                        $productsArray = $products['products']; // ใช้ array ที่คุณมีอยู่แล้ว
+                        $productData = [];
+
+                        foreach ($productsArray as $product) {
+                            $productID = $product['Product_ID'];
+
+                            // ค้นหาข้อมูลในฐานข้อมูลจาก Product_ID
+                            $productDetails = master_product_item::LeftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
+                                ->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')
+                                ->where('master_product_items.Product_ID', $productID)
+                                ->select('master_product_items.*', 'master_units.name_th as unit_name','master_quantities.name_th as quantity_name')
+                                ->first();
+
+                            $ProductName = $productDetails->name_en;
+                            $unitName = $productDetails->unit_name;
+                            $quantity_name = $productDetails->quantity_name;
+
+                            if ($productDetails) {
+                                $productData[] = [
+                                    'Product_ID' => $productID,
+                                    'Quantity' => $product['Quantity'],
+                                    'Unit' => $product['Unit'],
+                                    'netpriceproduct' => $product['totaldiscount'],
+                                    'Product_Name' => $ProductName,
+                                    'Product_Quantity' => $unitName,
+                                    'Product_Unit' => $quantity_name, // หรือระบุฟิลด์ที่ต้องการจาก $productDetails
+                                ];
+                            }
+                        }
+                    }
+                    $formattedProductData = [];
+
+                    foreach ($productData as $product) {
+                        $formattedPrice = number_format($product['netpriceproduct']).' '.'บาท';
+                        $formattedProductData[] = 'Description : ' . $product['Product_Name'] . ' , ' . 'Quantity : ' . $product['Quantity'] . ' ' . $product['Product_Unit'] . ' , ' . 'Price Product : ' . $formattedPrice;
+                    }
+
+                    if ($Quotation_ID) {
+                        $QuotationID = 'Proposal ID : '.$Quotation_ID;
+                    }
+                    if ($IssueDate) {
+                        $Issue_Date = 'Issue Date : '.$IssueDate;
+                    }
+                    if ($Expiration) {
+                        $Expiration_Date = 'Expiration Date : '.$Expiration;
+                    }
+
+                    $fullName = null;
+                    $Contact_Name = null;
                     if ($Selectdata == 'Guest') {
                         $Data = Guest::where('Profile_ID',$Data_ID)->first();
                         $prename = $Data->preface;
@@ -2498,398 +2356,64 @@ class QuotationController extends Controller
                                 $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
                             }
                         }
+                        $representative = representative::where('Company_ID',$Data_ID)->first();
+                        $prename = $representative->prefix;
+                        $prefix = master_document::where('id', $prename)->where('Category', 'Mprename')->first();
+                        $name = $prefix->name_th;
+                        $Contact_Name = 'ตัวแทน : '.$name.$representative->First_name.' '.$representative->Last_name;
                     }
-                    $currentDateTime = Carbon::now();
-                    $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
-                    $currentTime = $currentDateTime->toTimeString(); // Format: HH:MM:SS
+                    $nameevent = null;
+                    if ($Mevent) {
+                        $Mevent = master_document::where('id',$Mevent)->where('status', '1')->where('Category','Mevent')->first();
+                        $nameevent = 'ประเภท : '.$Mevent->name_th;
+                    }
+                    $namevat = null;
+                    if ($Mvat) {
+                        $Mvat = master_document::where('id',$Mvat)->where('status', '1')->where('Category','Mvat')->first();
+                        $namevat = 'ประเภท VAT : '.$Mvat->name_th;
+                    }
+                    $Time =null;
+                    if ($Checkin) {
+                        $checkin = $Checkin;
+                        $checkout = $Checkout;
+                        $Time = 'วันเข้าที่พัก : '.$checkin.' '.'วันออกที่พัก : '.$checkout.' '.'จำนวน : '.$Day.' วัน '.' '.$Night.' คืน ';
+                    }
+                    $Pax = null;
+                    if ($TotalPax) {
+                        $Pax = 'รวมความจุของห้องพัก : '.$TotalPax;
+                    }
+                    $datacompany = '';
 
-                    // Optionally, you can format the date and time as per your requirement
-                    $formattedDate = $currentDateTime->format('Y-m-d'); // Custom format for date
-                    $formattedTime = $currentDateTime->format('H:i:s');
-                    $savePDF = new log();
-                    $savePDF->Quotation_ID = $Quotation_ID;
-                    $savePDF->QuotationType = 'Proposal';
-                    $savePDF->Company_Name = $fullName;
-                    $savePDF->Approve_date = $formattedDate;
-                    $savePDF->Approve_time = $formattedTime;
-                    $savePDF->save();
-                    {
-                        //-----------------------PDF---------------------------
-                        $datarequest = [
-                            'Proposal_ID' => $data['Quotation_ID'] ?? null,
-                            'IssueDate' => $data['IssueDate'] ?? null,
-                            'Expiration' => $data['Expiration'] ?? null,
-                            'Selectdata' => $data['selectdata'] ?? null,
-                            'Data_ID' => $data['Guest'] ?? $data['Company'] ?? null,
-                            'Adult' => $data['Adult'] ?? null,
-                            'Children' => $data['Children'] ?? null,
-                            'Mevent' => $data['Mevent'] ?? null,
-                            'Mvat' => $data['Mvat'] ?? null,
-                            'DiscountAmount' => $data['DiscountAmount'] ?? null,
-                            'ProductIDmain' => $data['ProductIDmain'] ?? null,
-                            'pax' => $data['pax'] ?? null,
-                            'Quantitymain' => $data['Quantitymain'] ?? null,
-                            'priceproductmain' => $data['priceproductmain'] ?? null,
-                            'discountmain' => $data['discountmain'] ?? null,
-                            'comment' => $data['comment'] ?? null,
-                            'PaxToTalall' => $data['PaxToTalall'] ?? null,
-                            'Checkin' => $data['Checkin'] ?? null,
-                            'Checkout' => $data['Checkout'] ?? null,
-                            'Day' => $data['Day'] ?? null,
-                            'Night' => $data['Night'] ?? null,
-                            'Unitmain' => $data['Unitmain'] ?? null,
-                        ];
-                        $Products = Arr::wrap($datarequest['ProductIDmain']);
-                        $quantities = $datarequest['Quantitymain'] ?? [];
-                        $discounts = $datarequest['discountmain'] ?? [];
-                        $priceUnits = $datarequest['priceproductmain'] ?? [];
-                        $Unitmain = $datarequest['Unitmain'] ?? [];
-                        $productItems = [];
-                        $totaldiscount = [];
+                    $variables = [$QuotationID, $Issue_Date, $Expiration_Date, $fullName, $Contact_Name,$Time,$nameevent,$namevat,$Pax,$Head];
 
-                        foreach ($Products as $index => $productID) {
+                    // แปลง array ของ $formattedProductData เป็น string เดียวที่มีรายการทั้งหมด
+                    $formattedProductDataString = implode(' + ', $formattedProductData);
 
-                            if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
+                    // รวม $formattedProductDataString เข้าไปใน $variables
+                    $variables[] = $formattedProductDataString;
 
-                                $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
-                                $discountedPrices = [];
-                                $discountedPricestotal = [];
-                                $totaldiscount = [];
-                                // คำนวณราคาสำหรับแต่ละรายการ
-                                for ($i = 0; $i < count($quantities); $i++) {
-                                    $quantity = intval($quantities[$i]);
-                                    $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
-                                    $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
-                                    $discount = floatval($discounts[$i]);
-
-                                    $totaldiscount0 = (($priceUnit * $discount)/100);
-                                    $totaldiscount[] = $totaldiscount0;
-
-                                    $totalPrice = ($quantity * $unitValue) * $priceUnit;
-                                    $totalPrices[] = $totalPrice;
-
-                                    $discountedPrice = (($priceUnit * $discount) / 100);
-                                    $discountedPrices[] =  $priceUnit - $discountedPrice;
-
-                                    $total = ($quantity * $unitValue);
-
-                                    $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
-                                    $discountedPricestotal[] = $discountedPriceTotal;
-
-                                }
+                    foreach ($variables as $variable) {
+                        if (!empty($variable)) {
+                            if (!empty($datacompany)) {
+                                $datacompany .= ' + ';
                             }
-
-                            $items = master_product_item::where('Product_ID', $productID)->get();
-                            $QuotationVat= $datarequest['Mvat'];
-                            $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
-                            foreach ($items as $item) {
-                                // ตรวจสอบและกำหนดค่า quantity และ discount
-                                $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
-                                $unitValue = isset($Unitmain[$index]) ? $Unitmain[$index] : 0;
-                                $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
-                                $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
-                                $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
-                                $discountedPricestotal = isset($discountedPricestotal[$index]) ? $discountedPricestotal[$index] : 0;
-                                $totaldiscount = isset($totaldiscount[$index]) ? $totaldiscount[$index] : 0;
-                                $productItems[] = [
-                                    'product' => $item,
-                                    'quantity' => $quantity,
-                                    'unit' => $unitValue,
-                                    'discount' => $discount,
-                                    'totalPrices'=>$totalPrices,
-                                    'discountedPrices'=>$discountedPrices,
-                                    'discountedPricestotal'=>$discountedPricestotal,
-                                    'totaldiscount'=>$totaldiscount,
-                                ];
-                            }
-
-                        }
-
-                        {//คำนวน
-                            $totalAmount = 0;
-                            $totalPrice = 0;
-                            $subtotal = 0;
-                            $beforeTax = 0;
-                            $AddTax = 0;
-                            $Nettotal =0;
-                            $totalaverage=0;
-
-                            $SpecialDistext = $datarequest['DiscountAmount'];
-                            $SpecialDis = floatval($SpecialDistext);
-                            $totalguest = 0;
-                            $totalguest = $adult + $children;
-                            $guest = $request->PaxToTalall;
-                            if ($Mvat->id == 50) {
-                                foreach ($productItems as $item) {
-                                    $totalPrice += $item['totalPrices'];
-                                    $totalAmount += $item['discountedPricestotal'];
-                                    $subtotal = $totalAmount-$SpecialDis;
-                                    $beforeTax = $subtotal/1.07;
-                                    $AddTax = $subtotal-$beforeTax;
-                                    $Nettotal = $subtotal;
-                                    $totalaverage =$Nettotal/$guest;
-
-                                }
-                            }
-                            elseif ($Mvat->id == 51) {
-                                foreach ($productItems as $item) {
-                                    $totalPrice += $item['totalPrices'];
-                                    $totalAmount += $item['discountedPricestotal'];
-                                    $subtotal = $totalAmount-$SpecialDis;
-                                    $Nettotal = $subtotal;
-                                    $totalaverage =$Nettotal/$guest;
-
-                                }
-                            }
-                            elseif ($Mvat->id == 52) {
-                                foreach ($productItems as $item) {
-                                    $totalPrice += $item['totalPrices'];
-                                    $totalAmount += $item['discountedPricestotal'];
-                                    $subtotal = $totalAmount-$SpecialDis;
-                                    $AddTax = $subtotal*7/100;
-                                    $Nettotal = $subtotal+$AddTax;
-                                    $totalaverage =$Nettotal/$guest;
-                                }
-                            }else
-                            {
-                                foreach ($productItems as $item) {
-                                    $totalPrice += $item['totalPrices'];
-                                    $totalAmount += $item['discountedPricestotal'];
-                                    $subtotal = $totalAmount-$SpecialDis;
-                                    $beforeTax = $subtotal/1.07;
-                                    $AddTax = $subtotal-$beforeTax;
-                                    $Nettotal = $subtotal;
-                                    $totalaverage =$Nettotal/$guest;
-                                }
-                            }
-
-                            $pagecount = count($productItems);
-                            $page = $pagecount/10;
-
-                            $page_item = 1;
-                            if ($page > 1.1 && $page < 2.1) {
-                                $page_item += 1;
-
-                            } elseif ($page > 1.1) {
-                            $page_item = 1 + $page > 1.1 ? ceil($page) : 1;
-                            }
-                        }
-                        {//QRCODE
-                            $id = $datarequest['Proposal_ID'];
-                            $protocol = $request->secure() ? 'https' : 'http';
-                            $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
-                            $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
-                            $qrCodeBase64 = base64_encode($qrCodeImage);
-                        }
-                        $Proposal_ID = $datarequest['Proposal_ID'];
-                        $IssueDate = $datarequest['IssueDate'];
-                        $Expiration = $datarequest['Expiration'];
-                        $Selectdata = $datarequest['Selectdata'];
-                        $Data_ID = $datarequest['Data_ID'];
-                        $Adult = $datarequest['Adult'];
-                        $Children = $datarequest['Children'];
-                        $Mevent = $datarequest['Mevent'];
-                        $Mvat = $datarequest['Mvat'];
-                        $DiscountAmount = $datarequest['DiscountAmount'];
-                        $Checkin = $datarequest['Checkin'];
-                        $Checkout = $datarequest['Checkout'];
-                        $Day = $datarequest['Day'];
-                        $Night = $datarequest['Night'];
-                        $comment = $datarequest['comment'];
-                        $user = User::where('id',$userid)->select('id','name')->first();
-                        $fullName = null;
-                        $Contact_Name = null;
-                        $Contact_phone =null;
-                        $Contact_Email = null;
-                        if ($Selectdata == 'Guest') {
-                            $Data = Guest::where('Profile_ID',$Data_ID)->first();
-                            $prename = $Data->preface;
-                            $First_name = $Data->First_name;
-                            $Last_name = $Data->Last_name;
-                            $Address = $Data->Address;
-                            $Email = $Data->Email;
-                            $Taxpayer_Identification = $Data->Identification_Number;
-                            $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
-                            $name = $prefix->name_th;
-                            $fullName = $name.' '.$First_name.' '.$Last_name;
-                            //-------------ที่อยู่
-                            $CityID=$Data->City;
-                            $amphuresID = $Data->Amphures;
-                            $TambonID = $Data->Tambon;
-                            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
-                            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
-                            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-                            $Fax_number = '-';
-                            $phone = phone_guest::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
-                        }else{
-                            $Company = companys::where('Profile_ID',$Data_ID)->first();
-                            $Company_type = $Company->Company_type;
-                            $Compannyname = $Company->Company_Name;
-                            $Address = $Company->Address;
-                            $Email = $Company->Company_Email;
-                            $Taxpayer_Identification = $Company->Taxpayer_Identification;
-                            $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
-                            if ($comtype) {
-                                if ($comtype->name_th == "บริษัทจำกัด") {
-                                    $fullName = "บริษัท " . $Compannyname . " จำกัด";
-                                } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
-                                    $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
-                                } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
-                                    $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
-                                }
-                            }
-                            $representative = representative::where('Company_ID',$Data_ID)->first();
-                            $prename = $representative->prefix;
-                            $Contact_Email = $representative->Email;
-                            $prefix = master_document::where('id', $prename)->where('Category', 'Mprename')->first();
-                            $name = $prefix->name_th;
-                            $Contact_Name = $representative->First_name.' '.$representative->Last_name;
-                            $CityID=$Company->City;
-                            $amphuresID = $Company->Amphures;
-                            $TambonID = $Company->Tambon;
-                            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
-                            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
-                            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-                            $company_fax = company_fax::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
-                            if ($company_fax) {
-                                $Fax_number =  $company_fax->Fax_number;
-                            }else{
-                                $Fax_number = '-';
-                            }
-                            $phone = company_phone::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
-                            $Contact_phone = representative_phone::where('Company_ID',$Data_ID)->where('Sequence','main')->first();
-                        }
-                        $eventformat = master_document::where('id',$Mevent)->select('name_th','id')->first();
-                        $template = master_template::query()->latest()->first();
-                        $CodeTemplate = $template->CodeTemplate;
-                        $sheet = master_document_sheet::select('topic','name_th','id','CodeTemplate')->get();
-                        $Reservation_show = $sheet->where('topic', 'Reservation')->where('CodeTemplate',$CodeTemplate)->first();
-                        $Paymentterms = $sheet->where('topic', 'Paymentterms')->where('CodeTemplate',$CodeTemplate)->first();
-                        $note = $sheet->where('topic', 'note')->where('CodeTemplate',$CodeTemplate)->first();
-                        $Cancellations = $sheet->where('topic', 'Cancellations')->where('CodeTemplate',$CodeTemplate)->first();
-                        $Complimentary = $sheet->where('topic', 'Complimentary')->where('CodeTemplate',$CodeTemplate)->first();
-                        $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->where('CodeTemplate',$CodeTemplate)->first();
-                        $date = Carbon::now();
-                        $unit = master_unit::where('status',1)->get();
-                        $quantity = master_quantity::where('status',1)->get();
-                        $settingCompany = Master_company::orderBy('id', 'desc')->first();
-                        if ($Checkin) {
-                            $checkin = $Checkin;
-                            $checkout = $Checkout;
-                        }else{
-                            $checkin = '-';
-                            $checkout = '-';
-                        }
-                        $data = [
-                            'settingCompany'=>$settingCompany,
-                            'page_item'=>$page_item,
-                            'page'=>$pagecount,
-                            'Selectdata'=>$Selectdata,
-                            'date'=>$date,
-                            'fullName'=>$fullName,
-                            'provinceNames'=>$provinceNames,
-                            'Address'=>$Address,
-                            'amphuresID'=>$amphuresID,
-                            'TambonID'=>$TambonID,
-                            'Email'=>$Email,
-                            'phone'=>$phone,
-                            'Fax_number'=>$Fax_number,
-                            'Day'=>$Day,
-                            'Night'=>$Night,
-                            'Checkin'=>$checkin,
-                            'Checkout'=>$checkout,
-                            'eventformat'=>$eventformat,
-                            'totalguest'=>$totalguest,
-                            'Reservation_show'=>$Reservation_show,
-                            'Paymentterms'=>$Paymentterms,
-                            'note'=>$note,
-                            'Cancellations'=>$Cancellations,
-                            'Complimentary'=>$Complimentary,
-                            'All_rights_reserved'=>$All_rights_reserved,
-                            'Proposal_ID'=>$Proposal_ID,
-                            'IssueDate'=>$IssueDate,
-                            'Expiration'=>$Expiration,
-                            'qrCodeBase64'=>$qrCodeBase64,
-                            'user'=>$user,
-                            'Taxpayer_Identification'=>$Taxpayer_Identification,
-                            'Adult'=>$Adult,
-                            'Children'=>$Children,
-                            'totalAmount'=>$totalAmount,
-                            'SpecialDis'=>$SpecialDis,
-                            'subtotal'=>$subtotal,
-                            'beforeTax'=>$beforeTax,
-                            'Nettotal'=>$Nettotal,
-                            'totalguest'=>$totalguest,
-                            'guest'=>$guest,
-                            'totalaverage'=>$totalaverage,
-                            'AddTax'=>$AddTax,
-                            'productItems'=>$productItems,
-                            'unit'=>$unit,
-                            'quantity'=>$quantity,
-                            'Mvat'=>$Mvat,
-                            'comment'=>$comment,
-                            'Mevent'=>$Mevent,
-                            'Contact_Name'=>$Contact_Name,
-                            'Contact_phone'=>$Contact_phone,
-                            'Contact_Email'=>$Contact_Email,
-                            'SpecialDistext'=>$SpecialDistext,
-                        ];
-                        $view= $template->name;
-                        $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
-                        // บันทึกไฟล์ PDF
-                        $path = 'Log_PDF/proposal/';
-                        $pdf->save($path . $Quotation_ID . '.pdf');
-
-                        $Quotation = Quotation::where('Quotation_ID',$Quotation_ID)->first();
-                        $Quotation->AddTax = $AddTax;
-                        $Quotation->Nettotal = $Nettotal;
-                        $Quotation->total = $Nettotal;
-                        $Quotation->save();
-                        $Auto = $Quotation->Confirm_by;
-                        $id = $Quotation->id;
-                        if ($SpecialDistext == 0) {
-                            return redirect()->route('Proposal.viewproposal', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
-                        }else{
-                            return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+                            $datacompany .= $variable;
                         }
                     }
+
+                    $userid = Auth::user()->id;
+                    $save = new log_company();
+                    $save->Created_by = $userid;
+                    $save->Company_ID = $Quotation_ID;
+                    $save->type = 'Create';
+                    $save->Category = 'Create :: Proposal';
+                    $save->content =$datacompany;
+                    $save->save();
                 }
+            } catch (\Throwable $e) {
+                return redirect()->route('Proposal.index')->with('error', $e->getMessage());
             }
-        } catch (\Exception $e) {
-            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
-        }
-    }
-    //------------------------------แก้ไข--------------------
-    public function edit($id)
-    {
-        $settingCompany = Master_company::orderBy('id', 'desc')->first();
-        $Quotation = Quotation::where('id', $id)->first();
-        $Quotation_ID = $Quotation->Quotation_ID;
-        $Company = companys::select('Company_Name','id','Profile_ID')->get();
-        $Guest = Guest::select('First_name','Last_name','id','Profile_ID')->get();
-        $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
-        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
-        $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
-        $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
-        $unit = master_unit::where('status',1)->get();
-        $quantity = master_quantity::where('status',1)->get();
-        return view('quotation.edit',compact('settingCompany','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity'));
-    }
-    public function update(Request $request,$id)
-    {
-        $preview = $request->preview;
-        $Quotation_ID=$request->Quotation_ID;
-        $adult=$request->Adult;
-        $children=$request->Children;
-        $SpecialDiscount = $request->SpecialDiscount;
-        $SpecialDiscountBath = $request->DiscountAmount;
-        $Add_discount = $request->Add_discount;
-        $data = $request->all();
-
-
-        try {
-            if ($preview == 1) {
-                $userid = Auth::user()->id;
+            try {
                 $datarequest = [
                     'Proposal_ID' => $data['Quotation_ID'] ?? null,
                     'IssueDate' => $data['IssueDate'] ?? null,
@@ -2903,37 +2427,18 @@ class QuotationController extends Controller
                     'DiscountAmount' => $data['DiscountAmount'] ?? null,
                     'ProductIDmain' => $data['ProductIDmain'] ?? null,
                     'pax' => $data['pax'] ?? null,
-                    'CheckProduct' => $data['CheckProduct'] ?? null,
                     'Quantitymain' => $data['Quantitymain'] ?? null,
                     'priceproductmain' => $data['priceproductmain'] ?? null,
                     'discountmain' => $data['discountmain'] ?? null,
                     'comment' => $data['comment'] ?? null,
                     'PaxToTalall' => $data['PaxToTalall'] ?? null,
-                    'FreelancerMember' => $data['Freelancer_member'] ?? null,
                     'Checkin' => $data['Checkin'] ?? null,
                     'Checkout' => $data['Checkout'] ?? null,
                     'Day' => $data['Day'] ?? null,
                     'Night' => $data['Night'] ?? null,
                     'Unitmain' => $data['Unitmain'] ?? null,
                 ];
-                $Products = $datarequest['ProductIDmain'];
-                $Productslast = $datarequest['CheckProduct'];
-                $pax=$datarequest['pax'];
-                $productsCount = is_array($Products) ? count($Products) : 0;
-                $productslastCount = is_array($Productslast) ? count($Productslast) : 0;
-                if (is_array($Products) && is_array($Productslast)) {
-                    $commonValues = array_intersect($Products, $Productslast);
-                    if (!empty($commonValues)) {
-                        $diffFromProducts = array_diff($Products, $Productslast);
-                        $diffFromProductslast = array_diff($Productslast, $Products);
-                        $Products = array_merge($commonValues,$diffFromProducts,$diffFromProductslast);
-                    } else {
-                        $Products = array_merge($Productslast,$Products);
-                    }
-
-                }else{
-                    $Products = $Productslast;
-                }
+                $Products = Arr::wrap($datarequest['ProductIDmain']);
                 $quantities = $datarequest['Quantitymain'] ?? [];
                 $discounts = $datarequest['discountmain'] ?? [];
                 $priceUnits = $datarequest['priceproductmain'] ?? [];
@@ -2941,7 +2446,9 @@ class QuotationController extends Controller
                 $productItems = [];
                 $totaldiscount = [];
                 foreach ($Products as $index => $productID) {
+
                     if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
+
                         $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
                         $discountedPrices = [];
                         $discountedPricestotal = [];
@@ -2969,6 +2476,7 @@ class QuotationController extends Controller
 
                         }
                     }
+
                     $items = master_product_item::where('Product_ID', $productID)->get();
                     $QuotationVat= $datarequest['Mvat'];
                     $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
@@ -2992,6 +2500,7 @@ class QuotationController extends Controller
                             'totaldiscount'=>$totaldiscount,
                         ];
                     }
+
                 }
                 {//คำนวน
                     $totalAmount = 0;
@@ -3050,6 +2559,7 @@ class QuotationController extends Controller
                             $totalaverage =$Nettotal/$guest;
                         }
                     }
+
                     $pagecount = count($productItems);
                     $page = $pagecount/10;
 
@@ -3222,43 +2732,61 @@ class QuotationController extends Controller
                     'SpecialDistext'=>$SpecialDistext,
                 ];
                 $view= $template->name;
-                $pdf = FacadePdf::loadView('quotationpdf.preview',$data);
-                return $pdf->stream();
-            }else{
-                $userid = Auth::user()->id;
-                $Quotationcheck = Quotation::where('id',$id)->first();
-                $correct = $Quotationcheck->correct;
-                if ($correct >= 1) {
-                    $correctup = $correct + 1;
+                $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
+                // บันทึกไฟล์ PDF
+                $path = 'Log_PDF/proposal/';
+                $pdf->save($path . $Quotation_ID . '.pdf');
+            } catch (\Throwable $e) {
+                log_company::where('Company_ID',$Quotation_ID)->latest()->first()->delete();
+                return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+            }
+            try {
+                //PDF
+                $Selectdata = $datarequest['Selectdata'];
+                $Data_ID = $datarequest['Data_ID'];
+                if ($Selectdata == 'Guest') {
+                    $Data = Guest::where('Profile_ID',$Data_ID)->first();
+                    $prename = $Data->preface;
+                    $First_name = $Data->First_name;
+                    $Last_name = $Data->Last_name;
+                    $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
+                    $name = $prefix->name_th;
+                    $fullName = $name.$First_name.' '.$Last_name;
                 }else{
-                    $correctup = 1;
+                    $Company = companys::where('Profile_ID',$Data_ID)->first();
+                    $Company_type = $Company->Company_type;
+                    $Compannyname = $Company->Company_Name;
+                    $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+                    if ($comtype) {
+                        if ($comtype->name_th == "บริษัทจำกัด") {
+                            $fullName = "บริษัท " . $Compannyname . " จำกัด";
+                        } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                            $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
+                        } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                            $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                        }
+                    }
                 }
-                $datarequest = [
-                    'Proposal_ID' => $data['Quotation_ID'] ?? null,
-                    'IssueDate' => $data['IssueDate'] ?? null,
-                    'Expiration' => $data['Expiration'] ?? null,
-                    'Selectdata' => $data['selectdata'] ?? null,
-                    'Data_ID' => $data['Guest'] ?? $data['Company'] ?? null,
-                    'Adult' => $data['Adult'] ?? null,
-                    'Children' => $data['Children'] ?? null,
-                    'Mevent' => $data['Mevent'] ?? null,
-                    'Mvat' => $data['Mvat'] ?? null,
-                    'DiscountAmount' => $data['DiscountAmount'] ?? null,
-                    'ProductIDmain' => $data['ProductIDmain'] ?? null,
-                    'pax' => $data['pax'] ?? null,
-                    'CheckProduct' => $data['CheckProduct'] ?? null,
-                    'Quantitymain' => $data['Quantitymain'] ?? null,
-                    'priceproductmain' => $data['priceproductmain'] ?? null,
-                    'discountmain' => $data['discountmain'] ?? null,
-                    'comment' => $data['comment'] ?? null,
-                    'PaxToTalall' => $data['PaxToTalall'] ?? null,
-                    'FreelancerMember' => $data['Freelancer_member'] ?? null,
-                    'Checkin' => $data['Checkin'] ?? null,
-                    'Checkout' => $data['Checkout'] ?? null,
-                    'Day' => $data['Day'] ?? null,
-                    'Night' => $data['Night'] ?? null,
-                    'Unitmain' => $data['Unitmain'] ?? null,
-                ];
+                $currentDateTime = Carbon::now();
+                $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
+                $currentTime = $currentDateTime->toTimeString(); // Format: HH:MM:SS
+
+                // Optionally, you can format the date and time as per your requirement
+                $formattedDate = $currentDateTime->format('Y-m-d'); // Custom format for date
+                $formattedTime = $currentDateTime->format('H:i:s');
+                $savePDF = new log();
+                $savePDF->Quotation_ID = $Quotation_ID;
+                $savePDF->QuotationType = 'Proposal';
+                $savePDF->Company_Name = $fullName;
+                $savePDF->Approve_date = $formattedDate;
+                $savePDF->Approve_time = $formattedTime;
+                $savePDF->save();
+            } catch (\Throwable $e) {
+                log_company::where('Company_ID',$Quotation_ID)->latest()->first()->delete();
+                log::where('Quotation_ID',$Quotation_ID)->latest()->first()->delete();
+                return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+            }
+            {
                 {   //จัด product
                     $quantities = $datarequest['Quantitymain'] ?? [];
                     $discounts = $datarequest['discountmain'] ?? [];
@@ -3300,27 +2828,11 @@ class QuotationController extends Controller
                         $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
                     }
                     $Products = $datarequest['ProductIDmain'];
-                    $Productslast = $datarequest['CheckProduct'];
-                    $pax=$datarequest['pax'];
-                    $productsCount = is_array($Products) ? count($Products) : 0;
-                    $productslastCount = is_array($Productslast) ? count($Productslast) : 0;
-                    if (is_array($Products) && is_array($Productslast)) {
-                        $commonValues = array_intersect($Products, $Productslast);
-                        if (!empty($commonValues)) {
-                            $diffFromProducts = array_diff($Products, $Productslast);
-                            $diffFromProductslast = array_diff($Productslast, $Products);
-                            $Products = array_merge($commonValues,$diffFromProducts,$diffFromProductslast);
-                        } else {
-                            $Products = array_merge($Productslast,$Products);
-                        }
-                    }else{
-                        $Products = $Productslast;
-                    }
                     $productsArray = [];
                     foreach ($Products as $index => $ProductID) {
                         $saveProduct = [
-                            'Quotation_ID' => $Quotation_ID,
-                            'Company_ID' => $request->Company,
+                            'Quotation_ID' => $datarequest['Proposal_ID'],
+                            'Company_ID' => $datarequest['Data_ID'],
                             'Product_ID' => $ProductID,
                             'pax' => $pax[$index] ?? 0,
                             'Issue_date' => $request->IssueDate,
@@ -3337,6 +2849,321 @@ class QuotationController extends Controller
                         $productsArray[] = $saveProduct;
                     }
                 }
+            }
+            try {
+                $save = new Quotation();
+                $save->Quotation_ID = $Quotation_ID;
+                $save->DummyNo = $Quotation_ID;
+                $save->Company_ID = $datarequest['Data_ID'];
+                $save->company_contact = $datarequest['Data_ID'];
+                $save->checkin = $request->Checkin;
+                $save->checkout = $request->Checkout;
+                $save->TotalPax = $request->PaxToTalall;
+                $save->day = $request->Day;
+                $save->night = $request->Night;
+                $save->adult = $request->Adult;
+                $save->children = $request->Children;
+                $save->ComRateCode = $request->Company_Rate_Code;
+                $save->freelanceraiffiliate = $request->Freelancer_member;
+                $save->commissionratecode = $request->Company_Commission_Rate_Code;
+                $save->eventformat = $request->Mevent;
+                $save->vat_type = $request->Mvat;
+                $save->type_Proposal = $Selectdata;
+                $save->AddTax = $AddTax;
+                $save->Nettotal = $Nettotal;
+                $save->total = $Nettotal;
+                $save->issue_date = $request->IssueDate;
+                $save->ComRateCode = $request->Company_Discount;
+                $save->Expirationdate = $request->Expiration;
+                $save->Operated_by = $userid;
+                $save->Refler_ID=$Quotation_ID;
+                $save->comment = $request->comment;
+                $save->Date_type = $request->Date_type;
+                if ($Add_discount == 0 && $SpecialDiscountBath == 0) {
+                    $save->SpecialDiscount = $SpecialDiscount;
+                    $save->SpecialDiscountBath = $SpecialDiscountBath;
+                    $save->additional_discount = $Add_discount;
+                    $save->status_document = 1;
+                    $save->Confirm_by = 'Auto';
+                    $save->save();
+                }else {
+                    $save->SpecialDiscount = $SpecialDiscount;
+                    $save->SpecialDiscountBath = $SpecialDiscountBath;
+                    $save->additional_discount = $Add_discount;
+                    $save->status_document = 2;
+                    $save->Confirm_by = '-';
+                    $save->save();
+                }
+            } catch (\Throwable $e) {
+                log_company::where('Company_ID',$Quotation_ID)->latest()->first()->delete();
+                $path = 'Log_PDF/proposal/';
+                $file = $path . $Quotation_ID . '.pdf';
+                if (is_file($file)) {
+                    unlink($file); // ลบไฟล์
+                }
+                log::where('Quotation_ID',$Quotation_ID)->latest()->first()->delete();
+                return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+            }
+            try {
+                if ($Products !== null) {
+                    foreach ($Products as $index => $ProductID) {
+                        $saveProduct = new document_quotation();
+                        $saveProduct->Quotation_ID = $Quotation_ID;
+                        $saveProduct->Company_ID = $datarequest['Data_ID'];
+                        $saveProduct->Product_ID = $ProductID;
+                        $paxValue = $pax[$index] ?? 0;
+                        $saveProduct->pax = $paxValue;
+                        $saveProduct->Issue_date = $request->IssueDate;
+                        $saveProduct->discount =$discounts[$index];
+                        $saveProduct->priceproduct =$priceUnits[$index];
+                        $saveProduct->netpriceproduct =$discountedPrices[$index];
+                        $saveProduct->totaldiscount =$discountedPricestotal[$index];
+                        $saveProduct->ExpirationDate = $request->Expiration;
+                        $saveProduct->freelanceraiffiliate = $request->Freelancer_member;
+                        $saveProduct->Quantity = $quantities[$index];
+                        $saveProduct->Unit = $Unitmain[$index];
+                        $saveProduct->Document_issuer = $userid;
+                        $saveProduct->save();
+                    }
+                }
+            } catch (\Throwable $e) {
+                log_company::where('Company_ID',$Quotation_ID)->latest()->first()->delete();
+                $path = 'Log_PDF/proposal/';
+                $file = $path . $Quotation_ID . '.pdf';
+                if (is_file($file)) {
+                    unlink($file); // ลบไฟล์
+                }
+                log::where('Quotation_ID',$Quotation_ID)->latest()->first()->delete();
+                Quotation::where('Quotation_ID',$Quotation_ID)->first()->delete();
+                return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+            }
+        }
+        return redirect()->route('Proposal.viewproposal', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+    }
+    //------------------------------แก้ไข--------------------
+    public function edit($id)
+    {
+        $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        $Quotation = Quotation::where('id', $id)->first();
+        $Quotation_ID = $Quotation->Quotation_ID;
+        $Company = companys::select('Company_Name','id','Profile_ID')->get();
+        $Guest = Guest::select('First_name','Last_name','id','Profile_ID')->get();
+        $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
+        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
+        $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
+        $selectproduct = document_quotation::where('Quotation_ID', $Quotation_ID)->get();
+        $unit = master_unit::where('status',1)->get();
+        $quantity = master_quantity::where('status',1)->get();
+        return view('quotation.edit',compact('settingCompany','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity'));
+    }
+    public function update(Request $request,$id)
+    {
+        $preview = $request->preview;
+        $Quotationid =$id;
+        $Quotation_ID=$request->Quotation_ID;
+        $adult=$request->Adult;
+        $children=$request->Children;
+        $SpecialDiscount = $request->SpecialDiscount;
+        $SpecialDiscountBath = $request->DiscountAmount;
+        $Add_discount = $request->Add_discount;
+        $data = $request->all();
+        $userid = Auth::user()->id;
+        $Quotationcheck = Quotation::where('id',$id)->first();
+        $correct = $Quotationcheck->correct;
+        if ($correct >= 1) {
+            $correctup = $correct + 1;
+        }else{
+            $correctup = 1;
+        }
+
+        if ($preview == 1) {
+            # code...
+        }else {
+            $datarequest = [
+                'Proposal_ID' => $data['Quotation_ID'] ?? null,
+                'IssueDate' => $data['IssueDate'] ?? null,
+                'Expiration' => $data['Expiration'] ?? null,
+                'Selectdata' => $data['selectdata'] ?? null,
+                'Data_ID' => $data['Guest'] ?? $data['Company'] ?? null,
+                'Adult' => $data['Adult'] ?? null,
+                'Children' => $data['Children'] ?? null,
+                'Mevent' => $data['Mevent'] ?? null,
+                'Mvat' => $data['Mvat'] ?? null,
+                'DiscountAmount' => $data['DiscountAmount'] ?? null,
+                'ProductIDmain' => $data['ProductIDmain'] ?? null,
+                'pax' => $data['pax'] ?? null,
+                'CheckProduct' => $data['CheckProduct'] ?? null,
+                'Quantitymain' => $data['Quantitymain'] ?? null,
+                'priceproductmain' => $data['priceproductmain'] ?? null,
+                'discountmain' => $data['discountmain'] ?? null,
+                'comment' => $data['comment'] ?? null,
+                'PaxToTalall' => $data['PaxToTalall'] ?? null,
+                'FreelancerMember' => $data['Freelancer_member'] ?? null,
+                'Checkin' => $data['Checkin'] ?? null,
+                'Checkout' => $data['Checkout'] ?? null,
+                'Day' => $data['Day'] ?? null,
+                'Night' => $data['Night'] ?? null,
+                'Unitmain' => $data['Unitmain'] ?? null,
+            ];
+            {   //จัด product
+                $quantities = $datarequest['Quantitymain'] ?? [];
+                $discounts = $datarequest['discountmain'] ?? [];
+                $priceUnits = $datarequest['priceproductmain'] ?? [];
+                $Unitmain = $datarequest['Unitmain'] ?? [];
+                $discounts = array_map(function($value) {
+                    return ($value !== null) ? $value : "0";
+                }, $discounts);
+
+                if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
+                    $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
+                    $discountedPrices = [];
+                    $discountedPricestotal = [];
+                    $totaldiscount = [];
+                    // คำนวณราคาสำหรับแต่ละรายการ
+                    for ($i = 0; $i < count($quantities); $i++) {
+                        $quantity = intval($quantities[$i]);
+                        $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
+                        $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
+                        $discount = floatval($discounts[$i]);
+
+                        $totaldiscount0 = (($priceUnit * $discount)/100);
+                        $totaldiscount[] = $totaldiscount0;
+
+                        $totalPrice = ($quantity * $unitValue) * $priceUnit;
+                        $totalPrices[] = $totalPrice;
+
+                        $discountedPrice = (($priceUnit * $discount) / 100);
+                        $discountedPrices[] =  $priceUnit - $discountedPrice;
+
+                        $total = ($quantity * $unitValue);
+
+                        $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
+                        $discountedPricestotal[] = $discountedPriceTotal;
+
+                    }
+                }
+                foreach ($priceUnits as $key => $price) {
+                    $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
+                }
+                $Products = $datarequest['ProductIDmain'];
+                $Productslast = $datarequest['CheckProduct'];
+                $pax=$datarequest['pax'];
+                $productsCount = is_array($Products) ? count($Products) : 0;
+                $productslastCount = is_array($Productslast) ? count($Productslast) : 0;
+                if (is_array($Products) && is_array($Productslast)) {
+                    $commonValues = array_intersect($Products, $Productslast);
+                    if (!empty($commonValues)) {
+                        $diffFromProducts = array_diff($Products, $Productslast);
+                        $diffFromProductslast = array_diff($Productslast, $Products);
+                        $Products = array_merge($commonValues,$diffFromProducts,$diffFromProductslast);
+                    } else {
+                        $Products = array_merge($Productslast,$Products);
+                    }
+                }else{
+                    $Products = $Productslast;
+                }
+
+                $productsArray = [];
+                foreach ($Products as $index => $ProductID) {
+                    $saveProduct = [
+                        'Quotation_ID' => $Quotation_ID,
+                        'Company_ID' => $request->Company,
+                        'Product_ID' => $ProductID,
+                        'pax' => $pax[$index] ?? 0,
+                        'Issue_date' => $request->IssueDate,
+                        'discount' => $discounts[$index],
+                        'priceproduct' => $priceUnits[$index],
+                        'netpriceproduct' => $discountedPrices[$index],
+                        'totaldiscount' => $discountedPricestotal[$index],
+                        'ExpirationDate' => $request->Expiration,
+                        'freelanceraiffiliate' => $request->Freelancer_member,
+                        'Quantity' => $quantities[$index],
+                        'Unit' => $Unitmain[$index],
+                        'Document_issuer' => $userid,
+                    ];
+                    $productsArray[] = $saveProduct;
+                }
+            }
+            try {
+                $save = Quotation::find($id);
+                $save->Quotation_ID = $Quotation_ID;
+                $save->DummyNo = $Quotation_ID;
+                $save->Company_ID = $datarequest['Data_ID'];
+                $save->company_contact = $datarequest['Data_ID'];
+                $save->checkin = $request->Checkin;
+                $save->checkout = $request->Checkout;
+                $save->TotalPax = $request->PaxToTalall;
+                $save->day = $request->Day;
+                $save->night = $request->Night;
+                $save->adult = $request->Adult;
+                $save->children = $request->Children;
+                $save->ComRateCode = $request->Company_Rate_Code;
+                $save->freelanceraiffiliate = $request->Freelancer_member;
+                $save->commissionratecode = $request->Company_Commission_Rate_Code;
+                $save->eventformat = $request->Mevent;
+                $save->vat_type = $request->Mvat;
+                $save->type_Proposal = $datarequest['Selectdata'];
+                $save->issue_date = $request->IssueDate;
+                $save->ComRateCode = $request->Company_Discount;
+                $save->Expirationdate = $request->Expiration;
+                $save->Operated_by = $userid;
+                $save->Refler_ID=$Quotation_ID;
+                $save->comment = $request->comment;
+                if ($Add_discount == 0 && $SpecialDiscountBath == 0) {
+                    $save->SpecialDiscount = $SpecialDiscount;
+                    $save->SpecialDiscountBath = $SpecialDiscountBath;
+                    $save->additional_discount = $Add_discount;
+                    $count = document_invoices::where('Quotation_ID',$Quotation_ID)->count();
+                    if ($count < 1 ) {
+                        $save->status_document = 1;
+                        $save->status_guest = 0;
+                        $save->Confirm_by = 'Auto';
+                    }
+                    $save->correct = $correctup;
+                    $save->save();
+                }else {
+                    $save->SpecialDiscount = $SpecialDiscount;
+                    $save->SpecialDiscountBath = $SpecialDiscountBath;
+                    $save->additional_discount = $Add_discount;
+                    $count = document_invoices::where('Quotation_ID',$Quotation_ID)->count();
+                    if ($count < 1 ) {
+                        $save->status_document = 2;
+                        $save->Confirm_by = '-';
+                        $save->status_guest = 0;
+                    }
+                    $save->correct = $correctup;
+                    $save->save();
+                }
+            } catch (\Throwable $e) {
+                return redirect()->route('Proposal.edit',['id' => $Quotationid])->with('error', $e->getMessage());
+            }
+            try {
+                if ($Products !== null) {
+                    $productold = document_quotation::where('Quotation_ID', $Quotation_ID)->delete();
+                    foreach ($Products as $index => $ProductID) {
+                        $saveProduct = new document_quotation();
+                        $saveProduct->Quotation_ID = $Quotation_ID;
+                        $saveProduct->Company_ID = $datarequest['Data_ID'];
+                        $saveProduct->Product_ID = $ProductID;
+                        $saveProduct->Issue_date = $request->IssueDate;
+                        $paxValue = $pax[$index] ?? 0;
+                        $saveProduct->pax = $paxValue;
+                        $saveProduct->discount =$discounts[$index];
+                        $saveProduct->priceproduct =$priceUnits[$index];
+                        $saveProduct->netpriceproduct =$discountedPrices[$index];
+                        $saveProduct->totaldiscount =$discountedPricestotal[$index];
+                        $saveProduct->ExpirationDate = $request->Expiration;
+                        $saveProduct->freelanceraiffiliate = $request->Freelancer_member;
+                        $saveProduct->Quantity = $quantities[$index];
+                        $saveProduct->Unit = $Unitmain[$index];
+                        $saveProduct->Document_issuer = $userid;
+                        $saveProduct->save();
+                    }
+                }
+            } catch (\Throwable $e) {
+                return redirect()->route('Proposal.edit',['id' => $Quotationid])->with('error', $e->getMessage());
+            }
+            try {
                 $DataProduct = [
                     'Quotation_ID' => $data['Quotation_ID'] ?? null,
                     'issue_date' => $data['IssueDate'] ?? null,
@@ -3689,57 +3516,36 @@ class QuotationController extends Controller
                 $save->Category = 'Edit :: Proposal';
                 $save->content =$datacompany;
                 $save->save();
-
-                $save = Quotation::find($id);
-                $save->Quotation_ID = $Quotation_ID;
-                $save->DummyNo = $Quotation_ID;
-                $save->Company_ID = $datarequest['Data_ID'];
-                $save->company_contact = $datarequest['Data_ID'];
-                $save->checkin = $request->Checkin;
-                $save->checkout = $request->Checkout;
-                $save->TotalPax = $request->PaxToTalall;
-                $save->day = $request->Day;
-                $save->night = $request->Night;
-                $save->adult = $request->Adult;
-                $save->children = $request->Children;
-                $save->ComRateCode = $request->Company_Rate_Code;
-                $save->freelanceraiffiliate = $request->Freelancer_member;
-                $save->commissionratecode = $request->Company_Commission_Rate_Code;
-                $save->eventformat = $request->Mevent;
-                $save->vat_type = $request->Mvat;
-                $save->type_Proposal = $Selectdata;
-                $save->issue_date = $request->IssueDate;
-                $save->ComRateCode = $request->Company_Discount;
-                $save->Expirationdate = $request->Expiration;
-                $save->Operated_by = $userid;
-                $save->Refler_ID=$Quotation_ID;
-                $save->comment = $request->comment;
-                if ($Add_discount == 0 && $SpecialDiscountBath == 0) {
-                    $save->SpecialDiscount = $SpecialDiscount;
-                    $save->SpecialDiscountBath = $SpecialDiscountBath;
-                    $save->additional_discount = $Add_discount;
-                    $count = document_invoices::where('Quotation_ID',$Quotation_ID)->count();
-                    if ($count < 1 ) {
-                        $save->status_document = 1;
-                        $save->status_guest = 0;
-                        $save->Confirm_by = 'Auto';
-                    }
-                    $save->correct = $correctup;
-                    $save->save();
-                }else {
-                    $save->SpecialDiscount = $SpecialDiscount;
-                    $save->SpecialDiscountBath = $SpecialDiscountBath;
-                    $save->additional_discount = $Add_discount;
-                    $count = document_invoices::where('Quotation_ID',$Quotation_ID)->count();
-                    if ($count < 1 ) {
-                        $save->status_document = 2;
-                        $save->Confirm_by = '-';
-                        $save->status_guest = 0;
-                    }
-                    $save->correct = $correctup;
-                    $save->save();
-                }
-
+            } catch (\Throwable $e) {
+                return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+            }
+            try {
+                $datarequest = [
+                    'Proposal_ID' => $data['Quotation_ID'] ?? null,
+                    'IssueDate' => $data['IssueDate'] ?? null,
+                    'Expiration' => $data['Expiration'] ?? null,
+                    'Selectdata' => $data['selectdata'] ?? null,
+                    'Data_ID' => $data['Guest'] ?? $data['Company'] ?? null,
+                    'Adult' => $data['Adult'] ?? null,
+                    'Children' => $data['Children'] ?? null,
+                    'Mevent' => $data['Mevent'] ?? null,
+                    'Mvat' => $data['Mvat'] ?? null,
+                    'DiscountAmount' => $data['DiscountAmount'] ?? null,
+                    'ProductIDmain' => $data['ProductIDmain'] ?? null,
+                    'pax' => $data['pax'] ?? null,
+                    'CheckProduct' => $data['CheckProduct'] ?? null,
+                    'Quantitymain' => $data['Quantitymain'] ?? null,
+                    'priceproductmain' => $data['priceproductmain'] ?? null,
+                    'discountmain' => $data['discountmain'] ?? null,
+                    'comment' => $data['comment'] ?? null,
+                    'PaxToTalall' => $data['PaxToTalall'] ?? null,
+                    'FreelancerMember' => $data['Freelancer_member'] ?? null,
+                    'Checkin' => $data['Checkin'] ?? null,
+                    'Checkout' => $data['Checkout'] ?? null,
+                    'Day' => $data['Day'] ?? null,
+                    'Night' => $data['Night'] ?? null,
+                    'Unitmain' => $data['Unitmain'] ?? null,
+                ];
                 $Products = $datarequest['ProductIDmain'];
                 $Productslast = $datarequest['CheckProduct'];
                 $pax=$datarequest['pax'];
@@ -3758,207 +3564,319 @@ class QuotationController extends Controller
                 }else{
                     $Products = $Productslast;
                 }
-                $productold = document_quotation::where('Quotation_ID', $Quotation_ID)->delete();
-                if ($Products !== null) {
-                    foreach ($Products as $index => $ProductID) {
-                        $saveProduct = new document_quotation();
-                        $saveProduct->Quotation_ID = $Quotation_ID;
-                        $saveProduct->Company_ID = $datarequest['Data_ID'];
-                        $saveProduct->Product_ID = $ProductID;
-                        $saveProduct->Issue_date = $request->IssueDate;
-                        $paxValue = $pax[$index] ?? 0;
-                        $saveProduct->pax = $paxValue;
-                        $saveProduct->discount =$discounts[$index];
-                        $saveProduct->priceproduct =$priceUnits[$index];
-                        $saveProduct->netpriceproduct =$discountedPrices[$index];
-                        $saveProduct->totaldiscount =$discountedPricestotal[$index];
-                        $saveProduct->ExpirationDate = $request->Expiration;
-                        $saveProduct->freelanceraiffiliate = $request->Freelancer_member;
-                        $saveProduct->Quantity = $quantities[$index];
-                        $saveProduct->Unit = $Unitmain[$index];
-                        $saveProduct->Document_issuer = $userid;
-                        $saveProduct->save();
+                $quantities = $datarequest['Quantitymain'] ?? [];
+                $discounts = $datarequest['discountmain'] ?? [];
+                $priceUnits = $datarequest['priceproductmain'] ?? [];
+                $Unitmain = $datarequest['Unitmain'] ?? [];
+                $productItems = [];
+                $totaldiscount = [];
+                foreach ($Products as $index => $productID) {
+                    if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
+                        $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
+                        $discountedPrices = [];
+                        $discountedPricestotal = [];
+                        $totaldiscount = [];
+                        // คำนวณราคาสำหรับแต่ละรายการ
+                        for ($i = 0; $i < count($quantities); $i++) {
+                            $quantity = intval($quantities[$i]);
+                            $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
+                            $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
+                            $discount = floatval($discounts[$i]);
+
+                            $totaldiscount0 = (($priceUnit * $discount)/100);
+                            $totaldiscount[] = $totaldiscount0;
+
+                            $totalPrice = ($quantity * $unitValue) * $priceUnit;
+                            $totalPrices[] = $totalPrice;
+
+                            $discountedPrice = (($priceUnit * $discount) / 100);
+                            $discountedPrices[] =  $priceUnit - $discountedPrice;
+
+                            $total = ($quantity * $unitValue);
+
+                            $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
+                            $discountedPricestotal[] = $discountedPriceTotal;
+
+                        }
+                    }
+                    $items = master_product_item::where('Product_ID', $productID)->get();
+                    $QuotationVat= $datarequest['Mvat'];
+                    $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
+                    foreach ($items as $item) {
+                        // ตรวจสอบและกำหนดค่า quantity และ discount
+                        $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+                        $unitValue = isset($Unitmain[$index]) ? $Unitmain[$index] : 0;
+                        $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
+                        $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
+                        $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
+                        $discountedPricestotal = isset($discountedPricestotal[$index]) ? $discountedPricestotal[$index] : 0;
+                        $totaldiscount = isset($totaldiscount[$index]) ? $totaldiscount[$index] : 0;
+                        $productItems[] = [
+                            'product' => $item,
+                            'quantity' => $quantity,
+                            'unit' => $unitValue,
+                            'discount' => $discount,
+                            'totalPrices'=>$totalPrices,
+                            'discountedPrices'=>$discountedPrices,
+                            'discountedPricestotal'=>$discountedPricestotal,
+                            'totaldiscount'=>$totaldiscount,
+                        ];
                     }
                 }
-                {
-                    $datarequest = [
-                        'Proposal_ID' => $data['Quotation_ID'] ?? null,
-                        'IssueDate' => $data['IssueDate'] ?? null,
-                        'Expiration' => $data['Expiration'] ?? null,
-                        'Selectdata' => $data['selectdata'] ?? null,
-                        'Data_ID' => $data['Guest'] ?? $data['Company'] ?? null,
-                        'Adult' => $data['Adult'] ?? null,
-                        'Children' => $data['Children'] ?? null,
-                        'Mevent' => $data['Mevent'] ?? null,
-                        'Mvat' => $data['Mvat'] ?? null,
-                        'DiscountAmount' => $data['DiscountAmount'] ?? null,
-                        'ProductIDmain' => $data['ProductIDmain'] ?? null,
-                        'pax' => $data['pax'] ?? null,
-                        'CheckProduct' => $data['CheckProduct'] ?? null,
-                        'Quantitymain' => $data['Quantitymain'] ?? null,
-                        'priceproductmain' => $data['priceproductmain'] ?? null,
-                        'discountmain' => $data['discountmain'] ?? null,
-                        'comment' => $data['comment'] ?? null,
-                        'PaxToTalall' => $data['PaxToTalall'] ?? null,
-                        'FreelancerMember' => $data['Freelancer_member'] ?? null,
-                        'Checkin' => $data['Checkin'] ?? null,
-                        'Checkout' => $data['Checkout'] ?? null,
-                        'Day' => $data['Day'] ?? null,
-                        'Night' => $data['Night'] ?? null,
-                        'Unitmain' => $data['Unitmain'] ?? null,
-                    ];
-                    $Products = $datarequest['ProductIDmain'];
-                    $Productslast = $datarequest['CheckProduct'];
-                    $pax=$datarequest['pax'];
-                    $productsCount = is_array($Products) ? count($Products) : 0;
-                    $productslastCount = is_array($Productslast) ? count($Productslast) : 0;
-                    if (is_array($Products) && is_array($Productslast)) {
-                        $commonValues = array_intersect($Products, $Productslast);
-                        if (!empty($commonValues)) {
-                            $diffFromProducts = array_diff($Products, $Productslast);
-                            $diffFromProductslast = array_diff($Productslast, $Products);
-                            $Products = array_merge($commonValues,$diffFromProducts,$diffFromProductslast);
-                        } else {
-                            $Products = array_merge($Productslast,$Products);
-                        }
+                {//คำนวน
+                    $totalAmount = 0;
+                    $totalPrice = 0;
+                    $subtotal = 0;
+                    $beforeTax = 0;
+                    $AddTax = 0;
+                    $Nettotal =0;
+                    $totalaverage=0;
 
+                    $SpecialDistext = $datarequest['DiscountAmount'];
+                    $SpecialDis = floatval($SpecialDistext);
+                    $totalguest = 0;
+                    $totalguest = $adult + $children;
+                    $guest = $request->PaxToTalall;
+                    if ($Mvat->id == 50) {
+                        foreach ($productItems as $item) {
+                            $totalPrice += $item['totalPrices'];
+                            $totalAmount += $item['discountedPricestotal'];
+                            $subtotal = $totalAmount-$SpecialDis;
+                            $beforeTax = $subtotal/1.07;
+                            $AddTax = $subtotal-$beforeTax;
+                            $Nettotal = $subtotal;
+                            $totalaverage =$Nettotal/$guest;
+
+                        }
+                    }
+                    elseif ($Mvat->id == 51) {
+                        foreach ($productItems as $item) {
+                            $totalPrice += $item['totalPrices'];
+                            $totalAmount += $item['discountedPricestotal'];
+                            $subtotal = $totalAmount-$SpecialDis;
+                            $Nettotal = $subtotal;
+                            $totalaverage =$Nettotal/$guest;
+
+                        }
+                    }
+                    elseif ($Mvat->id == 52) {
+                        foreach ($productItems as $item) {
+                            $totalPrice += $item['totalPrices'];
+                            $totalAmount += $item['discountedPricestotal'];
+                            $subtotal = $totalAmount-$SpecialDis;
+                            $AddTax = $subtotal*7/100;
+                            $Nettotal = $subtotal+$AddTax;
+                            $totalaverage =$Nettotal/$guest;
+                        }
+                    }else
+                    {
+                        foreach ($productItems as $item) {
+                            $totalPrice += $item['totalPrices'];
+                            $totalAmount += $item['discountedPricestotal'];
+                            $subtotal = $totalAmount-$SpecialDis;
+                            $beforeTax = $subtotal/1.07;
+                            $AddTax = $subtotal-$beforeTax;
+                            $Nettotal = $subtotal;
+                            $totalaverage =$Nettotal/$guest;
+                        }
+                    }
+                    $pagecount = count($productItems);
+                    $page = $pagecount/10;
+
+                    $page_item = 1;
+                    if ($page > 1.1 && $page < 2.1) {
+                        $page_item += 1;
+
+                    } elseif ($page > 1.1) {
+                    $page_item = 1 + $page > 1.1 ? ceil($page) : 1;
+                    }
+                }
+                {//QRCODE
+                    $id = $datarequest['Proposal_ID'];
+                    $protocol = $request->secure() ? 'https' : 'http';
+                    $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+                    $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
+                    $qrCodeBase64 = base64_encode($qrCodeImage);
+                }
+                $Proposal_ID = $datarequest['Proposal_ID'];
+                $IssueDate = $datarequest['IssueDate'];
+                $Expiration = $datarequest['Expiration'];
+                $Selectdata = $datarequest['Selectdata'];
+                $Data_ID = $datarequest['Data_ID'];
+                $Adult = $datarequest['Adult'];
+                $Children = $datarequest['Children'];
+                $Mevent = $datarequest['Mevent'];
+                $Mvat = $datarequest['Mvat'];
+                $DiscountAmount = $datarequest['DiscountAmount'];
+                $Checkin = $datarequest['Checkin'];
+                $Checkout = $datarequest['Checkout'];
+                $Day = $datarequest['Day'];
+                $Night = $datarequest['Night'];
+                $comment = $datarequest['comment'];
+                $user = User::where('id',$userid)->select('id','name')->first();
+                $fullName = null;
+                $Contact_Name = null;
+                $Contact_phone =null;
+                $Contact_Email = null;
+                if ($Selectdata == 'Guest') {
+                    $Data = Guest::where('Profile_ID',$Data_ID)->first();
+                    $prename = $Data->preface;
+                    $First_name = $Data->First_name;
+                    $Last_name = $Data->Last_name;
+                    $Address = $Data->Address;
+                    $Email = $Data->Email;
+                    $Taxpayer_Identification = $Data->Identification_Number;
+                    $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
+                    $name = $prefix->name_th;
+                    $fullName = $name.' '.$First_name.' '.$Last_name;
+                    //-------------ที่อยู่
+                    $CityID=$Data->City;
+                    $amphuresID = $Data->Amphures;
+                    $TambonID = $Data->Tambon;
+                    $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                    $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                    $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                    $Fax_number = '-';
+                    $phone = phone_guest::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+                }else{
+                    $Company = companys::where('Profile_ID',$Data_ID)->first();
+                    $Company_type = $Company->Company_type;
+                    $Compannyname = $Company->Company_Name;
+                    $Address = $Company->Address;
+                    $Email = $Company->Company_Email;
+                    $Taxpayer_Identification = $Company->Taxpayer_Identification;
+                    $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+                    if ($comtype) {
+                        if ($comtype->name_th == "บริษัทจำกัด") {
+                            $fullName = "บริษัท " . $Compannyname . " จำกัด";
+                        } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                            $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
+                        } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                            $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                        }
+                    }
+                    $representative = representative::where('Company_ID',$Data_ID)->first();
+                    $prename = $representative->prefix;
+                    $Contact_Email = $representative->Email;
+                    $prefix = master_document::where('id', $prename)->where('Category', 'Mprename')->first();
+                    $name = $prefix->name_th;
+                    $Contact_Name = $representative->First_name.' '.$representative->Last_name;
+                    $CityID=$Company->City;
+                    $amphuresID = $Company->Amphures;
+                    $TambonID = $Company->Tambon;
+                    $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                    $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                    $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                    $company_fax = company_fax::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+                    if ($company_fax) {
+                        $Fax_number =  $company_fax->Fax_number;
                     }else{
-                        $Products = $Productslast;
+                        $Fax_number = '-';
                     }
-                    $quantities = $datarequest['Quantitymain'] ?? [];
-                    $discounts = $datarequest['discountmain'] ?? [];
-                    $priceUnits = $datarequest['priceproductmain'] ?? [];
-                    $Unitmain = $datarequest['Unitmain'] ?? [];
-                    $productItems = [];
-                    $totaldiscount = [];
-                    foreach ($Products as $index => $productID) {
-                        if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
-                            $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
-                            $discountedPrices = [];
-                            $discountedPricestotal = [];
-                            $totaldiscount = [];
-                            // คำนวณราคาสำหรับแต่ละรายการ
-                            for ($i = 0; $i < count($quantities); $i++) {
-                                $quantity = intval($quantities[$i]);
-                                $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
-                                $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
-                                $discount = floatval($discounts[$i]);
+                    $phone = company_phone::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+                    $Contact_phone = representative_phone::where('Company_ID',$Data_ID)->where('Sequence','main')->first();
+                }
+                $eventformat = master_document::where('id',$Mevent)->select('name_th','id')->first();
+                $template = master_template::query()->latest()->first();
+                $CodeTemplate = $template->CodeTemplate;
+                $sheet = master_document_sheet::select('topic','name_th','id','CodeTemplate')->get();
+                $Reservation_show = $sheet->where('topic', 'Reservation')->where('CodeTemplate',$CodeTemplate)->first();
+                $Paymentterms = $sheet->where('topic', 'Paymentterms')->where('CodeTemplate',$CodeTemplate)->first();
+                $note = $sheet->where('topic', 'note')->where('CodeTemplate',$CodeTemplate)->first();
+                $Cancellations = $sheet->where('topic', 'Cancellations')->where('CodeTemplate',$CodeTemplate)->first();
+                $Complimentary = $sheet->where('topic', 'Complimentary')->where('CodeTemplate',$CodeTemplate)->first();
+                $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->where('CodeTemplate',$CodeTemplate)->first();
+                $date = Carbon::now();
+                $unit = master_unit::where('status',1)->get();
+                $quantity = master_quantity::where('status',1)->get();
+                $settingCompany = Master_company::orderBy('id', 'desc')->first();
+                if ($Checkin) {
+                    $checkin = $Checkin;
+                    $checkout = $Checkout;
+                }else{
+                    $checkin = '-';
+                    $checkout = '-';
+                }
+                $data = [
+                    'settingCompany'=>$settingCompany,
+                    'page_item'=>$page_item,
+                    'page'=>$pagecount,
+                    'Selectdata'=>$Selectdata,
+                    'date'=>$date,
+                    'fullName'=>$fullName,
+                    'provinceNames'=>$provinceNames,
+                    'Address'=>$Address,
+                    'amphuresID'=>$amphuresID,
+                    'TambonID'=>$TambonID,
+                    'Email'=>$Email,
+                    'phone'=>$phone,
+                    'Fax_number'=>$Fax_number,
+                    'Day'=>$Day,
+                    'Night'=>$Night,
+                    'Checkin'=>$checkin,
+                    'Checkout'=>$checkout,
+                    'eventformat'=>$eventformat,
+                    'totalguest'=>$totalguest,
+                    'Reservation_show'=>$Reservation_show,
+                    'Paymentterms'=>$Paymentterms,
+                    'note'=>$note,
+                    'Cancellations'=>$Cancellations,
+                    'Complimentary'=>$Complimentary,
+                    'All_rights_reserved'=>$All_rights_reserved,
+                    'Proposal_ID'=>$Proposal_ID,
+                    'IssueDate'=>$IssueDate,
+                    'Expiration'=>$Expiration,
+                    'qrCodeBase64'=>$qrCodeBase64,
+                    'user'=>$user,
+                    'Taxpayer_Identification'=>$Taxpayer_Identification,
+                    'Adult'=>$Adult,
+                    'Children'=>$Children,
+                    'totalAmount'=>$totalAmount,
+                    'SpecialDis'=>$SpecialDis,
+                    'subtotal'=>$subtotal,
+                    'beforeTax'=>$beforeTax,
+                    'Nettotal'=>$Nettotal,
+                    'totalguest'=>$totalguest,
+                    'guest'=>$guest,
+                    'totalaverage'=>$totalaverage,
+                    'AddTax'=>$AddTax,
+                    'productItems'=>$productItems,
+                    'unit'=>$unit,
+                    'quantity'=>$quantity,
+                    'Mvat'=>$Mvat,
+                    'comment'=>$comment,
+                    'Mevent'=>$Mevent,
+                    'Contact_Name'=>$Contact_Name,
+                    'Contact_phone'=>$Contact_phone,
+                    'Contact_Email'=>$Contact_Email,
+                    'SpecialDistext'=>$SpecialDistext,
+                ];
+                $view= $template->name;
+                $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
+                // บันทึกไฟล์ PDF
+                $path = 'Log_PDF/proposal/';
+                $pdf->save($path . $Quotation_ID.'-'.$correctup . '.pdf');
+            } catch (\Throwable $e) {
+                return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+            }
+            try {
+                $Quotation = Quotation::where('Quotation_ID',$Quotation_ID)->first();
+                $Quotation->AddTax = $AddTax;
+                $Quotation->Nettotal = $Nettotal;
+                $Quotation->total = $Nettotal;
+                $Quotation->save();
+            } catch (\Throwable $e) {
+                return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+            }
+            try {
+                $currentDateTime = Carbon::now();
 
-                                $totaldiscount0 = (($priceUnit * $discount)/100);
-                                $totaldiscount[] = $totaldiscount0;
-
-                                $totalPrice = ($quantity * $unitValue) * $priceUnit;
-                                $totalPrices[] = $totalPrice;
-
-                                $discountedPrice = (($priceUnit * $discount) / 100);
-                                $discountedPrices[] =  $priceUnit - $discountedPrice;
-
-                                $total = ($quantity * $unitValue);
-
-                                $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
-                                $discountedPricestotal[] = $discountedPriceTotal;
-
-                            }
-                        }
-                        $items = master_product_item::where('Product_ID', $productID)->get();
-                        $QuotationVat= $datarequest['Mvat'];
-                        $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
-                        foreach ($items as $item) {
-                            // ตรวจสอบและกำหนดค่า quantity และ discount
-                            $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
-                            $unitValue = isset($Unitmain[$index]) ? $Unitmain[$index] : 0;
-                            $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
-                            $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
-                            $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
-                            $discountedPricestotal = isset($discountedPricestotal[$index]) ? $discountedPricestotal[$index] : 0;
-                            $totaldiscount = isset($totaldiscount[$index]) ? $totaldiscount[$index] : 0;
-                            $productItems[] = [
-                                'product' => $item,
-                                'quantity' => $quantity,
-                                'unit' => $unitValue,
-                                'discount' => $discount,
-                                'totalPrices'=>$totalPrices,
-                                'discountedPrices'=>$discountedPrices,
-                                'discountedPricestotal'=>$discountedPricestotal,
-                                'totaldiscount'=>$totaldiscount,
-                            ];
-                        }
-                    }
-                    {//คำนวน
-                        $totalAmount = 0;
-                        $totalPrice = 0;
-                        $subtotal = 0;
-                        $beforeTax = 0;
-                        $AddTax = 0;
-                        $Nettotal =0;
-                        $totalaverage=0;
-
-                        $SpecialDistext = $datarequest['DiscountAmount'];
-                        $SpecialDis = floatval($SpecialDistext);
-                        $totalguest = 0;
-                        $totalguest = $adult + $children;
-                        $guest = $request->PaxToTalall;
-                        if ($Mvat->id == 50) {
-                            foreach ($productItems as $item) {
-                                $totalPrice += $item['totalPrices'];
-                                $totalAmount += $item['discountedPricestotal'];
-                                $subtotal = $totalAmount-$SpecialDis;
-                                $beforeTax = $subtotal/1.07;
-                                $AddTax = $subtotal-$beforeTax;
-                                $Nettotal = $subtotal;
-                                $totalaverage =$Nettotal/$guest;
-
-                            }
-                        }
-                        elseif ($Mvat->id == 51) {
-                            foreach ($productItems as $item) {
-                                $totalPrice += $item['totalPrices'];
-                                $totalAmount += $item['discountedPricestotal'];
-                                $subtotal = $totalAmount-$SpecialDis;
-                                $Nettotal = $subtotal;
-                                $totalaverage =$Nettotal/$guest;
-
-                            }
-                        }
-                        elseif ($Mvat->id == 52) {
-                            foreach ($productItems as $item) {
-                                $totalPrice += $item['totalPrices'];
-                                $totalAmount += $item['discountedPricestotal'];
-                                $subtotal = $totalAmount-$SpecialDis;
-                                $AddTax = $subtotal*7/100;
-                                $Nettotal = $subtotal+$AddTax;
-                                $totalaverage =$Nettotal/$guest;
-                            }
-                        }else
-                        {
-                            foreach ($productItems as $item) {
-                                $totalPrice += $item['totalPrices'];
-                                $totalAmount += $item['discountedPricestotal'];
-                                $subtotal = $totalAmount-$SpecialDis;
-                                $beforeTax = $subtotal/1.07;
-                                $AddTax = $subtotal-$beforeTax;
-                                $Nettotal = $subtotal;
-                                $totalaverage =$Nettotal/$guest;
-                            }
-                        }
-                        $pagecount = count($productItems);
-                        $page = $pagecount/10;
-
-                        $page_item = 1;
-                        if ($page > 1.1 && $page < 2.1) {
-                            $page_item += 1;
-
-                        } elseif ($page > 1.1) {
-                        $page_item = 1 + $page > 1.1 ? ceil($page) : 1;
-                        }
-                    }
-                    {//QRCODE
-                        $id = $datarequest['Proposal_ID'];
-                        $protocol = $request->secure() ? 'https' : 'http';
-                        $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
-                        $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
-                        $qrCodeBase64 = base64_encode($qrCodeImage);
-                    }
+                $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
+                $currentTime = $currentDateTime->toTimeString(); // Format: HH:MM:SS
+                // Optionally, you can format the date and time as per your requirement
+                $formattedDate = $currentDateTime->format('Y-m-d'); // Custom format for date
+                $formattedTime = $currentDateTime->format('H:i:s');
+                {
                     $Proposal_ID = $datarequest['Proposal_ID'];
                     $IssueDate = $datarequest['IssueDate'];
                     $Expiration = $datarequest['Expiration'];
@@ -3974,38 +3892,20 @@ class QuotationController extends Controller
                     $Day = $datarequest['Day'];
                     $Night = $datarequest['Night'];
                     $comment = $datarequest['comment'];
-                    $user = User::where('id',$userid)->select('id','name')->first();
-                    $fullName = null;
-                    $Contact_Name = null;
-                    $Contact_phone =null;
-                    $Contact_Email = null;
                     if ($Selectdata == 'Guest') {
                         $Data = Guest::where('Profile_ID',$Data_ID)->first();
                         $prename = $Data->preface;
                         $First_name = $Data->First_name;
                         $Last_name = $Data->Last_name;
-                        $Address = $Data->Address;
-                        $Email = $Data->Email;
-                        $Taxpayer_Identification = $Data->Identification_Number;
                         $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
                         $name = $prefix->name_th;
                         $fullName = $name.' '.$First_name.' '.$Last_name;
                         //-------------ที่อยู่
-                        $CityID=$Data->City;
-                        $amphuresID = $Data->Amphures;
-                        $TambonID = $Data->Tambon;
-                        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
-                        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
-                        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-                        $Fax_number = '-';
-                        $phone = phone_guest::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+
                     }else{
                         $Company = companys::where('Profile_ID',$Data_ID)->first();
                         $Company_type = $Company->Company_type;
                         $Compannyname = $Company->Company_Name;
-                        $Address = $Company->Address;
-                        $Email = $Company->Company_Email;
-                        $Taxpayer_Identification = $Company->Taxpayer_Identification;
                         $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
                         if ($comtype) {
                             if ($comtype->name_th == "บริษัทจำกัด") {
@@ -4016,182 +3916,22 @@ class QuotationController extends Controller
                                 $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
                             }
                         }
-                        $representative = representative::where('Company_ID',$Data_ID)->first();
-                        $prename = $representative->prefix;
-                        $Contact_Email = $representative->Email;
-                        $prefix = master_document::where('id', $prename)->where('Category', 'Mprename')->first();
-                        $name = $prefix->name_th;
-                        $Contact_Name = $representative->First_name.' '.$representative->Last_name;
-                        $CityID=$Company->City;
-                        $amphuresID = $Company->Amphures;
-                        $TambonID = $Company->Tambon;
-                        $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
-                        $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
-                        $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
-                        $company_fax = company_fax::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
-                        if ($company_fax) {
-                            $Fax_number =  $company_fax->Fax_number;
-                        }else{
-                            $Fax_number = '-';
-                        }
-                        $phone = company_phone::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
-                        $Contact_phone = representative_phone::where('Company_ID',$Data_ID)->where('Sequence','main')->first();
-                    }
-                    $eventformat = master_document::where('id',$Mevent)->select('name_th','id')->first();
-                    $template = master_template::query()->latest()->first();
-                    $CodeTemplate = $template->CodeTemplate;
-                    $sheet = master_document_sheet::select('topic','name_th','id','CodeTemplate')->get();
-                    $Reservation_show = $sheet->where('topic', 'Reservation')->where('CodeTemplate',$CodeTemplate)->first();
-                    $Paymentterms = $sheet->where('topic', 'Paymentterms')->where('CodeTemplate',$CodeTemplate)->first();
-                    $note = $sheet->where('topic', 'note')->where('CodeTemplate',$CodeTemplate)->first();
-                    $Cancellations = $sheet->where('topic', 'Cancellations')->where('CodeTemplate',$CodeTemplate)->first();
-                    $Complimentary = $sheet->where('topic', 'Complimentary')->where('CodeTemplate',$CodeTemplate)->first();
-                    $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->where('CodeTemplate',$CodeTemplate)->first();
-                    $date = Carbon::now();
-                    $unit = master_unit::where('status',1)->get();
-                    $quantity = master_quantity::where('status',1)->get();
-                    $settingCompany = Master_company::orderBy('id', 'desc')->first();
-                    if ($Checkin) {
-                        $checkin = $Checkin;
-                        $checkout = $Checkout;
-                    }else{
-                        $checkin = '-';
-                        $checkout = '-';
-                    }
-                    $data = [
-                        'settingCompany'=>$settingCompany,
-                        'page_item'=>$page_item,
-                        'page'=>$pagecount,
-                        'Selectdata'=>$Selectdata,
-                        'date'=>$date,
-                        'fullName'=>$fullName,
-                        'provinceNames'=>$provinceNames,
-                        'Address'=>$Address,
-                        'amphuresID'=>$amphuresID,
-                        'TambonID'=>$TambonID,
-                        'Email'=>$Email,
-                        'phone'=>$phone,
-                        'Fax_number'=>$Fax_number,
-                        'Day'=>$Day,
-                        'Night'=>$Night,
-                        'Checkin'=>$checkin,
-                        'Checkout'=>$checkout,
-                        'eventformat'=>$eventformat,
-                        'totalguest'=>$totalguest,
-                        'Reservation_show'=>$Reservation_show,
-                        'Paymentterms'=>$Paymentterms,
-                        'note'=>$note,
-                        'Cancellations'=>$Cancellations,
-                        'Complimentary'=>$Complimentary,
-                        'All_rights_reserved'=>$All_rights_reserved,
-                        'Proposal_ID'=>$Proposal_ID,
-                        'IssueDate'=>$IssueDate,
-                        'Expiration'=>$Expiration,
-                        'qrCodeBase64'=>$qrCodeBase64,
-                        'user'=>$user,
-                        'Taxpayer_Identification'=>$Taxpayer_Identification,
-                        'Adult'=>$Adult,
-                        'Children'=>$Children,
-                        'totalAmount'=>$totalAmount,
-                        'SpecialDis'=>$SpecialDis,
-                        'subtotal'=>$subtotal,
-                        'beforeTax'=>$beforeTax,
-                        'Nettotal'=>$Nettotal,
-                        'totalguest'=>$totalguest,
-                        'guest'=>$guest,
-                        'totalaverage'=>$totalaverage,
-                        'AddTax'=>$AddTax,
-                        'productItems'=>$productItems,
-                        'unit'=>$unit,
-                        'quantity'=>$quantity,
-                        'Mvat'=>$Mvat,
-                        'comment'=>$comment,
-                        'Mevent'=>$Mevent,
-                        'Contact_Name'=>$Contact_Name,
-                        'Contact_phone'=>$Contact_phone,
-                        'Contact_Email'=>$Contact_Email,
-                        'SpecialDistext'=>$SpecialDistext,
-                    ];
-                    $view= $template->name;
-                    $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
-                    // บันทึกไฟล์ PDF
-                    $path = 'Log_PDF/proposal/';
-                    $pdf->save($path . $Quotation_ID.'-'.$correctup . '.pdf');
 
-                    $Quotation = Quotation::where('Quotation_ID',$Quotation_ID)->first();
-                    $Quotation->AddTax = $AddTax;
-                    $Quotation->Nettotal = $Nettotal;
-                    $Quotation->total = $Nettotal;
-                    $Quotation->save();
-                    $Auto = $Quotation->Confirm_by;
-                    $id = $Quotation->id;
-                    $currentDateTime = Carbon::now();
-
-                    $currentDate = $currentDateTime->toDateString(); // Format: YYYY-MM-DD
-                    $currentTime = $currentDateTime->toTimeString(); // Format: HH:MM:SS
-                    // Optionally, you can format the date and time as per your requirement
-                    $formattedDate = $currentDateTime->format('Y-m-d'); // Custom format for date
-                    $formattedTime = $currentDateTime->format('H:i:s');
-                    {
-                        $Proposal_ID = $datarequest['Proposal_ID'];
-                        $IssueDate = $datarequest['IssueDate'];
-                        $Expiration = $datarequest['Expiration'];
-                        $Selectdata = $datarequest['Selectdata'];
-                        $Data_ID = $datarequest['Data_ID'];
-                        $Adult = $datarequest['Adult'];
-                        $Children = $datarequest['Children'];
-                        $Mevent = $datarequest['Mevent'];
-                        $Mvat = $datarequest['Mvat'];
-                        $DiscountAmount = $datarequest['DiscountAmount'];
-                        $Checkin = $datarequest['Checkin'];
-                        $Checkout = $datarequest['Checkout'];
-                        $Day = $datarequest['Day'];
-                        $Night = $datarequest['Night'];
-                        $comment = $datarequest['comment'];
-                        if ($Selectdata == 'Guest') {
-                            $Data = Guest::where('Profile_ID',$Data_ID)->first();
-                            $prename = $Data->preface;
-                            $First_name = $Data->First_name;
-                            $Last_name = $Data->Last_name;
-                            $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
-                            $name = $prefix->name_th;
-                            $fullName = $name.' '.$First_name.' '.$Last_name;
-                            //-------------ที่อยู่
-
-                        }else{
-                            $Company = companys::where('Profile_ID',$Data_ID)->first();
-                            $Company_type = $Company->Company_type;
-                            $Compannyname = $Company->Company_Name;
-                            $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
-                            if ($comtype) {
-                                if ($comtype->name_th == "บริษัทจำกัด") {
-                                    $fullName = "บริษัท " . $Compannyname . " จำกัด";
-                                } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
-                                    $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
-                                } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
-                                    $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
-                                }
-                            }
-
-                        }
-                    }
-                    $savePDF = new log();
-                    $savePDF->Quotation_ID = $Quotation_ID;
-                    $savePDF->QuotationType = 'Proposal';
-                    $savePDF->Company_Name = $fullName;
-                    $savePDF->Approve_date = $formattedDate;
-                    $savePDF->Approve_time = $formattedTime;
-                    $savePDF->correct = $correctup;
-                    $savePDF->save();
-                    if ($SpecialDistext == 0) {
-                        return redirect()->route('Proposal.viewproposal', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
-                    }else{
-                        return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
                     }
                 }
+                $savePDF = new log();
+                $savePDF->Quotation_ID = $Quotation_ID;
+                $savePDF->QuotationType = 'Proposal';
+                $savePDF->Company_Name = $fullName;
+                $savePDF->Approve_date = $formattedDate;
+                $savePDF->Approve_time = $formattedTime;
+                $savePDF->correct = $correctup;
+                $savePDF->save();
+            } catch (\Throwable $e) {
+                return redirect()->route('Proposal.index')->with('error', $e->getMessage());
             }
-        } catch (\Throwable $e) {
-            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+
+            return redirect()->route('Proposal.viewproposal', ['id' => $Quotationid])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
         }
     }
     //------------------------------ดูข้อมูล------------------

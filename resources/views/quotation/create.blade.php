@@ -918,6 +918,7 @@
             $('.select2').select2({
                 placeholder: "Please select an option"
             });
+            month();
         });
         $(function() {
             // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
@@ -1044,8 +1045,6 @@
 
         // เรียกใช้เมื่อโหลดหน้า
         setMinDate();
-
-
         document.addEventListener('DOMContentLoaded', setMinDate);
         function month() {
             var checkmonthValue = document.getElementById('checkmonth').value; // ค่าจาก input checkmonth

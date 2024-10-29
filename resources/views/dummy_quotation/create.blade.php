@@ -902,6 +902,7 @@
                 $('#inputmonth').val(currentMonthIndex + 1); // บันทึกใน input โดยเพิ่ม 1 เพื่อให้เป็น 1-12 แทน
                 CheckDate();
             });
+            month();
 
         });
         $(function() {
