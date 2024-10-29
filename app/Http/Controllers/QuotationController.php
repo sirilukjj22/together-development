@@ -2977,7 +2977,345 @@ class QuotationController extends Controller
         }
 
         if ($preview == 1) {
-            # code...
+            try {
+                $userid = Auth::user()->id;
+                $datarequest = [
+                    'Proposal_ID' => $data['Quotation_ID'] ?? null,
+                    'IssueDate' => $data['IssueDate'] ?? null,
+                    'Expiration' => $data['Expiration'] ?? null,
+                    'Selectdata' => $data['selectdata'] ?? null,
+                    'Data_ID' => $data['Guest'] ?? $data['Company'] ?? null,
+                    'Adult' => $data['Adult'] ?? null,
+                    'Children' => $data['Children'] ?? null,
+                    'Mevent' => $data['Mevent'] ?? null,
+                    'Mvat' => $data['Mvat'] ?? null,
+                    'DiscountAmount' => $data['DiscountAmount'] ?? null,
+                    'ProductIDmain' => $data['ProductIDmain'] ?? null,
+                    'pax' => $data['pax'] ?? null,
+                    'CheckProduct' => $data['CheckProduct'] ?? null,
+                    'Quantitymain' => $data['Quantitymain'] ?? null,
+                    'priceproductmain' => $data['priceproductmain'] ?? null,
+                    'discountmain' => $data['discountmain'] ?? null,
+                    'comment' => $data['comment'] ?? null,
+                    'PaxToTalall' => $data['PaxToTalall'] ?? null,
+                    'FreelancerMember' => $data['Freelancer_member'] ?? null,
+                    'Checkin' => $data['Checkin'] ?? null,
+                    'Checkout' => $data['Checkout'] ?? null,
+                    'Day' => $data['Day'] ?? null,
+                    'Night' => $data['Night'] ?? null,
+                    'Unitmain' => $data['Unitmain'] ?? null,
+                ];
+                $Products = $datarequest['ProductIDmain'];
+                $Productslast = $datarequest['CheckProduct'];
+                $pax=$datarequest['pax'];
+                $productsCount = is_array($Products) ? count($Products) : 0;
+                $productslastCount = is_array($Productslast) ? count($Productslast) : 0;
+                if (is_array($Products) && is_array($Productslast)) {
+                    $commonValues = array_intersect($Products, $Productslast);
+                    if (!empty($commonValues)) {
+                        $diffFromProducts = array_diff($Products, $Productslast);
+                        $diffFromProductslast = array_diff($Productslast, $Products);
+                        $Products = array_merge($commonValues,$diffFromProducts,$diffFromProductslast);
+                    } else {
+                        $Products = array_merge($Productslast,$Products);
+                    }
+
+                }else{
+                    $Products = $Productslast;
+                }
+                $quantities = $datarequest['Quantitymain'] ?? [];
+                $discounts = $datarequest['discountmain'] ?? [];
+                $priceUnits = $datarequest['priceproductmain'] ?? [];
+                $Unitmain = $datarequest['Unitmain'] ?? [];
+                $productItems = [];
+                $totaldiscount = [];
+                foreach ($Products as $index => $productID) {
+                    if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
+                        $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
+                        $discountedPrices = [];
+                        $discountedPricestotal = [];
+                        $totaldiscount = [];
+                        // คำนวณราคาสำหรับแต่ละรายการ
+                        for ($i = 0; $i < count($quantities); $i++) {
+                            $quantity = intval($quantities[$i]);
+                            $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
+                            $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
+                            $discount = floatval($discounts[$i]);
+
+                            $totaldiscount0 = (($priceUnit * $discount)/100);
+                            $totaldiscount[] = $totaldiscount0;
+
+                            $totalPrice = ($quantity * $unitValue) * $priceUnit;
+                            $totalPrices[] = $totalPrice;
+
+                            $discountedPrice = (($priceUnit * $discount) / 100);
+                            $discountedPrices[] =  $priceUnit - $discountedPrice;
+
+                            $total = ($quantity * $unitValue);
+
+                            $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
+                            $discountedPricestotal[] = $discountedPriceTotal;
+
+                        }
+                    }
+                    $items = master_product_item::where('Product_ID', $productID)->get();
+                    $QuotationVat= $datarequest['Mvat'];
+                    $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
+                    foreach ($items as $item) {
+                        // ตรวจสอบและกำหนดค่า quantity และ discount
+                        $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
+                        $unitValue = isset($Unitmain[$index]) ? $Unitmain[$index] : 0;
+                        $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
+                        $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
+                        $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
+                        $discountedPricestotal = isset($discountedPricestotal[$index]) ? $discountedPricestotal[$index] : 0;
+                        $totaldiscount = isset($totaldiscount[$index]) ? $totaldiscount[$index] : 0;
+                        $productItems[] = [
+                            'product' => $item,
+                            'quantity' => $quantity,
+                            'unit' => $unitValue,
+                            'discount' => $discount,
+                            'totalPrices'=>$totalPrices,
+                            'discountedPrices'=>$discountedPrices,
+                            'discountedPricestotal'=>$discountedPricestotal,
+                            'totaldiscount'=>$totaldiscount,
+                        ];
+                    }
+                }
+                {//คำนวน
+                    $totalAmount = 0;
+                    $totalPrice = 0;
+                    $subtotal = 0;
+                    $beforeTax = 0;
+                    $AddTax = 0;
+                    $Nettotal =0;
+                    $totalaverage=0;
+
+                    $SpecialDistext = $datarequest['DiscountAmount'];
+                    $SpecialDis = floatval($SpecialDistext);
+                    $totalguest = 0;
+                    $totalguest = $adult + $children;
+                    $guest = $request->PaxToTalall;
+                    if ($Mvat->id == 50) {
+                        foreach ($productItems as $item) {
+                            $totalPrice += $item['totalPrices'];
+                            $totalAmount += $item['discountedPricestotal'];
+                            $subtotal = $totalAmount-$SpecialDis;
+                            $beforeTax = $subtotal/1.07;
+                            $AddTax = $subtotal-$beforeTax;
+                            $Nettotal = $subtotal;
+                            $totalaverage =$Nettotal/$guest;
+
+                        }
+                    }
+                    elseif ($Mvat->id == 51) {
+                        foreach ($productItems as $item) {
+                            $totalPrice += $item['totalPrices'];
+                            $totalAmount += $item['discountedPricestotal'];
+                            $subtotal = $totalAmount-$SpecialDis;
+                            $Nettotal = $subtotal;
+                            $totalaverage =$Nettotal/$guest;
+
+                        }
+                    }
+                    elseif ($Mvat->id == 52) {
+                        foreach ($productItems as $item) {
+                            $totalPrice += $item['totalPrices'];
+                            $totalAmount += $item['discountedPricestotal'];
+                            $subtotal = $totalAmount-$SpecialDis;
+                            $AddTax = $subtotal*7/100;
+                            $Nettotal = $subtotal+$AddTax;
+                            $totalaverage =$Nettotal/$guest;
+                        }
+                    }else
+                    {
+                        foreach ($productItems as $item) {
+                            $totalPrice += $item['totalPrices'];
+                            $totalAmount += $item['discountedPricestotal'];
+                            $subtotal = $totalAmount-$SpecialDis;
+                            $beforeTax = $subtotal/1.07;
+                            $AddTax = $subtotal-$beforeTax;
+                            $Nettotal = $subtotal;
+                            $totalaverage =$Nettotal/$guest;
+                        }
+                    }
+                    $pagecount = count($productItems);
+                    $page = $pagecount/10;
+
+                    $page_item = 1;
+                    if ($page > 1.1 && $page < 2.1) {
+                        $page_item += 1;
+
+                    } elseif ($page > 1.1) {
+                    $page_item = 1 + $page > 1.1 ? ceil($page) : 1;
+                    }
+                }
+                {//QRCODE
+                    $id = $datarequest['Proposal_ID'];
+                    $protocol = $request->secure() ? 'https' : 'http';
+                    $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+                    $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
+                    $qrCodeBase64 = base64_encode($qrCodeImage);
+                }
+                $Proposal_ID = $datarequest['Proposal_ID'];
+                $IssueDate = $datarequest['IssueDate'];
+                $Expiration = $datarequest['Expiration'];
+                $Selectdata = $datarequest['Selectdata'];
+                $Data_ID = $datarequest['Data_ID'];
+                $Adult = $datarequest['Adult'];
+                $Children = $datarequest['Children'];
+                $Mevent = $datarequest['Mevent'];
+                $Mvat = $datarequest['Mvat'];
+                $DiscountAmount = $datarequest['DiscountAmount'];
+                $Checkin = $datarequest['Checkin'];
+                $Checkout = $datarequest['Checkout'];
+                $Day = $datarequest['Day'];
+                $Night = $datarequest['Night'];
+                $comment = $datarequest['comment'];
+                $user = User::where('id',$userid)->select('id','name')->first();
+                $fullName = null;
+                $Contact_Name = null;
+                $Contact_phone =null;
+                $Contact_Email = null;
+                if ($Selectdata == 'Guest') {
+                    $Data = Guest::where('Profile_ID',$Data_ID)->first();
+                    $prename = $Data->preface;
+                    $First_name = $Data->First_name;
+                    $Last_name = $Data->Last_name;
+                    $Address = $Data->Address;
+                    $Email = $Data->Email;
+                    $Taxpayer_Identification = $Data->Identification_Number;
+                    $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
+                    $name = $prefix->name_th;
+                    $fullName = $name.' '.$First_name.' '.$Last_name;
+                    //-------------ที่อยู่
+                    $CityID=$Data->City;
+                    $amphuresID = $Data->Amphures;
+                    $TambonID = $Data->Tambon;
+                    $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                    $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                    $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                    $Fax_number = '-';
+                    $phone = phone_guest::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+                }else{
+                    $Company = companys::where('Profile_ID',$Data_ID)->first();
+                    $Company_type = $Company->Company_type;
+                    $Compannyname = $Company->Company_Name;
+                    $Address = $Company->Address;
+                    $Email = $Company->Company_Email;
+                    $Taxpayer_Identification = $Company->Taxpayer_Identification;
+                    $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+                    if ($comtype) {
+                        if ($comtype->name_th == "บริษัทจำกัด") {
+                            $fullName = "บริษัท " . $Compannyname . " จำกัด";
+                        } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                            $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
+                        } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                            $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                        }
+                    }
+                    $representative = representative::where('Company_ID',$Data_ID)->first();
+                    $prename = $representative->prefix;
+                    $Contact_Email = $representative->Email;
+                    $prefix = master_document::where('id', $prename)->where('Category', 'Mprename')->first();
+                    $name = $prefix->name_th;
+                    $Contact_Name = $representative->First_name.' '.$representative->Last_name;
+                    $CityID=$Company->City;
+                    $amphuresID = $Company->Amphures;
+                    $TambonID = $Company->Tambon;
+                    $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+                    $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+                    $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+                    $company_fax = company_fax::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+                    if ($company_fax) {
+                        $Fax_number =  $company_fax->Fax_number;
+                    }else{
+                        $Fax_number = '-';
+                    }
+                    $phone = company_phone::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
+                    $Contact_phone = representative_phone::where('Company_ID',$Data_ID)->where('Sequence','main')->first();
+                }
+                $eventformat = master_document::where('id',$Mevent)->select('name_th','id')->first();
+                $template = master_template::query()->latest()->first();
+                $CodeTemplate = $template->CodeTemplate;
+                $sheet = master_document_sheet::select('topic','name_th','id','CodeTemplate')->get();
+                $Reservation_show = $sheet->where('topic', 'Reservation')->where('CodeTemplate',$CodeTemplate)->first();
+                $Paymentterms = $sheet->where('topic', 'Paymentterms')->where('CodeTemplate',$CodeTemplate)->first();
+                $note = $sheet->where('topic', 'note')->where('CodeTemplate',$CodeTemplate)->first();
+                $Cancellations = $sheet->where('topic', 'Cancellations')->where('CodeTemplate',$CodeTemplate)->first();
+                $Complimentary = $sheet->where('topic', 'Complimentary')->where('CodeTemplate',$CodeTemplate)->first();
+                $All_rights_reserved = $sheet->where('topic', 'All_rights_reserved')->where('CodeTemplate',$CodeTemplate)->first();
+                $date = Carbon::now();
+                $unit = master_unit::where('status',1)->get();
+                $quantity = master_quantity::where('status',1)->get();
+                $settingCompany = Master_company::orderBy('id', 'desc')->first();
+                if ($Checkin) {
+                    $checkin = $Checkin;
+                    $checkout = $Checkout;
+                }else{
+                    $checkin = '-';
+                    $checkout = '-';
+                }
+                $data = [
+                    'settingCompany'=>$settingCompany,
+                    'page_item'=>$page_item,
+                    'page'=>$pagecount,
+                    'Selectdata'=>$Selectdata,
+                    'date'=>$date,
+                    'fullName'=>$fullName,
+                    'provinceNames'=>$provinceNames,
+                    'Address'=>$Address,
+                    'amphuresID'=>$amphuresID,
+                    'TambonID'=>$TambonID,
+                    'Email'=>$Email,
+                    'phone'=>$phone,
+                    'Fax_number'=>$Fax_number,
+                    'Day'=>$Day,
+                    'Night'=>$Night,
+                    'Checkin'=>$checkin,
+                    'Checkout'=>$checkout,
+                    'eventformat'=>$eventformat,
+                    'totalguest'=>$totalguest,
+                    'Reservation_show'=>$Reservation_show,
+                    'Paymentterms'=>$Paymentterms,
+                    'note'=>$note,
+                    'Cancellations'=>$Cancellations,
+                    'Complimentary'=>$Complimentary,
+                    'All_rights_reserved'=>$All_rights_reserved,
+                    'Proposal_ID'=>$Proposal_ID,
+                    'IssueDate'=>$IssueDate,
+                    'Expiration'=>$Expiration,
+                    'qrCodeBase64'=>$qrCodeBase64,
+                    'user'=>$user,
+                    'Taxpayer_Identification'=>$Taxpayer_Identification,
+                    'Adult'=>$Adult,
+                    'Children'=>$Children,
+                    'totalAmount'=>$totalAmount,
+                    'SpecialDis'=>$SpecialDis,
+                    'subtotal'=>$subtotal,
+                    'beforeTax'=>$beforeTax,
+                    'Nettotal'=>$Nettotal,
+                    'totalguest'=>$totalguest,
+                    'guest'=>$guest,
+                    'totalaverage'=>$totalaverage,
+                    'AddTax'=>$AddTax,
+                    'productItems'=>$productItems,
+                    'unit'=>$unit,
+                    'quantity'=>$quantity,
+                    'Mvat'=>$Mvat,
+                    'comment'=>$comment,
+                    'Mevent'=>$Mevent,
+                    'Contact_Name'=>$Contact_Name,
+                    'Contact_phone'=>$Contact_phone,
+                    'Contact_Email'=>$Contact_Email,
+                    'SpecialDistext'=>$SpecialDistext,
+                ];
+                $view= $template->name;
+                $pdf = FacadePdf::loadView('quotationpdf.preview',$data);
+                return $pdf->stream();
+            } catch (\Throwable $e) {
+                return redirect()->route('Proposal.edit',['id' => $Quotationid])->with('error', $e->getMessage());
+            }
         }else {
             $datarequest = [
                 'Proposal_ID' => $data['Quotation_ID'] ?? null,

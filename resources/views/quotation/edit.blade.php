@@ -1007,7 +1007,7 @@
         $(document).ready(function() {
             const checkinDate = moment(document.getElementById('Checkin').value, 'DD/MM/YYYY');
             const checkoutDate = moment(document.getElementById('Checkout').value, 'DD/MM/YYYY');
-
+            var flexCheckChecked = document.getElementById('flexCheckChecked');
             var dayName = checkinDate.format('dddd'); // Format to get the day name
             var enddayName = checkoutDate.format('dddd'); // Format to get the day name
 
@@ -1015,19 +1015,22 @@
             if (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'].includes(dayName)) {
                 if (dayName === 'Thursday' && enddayName === 'Saturday') {
                     $('#calendartext').text("Weekday-Weekend");
-
                     $('#inputcalendartext').val("Weekday-Weekend");
+                    flexCheckChecked.disabled = true;
                 }else{
                     $('#calendartext').text("Weekday");
                     $('#inputcalendartext').val("Weekday");
+                    flexCheckChecked.disabled = true;
                 }
             } else if (['Friday','Saturday','Sunday'].includes(dayName)) {
                 if (dayName === 'Saturday' && enddayName === 'Monday') {
                     $('#calendartext').text("Weekday-Weekend");
                     $('#inputcalendartext').val("Weekday-Weekend");
+                    flexCheckChecked.disabled = true;
                 }else{
                     $('#calendartext').text("Weekend");
                     $('#inputcalendartext').val("Weekend");
+                    flexCheckChecked.disabled = true;
                 }
             }
         });
@@ -1481,7 +1484,7 @@
                                     return true;
                                 }
                             }
-                        } else {
+                        } else if (checkDate === 'Weekday-Weekend'){
                             if (indayName === 'Thursday') {
                                 if (['Monday', 'Sunday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
                                     return true;
@@ -1490,6 +1493,10 @@
                                 if (['Saturday', 'Sunday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
                                     return true;
                                 }
+                            }
+                        }else{
+                            if (['Saturday', 'Sunday','Monday', 'Tuesday', 'Wednesday', 'Friday', 'Thursday'].includes(date.format('dddd'))) {
+                                return true;
                             }
                         }
                     }

@@ -192,8 +192,8 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Edit Proposal.</small>
-                    <div class=""><span class="span1">Edit Proposal (แก้ไขเอกสารใบข้อเสนอ)</span></div>
+                    <small class="text-muted">Welcome to View Dummy Proposal.</small>
+                    <div class=""><span class="span1">View Dummy Proposal (ดูเอกสารใบข้อเสนอ)</span></div>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -304,7 +304,7 @@
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <div class="row">
                                         <div class="col-lg-6 col-md-12 col-sm-12">
-                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
+                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" disabled> No Check In Date</label>
                                         </div>
                                         <div class="col-lg-6 col-md-12 col-sm-12" style="float: right">
                                             <span><b> Date Type : </b><span id="calendartext" style="font-size: 16px;color:rgb(0, 0, 0);"></span></span>
@@ -2301,7 +2301,7 @@
         function BACKtoEdit(){
             event.preventDefault();
             Swal.fire({
-                title: "คุณต้องการยกเลิกใช่หรือไม่?",
+                title: "คุณต้องการย้อนกลับใช่หรือไม่?",
                 icon: "question",
                 showCancelButton: true,
                 confirmButtonText: "ตกลง",

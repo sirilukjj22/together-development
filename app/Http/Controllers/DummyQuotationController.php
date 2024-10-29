@@ -399,7 +399,7 @@ class DummyQuotationController extends Controller
         $ProposalID =$request->Quotation_ID;
         $adult = (int) $request->input('Adult', 0); // ใช้ค่าเริ่มต้นเป็น 0 ถ้าค่าไม่ถูกต้อง
         $children = (int) $request->input('Children', 0);
-        $SpecialDiscount = $request->SpecialDiscount;
+        $SpecialDiscount = floor($request->SpecialDiscount);
         $SpecialDiscountBath = $request->DiscountAmount;
         $userid = Auth::user()->id;
         $Proposal_ID = dummy_quotation::where('Quotation_ID',$ProposalID)->first();
@@ -2360,6 +2360,8 @@ class DummyQuotationController extends Controller
             $save->commissionratecode = $dummy->commissionratecode;
             $save->eventformat = $dummy->eventformat;
             $save->vat_type = $dummy->vat_type;
+            $save->additional_discount = $dummy->additional_discount;
+            $save->SpecialDiscountBath = $dummy->SpecialDiscountBath;
             $save->issue_date = $dummy->issue_date;
             $save->Date_type = $dummy->Date_type;
             $save->Expirationdate = $dummy->Expirationdate;

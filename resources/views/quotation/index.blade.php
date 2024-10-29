@@ -1775,16 +1775,17 @@
                         // ตรวจสอบว่าแถวมี `approve_date` อยู่หรือไม่
                         const approveDateInput = row.querySelector('#approve_date');
                         const updateDate = new Date(input.value);
-                        const approveDate = approveDateInput && approveDateInput.value ? new Date(approveDateInput.value) : null;
+                        const approveDate = approveDateInput && approveDateInput.value ? new Date(approveDateInput.value) : new Date();
 
-                        // ถ้า approveDate ไม่มีค่า ให้ใช้วันที่ปัจจุบันแทน
-                        const endDate = approveDate || new Date();
-                        console.log(updateDate);
-                        console.log(endDate);
+                        // ตั้งค่าเวลาเป็น 00:00 ของวันที่เพื่อความแม่นยำในการคำนวณ
+                        updateDate.setHours(0, 0, 0, 0);
+                        approveDate.setHours(0, 0, 0, 0);
 
                         // คำนวณความแตกต่างของเวลาในหน่วยวัน
-                        const timeDifference = endDate - updateDate;
+                        const timeDifference = approveDate - updateDate;
                         const daysPassed = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+                        console.log(daysPassed);
 
                         // แสดงผลลัพธ์ใน `<span>` ที่อยู่ในแถวเดียวกัน
                         const daysCountSpan = row.querySelector('.days-count');

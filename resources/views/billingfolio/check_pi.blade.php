@@ -39,9 +39,118 @@
                     <button class="bt-tg-normal ">
                         <a href="{{ route('invoice.index') }}">Create Invoice</a>
                     </button>
-                    {{-- <button class="bt-tg-normal">
-                    <a href="createBill.html">Normal Bill</a>
-                    </button> --}}
+                    @php
+                        $canEditProposal = @Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
+                    @endphp
+                    @if ($canEditProposal)
+                        <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#OverCreate" onclick="requestConfirmation()">
+                        <i class="fa fa-plus"></i> Over Bill</button>
+                    @endif
+                    <div class="modal fade" id="OverCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Waiting for confirmation</h1>
+                                    <span style="color: red;font-size: 10px;">(รอยืนยัน)</span>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="col-12">
+                                        <div class="card-body">
+                                            <div class="col-lg-12 col-md-12 col-sm-12">
+
+                                            </div>
+                                            <div id="countdownDisplay" style="font-weight: bold; font-size: 16px; color: red;">
+                                                รอการยืนยันจากบุคคลที่สอง...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger"  onclick="CancelRequest()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <script>
+
+                        function requestConfirmation() {
+                            let timeLeft = 300;
+                            const countdownDisplay = document.getElementById("countdownDisplay");
+
+                            // ส่งคำขอยืนยันไปยังเซิร์ฟเวอร์
+                            fetch('/request-confirmation', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            })
+                            .then(response => response.text())  // ใช้ .text() เพื่อดูผลลัพธ์จริง
+                            .then(text => {
+                                console.log(text);  // ดูว่าได้ HTML หรือ JSON กลับมา
+                                return JSON.parse(text);  // แปลงเป็น JSON หลังจากดูข้อมูลแล้ว
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    // เริ่มนับถอยหลัง
+                                    const countdownInterval = setInterval(() => {
+                                        timeLeft--;
+                                        const minutes = Math.floor(timeLeft / 60);
+                                        const seconds = timeLeft % 60;
+
+                                        // แสดงผลในรูปแบบ นาที:วินาที
+                                        countdownDisplay.innerText = `เหลือเวลา ${minutes}:${seconds < 10 ? '0' : ''}${seconds} นาที`;
+                                        console.log(data.request_id);
+
+                                        // เช็คสถานะการยืนยัน
+                                        fetch(`/check-confirmation-status/${data.request_id}`, {
+                                            method: 'GET',
+                                            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+                                        })
+                                        .then(response => response.json())
+                                        .then(statusData => {
+                                            if (statusData.status == '2') {
+                                                window.location.href = "/Document/BillingFolio/Over/index";
+                                                clearInterval(countdownInterval);
+                                            } else if (statusData.status == '0') {
+                                                clearInterval(countdownInterval);
+                                            }
+                                        })
+                                        // .catch(error => console.error("Status check error:", error));
+
+                                        // เมื่อหมดเวลา
+                                        if (timeLeft <= 0) {
+                                            clearInterval(countdownInterval);
+                                            countdownDisplay.innerText = "หมดเวลาแล้ว บุคคลที่สองไม่ได้ยืนยัน";
+                                            CancelRequest();
+                                        }
+                                    }, 1000);
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                        }
+
+                        function CancelRequest() {
+                            var id = "{{ auth()->user()->id }}";
+                            jQuery.ajax({
+                                type: "GET",
+                                url: "/Cancel-request/" + id,
+                                datatype: "JSON",
+                                async: false,
+                                success: function(response) {
+                                    if (response.success) {
+                                        $('#OverCreate').modal('hide');
+                                        location.reload();
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error("AJAX request failed: ", status, error);
+                                }
+                            });
+                        }
+                    </script>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -126,16 +235,32 @@
                             </section>
                         <section class="card2 gradient-bg">
                         <div class="card-content3 bg-card-content-white">
-                            <h5 class="card-title center" >Folio</h5>
+                            <div class="card-title center" style="position: relative;"><span>Folio </span><span id="switchButton" style='font-size:20px;position: absolute;right: 1em;'>&#8644;</span> </div>
                             <ul class="card-list-between">
                                 <li class="pr-3">
                                     <span>Proposal ({{$Proposal_ID}})</span>
                                     <span class="hover-effect i  f-w-bold" style="color: #438985;" data-bs-toggle="modal" data-bs-target="#ModalProposalSummary"> {{ number_format($Nettotal, 2, '.', ',') }} <i class="fa fa-file-text-o hover-up"></i></span>
                                 </li>
-                                <li class="pr-3">
-                                    <span>Receipt</span>
-                                    <span class="text-danger f-w-bold">{{ number_format($totalReceipt, 2, '.', ',') }}</span>
-                                </li>
+                                <span id="defaultContent">
+                                    <li class="pr-3">
+                                        <span>Receipt</span>
+                                        <span class="text-danger f-w-bold">{{ number_format($totalReceipt, 2, '.', ',') }}</span>
+                                    </li>
+                                    <li class="pr-3">
+                                        <span>Additional</span>
+                                        <span class="text-danger f-w-bold">0</span>
+                                    </li>
+                                </span>
+                                <span id="toggleContent" style="display: none;">
+                                    <li class="pr-3 ">
+                                        <span>Cash</span>
+                                        <span class="text-danger f-w-bold">15,000.00</span>
+                                    </li>
+                                    <li class="pr-3">
+                                        <span>Complimentary</span>
+                                        <span class="text-danger f-w-bold">15,000.00</span>
+                                    </li>
+                                </span>
                             </ul>
                             <li class="outstanding-amount">
                                 <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
@@ -607,4 +732,20 @@
   });
 });
    </script>
+   <script>
+    document.getElementById("switchButton").addEventListener("click", function () {
+      const defaultContent = document.getElementById("defaultContent");
+      const toggleContent = document.getElementById("toggleContent");
+
+      if (defaultContent.style.display === "none") {
+        defaultContent.style.display = "block";
+        toggleContent.style.display = "none";
+        this.innerHTML = "&#8644;";
+      } else {
+        defaultContent.style.display = "none";
+        toggleContent.style.display = "block";
+        this.innerHTML = "&#8646;";
+      }
+    });
+  </script>
 @endsection
