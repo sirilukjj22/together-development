@@ -685,6 +685,8 @@ class SMSController extends Controller
     {
         $role_revenue = Role_permission_revenue::where('user_id', Auth::user()->id)->first();
 
+        // dd($request);
+
         if ($request->filter_by == "date" || $request->filter_by == "today") {
             $req_date = $request->filter_by == "today" ? date('Y-m-d') : Carbon::parse($request->date)->format('Y-m-d');
             $adate = $req_date;
@@ -714,13 +716,16 @@ class SMSController extends Controller
             $date_current = $adate2;
 
         } elseif ($request->filter_by == "month") {
+            $countM = explode(' ', $request->date);
             $exp = explode('-', $request->date);
 
-            $start_month = Carbon::parse($exp[0])->format('m');
-            $end_month = Carbon::parse($exp[0])->format('m');
+            dd($exp[0]);
+
+            $start_month = Carbon::parse($exp[1])->format('m');
+            $end_month = Carbon::parse($exp[1])->format('m');
             $year = Carbon::parse($exp[0])->format('Y');
 
-            if (isset($exp[1])) { // เลือกมากกว่า 1 เดือน
+            if (isset($countM[1])) { // เลือกมากกว่า 1 เดือน
                 $end_month = Carbon::parse($exp[1])->format('m');
                 $year = Carbon::parse($exp[1])->format('Y');
             }

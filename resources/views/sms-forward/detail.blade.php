@@ -427,7 +427,7 @@
 
     <input type="hidden" id="filter-by" name="filter_by" value="{{ $filter_by }}">
     <input type="hidden" id="date" name="date" value="{{ $search_date }}">
-    <input type="hidden" id="status" value="{{ $status }}">
+    <input type="hidden" id="search-status" value="{{ $status }}">
     <input type="hidden" id="into_account" value="{{ $into_account }}">
     <input type="hidden" id="get-total-smsDetail" value="{{ $data_sms->total() }}">
     <input type="hidden" id="currentPage-smsDetail" value="1">

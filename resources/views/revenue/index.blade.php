@@ -10,7 +10,8 @@
 
         $this_week = date('d M', strtotime('last sunday', strtotime('next sunday', strtotime(date('Y-m-d'))))); // อาทิตย์ - เสาร์
         
-        $day_sum = isset($search_date) ? date('j', strtotime($search_date)) : date('j');
+        $formatMonth = date('Y-m', strtotime($date_current));
+        $day_sum = isset($formatMonth) ? date('t', strtotime($formatMonth)) : date('t');
 
         if (isset($filter_by) && $filter_by == 'date' || isset($filter_by) && $filter_by == 'today' || isset($filter_by) && $filter_by == 'yesterday' || isset($filter_by) && $filter_by == 'tomorrow') {
             $pickup_time = date('d F Y', strtotime($search_date));
@@ -331,8 +332,7 @@
                             <div>
                                 {{ number_format(($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_credit ?? 0), 2) }}
                             </div>
-                            <input type="hidden" id="total_credit_dashboard"
-                                value="{{ ($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_credit ?? 0) }}">
+                            <input type="hidden" id="total_credit_dashboard" value="{{ ($credit_revenue->total_credit ?? 0) + ($total_revenue_today->wp_credit ?? 0) }}">
                         </div>
                         <div class="sub d-grid-r4">
                             <div class="box-card bg-box" onclick="revenue_detail('cc_credit_hotel')">

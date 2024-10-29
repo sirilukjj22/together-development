@@ -1413,6 +1413,7 @@ class RevenuesController extends Controller
         $total_verified = Revenues::whereBetween('date', [$date1, $date2])->where('status', 1)->count();
         $total_unverified = Revenues::whereBetween('date', [$date1, $date2])->where('status', 0)->count();
 
+        // dd($month_from, $month_to);
         $total_revenue_today = Revenues::whereBetween('date', [$month_from, $month_to])->select(
             DB::raw("
             SUM(front_cash + front_transfer + front_credit) as front_amount, 
@@ -1420,7 +1421,8 @@ class RevenuesController extends Controller
             SUM(fb_cash + fb_transfer + fb_credit) as fb_amount,
             SUM(wp_cash + wp_transfer + wp_credit) as wp_amount,
             SUM(room_credit + fb_credit + wp_credit) as credit_amount,
-            SUM(total_transaction) as total_transaction"), 'total_credit_agoda', 'other_revenue', 'total_no_type', 'status')->first();
+            SUM(total_transaction) as total_transaction,
+            SUM(total_credit_agoda) as total_credit_agoda"), 'other_revenue', 'total_no_type', 'status')->first();
 
         $total_transfer = SMS_alerts::whereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('transfer_status', 1)->sum('amount');
         $total_transfer2 = SMS_alerts::whereBetween('date_into', [$from, $to])->where('transfer_status', 1)->count();
@@ -1437,6 +1439,8 @@ class RevenuesController extends Controller
 
         $total_day = $total_revenue_today->front_amount + $total_revenue_today->room_amount + $total_revenue_today->fb_amount
          + $total_revenue_today->wp_amount + $total_revenue_today->credit_amount + $total_revenue_today->total_credit_agoda + $total_revenue_today->other_revenue;
+
+        //  dd($total_revenue_today);
 
         ## ข้อมูลในตาราง
 
