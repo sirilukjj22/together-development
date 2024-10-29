@@ -1776,7 +1776,7 @@ class RevenuesController extends Controller
         $ev_month_query = Revenues::query();
         
             if ($request->filter_by == "date"|| $request->filter_by == "today") {
-                $ev_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', date('m'))->whereYear('date', date('Y'));
+                $ev_month_query->whereDay('date', $symbol, $day_now)->whereMonth('date', $Fmonth)->whereYear('date', $Fyear);
 
             } elseif ($request->filter_by == "month" || $request->filter_by == "thisMonth" || $request->filter_by == "year" || $request->filter_by == "week" || $request->filter_by == "customRang") {
                 $ev_month_query->whereBetween('date', [$month_from, $month_to]);
