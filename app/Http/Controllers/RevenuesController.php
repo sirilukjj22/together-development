@@ -2468,6 +2468,16 @@ class RevenuesController extends Controller
             $status = "credit_hotel_fee";
             $revenue_name = "fee";
 
+        } if($request->revenue_type == "agoda_fee") {
+            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+                ->where('revenue_credit.revenue_type', 1)->whereBetween('revenue.date', [$month_from, $month_to])
+                ->select('revenue.date', 'revenue_credit.batch', 'revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding', 'revenue_credit.status')->paginate(10);
+            $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+                ->where('revenue_credit.revenue_type', 1)->whereBetween('revenue.date', [$month_from, $month_to])->sum(DB::raw('revenue_credit.agoda_charge - revenue_credit.agoda_outstanding'));
+            $title = "Agoda Fee";
+            $status = "agoda_fee";
+            $revenue_name = "agoda_fee";
+
         }
 
 
@@ -2596,6 +2606,8 @@ class RevenuesController extends Controller
             return view('revenue.detail_cash', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($revenue_name == "fee") {
             return view('revenue.fee_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+        }  elseif ($revenue_name == "agoda_fee") {
+            return view('revenue.fee_agoda_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } 
         else {
             return view('revenue.detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
