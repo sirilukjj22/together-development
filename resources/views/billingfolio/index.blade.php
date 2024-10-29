@@ -1,6 +1,5 @@
 @extends('layouts.masterLayout')
 
-</style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
         <div class="container-xl">
@@ -44,121 +43,123 @@
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
-        <div class="row clearfix">
-            <div class="col-sm-12 col-12">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div style="min-height: 70vh;" class="mt-2">
-                            <caption class="caption-top">
-                                <div class="flex-end-g2">
-                                    <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-billing" onchange="getPage(1, this.value, 'billing')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "billing" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "billing" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "billing" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "billing" ? 'selected' : '' }}>100</option>
-                                    </select>
-                                    <input class="search-button search-data" id="billing" style="text-align:left;" placeholder="Search" />
-                                </div>
-                            </caption>
-                            <table id="billingTable" class="example1 ui striped table nowrap unstackable hover">
-                                <thead>
-                                    <tr>
-                                        <th style="text-align: center;"data-priority="1">No</th>
-                                        <th data-priority="1">Receipt ID</th>
-                                        <th data-priority="1">Company / Individual</th>
-                                        <th>Room No</th>
-                                        <th>Payment Date</th>
-                                        <th class="text-center">Amount</th>
-                                        <th class="text-center">Category</th>
-                                        <th class="text-center">Operated By</th>
-                                        <th class="text-center">Document status</th>
-                                        <th class="text-center">Order</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(!empty($Approved))
-                                        @foreach ($Approved as $key => $item)
+        <div class="container-xl">
+            <div class="row clearfix">
+                <div class="col-sm-12 col-12">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div style="min-height: 70vh;" class="mt-2">
+                                <caption class="caption-top">
+                                    <div class="flex-end-g2">
+                                        <label class="entriespage-label">entries per page :</label>
+                                        <select class="entriespage-button" id="search-per-page-billing" onchange="getPage(1, this.value, 'billing')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "billing" ? 'selected' : '' }}>10</option>
+                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "billing" ? 'selected' : '' }}>25</option>
+                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "billing" ? 'selected' : '' }}>50</option>
+                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "billing" ? 'selected' : '' }}>100</option>
+                                        </select>
+                                        <input class="search-button search-data" id="billing" style="text-align:left;" placeholder="Search" />
+                                    </div>
+                                </caption>
+                                <table id="billingTable" class="example1 ui striped table nowrap unstackable hover">
+                                    <thead>
                                         <tr>
-                                            <td style="text-align: center;">
-                                                {{$key +1}}
-                                            </td>
-                                            <td>{{ $item->Receipt_ID}}</td>
-                                            @if ($item->type_Proposal == 'Company')
-                                                <td>{{ isset($item->company00->Company_Name) ? $item->company00->Company_Name : '' }}</td>
-                                            @elseif ($item->type_Proposal == 'Guest')
-                                                <td>{{ isset($item->guest->First_name) && isset($item->guest->Last_name) ? $item->guest->First_name.' '.$item->guest->Last_name : '' }}</td>
-                                            @elseif ($item->type_Proposal == 'company_tax')
-                                                <td>{{ isset($item->company_tax->Companny_name) ? $item->company_tax->Companny_name : (isset($item->company_tax->first_name) && isset($item->company_tax->last_name) ? $item->company_tax->first_name.' '.$item->company_tax->last_name : '') }}</td>
-                                            @elseif ($item->type_Proposal == 'guest_tax')
-                                                <td>{{ isset($item->guest_tax->Company_name) ? $item->guest_tax->Company_name : (isset($item->guest_tax->first_name) && isset($item->guest_tax->last_name) ? $item->guest_tax->first_name.' '.$item->guest_tax->last_name : '') }}</td>
-                                            @endif
+                                            <th style="text-align: center;"data-priority="1">No</th>
+                                            <th data-priority="1">Receipt ID</th>
+                                            <th data-priority="1">Company / Individual</th>
+                                            <th>Room No</th>
+                                            <th>Payment Date</th>
+                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">Category</th>
+                                            <th class="text-center">Operated By</th>
+                                            <th class="text-center">Document status</th>
+                                            <th class="text-center">Order</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($Approved))
+                                            @foreach ($Approved as $key => $item)
+                                            <tr>
+                                                <td style="text-align: center;">
+                                                    {{$key +1}}
+                                                </td>
+                                                <td>{{ $item->Receipt_ID}}</td>
+                                                @if ($item->type_Proposal == 'Company')
+                                                    <td>{{ isset($item->company00->Company_Name) ? $item->company00->Company_Name : '' }}</td>
+                                                @elseif ($item->type_Proposal == 'Guest')
+                                                    <td>{{ isset($item->guest->First_name) && isset($item->guest->Last_name) ? $item->guest->First_name.' '.$item->guest->Last_name : '' }}</td>
+                                                @elseif ($item->type_Proposal == 'company_tax')
+                                                    <td>{{ isset($item->company_tax->Companny_name) ? $item->company_tax->Companny_name : (isset($item->company_tax->first_name) && isset($item->company_tax->last_name) ? $item->company_tax->first_name.' '.$item->company_tax->last_name : '') }}</td>
+                                                @elseif ($item->type_Proposal == 'guest_tax')
+                                                    <td>{{ isset($item->guest_tax->Company_name) ? $item->guest_tax->Company_name : (isset($item->guest_tax->first_name) && isset($item->guest_tax->last_name) ? $item->guest_tax->first_name.' '.$item->guest_tax->last_name : '') }}</td>
+                                                @endif
 
-                                            <td>{{ $item->roomNo }}</td>
-                                            <td>{{ $item->paymentDate }}</td>
-                                            <td style="text-align: center;">
-                                                {{ number_format($item->Amount) }}
-                                            </td>
-                                            <td style="text-align: center;">{{ $item->category }}</td>
-                                            <td style="text-align: center;">
-                                                {{ @$item->userOperated->name }}
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <span class="badge rounded-pill bg-success">Confirm</span>
-                                            </td>
-                                            @php
-                                                $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                $canViewProposal = @Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
-                                                $canEditProposal = @Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
-                                            @endphp
-                                            <td style="text-align: center;">
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
-                                                    <ul class="dropdown-menu border-0 shadow p-3">
-                                                        @if ($rolePermission > 0)
-                                                            @if ($canViewProposal == 1)
-                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item->id) }}">Export</a></li>
-                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/log/'.$item->id) }}">LOG</a></li>
-                                                            @endif
-                                                            @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
-                                                                @if ($canEditProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
+                                                <td>{{ $item->roomNo }}</td>
+                                                <td>{{ $item->paymentDate }}</td>
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->Amount) }}
+                                                </td>
+                                                <td style="text-align: center;">{{ $item->category }}</td>
+                                                <td style="text-align: center;">
+                                                    {{ @$item->userOperated->name }}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    <span class="badge rounded-pill bg-success">Confirm</span>
+                                                </td>
+                                                @php
+                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                    $canViewProposal = @Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
+                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
+                                                @endphp
+                                                <td style="text-align: center;">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                                            @if ($rolePermission > 0)
+                                                                @if ($canViewProposal == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item->id) }}">Export</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/log/'.$item->id) }}">LOG</a></li>
                                                                 @endif
-                                                            @elseif ($rolePermission == 2)
-                                                                @if ($item->Operated_by == $CreateBy)
+                                                                @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
+                                                                    @if ($canEditProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
+                                                                    @endif
+                                                                @elseif ($rolePermission == 2)
+                                                                    @if ($item->Operated_by == $CreateBy)
+                                                                        @if ($canEditProposal == 1)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
+                                                                        @endif
+                                                                    @endif
+                                                                @elseif ($rolePermission == 3)
                                                                     @if ($canEditProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
                                                                     @endif
                                                                 @endif
-                                                            @elseif ($rolePermission == 3)
-                                                                @if ($canEditProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/'.$item->id) }}">Edit</a></li>
+                                                            @else
+                                                                @if ($canViewProposal == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item->id) }}">Export</a></li>
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/log/'.$item->id) }}">LOG</a></li>
                                                                 @endif
                                                             @endif
-                                                        @else
-                                                            @if ($canViewProposal == 1)
-                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/view/'.$item->id) }}">Export</a></li>
-                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/invoice/log/'.$item->id) }}">LOG</a></li>
-                                                            @endif
-                                                        @endif
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    @endif
-                                </tbody>
-                            </table>
-                            <input type="hidden" id="get-total-billing" value="{{ $Approved->total() }}">
-                            <input type="hidden" id="currentPage-billing" value="1">
-                            <caption class="caption-bottom">
-                                <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="billing-showingEntries">{{ showingEntriesTable($Approved, 'billing') }}</p>
-                                    <div id="billing-paginate">
-                                        {!! paginateTable($Approved, 'billing') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                                <input type="hidden" id="get-total-billing" value="{{ $Approved->total() }}">
+                                <input type="hidden" id="currentPage-billing" value="1">
+                                <caption class="caption-bottom">
+                                    <div class="md-flex-bt-i-c">
+                                        <p class="py2" id="billing-showingEntries">{{ showingEntriesTable($Approved, 'billing') }}</p>
+                                        <div id="billing-paginate">
+                                            {!! paginateTable($Approved, 'billing') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                        </div>
                                     </div>
-                                </div>
-                            </caption>
+                                </caption>
+                            </div>
                         </div>
                     </div>
                 </div>

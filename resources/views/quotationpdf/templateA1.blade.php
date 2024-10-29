@@ -198,11 +198,11 @@
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Company Address :</b></td>
-                        <td>{{$Address}} {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}</td>
+                        <td>{{$Address}} {{'ตำบล' . $TambonID->name_th}} </td>
                     </tr>
                     <tr>
                         <td></td>
-                    <td> {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
+                    <td> {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
                     </tr>
                     <tr>
                         <td><b style="margin-left: 30px;">Company Email :</b></td>
@@ -422,8 +422,16 @@
                                 <tr>
                                     <td><b style="margin-left: 10px;">Company Address :</b></td>
                                     <td>{{$Address}}
-                                        @if ($TambonID)
+                                        {{-- @if ($TambonID)
                                             {{'ตำบล' . $TambonID->name_th}}
+                                        @endif --}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        @if ($TambonID)
+                                        {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}
                                         @endif
                                     </td>
                                 </tr>
@@ -431,7 +439,7 @@
                                     <td></td>
                                     <td>
                                         @if ($TambonID)
-                                            {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
+                                        {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
                                         @endif
                                     </td>
                                 </tr>

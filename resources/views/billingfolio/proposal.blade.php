@@ -32,94 +32,96 @@
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
-        <div class="row clearfix">
-            <div class="col-sm-12 col-12">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div style="min-height: 70vh;" class="mt-2">
-                            <caption class="caption-top">
-                                <div class="flex-end-g2">
-                                    <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-billing" onchange="getPagePending(1, this.value, 'billing')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "billing" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "billing" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "billing" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "billing" ? 'selected' : '' }}>100</option>
-                                    </select>
-                                    <input class="search-button search-data" id="billing" style="text-align:left;" placeholder="Search" />
-                                </div>
-                            </caption>
-                            <table id="billingTable" class="example1 ui striped table nowrap unstackable hover">
-                                <thead>
-                                    <tr>
-                                        <th style="text-align: center;"data-priority="1">No</th>
-                                        <th data-priority="1">Proposal ID</th>
-                                        <th data-priority="1">Company / Individual</th>
-                                        <th>Issue Date</th>
-                                        <th>Expiration Date</th>
-                                        <th class="text-center">Amount</th>
-                                        <th class="text-center">Paid</th>
-                                        <th class="text-center">Approve By</th>
-                                        <th class="text-center">Document status</th>
-                                        <th class="text-center">Order</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if(!empty($Approved))
-                                        @foreach ($Approved as $key => $item)
-                                        <tr>
-                                            <td style="text-align: center;">
-                                                {{$key +1}}
-                                            </td>
-                                            <td>{{ $item->Quotation_ID}}</td>
-                                            @if ($item->type_Proposal == 'Company')
-                                                <td>{{ @$item->company->Company_Name}}</td>
-                                            @else
-                                                <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
-                                            @endif
-                                            <td>{{ $item->issue_date }}</td>
-                                            <td>{{ $item->Expirationdate }}</td>
-                                            <td style="text-align: center;">
-                                                {{ number_format($item->Nettotal) }}
-                                            </td>
-                                            <td style="text-align: center;">
-                                                @if ($item->receive_amount == 0 )
-                                                    0
-                                                @else
-                                                    {{ number_format($item->receive_amount) }}
-                                                @endif
-                                            </td>
-                                            <td style="text-align: center;">
-                                                @if (@$item->userConfirm->name == null)
-                                                    Auto
-                                                @else
-                                                    {{ @$item->userConfirm->name }}
-                                                @endif
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <span class="badge rounded-pill bg-success">Proposal</span>
-                                            </td>
-
-                                            <td style="text-align: center;">
-                                                <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/BillingFolio/Proposal/invoice/CheckPI/'.$item->id) }}'">
-                                                    Select
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    @endif
-                                </tbody>
-                            </table>
-                            <input type="hidden" id="get-total-billing" value="{{ $Approved->total() }}">
-                            <input type="hidden" id="currentPage-billing" value="1">
-                            <caption class="caption-bottom">
-                                <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="billing-showingEntries">{{ showingEntriesTablePending($Approved, 'billing') }}</p>
-                                    <div id="billing-paginate">
-                                        {!! paginateTablePending($Approved, 'billing') !!} <!-- ข้อมูล, ชื่อตาราง -->
+        <div class="container-xl">
+            <div class="row clearfix">
+                <div class="col-sm-12 col-12">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div style="min-height: 70vh;" class="mt-2">
+                                <caption class="caption-top">
+                                    <div class="flex-end-g2">
+                                        <label class="entriespage-label">entries per page :</label>
+                                        <select class="entriespage-button" id="search-per-page-billing" onchange="getPagePending(1, this.value, 'billing')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "billing" ? 'selected' : '' }}>10</option>
+                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "billing" ? 'selected' : '' }}>25</option>
+                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "billing" ? 'selected' : '' }}>50</option>
+                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "billing" ? 'selected' : '' }}>100</option>
+                                        </select>
+                                        <input class="search-button search-data" id="billing" style="text-align:left;" placeholder="Search" />
                                     </div>
-                                </div>
-                            </caption>
+                                </caption>
+                                <table id="billingTable" class="example1 ui striped table nowrap unstackable hover">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center;"data-priority="1">No</th>
+                                            <th data-priority="1">Proposal ID</th>
+                                            <th data-priority="1">Company / Individual</th>
+                                            <th>Issue Date</th>
+                                            <th>Expiration Date</th>
+                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">Paid</th>
+                                            <th class="text-center">Approve By</th>
+                                            <th class="text-center">Document status</th>
+                                            <th class="text-center">Order</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(!empty($Approved))
+                                            @foreach ($Approved as $key => $item)
+                                            <tr>
+                                                <td style="text-align: center;">
+                                                    {{$key +1}}
+                                                </td>
+                                                <td>{{ $item->Quotation_ID}}</td>
+                                                @if ($item->type_Proposal == 'Company')
+                                                    <td>{{ @$item->company->Company_Name}}</td>
+                                                @else
+                                                    <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                @endif
+                                                <td>{{ $item->issue_date }}</td>
+                                                <td>{{ $item->Expirationdate }}</td>
+                                                <td style="text-align: center;">
+                                                    {{ number_format($item->Nettotal) }}
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    @if ($item->receive_amount == 0 )
+                                                        0
+                                                    @else
+                                                        {{ number_format($item->receive_amount) }}
+                                                    @endif
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    @if (@$item->userConfirm->name == null)
+                                                        Auto
+                                                    @else
+                                                        {{ @$item->userConfirm->name }}
+                                                    @endif
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    <span class="badge rounded-pill bg-success">Proposal</span>
+                                                </td>
+
+                                                <td style="text-align: center;">
+                                                    <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/BillingFolio/Proposal/invoice/CheckPI/'.$item->id) }}'">
+                                                        Select
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                                <input type="hidden" id="get-total-billing" value="{{ $Approved->total() }}">
+                                <input type="hidden" id="currentPage-billing" value="1">
+                                <caption class="caption-bottom">
+                                    <div class="md-flex-bt-i-c">
+                                        <p class="py2" id="billing-showingEntries">{{ showingEntriesTablePending($Approved, 'billing') }}</p>
+                                        <div id="billing-paginate">
+                                            {!! paginateTablePending($Approved, 'billing') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                        </div>
+                                    </div>
+                                </caption>
+                            </div>
                         </div>
                     </div>
                 </div>

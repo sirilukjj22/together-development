@@ -59,437 +59,439 @@
                 </div>
             </div> <!-- Row end  -->
         </div> <!-- Row end  -->
-        <div class="row clearfix">
-            <div class="col-sm-12 col-12 pi">
-                <div class="">
-                    <div class="card-body">
-                        <section class="card-container bg-card-container">
+        <div class="container-xl">
+            <div class="row clearfix">
+                <div class="col-sm-12 col-12 pi">
+                    <div class="">
+                        <div class="card-body">
+                            <section class="card-container bg-card-container">
+                                <section class="card2 gradient-bg">
+                                    <div class="card-content bg-card-content-white" class="card-content">
+                                        <h5 class="card-title center">Client Details</h5>
+                                        <ul class="card-list-withColon">
+                                            <li>
+                                            <span>Guest Name</span>
+                                            @if ($type == 'Comapny')
+                                                <span> - </span>
+                                            @else
+                                                <span>{{$name}}</span>
+                                            @endif
+                                            </li>
+                                            <li>
+                                            <span>Company</span>
+                                            @if ($type == 'Comapny')
+                                                <span>{{$name}}</span>
+                                            @else
+                                                <span> - </span>
+                                            @endif
+                                            </li>
+                                            <li>
+                                                <span>Tax ID/Gst Pass</span>
+                                                <span>{{$Identification}}</span>
+                                            </li>
+                                            <li>
+                                                <span>Address</span>
+                                                <span>{{$address}}</span>
+                                            </li>
+                                            <li>
+                                                <span>Check In Date</span>
+                                                <span>{{$Proposal->checkin ?? 'No Check In Date'}}</span>
+                                            </li>
+                                            <li>
+                                                <span>Check Out Date</span>
+                                                <span>{{$Proposal->checkout ?? '-'}}</span>
+                                            </li>
+                                            <li>
+                                                <span>Valid Date</span>
+                                                <span>{{$valid ?? '-'}}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </section>
+                                <section class="card2 card-circle">
+                                    <div class="tech-circle-container mx-4" style="background-color: #135d58;">
+                                        <div class="outer-glow-circle"></div>
+                                        <div class="circle-content">
+                                            <p class="circle-text">
+                                            <p class="f-w-bold fs-3">{{ number_format($sumpayment, 2, '.', ',') }}</p>
+                                            <span class="subtext fs-6" >Total Amount</span>
+                                            </p>
+                                        </div>
+                                        <div class="outer-ring">
+                                            <div class="rotating-dot"></div>
+                                        </div>
+                                    </div>
+                                </section>
                             <section class="card2 gradient-bg">
-                                <div class="card-content bg-card-content-white" class="card-content">
-                                    <h5 class="card-title center">Client Details</h5>
-                                    <ul class="card-list-withColon">
-                                        <li>
-                                        <span>Guest Name</span>
-                                        @if ($type == 'Comapny')
-                                            <span> - </span>
-                                        @else
-                                            <span>{{$name}}</span>
-                                        @endif
-                                        </li>
-                                        <li>
-                                        <span>Company</span>
-                                        @if ($type == 'Comapny')
-                                            <span>{{$name}}</span>
-                                        @else
-                                            <span> - </span>
-                                        @endif
-                                        </li>
-                                        <li>
-                                            <span>Tax ID/Gst Pass</span>
-                                            <span>{{$Identification}}</span>
-                                        </li>
-                                        <li>
-                                            <span>Address</span>
-                                            <span>{{$address}}</span>
-                                        </li>
-                                        <li>
-                                            <span>Check In Date</span>
-                                            <span>{{$Proposal->checkin ?? 'No Check In Date'}}</span>
-                                        </li>
-                                        <li>
-                                            <span>Check Out Date</span>
-                                            <span>{{$Proposal->checkout ?? '-'}}</span>
-                                        </li>
-                                        <li>
-                                            <span>Valid Date</span>
-                                            <span>{{$valid ?? '-'}}</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </section>
-                            <section class="card2 card-circle">
-                                <div class="tech-circle-container mx-4" style="background-color: #135d58;">
-                                    <div class="outer-glow-circle"></div>
-                                    <div class="circle-content">
-                                        <p class="circle-text">
-                                        <p class="f-w-bold fs-3">{{ number_format($sumpayment, 2, '.', ',') }}</p>
-                                        <span class="subtext fs-6" >Total Amount</span>
-                                        </p>
-                                    </div>
-                                    <div class="outer-ring">
-                                        <div class="rotating-dot"></div>
-                                    </div>
-                                </div>
-                            </section>
-                        <section class="card2 gradient-bg">
-                        <div class="card-content3 bg-card-content-white">
-                            <h5 class="card-title center" >Folio</h5>
-                            <ul class="card-list-between">
-                                <li class="pb-1 px-2 justify-content-center gap-2 fs-5" >
-                                    <span>PI N0. </span>
-                                    <span class="hover-effect f-w-bold text-primary">({{$Invoice_ID}}) </i>
-                                    </span>
+                            <div class="card-content3 bg-card-content-white">
+                                <h5 class="card-title center" >Folio</h5>
+                                <ul class="card-list-between">
+                                    <li class="pb-1 px-2 justify-content-center gap-2 fs-5" >
+                                        <span>PI N0. </span>
+                                        <span class="hover-effect f-w-bold text-primary">({{$Invoice_ID}}) </i>
+                                        </span>
+                                    </li>
+                                    <li class="px-2">
+                                        <span>Price Before Tax</span>
+                                            <span class="hover-effect f-w-bold text-primary"> {{ number_format($sumpayment/1.07, 2, '.', ',') }} </i>
+                                        </span>
+                                    </li>
+                                    <li class="px-2">
+                                        <span>Value Added Tax</span>
+                                        <span class="hover-effect f-w-bold text-primary"> {{ number_format($sumpayment - ($sumpayment/1.07), 2, '.', ',') }} </i></span>
+                                    </li>
+                                </ul>
+                                <li class="outstanding-amount">
+                                    <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
+                                    <span class="text-success f-w-bold"> {{ number_format($sumpayment, 2, '.', ',') }}</span>
                                 </li>
-                                <li class="px-2">
-                                    <span>Price Before Tax</span>
-                                        <span class="hover-effect f-w-bold text-primary"> {{ number_format($sumpayment/1.07, 2, '.', ',') }} </i>
-                                    </span>
-                                </li>
-                                <li class="px-2">
-                                    <span>Value Added Tax</span>
-                                    <span class="hover-effect f-w-bold text-primary"> {{ number_format($sumpayment - ($sumpayment/1.07), 2, '.', ',') }} </i></span>
-                                </li>
-                            </ul>
-                            <li class="outstanding-amount">
-                                <span class="f-w-bold">Outstanding Amount &nbsp;:</span>
-                                <span class="text-success f-w-bold"> {{ number_format($sumpayment, 2, '.', ',') }}</span>
-                            </li>
-                        </div>
-                    </div>
-                    <input type="hidden" class="form-control" id="idfirst" value="{{$name_ID}}" />
-                    <input type="hidden" class="form-control" id="InvoiceID" value="{{$Invoice_ID}}" />
-                    <!-- Modal ออกบิลปกติ-->
-                    <div class="modal fade bd-example-modal-lg" id="modalAddBill" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg" role="document">
-                            <div class="modal-content rounded-lg">
-                            <div class="modal-header modal-h" style="border-radius: 0;">
-                                <h3 class="modal-title text-white">Issue Bill</h3>
-                                <span type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </span>
                             </div>
-                            <form id="myForm" action="{{route('BillingFolio.savere')}} " method="POST">
-                                @csrf
-                                <input type="hidden" id="invoice" name="invoice" class="form-control" value="{{$Invoice_ID}}">
-                                <div class="modal-body">
-                                    <div class="col-lg-12 flex-end" style="display: grid; gap:1px" >
-                                        <b >Receipt ID : {{$REID}}</b>
-                                        <b >Proforma Invoice ID : {{$Invoice_ID}}</b>
-                                    </div>
-                                    <h3>
-                                        <span>Customer Details</span>
-                                    </h3>
-                                    <div >
-                                        <label for="" class="star-red">Guest Name</label>
-                                        <select name="Guest" id="Guest" class="select2" onchange="data()" required>
-                                            <option value="{{$name_ID}}">{{$name}}</option>
-                                            @foreach($datasub as $item)
-                                                @if ($type == 'Company')
-                                                    <option value="{{ $item->ComTax_ID }}">{{ 'บริษัท '.$item->Companny_name.' จำกัด' ?? 'คุณ '.$item->first_name.' '.$item->last_name }}</option>
-                                                @else
-                                                    <option value="{{ $item->GuestTax_ID }}">{{ $item->Company_name ?? $item->first_name.' '.$item->last_name }}</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div >
-                                        <label class="star-red" for="reservationNo">Reservation No </label>
-                                        <input type="text" class="form-control" name="reservationNo" id="reservationNo" required />
-                                    </div>
-                                    <div >
-                                        <label for="company">Company</label>
-                                        @if ($type == 'Company')
-                                            <input type="text" class="form-control " id="company" name="company" value="{{$name}}" disabled  style="background-color: #59a89e81;"/>
-                                        @else
-                                            <input type="text" class="form-control " id="company" disabled  style="background-color: #59a89e81;"/>
-                                        @endif
-                                    </div>
-                                    <div >
-                                        <label for="taxID">Tax ID/Gst Pass</label>
-                                        <input type="text" id="taxID" value="auto-select" class="form-control" disabled  style="background-color: #59a89e81;"/>
-                                    </div>
-                                    <div >
-                                        <label for="address">Address</label>
-                                        <input type="text" id="address" value="auto-select" class="form-control" disabled  style="background-color: #59a89e81;"/>
-                                        <input type="text" id="address2" value="auto-select" class="form-control mt-3" disabled  style="background-color: #59a89e81;"/>
-                                    </div>
-                                    <h3>
-                                        <span>Stay Details</span>
-                                    </h3>
-                                    <div >
-                                        <label class="star-red" for="roomNo">Room No.</label>
-                                        <input type="text" id="roomNo" name="roomNo" class="form-control" required />
-                                    </div>
-                                    <div >
-                                        <label class="star-red" for="numberOfGuests">Number of Guests</label>
-                                        <input type="text" id="numberOfGuests" name="numberOfGuests" class="form-control" required />
-                                    </div>
-                                    <div >
-                                        <label for="arrival">Arrival</label>
-                                        <div class="input-group">
-                                            <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" required>
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                </span>
-                                            </div>
+                        </div>
+                        <input type="hidden" class="form-control" id="idfirst" value="{{$name_ID}}" />
+                        <input type="hidden" class="form-control" id="InvoiceID" value="{{$Invoice_ID}}" />
+                        <!-- Modal ออกบิลปกติ-->
+                        <div class="modal fade bd-example-modal-lg" id="modalAddBill" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content rounded-lg">
+                                <div class="modal-header modal-h" style="border-radius: 0;">
+                                    <h3 class="modal-title text-white">Issue Bill</h3>
+                                    <span type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </span>
+                                </div>
+                                <form id="myForm" action="{{route('BillingFolio.savere')}} " method="POST">
+                                    @csrf
+                                    <input type="hidden" id="invoice" name="invoice" class="form-control" value="{{$Invoice_ID}}">
+                                    <div class="modal-body">
+                                        <div class="col-lg-12 flex-end" style="display: grid; gap:1px" >
+                                            <b >Receipt ID : {{$REID}}</b>
+                                            <b >Proforma Invoice ID : {{$Invoice_ID}}</b>
                                         </div>
-                                    </div>
-                                    <div >
-                                        <label for="departure">Departure</label>
-                                        <div class="input-group">
-                                            <input type="text" name="departure" id="departure" placeholder="DD/MM/YYYY" class="form-control" required>
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <h3>
-                                        <span>Payment Details</span>
-                                    </h3>
-                                    @if ($chequeRestatus == '0')
-                                        <div class="payment-container">
-                                            <label for="paymentType" class="star-red">Payment Type</label>
-                                            <input type="hidden" name="paymentTypecheque" value="cheque">
-                                            <select name="paymentType" id="paymentType" class="paymentType select2" disabled>
-                                                <option value="cheque">Cheque</option>
+                                        <h3>
+                                            <span>Customer Details</span>
+                                        </h3>
+                                        <div >
+                                            <label for="" class="star-red">Guest Name</label>
+                                            <select name="Guest" id="Guest" class="select2" onchange="data()" required>
+                                                <option value="{{$name_ID}}">{{$name}}</option>
+                                                @foreach($datasub as $item)
+                                                    @if ($type == 'Company')
+                                                        <option value="{{ $item->ComTax_ID }}">{{ 'บริษัท '.$item->Companny_name.' จำกัด' ?? 'คุณ '.$item->first_name.' '.$item->last_name }}</option>
+                                                    @else
+                                                        <option value="{{ $item->GuestTax_ID }}">{{ $item->Company_name ?? $item->first_name.' '.$item->last_name }}</option>
+                                                    @endif
+                                                @endforeach
                                             </select>
-                                            <div class="chequeInput" style="display: block;">
-                                                <label for="chequeBank" class="star-red">Bank</label>
-                                                <select  id="chequeBank" name="chequeBank" class="chequeBank select2" disabled>
-                                                    @foreach ($data_bank as $item)
-                                                        <option value="{{ $item->name_en }}"{{$databankname == $item->name_en ? 'selected' : ''}} >{{ $item->name_th }} </option>
-                                                    @endforeach
-                                                </select>
-                                                <label for="chequeNumber" class="star-red">Cheque Number</label>
-                                                <input type="text" id="cheque" name="cheque" class="chequeNumber form-control" placeholder="Enter cheque number" maxlength="8" value="{{$chequeRe->cheque_number}}" @readonly(true) style="background-color: #59a89e81;">
-                                                <label for="chequeAmount" class="star-red">Amount</label>
-                                                <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="chequeAmount form-control" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
-                                                <label for="chequeBank" class="star-red">Bank Received</label>
-                                                <select  id="chequeBankReceived" name="chequeBankReceived" class="chequeBank select2">
-                                                    @foreach ($data_bank as $item)
-                                                        <option value=""></option>
-                                                        <option value="{{ $item->name_en }}" >{{ $item->name_th }} </option>
-                                                    @endforeach
-                                                </select>
+                                        </div>
+                                        <div >
+                                            <label class="star-red" for="reservationNo">Reservation No </label>
+                                            <input type="text" class="form-control" name="reservationNo" id="reservationNo" required />
+                                        </div>
+                                        <div >
+                                            <label for="company">Company</label>
+                                            @if ($type == 'Company')
+                                                <input type="text" class="form-control " id="company" name="company" value="{{$name}}" disabled  style="background-color: #59a89e81;"/>
+                                            @else
+                                                <input type="text" class="form-control " id="company" disabled  style="background-color: #59a89e81;"/>
+                                            @endif
+                                        </div>
+                                        <div >
+                                            <label for="taxID">Tax ID/Gst Pass</label>
+                                            <input type="text" id="taxID" value="auto-select" class="form-control" disabled  style="background-color: #59a89e81;"/>
+                                        </div>
+                                        <div >
+                                            <label for="address">Address</label>
+                                            <input type="text" id="address" value="auto-select" class="form-control" disabled  style="background-color: #59a89e81;"/>
+                                            <input type="text" id="address2" value="auto-select" class="form-control mt-3" disabled  style="background-color: #59a89e81;"/>
+                                        </div>
+                                        <h3>
+                                            <span>Stay Details</span>
+                                        </h3>
+                                        <div >
+                                            <label class="star-red" for="roomNo">Room No.</label>
+                                            <input type="text" id="roomNo" name="roomNo" class="form-control" required />
+                                        </div>
+                                        <div >
+                                            <label class="star-red" for="numberOfGuests">Number of Guests</label>
+                                            <input type="text" id="numberOfGuests" name="numberOfGuests" class="form-control" required />
+                                        </div>
+                                        <div >
+                                            <label for="arrival">Arrival</label>
+                                            <div class="input-group">
+                                                <input type="text" name="arrival" id="arrival" placeholder="DD/MM/YYYY" class="form-control" required>
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
+                                                        <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
-                                    @else
-                                        <div class="payment-container">
-                                            <label for="paymentType" class="star-red">Payment Type</label>
-                                            <select name="paymentType" id="paymentType" class="paymentType select2">
-                                                <option value="" disabled selected>Select Payment Type</option>
-                                                <option value="cash">Cash</option>
-                                                <option value="bankTransfer">Bank Transfer</option>
-                                                <option value="creditCard">Credit Card</option>
-                                            </select>
-                                            <!-- Cash Input -->
-                                            <div class="cashInput" style="display: none;">
-                                                <label for="cashAmount" class="star-red">Cash Amount</label>
-                                                <input type="text" id="Amount" value="{{ number_format($sumpayment, 2) }}" name="Amount" class="cashAmount form-control" placeholder="Enter cash amount" disabled style="background-color: #59a89e81;">
+                                        <div >
+                                            <label for="departure">Departure</label>
+                                            <div class="input-group">
+                                                <input type="text" name="departure" id="departure" placeholder="DD/MM/YYYY" class="form-control" required>
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
+                                                        <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <!-- Bank Transfer Input -->
-                                            <div class="bankTransferInput" style="display: none;">
-                                                <label for="bankName" class="star-red">Bank</label>
-                                                    <select  id="bank" name="bank" class="bankName select2">
+                                        </div>
+                                        <h3>
+                                            <span>Payment Details</span>
+                                        </h3>
+                                        @if ($chequeRestatus == '0')
+                                            <div class="payment-container">
+                                                <label for="paymentType" class="star-red">Payment Type</label>
+                                                <input type="hidden" name="paymentTypecheque" value="cheque">
+                                                <select name="paymentType" id="paymentType" class="paymentType select2" disabled>
+                                                    <option value="cheque">Cheque</option>
+                                                </select>
+                                                <div class="chequeInput" style="display: block;">
+                                                    <label for="chequeBank" class="star-red">Bank</label>
+                                                    <select  id="chequeBank" name="chequeBank" class="chequeBank select2" disabled>
                                                         @foreach ($data_bank as $item)
-                                                            <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }} Bank Transfer - Together Resort Ltd - Reservation Deposit </option>
+                                                            <option value="{{ $item->name_en }}"{{$databankname == $item->name_en ? 'selected' : ''}} >{{ $item->name_th }} </option>
                                                         @endforeach
                                                     </select>
-                                                <label for="bankTransferAmount" class="star-red">Amount</label>
-                                                <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="bankTransferAmount form-control"  placeholder="Enter transfer amount"disabled  style="background-color: #59a89e81;">
+                                                    <label for="chequeNumber" class="star-red">Cheque Number</label>
+                                                    <input type="text" id="cheque" name="cheque" class="chequeNumber form-control" placeholder="Enter cheque number" maxlength="8" value="{{$chequeRe->cheque_number}}" @readonly(true) style="background-color: #59a89e81;">
+                                                    <label for="chequeAmount" class="star-red">Amount</label>
+                                                    <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="chequeAmount form-control" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
+                                                    <label for="chequeBank" class="star-red">Bank Received</label>
+                                                    <select  id="chequeBankReceived" name="chequeBankReceived" class="chequeBank select2">
+                                                        @foreach ($data_bank as $item)
+                                                            <option value=""></option>
+                                                            <option value="{{ $item->name_en }}" >{{ $item->name_th }} </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <!-- Credit Card Input -->
-                                            <div class="creditCardInput" style="display: none;">
-                                                <label for="creditCardNumber" class="star-red">Credit Card Number</label>
-                                                <input type="text" id="CardNumber" name="CardNumber" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
-                                                <label for="expiryDate" class="star-red">Expiry Date</label>
-                                                <input type="text" name="Expiry" id="Expiry" class="expiryDate form-control" placeholder="MM/YY" maxlength="5">
-                                                <label for="creditCardAmount" class="star-red">Amount</label>
-                                                <input type="text" id="Amount" name="Amount" class="creditCardAmount form-control" value="{{ number_format($sumpayment, 2) }}" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
+                                        @else
+                                            <div class="payment-container">
+                                                <label for="paymentType" class="star-red">Payment Type</label>
+                                                <select name="paymentType" id="paymentType" class="paymentType select2">
+                                                    <option value="" disabled selected>Select Payment Type</option>
+                                                    <option value="cash">Cash</option>
+                                                    <option value="bankTransfer">Bank Transfer</option>
+                                                    <option value="creditCard">Credit Card</option>
+                                                </select>
+                                                <!-- Cash Input -->
+                                                <div class="cashInput" style="display: none;">
+                                                    <label for="cashAmount" class="star-red">Cash Amount</label>
+                                                    <input type="text" id="Amount" value="{{ number_format($sumpayment, 2) }}" name="Amount" class="cashAmount form-control" placeholder="Enter cash amount" disabled style="background-color: #59a89e81;">
+                                                </div>
+                                                <!-- Bank Transfer Input -->
+                                                <div class="bankTransferInput" style="display: none;">
+                                                    <label for="bankName" class="star-red">Bank</label>
+                                                        <select  id="bank" name="bank" class="bankName select2">
+                                                            @foreach ($data_bank as $item)
+                                                                <option value="{{ $item->name_en }}"{{$item->name_en == 'SCB' ? 'selected' : ''}}>{{ $item->name_en }} Bank Transfer - Together Resort Ltd - Reservation Deposit </option>
+                                                            @endforeach
+                                                        </select>
+                                                    <label for="bankTransferAmount" class="star-red">Amount</label>
+                                                    <input type="text" id="Amount" name="Amount" value="{{ number_format($sumpayment, 2) }}" class="bankTransferAmount form-control"  placeholder="Enter transfer amount"disabled  style="background-color: #59a89e81;">
+                                                </div>
+                                                <!-- Credit Card Input -->
+                                                <div class="creditCardInput" style="display: none;">
+                                                    <label for="creditCardNumber" class="star-red">Credit Card Number</label>
+                                                    <input type="text" id="CardNumber" name="CardNumber" class="creditCardNumber form-control" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19">
+                                                    <label for="expiryDate" class="star-red">Expiry Date</label>
+                                                    <input type="text" name="Expiry" id="Expiry" class="expiryDate form-control" placeholder="MM/YY" maxlength="5">
+                                                    <label for="creditCardAmount" class="star-red">Amount</label>
+                                                    <input type="text" id="Amount" name="Amount" class="creditCardAmount form-control" value="{{ number_format($sumpayment, 2) }}" placeholder="Enter amount" disabled  style="background-color: #59a89e81;">
+                                                </div>
                                             </div>
-                                        </div>
-                                    @endif
-                                    <div class="d-grid" style="height: max-content;">
-                                        <label class="star-red" for="paymentDate">Date</label>
-                                        <div class="input-group">
-                                            <input type="text" name="paymentDate" id="paymentDate" placeholder="DD/MM/YYYY" class="form-control" required>
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                </span>
+                                        @endif
+                                        <div class="d-grid" style="height: max-content;">
+                                            <label class="star-red" for="paymentDate">Date</label>
+                                            <div class="input-group">
+                                                <input type="text" name="paymentDate" id="paymentDate" placeholder="DD/MM/YYYY" class="form-control" required>
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
+                                                        <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
+                                                    </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div>
-                                            <label for="note">Note</label>
-                                            <textarea id="note" name="note" style="height: 1px" placeholder="Enter details" class="form-control"></textarea>
-                                        </div>
-                                        <div>
-                                            <label for="reference">Reference</label>
-                                            <input readonly type="text" id="reference" class="form-control" style="background-color: #59a89e81;"/>
+                                            <div>
+                                                <label for="note">Note</label>
+                                                <textarea id="note" name="note" style="height: 1px" placeholder="Enter details" class="form-control"></textarea>
+                                            </div>
+                                            <div>
+                                                <label for="reference">Reference</label>
+                                                <input readonly type="text" id="reference" class="form-control" style="background-color: #59a89e81;"/>
+                                            </div>
                                         </div>
                                     </div>
+                                </form>
+                                <div class="modal-footer">
+                                    <button type="button" class="bt-tg bt-grey sm" data-dismiss="modal"> Close </button>
+                                    <button type="button"  class="bt-tg sm" data-dismiss="modal" onclick="Preview()">Preview</button>
                                 </div>
-                            </form>
-                            <div class="modal-footer">
-                                <button type="button" class="bt-tg bt-grey sm" data-dismiss="modal"> Close </button>
-                                <button type="button"  class="bt-tg sm" data-dismiss="modal" onclick="Preview()">Preview</button>
-                            </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <section id="billDetailsEditBill" style="border: 1px solid rgba(23, 27, 36, 0.633); padding: 2rem; margin: 2rem 0;" class="wrap-bill">
-                            <div class="wrap-all-company-detail">
-                                <header>
-                                    <section class="wrap-company-detail">
-                                    <div class="company-detail">
-                                        <ul>
-                                        <h1>{{$settingCompany->name_th}}</h1>
-                                        <li class="font-w-600">{{$settingCompany->name}}</li>
-                                        <li class="left-4px font-w-600"> *** Head Office / Headquarters </li>
-                                        <li>{{$settingCompany->address}}</li>
-                                        <li> Tel : {{$settingCompany->tel}} | @if ($settingCompany->fax) Fax : {{$settingCompany->fax}} @endif </li>
-                                        <li>HOTEL TAX ID {{$settingCompany->Hotal_ID}}</li>
-                                        <li class="w-spaceWrap-less860px"> <span> website: {{$settingCompany->web}} |</span><span> Email: {{$settingCompany->email}} </span> </li>
-                                        </ul>
-                                    </div>
+                        <div>
+                            <section id="billDetailsEditBill" style="border: 1px solid rgba(23, 27, 36, 0.633); padding: 2rem; margin: 2rem 0;" class="wrap-bill">
+                                <div class="wrap-all-company-detail">
+                                    <header>
+                                        <section class="wrap-company-detail">
+                                        <div class="company-detail">
+                                            <ul>
+                                            <h1>{{$settingCompany->name_th}}</h1>
+                                            <li class="font-w-600">{{$settingCompany->name}}</li>
+                                            <li class="left-4px font-w-600"> *** Head Office / Headquarters </li>
+                                            <li>{{$settingCompany->address}}</li>
+                                            <li> Tel : {{$settingCompany->tel}} | @if ($settingCompany->fax) Fax : {{$settingCompany->fax}} @endif </li>
+                                            <li>HOTEL TAX ID {{$settingCompany->Hotal_ID}}</li>
+                                            <li class="w-spaceWrap-less860px"> <span> website: {{$settingCompany->web}} |</span><span> Email: {{$settingCompany->email}} </span> </li>
+                                            </ul>
+                                        </div>
 
-                                    <div class="img">
-                                        <img src="{{ asset('assets2/images/' . $settingCompany->image) }}" alt="together-resort" width="200px" />
-                                    </div>
+                                        <div class="img">
+                                            <img src="{{ asset('assets2/images/' . $settingCompany->image) }}" alt="together-resort" width="200px" />
+                                        </div>
+                                        </section>
+                                        <section>
+                                        <h3 class="center font-upper">Receipt / tax invoice</h3>
+                                        <div class="receipt-cutomer-detail">
+                                            <ul>
+                                            <h4 class="font-upper"> Tax invoice {{$REID}}</h4>
+                                            <li>
+                                                <span>Guest name</span>
+                                                <span id="displayGuestNameEditBill">คุณพัชรี</span>
+                                            </li>
+                                            <li>
+                                                <span>Reservation No</span>
+                                                <span id="displayReservationNoEditBill">6576</span>
+                                            </li>
+                                            <li>
+                                                <span>Company</span>
+                                                <span id="displayCompanyEditBill">Together Resort </span>
+                                            </li>
+                                            <li>
+                                                <span>Tax ID/Gst Pass</span>
+                                                <span id="displayTaxIDEditBill">0764559000169</span>
+                                            </li>
+                                            <li>
+                                                <span>Address</span>
+                                                <span id="displayAddressEditBill" >168 Moo 2 Kaengkrachan phetchaburi 76170</span>
+                                            </li>
+                                            </ul>
+                                            <ul>
+                                            <li>
+                                                <span>Page #</span>
+                                                <span>1 /1 </span>
+                                            </li>
+                                            <li>
+                                                <span>Room No.</span>
+                                                <span id="displayRoomNoEditBill">9643</span>
+                                            </li>
+                                            <li>
+                                                <span>Arrival</span>
+                                                <span id="displayArrivalEditBill">01/06/2024</span>
+                                            </li>
+                                            <li>
+                                                <span>Departure</span>
+                                                <span id="displayDepartureEditBill">02/06/2024</span>
+                                            </li>
+                                            <li>
+                                                <span>No of Guest</span>
+                                                <span id="displayNumberOfGuestsEditBill">3</span>
+                                            </li>
+                                            <li>
+                                                <span>Printed Date</span>
+                                                <span  id="date">02/06/2024</span>
+                                            </li>
+                                            <li>
+                                                <span>Printed time</span>
+                                                <span  id="dateM">13:26:24 PM</span>
+                                            </li>
+                                            <li>
+                                                <span>Tax invoice Date</span>
+                                                <span  id="Invoicedate">02/06/2024</span>
+                                            </li>
+                                            </ul>
+                                        </div>
+                                        </section>
+                                    </header>
+                                    <section class="receipt-cutomer-detail-body">
+                                        <div>
+                                        <div style="overflow: auto;">
+                                            <table id="table-revenueEditBill">
+                                            <thead>
+                                                <tr>
+                                                <th>Date</th>
+                                                <th >Description </th>
+                                                <th>Reference</th>
+                                                <th>amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                <td id="displayPaymentDateEditBill">10/04/2024</td>
+                                                <td >
+                                                    <span id="displayDescriptionEditBill" > SCB Bank Transfer - Together Resort Ltd - Reservation Deposit </span>
+                                                    <p>*** <span id="displayNoteEditBill" >รายละเอียดโปรดระบุ</p>
+                                        </td>
+                                                <td id="displayReferenceEditBill"></td>
+                                                <td id="displayAmountEditBill">{{ number_format($sumpayment, 2) }}</td>
+                                                </tr>
+                                            </tbody>
+                                            </table>
+                                        </div>
+                                        </div>
                                     </section>
-                                    <section>
-                                    <h3 class="center font-upper">Receipt / tax invoice</h3>
-                                    <div class="receipt-cutomer-detail">
-                                        <ul>
-                                        <h4 class="font-upper"> Tax invoice {{$REID}}</h4>
-                                        <li>
-                                            <span>Guest name</span>
-                                            <span id="displayGuestNameEditBill">คุณพัชรี</span>
-                                        </li>
-                                        <li>
-                                            <span>Reservation No</span>
-                                            <span id="displayReservationNoEditBill">6576</span>
-                                        </li>
-                                        <li>
-                                            <span>Company</span>
-                                            <span id="displayCompanyEditBill">Together Resort </span>
-                                        </li>
-                                        <li>
-                                            <span>Tax ID/Gst Pass</span>
-                                            <span id="displayTaxIDEditBill">0764559000169</span>
-                                        </li>
-                                        <li>
-                                            <span>Address</span>
-                                            <span id="displayAddressEditBill" >168 Moo 2 Kaengkrachan phetchaburi 76170</span>
-                                        </li>
-                                        </ul>
-                                        <ul>
-                                        <li>
-                                            <span>Page #</span>
-                                            <span>1 /1 </span>
-                                        </li>
-                                        <li>
-                                            <span>Room No.</span>
-                                            <span id="displayRoomNoEditBill">9643</span>
-                                        </li>
-                                        <li>
-                                            <span>Arrival</span>
-                                            <span id="displayArrivalEditBill">01/06/2024</span>
-                                        </li>
-                                        <li>
-                                            <span>Departure</span>
-                                            <span id="displayDepartureEditBill">02/06/2024</span>
-                                        </li>
-                                        <li>
-                                            <span>No of Guest</span>
-                                            <span id="displayNumberOfGuestsEditBill">3</span>
-                                        </li>
-                                        <li>
-                                            <span>Printed Date</span>
-                                            <span  id="date">02/06/2024</span>
-                                        </li>
-                                        <li>
-                                            <span>Printed time</span>
-                                            <span  id="dateM">13:26:24 PM</span>
-                                        </li>
-                                        <li>
-                                            <span>Tax invoice Date</span>
-                                            <span  id="Invoicedate">02/06/2024</span>
-                                        </li>
-                                        </ul>
-                                    </div>
-                                    </section>
-                                </header>
-                                <section class="receipt-cutomer-detail-body">
-                                    <div>
-                                    <div style="overflow: auto;">
-                                        <table id="table-revenueEditBill">
-                                        <thead>
-                                            <tr>
-                                            <th>Date</th>
-                                            <th >Description </th>
-                                            <th>Reference</th>
-                                            <th>amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                            <td id="displayPaymentDateEditBill">10/04/2024</td>
-                                            <td >
-                                                <span id="displayDescriptionEditBill" > SCB Bank Transfer - Together Resort Ltd - Reservation Deposit </span>
-                                                <p>*** <span id="displayNoteEditBill" >รายละเอียดโปรดระบุ</p>
-                                    </td>
-                                            <td id="displayReferenceEditBill"></td>
-                                            <td id="displayAmountEditBill">{{ number_format($sumpayment, 2) }}</td>
-                                            </tr>
-                                        </tbody>
-                                        </table>
-                                    </div>
-                                    </div>
-                                </section>
-                                <section class="receipt-subtotal">
+                                    <section class="receipt-subtotal">
 
-                                    <div class="right">
-                                    <ul class="font-w-500">
-                                        <li>
-                                        <span>Total Balance(Baht) </span>
-                                        <span class="border-total-top">{{ number_format($sumpayment, 2) }}</span>
-                                        </li>
-                                        <li>
-                                        <span>Vatable</span>
-                                        <span>{{ number_format($sumpayment/1.07, 2) }}</span>
-                                        </li>
-                                        <li>
-                                        <span>VAT 7 %</span>
-                                        <span>{{ number_format($sumpayment-$sumpayment/1.07, 2) }}</span>
-                                        </li>
-                                        <li>
-                                        <span>Non - Vatable</span>
-                                        <span>0</span>
-                                        </li>
-                                        <li>
-                                        <span>Total Amount (Baht)</span>
-                                        <span>{{ number_format($sumpayment, 2) }}</span>
-                                        </li>
-                                        <li class="font-w-600">
-                                        <span>Net Total</span>
-                                        <span class="border-total">{{ number_format($sumpayment, 2) }}</span>
-                                        </li>
-                                    </ul>
-                                    </div>
-                                </section>
-                                <section class="body-bottom">
-                                    <div>
-                                    <p> I agree that my liability for this invoice is not waived and agree to be held personally liable in the event that the indicated person, company, or association fails to pay for any part or the full amount of these charges. </p>
-                                    </div>
-                                </section>
-                                <section class="signature">
-                                    <div class="left">
-                                    <p>Guest's Signature</p>
-                                    </div>
-                                    <div class="right">
-                                    <p>Guest's Signature</p>
-                                    </div>
-                                </section>
-                            </div>
-                        </section>
-                        <div class="bottom">
-                            <div class="flex-end pr-3">
-                                <button id="nextSteptoSave" class="bt-tg green md float-right" onclick="submit()"> Next </button>
+                                        <div class="right">
+                                        <ul class="font-w-500">
+                                            <li>
+                                            <span>Total Balance(Baht) </span>
+                                            <span class="border-total-top">{{ number_format($sumpayment, 2) }}</span>
+                                            </li>
+                                            <li>
+                                            <span>Vatable</span>
+                                            <span>{{ number_format($sumpayment/1.07, 2) }}</span>
+                                            </li>
+                                            <li>
+                                            <span>VAT 7 %</span>
+                                            <span>{{ number_format($sumpayment-$sumpayment/1.07, 2) }}</span>
+                                            </li>
+                                            <li>
+                                            <span>Non - Vatable</span>
+                                            <span>0</span>
+                                            </li>
+                                            <li>
+                                            <span>Total Amount (Baht)</span>
+                                            <span>{{ number_format($sumpayment, 2) }}</span>
+                                            </li>
+                                            <li class="font-w-600">
+                                            <span>Net Total</span>
+                                            <span class="border-total">{{ number_format($sumpayment, 2) }}</span>
+                                            </li>
+                                        </ul>
+                                        </div>
+                                    </section>
+                                    <section class="body-bottom">
+                                        <div>
+                                        <p> I agree that my liability for this invoice is not waived and agree to be held personally liable in the event that the indicated person, company, or association fails to pay for any part or the full amount of these charges. </p>
+                                        </div>
+                                    </section>
+                                    <section class="signature">
+                                        <div class="left">
+                                        <p>Guest's Signature</p>
+                                        </div>
+                                        <div class="right">
+                                        <p>Guest's Signature</p>
+                                        </div>
+                                    </section>
+                                </div>
+                            </section>
+                            <div class="bottom">
+                                <div class="flex-end pr-3">
+                                    <button id="nextSteptoSave" class="bt-tg green md float-right" onclick="submit()"> Next </button>
+                                </div>
                             </div>
                         </div>
                     </div>

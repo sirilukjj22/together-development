@@ -2068,6 +2068,8 @@ class QuotationController extends Controller
                             $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                         } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                             $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                        }else{
+                            $fullName = $comtype->name_th . $Compannyname;
                         }
                     }
                     $representative = representative::where('Company_ID',$Data_ID)->first();
@@ -2354,6 +2356,8 @@ class QuotationController extends Controller
                                 $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                             } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                                 $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                            }else{
+                                $fullName = $comtype->name_th . $Compannyname;
                             }
                         }
                         $representative = representative::where('Company_ID',$Data_ID)->first();
@@ -2633,6 +2637,8 @@ class QuotationController extends Controller
                             $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                         } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                             $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                        }else{
+                            $fullName = $comtype->name_th . $Compannyname;
                         }
                     }
                     $representative = representative::where('Company_ID',$Data_ID)->first();
@@ -2764,6 +2770,8 @@ class QuotationController extends Controller
                             $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                         } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                             $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                        }else{
+                            $fullName = $comtype->name_th . $Compannyname;
                         }
                     }
                 }
@@ -2894,6 +2902,7 @@ class QuotationController extends Controller
                     $save->Confirm_by = '-';
                     $save->save();
                 }
+
             } catch (\Throwable $e) {
                 log_company::where('Company_ID',$Quotation_ID)->latest()->first()->delete();
                 $path = 'Log_PDF/proposal/';
@@ -2938,7 +2947,9 @@ class QuotationController extends Controller
                 return redirect()->route('Proposal.index')->with('error', $e->getMessage());
             }
         }
-        return redirect()->route('Proposal.viewproposal', ['id' => $id])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+        $dataproposal = Quotation::where('Quotation_ID',$Quotation_ID)->first();
+        $ids = $dataproposal->id;
+        return redirect()->route('Proposal.viewproposal', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
     }
     //------------------------------แก้ไข--------------------
     public function edit($id)
@@ -3212,6 +3223,8 @@ class QuotationController extends Controller
                             $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                         } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                             $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                        }else{
+                            $fullName = $comtype->name_th . $Compannyname;
                         }
                     }
                     $representative = representative::where('Company_ID',$Data_ID)->first();
@@ -3695,6 +3708,8 @@ class QuotationController extends Controller
                                 $Name = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                             } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                                 $Name = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                            }else{
+                                $Name = $comtype->name_th . $Compannyname;
                             }
                         }
                         $representative = representative::where('Company_ID',$Company_ID)->first();
@@ -4091,6 +4106,8 @@ class QuotationController extends Controller
                             $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                         } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                             $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                        }else{
+                            $fullName = $comtype->name_th . $Compannyname;
                         }
                     }
                     $representative = representative::where('Company_ID',$Data_ID)->first();
@@ -4252,6 +4269,8 @@ class QuotationController extends Controller
                                 $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                             } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                                 $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                            }else{
+                                $fullName = $comtype->name_th . $Compannyname;
                             }
                         }
 
@@ -4334,7 +4353,7 @@ class QuotationController extends Controller
             }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
                 $comtypefullname = "Company : "." ห้างหุ้นส่วนจำกัด ". $companys->Company_Name ;
             }else {
-                $comtypefullname = $companys->Company_Name;
+                $comtypefullname = $comtype->name_th . $companys->Company_Name;
             }
         }
 
@@ -5033,6 +5052,8 @@ class QuotationController extends Controller
                     $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                 } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                     $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                }else{
+                    $fullName = $comtype->name_th . $Compannyname;
                 }
             }
             $representative = representative::where('Company_ID',$Data_ID)->first();
