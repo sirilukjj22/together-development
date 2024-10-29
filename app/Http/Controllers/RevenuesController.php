@@ -802,8 +802,6 @@ class RevenuesController extends Controller
         // $check_sms = SMS_alerts::whereBetween('date', [date("Y-m-".str_pad(5 - 1, 2, '0', STR_PAD_LEFT).' 21:00:00'), date('Y-m-'.str_pad(5, 2, '0', STR_PAD_LEFT).' 21:00:00')])
         //         ->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))->groupBy('status')->get();
 
-        // dd($room_array);
-
         $room_transfer = 0;
         $fb_transfer = 0;
         $wp_transfer = 0;
@@ -899,11 +897,41 @@ class RevenuesController extends Controller
 
         } else {
 
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") {
+        if ($request->filter_by == "date" || $request->filter_by == "today") {
             $req_date = Carbon::parse($request->date)->format('Y-m-d');
             $adate = date('Y-m-d 21:00:00', strtotime($req_date));
             $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate));
+
+            // Revenue
+            $month_from = $req_date;
+            $month_to = $req_date;
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime($req_date)));
+
+            $Fday = date('d', strtotime($month_from));
+            $Fmonth = date('m', strtotime($month_from));
+            $Fyear = date('Y', strtotime($month_from));
+
+        } elseif ($request->filter_by == "yesterday") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = date('Y-m-d' . ' 21:00:00', strtotime('-2 day', strtotime(date($req_date))));
+            $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59', strtotime($adate));
+
+            // Revenue
+            $month_from = $req_date;
+            $month_to = $req_date;
+            $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime($req_date)));
+
+            $Fday = date('d', strtotime($month_from));
+            $Fmonth = date('m', strtotime($month_from));
+            $Fyear = date('Y', strtotime($month_from));
+
+        } elseif ($request->filter_by == "tomorrow") {
+            $req_date = Carbon::now()->format('Y-m-d');
+            $adate = date('Y-m-d' . ' 21:00:00', strtotime(date($req_date)));
+            $from = $adate;
+            $to = date('Y-m-d', strtotime('+1 day', strtotime(date($adate))));
 
             // Revenue
             $month_from = $req_date;
@@ -1059,13 +1087,14 @@ class RevenuesController extends Controller
         $no_type_array = [];
         $transaction_array = [];
 
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") 
+        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow" || $request->filter_by == "month" || 
+            $request->filter_by == "year" || $request->filter_by == "week" || $request->filter_by == "thisMonth" || $request->filter_by == "thisYear" || $request->filter_by == "customRang") 
         {
             for ($i=1; $i <= 31; $i++) { 
                 if ($i == 1) {
                     $check_sms = SMS_alerts::whereBetween('date', [date("Y-m-".$last_day2, strtotime("-1 months", strtotime($datetime))).' 21:00:00', date('Y-'.$Fmonth.'-01 20:59:59')])->whereNull('date_into')
-                    ->orWhereDate('date_into', date("Y-".$Fmonth."-01"))
-                    ->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))->groupBy('status')->get();
+                        ->orWhereDate('date_into', date("Y-".$Fmonth."-01"))
+                        ->select('sms_alert.*', DB::raw("COUNT(id) as transaction_bill, DATE(date) as date_fm, SUM(amount) as total_amount"))->groupBy('status')->get();
 
                     $sum_bill = 0;
                     foreach ($check_sms as $key => $value) {
