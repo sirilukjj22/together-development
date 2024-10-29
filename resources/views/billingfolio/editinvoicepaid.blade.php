@@ -488,6 +488,7 @@ white-space: nowrap
                 showDropdowns: true,
                 autoUpdateInput: false,
                 autoApply: true,
+
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }
@@ -504,6 +505,7 @@ white-space: nowrap
                 showDropdowns: true,
                 autoUpdateInput: false,
                 autoApply: true,
+                opens: 'top',
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }

@@ -899,6 +899,8 @@ class Document_invoice extends Controller
                             $comtypefullname = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                         } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                             $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                        }else{
+                            $comtypefullname = $comtype->name_th . $Compannyname;
                         }
                     }
                     $representative = representative::where('Company_ID',$Data_ID)->where('status',1)->first();
@@ -1181,6 +1183,8 @@ class Document_invoice extends Controller
                                 $comtypefullname = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                             } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                                 $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                            }else{
+                                $comtypefullname = $comtype->name_th . $Compannyname;
                             }
                         }
 
@@ -1454,8 +1458,8 @@ class Document_invoice extends Controller
                 $comtypefullname = "บริษัท ". $Company->Company_Name . " จำกัด (มหาชน)";
             }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
                 $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company->Company_Name ;
-            }else {
-                $comtypefullname = $Company->Company_Name;
+            }else{
+                $comtypefullname = $comtype->name_th . $Company->Company_Name;
             }
             $CityID=$Company->City;
             $amphuresID = $Company->Amphures;
@@ -1574,8 +1578,8 @@ class Document_invoice extends Controller
                 $comtypefullname = "บริษัท ". $Company->Company_Name . " จำกัด (มหาชน)";
             }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
                 $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company->Company_Name ;
-            }else {
-                $comtypefullname = $Company->Company_Name;
+            }else{
+                $comtypefullname = $comtype->name_th . $Company->Company_Name;
             }
             $CityID=$Company->City;
             $amphuresID = $Company->Amphures;
@@ -1679,6 +1683,8 @@ class Document_invoice extends Controller
                             $comtypefullname = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                         } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                             $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                        }else{
+                            $comtypefullname = $comtype->name_th . $Compannyname;
                         }
                     }
                     $representative = representative::where('Company_ID',$Data_ID)->where('status',1)->first();
@@ -1969,6 +1975,8 @@ class Document_invoice extends Controller
                                 $comtypefullname = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                             } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                                 $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                            }else{
+                                $comtypefullname = $comtype->name_th . $Compannyname;
                             }
                         }
 
@@ -2379,6 +2387,8 @@ class Document_invoice extends Controller
                     $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                 } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                     $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                }else{
+                    $fullName = $comtype->name_th . $Compannyname;
                 }
             }
             $representative = representative::where('Company_ID',$Data_ID)->first();
@@ -2578,6 +2588,8 @@ class Document_invoice extends Controller
                     $comtypefullname = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                 } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                     $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                }else{
+                    $comtypefullname = $comtype->name_th . $Compannyname;
                 }
             }
             $representative = representative::where('Company_ID',$Data_ID)->where('status',1)->first();

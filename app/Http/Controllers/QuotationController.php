@@ -2949,7 +2949,13 @@ class QuotationController extends Controller
         }
         $dataproposal = Quotation::where('Quotation_ID',$Quotation_ID)->first();
         $ids = $dataproposal->id;
-        return redirect()->route('Proposal.viewproposal', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+        $check = $dataproposal->SpecialDiscountBath;
+        $Adcheck = $dataproposal->additional_discount;
+        if ($check || $Adcheck) {
+            return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+        }else{
+            return redirect()->route('Proposal.viewproposal', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+        }
     }
     //------------------------------แก้ไข--------------------
     public function edit($id)

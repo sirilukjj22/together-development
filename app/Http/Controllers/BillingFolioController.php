@@ -445,7 +445,19 @@ class BillingFolioController extends Controller
         $firstPart = $parts[0];
         if ($firstPart == 'C') {
             $company =  companys::where('Profile_ID',$nameid)->first();
-            $fullname = $company->Company_Name;
+            $Company_type = $company->Company_type;
+            $comtype = master_document::where('id', $Company_type)->where('Category', 'Mcompany_type')->first();
+            if ($comtype) {
+                if ($comtype->name_th == "บริษัทจำกัด") {
+                    $fullname = "บริษัท " . $company->Company_Name . " จำกัด";
+                } elseif ($comtype->name_th == "บริษัทมหาชนจำกัด") {
+                    $fullname = "บริษัท " . $company->Company_Name . " จำกัด (มหาชน)";
+                } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
+                    $fullname = "ห้างหุ้นส่วนจำกัด " . $company->Company_Name;
+                }else{
+                    $fullname = $comtype->name_th . $company->Company_Name;
+                }
+            }
             $Address=$company->Address;
             $CityID=$company->City;
             $amphuresID = $company->Amphures;

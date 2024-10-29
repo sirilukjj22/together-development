@@ -42,9 +42,11 @@
                     @php
                         $canEditProposal = @Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
                     @endphp
-                    @if ($canEditProposal)
-                        <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#OverCreate" onclick="requestConfirmation()">
-                        <i class="fa fa-plus"></i> Over Bill</button>
+                    @if ($Nettotal-$totalReceipt == 0)
+                        @if ($canEditProposal)
+                            <button type="button" class="btn btn-color-green lift btn_modal" data-bs-toggle="modal" data-bs-target="#OverCreate" onclick="requestConfirmation()">
+                            <i class="fa fa-plus"></i> Over Bill</button>
+                        @endif
                     @endif
                     <div class="modal fade" id="OverCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">

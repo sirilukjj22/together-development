@@ -286,6 +286,8 @@ class CompanyController extends Controller
                         $comtypefullname = "บริษัท ". $Company_Name . " จำกัด (มหาชน)";
                     }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
                         $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company_Name ;
+                    }else{
+                        $comtypefullname = $comtype->name_th. $Company_Name ;
                     }
                     if ($CountryOther == 'Thailand') {
                         $provinceNames = province::where('id', $city)->first();
@@ -753,6 +755,8 @@ class CompanyController extends Controller
                         $comtypefullname = "บริษัท " . $Company_Name . " จำกัด (มหาชน)";
                     } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                         $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $Company_Name;
+                    }else{
+                        $comtypefullname = $comtype->name_th. $Company_Name ;
                     }
                 }
             } elseif ($Company_Name && $Branch) {
@@ -1171,6 +1175,8 @@ class CompanyController extends Controller
                     $comtypefullname = "บริษัท ". $Company_Name_tax . " จำกัด (มหาชน)";
                 }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
                     $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company_Name_tax ;
+                }else{
+                    $comtypefullname = $comtype->name_th. $Company_Name_tax ;
                 }
             }else{
                 $Mprefix = master_document::where('id', $prefix)->where('Category', 'Mprename')->first();
@@ -1499,6 +1505,8 @@ class CompanyController extends Controller
                             $comtypefullname = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                         } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                             $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                        }else{
+                            $comtypefullname = $comtype->name_th. $Company_Name_tax ;
                         }
                     }
                 } elseif ($Compannyname && $BranchTax) {

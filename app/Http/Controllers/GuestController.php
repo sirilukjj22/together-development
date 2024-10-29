@@ -941,6 +941,8 @@ class GuestController extends Controller
                         $comtypefullname = "บริษัท ". $Company_Name . " จำกัด (มหาชน)";
                     }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
                         $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company_Name ;
+                    }else{
+                        $comtypefullname = $comtype->name_th. $Company_Name ;
                     }
                 }else{
                     if ($prefix && $first_name && $last_name) {
@@ -1430,6 +1432,8 @@ class GuestController extends Controller
                             $comtypefullname = "บริษัท " . $request->Company_name . " จำกัด (มหาชน)";
                         } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                             $comtypefullname = "ห้างหุ้นส่วนจำกัด " . $request->Company_name;
+                        }else{
+                            $comtypefullname = $comtype->name_th. $request->Company_name ;
                         }
                     }elseif ($request->Branch) {
                         $comtypefullname = 'สาขา : ' . $request->Branch;
