@@ -39,6 +39,7 @@ use App\Mail\QuotationEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Models\master_document_email;
 use App\Models\log_company;
+use Illuminate\Pagination\LengthAwarePaginator;
 class QuotationController extends Controller
 {
     public function index()
@@ -66,6 +67,8 @@ class QuotationController extends Controller
     }
     public function SearchAll(Request $request){
 
+        $checkinDate  = $request->checkin;
+        $checkoutDate  = $request->checkout;
         $checkin  = $request->checkin;
         $checkout  = $request->checkout;
         $checkbox  = $request->checkbox;
@@ -77,13 +80,6 @@ class QuotationController extends Controller
         $user = Auth::user();
         $userid = Auth::user()->id;
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-        if ($checkin) {
-            $checkinDate = Carbon::createFromFormat('d/m/Y', $checkin)->format('Y-m-d');
-        }
-
-        if ($checkout) {
-            $checkoutDate = Carbon::createFromFormat('d/m/Y', $checkout)->format('Y-m-d');
-        }
         if ($user->permission == 1) {
             $User = User::select('name','id')->whereIn('permission',[0,1,2])->get();
             $Proposalcount = Quotation::query()->count();
@@ -119,6 +115,7 @@ class QuotationController extends Controller
                     }
                 }
             }elseif ($Filter == 'Checkin') {
+                // dd($checkinDate,$checkoutDate);
                 if ($checkin && $checkout &&$Usercheck ==null&& $status == null ) {
                     $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->orderBy('created_at', 'desc')->paginate($perPage);
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == null ) {
@@ -145,18 +142,26 @@ class QuotationController extends Controller
                     $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',0)->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
                 }
             }elseif ($Filter == 'Company') {
-                $nameCom = companys::where('Company_Name', 'LIKE', '%'.$search_value.'%')->first();
-                $nameGuest = Guest::where('First_name', 'LIKE', '%'.$search_value.'%')->orWhere('Last_name', 'LIKE', '%'.$search_value.'%')->first();
-                $porfile= null;
-                if ($nameCom) {
-                    $porfile = $nameCom->Profile_ID;
-                }
-                if ($nameGuest) {
-                    $porfile = $nameGuest->Profile_ID;
-                }
-                if ($porfile) {
-                    $Proposal = Quotation::query()->where('Company_ID',$porfile)->paginate($perPage);
-                }
+
+                $nameCom = companys::where('Company_Name', 'LIKE', '%' . $search_value . '%')->first();
+                $nameGuest = Guest::where('First_name', 'LIKE', '%' . $search_value . '%')
+                                  ->orWhere('Last_name', 'LIKE', '%' . $search_value . '%')
+                                  ->first();
+                
+                $profile = $nameCom ? $nameCom->Profile_ID : ($nameGuest ? $nameGuest->Profile_ID : null);
+                
+                $Proposal = collect(); // สร้างคอลเลกชันว่างในกรณีที่ไม่มี $profile
+
+                $Proposal = null; // ตั้งค่าเริ่มต้นเป็น null
+
+                if ($profile) {
+                    $Proposal = Quotation::query()
+                        ->where('Company_ID', $profile)
+                        ->paginate($perPage);
+                } else {
+                    // สร้าง LengthAwarePaginator ว่างเมื่อไม่มีข้อมูล
+                    $Proposal = new LengthAwarePaginator([], 0, $perPage);
+                }          
             }
             elseif ($Filter == null) {
                 if ($Usercheck) {

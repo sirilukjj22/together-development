@@ -1,6 +1,4 @@
 @extends('layouts.masterLayout')
-
-</style>
 @section('content')
     <div id="content-index" class="body-header d-flex py-3">
         <div class="container-xl">
@@ -83,7 +81,42 @@
                                                         <button type="submit" class="btn btn-color-green lift" id="btn-save">ค้นหา</button>
                                                     </div>
                                                 </form>
+                                                
                                                 <script>
+                                                    $(function() {
+                                                        // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
+                                                        $('#checkinput').daterangepicker({
+                                                            singleDatePicker: true,
+                                                            showDropdowns: true,
+                                                            autoUpdateInput: false,
+                                                            autoApply: true,
+
+                                                            locale: {
+                                                                format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                                                            }
+                                                        });
+                                                        $('#checkinput').on('apply.daterangepicker', function(ev, picker) {
+                                                            $(this).val(picker.startDate.format('DD/MM/YYYY'));
+
+                                                        });
+                                                    });
+                                                    $(function() {
+                                                        // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
+                                                        $('#checkinout').daterangepicker({
+                                                            singleDatePicker: true,
+                                                            showDropdowns: true,
+                                                            autoUpdateInput: false,
+                                                            autoApply: true,
+
+                                                            locale: {
+                                                                format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
+                                                            }
+                                                        });
+                                                        $('#checkinout').on('apply.daterangepicker', function(ev, picker) {
+                                                            $(this).val(picker.startDate.format('DD/MM/YYYY'));
+
+                                                        });
+                                                    });
                                                     document.getElementById('Filter').addEventListener('change', function() {
                                                         const selectedValue = this.value;
                                                         // ทำสิ่งที่คุณต้องการเมื่อมีการเปลี่ยนแปลง
@@ -95,6 +128,8 @@
                                                         const checkinput = document.getElementById('checkinput');
                                                         const checkinout = document.getElementById('checkinout');
                                                         const inputcompany = document.getElementById('inputcompany');
+                                                        const inputcompanyindividual = document.getElementById('inputcompanyindividual');
+
                                                         if (selectedValue === 'All') {
                                                             checkinDiv.style.display = 'none';
                                                             checkoutDiv.style.display = 'none';
@@ -102,6 +137,7 @@
                                                             status.style.display = 'none';
                                                             checkinput.disabled = true;
                                                             checkinout.disabled = true;
+                                                            inputcompanyindividual.disabled = true;
                                                         } else if (selectedValue === 'Nocheckin') {
                                                             checkinDiv.style.display = 'none';
                                                             checkoutDiv.style.display = 'none';
@@ -109,6 +145,7 @@
                                                             status.style.display = 'block';
                                                             checkinput.disabled = true;
                                                             checkinout.disabled = true;
+                                                            inputcompanyindividual.disabled = true;
                                                         } else if (selectedValue === 'Checkin') {
                                                             checkinDiv.style.display = 'block';
                                                             checkoutDiv.style.display = 'block';
@@ -116,6 +153,7 @@
                                                             status.style.display = 'block';
                                                             checkinput.disabled = false;
                                                             checkinout.disabled = false;
+                                                            inputcompanyindividual.disabled = true;
                                                         }else if (selectedValue === 'Company') {
                                                             checkinDiv.style.display = 'none';
                                                             checkoutDiv.style.display = 'none';
@@ -1194,6 +1232,10 @@
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
     <script type="text/javascript" src="{{ asset('assets/helper/searchTableproposal.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/daterangepicker.min.js')}}" defer></script>
+    <script type="text/javascript" src="{{ asset('assets/js/moment.min.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.min.js')}}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/daterangepicker.css')}}" />
     <script>
         const table_name = ['proposalTable','proposalPendingTable','proposalAwaitingTable','proposalApprovedTable','proposalRejectTable','proposalCancelTable'];
         $(document).ready(function() {
