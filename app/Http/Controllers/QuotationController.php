@@ -80,7 +80,7 @@ class QuotationController extends Controller
         $user = Auth::user();
         $userid = Auth::user()->id;
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-        if ($user->permission == 1) {
+
             $User = User::select('name','id')->whereIn('permission',[0,1,2])->get();
             $Proposalcount = Quotation::query()->count();
 
@@ -147,9 +147,9 @@ class QuotationController extends Controller
                 $nameGuest = Guest::where('First_name', 'LIKE', '%' . $search_value . '%')
                                   ->orWhere('Last_name', 'LIKE', '%' . $search_value . '%')
                                   ->first();
-                
+
                 $profile = $nameCom ? $nameCom->Profile_ID : ($nameGuest ? $nameGuest->Profile_ID : null);
-                
+
                 $Proposal = collect(); // สร้างคอลเลกชันว่างในกรณีที่ไม่มี $profile
 
                 $Proposal = null; // ตั้งค่าเริ่มต้นเป็น null
@@ -161,7 +161,7 @@ class QuotationController extends Controller
                 } else {
                     // สร้าง LengthAwarePaginator ว่างเมื่อไม่มีข้อมูล
                     $Proposal = new LengthAwarePaginator([], 0, $perPage);
-                }          
+                }
             }
             elseif ($Filter == null) {
                 if ($Usercheck) {
@@ -208,83 +208,6 @@ class QuotationController extends Controller
             $Rejectcount = Quotation::query()->where('status_document',4)->count();
             $Cancel = Quotation::query()->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
             $Cancelcount = Quotation::query()->where('status_document',0)->count();
-        }
-        if ($user->permission == 0) {
-
-            $User = User::select('name','id')->where('id',$userid)->get();
-            if ($Filter == 'All') {
-                $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->paginate($perPage);
-            }elseif ($Filter == 'Nocheckin') {
-                if ($Filter == 'Nocheckin'&&$checkin ==null&& $checkout == null&&$status == null && $Usercheck !== null) {
-                    $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->paginate($perPage);
-                }elseif ($Filter == 'Nocheckin'&&$status == 1 && $Usercheck !== null) {
-                    $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->whereIn('status_document',[1,3])->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
-                }elseif ($Filter == 'Nocheckin'&&$status == 3 && $Usercheck !== null) {
-                    $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_guest',1)->orderBy('created_at', 'desc')->paginate($perPage);
-                }elseif ($Filter == 'Nocheckin'&&$status == 2 && $Usercheck !== null) {
-                    $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->paginate($perPage);
-                }elseif ($Filter == 'Nocheckin'&&$status == 4 && $Usercheck !== null) {
-                    $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->paginate($perPage);
-                }elseif ($Filter == 'Nocheckin'&&$status == 0 && $Usercheck !== null) {
-                    $Proposal = Quotation::query()->where('checkin',null)->where('checkout',null)->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
-                }
-            }elseif ($Filter == 'Checkin') {
-                if ($checkin && $checkout &&$Usercheck !==null&& $status == null ) {
-                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->paginate($perPage);
-                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 1 ) {
-                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->whereIn('status_document',[1,3])->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
-                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 2 ) {
-                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',2)->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
-                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 3 ) {
-                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_guest',1)->orderBy('created_at', 'desc')->paginate($perPage);
-                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 4 ) {
-                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',4)->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
-                }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 0 ) {
-                    $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',0)->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
-                }
-            }elseif ($Filter == 'Company') {
-                $nameCom = companys::where('Company_Name', 'LIKE', '%'.$search_value.'%')->first();
-                $nameGuest = Guest::where('First_name', 'LIKE', '%'.$search_value.'%')->orWhere('Last_name', 'LIKE', '%'.$search_value.'%')->first();
-                $porfile= null;
-                if ($nameCom) {
-                    $porfile = $nameCom->Profile_ID;
-                }
-                if ($nameGuest) {
-                    $porfile = $nameGuest->Profile_ID;
-                }
-                if ($porfile) {
-                    $Proposal = Quotation::query()->where('Company_ID',$porfile)->paginate($perPage);
-                }
-            }
-            elseif ($Filter == null) {
-                if ($Usercheck) {
-                    if ($Usercheck !== null && $status == null) {
-                        $Proposal = Quotation::query()->orderBy('created_at', 'desc')->where('Operated_by',$Usercheck)->paginate($perPage);
-                    }elseif ($Usercheck !== null && $status == 0) {
-                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
-                    }elseif ($Usercheck !== null && $status == 1) {
-                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->whereIn('status_document',[1,3])->orderBy('created_at', 'desc')->paginate($perPage);
-                    }elseif ($Usercheck !== null && $status == 2) {
-                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',2)->orderBy('created_at', 'desc')->paginate($perPage);
-                    }elseif ($Usercheck !== null && $status == 3) {
-                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_guest',1)->orderBy('created_at', 'desc')->paginate($perPage);
-                    }elseif ($Usercheck !== null && $status == 4) {
-                        $Proposal = Quotation::query()->where('Operated_by',$Usercheck)->where('status_document',4)->orderBy('created_at', 'desc')->paginate($perPage);
-                    }
-                }
-            }
-            $Proposalcount = Quotation::query()->where('Operated_by',$userid)->count();
-            $Pending = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->where('status_guest',0)->paginate($perPage);
-            $Pendingcount = Quotation::query()->where('Operated_by',$userid)->whereIn('status_document',[1,3])->where('status_guest',0)->count();
-            $Awaiting = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',2)->paginate($perPage);
-            $Awaitingcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',2)->count();
-            $Approved = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_guest',1)->paginate($perPage);
-            $Approvedcount = Quotation::query()->where('Operated_by',$userid)->where('status_guest',1)->count();
-            $Reject = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',4)->paginate($perPage);
-            $Rejectcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',4)->count();
-            $Cancel = Quotation::query()->where('Operated_by',$userid)->orderBy('created_at', 'desc')->where('status_document',0)->paginate($perPage);
-            $Cancelcount = Quotation::query()->where('Operated_by',$userid)->where('status_document',0)->count();
-        }
         return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount'
         ,'User'));
     }

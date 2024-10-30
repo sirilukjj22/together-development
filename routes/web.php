@@ -767,6 +767,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('billingover-proposal-search-table', 'search_table_billingover_proposal');
         Route::post('billingover-proposal-paginate-table', 'paginate_table_billingover_proposal');
 
+        Route::get('/Document/BillingFolio/{Quotation_ID}/addProduct', 'addProduct')->name('BillingFolioOver.addProduct');
+        Route::get('/Document/BillingFolio/{Quotation_ID}/addProductselect', 'addProductselect')->name('BillingFolioOver.addProductselect');
+        Route::get('/Document/BillingFolio/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('BillingFolioOver.addProducttablecreatemain');
         Route::post('billingover-search-table', 'search_table_billingover');
         Route::post('billingover-paginate-table', 'paginate_table_billingover');
     });

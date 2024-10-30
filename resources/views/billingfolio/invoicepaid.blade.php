@@ -589,7 +589,7 @@
                 showDropdowns: true,
                 autoUpdateInput: false,
                 autoApply: true,
-                opens: 'top',
+                drops: 'up',
                 locale: {
                     format: 'DD/MM/YYYY' // ฟอร์แมตเป็น dd/mm/yyyy
                 }

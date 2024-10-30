@@ -26,6 +26,7 @@ use App\Models\Master_company;
 use App\Models\phone_guest;
 use App\Models\document_invoices;
 use App\Models\document_proposal_overbill;
+use App\Models\Master_additional;
 use App\Models\proposal_overbill;
 use Auth;
 use App\Models\User;
@@ -336,116 +337,48 @@ class BillingFolioOverbill extends Controller
         $Quotation = Quotation::where('id', $id)->first();
         $preview = $request->preview;
         $Quotation_ID=$request->Quotation_ID;
-        $adult=$request->Adult;
-        $children=$request->Children;
-        $SpecialDiscount = $request->SpecialDiscount;
-        $SpecialDiscountBath = $request->DiscountAmount;
-        $Add_discount = $request->Add_discount;
         $userid = Auth::user()->id;
         $data = $request->all();
+
         if ($preview == 1) {
             $userid = Auth::user()->id;
             $datarequest = [
                 'Proposal_ID' => $data['Quotation_ID'] ?? null,
-                'IssueDate' => $data['IssueDate'] ?? null,
-                'Expiration' => $data['Expiration'] ?? null,
-                'Selectdata' => $data['selectdata'] ?? null,
-                'Data_ID' => $data['Guest'] ?? $data['Company'] ?? null,
-                'Adult' => $data['Adult'] ?? null,
-                'Children' => $data['Children'] ?? null,
-                'Mevent' => $data['Mevent'] ?? null,
-                'Mvat' => $data['Mvat'] ?? null,
-                'DiscountAmount' => $data['DiscountAmount'] ?? null,
-                'ProductIDmain' => $data['ProductIDmain'] ?? null,
-                'pax' => $data['pax'] ?? null,
-                'CheckProduct' => $data['CheckProduct'] ?? null,
-                'Quantitymain' => $data['Quantitymain'] ?? null,
-                'priceproductmain' => $data['priceproductmain'] ?? null,
-                'discountmain' => $data['discountmain'] ?? null,
+                'Code' => $data['Code'] ?? [],
+                'Amount' => $data['Amount'] ?? [],
+                'IssueDate' => $Quotation['issue_date'] ?? null,
+                'Expiration' => $Quotation['Expirationdate'] ?? null,
+                'Selectdata' => $Quotation['type_Proposal'] ?? null,
+                'Data_ID' => $Quotation['Company_ID'] ?? null,
+                'Adult' => $Quotation['adult'] ?? null,
+                'Children' => $Quotation['children'] ?? null,
+                'Mevent' => $Quotation['eventformat'] ?? null,
+                'Mvat' => $Quotation['vat_type'] ?? null,
                 'comment' => $data['comment'] ?? null,
-                'PaxToTalall' => $data['PaxToTalall'] ?? null,
-                'FreelancerMember' => $data['Freelancer_member'] ?? null,
-                'Checkin' => $data['Checkin'] ?? null,
-                'Checkout' => $data['Checkout'] ?? null,
-                'Day' => $data['Day'] ?? null,
-                'Night' => $data['Night'] ?? null,
-                'Unitmain' => $data['Unitmain'] ?? null,
+                'PaxToTalall' => $Quotation['TotalPax'] ?? null,
+                'Checkin' => $Quotation['checkin'] ?? null,
+                'Checkout' => $Quotation['checkout'] ?? null,
+                'Day' => $Quotation['day'] ?? null,
+                'Night' => $Quotation['night'] ?? null,
+
             ];
-            $Products = $datarequest['ProductIDmain'];
-            $Productslast = $datarequest['CheckProduct'];
-            $pax=$datarequest['pax'];
-            $productsCount = is_array($Products) ? count($Products) : 0;
-            $productslastCount = is_array($Productslast) ? count($Productslast) : 0;
-            if (is_array($Products) && is_array($Productslast)) {
-                $commonValues = array_intersect($Products, $Productslast);
-                if (!empty($commonValues)) {
-                    $diffFromProducts = array_diff($Products, $Productslast);
-                    $diffFromProductslast = array_diff($Productslast, $Products);
-                    $Products = array_merge($commonValues,$diffFromProducts,$diffFromProductslast);
-                } else {
-                    $Products = array_merge($Productslast,$Products);
-                }
-
-            }else{
-                $Products = $Productslast;
-            }
-            $quantities = $datarequest['Quantitymain'] ?? [];
-            $discounts = $datarequest['discountmain'] ?? [];
-            $priceUnits = $datarequest['priceproductmain'] ?? [];
-            $Unitmain = $datarequest['Unitmain'] ?? [];
+            $Code = $datarequest['Code'];
+            $Amount = $datarequest['Amount'];
             $productItems = [];
-            $totaldiscount = [];
-            foreach ($Products as $index => $productID) {
-                if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
-                    $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
-                    $discountedPrices = [];
-                    $discountedPricestotal = [];
-                    $totaldiscount = [];
-                    // คำนวณราคาสำหรับแต่ละรายการ
-                    for ($i = 0; $i < count($quantities); $i++) {
-                        $quantity = intval($quantities[$i]);
-                        $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
-                        $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
-                        $discount = floatval($discounts[$i]);
 
-                        $totaldiscount0 = (($priceUnit * $discount)/100);
-                        $totaldiscount[] = $totaldiscount0;
+            if (count($Code) === count($Amount)) {
+                foreach ($Code as $index => $productID) {
+                    // Retrieve the product details based on Code
+                    $items = Master_additional::where('code', $productID)->get();
 
-                        $totalPrice = ($quantity * $unitValue) * $priceUnit;
-                        $totalPrices[] = $totalPrice;
-
-                        $discountedPrice = (($priceUnit * $discount) / 100);
-                        $discountedPrices[] =  $priceUnit - $discountedPrice;
-
-                        $total = ($quantity * $unitValue);
-
-                        $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
-                        $discountedPricestotal[] = $discountedPriceTotal;
-
+                    foreach ($items as $item) {
+                        // Use corresponding Amount for each productID based on index
+                        $quantity = isset($Amount[$index]) ? intval($Amount[$index]) : 0;
+                        $productItems[] = [
+                            'product' => $item,
+                            'Amount' => $quantity,
+                        ];
                     }
-                }
-                $items = master_product_item::where('Product_ID', $productID)->get();
-                $QuotationVat= $datarequest['Mvat'];
-                $Mvat = master_document::where('id',$QuotationVat)->where('status', '1')->where('Category','Mvat')->select('name_th','id')->first();
-                foreach ($items as $item) {
-                    // ตรวจสอบและกำหนดค่า quantity และ discount
-                    $quantity = isset($quantities[$index]) ? $quantities[$index] : 0;
-                    $unitValue = isset($Unitmain[$index]) ? $Unitmain[$index] : 0;
-                    $discount = isset($discounts[$index]) ? $discounts[$index] : 0;
-                    $totalPrices = isset($totalPrices[$index]) ? $totalPrices[$index] : 0;
-                    $discountedPrices = isset($discountedPrices[$index]) ? $discountedPrices[$index] : 0;
-                    $discountedPricestotal = isset($discountedPricestotal[$index]) ? $discountedPricestotal[$index] : 0;
-                    $totaldiscount = isset($totaldiscount[$index]) ? $totaldiscount[$index] : 0;
-                    $productItems[] = [
-                        'product' => $item,
-                        'quantity' => $quantity,
-                        'unit' => $unitValue,
-                        'discount' => $discount,
-                        'totalPrices'=>$totalPrices,
-                        'discountedPrices'=>$discountedPrices,
-                        'discountedPricestotal'=>$discountedPricestotal,
-                        'totaldiscount'=>$totaldiscount,
-                    ];
                 }
             }
             {//คำนวน
@@ -457,54 +390,21 @@ class BillingFolioOverbill extends Controller
                 $Nettotal =0;
                 $totalaverage=0;
 
-                $SpecialDistext = $datarequest['DiscountAmount'];
-                $SpecialDis = floatval($SpecialDistext);
+
                 $totalguest = 0;
-                $totalguest = $adult + $children;
-                $guest = $request->PaxToTalall;
-                if ($Mvat->id == 50) {
-                    foreach ($productItems as $item) {
-                        $totalPrice += $item['totalPrices'];
-                        $totalAmount += $item['discountedPricestotal'];
-                        $subtotal = $totalAmount-$SpecialDis;
-                        $beforeTax = $subtotal/1.07;
-                        $AddTax = $subtotal-$beforeTax;
-                        $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$guest;
+                $totalguest = $datarequest['Adult'] + $datarequest['Children'];
+                $guest =  $datarequest['Adult'] + $datarequest['Children'];
 
-                    }
+                foreach ($productItems as $item) {
+                    $totalPrice += $item['Amount'];
+                    $subtotal = $totalPrice;
+                    $beforeTax = $subtotal/1.07;
+                    $AddTax = $subtotal-$beforeTax;
+                    $Nettotal = $subtotal;
+                    $totalaverage =$Nettotal/$totalguest;
+                    $totalAmount = $totalPrice;
                 }
-                elseif ($Mvat->id == 51) {
-                    foreach ($productItems as $item) {
-                        $totalPrice += $item['totalPrices'];
-                        $totalAmount += $item['discountedPricestotal'];
-                        $subtotal = $totalAmount-$SpecialDis;
-                        $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$guest;
 
-                    }
-                }
-                elseif ($Mvat->id == 52) {
-                    foreach ($productItems as $item) {
-                        $totalPrice += $item['totalPrices'];
-                        $totalAmount += $item['discountedPricestotal'];
-                        $subtotal = $totalAmount-$SpecialDis;
-                        $AddTax = $subtotal*7/100;
-                        $Nettotal = $subtotal+$AddTax;
-                        $totalaverage =$Nettotal/$guest;
-                    }
-                }else
-                {
-                    foreach ($productItems as $item) {
-                        $totalPrice += $item['totalPrices'];
-                        $totalAmount += $item['discountedPricestotal'];
-                        $subtotal = $totalAmount-$SpecialDis;
-                        $beforeTax = $subtotal/1.07;
-                        $AddTax = $subtotal-$beforeTax;
-                        $Nettotal = $subtotal;
-                        $totalaverage =$Nettotal/$guest;
-                    }
-                }
                 $pagecount = count($productItems);
                 $page = $pagecount/10;
 
@@ -532,7 +432,6 @@ class BillingFolioOverbill extends Controller
             $Children = $datarequest['Children'];
             $Mevent = $datarequest['Mevent'];
             $Mvat = $datarequest['Mvat'];
-            $DiscountAmount = $datarequest['DiscountAmount'];
             $Checkin = $datarequest['Checkin'];
             $Checkout = $datarequest['Checkout'];
             $Day = $datarequest['Day'];
@@ -578,6 +477,8 @@ class BillingFolioOverbill extends Controller
                         $fullName = "บริษัท " . $Compannyname . " จำกัด (มหาชน)";
                     } elseif ($comtype->name_th == "ห้างหุ้นส่วนจำกัด") {
                         $fullName = "ห้างหุ้นส่วนจำกัด " . $Compannyname;
+                    }else{
+                        $fullName = $comtype->name_th . $Compannyname;
                     }
                 }
                 $representative = representative::where('Company_ID',$Quotation->Company_ID)->first();
@@ -657,7 +558,6 @@ class BillingFolioOverbill extends Controller
                 'Adult'=>$Adult,
                 'Children'=>$Children,
                 'totalAmount'=>$totalAmount,
-                'SpecialDis'=>$SpecialDis,
                 'subtotal'=>$subtotal,
                 'beforeTax'=>$beforeTax,
                 'Nettotal'=>$Nettotal,
@@ -674,10 +574,9 @@ class BillingFolioOverbill extends Controller
                 'Contact_Name'=>$Contact_Name,
                 'Contact_phone'=>$Contact_phone,
                 'Contact_Email'=>$Contact_Email,
-                'SpecialDistext'=>$SpecialDistext,
             ];
             $view= $template->name;
-            $pdf = FacadePdf::loadView('quotationpdf.preview',$data);
+            $pdf = FacadePdf::loadView('billingfolio.overbill_pdf.preview',$data);
             return $pdf->stream();
         }else{
             $datarequest = [
@@ -1493,5 +1392,45 @@ class BillingFolioOverbill extends Controller
 
     }
 
+    public function addProduct($Quotation_ID, Request $request){
+        $value = $request->input('value');
+        if ($value == 'Room_Type') {
+            $products = Master_additional::where('type','RM')->get();
+        }
+        elseif ($value == 'Banquet') {
+            $products = Master_additional::where('type','BQ')->get();
+        }
+        elseif ($value == 'Meals') {
+            $products = Master_additional::where('type','FB')->get();
+        }
+        elseif ($value == 'Entertainment') {
+            $products = Master_additional::where('type','AT')->get();
+        }
+        elseif ($value == 'Other') {
+            $products = Master_additional::where('type','EM')->get();
+        }
+        elseif ($value == 'all'){
+            $products = Master_additional::query()->get();
+        }
+        return response()->json([
+            'products' => $products,
+
+        ]);
+    }
+    public function addProductselect($Quotation_ID, Request $request) {
+        $id = $request->input('value');
+        $products = Master_additional::where('id',$id)->get();
+        return response()->json([
+            'products' => $products,
+        ]);
+    }
+    public function addProducttablecreatemain($Quotation_ID, Request $request) {
+        $id = $request->input('value');
+        $products = Master_additional::query()->get();
+        return response()->json([
+            'products' => $products,
+
+        ]);
+    }
 
 }
