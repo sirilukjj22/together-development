@@ -527,7 +527,6 @@
                             $('#txt_total_receive_payment').text(currencyFormat(Number(SumTotalDebit))); // ยอดที่รับชำระ แสดงแบบ Text
                             $('#txt_total_received').text(currencyFormat(Number(SumTotalDebit)));
 
-                            // console.log(Number(total_receive_payment).toFixed(2) - Number(amount).toFixed(2));
                             $('#total_outstanding').val(total + amount);
                             $('#txt_total_outstanding').text(currencyFormat(Number(total + amount)));
 
