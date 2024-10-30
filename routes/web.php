@@ -763,10 +763,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/BillingFolio/Over/select', 'select')->name('BillingFolioOver.select');
         Route::get('/Document/BillingFolio/Proposal/Over/{id}','proposal')->name('BillingFolioOver.proposal');
         Route::post('/Document/BillingFolio/Proposal/Over/create/{id}', 'create')->name('BillingFolioOver.create');
-        Route::get('/Document/BillingFolio/Proposal/Over/document/PDF/{id}', 'sheetpdf')->name('Proposal.sheet');
+        Route::get('/Document/BillingFolio/Proposal/Over/document/PDF/{id}', 'sheetpdf')->name('BillingFolioOver.sheet');
+        Route::get('/Document/BillingFolio/Proposal/Over/log/{id}', 'log')->name('BillingFolioOver.log');
+        Route::get('/Document/BillingFolio/Proposal/Over/edit/{id}','edit')->name('BillingFolioOver.edit');
+
         Route::post('billingover-proposal-search-table', 'search_table_billingover_proposal');
         Route::post('billingover-proposal-paginate-table', 'paginate_table_billingover_proposal');
-
         Route::get('/Document/BillingFolio/{Quotation_ID}/addProduct', 'addProduct')->name('BillingFolioOver.addProduct');
         Route::get('/Document/BillingFolio/{Quotation_ID}/addProductselect', 'addProductselect')->name('BillingFolioOver.addProductselect');
         Route::get('/Document/BillingFolio/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('BillingFolioOver.addProducttablecreatemain');

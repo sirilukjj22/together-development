@@ -258,10 +258,11 @@
                                             <div class="col-lg-4"></div>
                                             <div class="PROPOSAL col-lg-7" style="margin-left: 5px">
                                                 <div class="row">
-                                                    <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">Proposal</b>
-                                                    <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$Quotation_ID}}</b>
+                                                    <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">additional</b>
+                                                    <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$Quotation_IDoverbill}}</b>
                                                 </div>
                                                 <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
+                                                <input type="hidden" id="Additional_ID" name="Additional_ID" value="{{$Quotation_IDoverbill}}">
                                             </div>
                                         </div>
                                         <div class="row mt-2">

@@ -68,8 +68,9 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center"data-priority="1">No</th>
+                                            <th class="text-center" data-priority="1">Additional ID</th>
                                             <th class="text-center" data-priority="1">Proposal ID</th>
-                                            <th class="text-center" data-priority="1">Company / Individual</th>
+                                            <th data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
@@ -87,6 +88,7 @@
                                                 <td style="text-align: center;">
                                                     {{$key +1}}
                                                 </td>
+                                                <td>{{ $item->Additional_ID }}</td>
                                                 <td>{{ $item->Quotation_ID }}</td>
                                                 @if ($item->type_Proposal == 'Company')
                                                     <td>{{ @$item->company->Company_Name}}</td>
@@ -94,7 +96,7 @@
                                                     <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                 @endif
                                                 <td>{{ $item->issue_date }}</td>
-                                                <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                <td style="text-align: center;">{{ $item->Date_type ?? 'No Check In Date' }}</td>
                                                 @if ($item->checkin)
                                                 <td style="text-align: center;">{{ $item->checkin}}</td>
                                                 <td style="text-align: center;">{{ $item->checkout }}</td>
@@ -105,21 +107,60 @@
                                                 <td style="text-align: center;">{{ $item->Expirationdate }}</td>
                                                 <td >{{ @$item->userOperated->name }}</td>
                                                 <td style="text-align: center;">
-                                                    <span class="badge rounded-pill bg-success">Approved</span>
+                                                    @if($item->status_document == 0)
+                                                        <span class="badge rounded-pill bg-danger">Cancel</span>
+                                                    @elseif ($item->status_document == 1)
+                                                        <span class="badge rounded-pill "style="background-color: #FF6633">Pending</span>
+                                                    @elseif ($item->status_document == 2)
+                                                        <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
+                                                    @elseif ($item->status_document == 3)
+                                                        <span class="badge rounded-pill bg-success">Approved</span>
+                                                    @elseif ($item->status_document == 4)
+                                                        <span class="badge rounded-pill "style="background-color:#1d4ed8">Reject</span>
+                                                    @elseif ($item->status_document == 5)
+                                                        <span class="badge rounded-pill "style="background-color:#0ea5e9">Receive (RE)</span>
+                                                    @endif
                                                 </td>
                                                 @php
                                                     $CreateBy = Auth::user()->id;
+                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                    $canViewProposal = @Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
+                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
                                                 @endphp
                                                 <td style="text-align: center;">
-                                                    @if ($item->Operated_by == $CreateBy)
-                                                        <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Document/BillingFolio/Proposal/Over/'.$item->id) }}'">
-                                                            Select
-                                                        </button>
-                                                    @else
-                                                        <button type="button" class="btn btn-color-green lift btn_modal" disabled>
-                                                            Select
-                                                        </button>
-                                                    @endif
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                                            @if ($canViewProposal == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/Over/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/log/'.$item->id) }}">LOG</a></li>
+                                                            @endif
+                                                            @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
+                                                                @if ($canEditProposal == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                    @if ($item->status_document == 3)
+
+                                                                    @endif
+                                                                @endif
+                                                            @elseif ($rolePermission == 2)
+                                                                @if ($item->Operated_by == $CreateBy)
+                                                                    @if ($canEditProposal == 1)
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                        @if ($item->status_document == 3)
+
+                                                                        @endif
+                                                                    @endif
+                                                                @endif
+                                                            @elseif ($rolePermission == 3)
+                                                                @if ($canEditProposal == 1)
+                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                    @if ($item->status_document == 3)
+
+                                                                    @endif
+                                                                @endif
+                                                            @endif
+                                                        </ul>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             @endforeach

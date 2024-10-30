@@ -92,7 +92,7 @@
                 top: 50px;
                 right: 6;
                 width: 180px;
-                height: 60px;
+                height: 75px;
                 border: 2px solid #2D7F7B;
                 border-radius: 10px;
             }
@@ -163,154 +163,6 @@
     </head>
     <body>
         @if ($Selectdata == 'Company')
-            <div style="page-break-after: always;">
-                <div id="logo">
-
-                    <img src="{{$settingCompany->image}}">
-
-                </div>
-
-                <div class="txt-head">
-
-                    <div class="add-text" style="line-height:12px;margin-left:10px;">
-
-                    <b style="font-size:20px;">{{$settingCompany->name}}</b>
-
-                        <br> <b> {{$settingCompany->address}}</b>
-
-                        <br> <b>Tel : {{$settingCompany->tel}} Fax : {{$settingCompany->fax}}</b></br>
-
-                        <b> Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</b>
-                    </div>
-                </div>
-                <main>
-                    <br><br><br><br>
-                    <b>Subject : </b>ขอเสนอราคาค่าที่พัก อาหาร สัมมนา และ กิจกรรม
-                    <span  style="float: right" > {{ $date->format('d/m/Y H:i:s') }}</span><b style="float: right">Date :</b>
-                </main>
-                <br>
-                <div style="border: 2px solid #2D7F7B"></div>
-                <b class="com" style="margin-left: 20px; margin-top:10px; font-size:18px">Company Information</b>
-                <table style="line-height:12px;">
-                    <tr>
-                        <td style="width: 30%"><b style="margin-left: 30px;">Company Name :</b></td>
-                        <td>{{$fullName}}</td>
-                    </tr>
-                    <tr>
-                        <td><b style="margin-left: 30px;">Company Address :</b></td>
-                        <td>{{$Address}} {{'ตำบล' . $TambonID->name_th}} </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                    <td> {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}</td>
-                    </tr>
-                    <tr>
-                        <td><b style="margin-left: 30px;">Company Email :</b></td>
-                        <td>{{$Email}}</td>
-                    </tr>
-                    <tr>
-                        <td><b style="margin-left: 30px;">Company Number :</b></td>
-                        <td>{{ substr($phone->Phone_number, 0, 3) }}-{{ substr($phone->Phone_number, 3, 3) }}-{{ substr($phone->Phone_number, 6) }}</td>
-                    </tr>
-                    <tr>
-                        <td><b style="margin-left: 30px;">Company Fax :</b></td>
-                        <td>{{$Fax_number}}</td>
-                    </tr>
-                </table>
-                <span style="position: absolute;top: 220px; right: 30;width: 280px;height: 145px;line-height:14px;">
-                    <b class="com" style=" font-size:18px">Contact Information</b><br>
-                    <b style="margin-left: 10px;">Contact Name : </b><span >คุณ {{$Contact_Name}}</span><br>
-                    <b style="margin-left: 10px;">Contact Email : </b><span >{{$Contact_Email}}</span><br>
-                    <b style="margin-left: 10px;">Contact Number : </b><span>{{ substr($Contact_phone->Phone_number, 0, 3) }}-{{ substr($Contact_phone->Phone_number, 3, 3) }}-{{ substr($Contact_phone->Phone_number, 6) }}</span><br>
-
-                </span>
-                <div style="line-height:17px;margin-top: 10px;">
-                    โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน ขอแสดงความขอบคุณที่ท่านเลือก โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน<br>
-                ให้ได้รับใช้ท่านในการสำรองห้องพักและการจัดงาน ทางโรงแรมขอเสนอราคาพิเศษ ให้กับหน่วยงานของท่าน ดังนี้<br>
-                </div>
-                รายละเอียดการจัดงาน
-                <table style="line-height:12px;">
-                    <tr>
-                        <td ><span style="margin-left: 30px;">วันที่</span></td>
-                        @if ($Checkin == '-')
-                        <td>No Check in date</td>
-                        @else
-                        <td>{{$Checkin}} - {{$Checkout}} ( {{$Day}} วัน {{$Night}} คืน)</td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td><span style="margin-left: 30px;">สถานที่</span></td>
-                        <td>โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</td>
-                    </tr>
-                    <tr>
-                        <td><span style="margin-left: 30px;">รูปแบบการจัดงาน</span></td>
-                        <td>{{$eventformat->name_th}}</td>
-                    </tr>
-                    <tr>
-                        <td><span style="margin-left: 30px;">จำนวน</span></td>
-                        <td>{{ $totalguest }} ท่าน</td>
-                    </tr>
-                    <tr>
-                        <td><b style="margin-left: 30px;">Remark :</b></td>
-                        <td>เอกสารฉบับนี้ เป็นเพียงการเสนอราคาเท่านั้นยังมิได้ทำการจองแต่อย่างใดทั้งสิ้น</td>
-                    </tr>
-                </table>
-                <div style="border: 2px solid #2D7F7B;margin-top: 10px;"></div>
-                <b>การจองห้องพัก</b>
-                <div style="margin-left: 60px;line-height:5px;">
-                    {!! $Reservation_show->name_th !!}
-                </div>
-                <b>เงื่อนไขการจ่ายเงิน</b>
-                <div style="margin-left: 60px;line-height:5px;">
-                    {!! $Paymentterms->name_th !!}
-                </div>
-                <b>หมายเหตุ</b>
-                <div style="margin-left: 60px;line-height:5px;">
-                    {!! $note->name_th !!}
-                </div>
-            </div>
-            <div style="page-break-after: always;">
-                <div id="logo">
-
-                    <img src="{{$settingCompany->image}}">
-
-                </div>
-
-                <div class="txt-head">
-
-                    <div class="add-text" style="line-height:12px;margin-left:10px;">
-
-                    <b style="font-size:20px;">{{$settingCompany->name}}</b>
-
-                        <br> <b> {{$settingCompany->address}}</b>
-
-                        <br> <b>Tel : {{$settingCompany->tel}} Fax : {{$settingCompany->fax}}</b></br>
-
-                        <b> Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</b>
-                    </div>
-                </div>
-                <main>
-                    <br><br><br><br>
-                    <b>Subject : </b>ขอเสนอราคาค่าที่พัก อาหาร สัมมนา และ กิจกรรม
-                    <span  style="float: right" > {{ $date->format('d/m/Y H:i:s') }}</span><b style="float: right">Date :</b>
-                </main>
-                <br>
-                <div style="border: 2px solid #2D7F7B"></div>
-                <div style=" margin-top:10px;">
-                    <b>การยกเลิกและการเปลี่ยนแปลงการจอง</b>
-                    <div style="margin-left: 60px;line-height:5px;">
-                        {!! $Cancellations->name_th !!}
-                    </div>
-                    <b>อภินันทนาการทางรีสอร์ท</b>
-                    <div style="margin-left: 60px;line-height:5px;">
-                        {!! $Complimentary->name_th !!}
-                    </div>
-                    <b>ทางรีสอร์ทขอสงวนสิทธิ์แก่ผู้ใช้บริการดังนี้</b>
-                    <div style="margin-left: 60px;line-height:5px;">
-                        {!! $All_rights_reserved->name_th !!}
-                    </div>
-                </div>
-            </div>
             @php
                 $num=0;
                 $num1=0;
@@ -349,7 +201,7 @@
 
                             <div  style="text-align: center">
 
-                                <b style="font-size:18px;color:#ffffff;font-weight: bold;">PROPOSAL</b>
+                                <b style="font-size:18px;color:#ffffff;font-weight: bold;">ADDITIONAL</b>
 
                             </div>
 
@@ -359,6 +211,8 @@
                         <div class="PROPOSALfirst" style="line-height:10px;">
 
                             <div style="padding: 4%">
+
+                                <b >Additional ID : </b><span style="margin-left: 10px;">{{ $Additional_ID }}</span><br>
 
                                 <b >Proposal ID : </b><span style="margin-left: 10px;">{{ $Proposal_ID }}</span><br>
 
@@ -500,37 +354,18 @@
                         <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
                             <tr style="font-weight: bold;">
                                 <th style="font-weight: bold;">NO.</th>
-                                <th style="font-weight: bold;">DESCRIPTION</th>
-                                <th style="font-weight: bold;">QUANTITY </th>
-                                <th style="font-weight: bold;">UNIT </th>
-                                <th style="text-align:center;font-weight: bold;">PRICE / UNIT </th>
-                                <th style="font-weight: bold;">DISCOUNT</th>
-                                <th style="text-align:center;font-weight: bold;">NET PRICE / UNIT</th>
+                                <th style="font-weight: bold;">CODE</th>
+                                <th style="text-align:left;font-weight: bold;">DESCRIPTION</th>
                                 <th style="text-align:center;font-weight: bold;">AMOUNT</th>
                             </tr>
                             @foreach($productItems as $key => $item)
                                 @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
-                                    @foreach ($unit as $singleUnit)
-                                        @foreach ($quantity as $singlequantity)
-                                            @if($singleUnit->id == $item['product']->unit)
-                                                @if($singlequantity->id == $item['product']->quantity)
-                                                    <tr>
-                                                        <td style="text-align:center;">{{$key+1}}</td>
-                                                        <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
-                                                        <td style="text-align:center;">{{ $item['quantity'] }} {{ $singleUnit->name_th }}</td>
-                                                        <td  style="text-align:center;">{{ $item['unit'] }} {{ $singlequantity->name_th }}</td>
-                                                        @php
-                                                            $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
-                                                        @endphp
-                                                        <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
-                                                        <td style="text-align:center;"> {{ $item['totaldiscount'] == 0 ? '' : number_format($item['totaldiscount']) }}</td>
-                                                        <td style="text-align:center;">{{ $item['discountedPrices'] == 0 ? '' : number_format($item['discountedPrices']) }}</td>
-                                                        <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
-                                                    </tr>
-                                                @endif
-                                            @endif
-                                        @endforeach
-                                    @endforeach
+                                    <tr>
+                                        <td style="text-align:center;">{{$key+1}}</td>
+                                        <td style="text-align:center;">{{ $item['product']->code}}</td>
+                                        <td>{{ $item['product']->description}}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
+                                        <td style="text-align:center;">{{ number_format($item['Amount']) }}</td>
+                                    </tr>
                                     @php
                                         $num2 +=1;
                                     @endphp
@@ -538,194 +373,45 @@
                             @endforeach
                         </table>
                         @if ($page_item == $i )
-                            @if ($Mvat == 50)
-                                <table  id="customers" class="table" style="width: 28%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    @if ($SpecialDistext)
-                                    <tr>
+                            <table  id="customers" class="table" style="width: 28%;float:right;" >
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
 
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }}</strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
-                                    </tr>
+                                <tr style="background-color: #ffffff">
+                                    <td colspan="2" style="text-align:center;">
+                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                            <b style="font-size: 16px;">Net Total </b>
+                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                        </div>
+                                    </td>
+                                </tr>
 
-                                    @endif
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
+                                <br>
+                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price">{{$guest}} </strong>Adults</td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
+                                </tr>
 
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price">{{$guest}} </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                    </tr>
-
-                                </table>
-                            @elseif ($Mvat == 51)
-                                <table  id="customers" class="table" style="width: 28%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    @if ($SpecialDistext)
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    @endif
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> {{$guest}} </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                    </tr>
-                                </table>
-                            @elseif ($Mvat == 52)
-                                <table  id="customers" class="table" style="width: 28%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    @if ($SpecialDistext)
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    @endif
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> {{$guest}} </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                    </tr>
-                                </table>
-                            @else
-                                <table  id="customers" class="table" style="width: 28%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    @if ($SpecialDistext)
-                                        <tr>
-                                            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                            <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                            <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
-                                        </tr>
-                                    @endif
-
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> {{$guest}} </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                    </tr>
-                                </table>
-                            @endif
+                            </table>
                         @endif
                         <b>Notes or Special Comment : </b><br>
                         <div style="line-height:15px;width: 65%;border: 1px solid #afafaf; height: 70px;border-radius: 5px;">
@@ -762,155 +448,6 @@
                 </div>
             @endfor
         @else
-            <div style="page-break-after: always;">
-                <div id="logo">
-
-                    <img src="{{$settingCompany->image}}">
-
-                </div>
-
-                <div class="txt-head">
-
-                    <div class="add-text" style="line-height:12px;margin-left:10px;">
-
-                    <b style="font-size:20px;">{{$settingCompany->name}}</b>
-
-                        <br> <b> {{$settingCompany->address}}</b>
-
-                        <br> <b>Tel : {{$settingCompany->tel}} Fax : {{$settingCompany->fax}}</b></br>
-
-                        <b> Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</b>
-                    </div>
-                </div>
-                <main>
-                    <br><br><br><br>
-                    <b>Subject : </b>ขอเสนอราคาค่าที่พัก อาหาร สัมมนา และ กิจกรรม
-                    <span  style="float: right" > {{ $date->format('d/m/Y H:i:s') }}</span><b style="float: right">Date :</b>
-                </main>
-                <br>
-                <div style="border: 2px solid #2D7F7B"></div>
-                <b class="com" style="margin-left: 20px; margin-top:10px; font-size:18px">Guest Information</b>
-                <table style="line-height:12px;">
-                    <tr>
-                        <td style="width: 30%"><b style="margin-left: 30px;">Guest Name :</b></td>
-                        <td>{{$fullName}}</td>
-                    </tr>
-                    <tr>
-                        <td><b style="margin-left: 30px;">Guest Address :</b></td>
-                        <td>{{$Address}}
-                            @if ($TambonID)
-                                {{'ตำบล' . $TambonID->name_th}}  {{'อำเภอ' .$amphuresID->name_th}}
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                    <td>
-                        @if ($TambonID)
-                            {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
-                        @endif
-                    </td>
-                    </tr>
-                    <tr>
-                        <td><b style="margin-left: 30px;">Guest Email :</b></td>
-                        <td>{{$Email}}</td>
-                    </tr>
-                    <tr>
-                        <td><b style="margin-left: 30px;">Guest Number :</b></td>
-                        <td>{{ $phone->Phone_number }}</td>
-                    </tr>
-                    <tr>
-                        <td><b style="margin-left: 30px;">Guest Fax :</b></td>
-                        <td>{{$Fax_number}}</td>
-                    </tr>
-                </table>
-                <div style="line-height:17px;margin-top: 10px;">
-                    โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน ขอแสดงความขอบคุณที่ท่านเลือก โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน<br>
-                ให้ได้รับใช้ท่านในการสำรองห้องพักและการจัดงาน ทางโรงแรมขอเสนอราคาพิเศษ ให้กับหน่วยงานของท่าน ดังนี้<br>
-                </div>
-                รายละเอียดการจัดงาน
-                <table style="line-height:12px;">
-                    <tr>
-                        <td ><span style="margin-left: 30px;">วันที่</span></td>
-                        @if ($Checkin == '-')
-                        <td>No Check in date</td>
-                        @else
-                        <td>{{$Checkin}} - {{$Checkout}} ( {{$Day}} วัน {{$Night}} คืน)</td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td><span style="margin-left: 30px;">สถานที่</span></td>
-                        <td>โรงแรม ทูเก็ตเตอร์ รีสอร์ท แก่งกระจาน</td>
-                    </tr>
-                    <tr>
-                        <td><span style="margin-left: 30px;">รูปแบบการจัดงาน</span></td>
-                        <td>{{$eventformat->name_th}}</td>
-                    </tr>
-                    <tr>
-                        <td><span style="margin-left: 30px;">จำนวน</span></td>
-                        <td>{{ $totalguest }} ท่าน</td>
-                    </tr>
-                    <tr>
-                        <td><b style="margin-left: 30px;">Remark :</b></td>
-                        <td>เอกสารฉบับนี้ เป็นเพียงการเสนอราคาเท่านั้นยังมิได้ทำการจองแต่อย่างใดทั้งสิ้น</td>
-                    </tr>
-                </table>
-                <div style="border: 2px solid #2D7F7B;margin-top: 10px;"></div>
-                <b>การจองห้องพัก</b>
-                <div style="margin-left: 60px;line-height:5px;">
-                    {!! $Reservation_show->name_th !!}
-                </div>
-                <b>เงื่อนไขการจ่ายเงิน</b>
-                <div style="margin-left: 60px;line-height:5px;">
-                    {!! $Paymentterms->name_th !!}
-                </div>
-                <b>หมายเหตุ</b>
-                <div style="margin-left: 60px;line-height:5px;">
-                    {!! $note->name_th !!}
-                </div>
-            </div>
-            <div style="page-break-after: always;">
-                <div id="logo">
-
-                    <img src="{{$settingCompany->image}}">
-
-                </div>
-
-                <div class="txt-head">
-
-                    <div class="add-text" style="line-height:12px;margin-left:10px;">
-
-                    <b style="font-size:20px;">{{$settingCompany->name}}</b>
-
-                        <br> <b> {{$settingCompany->address}}</b>
-
-                        <br> <b>Tel : {{$settingCompany->tel}} Fax : {{$settingCompany->fax}}</b></br>
-
-                        <b> Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</b>
-                    </div>
-                </div>
-                <main>
-                    <br><br><br><br>
-                    <b>Subject : </b>ขอเสนอราคาค่าที่พัก อาหาร สัมมนา และ กิจกรรม
-                    <span  style="float: right" > {{ $date->format('d/m/Y H:i:s') }}</span><b style="float: right">Date :</b>
-                </main>
-                <br>
-                <div style="border: 2px solid #2D7F7B"></div>
-                <div style=" margin-top:10px;">
-                    <b>การยกเลิกและการเปลี่ยนแปลงการจอง</b>
-                    <div style="margin-left: 60px;line-height:5px;">
-                        {!! $Cancellations->name_th !!}
-                    </div>
-                    <b>อภินันทนาการทางรีสอร์ท</b>
-                    <div style="margin-left: 60px;line-height:5px;">
-                        {!! $Complimentary->name_th !!}
-                    </div>
-                    <b>ทางรีสอร์ทขอสงวนสิทธิ์แก่ผู้ใช้บริการดังนี้</b>
-                    <div style="margin-left: 60px;line-height:5px;">
-                        {!! $All_rights_reserved->name_th !!}
-                    </div>
-                </div>
-            </div>
             @php
                 $num=0;
                 $num1=0;
@@ -949,7 +486,7 @@
 
                             <div  style="text-align: center">
 
-                                <b style="font-size:18px;color:#ffffff;font-weight: bold;">PROPOSAL</b>
+                                <b style="font-size:18px;color:#ffffff;font-weight: bold;">ADDITIONAL</b>
 
                             </div>
 
@@ -959,6 +496,7 @@
                         <div class="PROPOSALfirst" style="line-height:10px;">
 
                             <div style="padding: 4%">
+                                <b >Additional ID : </b><span style="margin-left: 10px;">{{ $Additional_ID }}</span><br>
 
                                 <b >Proposal ID : </b><span style="margin-left: 10px;">{{ $Proposal_ID }}</span><br>
 
@@ -1022,8 +560,16 @@
                                 <tr>
                                     <td><b style="margin-left: 10px;">Guest Address :</b></td>
                                     <td>{{$Address}}
-                                        @if ($TambonID)
+                                        {{-- @if ($TambonID)
                                             {{'ตำบล' . $TambonID->name_th}}
+                                        @endif --}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        @if ($TambonID)
+                                        {{'ตำบล' . $TambonID->name_th}} {{'อำเภอ' .$amphuresID->name_th}}
                                         @endif
                                     </td>
                                 </tr>
@@ -1031,7 +577,7 @@
                                     <td></td>
                                     <td>
                                         @if ($TambonID)
-                                            {{'อำเภอ' .$amphuresID->name_th}} {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
+                                        {{'จังหวัด' .$provinceNames->name_th}} {{$TambonID->Zip_Code}}
                                         @endif
                                     </td>
                                 </tr>
@@ -1092,37 +638,18 @@
                         <table id="customers" class="table" style="width: 100%; margin-top:10px;font-size:16px" >
                             <tr style="font-weight: bold;">
                                 <th style="font-weight: bold;">NO.</th>
-                                <th style="font-weight: bold;">DESCRIPTION</th>
-                                <th style="font-weight: bold;">QUANTITY </th>
-                                <th style="font-weight: bold;">UNIT </th>
-                                <th style="text-align:center;font-weight: bold;">PRICE / UNIT </th>
-                                <th style="font-weight: bold;">DISCOUNT</th>
-                                <th style="text-align:center;font-weight: bold;">NET PRICE / UNIT</th>
+                                <th style="font-weight: bold;">CODE</th>
+                                <th style="text-align:left;font-weight: bold;">DESCRIPTION</th>
                                 <th style="text-align:center;font-weight: bold;">AMOUNT</th>
                             </tr>
                             @foreach($productItems as $key => $item)
                                 @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
-                                    @foreach ($unit as $singleUnit)
-                                        @foreach ($quantity as $singlequantity)
-                                            @if($singleUnit->id == $item['product']->unit)
-                                                @if($singlequantity->id == $item['product']->quantity)
-                                                    <tr>
-                                                        <td style="text-align:center;">{{$key+1}}</td>
-                                                        <td>{{ $item['product']->name_en }}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
-                                                        <td style="text-align:center;">{{ $item['quantity'] }} {{ $singleUnit->name_th }}</td>
-                                                        <td  style="text-align:center;">{{ $item['unit'] }} {{ $singlequantity->name_th }}</td>
-                                                        @php
-                                                            $normalPrice = preg_replace('/[^0-9.]/', '', $item['product']->normal_price);
-                                                        @endphp
-                                                        <td style="text-align:center;">{{ number_format((float)$normalPrice, 0) }}</td>
-                                                        <td style="text-align:center;"> {{ $item['totaldiscount'] == 0 ? '' : number_format($item['totaldiscount']) }}</td>
-                                                        <td style="text-align:center;">{{ $item['discountedPrices'] == 0 ? '' : number_format($item['discountedPrices']) }}</td>
-                                                        <td style="text-align:center;">{{ number_format($item['discountedPricestotal']) }}</td>
-                                                    </tr>
-                                                @endif
-                                            @endif
-                                        @endforeach
-                                    @endforeach
+                                    <tr>
+                                        <td style="text-align:center;">{{$key+1}}</td>
+                                        <td style="text-align:center;">{{ $item['product']->code}}</td>
+                                        <td>{{ $item['product']->description}}</td> <!-- สมมติว่า Product_Name เป็นฟิลด์ในโมเดล -->
+                                        <td style="text-align:center;">{{ number_format($item['Amount']) }}</td>
+                                    </tr>
                                     @php
                                         $num2 +=1;
                                     @endphp
@@ -1130,195 +657,45 @@
                             @endforeach
                         </table>
                         @if ($page_item == $i )
-                            @if ($Mvat == 50)
+                            <table  id="customers" class="table" style="width: 28%;float:right;" >
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
+                                    <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
+                                </tr>
+                                <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
 
-                                <table  id="customers" class="table" style="width: 28%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    @if ($SpecialDistext)
-                                    <tr>
+                                <tr style="background-color: #ffffff">
+                                    <td colspan="2" style="text-align:center;">
+                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
+                                            <b style="font-size: 16px;">Net Total </b>
+                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
+                                        </div>
+                                    </td>
+                                </tr>
 
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }}</strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
-                                    </tr>
+                                <br>
+                                <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price">{{$guest}} </strong>Adults</td>
+                                </tr>
+                                <tr  style="border: 1px solid #ffffff;background-color: #fff;">
+                                    <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
+                                    <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
+                                </tr>
 
-                                    @endif
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price">{{$guest}} </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price">{{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                    </tr>
-
-                                </table>
-                            @elseif ($Mvat == 51)
-                                <table  id="customers" class="table" style="width: 28%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    @if ($SpecialDistext)
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    @endif
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> {{$guest}} </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                    </tr>
-                                </table>
-                            @elseif ($Mvat == 52)
-                                <table  id="customers" class="table" style="width: 28%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    @if ($SpecialDistext)
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                        <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    @endif
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> {{$guest}} </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                    </tr>
-                                </table>
-                            @else
-                                <table  id="customers" class="table" style="width: 28%;float:right;" >
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;width: 65%" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-amount">{{ number_format($totalAmount, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    @if ($SpecialDistext)
-                                        <tr>
-                                            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Special Discount</strong></td>
-                                            <td style="text-align:right;font-size: 16px;"><strong id="total-discount">{{ number_format($SpecialDis, 2, '.', ',') }} </strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align:right;font-size: 16px;" class="text-right"><strong>Subtotal less Discount</strong></td>
-                                            <td style="text-align:right;font-size: 16px;" ><strong id="total-Price">{{ number_format($subtotal, 2, '.', ',') }} </strong></td>
-                                        </tr>
-                                    @endif
-
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Price Before Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($beforeTax, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:right;font-size: 16px;" colspan="1" class="text-right"><strong>Value Added Tax</strong></td>
-                                        <td style="text-align:right;font-size: 16px;"><strong id="total-Price">{{ number_format($AddTax, 2, '.', ',') }} </strong></td>
-                                    </tr>
-                                    <tr style="background-color: #ffffff"><td colspan="2"><br></td></tr>
-
-                                    <tr style="background-color: #ffffff">
-                                        <td colspan="2" style="text-align:center;">
-                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;  padding-bottom: 8px;">
-                                                <b style="font-size: 16px;">Net Total </b>
-                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;">{{ number_format($Nettotal, 2, '.', ',') }} </strong>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <br>
-                                    <tr style="border: 1px solid #2D7F7B;background-color: #2D7F7B;">
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Number of Guests : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> {{$guest}} </strong>Adults</td>
-                                    </tr>
-                                    <tr  style="border: 1px solid #ffffff;background-color: #fff;">
-                                        <td style="text-align:right;" colspan="1" class="text-right"><strong>Average per person : </strong></td>
-                                        <td style="text-align:left;"><strong id="total-Price"> {{ number_format($totalaverage, 2, '.', ',') }} </strong>THB</td>
-                                    </tr>
-                                </table>
-                            @endif
+                            </table>
                         @endif
                         <b>Notes or Special Comment : </b><br>
                         <div style="line-height:15px;width: 65%;border: 1px solid #afafaf; height: 70px;border-radius: 5px;">
