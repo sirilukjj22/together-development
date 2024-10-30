@@ -1515,6 +1515,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <!-- Calendar -->
+    <link rel="stylesheet" href="{{ asset('assets/src/calendar-draft.css') }}?v={{ time() }}">
     <script src="{{ asset('assets/js/calendar-draft.js')}}"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->

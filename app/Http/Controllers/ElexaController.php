@@ -18,7 +18,7 @@ class ElexaController extends Controller
             // ->whereMonth('revenue.date', $exp[1])->whereYear('revenue.date', $exp[0])
             ->where('revenue_credit.status', 8)
             ->select('revenue_credit.id', 'revenue_credit.batch',
-            'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
+            'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue', 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
             ->get();
 
             $total_outstanding_all = 0;
@@ -39,7 +39,7 @@ class ElexaController extends Controller
     {
         $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 8)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
+            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue',
                 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
             ->get();
 
@@ -63,7 +63,7 @@ class ElexaController extends Controller
     {
         $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 8)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
+            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue',
                 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
             ->orderBy('revenue.date', 'asc')->get();
 
@@ -87,7 +87,7 @@ class ElexaController extends Controller
 
         $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.id', $id)->where('revenue_credit.status', 8)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
+            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue',
                 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')->first();
 
             return response()->json([
@@ -101,7 +101,7 @@ class ElexaController extends Controller
         $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->whereMonth('revenue.date', $month)->where('revenue_credit.status', 8)
             ->where('revenue_credit.receive_payment', 0)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
+            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue',
                 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')->orderBy('revenue.date', 'asc')->get();
 
 
@@ -115,14 +115,14 @@ class ElexaController extends Controller
                         </div>';
 
             $btn = '<button type="button" class="btn btn-color-green text-white lift rounded-pill btn-receive-pay btn-outstanding'.($key + 1).'" id="btn-receive-'.$value->id.'" value="0"
-                                            onclick="select_receive_payment(this, '.$value->id.', '.$value->ev_charge.')">รับชำระ</button>';
+                                            onclick="select_receive_payment(this, '.$value->id.', '.$value->ev_revenue.')">รับชำระ</button>';
             
-            $total_amount += $value->ev_charge;
+            $total_amount += $value->ev_revenue;
             $data[] = [
                 'id' => $value->id,
                 'date' => Carbon::parse($value->date)->format('d/m/Y'),
                 'orderID' => $value->batch,
-                'ev_charge' => number_format($value->ev_charge, 2),
+                'ev_revenue' => number_format($value->ev_revenue, 2),
             ];
         }
 
@@ -175,7 +175,7 @@ class ElexaController extends Controller
     {
         $elexa_outstanding = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
             ->where('revenue_credit.status', 8)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
+            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue',
                 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue', 'revenue.date')
             ->orderBy('revenue.date', 'asc')->get();
 
@@ -183,9 +183,9 @@ class ElexaController extends Controller
             $elexa_debit_outstanding = 0;
             foreach ($elexa_outstanding as $key => $value) {
                 if ($value->receive_payment == 1) {
-                    $elexa_debit_outstanding += $value->ev_charge;
+                    $elexa_debit_outstanding += $value->ev_revenue;
                 }
-                $total_outstanding_all += $value->ev_charge;
+                $total_outstanding_all += $value->ev_revenue;
             }
 
             $elexa_revenue = SMS_alerts::where('id', $id)->where('status', 8)->select('id', 'amount')->first();
@@ -198,7 +198,7 @@ class ElexaController extends Controller
     public function status_elexa_receive($status) {
 
         $elexa_received = Revenue_credit::where('revenue_credit.status', 8)->where('receive_payment', $status)
-            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge',
+            ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.ev_charge', 'revenue_credit.ev_revenue',
                 'revenue_credit.receive_payment', 'revenue_credit.sms_revenue')->orderBy('revenue_id', 'asc')->get();
 
             return response()->json([

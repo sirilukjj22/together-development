@@ -89,7 +89,8 @@ class Revenues extends Model
                 $revenue_year_query->whereDate('revenue.date', '<=', $date);
 
             } elseif ($filter_by == "month") {
-                $revenue_year_query->whereBetween('revenue.date', [$date_from, $date_to]);
+                $F_YTD = date('Y-01-01', strtotime($date_from));
+                $revenue_year_query->whereBetween('revenue.date', [$F_YTD, $date_to]);
 
             } elseif ($filter_by == "year"  || $filter_by == "thisMonth") {
                 $revenue_year_query->whereBetween('revenue.date', [$year_now.'-01-01', $date_to]);
@@ -167,7 +168,8 @@ class Revenues extends Model
             $revenue_year_query->whereDate('revenue.date', '<=', $date);
 
         } elseif ($filter_by == "month") {
-            $revenue_year_query->whereBetween('revenue.date', [$date_from, $date_to]);
+            $F_YTD = date('Y-01-01', strtotime($date_from));
+            $revenue_year_query->whereBetween('revenue.date', [$F_YTD, $date_to]);
 
         } elseif ($filter_by == "year"  || $filter_by == "thisMonth") {
             $revenue_year_query->whereBetween('revenue.date', [$year_now.'-01-01', $date_to]);
@@ -258,7 +260,8 @@ class Revenues extends Model
                 $revenue_year_query->whereDate('revenue.date', '<=', $date);
 
             } elseif ($filter_by == "month") {
-                $revenue_year_query->whereBetween('revenue.date', [$date_from, $date_to]);
+                $F_YTD = date('Y-01-01', strtotime($date_from));
+                $revenue_year_query->whereBetween('revenue.date', [$F_YTD, $date_to]);
 
             } elseif ($filter_by == "year"  || $filter_by == "thisMonth") {
                 $revenue_year_query->whereBetween('revenue.date', [$year_now.'-01-01', $date_to]);

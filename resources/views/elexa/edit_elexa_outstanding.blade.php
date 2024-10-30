@@ -26,16 +26,51 @@
 @section('content')
     <div class="container">
         <div class="row clearfix">
-            <div class="row g-2 mb-5">
-                <div class="col-md-4 col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="card-body">
-                                        <div class="text-muted text-uppercase"><i class="fa fa-circle me-2 text-info"></i>Elexa Revenue</div>
-                                        <div class="mt-1">
-                                            <span class="fw-bold h4 mb-0" id="">{{ number_format(isset($elexa_revenue) ? $elexa_revenue->amount : 0, 2) }}</span>
+            <div>
+                <div class="row g-2 mb-5">
+                    <div class="col-md-3 col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card-body">
+                                            <div class="text-muted text-uppercase"><i class="fa fa-circle me-2 text-info"></i>Elexa Revenue</div>
+                                            <div class="mt-1">
+                                                <span class="fw-bold h4 mb-0" id="">{{ number_format(isset($elexa_revenue) ? $elexa_revenue->amount : 0, 2) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-12"></div>
+                    <div class="col-md-3 col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card-body">
+                                            <div class="text-muted text-uppercase"><i class="fa fa-circle me-2 text-primary"></i>Number of items</div>
+                                            <div class="mt-1">
+                                                <span class="fw-bold h4 mb-0" id="txt-total-item">{{ number_format(0) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card-body">
+                                            <div class="text-muted text-uppercase"><i class="fa fa-circle me-2 text-danger"></i>Outstanding Revenue</div>
+                                            <div class="mt-1">
+                                                <span class="fw-bold h4 mb-0" id="txt-total-debit">{{ number_format(0, 2) }}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -84,15 +119,15 @@
                                     </td>
                                     <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                     <td>{{ $item->batch }}</td>
-                                    <td>{{ number_format($item->ev_charge, 2) }}</td>
+                                    <td>{{ number_format($item->ev_revenue, 2) }}</td>
                                     <td>
                                         <button type="button" class="btn btn-danger rounded-pill close lift" id="btn-receive-{{ $item->id}}" value="1"
-                                        onclick="select_receive_payment(this, {{ $item->id}}, {{ $item->ev_charge }})">ยกเลิก</button>
+                                        onclick="select_receive_payment(this, {{ $item->id}}, {{ $item->ev_revenue }})">ยกเลิก</button>
                                     </td>
-                                    <input type="hidden" name="" id="ev_charge{{ $item->id }}" value="{{ $item->ev_charge }}">
+                                    <input type="hidden" name="" id="ev_revenue{{ $item->id }}" value="{{ $item->ev_revenue }}">
                                 </tr>
                                 <?php 
-                                    $total_debit += $item->ev_charge; 
+                                    $total_debit += $item->ev_revenue; 
                                     $debit_amount += 1;
                                 ?>
                                 @endif
@@ -173,22 +208,22 @@
                                     </td>
                                     <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                     <td>{{ $item->batch }}</td>
-                                    <td>{{ number_format($item->ev_charge, 2) }}</td>
+                                    <td>{{ number_format($item->ev_revenue, 2) }}</td>
                                     <td>
                                         @if ($item->receive_payment == 0)
                                             <button type="button" class="btn btn-color-green text-white lift rounded-pill btn-receive-pay btn-outstanding{{ $outstanding_amount }}"
                                             id="btn-receive-{{ $item->id }}" value="0"
-                                            onclick="select_receive_payment(this, {{ $item->id }}, {{ $item->ev_charge }})">รับชำระ</button>
+                                            onclick="select_receive_payment(this, {{ $item->id }}, {{ $item->ev_revenue }})">รับชำระ</button>
                                         @else
                                             <button type="button" class="btn btn-color-green text-white lift rounded-pill btn-receive-pay btn-outstanding{{ $outstanding_amount }}"
                                             id="btn-receive-{{ $item->id }}" value="0"
-                                            onclick="select_receive_payment(this, {{ $item->id }}, {{ $item->ev_charge }})" disabled>รับชำระ</button>
+                                            onclick="select_receive_payment(this, {{ $item->id }}, {{ $item->ev_revenue }})" disabled>รับชำระ</button>
                                         @endif
                                     </td>
-                                    <input type="hidden" name="" id="ev_charge{{ $item->id }}" value="{{ $item->ev_charge }}">
+                                    <input type="hidden" name="" id="ev_revenue{{ $item->id }}" value="{{ $item->ev_revenue }}">
                                 </tr>
                                 <?php 
-                                    $total += $item->ev_charge; 
+                                    $total += $item->ev_revenue; 
                                 ?>
                                 @endif
                             @endforeach
@@ -213,6 +248,8 @@
     <input type="hidden" id="total_revenue_amount" value="{{ isset($elexa_revenue) ? $elexa_revenue->amount : 0 }}">
     <input type="hidden" id="debit_amount" value="{{ $debit_amount }}">
     <input type="hidden" id="outstanding_amount" value="{{ $outstanding_amount }}">
+    <input type="hidden" name="" id="input-total-item" value="0">
+    <input type="hidden" name="" id="input-total-debit" value="0">
 
     <form action="#" id="form-elexa">
         @csrf
@@ -364,8 +401,8 @@
                                             '</div>',
                                             value.date,
                                             value.orderID,
-                                            value.ev_charge,
-                                            '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' + value.id + '" value="0"' + 'onclick="select_receive_payment(this, ' + value.id + ', ' + value.ev_charge + ')">รับชำระ</button>'
+                                            value.ev_revenue,
+                                            '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' + value.id + '" value="0"' + 'onclick="select_receive_payment(this, ' + value.id + ', ' + value.ev_revenue + ')">รับชำระ</button>'
                                         ]
                                     ];
 
@@ -376,7 +413,7 @@
                             var rowNode = table.row(addedRow.indexes()).node();
                             $(rowNode).attr('id', 'tr_row_' + value.id);
                             $(rowNode).addClass('checkbox-outstanding' + (index + 1));
-                            $(rowNode).append('<input type="hidden" name="" id="ev_charge' + value.id + '" value="'+ value.ev_charge +'">');
+                            $(rowNode).append('<input type="hidden" name="" id="ev_revenue' + value.id + '" value="'+ value.ev_revenue +'">');
 
                             $('#btn-receive-' + value.id).val(0);
                         });
@@ -392,6 +429,12 @@
             var total_receive_payment = Number($('#total_receive_payment').val());
             var SumTotalDebit = total_receive_payment;
 
+            // เคลียร์ให้เป็นค่าว่าง
+            $('#txt-total-item').text("0");
+            $('#txt-total-debit').text("0.00");
+            $('#input-total-item').val(0);
+            $('#input-total-debit').val(0);
+
             if (revenueID != "") {
 
                 for (let index = 1; index <= 100; index++) {
@@ -402,7 +445,7 @@
 
                         if (type_action == 'receive' && $('#btn-receive-' + itemID).val() == 0) {
 
-                            var amount = Number($('#ev_charge'+itemID).val());
+                            var amount = Number($('#ev_revenue'+itemID).val());
                             SumTotalDebit += amount; 
         
                             $('#total_receive_payment').val(Number(SumTotalDebit).toFixed(2));
@@ -459,8 +502,8 @@
                                                         '</div>',
                                                         moment( response.data.date).format('DD/MM/YYYY'),
                                                         response.data.batch,
-                                                        currencyFormat(response.data.ev_charge),
-                                                        '<button type="button" class="btn btn-danger rounded-pill lift close" id="btn-receive-' + itemID + '" value="1"' + ' onclick="select_receive_payment(this, ' + itemID + ', ' + response.data.ev_charge + ')">ยกเลิก</button>'
+                                                        currencyFormat(response.data.ev_revenue),
+                                                        '<button type="button" class="btn btn-danger rounded-pill lift close" id="btn-receive-' + itemID + '" value="1"' + ' onclick="select_receive_payment(this, ' + itemID + ', ' + response.data.ev_revenue + ')">ยกเลิก</button>'
                                                     ]
                                                 ];
 
@@ -477,7 +520,7 @@
                             });
                         } else {                            
                             var itemID = $('#checkbox-debit-outstanding'+index).val();
-                            var amount = Number($('#ev_charge'+itemID).val());
+                            var amount = Number($('#ev_revenue'+itemID).val());
                             SumTotalDebit -= amount; 
 
                             $('#total_receive_payment').val(Number(SumTotalDebit).toFixed(2)); // ยอดที่รับชำระ
@@ -532,8 +575,8 @@
                                                         '</div>',
                                                         moment( response.data.date).format('DD/MM/YYYY'),
                                                         response.data.batch,
-                                                        currencyFormat(response.data.ev_charge),
-                                                        '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' + itemID + '" value="0"' + 'onclick="select_receive_payment(this, ' + itemID + ', ' + response.data.ev_charge + ')">รับชำระ</button>'
+                                                        currencyFormat(response.data.ev_revenue),
+                                                        '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' + itemID + '" value="0"' + 'onclick="select_receive_payment(this, ' + itemID + ', ' + response.data.ev_revenue + ')">รับชำระ</button>'
                                                     ]
                                                 ];
 
@@ -575,6 +618,23 @@
             if (revenueID != "") {
 
                 if ($('#btn-receive-' + id).val() == 0) {
+
+                    // Update ยอดที่เลือก
+                    var ev_revenue = Number($('#ev_revenue'+id).val());
+                    var ev_revenue_amount = Number($('#input-total-debit').val());
+                    var ev_num = Number($('#input-total-item').val());
+
+                        if ($('#checkbox-outstanding'+id).is(':checked')) {
+                            $('#txt-total-item').text(ev_num += 1);
+                            $('#txt-total-debit').text(currencyFormat(ev_revenue_amount += ev_revenue));
+                        } else {
+                            $('#txt-total-item').text(ev_num -= 1);
+                            $('#txt-total-debit').text(currencyFormat(ev_revenue_amount -= ev_revenue));
+                        }
+
+                    $('#input-total-item').val(ev_num);
+                    $('#input-total-debit').val(ev_revenue_amount);
+                    // END
 
                     $('#total_receive_payment').val(Number(total_receive_payment + amount).toFixed(2));
                     $('#txt_total_receive_payment').text(currencyFormat(Number(total_receive_payment + amount)));
@@ -628,11 +688,11 @@
                                                 '</div>',
                                                 moment(response.data.date).format('DD/MM/YYYY'),
                                                 response.data.batch,
-                                                currencyFormat(response.data.ev_charge),
-                                                '<button type="button" class="btn btn-danger rounded-pill close" id="btn-receive-' + id + '" value="1"' + ' onclick="select_receive_payment(this, ' + id + ', ' + response.data.ev_charge + ')">ยกเลิก</button>'
+                                                currencyFormat(response.data.ev_revenue),
+                                                '<button type="button" class="btn btn-danger rounded-pill close" id="btn-receive-' + id + '" value="1"' + ' onclick="select_receive_payment(this, ' + id + ', ' + response.data.ev_revenue + ')">ยกเลิก</button>'
                                             ]
                                         ];
-
+                                
                                 // เพิ่มแถวใหม่
                                 var addedRow = table.rows.add(newRowData).draw();
 
@@ -699,8 +759,8 @@
                                                 '</div>',
                                                 moment( response.data.date).format('DD/MM/YYYY'),
                                                 response.data.batch,
-                                                currencyFormat(response.data.ev_charge),
-                                                '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' + id + '" value="0"' + 'onclick="select_receive_payment(this, ' + id + ', ' + response.data.ev_charge + ')">รับชำระ</button>'
+                                                currencyFormat(response.data.ev_revenue),
+                                                '<button type="button" class="btn btn-primary rounded-pill btn-receive-pay close" id="btn-receive-' + id + '" value="0"' + 'onclick="select_receive_payment(this, ' + id + ', ' + response.data.ev_revenue + ')">รับชำระ</button>'
                                             ]
                                         ];
 
@@ -764,6 +824,25 @@
                 });
             }
 
+        });
+
+        $(document).on('click', '.checkbox-item', function () {
+            var id = $(this).attr('id');
+            var ev_value = $(this).val();
+            var ev_revenue = Number($('#ev_revenue'+ev_value).val());
+            var amount = Number($('#input-total-debit').val());
+            var num = Number($('#input-total-item').val());
+
+                if ($('#'+id).is(':checked')) {
+                    $('#txt-total-item').text(num += 1);
+                    $('#txt-total-debit').text(currencyFormat(amount += ev_revenue));
+                } else {
+                    $('#txt-total-item').text(num -= 1);
+                    $('#txt-total-debit').text(currencyFormat(amount -= ev_revenue));
+                }
+
+            $('#input-total-item').val(num);
+            $('#input-total-debit').val(amount);
         });
     </script>
 @endsection
