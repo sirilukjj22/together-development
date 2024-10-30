@@ -967,6 +967,7 @@ class RevenuesController extends Controller
             $Fday = date('d', strtotime($adate));
             $Fmonth = $start_month;
             $Fyear = $year;
+            $F_YTD = date('Y-01-01', strtotime($month_from));
 
         } elseif ($request->filter_by == "year") {
             $year = $request->date;
@@ -1413,7 +1414,6 @@ class RevenuesController extends Controller
         $total_verified = Revenues::whereBetween('date', [$date1, $date2])->where('status', 1)->count();
         $total_unverified = Revenues::whereBetween('date', [$date1, $date2])->where('status', 0)->count();
 
-        // dd($month_from, $month_to);
         $total_revenue_today = Revenues::whereBetween('date', [$month_from, $month_to])->select(
             DB::raw("
             SUM(front_cash + front_transfer + front_credit) as front_amount, 
@@ -1422,7 +1422,7 @@ class RevenuesController extends Controller
             SUM(wp_cash + wp_transfer + wp_credit) as wp_amount,
             SUM(room_credit + fb_credit + wp_credit) as credit_amount,
             SUM(total_transaction) as total_transaction,
-            SUM(total_credit_agoda) as total_credit_agoda"), 'other_revenue', 'total_no_type', 'status')->first();
+            SUM(total_credit_agoda) as total_credit_agoda, SUM(other_revenue) as other_revenue"), 'total_no_type', 'status')->first();
 
         $total_transfer = SMS_alerts::whereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('transfer_status', 1)->sum('amount');
         $total_transfer2 = SMS_alerts::whereBetween('date_into', [$from, $to])->where('transfer_status', 1)->count();
@@ -1440,10 +1440,7 @@ class RevenuesController extends Controller
         $total_day = $total_revenue_today->front_amount + $total_revenue_today->room_amount + $total_revenue_today->fb_amount
          + $total_revenue_today->wp_amount + $total_revenue_today->credit_amount + $total_revenue_today->total_credit_agoda + $total_revenue_today->other_revenue;
 
-        //  dd($total_revenue_today);
-
         ## ข้อมูลในตาราง
-
         ### Credit Card Hotel ###
         // Today
         $credit_revenue_today = Revenues::where('date', $date_now)->select(DB::raw("SUM(total_credit) as total_credit"))->first();
@@ -1478,7 +1475,7 @@ class RevenuesController extends Controller
                 $credit_year_query->whereDate('date', '<=', date($request->date));
 
             } elseif ($request->filter_by == "month") {
-                $credit_year_query->whereBetween('date', [$month_from, $month_to]);
+                $credit_year_query->whereBetween('date', [$F_YTD, $month_to]);
 
             } elseif ($request->filter_by == "year"  || $request->filter_by == "thisMonth") {
                 $credit_year_query->whereBetween('date', [$year_from, $year_to]);
@@ -1522,7 +1519,7 @@ class RevenuesController extends Controller
                 $total_front_year_query->whereDate('date', '<=', date($request->date));
 
             } elseif ($request->filter_by == "month") {
-                $total_front_year_query->whereBetween('date', [$month_from, $month_to]);
+                $total_front_year_query->whereBetween('date', [$F_YTD, $month_to]);
 
             } elseif ($request->filter_by == "year" || $request->filter_by == "thisYear" || $request->filter_by == "thisMonth") {
                 $total_front_year_query->whereBetween('date', [$year_from, $year_to]);
@@ -1568,7 +1565,7 @@ class RevenuesController extends Controller
                 $guest_deposit_year_query->whereDate('date', '<=', date($request->date));
 
             } elseif ($request->filter_by == "month") {
-                $guest_deposit_year_query->whereBetween('date', [$month_from, $month_to]);
+                $guest_deposit_year_query->whereBetween('date', [$F_YTD, $month_to]);
 
             } elseif ($request->filter_by == "year"  || $request->filter_by == "thisMonth") {
                 $guest_deposit_year_query->whereBetween('date', [$year_from, $year_to]);
@@ -1614,7 +1611,7 @@ class RevenuesController extends Controller
                 $fb_year_query->whereDate('date', '<=', date($request->date));
 
             } elseif ($request->filter_by == "month") {
-                $fb_year_query->whereBetween('date', [$month_from, $month_to]);
+                $fb_year_query->whereBetween('date', [$F_YTD, $month_to]);
 
             } elseif ($request->filter_by == "year"  || $request->filter_by == "thisMonth") {
                 $fb_year_query->whereBetween('date', [$year_from, $year_to]);
@@ -1636,8 +1633,6 @@ class RevenuesController extends Controller
         } else {
             $total_other_revenue = Revenues::whereBetween('date', [$month_from, $month_to])->select('other_revenue')->sum('other_revenue');
         }
-
-        // dd([$adate, $adate2, $date_now]);
 
         // Month
         $other_month_query = Revenues::query();
@@ -1662,7 +1657,7 @@ class RevenuesController extends Controller
                 $other_year_query->whereDate('date', '<=', date($request->date));
 
             } elseif ($request->filter_by == "month") {
-                $other_year_query->whereBetween('date', [$month_from, $month_to]);
+                $other_year_query->whereBetween('date', [$F_YTD, $month_to]);
 
             } elseif ($request->filter_by == "year"  || $request->filter_by == "thisMonth") {
                 $other_year_query->whereBetween('date', [$year_from, $year_to]);
@@ -1704,7 +1699,7 @@ class RevenuesController extends Controller
                 $agoda_year_query->whereDate('date', '<=', date($request->date));
 
             } elseif ($request->filter_by == "month") {
-                $agoda_year_query->whereBetween('date', [$month_from, $month_to]);
+                $agoda_year_query->whereBetween('date', [$F_YTD, $month_to]);
 
             } elseif ($request->filter_by == "year"  || $request->filter_by == "thisMonth") {
                 $agoda_year_query->whereBetween('date', [$year_from, $year_to]);
@@ -1749,7 +1744,7 @@ class RevenuesController extends Controller
                 $wp_year_query->whereDate('date', '<=', date($date_now));
 
             } elseif ($request->filter_by == "month") {
-                $wp_year_query->whereBetween('date', [$month_from, $month_to]);
+                $wp_year_query->whereBetween('date', [$F_YTD, $month_to]);
 
             } elseif ($request->filter_by == "year"  || $request->filter_by == "thisMonth") {
                 $agoda_year_query->whereBetween('date', [$year_from, $year_to]);
@@ -1795,7 +1790,7 @@ class RevenuesController extends Controller
                 $ev_year_query->whereDate('date', '<=', $date_now);
 
             } elseif ($request->filter_by == "month") {
-                $ev_year_query->whereBetween('date', [$month_from, $month_to]);
+                $ev_year_query->whereBetween('date', [$F_YTD, $month_to]);
 
             } elseif ($request->filter_by == "year"  || $request->filter_by == "thisMonth") {
                 $agoda_year_query->whereBetween('date', [$year_from, $year_to]);
@@ -2468,6 +2463,16 @@ class RevenuesController extends Controller
             $status = "credit_hotel_fee";
             $revenue_name = "fee";
 
+        } if($request->revenue_type == "agoda_fee") {
+            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+                ->where('revenue_credit.revenue_type', 1)->whereBetween('revenue.date', [$month_from, $month_to])
+                ->select('revenue.date', 'revenue_credit.batch', 'revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding', 'revenue_credit.status')->paginate(10);
+            $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+                ->where('revenue_credit.revenue_type', 1)->whereBetween('revenue.date', [$month_from, $month_to])->sum(DB::raw('revenue_credit.agoda_charge - revenue_credit.agoda_outstanding'));
+            $title = "Agoda Fee";
+            $status = "agoda_fee";
+            $revenue_name = "agoda_fee";
+
         }
 
 
@@ -2596,6 +2601,8 @@ class RevenuesController extends Controller
             return view('revenue.detail_cash', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } elseif ($revenue_name == "fee") {
             return view('revenue.fee_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
+        }  elseif ($revenue_name == "agoda_fee") {
+            return view('revenue.fee_agoda_detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));
         } 
         else {
             return view('revenue.detail', compact('data_query', 'total_query', 'title', 'filter_by', 'search_date', 'status'));

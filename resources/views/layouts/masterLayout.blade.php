@@ -48,7 +48,6 @@
     <link rel="stylesheet" href="{{ asset('assets/src/userProfile.css') }}?v={{ time() }}" />
     <link rel="stylesheet" href="{{ asset('assets/src/global.css') }}?v={{ time() }}" />
     <link rel="stylesheet" href="{{ asset('assets/src/tableAllDesign.css') }}?v={{ time() }}">
-    <link rel="stylesheet" href="{{ asset('assets/src/calendar-draft.css') }}?v={{ time() }}">
 
     <!-- สำหรับ tooltip info -->
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>

@@ -77,7 +77,7 @@
         <div class="container-xl">
             <div class="nav-content">
                 <div class="nav-left">
-                    <h1 class="h-daily" style=" margin:0;" id="button-change">Hotel & Water Park Revenue &nbsp;<i class="theme-toggle"> &#10024;</i></h1>
+                    <h1 class="h-daily" style=" margin:0;" id="button-change">Hotel & Water Park Revenue</h1>
                 </div>
                 <div class="nav-right">
                     <div class="nav-right-in">
@@ -223,7 +223,6 @@
                     </div>
                     <div class="box-content">
                         <input type="hidden" id="total_revenue_dashboard" value="{{ number_format($total_today_revenue_graph, 2) }}">
-
                         <div class="header">
                             <div>Cash</div>
                             <div>{{ number_format($total_cash + $total_wp_revenue->wp_cash, 2) }}</div>
@@ -357,8 +356,10 @@
                 <!-- box5 -->
                 <div class="section2">
                     <div class="box-content">
-                        <div class="header">
-                            <div>Manual Charge</div>
+                        <div class="header" style="position: relative;">
+                            <div>Manual Charge 
+                                <img src="./image/front/lightbulb-grey.png" alt="" class="img"  id="toggleSumHotelCharg" />
+                            </div>
                             <div>
                                 {{ number_format($sum_charge + $wp_charge[0]['revenue_credit_date'] + $agoda_charge[0]['revenue_credit_date'] + $ev_charge[0]['revenue_credit_date'], 2) }}
                             </div>
@@ -386,6 +387,14 @@
                                 </div>
                                 <div class="t-end">{{ number_format($fb_charge[0]['revenue_credit_date'], 2) }}</div>
                             </div>
+                            <div class="box-card2 bg-box hidden" id="hotelManualCharge" >
+                                <div class="f-ic">
+                                    <p ><i style='font-size:15px;color:#2C7F7A' class='fas'>&#xf139;</i> Total Hotel Manual Charge </p>
+                                </div>
+                                <div class="t-end">
+                                    {{ number_format($front_charge[0]['revenue_credit_date'] + $guest_deposit_charge[0]['revenue_credit_date'] + $fb_charge[0]['revenue_credit_date'], 2) }}
+                                </div>
+                               </div>
                             <div class="box-card2 bg-box" onclick="revenue_detail('mc_water_park_charge')">
                                 <div class="f-ic">
                                     <img src="./image/front/water-park.png" alt="" class="img" />
@@ -698,7 +707,7 @@
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_cash : 0, 2) }}
                                 @else
-                                    {{ number_format(isset($today_guest_deposit) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_guest_deposit->room_cash : 0, 2) }}
+                                    {{ number_format(isset($today_guest_deposit) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "Month" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_guest_deposit->room_cash : 0, 2) }}
                                 @endif
                             </td>
                             <td class="t-end">
@@ -1130,7 +1139,7 @@
                                 @endif
                             </td>
                             <td class="t-end">{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($agoda_charge[0]['total_year'] - $total_agoda_year, 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format($agoda_charge[0]['total_year'], 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
                             <td class="pl-2 text-end f-semi"> Elexa EGAT Revenue Outstanding </td>
@@ -1178,10 +1187,10 @@
                                 @endif
                             </td>
                             <td class="t-end">
-                                {{ number_format($total_cash_bank_month + $total_charge_month + ($total_wp_cash_bank_month + $total_wp_charge_month + $total_agoda_month + $total_ev_month) - $agoda_charge[0]['total_month'], 2) }}
+                                {{ number_format($total_cash_bank_month + $total_charge_month + ($total_wp_cash_bank_month + $total_wp_charge_month) + $total_agoda_month + $total_ev_month, 2) }}
                             </td>
                             <td class="t-end padding-x-2">
-                                {{ number_format($total_cash_bank_year + $total_charge_year + ($total_wp_cash_bank_year + $total_wp_charge_year + $total_agoda_year + $total_ev_year) - $agoda_charge[0]['total_year'], 2) }}
+                                {{ number_format($total_cash_bank_year + $total_charge_year + ($total_wp_cash_bank_year + $total_wp_charge_year + $total_agoda_year + $total_ev_year), 2) }}
                             </td>
                         </tr>
                     </tbody>
@@ -1958,6 +1967,7 @@
         </div>
     </div>
 
+
     <!-- Moment Date -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
@@ -1965,7 +1975,9 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <!-- Calendar -->
+    <link rel="stylesheet" href="{{ asset('assets/src/calendar-draft.css') }}?v={{ time() }}">
     <script src="{{ asset('assets/js/calendar-draft.js')}}"></script>
+    {{-- <script src="{{ asset('assets/js/calendar-draft2.js')}}"></script> --}}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
@@ -3091,5 +3103,20 @@
         });
     });
 
-</script>
+    document.getElementById('toggleSumHotelCharg').addEventListener('click', function() {
+      var hotelManualCharge = document.getElementById('hotelManualCharge');
+      var toggleIcon = document.getElementById('toggleSumHotelCharg');
+
+      hotelManualCharge.classList.toggle('hidden');
+
+        if (hotelManualCharge.classList.contains('hidden')) {
+          toggleIcon.src = './image/front/lightbulb-grey.png'; // เปลี่ยนรูปเป็นไฟปิด
+          toggleIcon.style.filter = 'none';
+        } else {
+        
+            toggleIcon.src = './image/front/lightbulb.png'; // เปลี่ยนรูปเป็นไฟเปิด
+          toggleIcon.style.filter = 'drop-shadow(0 0 10px rgb(43, 240, 191))';
+        }
+    });
+  </script>
 @endsection

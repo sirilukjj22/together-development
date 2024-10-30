@@ -1285,3 +1285,28 @@ td {
     background-position: 0% 50%;
   }
 }
+
+.hidden {
+  display: none;
+}
+
+#toggleSumHotelCharg {
+  margin-left: 10px;
+  cursor: pointer;
+  position: absolute;
+  right: 1em;
+  top: 15%;
+  border-radius: 50%;
+  scale: 1.1;
+}
+
+#hotelManualCharge {
+  background-image: linear-gradient(#f1f6f2ec, #d0f8ecec);
+  font-weight: 500;
+  border-radius: 0;
+  gap: 1em;
+  border: 1px solid rgb(228, 237, 234);
+  padding: 0.5em;
+  box-shadow: 0 0 10px 2px rgb(47, 213, 191);
+  color: black;
+}
