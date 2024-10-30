@@ -29,7 +29,7 @@
     <div class="container">
         <div class="row clearfix">
             <div class="row g-2 mb-5">
-                <div class="col-md-4 col-12">
+                <div class="col-md-3 col-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
@@ -38,7 +38,6 @@
                                         <div class="text-muted text-uppercase"><i class="fa fa-circle me-2 text-info"></i>Agoda Revenue</div>
                                         <div class="mt-1">
                                             <span class="fw-bold h4 mb-0" id="">{{ number_format(isset($agoda_revenue) ? $agoda_revenue->amount : 0, 2) }}</span>
-                                            {{-- <span class="ms-1">5% <i class="fa fa-caret-up"></i></span> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -46,18 +45,54 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-3 col-12"></div>
+                    <div class="col-md-3 col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card-body">
+                                            <div class="text-muted text-uppercase"><i class="fa fa-circle me-2 text-primary"></i>Number of items</div>
+                                            <div class="mt-1">
+                                                <span class="fw-bold h4 mb-0" id="txt-total-item">{{ number_format(0) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card-body">
+                                            <div class="text-muted text-uppercase"><i class="fa fa-circle me-2 text-danger"></i>Outstanding Revenue</div>
+                                            <div class="mt-1">
+                                                <span class="fw-bold h4 mb-0" id="txt-total-debit">{{ number_format(0, 2) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
             </div>
             <div class="col-md-6 col-12">
                 <div class="card p-4 mb-4">
                     <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
                         <h6 class="fw-bold m-0"><i class="fa fa-circle me-2 text-success"></i> Debit Agoda Outstanding</h6>
-                        {{-- <div>
-                            <h6 class="fw-bold text-danger m-0">0.00</h6>
-                        </div> --}}
                     </div>
-                    <table id="myDataTableAll" class="exampleTable table display dataTable table-hover fw-bold">
+                    <table id="myDataTableDebit" class="exampleTable table display dataTable table-hover fw-bold">
                         <thead>
                             <tr>
+                                <th>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="checkDebitAll" name="checkbox-debit-all">
+                                        <label class="form-check-label" for="checkDebitAll">All</label>
+                                    </div>
+                                </th>
                                 <th>Booking Number</th>
                                 <th>วันที่ Check in</th>
                                 <th>วันที่ Check out</th>
@@ -66,10 +101,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $total_debit = 0; ?>
+                            <?php 
+                                $total_debit = 0;
+                                $outstanding_amount = 0;
+                                $key_num = 0;
+                            ?>
                             @foreach ($agoda_outstanding as $key => $item)
                                 @if ($item->receive_payment == 1 && $item->sms_revenue == $agoda_revenue->id)
-                                <tr id="tr_row_{{ $item->id }}">
+                                <tr id="tr_row_{{ $item->id }}" class="checkbox-debit-outstanding{{ $key_num += 1 }}">
+                                    <td>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input checkbox-debit-item" id="checkbox-debit-outstanding{{ $key_num }}" type="checkbox" name="checkbox" value="{{ $item->id }}">
+                                            <label class="form-check-label"></label>
+                                        </div>
+                                    </td>
                                     <td>{{ $item->batch }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->agoda_check_in)->format('d/m/Y') }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->agoda_check_out)->format('d/m/Y') }}</td>
@@ -104,22 +149,16 @@
                     <div
                         class="card-header d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
                         <h6 class="fw-bold m-0"><i class="fa fa-circle me-2 text-danger"></i> Agoda Outstanding Revenue</h6>
-                        {{-- <div class="dropdown">
-                            <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                สถานะการรับชำระ
-                            </button>
-                            <ul class="dropdown-menu border-0 shadow p-3">
-                                <li><a class="dropdown-item py-2 rounded" href="#"
-                                        onclick="status_receive(1)">Debit</a></li>
-                                <li><a class="dropdown-item py-2 rounded" href="#"
-                                        onclick="status_receive(0)">Credit</a></li>
-                            </ul>
-                        </div> --}}
                     </div>
                     <table id="myDataTableOutstanding" class="exampleTable table display dataTable table-hover fw-bold">
                         <thead>
                             <tr>
+                                <th>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="checkAll" name="checkbox-all">
+                                        <label class="form-check-label" for="checkAll">All</label>
+                                    </div>
+                                </th>
                                 <th>Booking Number</th>
                                 <th>วันที่ Check in</th>
                                 <th>วันที่ Check out</th>
@@ -128,10 +167,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $total = 0; ?>
+                            <?php 
+                                $total = 0; 
+                                $outstanding_amount = 0;
+                            ?>
                             @foreach ($agoda_outstanding as $key => $item)
                                 @if ($item->receive_payment == 0)
-                                <tr id="tr_row_{{ $item->id }}">
+                                <tr id="tr_row_{{ $item->id }}" class="checkbox-outstanding{{ $outstanding_amount += 1 }}">
+                                    <td>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input checkbox-item" id="checkbox-outstanding{{ $outstanding_amount }}" type="checkbox" name="checkbox" value="{{ $item->id }}">
+                                            <label class="form-check-label"></label>
+                                        </div>
+                                    </td>
                                     <td>{{ $item->batch }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->agoda_check_in)->format('d/m/Y') }}</td>
                                     <td>{{ Carbon\Carbon::parse($item->agoda_check_out)->format('d/m/Y') }}</td>
@@ -197,6 +245,55 @@
 
     <script>
 
+    $(document).ready(function() {
+        // Initialize DataTable
+        var table = $('#myDataTableOutstanding').DataTable();
+
+        // Object to hold the checkbox states
+        var checkedRows = {};
+
+        // Handle 'check all' for all pages
+        $('#checkAll').on('click', function() {
+            var isChecked = this.checked;
+            // Loop through all rows in the table, including those not currently visible
+            table.rows().every(function() {
+                var rowId = this.node().id; // Assuming row ID is set in each <tr> (you can adjust if needed)
+                $('input[type="checkbox"].checkbox-item', this.node()).prop('checked', isChecked);
+                checkedRows[rowId] = isChecked;
+            });
+        });
+
+        // Handle individual checkbox click for visible rows
+        $('#myDataTableOutstanding tbody').on('click', '.checkbox-item', function() {
+            var rowId = $(this).closest('tr').attr('id'); // Assuming each row has a unique ID
+            checkedRows[rowId] = $(this).prop('checked');
+
+            // Check if all checkboxes in the current page are selected
+            if ($('.checkbox-item:checked').length === $('.checkbox-item').length) {
+                $('#checkAll').prop('checked', true);
+            } else {
+                $('#checkAll').prop('checked', false);
+            }
+        });
+
+        // When the table is redrawn (e.g. when switching pages), restore checkbox states
+        table.on('draw', function() {
+            var allChecked = true;
+            // Loop through visible rows and set the checkbox state
+            table.rows({ page: 'current' }).every(function() {
+                var rowId = this.node().id; // Assuming each row has a unique ID
+                if (checkedRows[rowId]) {
+                    $('input[type="checkbox"].checkbox-item', this.node()).prop('checked', true);
+                } else {
+                    $('input[type="checkbox"].checkbox-item', this.node()).prop('checked', false);
+                    allChecked = false;
+                }
+            });
+            // Set the 'check all' checkbox state based on current page
+            $('#checkAll').prop('checked', allChecked);
+        });
+    });
+
         $(document).ready(function() {
             $('#myDataTableOutstanding').dataTable({
                 responsive: false,
@@ -256,7 +353,7 @@
                         success: function(response) {
                             if (response.data) {
                                 var status = "";
-                                var table = new DataTable('#myDataTableAll');
+                                var table = new DataTable('#myDataTableDebit');
                                 // table.clear().draw();
 
                                 if (response.data.agoda_check_in) {
@@ -305,7 +402,7 @@
 
                     $('#receive_id_' + id).remove();
 
-                    var tb_select = new DataTable('#myDataTableAll');
+                    var tb_select = new DataTable('#myDataTableDebit');
                     var removingRow = $(ele).closest('tr');
                     tb_select.row(removingRow).remove().draw();
 
