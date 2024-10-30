@@ -182,7 +182,7 @@
                             <tr>
                                 <th>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" id="checkAll" name="checkbox-all">
+                                        <input class="form-check-input checkbox-item-all" type="checkbox" id="checkAll" name="checkbox-all">
                                         <label class="form-check-label" for="checkAll">All</label>
                                     </div>
                                 </th>
@@ -527,7 +527,6 @@
                             $('#txt_total_receive_payment').text(currencyFormat(Number(SumTotalDebit))); // ยอดที่รับชำระ แสดงแบบ Text
                             $('#txt_total_received').text(currencyFormat(Number(SumTotalDebit)));
 
-                            // console.log(Number(total_receive_payment).toFixed(2) - Number(amount).toFixed(2));
                             $('#total_outstanding').val(total + amount);
                             $('#txt_total_outstanding').text(currencyFormat(Number(total + amount)));
 
@@ -840,6 +839,25 @@
                     $('#txt-total-item').text(num -= 1);
                     $('#txt-total-debit').text(currencyFormat(amount -= ev_revenue));
                 }
+
+            $('#input-total-item').val(num);
+            $('#input-total-debit').val(amount);
+        });
+
+        $(document).on('click', '.checkbox-item-all', function () {            
+            var amount = Number($('#total_outstanding').val());
+            var num = Number($('#outstanding_amount').val());
+
+            $('#txt-total-item').text(num);
+            $('#txt-total-debit').text(currencyFormat(amount));
+
+            if ($('.checkbox-item-all').is(':checked')) {
+                $('#txt-total-item').text(num);
+                $('#txt-total-debit').text(currencyFormat(amount));
+            } else {
+                $('#txt-total-item').text(0);
+                $('#txt-total-debit').text(currencyFormat(0));
+            }
 
             $('#input-total-item').val(num);
             $('#input-total-debit').val(amount);

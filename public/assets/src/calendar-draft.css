@@ -5,16 +5,18 @@
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
 }
+
 .today,
 .current-month,
 .current-year {
-  background-color: rgba(27, 134, 129, 0.261) !important;
-  color: #000 !important;
+  background-color: rgba(16, 152, 100, 0.188) !important;
+  color: #1d3d2e !important;
+  border: 1px solid #1b7c4f6f;
 }
 
 .selected-range {
-  background-color: rgba(9, 123, 125, 0.785) !important;
-  color: #fff !important;
+  background-color: rgba(27, 134, 129, 0.16) !important;
+  color: #064d45 !important;
 }
 
 .calendar-wrapper .date:hover,
@@ -22,9 +24,9 @@
 .calendar-wrapper .year:hover,
 .calendar-wrapper .date.active,
 .calendar-wrapper .month.active,
-.calendar-wrapper .year.active{
-  background-color: rgba(9, 123, 125, 0.785) !important;
-  color: #fff !important;
+.calendar-wrapper .year.active {
+  background-color: rgba(27, 134, 129, 0.161);
+  color: #064d45 !important;
 }
 
 .calendars-container {
