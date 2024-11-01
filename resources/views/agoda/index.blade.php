@@ -131,20 +131,26 @@
             </div>
             <div class="col-md-12 col-12">
                 <div class="card p-4 mb-4">
-                    <div
-                        class="card-header d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
-                        <h6 class="fw-bold m-0">Agoda Outstanding Revenue</h6>
-                        <div class="dropdown">
-                            <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                สถานะการรับชำระ
-                            </button>
-                            <ul class="dropdown-menu border-0 shadow p-3">
-                                <li><a class="dropdown-item py-2 rounded" href="#"
-                                        onclick="status_receive(1)">Paid</a></li>
-                                <li><a class="dropdown-item py-2 rounded" href="#"
-                                        onclick="status_receive(0)">Unpaid</a></li>
-                            </ul>
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
+                                <h6 class="fw-bold m-0">Agoda Outstanding Revenue</h6>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="d-flex align-items-center">
+                                <input type="text" id="search-date" class="form-control me-2" name="dates" style="text-align: left;" disabled>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="date-all" checked>
+                                    <label class="form-check-label" for="date-all">All</label>
+                                </div>
+                            </div>
+
+                            <select name="" id="search-status" class="form-select mt-3 mb-3" onchange="status_receive()">
+                                <option value="all">All</option>
+                                <option value="1">Paid</option>
+                                <option value="0">Unpaid</option>
+                            </select>
                         </div>
                     </div>
                     <table id="myDataTableOutstanding" class="exampleTable table display dataTable table-hover fw-bold">
@@ -152,37 +158,20 @@
                             <tr>
                                 <th>วันที่ทำรายการ</th>
                                 <th>Booking Number</th>
-                                <th>วันที่ Check in</th>
-                                <th>วันที่ Check out</th>
-                                <th>จำนวนเงิน</th>
-                                <th>สถานะ</th>
+                                <th>Check in</th>
+                                <th>Check out</th>
+                                <th>Amount</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php $total = 0; ?>
-                            @foreach ($agoda_outstanding as $key => $item)
-                                <tr id="tr_row_{{ $item->id }}">
-                                    <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                    <td>{{ $item->batch }}</td>
-                                    <td>{{ Carbon\Carbon::parse($item->agoda_check_in)->format('d/m/Y') }}</td>
-                                    <td>{{ Carbon\Carbon::parse($item->agoda_check_out)->format('d/m/Y') }}</td>
-                                    <td>{{ number_format($item->agoda_outstanding, 2) }}</td>
-                                    <td>
-                                        @if ($item->receive_payment == 0)
-                                            <span class="badge bg-danger">Unpaid</span>
-                                        @else
-                                            <span class="badge bg-success">Paid</span>
-                                        @endif    
-                                    </td>
-                                </tr>
-                                <?php $total += $item->agoda_outstanding; ?>
-                            @endforeach
                         </tbody>
                         <tfoot>
                             <tr style="font-weight: bold;">
                                 <td colspan="4" style="text-align: right;">ยอดรวมทั้งหมด</td>
                                 <td>
-                                    <span id="txt_total_outstanding">{{ number_format($total, 2) }}</span>
+                                    <span id="txt_total_outstanding"></span>
                                     <input type="hidden" id="total_outstanding" value="{{ $total }}">
                                 </td>
                                 <td></td>
@@ -254,8 +243,138 @@
         <script src="{{ asset('assets/bundles/sweetalert2.bundle.js') }}"></script>
     @endif
 
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <script>
+        $(document).ready(function () {
+            var dateRange = $('#search-date').val();
+            var status = $('#search-status').val();
+            var [startDate, endDate] = dateRange.split(" - ");
 
+            if ($('#date-all').is(':checked')) {
+                startDate = 'startAll';
+                endDate = 'endAll';
+            } else {
+                startDate = convertDateFormat(startDate);
+                endDate = convertDateFormat(endDate);
+            }
+
+            var table = $('#myDataTableOutstanding').dataTable({
+                searching: true,
+                paging: true,
+                info: true,
+                "ajax": {
+                            "url": "debit-status-agoda-receive/all/"+startDate+"/"+endDate+"",
+                            "dataSrc": function(json) {
+                                // Access the total field from the response
+                                var total = json.total_amount;
+
+                                $('#txt_total_outstanding').text(currencyFormat(total)); // เช่น แสดง total ใน element ที่มี id เป็น total-amount
+                                $('#total_outstanding').val(total);
+
+                                return json.data; // ส่งข้อมูล data กลับไปที่ DataTables
+                            }
+                        },
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                columns: [
+                    { data: 'date' },
+                    { data: 'batch' },
+                    { data: 'check_in' },
+                    { data: 'check_out' },
+                    { data: 'agoda_outstanding' },
+                    { data: 'status' },
+                ],
+                    
+            }); 
+
+        });
+
+        $('input[name="dates"]').daterangepicker({
+            locale: {
+                format: 'DD/MM/YYYY'  // หรือรูปแบบวันที่ที่คุณต้องการ เช่น 'MM-DD-YYYY', 'YYYY-MM-DD' เป็นต้น
+            }
+        });
+
+
+        function status_receive() {
+            var dateRange = $('#search-date').val();
+            var status = $('#search-status').val();
+            var [startDate, endDate] = dateRange.split(" - ");
+
+            if ($('#date-all').is(':checked')) {
+                startDate = 'startAll';
+                endDate = 'endAll';
+            } else {
+                startDate = convertDateFormat(startDate);
+                endDate = convertDateFormat(endDate);
+            }
+
+            $('#myDataTableOutstanding').DataTable().destroy();
+            var table = $('#myDataTableOutstanding').dataTable({
+                searching: true,
+                paging: true,
+                info: true,
+                ordering: false,
+                "ajax": {
+                            "url": "debit-status-agoda-receive/"+status+"/"+startDate+"/"+endDate+"",
+                            "dataSrc": function(json) {
+                                // Access the total field from the response
+                                var total = json.total_amount;
+
+                                $('#txt_total_outstanding').text(currencyFormat(total)); // เช่น แสดง total ใน element ที่มี id เป็น total-amount
+                                $('#total_outstanding').val(total);
+
+                                return json.data; // ส่งข้อมูล data กลับไปที่ DataTables
+                            }
+                        },
+                // order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                columns: [
+                    { data: 'date' },
+                    { data: 'batch' },
+                    { data: 'check_in' },
+                    { data: 'check_out' },
+                    { data: 'agoda_outstanding' },
+                    { data: 'status' },
+                ],
+                    
+            });  
+        }
+
+        $(document).on('click', '.applyBtn', function () {
+            status_receive();
+        });
+
+        $(document).on('click', '#date-all', function () {
+            if ($(this).is(':checked')) {
+                $('#search-date').prop('disabled', true);
+            } else {
+                $('#search-date').prop('disabled', false);
+            }
+        });
+
+        function convertDateFormat(date) {
+            const [day, month, year] = date.split("/");
+            return `${year}-${month}-${day}`;
+        }
+
+        // Number Format
+        function currencyFormat(num) {
+            return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        }
     </script>
 @endsection

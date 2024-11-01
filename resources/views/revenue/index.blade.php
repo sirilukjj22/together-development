@@ -89,7 +89,7 @@
                             <span class="dropdown">
                                 <button class="dropdown-toggle" type="button" id="dropdownMenuDaily" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
                                     <span id="txt-daily">
-                                        @if (isset($filter_by) && $filter_by == 'today' || $date_current == date('Y-m-d'))
+                                        @if (isset($filter_by) && $filter_by == 'today' || !isset($filter_by) && $date_current == date('Y-m-d'))
                                             Today
                                         @elseif (isset($filter_by) && $filter_by == 'yesterday' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('-1 day')))
                                             Yesterday
@@ -471,14 +471,16 @@
                                 <img src="./image/front/agoda.jpg" alt="" class="img" />
                                 <div>Credit Card Agoda Revenue Outstanding</div>
                                 <!-- </div> -->
-                                <div class="t-end">{{ number_format($agoda_charge[0]['total'], 2) }}</div>
+                                <div class="t-end">
+                                    {{ number_format(isset($filter_by) && $filter_by == "thisYear" || isset($filter_by) && $filter_by == "year" ? $agoda_charge[0]['total'] - $total_agoda_year : $agoda_charge[0]['total'], 2) }}
+                                </div>
                             </div>
                             <div class="box-card bg-box" onclick="revenue_detail('elexa_outstanding')">
                                 <!-- <div class="f-ic"> -->
                                 <img src="./image/front/elexa.png" alt="" class="img" />
                                 <div>Elexa EGAT Revenue Outstanding</div>
                                 <!-- </div> -->
-                                <div class="t-end">{{ number_format($ev_charge[0]['total'], 2) }}</div>
+                                <div class="t-end">{{ number_format(($ev_charge[0]['total'] - $total_ev_year), 2) }}</div>
                             </div>
                         </div>
                     </div>
@@ -938,7 +940,10 @@
                                 @endif
                             </td>
                             <td class="t-end">{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($agoda_charge[0]['total_year'], 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format(($agoda_charge[0]['total_year'] - $total_agoda_year), 2) }}</td>
+                        </tr>
+                        <tr class="table-row-bg">
+                            <td colspan="4" class="padding-l-2"></td>
                         </tr>
                         <tr class="table-row-n bg-green-middle">
                             <td class="t-end f-semi">Total Hotel Revenue</td>
@@ -953,7 +958,7 @@
                                 {{ number_format($total_cash_bank_month + $total_charge_month + $agoda_charge[0]['total_month'], 2) }}
                             </td>
                             <td class="t-end padding-x-2">
-                                {{ number_format($total_cash_bank_year + $total_charge_year + $agoda_charge[0]['total_year'], 2) }}
+                                {{ number_format($total_cash_bank_year + $total_charge_year + ($agoda_charge[0]['total_year'] - $total_agoda_year), 2) }}
                             </td>
                         </tr>
                         <tr class="table-row-bg">
@@ -1096,7 +1101,7 @@
                                 @endif
                             </td>
                             <td class="t-end">{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format(($ev_charge[0]['total_year'] - $total_ev_year), 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-green-middle">
                             <td class="t-end f-semi">Total Elexa EGAT Revenue</td>
@@ -1108,13 +1113,13 @@
                                 @endif
                             </td>
                             <td class="t-end">{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format(($ev_charge[0]['total_year'] - $total_ev_year), 2) }}</td>
                         </tr>
                         <tr class="table-row-bg">
                             <td colspan="4" class="padding-l-2"></td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
-                            <td class="pl-2 text-end f-semi"> Total Hotel, Water Park And Elexa EGAT Revenue </td>
+                            <td class="pl-2 text-end f-semi"> Total Hotel, Water Park And Elexa EGAT Revenue</td>
                             <td class="t-end">
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($total_cash_bank + $total_charge_week + ($total_wp_cash_bank + $total_wp_charge) + $agoda_charge[0]['total'] + $ev_charge[0]['total'], 2) }}
@@ -1126,11 +1131,11 @@
                                 {{ number_format($total_cash_bank_month + $total_charge_month + ($total_wp_cash_bank_month + $total_wp_charge_month) + $agoda_charge[0]['total_month'] + $ev_charge[0]['total_month'], 2) }}
                             </td>
                             <td class="t-end padding-x-2">
-                                {{ number_format($total_cash_bank_year + $total_charge_year + ($total_wp_cash_bank_year + $total_wp_charge_year) + $agoda_charge[0]['total_year'] + $ev_charge[0]['total_year'], 2) }}
+                                {{ number_format($total_cash_bank_year + $total_charge_year + ($total_wp_cash_bank_year + $total_wp_charge_year) + ($agoda_charge[0]['total_year'] - $total_agoda_year) + ($ev_charge[0]['total_year'] - $total_ev_year), 2) }}
                             </td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
-                            <td class="pl-2 text-end f-semi"> Credit Agoda Revenue Outstanding </td>
+                            <td class="pl-2 text-end f-semi"> Credit Agoda Revenue Outstanding</td>
                             <td class="t-end">
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($agoda_charge[0]['total'], 2) }}
@@ -1139,10 +1144,10 @@
                                 @endif
                             </td>
                             <td class="t-end">{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($agoda_charge[0]['total_year'], 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format(($agoda_charge[0]['total_year'] - $total_agoda_year), 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
-                            <td class="pl-2 text-end f-semi"> Elexa EGAT Revenue Outstanding </td>
+                            <td class="pl-2 text-end f-semi"> Elexa EGAT Revenue Outstanding</td>
                             <td class="t-end">
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($ev_charge[0]['total'], 2) }}
@@ -1150,8 +1155,8 @@
                                     {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $ev_charge[0]['total_today'] : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="t-end">{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
+                            <td class="t-end">{{ number_format(($ev_charge[0]['total_month'] - $total_ev_month), 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format(($ev_charge[0]['total_year'] - $total_ev_year), 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
                             <td class="pl-2 text-end f-semi">Agoda Revenue</td>
@@ -1187,10 +1192,10 @@
                                 @endif
                             </td>
                             <td class="t-end">
-                                {{ number_format($total_cash_bank_month + $total_charge_month + ($total_wp_cash_bank_month + $total_wp_charge_month) + $total_agoda_month + $total_ev_month, 2) }}
+                                {{ number_format($total_cash_bank_month + $total_charge_month + ($total_wp_cash_bank_month + $total_wp_charge_month) + ($agoda_charge[0]['total_month'] + $ev_charge[0]['total_month']) + ($total_agoda_month + $total_ev_month), 2) }}
                             </td>
                             <td class="t-end padding-x-2">
-                                {{ number_format($total_cash_bank_year + $total_charge_year + ($total_wp_cash_bank_year + $total_wp_charge_year + $total_agoda_year + $total_ev_year), 2) }}
+                                {{ number_format($total_cash_bank_year + $total_charge_year + ($total_wp_cash_bank_year + $total_wp_charge_year) + ($agoda_charge[0]['total_year'] - $total_agoda_year) + ($ev_charge[0]['total_year'] - $total_ev_year), 2) }}
                             </td>
                         </tr>
                     </tbody>

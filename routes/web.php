@@ -122,7 +122,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('debit-agoda-store', 'receive_payment')->name('debit-agoda-store');
         Route::get('debit-select-agoda-outstanding/{id}', 'select_agoda_outstanding')->name('debit-select-agoda-outstanding');
         Route::get('debit-select-agoda-received/{id}', 'select_agoda_received')->name('debit-select-agoda-received');
-        Route::get('debit-status-agoda-receive/{status}', 'status_agoda_receive')->name('debit-status-agoda-receive');
+        Route::get('debit-status-agoda-receive/{status}/{startDate}/{endDate}', 'status_agoda_receive')->name('debit-status-agoda-receive');
     });
 
     # Debit Elexa

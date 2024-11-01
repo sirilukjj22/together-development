@@ -979,6 +979,9 @@ class RevenuesController extends Controller
             $month_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($to))));
             $date_first_day = date('Y-m-d', strtotime('first day of this month', strtotime($adate)));
 
+            $year_from = date('Y-m-d', strtotime($adate));
+            $year_to = date('Y-m-d', strtotime('last day of this month', strtotime(date($to))));
+
             $Fday = date('d', strtotime($adate));
             $Fmonth = date('m', strtotime($month_from));
             $Fyear = $year;
@@ -1472,7 +1475,7 @@ class RevenuesController extends Controller
         $credit_year_query = Revenues::query();
         
             if ($request->filter_by == "date") {
-                $credit_year_query->whereDate('date', '<=', date($request->date));
+                $credit_year_query->whereDate('date', '<=', $date_now);
 
             } elseif ($request->filter_by == "month") {
                 $credit_year_query->whereBetween('date', [$F_YTD, $month_to]);
@@ -1516,7 +1519,7 @@ class RevenuesController extends Controller
         $total_front_year_query = Revenues::query();
 
             if ($request->filter_by == "date") {
-                $total_front_year_query->whereDate('date', '<=', date($request->date));
+                $total_front_year_query->whereDate('date', '<=', $date_now);
 
             } elseif ($request->filter_by == "month") {
                 $total_front_year_query->whereBetween('date', [$F_YTD, $month_to]);
@@ -1562,7 +1565,7 @@ class RevenuesController extends Controller
         $guest_deposit_year_query = Revenues::query();
 
             if ($request->filter_by == "date") {
-                $guest_deposit_year_query->whereDate('date', '<=', date($request->date));
+                $guest_deposit_year_query->whereDate('date', '<=', $date_now);
 
             } elseif ($request->filter_by == "month") {
                 $guest_deposit_year_query->whereBetween('date', [$F_YTD, $month_to]);
@@ -1608,12 +1611,12 @@ class RevenuesController extends Controller
         $fb_year_query = Revenues::query();
 
             if ($request->filter_by == "date") {
-                $fb_year_query->whereDate('date', '<=', date($request->date));
+                $fb_year_query->whereDate('date', '<=', $date_now);
 
             } elseif ($request->filter_by == "month") {
                 $fb_year_query->whereBetween('date', [$F_YTD, $month_to]);
 
-            } elseif ($request->filter_by == "year"  || $request->filter_by == "thisMonth") {
+            } elseif ($request->filter_by == "year" || $request->filter_by == "thisMonth") {
                 $fb_year_query->whereBetween('date', [$year_from, $year_to]);
             }
 
@@ -1654,7 +1657,7 @@ class RevenuesController extends Controller
         $other_year_query = Revenues::query();
 
             if ($request->filter_by == "date") {
-                $other_year_query->whereDate('date', '<=', date($request->date));
+                $other_year_query->whereDate('date', '<=', $date_now);
 
             } elseif ($request->filter_by == "month") {
                 $other_year_query->whereBetween('date', [$F_YTD, $month_to]);
@@ -1696,7 +1699,7 @@ class RevenuesController extends Controller
         $agoda_year_query = Revenues::query();
         
             if ($request->filter_by == "date") {
-                $agoda_year_query->whereDate('date', '<=', date($request->date));
+                $agoda_year_query->where('date', '<=', $date_now);
 
             } elseif ($request->filter_by == "month") {
                 $agoda_year_query->whereBetween('date', [$F_YTD, $month_to]);
@@ -1741,7 +1744,7 @@ class RevenuesController extends Controller
         $wp_year_query = Revenues::query();
         
             if ($request->filter_by == "date") {
-                $wp_year_query->whereDate('date', '<=', date($date_now));
+                $wp_year_query->whereDate('date', '<=', $date_now);
 
             } elseif ($request->filter_by == "month") {
                 $wp_year_query->whereBetween('date', [$F_YTD, $month_to]);
