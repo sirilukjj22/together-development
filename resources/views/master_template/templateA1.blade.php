@@ -205,7 +205,7 @@
                                 <div class=" col-12">
                                     <div class="row">
                                         <div class="col-lg-8 col-md-12 col-sm-12 image-container">
-                                            <img src="{{ asset('assets2/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
+                                            <img src="{{ asset('assets/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
                                             <div class="info">
                                                 <p class="titleh1">Together Resort Limited Partnership</p>
                                                 <p>168 Moo 2 Kaengkrachan Phetchaburi 76170</p>
@@ -387,7 +387,7 @@
                                     <div class=" col-12">
                                         <div class="row">
                                             <div class="col-lg-8 col-md-12 col-sm-12 image-container">
-                                                <img src="{{ asset('assets2/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
+                                                <img src="{{ asset('assets/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
                                                 <div class="info">
                                                     <p class="titleh1">Together Resort Limited Partnership</p>
                                                     <p>168 Moo 2 Kaengkrachan Phetchaburi 76170</p>
@@ -467,7 +467,7 @@
                                 <div class=" col-12">
                                     <div class="row">
                                         <div class="col-lg-8 col-md-12 col-sm-12 image-container">
-                                            <img src="{{ asset('assets2/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
+                                            <img src="{{ asset('assets/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
                                             <div class="info">
                                                 <p class="titleh1">Together Resort Limited Partnership</p>
                                                 <p>168 Moo 2 Kaengkrachan Phetchaburi 76170</p>
@@ -655,7 +655,7 @@
                                     <div class=" col-12">
                                         <div class="row">
                                             <div class="col-lg-8 col-md-12 col-sm-12 image-container">
-                                                <img src="{{ asset('assets2/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
+                                                <img src="{{ asset('assets/images/logo_crop.png') }}" alt="Together Resort Logo" class="logo"/>
                                                 <div class="info">
                                                     <p class="titleh1">Together Resort Limited Partnership</p>
                                                     <p>168 Moo 2 Kaengkrachan Phetchaburi 76170</p>

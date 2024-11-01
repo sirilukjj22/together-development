@@ -150,7 +150,7 @@
         right: 10px; /* ตำแหน่งจากด้านขวา */
         width: 32px; /* ขนาดของปุ่ม */
         height: 32px; /* ขนาดของปุ่ม */
-        background: url('{{ asset('assets2/images/photo-camera.png') }}') no-repeat center center;
+        background: url('{{ asset('assets/images/photo-camera.png') }}') no-repeat center center;
         background-size: cover;
         border: none; /* ไม่มีเส้นขอบ */
         border-radius: 50%; /* ทำให้ปุ่มเป็นวงกลม */
@@ -163,7 +163,7 @@
         right: 10px; /* ตำแหน่งจากด้านขวา */
         width: 32px; /* ขนาดของปุ่ม */
         height: 32px; /* ขนาดของปุ่ม */
-        background: url('{{ asset('assets2/images/delete.png') }}') no-repeat center center;
+        background: url('{{ asset('assets/images/delete.png') }}') no-repeat center center;
         background-size: cover;
         border: none; /* ไม่มีเส้นขอบ */
         border-radius: 50%; /* ทำให้ปุ่มเป็นวงกลม */
@@ -406,7 +406,7 @@
                         <input type="file" id="Identification_Number_file" name="Identification_Number_file"
                           style="width: 360px;border: 2px solid  #b4b4b4"accept="image/jpeg, image/png, image/svg" >
                          <a href="{{ asset($Freelancer_checked->Identification_file) }}" target="_blank" class="file-link">
-                            <img src="{{ asset('assets2/images/open.png') }}" alt="Card image" style="width: 15%;">
+                            <img src="{{ asset('assets/images/open.png') }}" alt="Card image" style="width: 15%;">
                         </a>
                     </div>
                 </div>
@@ -438,7 +438,7 @@
                         style="width: 360px;  border: 2px solid  #b4b4b4"
                         accept="image/jpeg, image/png, image/svg">
                         <a href="{{ asset($Freelancer_checked->Bank_file) }}" target="_blank" class="file-link">
-                            <img src="{{ asset('assets2/images/open.png') }}" alt="Card image" style="width: 15%;">
+                            <img src="{{ asset('assets/images/open.png') }}" alt="Card image" style="width: 15%;">
                         </a>
                     </div>
                 </div>

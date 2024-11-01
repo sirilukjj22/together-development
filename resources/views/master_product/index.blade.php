@@ -66,7 +66,7 @@
                             <button type="button" class="btn  mt-3 lift btn_modal" id="alldataproduct" onclick="alldataproduct()" style="background-color:#2D7F7B;color:#fff;width:100%">
                                 <div class="d-grid2" style="width: 100%" >
                                     <div class="" >
-                                        <img src="{{ asset('assets2/images/supplies.png') }}" style="width: 100%" class="logo"/>
+                                        <img src="{{ asset('assets/images/supplies.png') }}" style="width: 100%" class="logo"/>
                                     </div>
                                     <div>
                                         <div class="row">
@@ -81,7 +81,7 @@
                             <button type="button" class="btn  mt-3 lift btn_modal" id="Room" onclick="alldataRoom()" style="background-color:#2D7F7B;color:#fff;width:100%">
                                 <div class="d-grid2" style="width: 100%">
                                     <div>
-                                        <img src="{{ asset('assets2/images/bed.png') }}" style="width: 100%" class="logo"/>
+                                        <img src="{{ asset('assets/images/bed.png') }}" style="width: 100%" class="logo"/>
                                     </div>
                                     <div >
                                         <div class="row">
@@ -96,7 +96,7 @@
                             <button type="button" class="btn  mt-3 lift btn_modal" id="Banquet" onclick="alldataBanquet()" style="background-color:#2D7F7B;color:#fff;width:100%">
                                 <div class="d-grid2" style="width: 100%">
                                     <div>
-                                        <img src="{{ asset('assets2/images/seminar.png') }}" style="width: 100%" class="logo"/>
+                                        <img src="{{ asset('assets/images/seminar.png') }}" style="width: 100%" class="logo"/>
                                     </div>
                                     <div>
                                         <div class="row">
@@ -111,7 +111,7 @@
                             <button type="button" class="btn  mt-3 lift btn_modal" id="Meals" onclick="alldataMeals()" style="background-color:#2D7F7B;color:#fff;width:100%">
                                 <div class="d-grid2" style="width: 100%">
                                     <div>
-                                        <img src="{{ asset('assets2/images/serving-dish.png') }}" style="width: 100%" class="logo"/>
+                                        <img src="{{ asset('assets/images/serving-dish.png') }}" style="width: 100%" class="logo"/>
                                     </div>
                                     <div>
                                         <div class="row">
@@ -126,7 +126,7 @@
                             <button type="button" class="btn  mt-3 lift btn_modal"id="Entertainment"  onclick="alldataEntertainment()" style="background-color:#2D7F7B;color:#fff;width:100%">
                                 <div class="d-grid2" style="width: 100%">
                                     <div>
-                                        <img src="{{ asset('assets2/images/multimedia.png') }}" style="width: 100%" class="logo"/>
+                                        <img src="{{ asset('assets/images/multimedia.png') }}" style="width: 100%" class="logo"/>
                                     </div>
                                     <div>
                                         <div class="row">

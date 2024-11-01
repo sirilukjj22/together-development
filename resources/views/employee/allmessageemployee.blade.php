@@ -31,7 +31,7 @@
 
     }
     .image-read-button {
-            background: url('{{ asset('assets2/images/analytics.png') }}') no-repeat center center;
+            background: url('{{ asset('assets/images/analytics.png') }}') no-repeat center center;
             background-size: cover;
             width: 32px;
             height: 32px;

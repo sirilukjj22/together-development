@@ -146,7 +146,7 @@
         right: 10px; /* ตำแหน่งจากด้านขวา */
         width: 32px; /* ขนาดของปุ่ม */
         height: 32px; /* ขนาดของปุ่ม */
-        background: url('{{ asset('assets2/images/pepicons-pencil--photo-camera-circle-filled.png') }}') no-repeat center center;
+        background: url('{{ asset('assets/images/pepicons-pencil--photo-camera-circle-filled.png') }}') no-repeat center center;
         background-size: cover;
         border: none; /* ไม่มีเส้นขอบ */
         border-radius: 50%; /* ทำให้ปุ่มเป็นวงกลม */
@@ -159,7 +159,7 @@
         right: 50px; /* ตำแหน่งจากด้านขวา */
         width: 32px; /* ขนาดของปุ่ม */
         height: 35px;
-        background: url('{{ asset('assets2/images/verified.png') }}') no-repeat center center;
+        background: url('{{ asset('assets/images/verified.png') }}') no-repeat center center;
         background-size: cover;
         border: none; /* ไม่มีเส้นขอบ */
         border-radius: 50%; /* ทำให้ปุ่มเป็นวงกลม */
@@ -172,7 +172,7 @@
         right: 10px; /* ตำแหน่งจากด้านขวา */
         width: 32px; /* ขนาดของปุ่ม */
         height: 32px; /* ขนาดของปุ่ม */
-        background: url('{{ asset('assets2/images/multiply.png') }}') no-repeat center center;
+        background: url('{{ asset('assets/images/multiply.png') }}') no-repeat center center;
         background-size: cover;
         border: none; /* ไม่มีเส้นขอบ */
         border-radius: 50%; /* ทำให้ปุ่มเป็นวงกลม */
@@ -223,7 +223,7 @@
             right: 10px; /* ตำแหน่งจากด้านขวา */
             width: 32px; /* ขนาดของปุ่ม */
             height: 32px; /* ขนาดของปุ่ม */
-            background: url('{{ asset('assets2/images/pencil.png') }}') no-repeat center center;
+            background: url('{{ asset('assets/images/pencil.png') }}') no-repeat center center;
             background-size: cover;
             border: none; /* ไม่มีเส้นขอบ */
             border-radius: 50%; /* ทำให้ปุ่มเป็นวงกลม */
@@ -231,7 +231,7 @@
             box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.8);
         }
         .image-read-button {
-            background: url('{{ asset('assets2/images/analytics.png') }}') no-repeat center center;
+            background: url('{{ asset('assets/images/analytics.png') }}') no-repeat center center;
             background-size: cover;
             width: 32px;
             height: 32px;

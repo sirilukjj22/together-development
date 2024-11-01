@@ -271,7 +271,7 @@
                         </div>
                         <div class="col-lg-1 col-md-1 col-sm-12 mt-2">
                             <a href="{{ asset($Freelancer_checked->Identification_file) }}" target="_blank" class="file-link2">
-                                <img src="{{ asset('assets2/images/open.png') }}" alt="Card image" >
+                                <img src="{{ asset('assets/images/open.png') }}" alt="Card image" >
                             </a>
                         </div>
                     </div>
@@ -298,7 +298,7 @@
                         </div>
                         <div class="col-lg-1 col-md-1 col-sm-12 mt-2 ">
                             <a href="{{ asset($Freelancer_checked->Bank_file) }}" target="_blank" class="file-link">
-                                <img src="{{ asset('assets2/images/open.png') }}" alt="Card image">
+                                <img src="{{ asset('assets/images/open.png') }}" alt="Card image">
                             </a>
                         </div>
                     </div>

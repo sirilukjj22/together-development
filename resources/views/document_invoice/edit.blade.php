@@ -211,7 +211,7 @@
                             @csrf
                             <div class="row">
                                 <div class="col-lg-8 col-md-12 col-sm-12 image-container">
-                                    <img src="{{ asset('assets2/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
+                                    <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
                                     <div class="info">
                                         <p class="titleh1">{{$settingCompany->name}}</p>
                                         <p>{{$settingCompany->address}}</p>

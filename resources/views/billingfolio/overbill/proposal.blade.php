@@ -701,8 +701,8 @@
                                             <tr>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%">No.</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Code</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:40%"data-priority="1">Description</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:30%"data-priority="1">Amount</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:50%"data-priority="1">Description</th>
+                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Amount</th>
                                                 <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:20%"></th>
                                             </tr>
                                         </thead>
@@ -1507,9 +1507,9 @@
                                         '<tr id="tr-select-addmain' + val.id + '">' +
                                         '<td style="text-align:center;width:10%;vertical-align: middle;">' + rowNumbemain + '</td>' +
                                         '<td style="text-align:center;width:10%;vertical-align: middle;"><input type="hidden" id="Code" name="Code[]" value="' + val.code + '">' + val.code +'</td>' +
-                                        '<td style="text-align:left;width:40%;vertical-align: middle;">'+ val.description +'</td>' +
-                                        '<td style="text-align:center;width:30%;">'+ quantity +'</td>' +
-                                        '<td  style="text-align:center;width:10%;vertical-align: middle;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
+                                        '<td style="text-align:left;width:50%;vertical-align: middle;">'+ val.description +'</td>' +
+                                        '<td style="text-align:center;width:10%;">'+ quantity +'</td>' +
+                                        '<td  style="text-align:center;width:20%;vertical-align: middle;"><button type="button" class="Btn remove-buttonmain" value="' + val.id + '"><i class="fa fa-minus-circle text-danger fa-lg"></i></button></td>' +
                                         '</tr>'
                                     );
                                     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

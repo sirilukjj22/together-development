@@ -19,7 +19,7 @@
         align-items: center;
         justify-content: center;
         background-color: #f0f0f0;
-        background: url('{{ asset('assets2/images/no-image.jpg') }}') no-repeat center center;
+        background: url('{{ asset('assets/images/no-image.jpg') }}') no-repeat center center;
         position: relative;
     }
 
@@ -29,7 +29,7 @@
         right: 10px; /* ตำแหน่งจากด้านขวา */
         width: 32px; /* ขนาดของปุ่ม */
         height: 32px; /* ขนาดของปุ่ม */
-        background: url('{{ asset('assets2/images/photo-camera.png') }}') no-repeat center center;
+        background: url('{{ asset('assets/images/photo-camera.png') }}') no-repeat center center;
         background-size: cover;
         border: none; /* ไม่มีเส้นขอบ */
         border-radius: 50%; /* ทำให้ปุ่มเป็นวงกลม */
@@ -42,7 +42,7 @@
         right: 10px; /* ตำแหน่งจากด้านขวา */
         width: 32px; /* ขนาดของปุ่ม */
         height: 32px; /* ขนาดของปุ่ม */
-        background: url('{{ asset('assets2/images/delete.png') }}') no-repeat center center;
+        background: url('{{ asset('assets/images/delete.png') }}') no-repeat center center;
         background-size: cover;
         border: none; /* ไม่มีเส้นขอบ */
         border-radius: 50%; /* ทำให้ปุ่มเป็นวงกลม */
@@ -133,7 +133,7 @@
             align-items: center;
             justify-content: center;
             background-color: #f0f0f0;
-            background: url('{{ asset('assets2/images/no-image.jpg') }}') no-repeat center center;
+            background: url('{{ asset('assets/images/no-image.jpg') }}') no-repeat center center;
             background-size: cover;
             position: relative;
         }
@@ -221,7 +221,7 @@
                                             <div class="card1">
                                                 <div class="image-container">
                                                     <button type="button" class="image-upload-button"></button>
-                                                    <input type="file" name="imageFile" id="imageFile" accept="image/jpeg, image/png, image/svg" value="{{ asset('assets2/images/no-image.jpg') }}" style="display: none;">
+                                                    <input type="file" name="imageFile" id="imageFile" accept="image/jpeg, image/png, image/svg" value="{{ asset('assets/images/no-image.jpg') }}" style="display: none;">
                                                     <img src=""  class="image_preview" style="display: none;">
                                                     <button class="buttonIcon" type="button" id="imageSubmit" style="display: none;"></button>
                                                     <button class="deleteImage" id="deleteImage" type="button" style="display: none;"></button>

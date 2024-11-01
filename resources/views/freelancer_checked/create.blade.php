@@ -77,7 +77,7 @@
                                     <span>Change Image</span>
                                 </label>
                                 <input id="file" name="image" type="file" onchange="loadFile(event)" />
-                                <img src="{{ asset('assets2/images/no-image.jpg') }}" id="output" width="200" />
+                                <img src="{{ asset('assets/images/no-image.jpg') }}" id="output" width="200" />
                             </div>
                         </div>
                         <div class="col-sm-5 col-5"></div>
