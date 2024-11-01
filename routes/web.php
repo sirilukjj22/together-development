@@ -33,6 +33,7 @@ use App\Http\Controllers\UserDepartmentsController;
 use App\Http\Controllers\ReceiveChequeController;
 use App\Http\Controllers\confirmationrequest;
 use App\Http\Controllers\BillingFolioOverbill;
+use App\Http\Controllers\ReportAuditRevenueDateController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -191,6 +192,11 @@ Route::middleware(['auth'])->group(function () {
         // Table Search / Paginate
         Route::post('user-department-search-table', 'search_table')->name('user-department-search-table');
         Route::post('user-department-paginate-table', 'paginate_table')->name('user-department-paginate-table');
+    });
+
+    ## Report
+    Route::controller(ReportAuditRevenueDateController::class)->middleware('role:report')->group(function () {
+        Route::get('report-audit-revenue-date', 'index')->name('report-audit-revenue-date');
     });
 
     ####################################################

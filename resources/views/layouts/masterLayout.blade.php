@@ -264,7 +264,18 @@
                                 </li>
                             @endif
                             @if (Auth::user()->roleMenu->report == 1)
-                                <li><a class="m-link" href="#"><i class="fa fa-lg fa-list" style="font-weight: bold; color: white;"></i> <span>Report</span></a></li>
+                                <li class="collapsed">
+                                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Report" href="#"><i class="fa fa-lg fa-file-text-o"></i> 
+                                        <span>Report</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span>
+                                    </a>
+
+                                    <!-- Menu: Sub menu ul -->
+                                    <ul class="sub-menu collapse" id="menu-Report">
+                                        {{-- @if (Auth::user()->roleMenu->sms_alert == 1) --}}
+                                            {{-- <li><a class="ms-link" href="{{ route('report-audit-revenue-date') }}">Audit Hotel & Water Park Revenue by date</a></li> --}}
+                                        {{-- @endif --}}
+                                    </ul>
+                                </li>
                             @endif
                             @if (Auth::user()->roleMenu->setting == 1)
                                 <li class="collapsed">
