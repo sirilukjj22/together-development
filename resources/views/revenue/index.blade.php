@@ -480,7 +480,9 @@
                                 <img src="./image/front/elexa.png" alt="" class="img" />
                                 <div>Elexa EGAT Revenue Outstanding</div>
                                 <!-- </div> -->
-                                <div class="t-end">{{ number_format(($ev_charge[0]['total'] - $total_ev_year), 2) }}</div>
+                                <div class="t-end">
+                                    {{ number_format(isset($filter_by) && $filter_by == "thisYear" || isset($filter_by) && $filter_by == "year" ? $ev_charge[0]['total'] - $total_ev_year : $ev_charge[0]['total'], 2) }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -662,14 +664,14 @@
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_cash : 0, 2) }}
                                 @else
-                                    {{ number_format(isset($today_front_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_front_revenue->front_cash : 0, 2) }}
+                                    {{ number_format(isset($today_front_revenue) && isset($filter_by) && $filter_by == "date" || !isset($filter_by) ? $today_front_revenue->front_cash : 0, 2) }}
                                 @endif
                             </td>
                             <td class="t-end">
-                                {{ number_format(isset($total_front_month) ? $total_front_month->front_cash : 0, 2) }}
+                                {{ number_format(isset($total_front_month) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $total_front_month->front_cash : 0, 2) }}
                             </td>
                             <td class="t-end padding-x-2">
-                                {{ number_format(isset($total_front_year) ? $total_front_year->front_cash : 0, 2) }}</td>
+                                {{ number_format(isset($total_front_year) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $total_front_year->front_cash : 0, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Bank Transfer</td>
@@ -677,14 +679,14 @@
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format(isset($total_front_revenue) ? $total_front_revenue->front_transfer : 0, 2) }}
                                 @else
-                                    {{ number_format(isset($today_front_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_front_revenue->front_transfer : 0, 2) }}
+                                    {{ number_format(isset($today_front_revenue) && isset($filter_by) && $filter_by == "date" || !isset($filter_by) ? $today_front_revenue->front_transfer : 0, 2) }}
                                 @endif
                             </td>
                             <td class="t-end">
-                                {{ number_format(isset($total_front_month) ? $total_front_month->front_transfer : 0, 2) }}
+                                {{ number_format(isset($total_front_month) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $total_front_month->front_transfer : 0, 2) }}
                             </td>
                             <td class="t-end padding-x-2">
-                                {{ number_format(isset($total_front_year) ? $total_front_year->front_transfer : 0, 2) }}
+                                {{ number_format(isset($total_front_year) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $total_front_year->front_transfer : 0, 2) }}
                             </td>
                         </tr>
                         <tr class="table-row-n">
@@ -693,11 +695,11 @@
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($front_charge[0]['revenue_credit_date'], 2) }}
                                 @else
-                                    {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $front_charge[0]['revenue_credit_today'] : 0, 2) }}
+                                    {{ number_format(isset($filter_by) && $filter_by == "date" || !isset($filter_by) ? $front_charge[0]['revenue_credit_today'] : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="t-end">{{ number_format($front_charge[0]['revenue_credit_month'], 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($front_charge[0]['revenue_credit_year'], 2) }}
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $front_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $front_charge[0]['revenue_credit_year'] : 0, 2) }}
                             </td>
                         </tr>
                         <tr class="table-row-bg">
@@ -709,14 +711,14 @@
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_cash : 0, 2) }}
                                 @else
-                                    {{ number_format(isset($today_guest_deposit) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "Month" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_guest_deposit->room_cash : 0, 2) }}
+                                    {{ number_format(isset($today_guest_deposit) && isset($filter_by) && $filter_by == "date" || !isset($filter_by) ? $today_guest_deposit->room_cash : 0, 2) }}
                                 @endif
                             </td>
                             <td class="t-end">
-                                {{ number_format(isset($total_guest_deposit_month) ? $total_guest_deposit_month->room_cash : 0, 2) }}
+                                {{ number_format(isset($total_guest_deposit_month) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $total_guest_deposit_month->room_cash : 0, 2) }}
                             </td>
                             <td class="t-end padding-x-2">
-                                {{ number_format(isset($total_guest_deposit_year) ? $total_guest_deposit_year->room_cash : 0, 2) }}
+                                {{ number_format(isset($total_guest_deposit_year) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $total_guest_deposit_year->room_cash : 0, 2) }}
                             </td>
                         </tr>
                         <tr class="table-row-n">
@@ -725,14 +727,14 @@
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format(isset($total_guest_deposit) ? $total_guest_deposit->room_transfer : 0, 2) }}
                                 @else
-                                    {{ number_format(isset($today_guest_deposit) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_guest_deposit->room_transfer : 0, 2) }}
+                                    {{ number_format(isset($today_guest_deposit) && isset($filter_by) && $filter_by == "date" || !isset($filter_by) ? $today_guest_deposit->room_transfer : 0, 2) }}
                                 @endif
                             </td>
                             <td class="t-end">
-                                {{ number_format(isset($total_guest_deposit_month) ? $total_guest_deposit_month->room_transfer : 0, 2) }}
+                                {{ number_format(isset($total_guest_deposit_month) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $total_guest_deposit_month->room_transfer : 0, 2) }}
                             </td>
                             <td class="t-end padding-x-2">
-                                {{ number_format(isset($total_guest_deposit_year) ? $total_guest_deposit_year->room_transfer : 0, 2) }}
+                                {{ number_format(isset($total_guest_deposit_year) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $total_guest_deposit_year->room_transfer : 0, 2) }}
                             </td>
                         </tr>
                         <tr class="table-row-n">
@@ -741,12 +743,12 @@
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($guest_deposit_charge[0]['revenue_credit_today'], 2) }}
                                 @else
-                                {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $guest_deposit_charge[0]['revenue_credit_today'] : 0, 2) }}
+                                {{ number_format(isset($filter_by) && $filter_by == "date" || !isset($filter_by) ? $guest_deposit_charge[0]['revenue_credit_today'] : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="t-end">{{ number_format($guest_deposit_charge[0]['revenue_credit_month'], 2) }}
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $guest_deposit_charge[0]['revenue_credit_month'] : 0, 2) }}
                             </td>
-                            <td class="t-end padding-x-2">{{ number_format($guest_deposit_charge[0]['revenue_credit_year'], 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $guest_deposit_charge[0]['revenue_credit_year'] : 0, 2) }}</td>
                         </tr>
                         <tr class="table-row-bg">
                             <td colspan="4" class="padding-l-2">All Outlet Revenue</td>
@@ -757,11 +759,11 @@
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format(isset($total_fb_revenue) ? $total_fb_revenue->fb_cash : 0, 2) }}
                                 @else
-                                    {{ number_format(isset($today_fb_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_fb_revenue->fb_cash : 0, 2) }}
+                                    {{ number_format(isset($today_fb_revenue) && isset($filter_by) && $filter_by == "date" || !isset($filter_by) ? $today_fb_revenue->fb_cash : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="t-end">{{ number_format($total_fb_month->fb_cash, 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($total_fb_year->fb_cash, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $total_fb_month->fb_cash : 0, 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $total_fb_year->fb_cash : 0, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Bank Transfer</td>
@@ -769,11 +771,11 @@
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format(isset($total_fb_revenue) ? $total_fb_revenue->fb_transfer : 0, 2) }}
                                 @else
-                                    {{ number_format(isset($today_fb_revenue) && isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_fb_revenue->fb_transfer : 0, 2) }}
+                                    {{ number_format(isset($today_fb_revenue) && isset($filter_by) && $filter_by == "date" || !isset($filter_by) ? $today_fb_revenue->fb_transfer : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="t-end">{{ number_format($total_fb_month->fb_transfer, 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($total_fb_year->fb_transfer, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $total_fb_month->fb_transfer : 0, 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $total_fb_year->fb_transfer : 0, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2">Credit Card All Outlet Charge</td>
@@ -781,11 +783,11 @@
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($fb_charge[0]['revenue_credit_date'], 2) }}
                                 @else
-                                    {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $fb_charge[0]['revenue_credit_today'] : 0, 2) }}
+                                    {{ number_format(isset($filter_by) && $filter_by == "date" || !isset($filter_by) ? $fb_charge[0]['revenue_credit_today'] : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="t-end">{{ number_format($fb_charge[0]['revenue_credit_month'], 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($fb_charge[0]['revenue_credit_year'], 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $fb_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $fb_charge[0]['revenue_credit_year'] : 0, 2) }}</td>
                         </tr>
                         <tr class="table-row-bg">
                             <td colspan="4" class="padding-l-2">Other Revenue</td>
@@ -796,11 +798,11 @@
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($total_other_revenue, 2) }}
                                 @else
-                                    {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_other_revenue : 0, 2) }}
+                                    {{ number_format(isset($filter_by) && $filter_by == "date" || !isset($filter_by) ? $today_other_revenue : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="t-end">{{ number_format($total_other_month, 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($total_other_year, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $total_other_month : 0, 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $total_other_year : 0, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Total Cash</td>
@@ -808,11 +810,11 @@
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($total_front_revenue->front_cash + $total_guest_deposit->room_cash + $total_fb_revenue->fb_cash, 2) }}
                                 @else
-                                    {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_front_revenue->front_cash + $today_guest_deposit->room_cash + $today_fb_revenue->fb_cash : 0, 2) }}
+                                    {{ number_format(isset($filter_by) && $filter_by == "date" || !isset($filter_by) ? $today_front_revenue->front_cash + $today_guest_deposit->room_cash + $today_fb_revenue->fb_cash : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="t-end">{{ number_format($total_cash_month, 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($total_cash_year, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $total_cash_month : 0, 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $total_cash_year : 0, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Total Bank Transfer</td>
@@ -820,11 +822,11 @@
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($total_front_revenue->front_transfer + $total_guest_deposit->room_transfer + $total_fb_revenue->fb_transfer + $total_other_revenue, 2) }}
                                 @else
-                                    {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_front_revenue->front_transfer + $today_guest_deposit->room_transfer + $today_fb_revenue->fb_transfer + $today_other_revenue : 0, 2) }}
+                                    {{ number_format(isset($filter_by) && $filter_by == "date" || !isset($filter_by) ? $today_front_revenue->front_transfer + $today_guest_deposit->room_transfer + $today_fb_revenue->fb_transfer + $today_other_revenue : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="t-end">{{ number_format($total_bank_transfer_month, 2) }}</td>
-                            <td class="t-end padding-x-2">{{ number_format($total_bank_transfer_year, 2) }}</td>
+                            <td class="t-end">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $total_bank_transfer_month : 0, 2) }}</td>
+                            <td class="t-end padding-x-2">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $total_bank_transfer_year : 0, 2) }}</td>
                         </tr>
 
                         @php
@@ -1183,19 +1185,19 @@
                             <td class="t-end padding-x-2">{{ number_format($total_ev_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
-                            <td class="pl-2 text-end f-semi">Total Revenue</td>
+                            <td class="pl-2 text-end f-semi">Total Revenue {{ $total_agoda_year }}</td>
                             <td class="t-end">
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format(($total_cash_bank + $total_charge_week) + ($total_wp_cash_bank + $total_wp_charge) + $total_ev_revenue + $total_agoda_revenue, 2) }}
                                 @else
-                                    {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? ($total_cash_bank + $total_charge) + ($today_wp_cash_bank + $today_wp_charge) + $today_ev_revenue + $today_agoda_revenue : 0, 2) }}
+                                    {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? ($total_cash_bank + $total_charge) + ($today_wp_cash_bank + $today_wp_charge) + ($total_agoda_month + $total_ev_month) : 0, 2) }}
                                 @endif
                             </td>
                             <td class="t-end">
-                                {{ number_format($total_cash_bank_month + $total_charge_month + ($total_wp_cash_bank_month + $total_wp_charge_month) + ($agoda_charge[0]['total_month'] + $ev_charge[0]['total_month']) + ($total_agoda_month + $total_ev_month), 2) }}
+                                {{ number_format($total_cash_bank_month + $total_charge_month + ($total_wp_cash_bank_month + $total_wp_charge_month) + ($total_agoda_month + $total_ev_month), 2) }}
                             </td>
                             <td class="t-end padding-x-2">
-                                {{ number_format($total_cash_bank_year + $total_charge_year + ($total_wp_cash_bank_year + $total_wp_charge_year) + ($agoda_charge[0]['total_year'] - $total_agoda_year) + ($ev_charge[0]['total_year'] - $total_ev_year), 2) }}
+                                {{ number_format($total_cash_bank_year + $total_charge_year + ($total_wp_cash_bank_year + $total_wp_charge_year) + + ($total_agoda_year + $total_ev_year), 2) }}
                             </td>
                         </tr>
                     </tbody>
