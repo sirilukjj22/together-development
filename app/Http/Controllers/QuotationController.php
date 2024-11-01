@@ -63,7 +63,9 @@ class QuotationController extends Controller
         $Cancel = Quotation::query()->where('status_document',0)->paginate($perPage);
         $Cancelcount = Quotation::query()->where('status_document',0)->count();
         $User = User::select('name','id','permission')->whereIn('permission',[0,1,2])->get();
-        return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount','User'));
+        $oldestYear = Quotation::query()->orderBy('created_at', 'asc')->value('created_at')->year ?? now()->year;
+        $newestYear = Quotation::query()->orderBy('created_at', 'desc')->value('created_at')->year ?? now()->year;
+        return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount','User','oldestYear','newestYear'));
     }
     public function SearchAll(Request $request){
 
@@ -72,6 +74,11 @@ class QuotationController extends Controller
         $checkin  = $request->checkin;
         $checkout  = $request->checkout;
         $checkbox  = $request->checkbox;
+
+        $month  = $request->month;
+        $year  = $request->year;
+        $oldestYear = Quotation::query()->orderBy('created_at', 'asc')->value('created_at')->year ?? now()->year;
+        $newestYear = Quotation::query()->orderBy('created_at', 'desc')->value('created_at')->year ?? now()->year;
         $checkboxAll = $request->checkboxAll;
         $Usercheck = $request->User;
         $status = $request->status;
@@ -141,7 +148,36 @@ class QuotationController extends Controller
                 }elseif ($checkin && $checkout &&$Usercheck !==null&& $status == 0 ) {
                     $Proposal = Quotation::query()->where('checkin',$checkinDate)->where('checkout',$checkoutDate)->where('Operated_by',$Usercheck)->where('status_document',0)->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
                 }
-            }elseif ($Filter == 'Company') {
+            }elseif ($Filter == 'Month') {
+                $monthyear = sprintf('%02d/%d', $month, $year);
+                if ($month&&$year&&$Usercheck ==null&& $status == null ) {
+                    $Proposal = Quotation::query()->where('checkin', 'like', "%/{$monthyear}")->orderBy('created_at', 'desc')->paginate($perPage);
+                }elseif ($month&&$year &&$Usercheck !==null&& $status == null ) {
+                    $Proposal = Quotation::query()->where('checkin', 'like', "%/{$monthyear}")->where('Operated_by',$Usercheck)->orderBy('created_at', 'desc')->paginate($perPage);
+                }elseif ($month&&$year &&$Usercheck ==null&& $status == 1 ) {
+                    $Proposal = Quotation::query()->where('checkin', 'like', "%/{$monthyear}")->whereIn('status_document',[1,3])->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                }elseif ($month&&$year &&$Usercheck ==null&& $status == 2 ) {
+                    $Proposal = Quotation::query()->where('checkin', 'like', "%/{$monthyear}")->where('status_document',2)->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                }elseif ($month&&$year &&$Usercheck ==null&& $status == 3 ) {
+                    $Proposal = Quotation::query()->where('checkin', 'like', "%/{$monthyear}")->where('status_guest',1)->orderBy('created_at', 'desc')->paginate($perPage);
+                }elseif ($month&&$year &&$Usercheck ==null&& $status == 4 ) {
+                    $Proposal = Quotation::query()->where('checkin', 'like', "%/{$monthyear}")->where('status_document',4)->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                }elseif ($month&&$year &&$Usercheck ==null&& $status == 0 ) {
+                    $Proposal = Quotation::query()->where('checkin', 'like', "%/{$monthyear}")->where('status_document',0)->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                }elseif ($month&&$year &&$Usercheck !==null&& $status == 1 ) {
+                    $Proposal = Quotation::query()->where('checkin', 'like', "%/{$monthyear}")->where('Operated_by',$Usercheck)->whereIn('status_document',[1,3])->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                }elseif ($month&&$year &&$Usercheck !==null&& $status == 2 ) {
+                    $Proposal = Quotation::query()->where('checkin', 'like', "%/{$monthyear}")->where('Operated_by',$Usercheck)->where('status_document',2)->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                }elseif ($month&&$year &&$Usercheck !==null&& $status == 3 ) {
+                    $Proposal = Quotation::query()->where('checkin', 'like', "%/{$monthyear}")->where('Operated_by',$Usercheck)->where('status_guest',1)->orderBy('created_at', 'desc')->paginate($perPage);
+                }elseif ($month&&$year &&$Usercheck !==null&& $status == 4 ) {
+                    $Proposal = Quotation::query()->where('checkin', 'like', "%/{$monthyear}")->where('Operated_by',$Usercheck)->where('status_document',4)->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                }elseif ($month&&$year &&$Usercheck !==null&& $status == 0 ) {
+                    $Proposal = Quotation::query()->where('checkin', 'like', "%/{$monthyear}")->where('Operated_by',$Usercheck)->where('status_document',0)->where('status_guest',0)->orderBy('created_at', 'desc')->paginate($perPage);
+                }
+            }
+
+            elseif ($Filter == 'Company') {
 
                 $nameCom = companys::where('Company_Name', 'LIKE', '%' . $search_value . '%')->first();
                 $nameGuest = Guest::where('First_name', 'LIKE', '%' . $search_value . '%')
@@ -209,7 +245,7 @@ class QuotationController extends Controller
             $Cancel = Quotation::query()->where('status_document',0)->orderBy('created_at', 'desc')->paginate($perPage);
             $Cancelcount = Quotation::query()->where('status_document',0)->count();
         return view('quotation.index',compact('Proposalcount','Proposal','Awaitingcount','Awaiting','Pending','Pendingcount','Approved','Approvedcount','Rejectcount','Reject','Cancel','Cancelcount'
-        ,'User'));
+        ,'User','oldestYear','newestYear'));
     }
     public function  paginate_table_proposal(Request $request)
     {
@@ -355,11 +391,9 @@ class QuotationController extends Controller
                         'Type'=>$value->Date_type,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'ExpirationDate' => $value->Expirationdate,
                         'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                         'Operated' => @$value->userOperated->name,
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
@@ -529,11 +563,9 @@ class QuotationController extends Controller
                     'Type'=>$value->Date_type,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'ExpirationDate' => $value->Expirationdate,
                     'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                    'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                     'Operated' => @$value->userOperated->name,
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
@@ -647,11 +679,9 @@ class QuotationController extends Controller
                         'Type'=>$value->Date_type,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'ExpirationDate' => $value->Expirationdate,
                         'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                         'Operated' => @$value->userOperated->name,
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
@@ -767,11 +797,9 @@ class QuotationController extends Controller
                     'Type'=>$value->Date_type,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'ExpirationDate' => $value->Expirationdate,
                     'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                    'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                     'Operated' => @$value->userOperated->name,
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
@@ -861,11 +889,9 @@ class QuotationController extends Controller
                         'Type'=>$value->Date_type,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'ExpirationDate' => $value->Expirationdate,
                         'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                         'Operated' => @$value->userOperated->name,
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
@@ -955,11 +981,9 @@ class QuotationController extends Controller
                     'Type'=>$value->Date_type,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'ExpirationDate' => $value->Expirationdate,
                     'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                    'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                     'Operated' => @$value->userOperated->name,
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
@@ -1077,11 +1101,9 @@ class QuotationController extends Controller
                         'Type'=>$value->Date_type,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'ExpirationDate' => $value->Expirationdate,
                         'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                         'Operated' => @$value->userOperated->name,
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
@@ -1212,11 +1234,9 @@ class QuotationController extends Controller
                     'Type'=>$value->Date_type,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'ExpirationDate' => $value->Expirationdate,
                     'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                    'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                     'Operated' => @$value->userOperated->name,
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
@@ -1319,11 +1339,9 @@ class QuotationController extends Controller
                         'Type'=>$value->Date_type,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'ExpirationDate' => $value->Expirationdate,
                         'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                         'Operated' => @$value->userOperated->name,
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
@@ -1428,11 +1446,9 @@ class QuotationController extends Controller
                     'Type'=>$value->Date_type,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'ExpirationDate' => $value->Expirationdate,
                     'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                    'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                     'Operated' => @$value->userOperated->name,
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
@@ -1535,11 +1551,9 @@ class QuotationController extends Controller
                         'Type'=>$value->Date_type,
                         'CheckIn' => $value->checkin ? $value->checkin : '-',
                         'CheckOut' => $value->checkout ? $value->checkout : '-',
-                        'ExpirationDate' => $value->Expirationdate,
                         'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                         'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                         'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                        'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                         'Operated' => @$value->userOperated->name,
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
@@ -1644,11 +1658,9 @@ class QuotationController extends Controller
                     'Type'=>$value->Date_type,
                     'CheckIn' => $value->checkin ? $value->checkin : '-',
                     'CheckOut' => $value->checkout ? $value->checkout : '-',
-                    'ExpirationDate' => $value->Expirationdate,
                     'Period' =>'<span class="days-count">' . $daysPassed . '</span> วัน',
                     'DiscountP' => $value->additional_discount == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
                     'DiscountB' => $value->SpecialDiscountBath == 0 ? '-' : '<i class="bi bi-check-lg text-green"></i>',
-                    'Approve' => $value->Confirm_by == 'Auto' || $value->Confirm_by == '-' ? $value->Confirm_by : @$value->userConfirm->name,
                     'Operated' => @$value->userOperated->name,
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
@@ -4746,9 +4758,10 @@ class QuotationController extends Controller
             'data' => $data,
         ]);
     }
-    public function cancel($id){
+    public function cancel(Request $request ,$id){
         $Quotation = Quotation::find($id);
         $Quotation->status_document = 0;
+        $Quotation->remark = $request->note;
         $Quotation->save();
         $data = Quotation::where('id',$id)->first();
         $Quotation_ID = $data->Quotation_ID;
@@ -4758,7 +4771,7 @@ class QuotationController extends Controller
         $save->Company_ID = $Quotation_ID;
         $save->type = 'Cancel';
         $save->Category = 'Cancel :: Proposal';
-        $save->content = 'Cancel Document Proposal ID : '.$Quotation_ID;
+        $save->content = 'Cancel Document Proposal ID : '.$Quotation_ID.'+'.$request->note;
         $save->save();
         return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }

@@ -35,6 +35,7 @@
                                                             <option value="All">ทั้งหมด</option>
                                                             <option value="Nocheckin">No Check in date</option>
                                                             <option value="Checkin">Check in & Check out</option>
+                                                            <option value="Month">Month / Year</option>
                                                             <option value="Company">Company / Individual</option>
                                                         </select>
                                                     </div>
@@ -49,6 +50,36 @@
                                                     <div  id="checkout" class="col-sm-6 col-12" style="display: none">
                                                         <label for="checkin">Check-out Date</label><br>
                                                         <input type="text" name="checkout" id="checkinout" class="form-control" required>
+                                                    </div>
+                                                    <div  id="Month" class="col-lg- col-sm-6" style="display: none">
+                                                        <div class="row">
+                                                            <div class="col-lg-6 col-sm-6 ">
+                                                                <label for="month">เลือกเดือน:</label>
+                                                                <select class="select2" id="month" name="month">
+                                                                    <option value="01">มกราคม</option>
+                                                                    <option value="02">กุมภาพันธ์</option>
+                                                                    <option value="03">มีนาคม</option>
+                                                                    <option value="04">เมษายน</option>
+                                                                    <option value="05">พฤษภาคม</option>
+                                                                    <option value="06">มิถุนายน</option>
+                                                                    <option value="07">กรกฎาคม</option>
+                                                                    <option value="08">สิงหาคม</option>
+                                                                    <option value="09">กันยายน</option>
+                                                                    <option value="10">ตุลาคม</option>
+                                                                    <option value="11">พฤศจิกายน</option>
+                                                                    <option value="12">ธันวาคม</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-lg-6 col-sm-6">
+                                                                <label for="year">เลือกปี:</label>
+                                                                <select class="select2" id="year" name="year">
+                                                                    @for ($i = $oldestYear; $i <= $newestYear ; $i++)
+                                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                                    @endfor
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
                                                     <div id="User"  class="col-sm-6 col-12" style="display: block">
                                                         <label for="User">User</label>
@@ -81,7 +112,7 @@
                                                         <button type="submit" class="btn btn-color-green lift" id="btn-save">ค้นหา</button>
                                                     </div>
                                                 </form>
-                                                
+
                                                 <script>
                                                     $(function() {
                                                         // ฟอร์แมตวันที่ให้อยู่ในรูปแบบ dd/mm/yyyy
@@ -123,6 +154,7 @@
                                                         console.log('Selected filter:', selectedValue);
                                                         const checkinDiv = document.getElementById('checkin');
                                                         const checkoutDiv = document.getElementById('checkout');
+                                                        const Month = document.getElementById('Month');
                                                         const status = document.getElementById('status');
                                                         const User = document.getElementById('User');
                                                         const checkinput = document.getElementById('checkinput');
@@ -135,6 +167,7 @@
                                                             checkoutDiv.style.display = 'none';
                                                             User.style.display = 'none';
                                                             status.style.display = 'none';
+                                                            Month.style.display = 'none';
                                                             checkinput.disabled = true;
                                                             checkinout.disabled = true;
                                                             inputcompanyindividual.disabled = true;
@@ -143,6 +176,7 @@
                                                             checkoutDiv.style.display = 'none';
                                                             User.style.display = 'block';
                                                             status.style.display = 'block';
+                                                            Month.style.display = 'none';
                                                             checkinput.disabled = true;
                                                             checkinout.disabled = true;
                                                             inputcompanyindividual.disabled = true;
@@ -151,6 +185,7 @@
                                                             checkoutDiv.style.display = 'block';
                                                             User.style.display = 'block';
                                                             status.style.display = 'block';
+                                                            Month.style.display = 'none';
                                                             checkinput.disabled = false;
                                                             checkinout.disabled = false;
                                                             inputcompanyindividual.disabled = true;
@@ -159,15 +194,56 @@
                                                             checkoutDiv.style.display = 'none';
                                                             User.style.display = 'none';
                                                             status.style.display = 'none';
+                                                            Month.style.display = 'none';
                                                             checkinput.disabled = true;
                                                             checkinout.disabled = true;
                                                             inputcompany.style.display = 'block';
+                                                        }else if (selectedValue === 'Month') {
+                                                            checkinDiv.style.display = 'none';
+                                                            checkoutDiv.style.display = 'none';
+                                                            User.style.display = 'none';
+                                                            status.style.display = 'none';
+                                                            Month.style.display = 'none';
+                                                            checkinput.disabled = true;
+                                                            checkinout.disabled = true;
+                                                            inputcompany.style.display = 'none';
+                                                            Month.style.display = 'block';
                                                         }
                                                     });
                                                 </script>
                                             </div>
                                         </div><!-- Form Validation -->
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="PrenameModalCenterTitle">หมายเหตุ (Remark)</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="col-12">
+                                        <div class="card-body">
+                                            <form action="{{ url('/Proposal/cancel/') }}" method="GET" enctype="multipart/form-data" class="row g-3 basic-form">
+                                                @csrf
+                                                <textarea name="note" id="not" class="form-control mt-2" cols="30" rows="5" style="resize: none; overflow: hidden;" oninput="autoResize(this)"></textarea>
+                                                <script>
+                                                    function autoResize(textarea) {
+                                                        textarea.style.height = 'auto'; // รีเซ็ตความสูง
+                                                        textarea.style.height = textarea.scrollHeight + 'px'; // กำหนดความสูงตามเนื้อหา
+                                                    }
+                                                </script>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary lift" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-color-green lift" id="btn-save">Save</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div><!-- Form Validation -->
                                 </div>
                             </div>
                         </div>
@@ -239,18 +315,16 @@
                                                 <th class="text-center"data-priority="1">No</th>
                                                 <th class="text-center">Dummy</th>
                                                 <th class="text-center" data-priority="1">Proposal ID</th>
-                                                <th class="text-center" data-priority="1">Company / Individual</th>
+                                                <th class="text-center" data-priority="1">Company</th>
                                                 <th class="text-center">Issue Date</th>
                                                 <th class="text-center">Day Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Period</th>
-                                                <th class="text-center">Add.Dis (%)</th>
-                                                <th class="text-center">Discount (Bath)</th>
-                                                <th class="text-center">Approve  By</th>
-                                                <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document Status</th>
+                                                <th class="text-center">Add.Dis</th>
+                                                <th class="text-center">Spe.Dis</th>
+                                                <th class="text-center">Create By</th>
+                                                <th class="text-center">Status</th>
                                                 <th class="text-center">Action</th>
                                             </tr>
                                         </thead>
@@ -285,7 +359,6 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
@@ -299,13 +372,6 @@
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
-                                                        @endif
-                                                    </td>
-                                                    <td >
-                                                        @if ($item->Confirm_by == 'Auto' || $item->Confirm_by == '-')
-                                                            {{ @$item->Confirm_by}}
-                                                        @else
-                                                            {{ @$item->userConfirm->name }}
                                                         @endif
                                                     </td>
                                                     <td >{{ @$item->userOperated->name }}</td>
@@ -452,13 +518,11 @@
                                                 <th class="text-center">Day Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Period</th>
-                                                <th class="text-center">Add.Dis (%)</th>
-                                                <th class="text-center">Discount (Bath)</th>
-                                                <th class="text-center">Approve  By</th>
-                                                <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document Status</th>
+                                                <th class="text-center">Add.Dis</th>
+                                                <th class="text-center">Spe.Dis</th>
+                                                <th class="text-center">Create By</th>
+                                                <th class="text-center">Status</th>
                                                 <th class="text-center">Action</th>
                                             </tr>
                                         </thead>
@@ -494,7 +558,6 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
@@ -508,13 +571,6 @@
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
-                                                        @endif
-                                                    </td>
-                                                    <td >
-                                                        @if ($item->Confirm_by == 'Auto' || $item->Confirm_by == '-')
-                                                            {{ @$item->Confirm_by}}
-                                                        @else
-                                                            {{ @$item->userConfirm->name }}
                                                         @endif
                                                     </td>
                                                     <td >{{ @$item->userOperated->name }}</td>
@@ -619,13 +675,11 @@
                                                 <th class="text-center">Day Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Period</th>
-                                                <th class="text-center">Add.Dis (%)</th>
-                                                <th class="text-center">Discount (Bath)</th>
-                                                <th class="text-center">Approve  By</th>
-                                                <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document Status</th>
+                                                <th class="text-center">Add.Dis</th>
+                                                <th class="text-center">Spe.Dis</th>
+                                                <th class="text-center">Create By</th>
+                                                <th class="text-center">Status</th>
                                                 <th class="text-center">Action</th>
                                             </tr>
                                         </thead>
@@ -661,7 +715,6 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
@@ -675,13 +728,6 @@
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
-                                                        @endif
-                                                    </td>
-                                                    <td >
-                                                        @if ($item->Confirm_by == 'Auto' || $item->Confirm_by == '-')
-                                                            {{ @$item->Confirm_by}}
-                                                        @else
-                                                            {{ @$item->userConfirm->name }}
                                                         @endif
                                                     </td>
                                                     <td >{{ @$item->userOperated->name }}</td>
@@ -764,13 +810,11 @@
                                                 <th class="text-center">Day Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Period</th>
-                                                <th class="text-center">Add.Dis (%)</th>
-                                                <th class="text-center">Discount (Bath)</th>
-                                                <th class="text-center">Approve  By</th>
-                                                <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document Status</th>
+                                                <th class="text-center">Add.Dis</th>
+                                                <th class="text-center">Spe.Dis</th>
+                                                <th class="text-center">Create By</th>
+                                                <th class="text-center">Status</th>
                                                 <th class="text-center">Action</th>
                                             </tr>
                                         </thead>
@@ -806,7 +850,6 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
@@ -820,13 +863,6 @@
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
-                                                        @endif
-                                                    </td>
-                                                    <td >
-                                                        @if ($item->Confirm_by == 'Auto' || $item->Confirm_by == '-')
-                                                            {{ @$item->Confirm_by}}
-                                                        @else
-                                                            {{ @$item->userConfirm->name }}
                                                         @endif
                                                     </td>
                                                     <td >{{ @$item->userOperated->name }}</td>
@@ -928,13 +964,11 @@
                                                 <th class="text-center">Day Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Period</th>
-                                                <th class="text-center">Add.Dis (%)</th>
-                                                <th class="text-center">Discount (Bath)</th>
-                                                <th class="text-center">Approve  By</th>
-                                                <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document Status</th>
+                                                <th class="text-center">Add.Dis</th>
+                                                <th class="text-center">Spe.Dis</th>
+                                                <th class="text-center">Create By</th>
+                                                <th class="text-center">Status</th>
                                                 <th class="text-center">Action</th>
                                             </tr>
                                         </thead>
@@ -970,7 +1004,6 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td>{{ $item->Expirationdate }}</td>
                                                     <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
@@ -984,13 +1017,6 @@
                                                             -
                                                         @else
                                                             <i class="bi bi-check-lg text-green" ></i>
-                                                        @endif
-                                                    </td>
-                                                    <td >
-                                                        @if ($item->Confirm_by == 'Auto' || $item->Confirm_by == '-')
-                                                            {{ @$item->Confirm_by}}
-                                                        @else
-                                                            {{ @$item->userConfirm->name }}
                                                         @endif
                                                     </td>
                                                     <td >{{ @$item->userOperated->name }}</td>
@@ -1083,13 +1109,11 @@
                                                 <th class="text-center">Day Type</th>
                                                 <th class="text-center">Check In</th>
                                                 <th class="text-center">Check Out</th>
-                                                <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Period</th>
-                                                <th class="text-center">Add.Dis (%)</th>
-                                                <th class="text-center">Discount (Bath)</th>
-                                                <th class="text-center">Approve  By</th>
-                                                <th class="text-center">Operated By</th>
-                                                <th class="text-center">Document Status</th>
+                                                <th class="text-center">Add.Dis</th>
+                                                <th class="text-center">Spe.Dis</th>
+                                                <th class="text-center">Create By</th>
+                                                <th class="text-center">Status</th>
                                                 <th class="text-center">Action</th>
                                             </tr>
                                         </thead>
@@ -1117,7 +1141,7 @@
                                                     @endif
 
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->Expirationdate }}</td>
+                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
                                                     @if ($item->checkin)
                                                     <td style="text-align: center;">{{ $item->checkin}}</td>
                                                     <td style="text-align: center;">{{ $item->checkout}}</td>
@@ -1125,7 +1149,6 @@
                                                     <td style="text-align: center;">-</td>
                                                     <td style="text-align: center;">-</td>
                                                     @endif
-                                                    <td style="text-align: center;">{{$item->Date_type}}</td>
                                                     <td style="text-align: center;"> <span class="days-count"></span> วัน</td>
                                                     <td style="text-align: center;">
                                                         @if ($item->additional_discount == 0)
@@ -1141,13 +1164,7 @@
                                                             <i class="bi bi-check-lg text-green" ></i>
                                                         @endif
                                                     </td>
-                                                    <td >
-                                                        @if ($item->Confirm_by == 'Auto' || $item->Confirm_by == '-')
-                                                            {{ @$item->Confirm_by}}
-                                                        @else
-                                                            {{ @$item->userConfirm->name }}
-                                                        @endif
-                                                    </td>
+
                                                     <td >{{ @$item->userOperated->name }}</td>
                                                     <td style="text-align: center;">
                                                         <span class="badge rounded-pill bg-danger">Cancel</span>
@@ -1346,12 +1363,10 @@
                         { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'ExpirationDate' },
                         { data: 'Period' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
-                        { data: 'Operated' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
                     ],
@@ -1424,12 +1439,10 @@
                         { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'ExpirationDate' },
                         { data: 'Period' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
-                        { data: 'Operated' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
                     ],
@@ -1502,12 +1515,10 @@
                         { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'ExpirationDate' },
                         { data: 'Period' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
-                        { data: 'Operated' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
                     ],
@@ -1580,12 +1591,10 @@
                         { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'ExpirationDate' },
                         { data: 'Period' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
-                        { data: 'Operated' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
                     ],
@@ -1657,12 +1666,10 @@
                         { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'ExpirationDate' },
                         { data: 'Period' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
-                        { data: 'Operated' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
                     ],
@@ -1734,12 +1741,10 @@
                         { data: 'Type' },
                         { data: 'CheckIn' },
                         { data: 'CheckOut' },
-                        { data: 'ExpirationDate' },
                         { data: 'Period' },
                         { data: 'DiscountP' },
                         { data: 'DiscountB' },
                         { data: 'Approve' },
-                        { data: 'Operated' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
                     ],
@@ -1763,7 +1768,10 @@
             dangerMode: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "{{ url('/Proposal/cancel/') }}/" + id;
+                    // อัปเดต URL ของฟอร์มในโมดอล
+                    const form = document.querySelector('#myModal form');
+                    form.action = `{{ url('/Proposal/cancel/') }}/${id}`;
+                    $('#myModal').modal('show'); // เปิดโมดอล
                 }
             });
         }
