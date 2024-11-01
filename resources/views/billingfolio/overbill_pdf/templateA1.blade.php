@@ -201,7 +201,7 @@
 
                             <div  style="text-align: center">
 
-                                <b style="font-size:18px;color:#ffffff;font-weight: bold;">ADDITIONAL</b>
+                                <b style="font-size:18px;color:#ffffff;font-weight: bold;">ADDITIONAL CHARGE</b>
 
                             </div>
 
@@ -486,7 +486,7 @@
 
                             <div  style="text-align: center">
 
-                                <b style="font-size:18px;color:#ffffff;font-weight: bold;">ADDITIONAL</b>
+                                <b style="font-size:18px;color:#ffffff;font-weight: bold;">ADDITIONAL CHARGE</b>
 
                             </div>
 

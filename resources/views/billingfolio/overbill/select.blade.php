@@ -66,7 +66,7 @@
                                         <tr>
                                             <th class="text-center"data-priority="1">No</th>
                                             <th class="text-center" data-priority="1">Proposal ID</th>
-                                            <th class="text-center" data-priority="1">Company / Individual</th>
+                                            <th data-priority="1">Company / Individual</th>
                                             <th class="text-center">Issue Date</th>
                                             <th class="text-center">Day Type</th>
                                             <th class="text-center">Check In</th>
@@ -91,7 +91,7 @@
                                                     <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
                                                 @endif
                                                 <td>{{ $item->issue_date }}</td>
-                                                <td style="text-align: center;">{{$item->Date_type}}</td>
+                                                <td style="text-align: center;">{{$item->Date_type ?? 'No Check in Date'}}</td>
                                                 @if ($item->checkin)
                                                 <td style="text-align: center;">{{ $item->checkin}}</td>
                                                 <td style="text-align: center;">{{ $item->checkout }}</td>
@@ -133,6 +133,15 @@
                                         </div>
                                     </div>
                                 </caption>
+                            </div>
+                            <div class="col-12 row mt-5">
+                                <div class="col-4"></div>
+                                <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
+                                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('BillingFolioOver.index') }}'">
+                                        Back
+                                    </button>
+                                </div>
+                                <div class="col-4"></div>
                             </div>
                         </div>
                     </div>

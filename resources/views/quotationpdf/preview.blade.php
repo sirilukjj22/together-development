@@ -318,8 +318,8 @@
             @endphp
             @for ($i=1;$i<=$page_item;$i++)
                 @php
-                    $num += 10;
-                    $num1 += 11;
+                    $num += 8;
+                    $num1 += 9;
                 @endphp
                 <div class="wrapper-page">
                     <header>
@@ -509,7 +509,7 @@
                                 <th style="text-align:center;font-weight: bold;">AMOUNT</th>
                             </tr>
                             @foreach($productItems as $key => $item)
-                                @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
+                                @if (($key <= $num && $key > $num -8) || $key <= $num && $i == 1)
                                     @foreach ($unit as $singleUnit)
                                         @foreach ($quantity as $singlequantity)
                                             @if($singleUnit->id == $item['product']->unit)
@@ -918,8 +918,8 @@
             @endphp
             @for ($i=1;$i<=$page_item;$i++)
                 @php
-                    $num += 10;
-                    $num1 += 11;
+                    $num += 8;
+                    $num1 += 9;
                 @endphp
                 <div class="wrapper-page">
                     <header>
@@ -1101,7 +1101,7 @@
                                 <th style="text-align:center;font-weight: bold;">AMOUNT</th>
                             </tr>
                             @foreach($productItems as $key => $item)
-                                @if (($key <= $num && $key > $num -10) || $key <= $num && $i == 1)
+                                @if (($key <= $num && $key > $num -8) || $key <= $num && $i == 1)
                                     @foreach ($unit as $singleUnit)
                                         @foreach ($quantity as $singlequantity)
                                             @if($singleUnit->id == $item['product']->unit)

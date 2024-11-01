@@ -1937,7 +1937,7 @@ class QuotationController extends Controller
                 {//QRCODE
                     $id = $datarequest['Proposal_ID'];
                     $protocol = $request->secure() ? 'https' : 'http';
-                    $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+                   $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id";
                     $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
                     $qrCodeBase64 = base64_encode($qrCodeImage);
                 }
@@ -2506,7 +2506,7 @@ class QuotationController extends Controller
                 {//QRCODE
                     $id = $datarequest['Proposal_ID'];
                     $protocol = $request->secure() ? 'https' : 'http';
-                    $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+                   $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id";
                     $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
                     $qrCodeBase64 = base64_encode($qrCodeImage);
                 }
@@ -3098,7 +3098,7 @@ class QuotationController extends Controller
                 {//QRCODE
                     $id = $datarequest['Proposal_ID'];
                     $protocol = $request->secure() ? 'https' : 'http';
-                    $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+                   $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id";
                     $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
                     $qrCodeBase64 = base64_encode($qrCodeImage);
                 }
@@ -3981,7 +3981,7 @@ class QuotationController extends Controller
                 {//QRCODE
                     $id = $datarequest['Proposal_ID'];
                     $protocol = $request->secure() ? 'https' : 'http';
-                    $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+                   $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id";
                     $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
                     $qrCodeBase64 = base64_encode($qrCodeImage);
                 }
@@ -4222,7 +4222,13 @@ class QuotationController extends Controller
                 return redirect()->route('Proposal.index')->with('error', $e->getMessage());
             }
 
-            return redirect()->route('Proposal.viewproposal', ['id' => $Quotationid])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            $check = $request->Add_discount;
+            $Adcheck = $request->DiscountAmount;
+            if ($check || $Adcheck) {
+                return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            }else{
+                return redirect()->route('Proposal.viewproposal', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            }
         }
     }
     //------------------------------ดูข้อมูล------------------
@@ -4916,17 +4922,17 @@ class QuotationController extends Controller
             $page = $pagecount/10;
 
             $page_item = 1;
-            if ($page > 1.1 && $page < 2.1) {
+            if ($page > 0.9 && $page < 1.9) {
                 $page_item += 1;
 
-            } elseif ($page > 1.1) {
-            $page_item = 1 + $page > 1.1 ? ceil($page) : 1;
+            } elseif ($page > 0.9) {
+            $page_item = 1 + $page > 0.9 ? ceil($page) : 1;
             }
         }
         {//QRCODE
             $id = $datarequest['Proposal_ID'];
             $protocol = $request->secure() ? 'https' : 'http';
-            $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+            $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id";
             $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
             $qrCodeBase64 = base64_encode($qrCodeImage);
         }

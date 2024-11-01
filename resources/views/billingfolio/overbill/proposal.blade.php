@@ -240,7 +240,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-8 col-md-12 col-sm-12 image-container">
-                                        <img src="{{ asset('assets2/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
+                                        <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
                                         <div class="info">
                                             <p class="titleh1">{{$settingCompany->name}}</p>
                                             <p>{{$settingCompany->address}}</p>
@@ -258,7 +258,7 @@
                                             <div class="col-lg-4"></div>
                                             <div class="PROPOSAL col-lg-7" style="margin-left: 5px">
                                                 <div class="row">
-                                                    <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">additional</b>
+                                                    <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">ADDITIONAL CHARGE</b>
                                                     <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$Quotation_IDoverbill}}</b>
                                                 </div>
                                                 <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">

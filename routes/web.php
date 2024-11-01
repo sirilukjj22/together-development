@@ -33,6 +33,7 @@ use App\Http\Controllers\UserDepartmentsController;
 use App\Http\Controllers\ReceiveChequeController;
 use App\Http\Controllers\confirmationrequest;
 use App\Http\Controllers\BillingFolioOverbill;
+use App\Http\Controllers\LinkPDFProposal;
 use App\Http\Controllers\ReportAuditRevenueDateController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -56,6 +57,7 @@ Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.pos
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('sms-api-forward', [SMSController::class, 'forward'])->name('sms-api-forward');
+Route::get('/Quotation/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'proposal'])->name('Proposal.link');
 
 Route::middleware(['auth'])->group(function () {
 
@@ -772,7 +774,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/BillingFolio/Proposal/Over/document/PDF/{id}', 'sheetpdf')->name('BillingFolioOver.sheet');
         Route::get('/Document/BillingFolio/Proposal/Over/log/{id}', 'log')->name('BillingFolioOver.log');
         Route::get('/Document/BillingFolio/Proposal/Over/edit/{id}','edit')->name('BillingFolioOver.edit');
-
+        Route::post('/Document/BillingFolio/Proposal/Over/edit/update/{id}', 'update')->name('BillingFolioOver.update');
         Route::post('billingover-proposal-search-table', 'search_table_billingover_proposal');
         Route::post('billingover-proposal-paginate-table', 'paginate_table_billingover_proposal');
         Route::get('/Document/BillingFolio/{Quotation_ID}/addProduct', 'addProduct')->name('BillingFolioOver.addProduct');

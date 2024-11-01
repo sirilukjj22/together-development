@@ -37,7 +37,7 @@
                                                 </div>
                                                 <div class="col-sm-12 col-12">
                                                     <label class="form-label">ชื่อภาษาอังกฤษ</label>
-                                                    <input type="text" class="form-control" id="name_en" name="name_en" maxlength="50">
+                                                    <input type="text" class="form-control" id="name_en"  name="name_en" maxlength="50">
                                                 </div>
 
                                                 <input type="hidden" id="edit_id" name="edit_id" value="">
@@ -315,7 +315,7 @@
                 url:    "{!! url('/Mproduct/quantity/search-list2/"+datakey+"') !!}",
                 datatype:   "JSON",
                 success: function(data) {
-                    if (data.name_th) {
+                    if (data.name_th || data.name_en) {
                         console.log(data.name_th);
                         $('#comment').text("** '" + data.name_th + "' มีอยูในระบบแล้ว !");
                         $('#search_list').text('มีประเภทบริษัทซ้ำกันแล้ว');
@@ -407,22 +407,22 @@
                     datatype:   "JSON",
                     async:  false,
                     success: function(result) {
-                            if (result.data) {
-                                $('#comment').text("** '" + result.data.name_th + "' มีอยูในระบบแล้ว !");
-                                document.getElementById('btn-save').disabled = true;
-                            }else{
-                                if (module_name == "edit") {
-                                    jQuery.ajax({
-                                    type:   "GET",
-                                    url:    "{!! url('/Mcomt/update/"+id+"/"+datakey+"/"+dataEN+"') !!}",
-                                    datatype:   "JSON",
-                                    async:  false,
-                                    success: function(response) {
-                                        location.reload();
-                                        }
-                                    });
-                                }
+                            // if (result.data.name_th && result.data.name_en) {
+                            //     $('#comment').text("** '" + result.data.name_th +" และ "+ result.data.name_en + "' มีอยูในระบบแล้ว !");
+                            //     document.getElementById('btn-save').disabled = true;
+                            // }else{
+                            if (module_name == "edit") {
+                                jQuery.ajax({
+                                type:   "GET",
+                                url:    "{!! url('/Mcomt/update/"+id+"/"+datakey+"/"+dataEN+"') !!}",
+                                datatype:   "JSON",
+                                async:  false,
+                                success: function(response) {
+                                    location.reload();
+                                    }
+                                });
                             }
+                            // }
                         },
                     });
                 }
