@@ -3276,6 +3276,7 @@ class QuotationController extends Controller
                 return redirect()->route('Proposal.edit',['id' => $Quotationid])->with('error', $e->getMessage());
             }
         }else {
+
             $datarequest = [
                 'Proposal_ID' => $data['Quotation_ID'] ?? null,
                 'IssueDate' => $data['IssueDate'] ?? null,
@@ -3382,86 +3383,7 @@ class QuotationController extends Controller
                 }
             }
             try {
-                $save = Quotation::find($id);
-                $save->Quotation_ID = $Quotation_ID;
-                $save->DummyNo = $Quotation_ID;
-                $save->Company_ID = $datarequest['Data_ID'];
-                $save->company_contact = $datarequest['Data_ID'];
-                $save->checkin = $request->Checkin;
-                $save->checkout = $request->Checkout;
-                $save->TotalPax = $request->PaxToTalall;
-                $save->day = $request->Day;
-                $save->night = $request->Night;
-                $save->adult = $request->Adult;
-                $save->children = $request->Children;
-                $save->ComRateCode = $request->Company_Rate_Code;
-                $save->freelanceraiffiliate = $request->Freelancer_member;
-                $save->commissionratecode = $request->Company_Commission_Rate_Code;
-                $save->eventformat = $request->Mevent;
-                $save->vat_type = $request->Mvat;
-                $save->type_Proposal = $datarequest['Selectdata'];
-                $save->issue_date = $request->IssueDate;
-                $save->ComRateCode = $request->Company_Discount;
-                $save->Expirationdate = $request->Expiration;
-                $save->Operated_by = $userid;
-                $save->Refler_ID=$Quotation_ID;
-                $save->comment = $request->comment;
-                if ($Add_discount == 0 && $SpecialDiscountBath == 0) {
-                    $save->SpecialDiscount = $SpecialDiscount;
-                    $save->SpecialDiscountBath = $SpecialDiscountBath;
-                    $save->additional_discount = $Add_discount;
-                    $count = document_invoices::where('Quotation_ID',$Quotation_ID)->count();
-                    if ($count < 1 ) {
-                        $save->status_document = 1;
-                        $save->status_guest = 0;
-                        $save->Confirm_by = 'Auto';
-                    }
-                    $save->correct = $correctup;
-                    $save->save();
-                }else {
-                    $save->SpecialDiscount = $SpecialDiscount;
-                    $save->SpecialDiscountBath = $SpecialDiscountBath;
-                    $save->additional_discount = $Add_discount;
-                    $count = document_invoices::where('Quotation_ID',$Quotation_ID)->count();
-                    if ($count < 1 ) {
-                        $save->status_document = 2;
-                        $save->Confirm_by = '-';
-                        $save->status_guest = 0;
-                    }
-                    $save->correct = $correctup;
-                    $save->save();
-                }
-            } catch (\Throwable $e) {
-                return redirect()->route('Proposal.edit',['id' => $Quotationid])->with('error', $e->getMessage());
-            }
-            try {
-                if ($Products !== null) {
-                    $productold = document_quotation::where('Quotation_ID', $Quotation_ID)->delete();
-                    foreach ($Products as $index => $ProductID) {
-                        $saveProduct = new document_quotation();
-                        $saveProduct->Quotation_ID = $Quotation_ID;
-                        $saveProduct->Company_ID = $datarequest['Data_ID'];
-                        $saveProduct->Product_ID = $ProductID;
-                        $saveProduct->Issue_date = $request->IssueDate;
-                        $paxValue = $pax[$index] ?? 0;
-                        $saveProduct->pax = $paxValue;
-                        $saveProduct->discount =$discounts[$index];
-                        $saveProduct->priceproduct =$priceUnits[$index];
-                        $saveProduct->netpriceproduct =$discountedPrices[$index];
-                        $saveProduct->totaldiscount =$discountedPricestotal[$index];
-                        $saveProduct->ExpirationDate = $request->Expiration;
-                        $saveProduct->freelanceraiffiliate = $request->Freelancer_member;
-                        $saveProduct->Quantity = $quantities[$index];
-                        $saveProduct->Unit = $Unitmain[$index];
-                        $saveProduct->Document_issuer = $userid;
-                        $saveProduct->save();
-                    }
-                }
-            } catch (\Throwable $e) {
-                return redirect()->route('Proposal.edit',['id' => $Quotationid])->with('error', $e->getMessage());
-            }
-            try {
-                $DataProduct = [
+                $DataProductLog = [
                     'Quotation_ID' => $data['Quotation_ID'] ?? null,
                     'issue_date' => $data['IssueDate'] ?? null,
                     'Expirationdate' => $data['Expiration'] ?? null,
@@ -3480,7 +3402,7 @@ class QuotationController extends Controller
                     'day' => $data['Day'] ?? null,
                     'night' => $data['Night'] ?? null,
                 ];
-                $DataProduct['Products'] = $productsArray;
+                $DataProductLog['Products'] = $productsArray;
                 $ProposalData = Quotation::where('id',$id)->first();
                 $ProposalID = $ProposalData->DummyNo;
                 $ProposalProducts = document_quotation::where('Quotation_ID',$ProposalID)->get();
@@ -3493,15 +3415,15 @@ class QuotationController extends Controller
                 $keysToCompare = ['Quotation_ID', 'issue_date', 'Expirationdate', 'type_Proposal','Company_ID', 'company_contact', 'checkin', 'checkout', 'day', 'night', 'adult', 'children', 'comment', 'eventformat', 'vat_type', 'SpecialDiscountBath', 'TotalPax', 'Products'];
                 $differences = [];
                 foreach ($keysToCompare as $key) {
-                    if (isset($dataArray[$key]) && isset($DataProduct[$key])) {
+                    if (isset($dataArray[$key]) && isset($DataProductLog[$key])) {
                         // Check if both values are arrays
-                        if (is_array($dataArray[$key]) && is_array($DataProduct[$key])) {
+                        if (is_array($dataArray[$key]) && is_array($DataProductLog[$key])) {
                             foreach ($dataArray[$key] as $index => $value) {
-                                if (isset($DataProduct[$key][$index])) {
-                                    if ($value != $DataProduct[$key][$index]) {
+                                if (isset($DataProductLog[$key][$index])) {
+                                    if ($value != $DataProductLog[$key][$index]) {
                                         $differences[$key][$index] = [
                                             'dataArray' => $value,
-                                            'request' => $DataProduct[$key][$index]
+                                            'request' => $DataProductLog[$key][$index]
                                         ];
                                     }
                                 } else {
@@ -3512,7 +3434,7 @@ class QuotationController extends Controller
                                 }
                             }
                             // Handle case where $datarequest has extra elements
-                            foreach ($DataProduct[$key] as $index => $value) {
+                            foreach ($DataProductLog[$key] as $index => $value) {
                                 if (!isset($dataArray[$key][$index])) {
                                     $differences[$key][$index] = [
                                         'dataArray' => null,
@@ -3522,10 +3444,10 @@ class QuotationController extends Controller
                             }
                         } else {
                             // Compare non-array values
-                            if ($dataArray[$key] != $DataProduct[$key]) {
+                            if ($dataArray[$key] != $DataProductLog[$key]) {
                                 $differences[$key] = [
                                     'dataArray' => $dataArray[$key],
-                                    'request' => $DataProduct[$key]
+                                    'request' => $DataProductLog[$key]
                                 ];
                             }
                         }
@@ -3535,11 +3457,11 @@ class QuotationController extends Controller
                             'dataArray' => $dataArray[$key],
                             'request' => null
                         ];
-                    } elseif (isset($DataProduct[$key])) {
+                    } elseif (isset($DataProductLog[$key])) {
                         // Handle case where $dataArray does not have the key
                         $differences[$key] = [
                             'dataArray' => null,
-                            'request' => $DataProduct[$key]
+                            'request' => $DataProductLog[$key]
                         ];
                     }
                 }
@@ -3554,7 +3476,7 @@ class QuotationController extends Controller
                 })->unique();
 
                 // ดึงค่าจาก Request Products และแปลงเป็น string
-                $requestProductIds = collect($DataProduct['Products'])->map(function ($item) {
+                $requestProductIds = collect($DataProductLog['Products'])->map(function ($item) {
                     return implode('|', [
                         $item['Product_ID'] ?? '',
                         $item['discount'] ?? '',
@@ -3627,7 +3549,7 @@ class QuotationController extends Controller
                 $ProductsA =  $extractedDataA['Products'] ?? null;
                 $issue_date =  $extractedDataA['issue_date'] ?? null;
                 $Expirationdate =  $extractedDataA['Expirationdate'] ?? null;
-                $Selectdata = $DataProduct['type_Proposal'];
+                $Selectdata = $DataProductLog['type_Proposal'];
                 $fullName = null;
                 $Contact_Name = null;
                 $Name = null;
@@ -3666,13 +3588,13 @@ class QuotationController extends Controller
                         $fullName = $Name.'+'.$Contact_Name;
                     }
                 }
-                $Checkin =null;
+                $CheckinLog =null;
                 if ($checkin || $checkout) {
-                    $Checkin = 'Check in date : '.$checkin;
+                    $CheckinLog = 'Check in date : '.$checkin;
                     if ($checkin&&$checkout) {
-                        $Checkin = 'Check in date : '.$checkin.' '.'Check out date : '.$checkout;
+                        $CheckinLog = 'Check in date : '.$checkin.' '.'Check out date : '.$checkout;
                     }elseif ($checkout) {
-                        $Checkin = 'Check out date : '.$checkout;
+                        $CheckinLog = 'Check out date : '.$checkout;
                     }
                 }
                 $DAY =null;
@@ -3707,9 +3629,9 @@ class QuotationController extends Controller
                     $Mvat = master_document::where('id',$vat_type)->where('status', '1')->where('Category','Mvat')->first();
                     $namevat = 'ประเภท VAT : '.$Mvat->name_th;
                 }
-                $discount = null;
+                $discountlog = null;
                 if ($SpecialDiscountBath) {
-                    $discount = 'ส่วนลด : '.$SpecialDiscountBath;
+                    $discountlog = 'ส่วนลด : '.$SpecialDiscountBath;
                 }
                 $Pax = null;
                 if ($TotalPax) {
@@ -3788,7 +3710,7 @@ class QuotationController extends Controller
                 }
                 $datacompany = '';
 
-                $variables = [$fullName,$issue_date, $Expirationdate, $Checkin, $DAY,$people,$nameevent,$namevat,$discount
+                $variables = [$fullName,$issue_date, $Expirationdate, $CheckinLog, $DAY,$people,$nameevent,$namevat,$discountlog
                             ,$Pax,$Comment];
 
                 // แปลง array ของ $formattedProductData เป็น string เดียวที่มีรายการทั้งหมด
@@ -3806,6 +3728,7 @@ class QuotationController extends Controller
                         $datacompany .= $variable;
                     }
                 }
+
                 $userids = Auth::user()->id;
                 $save = new log_company();
                 $save->Created_by = $userids;
@@ -3817,6 +3740,86 @@ class QuotationController extends Controller
             } catch (\Throwable $e) {
                 return redirect()->route('Proposal.index')->with('error', $e->getMessage());
             }
+            try {
+                $save = Quotation::find($id);
+                $save->Quotation_ID = $Quotation_ID;
+                $save->DummyNo = $Quotation_ID;
+                $save->Company_ID = $datarequest['Data_ID'];
+                $save->company_contact = $datarequest['Data_ID'];
+                $save->checkin = $request->Checkin;
+                $save->checkout = $request->Checkout;
+                $save->TotalPax = $request->PaxToTalall;
+                $save->day = $request->Day;
+                $save->night = $request->Night;
+                $save->adult = $request->Adult;
+                $save->children = $request->Children;
+                $save->ComRateCode = $request->Company_Rate_Code;
+                $save->freelanceraiffiliate = $request->Freelancer_member;
+                $save->commissionratecode = $request->Company_Commission_Rate_Code;
+                $save->eventformat = $request->Mevent;
+                $save->vat_type = $request->Mvat;
+                $save->type_Proposal = $datarequest['Selectdata'];
+                $save->issue_date = $request->IssueDate;
+                $save->ComRateCode = $request->Company_Discount;
+                $save->Expirationdate = $request->Expiration;
+                $save->Operated_by = $userid;
+                $save->Refler_ID=$Quotation_ID;
+                $save->comment = $request->comment;
+                if ($Add_discount == 0 && $SpecialDiscountBath == 0) {
+                    $save->SpecialDiscount = $SpecialDiscount;
+                    $save->SpecialDiscountBath = $SpecialDiscountBath;
+                    $save->additional_discount = $Add_discount;
+                    $count = document_invoices::where('Quotation_ID',$Quotation_ID)->count();
+                    if ($count < 1 ) {
+                        $save->status_document = 1;
+                        $save->status_guest = 0;
+                        $save->Confirm_by = 'Auto';
+                    }
+                    $save->correct = $correctup;
+                    $save->save();
+                }else {
+                    $save->SpecialDiscount = $SpecialDiscount;
+                    $save->SpecialDiscountBath = $SpecialDiscountBath;
+                    $save->additional_discount = $Add_discount;
+                    $count = document_invoices::where('Quotation_ID',$Quotation_ID)->count();
+                    if ($count < 1 ) {
+                        $save->status_document = 2;
+                        $save->Confirm_by = '-';
+                        $save->status_guest = 0;
+                    }
+                    $save->correct = $correctup;
+                    $save->save();
+                }
+            } catch (\Throwable $e) {
+                return redirect()->route('Proposal.edit',['id' => $Quotationid])->with('error', $e->getMessage());
+            }
+            try {
+                if ($Products !== null) {
+                    $productold = document_quotation::where('Quotation_ID', $Quotation_ID)->delete();
+                    foreach ($Products as $index => $ProductID) {
+                        $saveProduct = new document_quotation();
+                        $saveProduct->Quotation_ID = $Quotation_ID;
+                        $saveProduct->Company_ID = $datarequest['Data_ID'];
+                        $saveProduct->Product_ID = $ProductID;
+                        $saveProduct->Issue_date = $request->IssueDate;
+                        $paxValue = $pax[$index] ?? 0;
+                        $saveProduct->pax = $paxValue;
+                        $saveProduct->discount =$discounts[$index];
+                        $saveProduct->priceproduct =$priceUnits[$index];
+                        $saveProduct->netpriceproduct =$discountedPrices[$index];
+                        $saveProduct->totaldiscount =$discountedPricestotal[$index];
+                        $saveProduct->ExpirationDate = $request->Expiration;
+                        $saveProduct->freelanceraiffiliate = $request->Freelancer_member;
+                        $saveProduct->Quantity = $quantities[$index];
+                        $saveProduct->Unit = $Unitmain[$index];
+                        $saveProduct->Document_issuer = $userid;
+                        $saveProduct->save();
+                    }
+                }
+            } catch (\Throwable $e) {
+                return redirect()->route('Proposal.edit',['id' => $Quotationid])->with('error', $e->getMessage());
+            }
+
             try {
                 $datarequest = [
                     'Proposal_ID' => $data['Quotation_ID'] ?? null,
