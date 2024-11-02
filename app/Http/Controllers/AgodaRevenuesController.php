@@ -7,6 +7,7 @@ use App\Models\Revenues;
 use App\Models\SMS_alerts;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AgodaRevenuesController extends Controller
@@ -188,17 +189,72 @@ class AgodaRevenuesController extends Controller
             ]);
     }
 
-    public function status_agoda_receive($status) {
+    public function status_agoda_receive($status, $startDate, $endDate) 
+    {
+        if ($status == 'all' && $startDate == 'startAll') {
+            $agoda_received = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+                ->where('revenue_credit.status', 5)
+                ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
+                    'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
+                    'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue', 'revenue.date')->orderBy('revenue.date', 'asc')
+                ->get();
 
-        $agoda_received = Revenue_credit::where('revenue_credit.status', 5)->where('receive_payment', $status)
-        ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
-        'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
-        'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue')->orderBy('revenue_id', 'asc')->get();
+        } elseif ($status != 'all' && $startDate == 'startAll') {
+            $agoda_received = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+                ->where('revenue_credit.status', 5)->where('receive_payment', $status)
+                ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
+                    'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
+                    'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue', 'revenue.date')->orderBy('revenue.date', 'asc')
+                ->get();
 
-            return response()->json([
-                'data' => $agoda_received,
-                'status' => 200,
-            ]);
+        } elseif ($status != 'all' && $startDate != 'startAll') {
+            $agoda_received = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+                ->where('revenue_credit.status', 5)->where('receive_payment', $status)
+                ->whereBetween('revenue.date', [$startDate, $endDate])
+                ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
+                    'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
+                    'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue', 'revenue.date')->orderBy('revenue.date', 'asc')
+                ->get();
+
+        }  elseif ($status == 'all' && $startDate != 'startAll') {
+            $agoda_received = Revenue_credit::leftjoin('revenue', 'revenue_credit.revenue_id', 'revenue.id')
+                ->where('revenue_credit.status', 5)
+                ->whereBetween('revenue.date', [$startDate, $endDate])
+                ->select('revenue_credit.id', 'revenue_credit.batch', 'revenue_credit.agoda_check_in', 'revenue_credit.agoda_check_out',
+                    'revenue_credit.revenue_type', 'revenue_credit.agoda_charge', 'revenue_credit.receive_payment',
+                    'revenue_credit.agoda_outstanding', 'revenue_credit.sms_revenue', 'revenue.date')->orderBy('revenue.date', 'asc')
+                ->get();
+        }
+
+        $data = [];
+        $total_amount = 0;
+
+        foreach ($agoda_received as $key => $value) {
+
+            if ($value->receive_payment == 1) {
+                $status_name = '<span class="badge bg-success">Paid</span>';
+            } else {
+                $status_name = '<span class="badge bg-danger">Unpaid</span>';
+            }
+
+            $total_amount += $value->agoda_outstanding;
+
+            $data[] = [
+                'id' => $value->id,
+                'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                'batch' => $value->batch,
+                'check_in' => Carbon::parse($value->agoda_check_in)->format('d/m/Y'),
+                'check_out' => Carbon::parse($value->agoda_check_out)->format('d/m/Y'),
+                'agoda_outstanding' => number_format($value->agoda_outstanding, 2),
+                'status' => $status_name
+            ];
+        }
+
+        return response()->json([
+            'data' => $data,
+            'total_amount' => $total_amount,
+            'status' => 200,
+        ]);
     }
 
     public function export()
