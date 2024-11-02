@@ -45,11 +45,7 @@ class QuotationController extends Controller
     public function index()
     {
         $Quotation_IDs = Quotation::query()->pluck('Quotation_ID');
-        $document = document_quotation::whereIn('Quotation_ID', $Quotation_IDs)->get();
-        $document_IDs = $document->pluck('Quotation_ID');
-        $missingQuotationIDs = $Quotation_IDs->diff($document_IDs);
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-        Quotation::whereIn('Quotation_ID', $missingQuotationIDs)->delete();
         $Proposalcount = Quotation::query()->count();
         $Proposal = Quotation::query()->orderBy('created_at', 'desc')->paginate($perPage);
         $Pending = Quotation::query()->whereIn('status_document',[1,3])->where('status_guest',0)->paginate($perPage);
