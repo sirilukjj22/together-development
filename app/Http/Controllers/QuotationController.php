@@ -3806,7 +3806,6 @@ class QuotationController extends Controller
                         $datacompany .= $variable;
                     }
                 }
-
                 $userids = Auth::user()->id;
                 $save = new log_company();
                 $save->Created_by = $userids;
@@ -4239,7 +4238,7 @@ class QuotationController extends Controller
             if ($check || $Adcheck) {
                 return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
             }else{
-                return redirect()->route('Proposal.viewproposal', ['id' => $ids])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
+                return redirect()->route('Proposal.viewproposal', ['id' => $Quotationid])->with('success', 'บันทึกข้อมูลเรียบร้อยแล้ว');
             }
         }
     }
