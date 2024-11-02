@@ -51,9 +51,9 @@
                                                         <label for="checkin">Check-out Date</label><br>
                                                         <input type="text" name="checkout" id="checkinout" class="form-control" required>
                                                     </div>
-                                                    <div  id="Month" class="col-lg- col-sm-6" style="display: none">
+                                                    <div  id="Month" class="col-lg-12 col-sm-12" style="display: none">
                                                         <div class="row">
-                                                            <div class="col-lg-6 col-sm-6 ">
+                                                            <div class="col-lg-6 col-sm-12 ">
                                                                 <label for="month">เลือกเดือน:</label>
                                                                 <select class="select2" id="month" name="month">
                                                                     <option value="01">มกราคม</option>
@@ -70,7 +70,7 @@
                                                                     <option value="12">ธันวาคม</option>
                                                                 </select>
                                                             </div>
-                                                            <div class="col-lg-6 col-sm-6">
+                                                            <div class="col-lg-6 col-sm-12">
                                                                 <label for="year">เลือกปี:</label>
                                                                 <select class="select2" id="year" name="year">
                                                                     @for ($i = $oldestYear; $i <= $newestYear ; $i++)

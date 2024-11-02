@@ -1190,7 +1190,7 @@ class BillingFolioOverbill extends Controller
                 return redirect()->route('BillingFolioOver.edit', ['id' => $Quotation->id])->with('error',$e->getMessage());
             }
         }else{
-            $datarequest = [
+            $DataProductLog = [
                 'Proposal_ID' => $data['Quotation_ID'] ?? null,
                 'Code' => $data['Code'] ?? [],
                 'Amount' => $data['Amount'] ?? [],
@@ -1262,6 +1262,16 @@ class BillingFolioOverbill extends Controller
                     }
                 }
             }
+            $DataProductLog['Products'] = $productsArray;
+            $ProposalData = proposal_overbill::where('id',$id)->first();
+            $ProposalID = $ProposalData->Additional_ID;
+            $ProposalProducts = document_quotation::where('Quotation_ID',$ProposalID)->get();
+            $dataArray = $ProposalData->toArray();
+            $dataArray['Products'] = $ProposalProducts->map(function($item) {
+                // ปรับแต่ง $item ที่ได้จากแต่ละแถว
+                unset($item['id'], $item['created_at'], $item['updated_at'], $item['SpecialDiscount']);
+                return $item;
+            })->toArray();
             dd($datarequest);
             try {
                 //code...
