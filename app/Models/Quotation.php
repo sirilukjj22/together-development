@@ -34,6 +34,10 @@ class Quotation extends Model
     {
         return $this->hasOne(companys::class, 'Profile_ID', 'Company_ID');
     }
+    public function  companytwo()
+    {
+        return $this->hasOne(companys::class, 'Profile_ID', 'Company_ID');
+    }
     public function  contact()
     {
         return $this->hasOne(representative::class, 'Company_ID', 'Company_ID');

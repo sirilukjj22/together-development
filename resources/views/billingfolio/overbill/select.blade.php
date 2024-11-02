@@ -52,7 +52,7 @@
                                 <caption class="caption-top">
                                     <div class="flex-end-g2">
                                         <label class="entriespage-label">entries per page :</label>
-                                        <select class="entriespage-button" id="search-per-page-proposal" onchange="getPagePending(1, this.value, 'proposal')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                        <select class="entriespage-button" id="search-per-page-proposal" onchange="getPageSelect(1, this.value, 'proposal')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
                                             <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>10</option>
                                             <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>25</option>
                                             <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposal" ? 'selected' : '' }}>50</option>
@@ -127,9 +127,9 @@
                                 <input type="hidden" id="currentPage-proposal" value="1">
                                 <caption class="caption-bottom">
                                     <div class="md-flex-bt-i-c">
-                                        <p class="py2" id="proposal-showingEntries">{{ showingEntriesTablePending($Proposal, 'proposal') }}</p>
+                                        <p class="py2" id="proposal-showingEntries">{{ showingEntriesTableSelect($Proposal, 'proposal') }}</p>
                                         <div id="proposal-paginate">
-                                            {!! paginateTablePending($Proposal, 'proposal') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                            {!! paginateTableSelect($Proposal, 'proposal') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                         </div>
                                     </div>
                                 </caption>
@@ -230,8 +230,8 @@
                         count_total = count;
                     }
                     $('#'+id+'-paginate').children().remove().end();
-                    $('#'+id+'-showingEntries').text(showingEntriesSearch(1,count_total, id));
-                    $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
+                    $('#'+id+'-showingEntries').text(showingEntriesSearchSelect(1,count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearchSelect(count_total, id, getUrl));
                 },
                     columnDefs: [
                                 { targets: [0,1,3,4,5,6,7,8,9,10], className: 'dt-center td-content-center' },

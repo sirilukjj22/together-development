@@ -775,6 +775,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/BillingFolio/Proposal/Over/log/{id}', 'log')->name('BillingFolioOver.log');
         Route::get('/Document/BillingFolio/Proposal/Over/edit/{id}','edit')->name('BillingFolioOver.edit');
         Route::post('/Document/BillingFolio/Proposal/Over/edit/update/{id}', 'update')->name('BillingFolioOver.update');
+        Route::get('/Document/BillingFolio/Proposal/Over/view/{id}','view')->name('BillingFolioOver.view');
         Route::post('billingover-proposal-search-table', 'search_table_billingover_proposal');
         Route::post('billingover-proposal-paginate-table', 'paginate_table_billingover_proposal');
         Route::get('/Document/BillingFolio/{Quotation_ID}/addProduct', 'addProduct')->name('BillingFolioOver.addProduct');
@@ -782,7 +783,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/BillingFolio/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('BillingFolioOver.addProducttablecreatemain');
         Route::post('billingover-search-table', 'search_table_billingover');
         Route::post('billingover-paginate-table', 'paginate_table_billingover');
+
+        Route::post('billingover-pending-search-table', 'search_table_billingover_pending');
+        Route::post('billingover-pending-paginate-table', 'paginate_table_billingover_pending');
     });
+
 
     Route::controller(ReceiveChequeController::class)->middleware('role:document')->group(function () {
         Route::get('/Document/ReceiveCheque/index', 'index')->name('ReceiveCheque.index');
