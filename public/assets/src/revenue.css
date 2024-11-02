@@ -1295,9 +1295,9 @@ td {
   cursor: pointer;
   position: absolute;
   right: 1em;
-  top: 15%;
-  border-radius: 50%;
-  scale: 1.1;
+  top: 50%;
+  transform: translateY(-50%);
+  scale: 1.2;
 }
 
 #hotelManualCharge {

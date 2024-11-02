@@ -537,7 +537,7 @@
                             <div class="sub d-grid-r">
                                 <div class="sub-content">
                                     <div class="box-card3 bg-box" style="min-height: 92%;display: flex;justify-content: center;">
-                                        <p class="t-center">{{ number_format(isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? ($monthly_revenue / 12) : $monthly_revenue, 2) }} <span> / Month</span>
+                                        <p class="t-center">{{ number_format(isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? ($monthly_revenue / Carbon\Carbon::now()->format('n')) : $monthly_revenue, 2) }} <span> / Month</span>
                                         </p>
                                     </div>
                                 </div>
@@ -843,8 +843,8 @@
                                     {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $total_cash_bank_today + $today_other_revenue : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="t-end m-t-d">{{ number_format($total_cash_bank_month, 2) }}</td>
-                            <td class="t-end padding-x-2 y-t-d">{{ number_format($total_cash_bank_year, 2) }}</td>
+                            <td class="t-end m-t-d">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $total_cash_bank_month : 0, 2) }}</td>
+                            <td class="t-end padding-x-2 y-t-d">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $total_cash_bank_year : 0, 2) }}</td>
                         </tr>
                         <?php
                         
@@ -863,8 +863,8 @@
                                     {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $total_credit_card_revenue : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="t-end m-t-d">{{ number_format($total_credit_card_revenue_month, 2) }}</td>
-                            <td class="t-end padding-x-2 y-t-d">{{ number_format($total_credit_card_revenue_year, 2) }}</td>
+                            <td class="t-end m-t-d">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "month" || isset($filter_by) && $filter_by == "thisMonth" ? $total_credit_card_revenue_month : 0, 2) }}</td>
+                            <td class="t-end padding-x-2 y-t-d">{{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? $total_credit_card_revenue_year : 0, 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
                             <td class="t-end f-semi">Credit Card Fee</td>
@@ -933,7 +933,7 @@
                             <td class="t-end padding-x-2 y-t-d">{{ number_format($agoda_charge[0]['fee_year'], 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-green-middle">
-                            <td class="padding-l-2">Agoda Revenue Outstanding </td>
+                            <td class="padding-l-2">Total Agoda Revenue</td>
                             <td class="t-end to-day">
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($agoda_charge[0]['total'], 2) }}
@@ -945,7 +945,7 @@
                             <td class="t-end padding-x-2 y-t-d">{{ number_format($agoda_charge[0]['total_year'], 2) }}</td>
                         </tr>
                         <tr class="table-row-n">
-                            <td class="padding-l-2">Agoda Revenue</td>
+                            <td class="padding-l-2">Agoda Paid</td>
                             <td class="t-end to-day">
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($total_agoda_revenue, 2) }}
@@ -958,20 +958,20 @@
                         </tr>
                         <tr class="table-row-n">
                             <td class="padding-l-2"> Total Agoda Revenue Outstanding </td>
-                            <td class="t-end to-day text-danger">
+                            <td class="t-end to-day">
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($agoda_charge[0]['total'], 2) }}
                                 @else
                                     {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $agoda_charge[0]['total_today'] : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="t-end m-t-d text-danger">{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
-                            <td class="t-end padding-x-2 y-t-d text-danger">{{ number_format(($agoda_charge[0]['total_year'] - $total_agoda_year), 2) }}</td>
+                            <td class="t-end m-t-d">{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
+                            <td class="t-end padding-x-2 y-t-d">{{ number_format(($agoda_charge[0]['total_year'] - $total_agoda_year), 2) }}</td>
                         </tr>
                         <tr class="table-row-bg">
                             <td colspan="4" class="padding-l-2"></td>
                         </tr>
-                        <tr class="table-row-n bg-green-middle">
+                        <tr class="table-row-n" style="background-color: rgba(102, 205, 190, 0.897);">
                             <td class="t-end f-semi">Total Hotel Revenue</td>
                             <td class="t-end to-day">
                                 @if (isset($filter_by) && $filter_by == "week")
@@ -1077,7 +1077,10 @@
                             <td class="t-end m-t-d">{{ number_format($total_wp_charge_month, 2) }}</td>
                             <td class="t-end padding-x-2 y-t-d">{{ number_format($total_wp_charge_year, 2) }}</td>
                         </tr>
-                        <tr class="table-row-n bg-green-middle">
+                        <tr class="table-row-bg">
+                            <td colspan="4" class="padding-l-2"></td>
+                        </tr>
+                        <tr class="table-row-n" style="background-color: rgba(102, 205, 190, 0.897);">
                             <td class="t-end f-semi">Total Water Park Revenue</td>
                             <td class="t-end to-day">
                                 @if (isset($filter_by) && $filter_by == "week")
@@ -1117,8 +1120,11 @@
                             <td class="t-end m-t-d">{{ number_format($ev_charge[0]['fee_month'], 2) }}</td>
                             <td class="t-end padding-x-2 y-t-d">{{ number_format($ev_charge[0]['fee_year'], 2) }}</td>
                         </tr>
-                        <tr class="table-row-n bg-green-middle">
-                            <td class="padding-l-2">Elexa EGAT Revenue Outstanding</td>
+                        <tr class="table-row-bg">
+                            <td colspan="4" class="padding-l-2"></td>
+                        </tr>
+                        <tr class="table-row-n" style="background-color: rgba(102, 205, 190, 0.897);">
+                            <td class="padding-l-2">Total Elexa EGAT Revenue</td>
                             <td class="t-end to-day">
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($ev_charge[0]['total'], 2) }}
@@ -1129,8 +1135,11 @@
                             <td class="t-end m-t-d">{{ number_format($ev_charge[0]['total_month'], 2) }}</td>
                             <td class="t-end padding-x-2 y-t-d">{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
                         </tr>
+                        <tr class="table-row-bg">
+                            <td colspan="4" class="padding-l-2"></td>
+                        </tr>
                         <tr class="table-row-n" style="background-color: white;">
-                            <td class="padding-l-2">Elexa EGAT Revenue</td>
+                            <td class="padding-l-2">Elexa EGAT Paid</td>
                             <td class="t-end to-day">
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($total_ev_revenue, 2) }}
@@ -1143,15 +1152,15 @@
                         </tr>
                         <tr class="table-row-n" style="background-color: white;">
                             <td class="padding-l-2">Total Elexa EGAT Revenue Outstanding</td>
-                            <td class="t-end to-day text-danger">
+                            <td class="t-end to-day">
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($total_ev_revenue, 2) }}
                                 @else
                                     {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_ev_revenue : 0, 2) }}
                                 @endif
                             </td>
-                            <td class="t-end m-t-d text-danger">{{ number_format($total_ev_month, 2) }}</td>
-                            <td class="t-end padding-x-2 y-t-d text-danger">{{ number_format($ev_charge[0]['total_year'] - $total_ev_year, 2) }}</td>
+                            <td class="t-end m-t-d">{{ number_format($total_ev_month, 2) }}</td>
+                            <td class="t-end padding-x-2 y-t-d">{{ number_format($ev_charge[0]['total_year'] - $total_ev_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-bg">
                             <td colspan="4" class="padding-l-2"></td>
@@ -1169,11 +1178,11 @@
                                 {{ number_format($total_cash_bank_month + $total_charge_month + ($total_wp_cash_bank_month + $total_wp_charge_month) + $agoda_charge[0]['total_month'] + $ev_charge[0]['total_month'], 2) }}
                             </td>
                             <td class="t-end padding-x-2 y-t-d">
-                                {{ number_format($total_cash_bank_year + $total_charge_year + ($total_wp_cash_bank_year + $total_wp_charge_year) + ($agoda_charge[0]['total_year'] - $total_agoda_year) + ($ev_charge[0]['total_year'] - $total_ev_year), 2) }}
+                                {{ number_format($total_cash_bank_year + $total_charge_year + ($total_wp_cash_bank_year + $total_wp_charge_year) + $agoda_charge[0]['total_year'] + $ev_charge[0]['total_year'], 2) }}
                             </td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
-                            <td class="pl-2 text-end f-semi"> Credit Agoda Revenue Outstanding</td>
+                            <td class="pl-2 text-end f-semi">Total Agoda Revenue</td>
                             <td class="t-end to-day">
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($agoda_charge[0]['total'], 2) }}
@@ -1182,22 +1191,10 @@
                                 @endif
                             </td>
                             <td class="t-end m-t-d">{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
-                            <td class="t-end padding-x-2 y-t-d">{{ number_format(($agoda_charge[0]['total_year'] - $total_agoda_year), 2) }}</td>
+                            <td class="t-end padding-x-2 y-t-d">{{ number_format($agoda_charge[0]['total_year'], 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
-                            <td class="pl-2 text-end f-semi"> Elexa EGAT Revenue Outstanding</td>
-                            <td class="t-end to-day">
-                                @if (isset($filter_by) && $filter_by == "week")
-                                    {{ number_format($ev_charge[0]['total'], 2) }}
-                                @else
-                                    {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $ev_charge[0]['total_today'] : 0, 2) }}
-                                @endif
-                            </td>
-                            <td class="t-end m-t-d">{{ number_format(($ev_charge[0]['total_month']), 2) }}</td>
-                            <td class="t-end padding-x-2 y-t-d">{{ number_format(($ev_charge[0]['total_year'] - $total_ev_year), 2) }}</td>
-                        </tr>
-                        <tr class="table-row-n bg-sky-200/60">
-                            <td class="pl-2 text-end f-semi">Agoda Revenue</td>
+                            <td class="pl-2 text-end f-semi">Agoda Paid</td>
                             <td class="t-end to-day">
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($total_agoda_revenue, 2) }}
@@ -1209,7 +1206,31 @@
                             <td class="t-end padding-x-2 y-t-d">{{ number_format($total_agoda_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
-                            <td class="pl-2 text-end f-semi">Elexa EGAT Revenue</td>
+                            <td class="pl-2 text-end f-semi">Total Agoda Revenue Outstanding</td>
+                            <td class="t-end to-day text-danger">
+                                @if (isset($filter_by) && $filter_by == "week")
+                                    {{ number_format($agoda_charge[0]['total'], 2) }}
+                                @else
+                                    {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $agoda_charge[0]['total_today'] : 0, 2) }}
+                                @endif
+                            </td>
+                            <td class="t-end m-t-d text-danger">{{ number_format($agoda_charge[0]['total_month'], 2) }}</td>
+                            <td class="t-end padding-x-2 y-t-d text-danger">{{ number_format(($agoda_charge[0]['total_year'] - $total_agoda_year), 2) }}</td>
+                        </tr>
+                        <tr class="table-row-n bg-sky-200/60">
+                            <td class="pl-2 text-end f-semi">Total Elexa EGAT Revenue</td>
+                            <td class="t-end to-day">
+                                @if (isset($filter_by) && $filter_by == "week")
+                                    {{ number_format($ev_charge[0]['total'], 2) }}
+                                @else
+                                    {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $ev_charge[0]['total_today'] : 0, 2) }}
+                                @endif
+                            </td>
+                            <td class="t-end m-t-d">{{ number_format(($ev_charge[0]['total_month']), 2) }}</td>
+                            <td class="t-end padding-x-2 y-t-d">{{ number_format($ev_charge[0]['total_year'], 2) }}</td>
+                        </tr>
+                        <tr class="table-row-n bg-sky-200/60">
+                            <td class="pl-2 text-end f-semi">Elexa EGAT Paid</td>
                             <td class="t-end to-day">
                                 @if (isset($filter_by) && $filter_by == "week")
                                     {{ number_format($total_ev_revenue, 2) }}
@@ -1219,6 +1240,18 @@
                             </td>
                             <td class="t-end m-t-d">{{ number_format($total_ev_month, 2) }}</td>
                             <td class="t-end padding-x-2 y-t-d">{{ number_format($total_ev_year, 2) }}</td>
+                        </tr>
+                        <tr class="table-row-n bg-sky-200/60">
+                            <td class="pl-2 text-end f-semi">Total Elexa EGAT Revenue Outstanding</td>
+                            <td class="t-end to-day text-danger">
+                                @if (isset($filter_by) && $filter_by == "week")
+                                    {{ number_format($total_ev_revenue, 2) }}
+                                @else
+                                    {{ number_format(isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "thisMonth" || isset($filter_by) && $filter_by == "thisYear" || !isset($filter_by) ? $today_ev_revenue : 0, 2) }}
+                                @endif
+                            </td>
+                            <td class="t-end m-t-d text-danger">{{ number_format($total_ev_month, 2) }}</td>
+                            <td class="t-end padding-x-2 y-t-d text-danger">{{ number_format($ev_charge[0]['total_year'] - $total_ev_year, 2) }}</td>
                         </tr>
                         <tr class="table-row-n bg-sky-200/60">
                             <td class="pl-2 text-end f-semi">Total Revenue</td>
