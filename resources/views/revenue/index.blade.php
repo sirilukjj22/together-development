@@ -537,7 +537,7 @@
                             <div class="sub d-grid-r">
                                 <div class="sub-content">
                                     <div class="box-card3 bg-box" style="min-height: 92%;display: flex;justify-content: center;">
-                                        <p class="t-center">{{ number_format($monthly_revenue, 2) }} <span> / Month</span>
+                                        <p class="t-center">{{ number_format(isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? ($monthly_revenue / 12) : $monthly_revenue, 2) }} <span> / Month</span>
                                         </p>
                                     </div>
                                 </div>
@@ -545,12 +545,12 @@
                         </div>
                         <div class="box-content">
                             <div class="header">
-                                <div>Daily Avg. Revenue</div>
+                                <div>Daily Avg. Revenue {{ Carbon\Carbon::now()->endOfYear()->dayOfYear }}</div>
                             </div>
                             <div class="sub d-grid-r">
                                 <div class="sub-content">
                                     <div class="box-card3 bg-box" style="min-height: 92%;display: flex;justify-content: center;">
-                                        <p>{{ number_format($monthly_revenue / $day_sum, 2) }} <span> / Day</span>
+                                        <p>{{ number_format(isset($filter_by) && $filter_by == "year" || isset($filter_by) && $filter_by == "thisYear" ? ($monthly_revenue / Carbon\Carbon::now()->endOfYear()->dayOfYear) : ($monthly_revenue / $day_sum), 2) }} <span> / Day</span>
                                         </p>
                                     </div>
                                 </div>
