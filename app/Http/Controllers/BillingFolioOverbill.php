@@ -1192,7 +1192,8 @@ class BillingFolioOverbill extends Controller
         }else{
             $datarequest = [
                 'Proposal_ID' => $data['Quotation_ID'] ?? null,
-                'Code' => $data['Code'] ?? $data['CheckProduct'],
+                'Code' => $data['Code'] ?? null ,
+                'CheckProduct' => $data['CheckProduct'] ?? null ,
                 'Amount' => $data['Amount'] ?? [],
                 'IssueDate' => $Quotation['issue_date'] ?? null,
                 'Expiration' => $Quotation['Expirationdate'] ?? null,
@@ -1210,7 +1211,21 @@ class BillingFolioOverbill extends Controller
                 'Night' => $Quotation['night'] ?? null,
             ];
             {   //จัด product
-                $Code = $datarequest['Code'] ?? $datarequest['CheckProduct'];
+                $Products = $datarequest['Code'];
+                $Productslast = $datarequest['CheckProduct'];
+                if (is_array($Products) && is_array($Productslast)) {
+                    $commonValues = array_intersect($Products, $Productslast);
+                    if (!empty($commonValues)) {
+                        $diffFromProducts = array_diff($Products, $Productslast);
+                        $diffFromProductslast = array_diff($Productslast, $Products);
+                        $Code = array_merge($commonValues,$diffFromProducts,$diffFromProductslast);
+                    } else {
+                        $Code = array_merge($Productslast,$Products);
+                    }
+
+                }else{
+                    $Code = $Productslast;
+                }
                 $Amount = $datarequest['Amount'];
                 $productItems = [];
                 if (count($Code) === count($Amount)) {
@@ -1239,6 +1254,7 @@ class BillingFolioOverbill extends Controller
                     }
                     $productData['Product'] = $productDataSave; // Assign the whole array once after the loop
                 }
+
                 {//คำนวน
                     $totalAmount = 0;
                     $totalPrice = 0;
@@ -1264,77 +1280,138 @@ class BillingFolioOverbill extends Controller
                     }
                 }
             }
-            $ProposalData = proposal_overbill::where('id', $id)->first();
-            $ProposalID = $ProposalData->Additional_ID;
+            try {
+                $ProposalData = proposal_overbill::where('id', $id)->first();
+                $ProposalID = $ProposalData->Additional_ID;
 
-            // Retrieve and filter proposal products
-            $ProposalProducts = document_proposal_overbill::where('Additional_ID', $ProposalID)->get();
-            $dataArray['Product'] = $ProposalProducts->map(function ($item) {
-                // Remove unnecessary fields from each item
-                return Arr::only($item->toArray(), ['Code', 'Detail', 'Amount']);
-            })->toArray();
-            $productData['Product'] = $productData['Product'] ?? [];
-            $keysToCompare = ['Product'];
-            $differences = [];
-            foreach ($keysToCompare as $key) {
-                if (is_array($dataArray[$key]) && is_array($productData[$key])) {
-                    foreach ($dataArray[$key] as $index => $value) {
-                        if (isset($productData[$key][$index])) {
-                            if ($value != $productData[$key][$index]) {
+                // Retrieve and filter proposal products
+                $ProposalProducts = document_proposal_overbill::where('Additional_ID', $ProposalID)->get();
+                $dataArray['Product'] = $ProposalProducts->map(function ($item) {
+                    // Remove unnecessary fields from each item
+                    return Arr::only($item->toArray(), ['Code', 'Detail', 'Amount']);
+                })->toArray();
+
+                $productData['Product'] = $productData['Product'] ?? [];
+                $keysToCompare = ['Product'];
+                $differences = [];
+
+                foreach ($keysToCompare as $key) {
+                    if (is_array($dataArray[$key]) && is_array($productData[$key])) {
+                        foreach ($dataArray[$key] as $index => $value) {
+                            if (isset($productData[$key][$index])) {
+                                if ($value != $productData[$key][$index]) {
+                                    $differences[$key][$index] = [
+                                        'dataArray' => $value,
+                                        'request' => $productData[$key][$index]
+                                    ];
+                                }
+                            } else {
                                 $differences[$key][$index] = [
                                     'dataArray' => $value,
-                                    'request' => $productData[$key][$index]
+                                    'request' => null
                                 ];
                             }
-                        } else {
-                            $differences[$key][$index] = [
-                                'dataArray' => $value,
-                                'request' => null
-                            ];
                         }
-                    }
-                    // Handle case where $datarequest has extra elements
-                    foreach ($productData[$key] as $index => $value) {
-                        if (!isset($dataArray[$key][$index])) {
-                            $differences[$key][$index] = [
-                                'dataArray' => null,
-                                'request' => $value
-                            ];
+                        // Handle case where $productData has extra elements
+                        foreach ($productData[$key] as $index => $value) {
+                            if (!isset($dataArray[$key][$index])) {
+                                $differences[$key][$index] = [
+                                    'dataArray' => null,
+                                    'request' => $value
+                                ];
+                            }
                         }
+                    } elseif (isset($dataArray[$key])) {
+                        $differences[$key] = [
+                            'dataArray' => $dataArray[$key],
+                            'request' => null
+                        ];
+                    } elseif (isset($productData[$key])) {
+                        $differences[$key] = [
+                            'dataArray' => null,
+                            'request' => $productData[$key]
+                        ];
                     }
-                } elseif (isset($dataArray[$key])) {
-                    // Handle case where $datarequest does not have the key
-                    $differences[$key] = [
-                        'dataArray' => $dataArray[$key],
-                        'request' => null
-                    ];
-                } elseif (isset($productData[$key])) {
-                    // Handle case where $dataArray does not have the key
-                    $differences[$key] = [
-                        'dataArray' => null,
-                        'request' => $DataProductLog[$key]
-                    ];
                 }
+
+                // แยกข้อมูลที่ไม่ซ้ำกันในแต่ละ array
                 $onlyInDataArray = [];
                 $onlyInRequest = [];
 
-                // สร้างเฉพาะข้อมูลที่มีเฉพาะใน dataArray หรือ request
-                foreach ($differences as $key => $value) {
-                    if ($key === 'Products') {
-                        $onlyInDataArray = array_filter($dataArray['Products'], function ($item) use ($productData) {
-                            return !in_array($item, $productData['Products']);
-                        });
+                if (isset($differences['Product'])) {
+                    $onlyInDataArray = array_filter($dataArray['Product'], function ($item) use ($productData) {
+                        return !in_array($item, $productData['Product']);
+                    });
 
-                        $onlyInRequest = array_filter($productData['Products'], function ($item) use ($dataArray) {
-                            return !in_array($item, $dataArray['Products']);
-                        });
+                    $onlyInRequest = array_filter($productData['Product'], function ($item) use ($dataArray) {
+                        return !in_array($item, $dataArray['Product']);
+                    });
+                }
+                $extractedData = [];
+                $extractedDataA = [];
+                foreach ($differences as $key => $value) {
+                    if ($key === 'Product') {
+                        // ถ้าเป็น Products ให้เก็บค่า request และ dataArray ที่แตกต่างกัน
+                        $extractedData[$key] = $onlyInDataArray; // ใช้ข้อมูลจาก $onlyInDataArray (ลบ)
+                        $extractedDataA[$key] = $onlyInRequest;  // ใช้ข้อมูลจาก $onlyInRequest (เพิ่ม)
                     }
                 }
-            }
+                $Products =  $extractedData['Product'] ?? null;
+                $ProductsA =  $extractedDataA['Product'] ?? null;
+                $formattedProductData = [];
+                $formattedProductDataA = [];
+                if ($Products) {
+                    $productDelete = [];
+                    foreach ($Products as $product) {
+                        $productDelete[] = [
+                            'Code' => $product['Code'],
+                            'Detail' => $product['Detail'],
+                            'Amount' => $product['Amount'],
+                        ];
+                    }
+                    // จัดรูปแบบข้อมูลของผลิตภัณฑ์
+                    foreach ($productDelete as $product) {
+                        $formattedProductData[] = 'ลบรายการ' . '+ ' . 'Code : ' . $product['Code'] . ' , ' . 'Detail : ' . $product['Detail'] . ' , ' . 'Amount : ' . $product['Amount'];
+                    }
+                }
+                if ($ProductsA) {
+                    $productIncrease  = [];
+                    foreach ($ProductsA as $product) {
+                        $productIncrease[] = [
+                            'Code' => $product['Code'],
+                            'Detail' => $product['Detail'],
+                            'Amount' => $product['Amount'],
+                        ];
 
-            dd($onlyInDataArray, $onlyInRequest,$differences);
-            try {
-                //code...
+                    }
+
+                    // จัดรูปแบบข้อมูลของผลิตภัณฑ์
+                    foreach ($productIncrease as $product) {
+                        $formattedProductDataA[] = 'เพิ่มรายการ' . '+ ' . 'Code : ' . $product['Code'] . ' , ' . 'Detail : ' . $product['Detail'] . ' , ' . 'Amount : ' . $product['Amount'];
+                    }
+                }
+
+                $Additional = 'Additional ID : '.$Additional_ID;
+                $com = 'รายการ';
+                $datacompany = '';
+
+                $variables = [$Additional,$com];
+                // แปลง array ของ $formattedProductData เป็น string เดียวที่มีรายการทั้งหมด
+                $formattedProductDataString = implode(' + ', $formattedProductData);
+                $formattedProductDataStringA = implode(' + ', $formattedProductDataA);
+
+                // รวม $formattedProductDataString เข้าไปใน $variables
+                $variables[] = $formattedProductDataString;
+                $variables[] = $formattedProductDataStringA;
+                foreach ($variables as $variable) {
+                    if (!empty($variable)) {
+                        if (!empty($datacompany)) {
+                            $datacompany .= ' + ';
+                        }
+                        $datacompany .= $variable;
+                    }
+                }
+                dd($datacompany);
             } catch (\Throwable $e) {
                 //throw $th;
             }

@@ -84,21 +84,15 @@
                                                     <div id="User"  class="col-sm-6 col-12" style="display: block">
                                                         <label for="User">User</label>
                                                         <select name="User" class="form-select">
-                                                            @if ( Auth::user()->permission == 0)
-                                                                @foreach($User as $item)
-                                                                    <option value="{{ $item->id }}">{{ @$item->name}}</option>
-                                                                @endforeach
-                                                            @else
-                                                                <option value="" selected disabled>ชื่อผู้ใช้งาน</option>
-                                                                @foreach($User as $item)
-                                                                    <option value="{{ $item->id }}">{{ @$item->name}}</option>
-                                                                @endforeach
-                                                            @endif
+                                                            <option value="" selected disabled>ชื่อผู้ใช้งาน</option>
+                                                            @foreach($User as $item)
+                                                                <option value="{{ $item->id }}">{{ @$item->name}}</option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                     <div id="status" class="col-sm-6 col-12"style="display: block">
                                                         <label for="Status">Status</label>
-                                                        <select name="status"  class="form-select">
+                                                        <select name="status"  class="form-select" >
                                                             <option value=" "selected disabled>สถานะเอกสาร</option>
                                                             <option value="1">Pending</option>
                                                             <option value="2">Awaiting Approval</option>
@@ -161,7 +155,9 @@
                                                         const checkinout = document.getElementById('checkinout');
                                                         const inputcompany = document.getElementById('inputcompany');
                                                         const inputcompanyindividual = document.getElementById('inputcompanyindividual');
-
+                                                        inputcompanyindividual.disabled = true;
+                                                        checkinput.disabled = true;
+                                                        checkinout.disabled = true;
                                                         if (selectedValue === 'All') {
                                                             checkinDiv.style.display = 'none';
                                                             checkoutDiv.style.display = 'none';
@@ -209,7 +205,27 @@
                                                             inputcompany.style.display = 'none';
                                                             Month.style.display = 'block';
                                                             inputcompanyindividual.disabled = true;
+                                                        }else{
+                                                            console.log(1);
+
+                                                            checkinDiv.style.display = 'none';
+                                                            checkoutDiv.style.display = 'none';
+                                                            User.style.display = 'none';
+                                                            status.style.display = 'none';
+                                                            Month.style.display = 'none';
+                                                            checkinput.disabled = true;
+                                                            checkinout.disabled = true;
+                                                            inputcompany.style.display = 'none';
+                                                            inputcompanyindividual.disabled = true;
                                                         }
+                                                    });
+                                                    $(document).ready(function() {
+                                                        const inputcompanyindividual = document.getElementById('inputcompanyindividual');
+                                                        const checkinput = document.getElementById('checkinput');
+                                                        const checkinout = document.getElementById('checkinout');
+                                                        checkinput.disabled = true;
+                                                        checkinout.disabled = true;
+                                                        inputcompanyindividual.disabled = true;
                                                     });
                                                 </script>
                                             </div>
