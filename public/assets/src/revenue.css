@@ -603,7 +603,7 @@ a:visited {
   }
 }
 
-tbody tr:nth-child(n + 41) {
+.table-2 tbody tr:nth-child(n + 43) {
   /* color: white; */
   background-color: rgba(102, 205, 190, 0.897);
 }

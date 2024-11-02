@@ -160,7 +160,7 @@
                                 <tr id="tr_row_{{ $item->id }}">
                                     <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                     <td>{{ $item->batch }}</td>
-                                    <td>{{ number_format($item->ev_charge, 2) }}</td>
+                                    <td>{{ number_format($item->ev_revenue, 2) }}</td>
                                     <td>
                                         @if ($item->receive_payment == 0)
                                             <span class="badge bg-danger">Unpaid</span>
@@ -169,7 +169,7 @@
                                         @endif    
                                     </td>
                                 </tr>
-                                <?php $total += $item->ev_charge; ?>
+                                <?php $total += $item->ev_revenue; ?>
                             @endforeach
                         </tbody>
                         <tfoot>
@@ -206,7 +206,7 @@
                                 <tr id="tr_row_{{ $item->id }}">
                                     <td>{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
                                     <td>{{ $item->batch }}</td>
-                                    <td>{{ number_format($item->ev_charge, 2) }}</td>
+                                    <td>{{ number_format($item->ev_revenue, 2) }}</td>
                                     <td>
                                         @if ($item->receive_payment == 0)
                                             <span class="badge bg-danger">Unpaid</span>
@@ -215,7 +215,7 @@
                                         @endif    
                                     </td>
                                 </tr>
-                                <?php $total_debit += $item->ev_charge; ?>
+                                <?php $total_debit += $item->ev_revenue; ?>
                                 @endif
                             @endforeach
                         </tbody>

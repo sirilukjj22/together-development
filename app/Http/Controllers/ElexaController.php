@@ -25,9 +25,9 @@ class ElexaController extends Controller
             $elexa_debit_outstanding = 0;
             foreach ($elexa_outstanding as $key => $value) {
                 if ($value->receive_payment == 1) {
-                    $elexa_debit_outstanding += $value->ev_charge;
+                    $elexa_debit_outstanding += $value->ev_revenue;
                 }
-                $total_outstanding_all += $value->ev_charge;
+                $total_outstanding_all += $value->ev_revenue;
             }
 
         $title = "Elexa";
