@@ -984,7 +984,7 @@
                                 {{ number_format($total_cash_bank_month + $total_charge_month + $agoda_charge[0]['total_month'], 2) }}
                             </td>
                             <td class="t-end padding-x-2 y-t-d">
-                                {{ number_format($total_cash_bank_year + $total_charge_year + ($agoda_charge[0]['total_year'] - $total_agoda_year), 2) }}
+                                {{ number_format($total_cash_bank_year + $total_charge_year + $agoda_charge[0]['total_year'], 2) }}
                             </td>
                         </tr>
                         <tr class="table-row-bg">
@@ -2066,8 +2066,13 @@
 
         // Hidden <td>
         // if (filter_by == "month" || filter_by == "thisMonth") {
-        //     $('.today').prop('hidden', true);
+        //     $('.to-day').prop('hidden', true);
         //     $('.y-t-d').prop('hidden', true);
+        // }
+
+        // if (filter_by == "year" || filter_by == "thisYear") {
+        //     $('.to-day').prop('hidden', true);
+        //     $('.m-t-d').prop('hidden', true);
         // }
 
     });
