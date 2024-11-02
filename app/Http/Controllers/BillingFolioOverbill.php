@@ -1190,9 +1190,9 @@ class BillingFolioOverbill extends Controller
                 return redirect()->route('BillingFolioOver.edit', ['id' => $Quotation->id])->with('error',$e->getMessage());
             }
         }else{
-            $DataProductLog = [
+            $datarequest = [
                 'Proposal_ID' => $data['Quotation_ID'] ?? null,
-                'Code' => $data['Code'] ?? [],
+                'Code' => $data['Code'] ?? $data['CheckProduct'],
                 'Amount' => $data['Amount'] ?? [],
                 'IssueDate' => $Quotation['issue_date'] ?? null,
                 'Expiration' => $Quotation['Expirationdate'] ?? null,
@@ -1210,7 +1210,7 @@ class BillingFolioOverbill extends Controller
                 'Night' => $Quotation['night'] ?? null,
             ];
             {   //จัด product
-                $Code = $datarequest['Code'];
+                $Code = $datarequest['Code'] ?? $datarequest['CheckProduct'];
                 $Amount = $datarequest['Amount'];
                 $productItems = [];
                 if (count($Code) === count($Amount)) {
@@ -1227,15 +1227,17 @@ class BillingFolioOverbill extends Controller
                         }
                     }
                 }
+
                 $productDataSave = [];
                 if (!empty($productItems)) {
                     foreach ($productItems as $product) {
                         $productDataSave[] = [
                             'Code' => $product['product']->code,
                             'Detail' => $product['product']->description,
-                            'Amount' => $product['Amount'], // Use the correct Amount value for each product
+                            'Amount' => $product['Amount'],
                         ];
                     }
+                    $productData['Product'] = $productDataSave; // Assign the whole array once after the loop
                 }
                 {//คำนวน
                     $totalAmount = 0;
@@ -1262,17 +1264,75 @@ class BillingFolioOverbill extends Controller
                     }
                 }
             }
-            $DataProductLog['Products'] = $productsArray;
-            $ProposalData = proposal_overbill::where('id',$id)->first();
+            $ProposalData = proposal_overbill::where('id', $id)->first();
             $ProposalID = $ProposalData->Additional_ID;
-            $ProposalProducts = document_quotation::where('Quotation_ID',$ProposalID)->get();
-            $dataArray = $ProposalData->toArray();
-            $dataArray['Products'] = $ProposalProducts->map(function($item) {
-                // ปรับแต่ง $item ที่ได้จากแต่ละแถว
-                unset($item['id'], $item['created_at'], $item['updated_at'], $item['SpecialDiscount']);
-                return $item;
+
+            // Retrieve and filter proposal products
+            $ProposalProducts = document_proposal_overbill::where('Additional_ID', $ProposalID)->get();
+            $dataArray['Product'] = $ProposalProducts->map(function ($item) {
+                // Remove unnecessary fields from each item
+                return Arr::only($item->toArray(), ['Code', 'Detail', 'Amount']);
             })->toArray();
-            dd($datarequest);
+            $productData['Product'] = $productData['Product'] ?? [];
+            $keysToCompare = ['Product'];
+            $differences = [];
+            foreach ($keysToCompare as $key) {
+                if (is_array($dataArray[$key]) && is_array($productData[$key])) {
+                    foreach ($dataArray[$key] as $index => $value) {
+                        if (isset($productData[$key][$index])) {
+                            if ($value != $productData[$key][$index]) {
+                                $differences[$key][$index] = [
+                                    'dataArray' => $value,
+                                    'request' => $productData[$key][$index]
+                                ];
+                            }
+                        } else {
+                            $differences[$key][$index] = [
+                                'dataArray' => $value,
+                                'request' => null
+                            ];
+                        }
+                    }
+                    // Handle case where $datarequest has extra elements
+                    foreach ($productData[$key] as $index => $value) {
+                        if (!isset($dataArray[$key][$index])) {
+                            $differences[$key][$index] = [
+                                'dataArray' => null,
+                                'request' => $value
+                            ];
+                        }
+                    }
+                } elseif (isset($dataArray[$key])) {
+                    // Handle case where $datarequest does not have the key
+                    $differences[$key] = [
+                        'dataArray' => $dataArray[$key],
+                        'request' => null
+                    ];
+                } elseif (isset($productData[$key])) {
+                    // Handle case where $dataArray does not have the key
+                    $differences[$key] = [
+                        'dataArray' => null,
+                        'request' => $DataProductLog[$key]
+                    ];
+                }
+                $onlyInDataArray = [];
+                $onlyInRequest = [];
+
+                // สร้างเฉพาะข้อมูลที่มีเฉพาะใน dataArray หรือ request
+                foreach ($differences as $key => $value) {
+                    if ($key === 'Products') {
+                        $onlyInDataArray = array_filter($dataArray['Products'], function ($item) use ($productData) {
+                            return !in_array($item, $productData['Products']);
+                        });
+
+                        $onlyInRequest = array_filter($productData['Products'], function ($item) use ($dataArray) {
+                            return !in_array($item, $dataArray['Products']);
+                        });
+                    }
+                }
+            }
+
+            dd($onlyInDataArray, $onlyInRequest,$differences);
             try {
                 //code...
             } catch (\Throwable $e) {

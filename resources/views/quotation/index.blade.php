@@ -208,6 +208,7 @@
                                                             checkinout.disabled = true;
                                                             inputcompany.style.display = 'none';
                                                             Month.style.display = 'block';
+                                                            inputcompanyindividual.disabled = true;
                                                         }
                                                     });
                                                 </script>
