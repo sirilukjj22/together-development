@@ -69,7 +69,7 @@
                                                 {!! $promotion !!} <br>
                                             @endforeach
                                         </textarea>
-                                        <img src="{{ asset('assets2/images/tgt-01.jpg') }}" style="width: 400px"/>
+                                        <img src="{{ asset('assets/images/tgt-01.jpg') }}" style="width: 400px"/>
                                         <script>
                                         $.getScript('https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js', function ()
                                             {
