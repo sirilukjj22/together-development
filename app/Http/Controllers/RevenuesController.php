@@ -268,8 +268,6 @@ class RevenuesController extends Controller
             
         }
 
-        // dd($room_array);
-
         $room_transfer = 0;
         $fb_transfer = 0;
         $wp_transfer = 0;
@@ -355,19 +353,8 @@ class RevenuesController extends Controller
             }
         }
 
-        // $daily_revenue = Revenues::whereMonth('date', date('m'))->whereYear('date', date('Y'))->select(
-        //     DB::raw("SUM(front_cash) + SUM(front_transfer) + SUM(front_credit) as front_amount, 
-        //     SUM(room_cash) + SUM(room_transfer) + SUM(room_credit) as room_amount, 
-        //     SUM(fb_cash) + SUM(fb_transfer) + SUM(fb_credit) as fb_amount,
-        //     SUM(wp_cash) + SUM(wp_transfer) + SUM(wp_credit) as wp_amount,
-        //     SUM(room_credit) + SUM(fb_credit) + SUM(wp_credit) as credit_amount"),
-        //     DB::raw("SUM(other_revenue) as other_revenue"), 'total_credit')->first();
-
-        // $total_daily_revenue = $daily_revenue->front_amount + $daily_revenue->room_amount + $daily_revenue->fb_amount + $daily_revenue->wp_amount + $daily_revenue->credit_amount + $daily_revenue->other_revenue + $daily_revenue->total_credit;
-
         $total_verified = Revenues::whereMonth('date', date('m'))->whereYear('date', date('Y'))->where('status', 1)->count();
         $total_unverified = Revenues::whereMonth('date', date('m'))->whereYear('date', date('Y'))->where('status', 0)->count();
-        // dd($total_daily_revenue);
         $total_revenue_today = Revenues::whereDate('date', date('Y-m-d'))->select(
             DB::raw("
                 front_cash + front_transfer + front_credit as front_amount, 
@@ -389,9 +376,6 @@ class RevenuesController extends Controller
 
         $total_day = $total_revenue_today->front_amount + $total_revenue_today->room_amount + $total_revenue_today->fb_amount + $total_revenue_today->wp_amount
          + $total_revenue_today->credit_amount + $total_revenue_today->total_credit_agoda + $total_revenue_today->other_revenue;
-        // dd($total_guest_deposit);
-
-        // dd($total_revenue_today->room_amount);
 
         ## ข้อมูลในตาราง
         $date = date('d');
@@ -458,6 +442,9 @@ class RevenuesController extends Controller
         if (isset($_GET['dailyPage']) && @$_GET['dailyPage'] != 'daily') {
             $by_page = 'index_'.@$_GET['dailyPage'];
         }
+
+        $filter_by = 'date';
+        $search_date = date('Y-m-d');
         
         return view('revenue.'.$by_page, compact(
             'total_revenue_today', 
@@ -523,6 +510,9 @@ class RevenuesController extends Controller
 
             'total_not_type',
             'total_not_type_revenue',
+
+            'filter_by',
+            'search_date'
         ));
     }
 
@@ -1091,9 +1081,9 @@ class RevenuesController extends Controller
         $no_type_array = [];
         $transaction_array = [];
 
-        if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow" || $request->filter_by == "month" || 
-            $request->filter_by == "year" || $request->filter_by == "week" || $request->filter_by == "thisMonth" || $request->filter_by == "thisYear" || $request->filter_by == "customRang") 
-        {
+        // if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow" || $request->filter_by == "month" || 
+        //     $request->filter_by == "year" || $request->filter_by == "week" || $request->filter_by == "thisMonth" || $request->filter_by == "thisYear" || $request->filter_by == "customRang") 
+        // {
             for ($i=1; $i <= 31; $i++) { 
                 if ($i == 1) {
                     $check_sms = SMS_alerts::whereBetween('date', [date("Y-m-".$last_day2, strtotime("-1 months", strtotime($datetime))).' 21:00:00', date('Y-'.$Fmonth.'-01 20:59:59')])->whereNull('date_into')
@@ -1398,7 +1388,7 @@ class RevenuesController extends Controller
                     ]);
                 }
             }
-        }
+        // }
         
         if ($request->filter_by == "date" || $request->filter_by == "today" || $request->filter_by == "yesterday" || $request->filter_by == "tomorrow") 
         {
@@ -1419,13 +1409,14 @@ class RevenuesController extends Controller
 
         $total_revenue_today = Revenues::whereBetween('date', [$month_from, $month_to])->select(
             DB::raw("
-            SUM(front_cash + front_transfer + front_credit) as front_amount, 
-            SUM(room_cash + room_transfer + room_credit) as room_amount, 
-            SUM(fb_cash + fb_transfer + fb_credit) as fb_amount,
-            SUM(wp_cash + wp_transfer + wp_credit) as wp_amount,
-            SUM(room_credit + fb_credit + wp_credit) as credit_amount,
-            SUM(total_transaction) as total_transaction,
-            SUM(total_credit_agoda) as total_credit_agoda, SUM(other_revenue) as other_revenue"), 'total_no_type', 'status')->first();
+                SUM(front_cash + front_transfer + front_credit) as front_amount, 
+                SUM(room_cash + room_transfer + room_credit) as room_amount, 
+                SUM(fb_cash + fb_transfer + fb_credit) as fb_amount,
+                SUM(wp_cash + wp_transfer + wp_credit) as wp_amount,
+                SUM(room_credit + fb_credit + wp_credit) as credit_amount,
+                SUM(total_transaction) as total_transaction,
+                SUM(total_credit_agoda) as total_credit_agoda, SUM(other_revenue) as other_revenue"), 'total_no_type', 'status')
+            ->first();
 
         $total_transfer = SMS_alerts::whereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->where('transfer_status', 1)->sum('amount');
         $total_transfer2 = SMS_alerts::whereBetween('date_into', [$from, $to])->where('transfer_status', 1)->count();
@@ -1807,15 +1798,9 @@ class RevenuesController extends Controller
 
         ## Filter ##
         $filter_by = $request->filter_by;
-        $search_date = $request->date;
         $customRang_start = $request->customRang_start;
         $customRang_end = $request->customRang_end;
-
-        // $day = $request->day;
-        // $month = $request->month;
-        // $month_to = $request->month_to;
-        // $year = $request->year;
-        // $time = $request->time;
+        $search_date = $filter_by != 'customRang' ? $request->date : $customRang_start.' - '.$customRang_end;
 
         $by_page = 'index';
         $by_page_pdf = '1A';
@@ -2294,8 +2279,8 @@ class RevenuesController extends Controller
 
         ## Cash
         if ($request->revenue_type == "cash_front") {
-            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->select('date', 'front_cash as amount')->paginate(10);
-            $total_query = Revenues::whereBetween('date', [$month_from, $month_to])->sum('front_cash');
+            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('front_cash', '>', 0)->select('date', 'front_cash as amount')->paginate(10);
+            $total_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('front_cash', '>', 0)->sum('front_cash');
             $title = "Front Desk Revenue (Cash)";
             $status = 'cash_front';
             $revenue_name = "cash";
@@ -2446,7 +2431,7 @@ class RevenuesController extends Controller
         } if($request->revenue_type == "mc_elexa_charge") {
             $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                 ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', 8)->whereBetween('revenue.date', [$month_from, $month_to])
-                ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->paginate(10);
+                ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->orderBy('revenue.date', 'asc')->paginate(10);
             $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                 ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', 8)->whereBetween('revenue.date', [$month_from, $month_to])->sum('revenue_credit.ev_charge');
             $title = "Elexa EGAT Charge";
@@ -2649,6 +2634,14 @@ class RevenuesController extends Controller
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate2));
 
+        } elseif ($request->filter_by == "thisYear") {
+            $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-d', strtotime(date('Y-01-01')));
+            $adate2 = date('Y-m-' . $lastday);
+
+            $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59');
+
         } elseif ($request->filter_by == "year") {
             $year = $request->date;
             $adate = date('Y-m-d', strtotime($year . '-01' . '-01'));
@@ -2711,8 +2704,9 @@ class RevenuesController extends Controller
 
             } elseif ($request->status == "mc_elexa_charge") {
                 $query_revenue = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
-                    ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', 8)->whereBetween('revenue.date', [$adate, $adate2])
-                    ->select('revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue');
+                    ->whereBetween('revenue.date', [$adate, $adate2])->where('revenue_credit.status', 8)
+                    ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')
+                    ->orderBy('revenue.date', 'asc');
 
                     if ($perPage == 10) {
                         $data_query = $query_revenue->limit($request->page.'0')->get();
@@ -2842,8 +2836,10 @@ class RevenuesController extends Controller
                 $query_sms = Revenues::query()->whereBetween('date', [$adate, $adate2]);
 
                     if ($request->status == "cash_front") {
+                        $query_sms->where('front_cash', '>', 0);
                         $query_sms->select('date', 'front_cash as amount');
                     } elseif ($request->status == "cash_all_outlet") {
+                        $query_sms->where('fb_cash', '>', 0);
                         $query_sms->select('date', 'fb_cash as amount');
                     } elseif ($request->status == "cash_all_outlet") {
                         $query_sms->select('date', 'room_cash as amount');
@@ -2876,9 +2872,9 @@ class RevenuesController extends Controller
         $page_2 = $request->page.'0';
 
         $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
-        
+
         if (isset($data_query) && count($data_query) > 0) {
-            if (count($exp) > 1 && $exp[0]."_".$exp[1] != "manual_charge" && $request->status != "mc_agoda_charge" && $request->status != "mc_elexa_charge" && $request->status != "agoda_outstanding" && $request->status != "elexa_outstanding" || $request->table_name == "revenueTable") { ## Manual Charge
+            if (count($exp) > 1 && $exp[0]."_".$exp[1] != "manual_charge" && $request->status != "mc_agoda_charge" && $request->status != "mc_elexa_charge" && $request->status != "agoda_outstanding" && $request->status != "elexa_outstanding" && $request->table_name != "revenueCashTable" || $request->table_name == "revenueTable") { ## Manual Charge
                 foreach ($data_query as $key => $value) {
                     if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
@@ -3005,7 +3001,6 @@ class RevenuesController extends Controller
                 }
 
             } elseif ($request->table_name == "revenueCashTable") { 
-
                 foreach ($data_query as $key => $value) {
                     if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
                         $data[] = [
@@ -3109,6 +3104,14 @@ class RevenuesController extends Controller
             $from = date('Y-m-d' . ' 21:00:00', strtotime('-1 day', strtotime(date($adate))));
             $to = date('Y-m-d 20:59:59', strtotime($adate2));
 
+        } elseif ($request->filter_by == "thisYear") {
+            $lastday = dayLast(date('m'), date('Y')); // หาวันสุดท้ายของเดือน
+            $adate = date('Y-m-d', strtotime(date('Y-01-01')));
+            $adate2 = date('Y-m-' . $lastday);
+
+            $from = date('Y-m-d 21:00:00', strtotime('-1 day', strtotime(date($adate))));
+            $to = date('Y-m-d 20:59:59');
+
         } elseif ($request->filter_by == "year") {
             $year = $request->date;
             $adate = date('Y-m-d', strtotime($year . '-01' . '-01'));
@@ -3201,11 +3204,13 @@ class RevenuesController extends Controller
                                 ->orWhere('revenue_credit.ev_revenue', 'like', '%' . $search . '%')
                                 ->orWhere('revenue.date', 'like', '%' . $search . '%');
                         })
-                        ->select('revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->paginate(10);
+                        ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')
+                        ->orderBy('revenue.date', 'asc')->paginate(10);
                 } else {
                     $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                         ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', 8)->whereBetween('revenue.date', [$adate, $adate2])
-                        ->select('revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->paginate(10);
+                        ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')
+                        ->orderBy('revenue.date', 'asc')->paginate(10);
                 }
 
             }  elseif ($request->status == "agoda_outstanding") {
