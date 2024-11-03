@@ -48,9 +48,19 @@ class BillingFolioOverbill extends Controller
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $Proposal = proposal_overbill::query()->paginate($perPage);
         $Proposalcount = proposal_overbill::query()->count();
-        $Pending = proposal_overbill::query()->where('status_document',1)->paginate($perPage);
-        $Pendingcount = proposal_overbill::query()->where('status_document',1)->count();
-        return view('billingfolio.overbill.index',compact('Proposal','Pending','Proposalcount','Pendingcount'));
+        $Pending = proposal_overbill::query()->where('status_document',5)->paginate($perPage);
+        $Pendingcount = proposal_overbill::query()->where('status_document',5)->count();
+        $Awaiting = proposal_overbill::query()->where('status_document',2)->paginate($perPage);
+        $Awaitingcount = proposal_overbill::query()->where('status_document',2)->count();
+        $Approved = proposal_overbill::query()->where('status_document',3)->paginate($perPage);
+        $Approvedcount = proposal_overbill::query()->where('status_document',3)->count();
+        $Reject = proposal_overbill::query()->where('status_document',4)->paginate($perPage);
+        $Rejectcount = proposal_overbill::query()->where('status_document',4)->count();
+        $Cancel = proposal_overbill::query()->where('status_document',0)->paginate($perPage);
+        $Cancelcount = proposal_overbill::query()->where('status_document',0)->count();
+
+        return view('billingfolio.overbill.index',compact('Proposal','Pending','Proposalcount','Pendingcount','Awaiting','Awaitingcount','Approved','Approvedcount','Reject','Rejectcount',
+                    'Cancel','Cancelcount'));
     }
     public function select(){
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
@@ -894,6 +904,7 @@ class BillingFolioOverbill extends Controller
                     $save->type_Proposal = $Quotation->type_Proposal;
                     $save->issue_date = $Quotation->issue_date;
                     $save->Expirationdate = $Quotation->Expirationdate;
+                    $save->status_document = 2;
                     $save->Operated_by = $userid;
                     $save->comment = $request->comment;
                     $save->Date_type = $Quotation->Date_type;
@@ -1796,6 +1807,7 @@ class BillingFolioOverbill extends Controller
                 $save->Nettotal = $NettotalD; // บันทึกยอดรวมสุทธิ
                 $save->total = $NettotalD; // บันทึกยอดรวม
                 $save->correct = $correctup;
+                $save->status_document = 2;
                 $save->save(); // บันทึกข้อมูล
             } catch (\Throwable $e) {
                 log_company::where('Category', 'Edit :: Additional')
@@ -2447,7 +2459,7 @@ class BillingFolioOverbill extends Controller
 
         if ($search_value) {
             $data_query = proposal_overbill::query()
-            ->where('status_document',1)
+            ->where('status_document',5)
             ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
             ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
             ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
@@ -2458,6 +2470,197 @@ class BillingFolioOverbill extends Controller
         }else{
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
             $data_query =  proposal_overbill::query()->where('status_document',1)->paginate($perPageS);
+        }
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                // สร้างสถานะการใช้งาน
+                if ($value->status_document == 0) {
+                    $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                } elseif ($value->status_document == 1) {
+                    $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                } elseif ($value->status_document == 2) {
+                    $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                } elseif ($value->status_document == 3) {
+                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                } elseif ($value->status_document == 4) {
+                    $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                } elseif ($value->status_document == 5) {
+                    $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
+                }
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $CreateBy = Auth::user()->id;
+                $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                if ($canViewProposal) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/Over/document/PDF/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/log/' . $value->id) . '">LOG</a></li>';
+
+                } if ($rolePermission == 1 && $isOperatedByCreator) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 2) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 3) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                }
+                $data[] = [
+                    'number' => ($key + 1) ,
+                    'Additional_ID'=>$value->Additional_ID,
+                    'Proposal_ID' => $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->issue_date,
+                    'Type'=>$value->Date_type ? $value->Date_type : 'No Check in Date',
+                    'CheckIn' => $value->checkin ? $value->checkin : '-',
+                    'CheckOut' => $value->checkout ? $value->checkout : '-',
+                    'ExpirationDate' => $value->Expirationdate,
+                    'Operated' => @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    //----------------------tableAwaiting-----------------
+    public function  paginate_awaiting_table_proposal(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query =  proposal_overbill::query()->where('status_document',2)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query =  proposal_overbill::query()->where('status_document',2)->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    // สร้างสถานะการใช้งาน
+                    if ($value->status_document == 0) {
+                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                    } elseif ($value->status_document == 1) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 2) {
+                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                    } elseif ($value->status_document == 3) {
+                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                    } elseif ($value->status_document == 4) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                    } elseif ($value->status_document == 5) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
+                    }
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $CreateBy = Auth::user()->id;
+                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/Over/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/log/' . $value->id) . '">LOG</a></li>';
+
+                    } if ($rolePermission == 1 && $isOperatedByCreator) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 2) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 3) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    }
+                    $data[] = [
+                        'number' => ($key + 1) ,
+                        'Additional_ID'=>$value->Additional_ID,
+                        'Proposal_ID' => $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->issue_date,
+                        'Type'=>$value->Date_type ? $value->Date_type : 'No Check in Date',
+                        'CheckIn' => $value->checkin ? $value->checkin : '-',
+                        'CheckOut' => $value->checkout ? $value->checkout : '-',
+                        'ExpirationDate' => $value->Expirationdate,
+                        'Operated' => @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_awaiting(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+
+        if ($search_value) {
+            $data_query = proposal_overbill::query()
+            ->where('status_document',2)
+            ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query =  proposal_overbill::query()->where('status_document',2)->paginate($perPageS);
         }
 
         $data = [];
@@ -2526,7 +2729,571 @@ class BillingFolioOverbill extends Controller
                 ];
             }
         }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    //----------------------tableAwaiting-----------------
+    public function  paginate_approved_table_proposal(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query =  proposal_overbill::query()->where('status_document',3)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query =  proposal_overbill::query()->where('status_document',3)->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    // สร้างสถานะการใช้งาน
+                    if ($value->status_document == 0) {
+                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                    } elseif ($value->status_document == 1) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 2) {
+                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                    } elseif ($value->status_document == 3) {
+                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                    } elseif ($value->status_document == 4) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                    } elseif ($value->status_document == 5) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
+                    }
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $CreateBy = Auth::user()->id;
+                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/Over/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/log/' . $value->id) . '">LOG</a></li>';
+
+                    } if ($rolePermission == 1 && $isOperatedByCreator) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 2) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 3) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    }
+                    $data[] = [
+                        'number' => ($key + 1) ,
+                        'Additional_ID'=>$value->Additional_ID,
+                        'Proposal_ID' => $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->issue_date,
+                        'Type'=>$value->Date_type ? $value->Date_type : 'No Check in Date',
+                        'CheckIn' => $value->checkin ? $value->checkin : '-',
+                        'CheckOut' => $value->checkout ? $value->checkout : '-',
+                        'ExpirationDate' => $value->Expirationdate,
+                        'Operated' => @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
         // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_approved(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+
+        if ($search_value) {
+            $data_query = proposal_overbill::query()
+            ->where('status_document',3)
+            ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query =  proposal_overbill::query()->where('status_document',3)->paginate($perPageS);
+        }
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                // สร้างสถานะการใช้งาน
+                if ($value->status_document == 0) {
+                    $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                } elseif ($value->status_document == 1) {
+                    $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                } elseif ($value->status_document == 2) {
+                    $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                } elseif ($value->status_document == 3) {
+                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                } elseif ($value->status_document == 4) {
+                    $btn_status = '<span class="badge rounded-pill " style="background-color:#0ea5e9">Generate</span>';
+                }
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $CreateBy = Auth::user()->id;
+                $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                if ($canViewProposal) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/Over/document/PDF/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/log/' . $value->id) . '">LOG</a></li>';
+
+                } if ($rolePermission == 1 && $isOperatedByCreator) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 2) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 3) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                }
+                $data[] = [
+                    'number' => ($key + 1) ,
+                    'Additional_ID'=>$value->Additional_ID,
+                    'Proposal_ID' => $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->issue_date,
+                    'Type'=>$value->Date_type ? $value->Date_type : 'No Check in Date',
+                    'CheckIn' => $value->checkin ? $value->checkin : '-',
+                    'CheckOut' => $value->checkout ? $value->checkout : '-',
+                    'ExpirationDate' => $value->Expirationdate,
+                    'Operated' => @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    //----------------------tableAwaiting-----------------
+    public function  paginate_reject_table_proposal(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query =  proposal_overbill::query()->where('status_document',4)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query =  proposal_overbill::query()->where('status_document',4)->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    // สร้างสถานะการใช้งาน
+                    if ($value->status_document == 0) {
+                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                    } elseif ($value->status_document == 1) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 2) {
+                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                    } elseif ($value->status_document == 3) {
+                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                    } elseif ($value->status_document == 4) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                    } elseif ($value->status_document == 5) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
+                    }
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $CreateBy = Auth::user()->id;
+                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/Over/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/log/' . $value->id) . '">LOG</a></li>';
+
+                    } if ($rolePermission == 1 && $isOperatedByCreator) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 2) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 3) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    }
+                    $data[] = [
+                        'number' => ($key + 1) ,
+                        'Additional_ID'=>$value->Additional_ID,
+                        'Proposal_ID' => $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->issue_date,
+                        'Type'=>$value->Date_type ? $value->Date_type : 'No Check in Date',
+                        'CheckIn' => $value->checkin ? $value->checkin : '-',
+                        'CheckOut' => $value->checkout ? $value->checkout : '-',
+                        'ExpirationDate' => $value->Expirationdate,
+                        'Operated' => @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_reject(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+
+        if ($search_value) {
+            $data_query = proposal_overbill::query()
+            ->where('status_document',4)
+            ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query =  proposal_overbill::query()->where('status_document',4)->paginate($perPageS);
+        }
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                // สร้างสถานะการใช้งาน
+                if ($value->status_document == 0) {
+                    $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                } elseif ($value->status_document == 1) {
+                    $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                } elseif ($value->status_document == 2) {
+                    $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                } elseif ($value->status_document == 3) {
+                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                } elseif ($value->status_document == 4) {
+                    $btn_status = '<span class="badge rounded-pill " style="background-color:#0ea5e9">Generate</span>';
+                }
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $CreateBy = Auth::user()->id;
+                $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                if ($canViewProposal) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/Over/document/PDF/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/log/' . $value->id) . '">LOG</a></li>';
+
+                } if ($rolePermission == 1 && $isOperatedByCreator) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 2) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 3) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                }
+                $data[] = [
+                    'number' => ($key + 1) ,
+                    'Additional_ID'=>$value->Additional_ID,
+                    'Proposal_ID' => $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->issue_date,
+                    'Type'=>$value->Date_type ? $value->Date_type : 'No Check in Date',
+                    'CheckIn' => $value->checkin ? $value->checkin : '-',
+                    'CheckOut' => $value->checkout ? $value->checkout : '-',
+                    'ExpirationDate' => $value->Expirationdate,
+                    'Operated' => @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+    //----------------------tableAwaiting-----------------
+    public function  paginate_cancel_table_proposal(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query =  proposal_overbill::query()->where('status_document',0)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query =  proposal_overbill::query()->where('status_document',0)->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    // สร้างสถานะการใช้งาน
+                    if ($value->status_document == 0) {
+                        $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                    } elseif ($value->status_document == 1) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    } elseif ($value->status_document == 2) {
+                        $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                    } elseif ($value->status_document == 3) {
+                        $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                    } elseif ($value->status_document == 4) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color:#1d4ed8">Reject</span>';
+                    } elseif ($value->status_document == 5) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
+                    }
+                    $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                    $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                    $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                    $CreateBy = Auth::user()->id;
+                    $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    if ($canViewProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/view/' . $value->id) . '">View</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/Over/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/log/' . $value->id) . '">LOG</a></li>';
+
+                    } if ($rolePermission == 1 && $isOperatedByCreator) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 2) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 3) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    }
+                    $data[] = [
+                        'number' => ($key + 1) ,
+                        'Additional_ID'=>$value->Additional_ID,
+                        'Proposal_ID' => $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->issue_date,
+                        'Type'=>$value->Date_type ? $value->Date_type : 'No Check in Date',
+                        'CheckIn' => $value->checkin ? $value->checkin : '-',
+                        'CheckOut' => $value->checkout ? $value->checkout : '-',
+                        'ExpirationDate' => $value->Expirationdate,
+                        'Operated' => @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_cancel(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+
+        if ($search_value) {
+            $data_query = proposal_overbill::query()
+            ->where('status_document',0)
+            ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query =  proposal_overbill::query()->where('status_document',0)->paginate($perPageS);
+        }
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                // สร้างสถานะการใช้งาน
+                if ($value->status_document == 0) {
+                    $btn_status = '<span class="badge rounded-pill bg-danger">Cancel</span>';
+                } elseif ($value->status_document == 1) {
+                    $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                } elseif ($value->status_document == 2) {
+                    $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                } elseif ($value->status_document == 3) {
+                    $btn_status = '<span class="badge rounded-pill bg-success">Approved</span>';
+                } elseif ($value->status_document == 4) {
+                    $btn_status = '<span class="badge rounded-pill " style="background-color:#0ea5e9">Generate</span>';
+                }
+                $rolePermission = Auth::user()->rolePermissionData(Auth::user()->id);
+                $canViewProposal = Auth::user()->roleMenuView('Proposal', Auth::user()->id);
+                $canEditProposal = Auth::user()->roleMenuEdit('Proposal', Auth::user()->id);
+                $CreateBy = Auth::user()->id;
+                $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                if ($canViewProposal) {
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/Over/document/PDF/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/log/' . $value->id) . '">LOG</a></li>';
+
+                } if ($rolePermission == 1 && $isOperatedByCreator) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 2) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 3) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                }
+                $data[] = [
+                    'number' => ($key + 1) ,
+                    'Additional_ID'=>$value->Additional_ID,
+                    'Proposal_ID' => $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->issue_date,
+                    'Type'=>$value->Date_type ? $value->Date_type : 'No Check in Date',
+                    'CheckIn' => $value->checkin ? $value->checkin : '-',
+                    'CheckOut' => $value->checkout ? $value->checkout : '-',
+                    'ExpirationDate' => $value->Expirationdate,
+                    'Operated' => @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
         return response()->json([
             'data' => $data,
         ]);

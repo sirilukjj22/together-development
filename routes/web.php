@@ -673,6 +673,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Dummy/Proposal/Request/document/view/Reject/', 'Reject')->name('DummyQuotation.Reject');
         Route::get('/Dummy/Proposal/Request/document/view/Approve/viewApprove/{id}','viewApprove')->name('DummyQuotation.viewApprove');
         Route::get('/Proposal/request/log', 'LOG')->name('ProposalReq.log');
+
+        Route::get('/Proposal/request/document/Additional/view/{id}', 'Additional')->name('ProposalReq.Additional');
+
+        Route::post('/Proposal/request/Request/document/view/Approve/', 'Additional_Approve')->name('ProposalReq.Approve');
+        Route::post('/Proposal/request/Request/document/view/Reject/', 'Additional_Reject')->name('ProposalReq.Reject');
+        Route::get('/Proposal/request/Additional/log', 'Additional_LOG')->name('ProposalReq.LogAdditional');
+
         //----------------------------
         Route::post('Proposal-request-search-table', 'search_table_proposal');
         Route::post('Proposal-request-paginate-table', 'paginate_table_proposal');
@@ -682,6 +689,14 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('request-Pending-search-table', 'search_table_paginate_pending');
         Route::post('request-Pending-paginate-table', 'paginate_pending_table_request');
+
+        Route::post('Proposal-request-Additional-search-table', 'search_table_Additional');
+        Route::post('Proposal-request-Additional-paginate-table', 'paginate_table_Additional');
+
+        Route::post('Additional-LogDoc-request-search-table', 'search_table_paginate_log_doc_Additional');
+        Route::post('Additional-LogDoc-request-paginate-table', 'paginate_log_doc_table_Additional');
+
+
     });
 
     ##-------------------------------TemplateController-----------------
@@ -765,6 +780,8 @@ Route::middleware(['auth'])->group(function () {
         //--------------------------LogDoc-----------
         Route::post('billing-LogDoc-search-table', 'search_table_paginate_log_doc');
         Route::post('billing-LogDoc-paginate-table', 'paginate_log_doc_table_billing');
+
+
     });
     Route::controller(BillingFolioOverbill::class)->middleware('role:document')->group(function () {
         Route::get('/Document/BillingFolio/Over/index', 'index')->name('BillingFolioOver.index');
@@ -786,6 +803,22 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('billingover-pending-search-table', 'search_table_billingover_pending');
         Route::post('billingover-pending-paginate-table', 'paginate_table_billingover_pending');
+
+         //--------------------------Awaiting---------
+        Route::post('billingover-Awaiting-search-table', 'search_table_paginate_awaiting');
+        Route::post('billingover-Awaiting-paginate-table', 'paginate_awaiting_table_proposal');
+
+         //--------------------------Approved---------
+        Route::post('billingover-Approved-search-table', 'search_table_paginate_approved');
+        Route::post('billingover-Approved-paginate-table', 'paginate_approved_table_proposal');
+
+        //--------------------------Reject-----------
+        Route::post('billingover-Reject-search-table', 'search_table_paginate_reject');
+        Route::post('billingover-Reject-paginate-table', 'paginate_reject_table_proposal');
+
+         //--------------------------Cancel-----------
+         Route::post('billingover-Cancel-search-table', 'search_table_paginate_cancel');
+         Route::post('billingover-Cancel-paginate-table', 'paginate_cancel_table_proposal');
     });
 
 

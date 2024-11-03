@@ -38,6 +38,9 @@ use Dompdf\Dompdf;
 use App\Models\master_template;
 use Illuminate\Support\Arr;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Models\document_proposal_overbill;
+use App\Models\Master_additional;
+use App\Models\proposal_overbill;
 class proposal_request extends Controller
 {
     public function index()
@@ -60,11 +63,13 @@ class proposal_request extends Controller
         ->select('id', 'DummyNo', 'Company_ID', 'Operated_by', 'QuotationType', DB::raw("COUNT(DummyNo) as COUNTDummyNo"))
         ->union($quotation1);
         $proposalcount = DB::table(DB::raw("({$proposal1->toSql()}) as sub"))->mergeBindings($proposal1->getQuery())->count();
-        $requestcount =confirmation_request::query()->paginate($perPage);
+        $requestcount =confirmation_request::query()->count();
         $currentDateTime = Carbon::now();
         confirmation_request::where('expiration_time', '<', $currentDateTime)->delete();
         $request =confirmation_request::query()->where('status',1)->paginate($perPage);
-        return view('proposal_req.index',compact('proposal','proposalcount','requestcount','request'));
+        $Additional =proposal_overbill::query()->where('status_document',2)->paginate($perPage);
+        $Additionalcount =proposal_overbill::query()->where('status_document',2)->count();
+        return view('proposal_req.index',compact('proposal','proposalcount','requestcount','request','Additional','Additionalcount'));
     }
     public function view($id,$Type)
     {
@@ -650,6 +655,7 @@ class proposal_request extends Controller
         }
     }
 
+
     public function viewApprove($id)
     {
         $Quotation = dummy_quotation::where('id', $id)->first();
@@ -1075,4 +1081,343 @@ class proposal_request extends Controller
         ]);
     }
 
+
+    public function Additional($id){
+
+        $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        $Quotation = proposal_overbill::where('id', $id)->first();
+        $Additional_ID = $Quotation->Additional_ID;
+        $Quotation_ID = $Quotation->Quotation_ID;
+        $Quotation_IDoverbill = $Quotation->Additional_ID;
+        $Company = companys::select('Company_Name','id','Profile_ID')->get();
+        $Guest = Guest::select('First_name','Last_name','id','Profile_ID')->get();
+        $Mevent = master_document::select('name_th','id')->where('status', '1')->where('Category','Mevent')->get();
+        $Mvat = master_document::select('name_th','id')->where('status', '1')->where('Category','Mvat')->get();
+        $Freelancer_member = Freelancer_Member::select('First_name','id','Profile_ID','Last_name')->where('status', '1')->get();
+        $selectproduct = document_proposal_overbill::where('Additional_ID', $Additional_ID)->get();
+        $unit = master_unit::where('status',1)->get();
+        $quantity = master_quantity::where('status',1)->get();
+        $path = 'Log_PDF/proposaloverbill/';
+        return view('proposal_req.additional',compact('path','settingCompany','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity','Quotation_IDoverbill','Additional_ID'));
+    }
+    public function Additional_Approve(Request $request){
+        try {
+            $Additional = proposal_overbill::where('Additional_ID', $request->approved_id)->first();
+            $id = $Additional->id;
+            $Additional_ID = $Additional->Additional_ID;
+            $save = proposal_overbill::find($id);
+            $save->status_document = 3;
+            $save->save();
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $Additional_ID;
+            $save->type = 'Request Approve Additional';
+            $save->Category = 'Approve :: Approve Additional';
+            $save->content = 'Approve Document Additional ID : '.$Additional_ID;
+            $save->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('ProposalReq.index')->with('error', $e->getMessage());
+        }
+        return redirect()->route('ProposalReq.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+    }
+    public function Additional_Reject($id){
+        try {
+            $Additional = proposal_overbill::where('Additional_ID', $request->approved_id)->first();
+            $id = $Additional->id;
+            $Additional_ID = $Additional->Additional_ID;
+            $save = proposal_overbill::find($id);
+            $save->status_document = 4;
+            $save->save();
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $Additional_ID;
+            $save->type = 'Request Reject Additional';
+            $save->Category = 'Reject :: Reject Additional';
+            $save->content = 'Reject Document Additional ID : '.$Additional_ID;
+            $save->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('ProposalReq.index')->with('error', $e->getMessage());
+        }
+        return redirect()->route('ProposalReq.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+    }
+    public function Additional_LOG()
+    {
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $userid = Auth::user()->id;
+        $log = log_company::select(
+            'log_company.*',
+            'proposal_overbill.id as Additional_id',
+            'proposal_overbill.correct as Additional_correct',
+        )
+        ->whereIn('log_company.type', ['Request Reject Additional', 'Request Approve Additional'])
+        ->leftJoin('proposal_overbill', 'log_company.Company_ID', '=', 'proposal_overbill.Additional_ID')
+        ->orderBy('log_company.updated_at', 'desc')
+        ->paginate($perPage);
+        $logcount = log_company::whereIn('type', ['Request Reject', 'Request Approval', 'Request Delete'])
+        ->orderBy('updated_at', 'desc')
+        ->count();
+        $path = 'Log_PDF/proposaloverbill/';
+        return view('proposal_req.additional_log',compact('userid','log','logcount','path'));
+    }
+    public function search_table_paginate_log_doc_Additional (Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+
+        if ($search_value) {
+            $data_query = log_company::select(
+                'log_company.*',
+                'proposal_overbill.id as Additional_id',
+                'proposal_overbill.correct as Additional_correct',
+            )
+            ->leftJoin('proposal_overbill', 'log_company.Company_ID', '=', 'proposal_overbill.Additional_ID')
+            ->orderBy('log_company.updated_at', 'desc')
+            ->where(function ($query) use ($search_value) {
+                // ค้นหาในผู้ใช้ (userOperated) ตามชื่อ
+                $query->whereHas('userOperated', function ($q) use ($search_value) {
+                    $q->where('name', 'LIKE', '%'.$search_value.'%');
+                })
+                // ค้นหาตาม Company_ID หรือ Type
+                ->orWhere('log_company.Company_ID', 'LIKE', '%'.$search_value.'%')
+                ->orWhere('log_company.type', 'LIKE', '%'.$search_value.'%');
+            })
+            ->whereIn('log_company.type', ['Request Reject Additional', 'Request Approve Additional'])
+            ->orderBy('log_company.updated_at', 'desc')
+            ->paginate($perPage);
+
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = log_company::select(
+                'log_company.*',
+                'proposal_overbill.id as Additional_id',
+                'proposal_overbill.correct as Additional_correct',
+            )
+            ->whereIn('log_company.type', ['Request Reject Additional', 'Request Approve Additional'])
+            ->leftJoin('proposal_overbill', 'log_company.Company_ID', '=', 'proposal_overbill.Additional_ID')
+            ->orderBy('log_company.updated_at', 'desc')
+            ->paginate($perPageS);
+        }
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $path = 'Log_PDF/proposaloverbill/';
+                if ($value->Additional_correct > 1) {
+                    $btn_action = '<a href="' . asset($path . $value->Company_ID .'-'.$value->Additional_correct. ".pdf") . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                    $btn_action .= '<i class="fa fa-print"></i>';
+                    $btn_action .= '</a>';
+                } else {
+                    $btn_action = '<a href="' . asset($path . $value->Company_ID . ".pdf") . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                    $btn_action .= '<i class="fa fa-print"></i>';
+                    $btn_action .= '</a>';
+                }
+                $contentArray = explode('+', $value->content);
+                $content = implode('</br>', $contentArray);
+                $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                $name = $Category.'</br>'.$content;
+                $data[] = [
+                    'number' => $key + 1,
+                    'Category'=>$value->Category,
+                    'type'=>$value->type,
+                    'Created_by'=>@$value->userOperated->name,
+                    'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                    'Content' => $name,
+                    'Doc'=> $btn_action,
+                ];
+            }
+        }
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function  paginate_log_doc_table_Additional (Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $guest_profile = $request->guest_profile;
+        $data = [];
+        if ($perPage == 10) {
+            $data_query = log_company::select(
+                'log_company.*',
+                'proposal_overbill.id as Additional_id',
+                'proposal_overbill.correct as Additional_correct',
+            )
+            ->whereIn('log_company.type', ['Request Reject Additional', 'Request Approve Additional'])
+            ->leftJoin('proposal_overbill', 'log_company.Company_ID', '=', 'proposal_overbill.Additional_ID')
+            ->orderBy('log_company.updated_at', 'desc')
+            ->limit($request->page.'0')->get();
+        } else {
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = log_company::select(
+                'log_company.*',
+                'proposal_overbill.id as Additional_id',
+                'proposal_overbill.correct as Additional_correct',
+            )
+            ->whereIn('log_company.type', ['Request Reject Additional', 'Request Approve Additional'])
+            ->leftJoin('proposal_overbill', 'log_company.Company_ID', '=', 'proposal_overbill.Additional_ID')
+            ->orderBy('log_company.updated_at', 'desc')
+            ->paginate($perPageS);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+                    $btn_action = "";
+                    $path = 'Log_PDF/proposaloverbill/';
+                    if ($value->Additional_correct > 1) {
+                        $btn_action = '<a href="' . asset($path . $value->Company_ID .'-'.$value->Additional_correct. ".pdf") . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                        $btn_action .= '<i class="fa fa-print"></i>';
+                        $btn_action .= '</a>';
+                    } else {
+                        $btn_action = '<a href="' . asset($path . $value->Company_ID . ".pdf") . '" type="button" class="btn btn-outline-dark rounded-pill lift" target="_blank" data-toggle="tooltip" data-placement="top" title="พิมพ์เอกสาร">';
+                        $btn_action .= '<i class="fa fa-print"></i>';
+                        $btn_action .= '</a>';
+                    }
+                    $contentArray = explode('+', $value->content);
+                    $content = implode('</br>', $contentArray);
+                    $Category = '<b style="color:#0000FF ">' . $value->Category . '</b>';
+                    $name = $Category.'</br>'.$content;
+                    $data[] = [
+                        'number' => $key + 1,
+                        'Category'=>$value->Category,
+                        'type'=>$value->type,
+                        'Created_by'=>@$value->userOperated->name,
+                        'created_at' => \Carbon\Carbon::parse($value->created_at)->format('d/m/Y'),
+                        'Content' => $name,
+                        'Doc'=> $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+    public function  paginate_table_Additional(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query =  proposal_overbill::query()->where('status_document',2)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query =  proposal_overbill::query()->where('status_document',2)->paginate($perPage);
+        }
+
+
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    // สร้างสถานะการใช้งาน
+
+                    $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                    $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href=\'' . url('/Proposal/request/document/Additional/view/' . $value->id) . '\'">
+                                        <i class="fa fa-folder-open-o"></i> View
+                                    </button>';
+                    $data[] = [
+                        'number' => ($key + 1) ,
+                        'Additional_ID'=>$value->Additional_ID,
+                        'Proposal_ID' => $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->issue_date,
+                        'Type'=>$value->Date_type ? $value->Date_type : 'No Check in Date',
+                        'CheckIn' => $value->checkin ? $value->checkin : '-',
+                        'CheckOut' => $value->checkout ? $value->checkout : '-',
+                        'ExpirationDate' => $value->Expirationdate,
+                        'Operated' => @$value->userOperated->name,
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_Additional(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+
+        if ($search_value) {
+            $data_query = proposal_overbill::query()
+            ->where('status_document',2)
+            ->where('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkin', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('checkout', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('issue_date', 'LIKE', '%'.$search_value.'%')
+            ->orWhere('Expirationdate', 'LIKE', '%'.$search_value.'%')
+            ->where('Company_ID',$guest_profile)
+            ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query =  proposal_overbill::query()->where('status_document',2)->paginate($perPageS);
+        }
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                // สร้างสถานะการใช้งาน
+                $btn_status = '<span class="badge rounded-pill bg-warning">Awaiting Approval</span>';
+                $btn_action = '<button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href=\'' . url('/Proposal/request/document/Additional/view/' . $value->id) . '\'">
+                                    <i class="fa fa-folder-open-o"></i> View
+                                </button>';
+                $data[] = [
+                    'number' => ($key + 1) ,
+                    'Additional_ID'=>$value->Additional_ID,
+                    'Proposal_ID' => $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->issue_date,
+                    'Type'=>$value->Date_type ? $value->Date_type : 'No Check in Date',
+                    'CheckIn' => $value->checkin ? $value->checkin : '-',
+                    'CheckOut' => $value->checkout ? $value->checkout : '-',
+                    'ExpirationDate' => $value->Expirationdate,
+                    'Operated' => @$value->userOperated->name,
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
 }

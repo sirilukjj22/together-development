@@ -177,7 +177,9 @@
                                                     ->count();  // นับจำนวนผลลัพธ์ทั้งหมด
                                                 $requestCount =  DB::table('confirmation_requests')->where('status', 1)
                                                     ->count();
-                                                $proposalCount = $ProposalCount+$requestCount;
+                                                $AdditionalCount =  DB::table('proposal_overbill')->where('status_document', 2)
+                                                    ->count();
+                                                $proposalCount = $ProposalCount+$requestCount+$AdditionalCount;
                                             @endphp
                                             <li>
                                                 <a class="ms-link" href="{{ route('ProposalReq.index') }}" style="position: relative;">Document Request <span class="box-sm-circle-red">{{$proposalCount}}</span></a>
@@ -265,7 +267,7 @@
                             @endif
                             @if (Auth::user()->roleMenu->report == 1)
                                 <li class="collapsed">
-                                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Report" href="#"><i class="fa fa-lg fa-file-text-o"></i> 
+                                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Report" href="#"><i class="fa fa-lg fa-file-text-o"></i>
                                         <span>Report</span> <span class="arrow fa fa-angle-down ms-auto text-end"></span>
                                     </a>
 

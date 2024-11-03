@@ -39,6 +39,7 @@
                     <ul class="nav nav-tabs px-3 border-bottom-0" role="tablist">
                         <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-proposal" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$proposalcount}}</span> Proposal Request</a></li>{{--ประวัติการแก้ไข--}}
                         <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending" onclick="nav($id='nav2')" role="tab"><span class="badge" style="background-color:#FF6633">{{$requestcount}}</span> Request OverBill</a></li>{{--QUOTAION--}}
+                        <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting" onclick="nav($id='nav3')" role="tab"><span class="badge bg-warning" >{{$Additionalcount}}</span> Additional</a></li>{{--เอกสารออกบิล--}}
                     </ul>
                     <div class="card mb-3">
                         <div class="card-body">
@@ -155,6 +156,98 @@
                                         </caption>
                                     </div>
                                 </div>
+                                <div class="tab-pane fade" id="nav-Awaiting" role="tabpanel" rel="0">
+                                    <div style="min-height: 70vh;" class="mt-2">
+                                        <caption class="caption-top">
+                                            <div class="top-table-3c">
+                                                <div class="top-table-3c_1">
+                                                    <div class="dropdown">
+                                                        <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('ProposalReq.LogAdditional') }}'">LOG</button>
+                                                    </div>
+                                                </div>
+                                                <label class="entriespage-label">entries per page :</label>
+                                                <select class="entriespage-button" id="search-per-page-proposalAwaiting" onchange="getPageAwaiting(1, this.value, 'proposalAwaiting')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "proposalAwaiting" ? 'selected' : '' }}>10</option>
+                                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "proposalAwaiting" ? 'selected' : '' }}>25</option>
+                                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "proposalAwaiting" ? 'selected' : '' }}>50</option>
+                                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "proposalAwaiting" ? 'selected' : '' }}>100</option>
+                                                </select>
+                                                <input class="search-button search-data-Awaiting" id="proposalAwaiting" style="text-align:left;" placeholder="Search" />
+                                            </div>
+                                        </caption>
+                                        <table id="proposalAwaitingTable" class="example2 ui striped table nowrap unstackable hover">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center"data-priority="1">No</th>
+                                                    <th class="text-center" data-priority="1">Additional ID</th>
+                                                    <th class="text-center" data-priority="1">Proposal ID</th>
+                                                    <th data-priority="1">Company / Individual</th>
+                                                    <th class="text-center">Issue Date</th>
+                                                    <th class="text-center">Day Type</th>
+                                                    <th class="text-center">Check In</th>
+                                                    <th class="text-center">Check Out</th>
+                                                    <th class="text-center">Expiration Date</th>
+                                                    <th class="text-center">Operated By</th>
+                                                    <th class="text-center">Document Status</th>
+                                                    <th class="text-center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(!empty($Additional))
+                                                    @foreach ($Additional as $key => $item)
+                                                        <tr>
+                                                            <td style="text-align: center;">
+                                                                {{$key +1}}
+                                                            </td>
+                                                            <td style="text-align: center;">{{ $item->Additional_ID }}</td>
+                                                            <td style="text-align: center;">{{ $item->Quotation_ID }}</td>
+                                                            @if ($item->type_Proposal == 'Company')
+                                                                <td>{{ @$item->company->Company_Name}}</td>
+                                                            @else
+                                                                <td>{{ @$item->guest->First_name.' '.@$item->guest->Last_name}}</td>
+                                                            @endif
+                                                            <td>{{ $item->issue_date }}</td>
+                                                            <td style="text-align: center;">{{ $item->Date_type ?? 'No Check In Date' }}</td>
+                                                            @if ($item->checkin)
+                                                            <td style="text-align: center;">{{ $item->checkin}}</td>
+                                                            <td style="text-align: center;">{{ $item->checkout }}</td>
+                                                            @else
+                                                            <td style="text-align: center;">-</td>
+                                                            <td style="text-align: center;">-</td>
+                                                            @endif
+                                                            <td style="text-align: center;">{{ $item->Expirationdate }}</td>
+                                                            <td >{{ @$item->userOperated->name }}</td>
+                                                            <td style="text-align: center;">
+                                                                <span class="badge rounded-pill bg-warning">Awaiting Approval</span>
+                                                            </td>
+                                                            @php
+                                                                $CreateBy = Auth::user()->id;
+                                                                $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                                $canViewProposal = @Auth::user()->roleMenuView('Billing Folio', Auth::user()->id);
+                                                                $canEditProposal = @Auth::user()->roleMenuEdit('Billing Folio', Auth::user()->id);
+                                                            @endphp
+                                                            <td style="text-align: center;">
+                                                                <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/Proposal/request/document/Additional/view/'.$item->id) }}'">
+                                                                    <i class="fa fa-folder-open-o"></i> View
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                        <input type="hidden" id="get-total-proposalAwaiting" value="{{ $Additional->total() }}">
+                                        <input type="hidden" id="currentPage-proposalAwaiting" value="1">
+                                        <caption class="caption-bottom">
+                                            <div class="md-flex-bt-i-c">
+                                                <p class="py2" id="proposalAwaiting-showingEntries">{{ showingEntriesTableAwaiting($Additional, 'proposalAwaiting') }}</p>
+                                                    <div id="proposalAwaiting-paginate">
+                                                        {!! paginateTableAwaiting($Additional, 'proposalAwaiting') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                                    </div>
+                                            </div>
+                                        </caption>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -171,7 +264,7 @@
     <script type="text/javascript" src="{{ asset('assets/helper/searchTableProposalRequest.js')}}"></script>
 
     <script>
-        const table_name = ['proposalTable','proposal-LogTable','requestTable'];
+        const table_name = ['proposalTable','proposal-LogTable','requestTable','proposalAwaitingTable'];
         $(document).ready(function() {
             for (let index = 0; index < table_name.length; index++) {
                 console.log();
@@ -282,6 +375,80 @@
                         { data: 'btn_action' },
                     ],
                 });
+            document.getElementById(id).focus();
+        });
+        $(document).on('keyup', '.search-data-Awaiting', function () {
+            var id = $(this).attr('id');
+            var search_value = $(this).val();
+            var table_name = id+'Table';
+            var filter_by = $('#filter-by').val();
+            var type_status = $('#status').val();
+            var total = parseInt($('#get-total-'+id).val());
+            var getUrl = window.location.pathname;
+            console.log(search_value);
+
+                $('#'+table_name).DataTable().destroy();
+                var table = $('#'+table_name).dataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    ajax: {
+                    url: '/Proposal-request-Additional-search-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        search_value: search_value,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        status: type_status,
+                    },
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                },
+                "initComplete": function (settings,json){
+
+                    if ($('#'+id+'Table .dataTable_empty').length == 0) {
+                        var count = $('#'+id+'Table tr').length - 1;
+                    }else{
+                        var count = 0;
+                    }
+                    if (search_value == '') {
+                        count_total = total;
+                    }else{
+                        count_total = count;
+                    }
+                    $('#'+id+'-paginate').children().remove().end();
+                    $('#'+id+'-showingEntries').text(showingEntriesSearchAwaiting(1,count_total, id));
+                    $('#'+id+'-paginate').append(paginateSearchAwaiting(count_total, id, getUrl));
+                },
+                    columnDefs: [
+                                { targets: [0,1,2,3,4,5,6,7,8,9,10], className: 'dt-center td-content-center' },
+                    ],
+                    order: [0, 'asc'],
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    columns: [
+                        { data: 'id', "render": function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                        { data: 'Additional_ID' },
+                        { data: 'Proposal_ID' },
+                        { data: 'Company_Name' },
+                        { data: 'IssueDate' },
+                        { data: 'Type' },
+                        { data: 'CheckIn' },
+                        { data: 'CheckOut' },
+                        { data: 'ExpirationDate' },
+                        { data: 'Operated' },
+                        { data: 'DocumentStatus' },
+                        { data: 'btn_action' }
+                    ],
+
+                });
+
+
             document.getElementById(id).focus();
         });
     </script>
