@@ -40,8 +40,8 @@
                                         <label for="ถึง">เรื่อง : </label>
                                     </div>
                                     <div class="col-lg-10 col-md-10 col-sm-12">
-                                        <input type="text" class="form-control" value="เอกสารมัดจำ เลขที่: {{$Quotation_ID}} -(คุณ{{$name}})" disabled>
-                                        <input type="hidden" name="tital" value="เอกสารมัดจำ เลขที่: {{$Quotation_ID}} -(คุณ{{$name}})">
+                                        <input type="text" class="form-control" value="Proforma Invoice เลขที่: {{$Quotation_ID}} -(คุณ{{$name}})" disabled>
+                                        <input type="hidden" name="tital" value="Proforma Invoice เลขที่: {{$Quotation_ID}} -(คุณ{{$name}})">
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -54,7 +54,7 @@
                                             Dear คุณ {{$name}} <br>
                                             {{$comtypefullname}} <br>
                                             Warmest Greeting from Together Resort Kaengkrachan. <br><br>
-                                            Please kindly see attached file Proposal letter at Together Resort Kaengkrachan  on {{$checkin}}  {{$checkout}}  {{$day}} {{$night}} .<br><br>
+                                            Please kindly see attached file Proforma Invoice letter at Together Resort Kaengkrachan  on {{$checkin}}  {{$checkout}}  {{$day}} {{$night}} .<br><br>
                                             Should there be any further or assisance you may need please don't be hesitate to contact me any time. <br><br>
                                             Best regards,<br>
                                             อัครพล มโนโชคกวินสกุล (Tel : 081-410-8888) <br>
@@ -93,7 +93,7 @@
                                         <label for="ถึง">สิ่งที่แนบมาด้วย: </label>
                                     </div>
                                     <div class="col-lg-10 col-md-10 col-sm-12">
-                                        เอกสารมัดจำ Proforma Invoice เลขที่ {{$Quotation_ID}} <a href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$quotation->id) }}" target="_blank" >[เอกสาร]</a>
+                                        Proforma Invoice เลขที่ {{$Quotation_ID}} <a href="{{ url('/Proposal/Quotation/cover/document/PDF/'.$quotation->id) }}" target="_blank" >[เอกสาร]</a>
                                         <input type="file" name="files[]" class="form-control" multiple>
                                     </div>
                                 </div>
