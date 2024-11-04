@@ -198,627 +198,313 @@
                     <small class="text-muted">Welcome to Additional.</small>
                     <div class=""><span class="span1">Additional</span></div>
                 </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
+                        Back
+                    </button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-color-green text-white  dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
+                        <ul class="dropdown-menu border-0 shadow p-3">
+                            @if ($Quotation->correct >= 1 )
+                                <li><a href="{{ asset($path.$Additional_ID.'-'.$Quotation->correct.".pdf") }}"  class="dropdown-item py-2 rounded" target="_blank" >PDF</a></li>
+                            @else
+                                <li><a href="{{ asset($path.$Additional_ID.".pdf") }}" class="dropdown-item py-2 rounded" target="_blank" >PDF</a></li>
+                            @endif
+                            <li><a class="dropdown-item py-2 rounded" onclick="Appovel({{$Quotation->id}})">Appovel</a></li>
+                            <li><a class="dropdown-item py-2 rounded" onclick="Reject({{$Quotation->id}})">Reject</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div> <!-- .row end -->
         </div>
     </div>
-
-    <form id="myForm"  method="POST">
-        @csrf
-        <div id="content-index" class="body d-flex py-lg-4 py-3">
-            <div class="container-xl">
-                <div class="row align-items-center mb-2" >
-                    @if (session("success"))
-                    <div class="alert alert-success" role="alert">
-                        <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
+    <div id="content-index" class="body d-flex py-lg-4 py-3">
+        <div class="container-xl">
+            <div class="row align-items-center mb-2" >
+                @if (session("success"))
+                <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading">บันทึกสำเร็จ!</h4>
+                    <hr>
+                    <p class="mb-0">{{ session('success') }}</p>
+                </div>
+                @endif
+                @if (session("error"))
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">บันทึกไม่สำเร็จ!</h4>
                         <hr>
-                        <p class="mb-0">{{ session('success') }}</p>
+                        <p class="mb-0">{{ session('error') }}</p>
                     </div>
-                    @endif
-                    @if (session("error"))
-                        <div class="alert alert-danger" role="alert">
-                            <h4 class="alert-heading">บันทึกไม่สำเร็จ!</h4>
-                            <hr>
-                            <p class="mb-0">{{ session('error') }}</p>
-                        </div>
-                    @endif
-                    <div class="col">
-                        <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                        </ol>
-                    </div>
-                    <div class="col-auto">
+                @endif
+                <div class="col">
+                    <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ol>
+                </div>
+                <div class="col-auto">
 
-                    </div>
-                </div> <!-- Row end  -->
+                </div>
             </div> <!-- Row end  -->
-            <div class="container-xl">
-                <div class="row clearfix">
-                    <div class="col-md-12 col-12">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-8 col-md-12 col-sm-12 image-container">
-                                        <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
-                                        <div class="info">
-                                            <p class="titleh1">{{$settingCompany->name}}</p>
-                                            <p>{{$settingCompany->address}}</p>
-                                            <p>Tel : {{$settingCompany->tel}}
-                                                @if ($settingCompany->fax)
-                                                    Fax : {{$settingCompany->fax}}
-                                                @endif
-                                            </p>
-                                            <p>Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</p>
-                                            <p></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-12 col-sm-12">
-                                        <div class="row">
-                                            <div class="col-lg-4"></div>
-                                            <div class="PROPOSAL col-lg-7" style="margin-left: 5px">
-                                                <div class="row">
-                                                    <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">ADDITIONAL CHARGE</b>
-                                                    <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$Quotation_IDoverbill}}</b>
-                                                </div>
-                                                <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
-                                                <input type="hidden" id="Additional_ID" name="Additional_ID" value="{{$Quotation_IDoverbill}}">
-                                            </div>
-                                        </div>
-                                        <div class="row mt-2">
-                                            <div class="col-lg-4"></div>
-                                            <div class="PROPOSALfirst col-lg-7" style="background-color: #ffffff;">
-                                                <div class="col-12 col-md-12 col-sm-12">
-                                                    <div class="row">
-                                                        <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
-                                                            <span>Issue Date:</span>
-                                                        </div>
-                                                        <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
-                                                            <input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" style="text-align: left;" value="{{$Quotation->issue_date}}"disabled>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-12 col-sm-12 mt-2">
-                                                    <div class="row">
-                                                        <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
-                                                            <span>Expiration Date:</span>
-                                                        </div>
-                                                        <div class="col-lg-6 col-md-12 col-sm-12">
-                                                            <input type="text" id="dateex" class="form-control readonly-input" name="Expiration" style="text-align: left;"value="{{$Quotation->Expirationdate}}"disabled>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+        </div> <!-- Row end  -->
+        <div class="container-xl">
+            <div class="row clearfix">
+                <div class="col-md-12 col-12">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-12 col-sm-12 image-container">
+                                    <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
+                                    <div class="info">
+                                        <p class="titleh1">{{$settingCompany->name}}</p>
+                                        <p>{{$settingCompany->address}}</p>
+                                        <p>Tel : {{$settingCompany->tel}}
+                                            @if ($settingCompany->fax)
+                                                Fax : {{$settingCompany->fax}}
+                                            @endif
+                                        </p>
+                                        <p>Email : {{$settingCompany->email}} Website : {{$settingCompany->web}}</p>
+                                        <p></p>
                                     </div>
                                 </div>
-                                <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
-                                <div class="row mt-5">
-                                    <div class="col-lg-3 col-md-3 col-sm-12">
-                                        <select name="selectdata" id="select" class="select2" onchange="showselectInput()" disabled>
-                                            <option value="Company"{{$Quotation->type_Proposal == "Company" ? 'selected' : ''}}>นามบริษัท</option>
-                                            <option value="Guest"{{$Quotation->type_Proposal == "Guest" ? 'selected' : ''}}>นามบุคคล</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div id="Companyshow" style="display: block">
-                                    <div class="row mt-2" >
-                                        <div class="col-lg-6 col-md-6 col-sm-12">
-                                            <label class="labelcontact" for="">Customer Company</label>
-                                            <select name="Company" id="Company" class="select2" onchange="companyContact()" required>
-                                                <option value=""></option>
-                                                @foreach($Company as $item)
-                                                    <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->Company_Name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-12">
-                                            <label class="labelcontact" for="">Customer Contact</label>
-                                            <button style="float: right; border: none; background-color: transparent;color:#fff;" type="button" class="btn" disabled>0</button>
-                                            <input type="text" name="Company_Contact" id="Company_Contact" class="form-control">
-                                            <input type="hidden" name="Company_Contact" id="Company_Contactname" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="Guestshow" style="display: none">
-                                    <div class="row mt-2" >
-                                        <div class="col-lg-6 col-md-6 col-sm-12">
-                                            <label class="labelcontact" for="">Customer Guest </label>
-                                            <button style="float: right" type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('guest','index') }}'"><i class="fa fa-plus"></i> เพิ่มลูกค้า</button>
-                                            <select name="Guest" id="Guest" class="select2" onchange="GuestContact()" disabled>
-                                                <option value=""></option>
-                                                @foreach($Guest as $item)
-                                                    <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->First_name }} {{$item->Last_name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr class="mt-3 my-3" style="border: 1px solid #000">
-                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="col-lg-4 col-md-12 col-sm-12">
                                     <div class="row">
-                                        <div class="col-lg-2 col-md-12 col-sm-12">
-                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
-                                        </div>
-                                        <div class="col-lg-10 col-md-12 col-sm-12" style="float: right">
-                                            <span><b> Date Type : </b><span id="calendartext" style="font-size: 16px;color:rgb(0, 0, 0);"></span></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-2 col-md-6 col-sm-12">
-                                        <span for="chekin">Check In Date
-                                        <div class="input-group">
-                                            <input type="text" name="Checkin" id="Checkin" class="form-control readonly-input" value="{{$Quotation->checkin}}"  readonly  disabled>
-                                            <input type="hidden" id="inputmonth" name="inputmonth" value="">
-                                            <input type="hidden" id="inputcalendartext" name="inputcalendartext" value="">
-                                            <input type="hidden" id="Date_type" name="Date_type" value="">
-                                            <input type="hidden" id="CheckinNew" name="CheckinNew" value="{{$Quotation->checkin}}">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
-                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                </span>
+                                        <div class="col-lg-4"></div>
+                                        <div class="PROPOSAL col-lg-7" style="margin-left: 5px">
+                                            <div class="row">
+                                                <b class="titleQuotation" style="font-size: 24px;color:rgb(255, 255, 255);">ADDITIONAL CHARGE</b>
+                                                <b  class="titleQuotation" style="font-size: 16px;color:rgb(255, 255, 255);">{{$Quotation_IDoverbill}}</b>
                                             </div>
+                                            <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
+                                            <input type="hidden" id="Additional_ID" name="Additional_ID" value="{{$Quotation_IDoverbill}}">
                                         </div>
                                     </div>
-                                    <div class="col-lg-2 col-md-6 col-sm-12">
-                                        <span for="chekin">Check Out Date </span>
-                                        <div class="input-group"  >
-                                            <input type="text" name="Checkout" id="Checkout" class="form-control readonly-input" value="{{$Quotation->checkout}}"  readonly disabled>
-                                            <input type="hidden" id="checkmonth" name="checkmonth" value="">
-                                            <input type="hidden" id="CheckoutNew" name="CheckoutNew" value="{{$Quotation->checkout}}">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"style="border-radius:  0  5px 5px  0 ">
-                                                    <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <span for="">จำนวน</span>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="Day" id="Day" placeholder="จำนวนวัน"value="{{$Quotation->day}}" @readonly(true)>
-                                            <span class="input-group-text">Day</span>
-                                            <input type="text" class="form-control" name="Night" id="Night" placeholder="จำนวนคืน"value="{{$Quotation->night}}" @readonly(true)>
-                                            <span class="input-group-text">Night</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <span for="">จำนวนผู้เข้าพัก (ผู้ใหญ่/เด็ก)</span>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่"value="{{$Quotation->adult}}"disabled>
-                                            <span class="input-group-text">ผู้ใหญ่</span>
-                                            <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก"value="{{$Quotation->children}}"disabled>
-                                            <span class="input-group-text">เด็ก</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Event</span>
-                                        <select name="Mevent" id="Mevent" class="select2"  onchange="masterevent()" disabled>
-                                            <option value=""></option>
-                                            @foreach($Mevent as $item)
-                                                <option value="{{ $item->id }}"{{$Quotation->eventformat == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Vat Type</span>
-                                        <select name="Mvat" id="Mvat" class="select2"  onchange="mastervat()" disabled>
-                                            @foreach($Mvat as $item)
-                                                <option value="{{ $item->id }}"{{$Quotation->vat_type == $item->id ? 'selected' : ''}}>{{ $item->name_th }} </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span class="Freelancer_member" for="">Introduce By</span>
-                                        <select name="Freelancer_member" id="Freelancer_member" class="select2" required disabled>
-                                            <option value=""></option>
-                                            @foreach($Freelancer_member as $item)
-                                                <option value="{{ $item->Profile_ID }}"{{$Quotation->freelanceraiffiliate == $item->Profile_ID ? 'selected' : ''}}>{{ $item->First_name }} {{ $item->Last_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Company Discount Contract</span>{{--ดึงของcompanyมาใส่--}}
-                                        <div class="input-group">
-                                            <span class="input-group-text">DC</span>
-                                            <input type="text" class="form-control" name="Company_Discount" id="Company_Discount" aria-label="Amount (to the nearest dollar)"value="{{$Quotation->ComRateCode}}" disabled>
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Company Commission</span>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control"  name="Company_Commission_Rate_Code" value="{{$Quotation->commissionratecode}}"disabled>
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <div class="row">
-                                            <div class="col-lg-6 col-md-12 col-sm-12">
-                                                <span  for="">User Discount </span>{{--ดึงของuserมาใส่--}}
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" name="User_discount"value="{{@Auth::user()->discount}}" id="User_discount" placeholder="ส่วนลดคิดเป็น %" readonly>
-                                                    <span class="input-group-text">%</span>
+                                    <div class="row mt-2">
+                                        <div class="col-lg-4"></div>
+                                        <div class="PROPOSALfirst col-lg-7" style="background-color: #ffffff;">
+                                            <div class="col-12 col-md-12 col-sm-12">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                        <span>Issue Date:</span>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12" id="reportrange1">
+                                                        <input type="text" id="datestart" class="form-control readonly-input" name="IssueDate" style="text-align: left;" value="{{$Quotation->issue_date}}"disabled>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6 col-md-12 col-sm-12">
-                                                <span  for=""> Additional Discount</span>{{--ดึงของuserมาใส่--}}
-                                                <div class="input-group">
-                                                    <input class="form-control" type="text" name="Add_discount" id="Add_discount" value="{{$Quotation->additional_discount}}" placeholder="ส่วนลดเพิ่มเติมคิดเป็น %"
-                                                            oninput="if (parseFloat(this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)) > {{ Auth::user()->additional_discount }}) this.value = {{ Auth::user()->additional_discount }};"
-                                                            onchange="adddis()"readonly>
-                                                    <span class="input-group-text">%</span>
+                                            <div class="col-12 col-md-12 col-sm-12 mt-2">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-12 col-sm-12"style="display:flex; justify-content:right; align-items:center;">
+                                                        <span>Expiration Date:</span>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-12 col-sm-12">
+                                                        <input type="text" id="dateex" class="form-control readonly-input" name="Expiration" style="text-align: left;"value="{{$Quotation->Expirationdate}}"disabled>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Total User Discount</span>
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"   placeholder="ส่วนลดคิดเป็น %" readonly>
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                        <script>
-                                            function adddis() {
-                                                // Get the discount values from the input fields
-                                                var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
-                                                var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
-
-                                                // Calculate the total discount
-                                                var total = User_discount + Add_discount;
-
-
-                                                // Set the total discount to the SpecialDiscount field
-                                                document.getElementById('SpecialDiscount').value = total.toFixed(2); // Keep two decimal places
-                                            }
-                                            $(document).ready(function() {
-
-                                                    var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
-                                                    var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
-                                                    var total = User_discount+Add_discount;
-                                                    $('#SpecialDiscount').val(total);
-
-                                            });
-                                        </script>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <span  for="">Discount Amount</span>
-                                        <div class="input-group">
-                                            <input type="number" class="DiscountAmount form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท"value="{{$Quotation->SpecialDiscountBath}}" disabled>
-                                            <span class="input-group-text">Bath</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container-xl">
-                <div class="row clearfix">
-                    <div class="col-md-12 col-12">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <div class="row mt-2">
-                                    <div class="col-lg-7 col-md-12 col-sm-12" style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#109699">
-                                        <b id="TiTlecompanyTable" class="com mt-2 my-2"style="font-size:18px">Company Information</b>
-                                        <table id="companyTable">
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Company Name :</b></td>
-                                                <td>
-                                                    <span id="Company_name" name="Company_name" ></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Address :</b></td>
-                                                <td><span id="Address" ></span></td>
-
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td><span id="Address2" ></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
-                                                <td>
-                                                    <span id="Company_Number"></span>
-                                                    <b style="margin-left: 10px;color:#000;">Company Fax : </b><span id="Company_Fax"></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Email :</b></td>
-                                                <td><span id="Company_Email"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Taxpayer Identification : </b></td>
-                                                <td><span id="Taxpayer"></span></td>
-                                            </tr>
-                                        </table>
-                                        <b id="TiTlecontractTable" class="com mt-2 my-2"style="font-size:18px">Personal Information</b>
-                                        <table id="contractTable">
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Name :</b></td>
-                                                <td>
-                                                    <span id="Company_contact"></span>
-                                                    <b style="margin-left: 10px;color:#000;">Contact Number : </b><span id="Contact_Phone"></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Email : </b></td>
-                                                <td><span id="Contact_Email"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#fff;">Taxpayer Identification : </b></td>
-                                                <td style="color: #fff"><span id="Taxpayer"></span></td>
-                                            </tr>
-                                        </table>
-                                        <b id="TiTleguestTable" class="com mt-2 my-2"style="font-size:18px;display: none">Guest Information</b>
-                                        <table id="guestTable" style="display: none">
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Guest Name :</b></td>
-                                                <td>
-                                                    <span id="guest_name" name="guest_name" ></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Address :</b></td>
-                                                <td><span id="guestAddress" ></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td><span id="guestAddress2" ></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Number :</b></td>
-                                                <td>
-                                                    <span id="guest_Number"></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Email :</b></td>
-                                                <td><span id="guest_Email"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Identification Number : </b></td>
-                                                <td><span id="guestTaxpayer"></span></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-lg-4 col-md-12 col-sm-12">
-                                        <div><br><br><br><br></div>
-                                        <div class="col-lg-12 col-md-12 col-sm-12 row" >
-                                            <div class="col-lg-6 col-md-6 col-sm-6">
-                                                <p style="display: inline-block;font-weight: bold;font-size:16px">Check In :</p><br>
-                                                <p style="display: inline-block;font-weight: bold;font-size:16px">Check Out :</p><br>
-                                                <p style="display: inline-block;font-weight: bold;font-size:16px">Length of Stay :</p><br>
-                                                <p style="display: inline-block;font-weight: bold;font-size:16px">Number of Guests :</p>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 col-sm-6 mt-2">
-                                                @if ($Quotation->checkin == null)
-                                                    <p style="display: inline-block;"><span id="checkinpo">-</span></p><br>
-                                                    <p style="display: inline-block;"><span id="checkoutpo">-</span></p><br>
-                                                @else
-                                                    <p style="display: inline-block;"><span >{{$Quotation->checkin}}</span></p><br>
-                                                    <p style="display: inline-block;"><span >{{$Quotation->checkout}}</span></p><br>
-                                                @endif
-                                                @if ($Quotation->day == null)
-                                                    <p style="display: inline-block;"><span id="daypo">-</span><span id="nightpo"></span></P><br>
-                                                @else
-                                                    <p style="display: inline-block;"><span >{{$Quotation->day}}</span> วัน <span >{{$Quotation->night}}</span> คืน</p><br>
-                                                @endif
-                                                <p style="display: inline-block;"><span id="Adultpo">{{$Quotation->adult}}</span> Adult , <span id="Childrenpo">{{$Quotation->children}}</span> Children</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="styled-hr"></div>
+                            <input type="hidden" id="Quotation_ID" name="Quotation_ID" value="{{$Quotation_ID}}">
+                            <div class="row mt-5">
+                                <div class="col-lg-3 col-md-3 col-sm-12">
+                                    <select name="selectdata" id="select" class="select2" onchange="showselectInput()" disabled>
+                                        <option value="Company"{{$Quotation->type_Proposal == "Company" ? 'selected' : ''}}>นามบริษัท</option>
+                                        <option value="Guest"{{$Quotation->type_Proposal == "Guest" ? 'selected' : ''}}>นามบุคคล</option>
+                                    </select>
                                 </div>
-                                <div class="mt-2">
-                                    <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
+                            </div>
+                            <div id="Companyshow" style="display: block">
+                                <div class="row mt-2" >
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <label class="labelcontact" for="">Customer Company</label>
+                                        <select name="Company" id="Company" class="select2" onchange="companyContact()" required>
+                                            <option value=""></option>
+                                            @foreach($Company as $item)
+                                                <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->Company_Name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <label class="labelcontact" for="">Customer Contact</label>
+                                        <button style="float: right; border: none; background-color: transparent;color:#fff;" type="button" class="btn" disabled>0</button>
+                                        <input type="text" name="Company_Contact" id="Company_Contact" class="form-control">
+                                        <input type="hidden" name="Company_Contact" id="Company_Contactname" class="form-control">
+                                    </div>
                                 </div>
-                                <div class="row mt-2">
-                                    <table id="main" class=" example2 ui striped table nowrap unstackable " style="width:100%">
-                                        <thead >
-                                            <tr>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%">No.</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Code</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:50%"data-priority="1">Description</th>
-                                                <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="display-selected-items">
-                                            @if (!empty($selectproduct))
-                                                @foreach ($selectproduct as $key => $item)
-                                                    @php
-                                                    $var = $item->Code;
-                                                    @endphp
-                                                    <tr id="tr-select-main{{$item->Code}}">
-                                                        <input type="hidden" id="CheckProduct" name="CheckProduct[]" value="{{$item->Code}}">
-                                                        <td style="text-align:center;vertical-align: middle;"><input type="hidden" id="ProductID" name="Code[]" value="{{$item->Code}}">{{$key+1}}</td>
-                                                        <td style="text-align:center;vertical-align: middle;">{{$item->Code}} </td>
-                                                        <td style="text-align:left;vertical-align: middle;">{{$item->Detail}} </td>
-                                                        <td class="Quantity" data-value="{{$item->Amount}}" style="text-align:center;">
-                                                            <input type="text" id="quantity{{$var}}" name="Amount[]" rel="{{$var}}" style="text-align:center;vertical-align: middle;"class="quantity-input form-control" value="{{$item->Amount}} "oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" disabled>
-                                                        </td>
+                            </div>
+                            <div id="Guestshow" style="display: none">
+                                <div class="row mt-2" >
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <label class="labelcontact" for="">Customer Guest </label>
+                                        <button style="float: right" type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ route('guest','index') }}'"><i class="fa fa-plus"></i> เพิ่มลูกค้า</button>
+                                        <select name="Guest" id="Guest" class="select2" onchange="GuestContact()" disabled>
+                                            <option value=""></option>
+                                            @foreach($Guest as $item)
+                                                <option value="{{ $item->Profile_ID }}"{{$Quotation->Company_ID == $item->Profile_ID ? 'selected' : ''}}>{{ $item->First_name }} {{$item->Last_name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="mt-3 my-3" style="border: 1px solid #000">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="row">
+                                    <div class="col-lg-2 col-md-12 col-sm-12">
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" > No Check In Date</label>
+                                    </div>
+                                    <div class="col-lg-10 col-md-12 col-sm-12" style="float: right">
+                                        <span><b> Date Type : </b><span id="calendartext" style="font-size: 16px;color:rgb(0, 0, 0);"></span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-2 col-md-6 col-sm-12">
+                                    <span for="chekin">Check In Date
+                                    <div class="input-group">
+                                        <input type="text" name="Checkin" id="Checkin" class="form-control readonly-input" value="{{$Quotation->checkin}}"  readonly  disabled>
+                                        <input type="hidden" id="inputmonth" name="inputmonth" value="">
+                                        <input type="hidden" id="inputcalendartext" name="inputcalendartext" value="">
+                                        <input type="hidden" id="Date_type" name="Date_type" value="">
+                                        <input type="hidden" id="CheckinNew" name="CheckinNew" value="{{$Quotation->checkin}}">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" style="border-radius:  0  5px 5px  0 ">
+                                                <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-6 col-sm-12">
+                                    <span for="chekin">Check Out Date </span>
+                                    <div class="input-group"  >
+                                        <input type="text" name="Checkout" id="Checkout" class="form-control readonly-input" value="{{$Quotation->checkout}}"  readonly disabled>
+                                        <input type="hidden" id="checkmonth" name="checkmonth" value="">
+                                        <input type="hidden" id="CheckoutNew" name="CheckoutNew" value="{{$Quotation->checkout}}">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"style="border-radius:  0  5px 5px  0 ">
+                                                <i class="fas fa-calendar-alt"></i> <!-- ไอคอนปฏิทิน -->
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <span for="">จำนวน</span>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="Day" id="Day" placeholder="จำนวนวัน"value="{{$Quotation->day}}" @readonly(true)>
+                                        <span class="input-group-text">Day</span>
+                                        <input type="text" class="form-control" name="Night" id="Night" placeholder="จำนวนคืน"value="{{$Quotation->night}}" @readonly(true)>
+                                        <span class="input-group-text">Night</span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <span for="">จำนวนผู้เข้าพัก (ผู้ใหญ่/เด็ก)</span>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="Adult" id="Adult" placeholder="จำนวนผู้ใหญ่"value="{{$Quotation->adult}}"disabled>
+                                        <span class="input-group-text">ผู้ใหญ่</span>
+                                        <input type="text" class="form-control" name="Children"id="Children" placeholder="จำนวนเด็ก"value="{{$Quotation->children}}"disabled>
+                                        <span class="input-group-text">เด็ก</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <span  for="">Event</span>
+                                    <select name="Mevent" id="Mevent" class="select2"  onchange="masterevent()" disabled>
+                                        <option value=""></option>
+                                        @foreach($Mevent as $item)
+                                            <option value="{{ $item->id }}"{{$Quotation->eventformat == $item->id ? 'selected' : ''}}>{{ $item->name_th }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <span  for="">Vat Type</span>
+                                    <select name="Mvat" id="Mvat" class="select2"  onchange="mastervat()" disabled>
+                                        @foreach($Mvat as $item)
+                                            <option value="{{ $item->id }}"{{$Quotation->vat_type == $item->id ? 'selected' : ''}}>{{ $item->name_th }} </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <span class="Freelancer_member" for="">Introduce By</span>
+                                    <select name="Freelancer_member" id="Freelancer_member" class="select2" required disabled>
+                                        <option value=""></option>
+                                        @foreach($Freelancer_member as $item)
+                                            <option value="{{ $item->Profile_ID }}"{{$Quotation->freelanceraiffiliate == $item->Profile_ID ? 'selected' : ''}}>{{ $item->First_name }} {{ $item->Last_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <span  for="">Company Discount Contract</span>{{--ดึงของcompanyมาใส่--}}
+                                    <div class="input-group">
+                                        <span class="input-group-text">DC</span>
+                                        <input type="text" class="form-control" name="Company_Discount" id="Company_Discount" aria-label="Amount (to the nearest dollar)"value="{{$Quotation->ComRateCode}}" disabled>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <span  for="">Company Commission</span>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control"  name="Company_Commission_Rate_Code" value="{{$Quotation->commissionratecode}}"disabled>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-12 col-sm-12">
+                                            <span  for="">User Discount </span>{{--ดึงของuserมาใส่--}}
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="User_discount"value="{{@Auth::user()->discount}}" id="User_discount" placeholder="ส่วนลดคิดเป็น %" readonly>
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 col-sm-12">
+                                            <span  for=""> Additional Discount</span>{{--ดึงของuserมาใส่--}}
+                                            <div class="input-group">
+                                                <input class="form-control" type="text" name="Add_discount" id="Add_discount" value="{{$Quotation->additional_discount}}" placeholder="ส่วนลดเพิ่มเติมคิดเป็น %"
+                                                        oninput="if (parseFloat(this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)) > {{ Auth::user()->additional_discount }}) this.value = {{ Auth::user()->additional_discount }};"
+                                                        onchange="adddis()"readonly>
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <span  for="">Total User Discount</span>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="SpecialDiscount" id="SpecialDiscount"   placeholder="ส่วนลดคิดเป็น %" readonly>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <script>
+                                        function adddis() {
+                                            // Get the discount values from the input fields
+                                            var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
+                                            var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
 
-                                                    </tr>
-                                                @endforeach
-                                            @endif
-                                        </tbody>
-                                    </table>
-                                    @if (@Auth::user()->roleMenuDiscount('Proposal',Auth::user()->id) == 1)
-                                        <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="1">
-                                    @else
-                                        <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="0">
-                                    @endif
-                                    <input type="hidden" id="paxold" name="paxold" value="{{$Quotation->TotalPax}}">
-                                    <input type="hidden" name="discountuser" id="discountuser" value="{{@Auth::user()->discount}}">
-                                    <div class="col-12 row ">
-                                        <div class="col-lg-9 col-md-8 col-sm-12 mt-2" >
-                                            <span >Notes or Special Comment</span>
-                                            <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea">{{$Quotation->comment}}</textarea>
-                                        </div>
-                                        <div class="col-lg-3 col-md-4 col-sm-12 " >
-                                            <table class="table table-custom-borderless" >
-                                                <tbody>
-                                                    <tr >
-                                                        <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Subtotal</b></td>
-                                                        <td style="text-align:left;width: 30%;font-size: 14px;"><span id="total-amount">0</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Price Before Tax</b></td>
-                                                        <td style="text-align:left;width: 30%;font-size: 14px;"><span id="Net-price">0</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td scope="row" style="text-align:right;width: 70%;font-size: 14px;"><b>Value Added Tax</b></td>
-                                                        <td style="text-align:left;width: 30%;font-size: 14px;"><span id="total-Vat">0</span></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 row">
-                                        <div class="col-9"></div>
-                                        <div class="col-lg-3 col-md-3 col-sm-12">
-                                            <table class="table table-custom-borderless" >
-                                                <tbody>
-                                                    <tr>
-                                                        <td colspan="2" style="text-align:center;">
-                                                            <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;padding:5px;  padding-bottom: 8px;">
-                                                                <b style="font-size: 14px;">Net Total</b>
-                                                                <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"><span id="Net-Total">0</span></strong>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 row">
-                                        <div class="col-9"></div>
-                                        <div class="col-3 styled-hr"></div>
-                                    </div>
-                                    <div class="col-12 row">
-                                        <div class="col-9">
-                                        </div>
-                                        <div class="col-lg-3 col-md-3 col-sm-12" id="Pax" style="display: block">
-                                            <table class="table table-custom-borderless" >
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="text-align:right;width: 55%;font-size: 14px;"><b>Number of Guests :</b></td>
-                                                        <td style="text-align:left;width: 45%;font-size: 14px;"><span id="PaxToTal">0</span> Adults
-                                                            <input type="hidden" name="PaxToTalall" id="PaxToTalall">
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person :</b></td>
-                                                        <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span> THB</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 mt-3">
-                                        <div class="col-lg-4 col-md-6 col-sm-12">
-                                            <strong class="com" style="font-size: 18px">Method of Payment</strong>
-                                        </div>
-                                        <span class="col-md-8 col-sm-12 mt-1"id="Payment50" style="display: block" >
-                                            Please make a 50% deposit within 7 days after confirmed. <br>
-                                            Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                                            If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
-                                            pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                                        </span>
-                                        <span class="col-md-8 col-sm-12 mt-1"  id="Payment100" style="display: none">
-                                            Please make a 100% deposit within 3 days after confirmed. <br>
-                                            Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
-                                            If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
-                                            pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
-                                        </span>
-                                        <div class="row">
-                                            <div class="col-lg-8 col-md-6 col-sm-12">
-                                                <div class="col-lg-12 col-md-12 col-sm-12  mt-2">
-                                                    <div class="row">
-                                                        <div class="col-2 mt-3" style="display: flex;justify-content: center;align-items: center;">
-                                                            <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 60%;border-radius: 50%;"/>
-                                                        </div>
-                                                        <div class="col-7 mt-2">
-                                                            <strong>The Siam Commercial Bank Public Company Limited <br>Bank Account No. 708-226791-3<br>Tha Yang - Phetchaburi Branch (Savings Account)</strong>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="styled-hr mt-3"></div>
-                                    <div class="col-lg-12 col-md-12 col-sm-12 mt-2">
-                                        <div class="col-lg-4 col-md-12 col-sm-12">
-                                            <strong class="titleh1">รับรอง</strong>
-                                        </div>
-                                        <div class="col-lg-12 col-md-12 col-sm-12 my-2">
-                                            <div class="row">
-                                                <div class="col-lg-2 centered-content">
-                                                    <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
-                                                    @php
-                                                        use SimpleSoftwareIO\QrCode\Facades\QrCode;
-                                                    @endphp
-                                                    <div class="mt-3">
-                                                        {!! QrCode::size(90)->generate('No found'); !!}
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-2 centered-content">
-                                                    <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
-                                                    <br><br>
-                                                    <span>{{@Auth::user()->name}}</span>
-                                                    <span id="issue_date_document"></span>
-                                                </div>
-                                                <div class="col-lg-2 centered-content">
-                                                    <span>ผู้อนุมัติเอกสาร (ผู้ขาย)</span><br>
-                                                    <br><br>
-                                                    <span>{{@Auth::user()->name}}</span>
-                                                    <span id="issue_date_document1"></span>
-                                                </div>
-                                                <div class="col-lg-2 centered-content">
-                                                    <span>ตราประทับ (ผู้ขาย)</span>
-                                                </div>
-                                                <div class="col-lg-2 centered-content">
-                                                    <span>ผู้รับเอกสาร (ลูกค้า)</span>
-                                                    <br><br><br>
-                                                    ______________________
-                                                    <span>_____/__________/_____</span>
-                                                </div>
-                                                <div class="col-lg-2 centered-content">
-                                                    <span >ตราประทับ (ลูกค้า)</span>
-                                                    <div class="centered-content4 mt-1">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="styled-hr mt-3"></div>
-                                    <div class="col-lg-12 col-md-12 col-sm-12 row mt-5">
-                                        <div class="col-lg-4 col-md-12 col-sm-12"></div>
-                                        <div class="col-lg-4 col-md-12 col-sm-12"  style="display:flex; justify-content:center; align-items:center;">
-                                            <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="BACKtoEdit()">
-                                                Back
-                                            </button>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-color-green text-white  dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Select &nbsp;</button>
-                                                <ul class="dropdown-menu border-0 shadow p-3">
-                                                    @if ($Quotation->correct >= 1 )
-                                                        <li><a href="{{ asset($path.$Additional_ID.'-'.$Quotation->correct.".pdf") }}"  class="dropdown-item py-2 rounded" target="_blank" >PDF</a></li>
-                                                    @else
-                                                        <li><a href="{{ asset($path.$Additional_ID.".pdf") }}" class="dropdown-item py-2 rounded" target="_blank" >PDF</a></li>
-                                                    @endif
-                                                    <li><a class="dropdown-item py-2 rounded" onclick="Appovel({{$Quotation->id}})">Appovel</a></li>
-                                                    <li><a class="dropdown-item py-2 rounded" onclick="Reject({{$Quotation->id}})">Reject</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="col-4"></div>
+                                            // Calculate the total discount
+                                            var total = User_discount + Add_discount;
+
+
+                                            // Set the total discount to the SpecialDiscount field
+                                            document.getElementById('SpecialDiscount').value = total.toFixed(2); // Keep two decimal places
+                                        }
+                                        $(document).ready(function() {
+
+                                                var User_discount = parseFloat(document.getElementById('User_discount').value) || 0;
+                                                var Add_discount = parseFloat(document.getElementById('Add_discount').value) || 0;
+                                                var total = User_discount+Add_discount;
+                                                $('#SpecialDiscount').val(total);
+
+                                        });
+                                    </script>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <span  for="">Discount Amount</span>
+                                    <div class="input-group">
+                                        <input type="number" class="DiscountAmount form-control" name="DiscountAmount" id="DiscountAmount"  placeholder="ส่วนลดคิดเป็นบาท"value="{{$Quotation->SpecialDiscountBath}}" disabled>
+                                        <span class="input-group-text">Bath</span>
                                     </div>
                                 </div>
                             </div>
@@ -827,7 +513,312 @@
                 </div>
             </div>
         </div>
-    </form>
+        <div class="container-xl">
+            <div class="row clearfix">
+                <div class="col-md-12 col-12">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row mt-2">
+                                <div class="col-lg-7 col-md-12 col-sm-12" style=" border-right-style: solid  ; border-right-width: 2px;border-right-color:#109699">
+                                    <b id="TiTlecompanyTable" class="com mt-2 my-2"style="font-size:18px">Company Information</b>
+                                    <table id="companyTable">
+                                        <tr>
+                                            <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Company Name :</b></td>
+                                            <td>
+                                                <span id="Company_name" name="Company_name" ></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Address :</b></td>
+                                            <td><span id="Address" ></span></td>
+
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><span id="Address2" ></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Number :</b></td>
+                                            <td>
+                                                <span id="Company_Number"></span>
+                                                <b style="margin-left: 10px;color:#000;">Company Fax : </b><span id="Company_Fax"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Company Email :</b></td>
+                                            <td><span id="Company_Email"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Taxpayer Identification : </b></td>
+                                            <td><span id="Taxpayer"></span></td>
+                                        </tr>
+                                    </table>
+                                    <b id="TiTlecontractTable" class="com mt-2 my-2"style="font-size:18px">Personal Information</b>
+                                    <table id="contractTable">
+                                        <tr>
+                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Name :</b></td>
+                                            <td>
+                                                <span id="Company_contact"></span>
+                                                <b style="margin-left: 10px;color:#000;">Contact Number : </b><span id="Contact_Phone"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Contact Email : </b></td>
+                                            <td><span id="Contact_Email"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#fff;">Taxpayer Identification : </b></td>
+                                            <td style="color: #fff"><span id="Taxpayer"></span></td>
+                                        </tr>
+                                    </table>
+                                    <b id="TiTleguestTable" class="com mt-2 my-2"style="font-size:18px;display: none">Guest Information</b>
+                                    <table id="guestTable" style="display: none">
+                                        <tr>
+                                            <td style="padding: 10px"><b style="margin-left: 2px; width:30%;font-weight: bold;color:#000;">Guest Name :</b></td>
+                                            <td>
+                                                <span id="guest_name" name="guest_name" ></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Address :</b></td>
+                                            <td><span id="guestAddress" ></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><span id="guestAddress2" ></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Number :</b></td>
+                                            <td>
+                                                <span id="guest_Number"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Guest Email :</b></td>
+                                            <td><span id="guest_Email"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px"><b style="margin-left: 2px;color:#000;">Identification Number : </b></td>
+                                            <td><span id="guestTaxpayer"></span></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-lg-4 col-md-12 col-sm-12">
+                                    <div><br><br><br><br></div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 row" >
+                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                            <p style="display: inline-block;font-weight: bold;font-size:16px">Check In :</p><br>
+                                            <p style="display: inline-block;font-weight: bold;font-size:16px">Check Out :</p><br>
+                                            <p style="display: inline-block;font-weight: bold;font-size:16px">Length of Stay :</p><br>
+                                            <p style="display: inline-block;font-weight: bold;font-size:16px">Number of Guests :</p>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6 mt-2">
+                                            @if ($Quotation->checkin == null)
+                                                <p style="display: inline-block;"><span id="checkinpo">-</span></p><br>
+                                                <p style="display: inline-block;"><span id="checkoutpo">-</span></p><br>
+                                            @else
+                                                <p style="display: inline-block;"><span >{{$Quotation->checkin}}</span></p><br>
+                                                <p style="display: inline-block;"><span >{{$Quotation->checkout}}</span></p><br>
+                                            @endif
+                                            @if ($Quotation->day == null)
+                                                <p style="display: inline-block;"><span id="daypo">-</span><span id="nightpo"></span></P><br>
+                                            @else
+                                                <p style="display: inline-block;"><span >{{$Quotation->day}}</span> วัน <span >{{$Quotation->night}}</span> คืน</p><br>
+                                            @endif
+                                            <p style="display: inline-block;"><span id="Adultpo">{{$Quotation->adult}}</span> Adult , <span id="Childrenpo">{{$Quotation->children}}</span> Children</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="styled-hr"></div>
+                            </div>
+                            <div class="mt-2">
+                                <strong>ขอเสนอราคาและเงื่อนไขสำหรับท่าน ดังนี้ <br> We are pleased to submit you the following desctibed here in as price,items and terms stated :</strong>
+                            </div>
+                            <div class="row mt-2">
+                                <table id="main" class=" example2 ui striped table nowrap unstackable " style="width:100%">
+                                    <thead >
+                                        <tr>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%">No.</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Code</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;width:50%"data-priority="1">Description</th>
+                                            <th style="background-color: rgba(45, 127, 123, 1); color:#fff;text-align:center;width:10%"data-priority="1">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="display-selected-items">
+                                        @if (!empty($selectproduct))
+                                            @foreach ($selectproduct as $key => $item)
+                                                @php
+                                                $var = $item->Code;
+                                                @endphp
+                                                <tr id="tr-select-main{{$item->Code}}">
+                                                    <input type="hidden" id="CheckProduct" name="CheckProduct[]" value="{{$item->Code}}">
+                                                    <td style="text-align:center;vertical-align: middle;"><input type="hidden" id="ProductID" name="Code[]" value="{{$item->Code}}">{{$key+1}}</td>
+                                                    <td style="text-align:center;vertical-align: middle;">{{$item->Code}} </td>
+                                                    <td style="text-align:left;vertical-align: middle;">{{$item->Detail}} </td>
+                                                    <td class="Quantity" data-value="{{$item->Amount}}" style="text-align:center;">
+                                                        <input type="text" id="quantity{{$var}}" name="Amount[]" rel="{{$var}}" style="text-align:center;vertical-align: middle;"class="quantity-input form-control" value="{{$item->Amount}} "oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" disabled>
+                                                    </td>
+
+                                                </tr>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                                @if (@Auth::user()->roleMenuDiscount('Proposal',Auth::user()->id) == 1)
+                                    <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="1">
+                                @else
+                                    <input type="hidden" name="roleMenuDiscount" id="roleMenuDiscount" value="0">
+                                @endif
+                                <input type="hidden" id="paxold" name="paxold" value="{{$Quotation->TotalPax}}">
+                                <input type="hidden" name="discountuser" id="discountuser" value="{{@Auth::user()->discount}}">
+                                <div class="col-12 row ">
+                                    <div class="col-lg-9 col-md-8 col-sm-12 mt-2" >
+                                        <span >Notes or Special Comment</span>
+                                        <textarea class="form-control mt-2"cols="30" rows="5"name="comment" id="comment" placeholder="Leave a comment here" id="floatingTextarea">{{$Quotation->comment}}</textarea>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12 " >
+                                        <table class="table table-custom-borderless" >
+                                            <tbody>
+                                                <tr >
+                                                    <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Subtotal</b></td>
+                                                    <td style="text-align:left;width: 30%;font-size: 14px;"><span id="total-amount">0</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td scope="row"style="text-align:right;width: 70%;font-size: 14px;"><b>Price Before Tax</b></td>
+                                                    <td style="text-align:left;width: 30%;font-size: 14px;"><span id="Net-price">0</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td scope="row" style="text-align:right;width: 70%;font-size: 14px;"><b>Value Added Tax</b></td>
+                                                    <td style="text-align:left;width: 30%;font-size: 14px;"><span id="total-Vat">0</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-12 row">
+                                    <div class="col-9"></div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <table class="table table-custom-borderless" >
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="2" style="text-align:center;">
+                                                        <div style="display: flex; justify-content: center; align-items: center; border: 2px solid #2D7F7B; background-color: #2D7F7B; border-radius: 5px; color: #ffffff;padding:5px;  padding-bottom: 8px;">
+                                                            <b style="font-size: 14px;">Net Total</b>
+                                                            <strong id="total-Price" style="font-size: 16px; margin-left: 10px;"><span id="Net-Total">0</span></strong>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-12 row">
+                                    <div class="col-9"></div>
+                                    <div class="col-3 styled-hr"></div>
+                                </div>
+                                <div class="col-12 row">
+                                    <div class="col-9">
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12" id="Pax" style="display: block">
+                                        <table class="table table-custom-borderless" >
+                                            <tbody>
+                                                <tr>
+                                                    <td style="text-align:right;width: 55%;font-size: 14px;"><b>Number of Guests :</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="PaxToTal">0</span> Adults
+                                                        <input type="hidden" name="PaxToTalall" id="PaxToTalall">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="text-align:right;width: 55%;font-size: 14px;"><b>Average per person :</b></td>
+                                                    <td style="text-align:left;width: 45%;font-size: 14px;"><span id="Average">0</span> THB</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <div class="col-lg-4 col-md-6 col-sm-12">
+                                        <strong class="com" style="font-size: 18px">Method of Payment</strong>
+                                    </div>
+                                    <span class="col-md-8 col-sm-12 mt-1"id="Payment50" style="display: block" >
+                                        Please make a 50% deposit within 7 days after confirmed. <br>
+                                        Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
+                                        If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
+                                        pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
+                                    </span>
+                                    <span class="col-md-8 col-sm-12 mt-1"  id="Payment100" style="display: none">
+                                        Please make a 100% deposit within 3 days after confirmed. <br>
+                                        Transfer to <strong> " Together Resort Limited Partnership "</strong> following banks details.<br>
+                                        If you use transfer, Please inform Accounting / Finance Department Tel or LINE ID<span style="font-size: 18px"> @Together-resort</span><br>
+                                        pay-in slip to number 032-708-888 every time for the correctness of payment allocation.<br>
+                                    </span>
+                                    <div class="row">
+                                        <div class="col-lg-8 col-md-6 col-sm-12">
+                                            <div class="col-lg-12 col-md-12 col-sm-12  mt-2">
+                                                <div class="row">
+                                                    <div class="col-2 mt-3" style="display: flex;justify-content: center;align-items: center;">
+                                                        <img src="{{ asset('/image/bank/SCB.jpg') }}" style="width: 60%;border-radius: 50%;"/>
+                                                    </div>
+                                                    <div class="col-7 mt-2">
+                                                        <strong>The Siam Commercial Bank Public Company Limited <br>Bank Account No. 708-226791-3<br>Tha Yang - Phetchaburi Branch (Savings Account)</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="styled-hr mt-3"></div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 mt-2">
+                                    <div class="col-lg-4 col-md-12 col-sm-12">
+                                        <strong class="titleh1">รับรอง</strong>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 my-2">
+                                        <div class="row">
+                                            <div class="col-lg-2 centered-content">
+                                                <span>สแกนเพื่อเปิดด้วยเว็บไซต์</span>
+                                                @php
+                                                    use SimpleSoftwareIO\QrCode\Facades\QrCode;
+                                                @endphp
+                                                <div class="mt-3">
+                                                    {!! QrCode::size(90)->generate('No found'); !!}
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 centered-content">
+                                                <span>ผู้ออกเอกสาร (ผู้ขาย)</span><br>
+                                                <br><br>
+                                                <span>{{@Auth::user()->name}}</span>
+                                                <span id="issue_date_document"></span>
+                                            </div>
+                                            <div class="col-lg-2 centered-content">
+                                                <span>ผู้อนุมัติเอกสาร (ผู้ขาย)</span><br>
+                                                <br><br>
+                                                <span>{{@Auth::user()->name}}</span>
+                                                <span id="issue_date_document1"></span>
+                                            </div>
+                                            <div class="col-lg-2 centered-content">
+                                                <span>ตราประทับ (ผู้ขาย)</span>
+                                            </div>
+                                            <div class="col-lg-2 centered-content">
+                                                <span>ผู้รับเอกสาร (ลูกค้า)</span>
+                                                <br><br><br>
+                                                ______________________
+                                                <span>_____/__________/_____</span>
+                                            </div>
+                                            <div class="col-lg-2 centered-content">
+                                                <span >ตราประทับ (ลูกค้า)</span>
+                                                <div class="centered-content4 mt-1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <form id="myFormApprove" action="{{route('ProposalReq.Approve')}}" method="POST">
         @csrf
         <input type="hidden" name="approved_id" id="approved_id" value="{{$Additional_ID}}">

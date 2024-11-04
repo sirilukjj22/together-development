@@ -1121,7 +1121,7 @@ class proposal_request extends Controller
         }
         return redirect()->route('ProposalReq.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
-    public function Additional_Reject($id){
+    public function Additional_Reject(Request $request){
         try {
             $Additional = proposal_overbill::where('Additional_ID', $request->approved_id)->first();
             $id = $Additional->id;

@@ -234,7 +234,7 @@
                             </div>
                         </div>
                     </div> --}}
-                    {{-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -244,7 +244,7 @@
                                 <div class="modal-body">
                                     <div class="col-12">
                                         <div class="card-body">
-                                            <form action="{{ url('/Proposal/cancel/') }}" method="GET" enctype="multipart/form-data" class="row g-3 basic-form">
+                                            <form action="{{ url('/Document/BillingFolio/Proposal/Over/Cancel/') }}" method="GET" enctype="multipart/form-data" class="row g-3 basic-form">
                                                 @csrf
                                                 <textarea name="note" id="not" class="form-control mt-2" cols="30" rows="5" style="resize: none; overflow: hidden;" oninput="autoResize(this)"></textarea>
                                                 <script>
@@ -263,7 +263,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -304,7 +304,7 @@
                     <li class="nav-item" id="nav1"><a class="nav-link active" data-bs-toggle="tab" href="#nav-Dummy" role="tab" onclick="nav($id='nav1')"><span class="badge" style="background-color:#64748b">{{$Proposalcount}}</span> Additional</a></li>{{--ประวัติการแก้ไข--}}
                     <li class="nav-item" id="nav3"><a class="nav-link" data-bs-toggle="tab" href="#nav-Awaiting" onclick="nav($id='nav3')" role="tab"><span class="badge bg-warning" >{{$Awaitingcount}}</span> Awaiting Approval</a></li>{{--เอกสารออกบิล--}}
                     <li class="nav-item" id="nav4"><a class="nav-link " data-bs-toggle="tab" href="#nav-Approved" onclick="nav($id='nav4')" role="tab"><span class="badge bg-success" >{{$Approvedcount}}</span> Approved</a></li>{{--Doc. number--}}
-                    <li class="nav-item" id="nav5"><a class="nav-link " data-bs-toggle="tab" href="#nav-Reject" onclick="nav($id='nav5')" role="tab"><span class="badge "style="background-color:#1d4ed8" >{{0}}</span> Reject</a></li>{{--ชื่อ คนแนะนำ ครั้งต่อครั้ง ต่อ เอกสาร--}}
+                    <li class="nav-item" id="nav5"><a class="nav-link " data-bs-toggle="tab" href="#nav-Reject" onclick="nav($id='nav5')" role="tab"><span class="badge "style="background-color:#1d4ed8" >{{$Rejectcount}}</span> Reject</a></li>{{--ชื่อ คนแนะนำ ครั้งต่อครั้ง ต่อ เอกสาร--}}
                     <li class="nav-item" id="nav6"><a class="nav-link" data-bs-toggle="tab" href="#nav-Cancel" onclick="nav($id='nav6')" role="tab"><span class="badge bg-danger" >{{$Cancelcount}}</span> Cancel</a></li>{{--% (Percentage) ครั้งต่อครั้ง ต่อ เอกสาร--}}
                     <li class="nav-item" id="nav2"><a class="nav-link " data-bs-toggle="tab" href="#nav-Pending" onclick="nav($id='nav2')" role="tab"><span class="badge" style="background-color:#0ea5e9">{{$Pendingcount}}</span> Receive (RE)</a></li>{{--QUOTAION--}}
                 </ul>
@@ -399,25 +399,49 @@
                                                                 @endif
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                        @if ($item->status_document == 3)
-
+                                                                        @if ($item->status_document !== 2)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                            @if ($item->status_document == 3)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 4)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 2)
                                                                     @if ($item->Operated_by == $CreateBy)
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                            @if ($item->status_document == 3)
-
+                                                                            @if ($item->status_document !== 2)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                                @if ($item->status_document == 3)
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 4)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
+                                                                                @endif
                                                                             @endif
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 3)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                        @if ($item->status_document == 3)
-
+                                                                        @if ($item->status_document !== 2)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                            @if ($item->status_document == 3)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 4)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 0)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
+                                                                            @endif
                                                                         @endif
                                                                     @endif
                                                                 @endif
@@ -529,25 +553,49 @@
                                                                 @endif
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                        @if ($item->status_document == 3)
-
+                                                                        @if ($item->status_document !== 2)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                            @if ($item->status_document == 3)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 4)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 2)
                                                                     @if ($item->Operated_by == $CreateBy)
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                            @if ($item->status_document == 3)
-
+                                                                            @if ($item->status_document !== 2)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                                @if ($item->status_document == 3)
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 4)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
+                                                                                @endif
                                                                             @endif
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 3)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                        @if ($item->status_document == 3)
-
+                                                                        @if ($item->status_document !== 2)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                            @if ($item->status_document == 3)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 4)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 0)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
+                                                                            @endif
                                                                         @endif
                                                                     @endif
                                                                 @endif
@@ -659,25 +707,49 @@
                                                                 @endif
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                        @if ($item->status_document == 3)
-
+                                                                        @if ($item->status_document !== 2)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                            @if ($item->status_document == 3)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 4)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 2)
                                                                     @if ($item->Operated_by == $CreateBy)
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                            @if ($item->status_document == 3)
-
+                                                                            @if ($item->status_document !== 2)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                                @if ($item->status_document == 3)
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 4)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
+                                                                                @endif
                                                                             @endif
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 3)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                        @if ($item->status_document == 3)
-
+                                                                        @if ($item->status_document !== 2)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                            @if ($item->status_document == 3)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 4)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 0)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
+                                                                            @endif
                                                                         @endif
                                                                     @endif
                                                                 @endif
@@ -789,25 +861,49 @@
                                                                 @endif
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                        @if ($item->status_document == 3)
-
+                                                                        @if ($item->status_document !== 2)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                            @if ($item->status_document == 3)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 4)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 2)
                                                                     @if ($item->Operated_by == $CreateBy)
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                            @if ($item->status_document == 3)
-
+                                                                            @if ($item->status_document !== 2)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                                @if ($item->status_document == 3)
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 4)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
+                                                                                @endif
                                                                             @endif
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 3)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                        @if ($item->status_document == 3)
-
+                                                                        @if ($item->status_document !== 2)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                            @if ($item->status_document == 3)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 4)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 0)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
+                                                                            @endif
                                                                         @endif
                                                                     @endif
                                                                 @endif
@@ -919,25 +1015,49 @@
                                                                 @endif
                                                                 @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                        @if ($item->status_document == 3)
-
+                                                                        @if ($item->status_document !== 2)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                            @if ($item->status_document == 3)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 4)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 2)
                                                                     @if ($item->Operated_by == $CreateBy)
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                            @if ($item->status_document == 3)
-
+                                                                            @if ($item->status_document !== 2)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                                @if ($item->status_document == 3)
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 4)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
+                                                                                @endif
                                                                             @endif
                                                                         @endif
                                                                     @endif
                                                                 @elseif ($rolePermission == 3)
                                                                     @if ($canEditProposal == 1)
-                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                        @if ($item->status_document == 3)
-
+                                                                        @if ($item->status_document !== 2)
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                            @if ($item->status_document == 3)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 4)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                            @endif
+                                                                            @if ($item->status_document == 0)
+                                                                                <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
+                                                                            @endif
                                                                         @endif
                                                                     @endif
                                                                 @endif
@@ -1049,25 +1169,49 @@
                                                                     @endif
                                                                     @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                            @if ($item->status_document == 3)
-
+                                                                            @if ($item->status_document !== 2)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                                @if ($item->status_document == 3)
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 4)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
                                                                             @endif
                                                                         @endif
                                                                     @elseif ($rolePermission == 2)
                                                                         @if ($item->Operated_by == $CreateBy)
                                                                             @if ($canEditProposal == 1)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                                @if ($item->status_document == 3)
-
+                                                                                @if ($item->status_document !== 2)
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                                    @if ($item->status_document == 3)
+                                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                    @endif
+                                                                                    @if ($item->status_document == 4)
+                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                    @endif
+                                                                                    @if ($item->status_document == 0)
+                                                                                        <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
+                                                                                    @endif
                                                                                 @endif
                                                                             @endif
                                                                         @endif
                                                                     @elseif ($rolePermission == 3)
                                                                         @if ($canEditProposal == 1)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
-                                                                            @if ($item->status_document == 3)
-
+                                                                            @if ($item->status_document !== 2)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/edit/'.$item->id) }}">Edit</a></li>
+                                                                                @if ($item->status_document == 3)
+                                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/BillingFolio/Proposal/Over/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 4)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Cancel({{ $item->id }})">Cancel</a></li>
+                                                                                @endif
+                                                                                @if ($item->status_document == 0)
+                                                                                    <li><a class="dropdown-item py-2 rounded"href="javascript:void(0);" onclick="Delete({{ $item->id }})">Delete</a></li>
+                                                                                @endif
                                                                             @endif
                                                                         @endif
                                                                     @endif
@@ -1601,6 +1745,39 @@
 
             document.getElementById(id).focus();
         });
+        function Cancel(id){
+            Swal.fire({
+            title: "คุณต้องการปิดการใช้งานใบข้อเสนอนี้ใช่หรือไม่?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+            confirmButtonColor: "#28a745",
+            dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // อัปเดต URL ของฟอร์มในโมดอล
+                    const form = document.querySelector('#myModal form');
+                    form.action = `{{ url('/Document/BillingFolio/Proposal/Over/Cancel/') }}/${id}`;
+                    $('#myModal').modal('show'); // เปิดโมดอล
+                }
+            });
+        }
+        function Delete(id){
+            Swal.fire({
+            title: "คุณต้องลบใบข้อเสนอนี้ใช่หรือไม่?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+            confirmButtonColor: "#28a745",
+            dangerMode: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ url('/Document/BillingFolio/Proposal/Over/Delete/') }}/" + id;
+                }
+            });
+        }
     </script>
 
 @endsection

@@ -28,6 +28,9 @@ use App\Models\document_invoices;
 use App\Models\document_proposal_overbill;
 use App\Models\Master_additional;
 use App\Models\proposal_overbill;
+use App\Models\company_tax;
+use App\Models\guest_tax;
+use App\Models\receive_payment;
 use Auth;
 use App\Models\User;
 use PDF;
@@ -2111,6 +2114,90 @@ class BillingFolioOverbill extends Controller
         return $pdf->stream();
     }
 
+    public function Generate(Request $request ,$id){
+        $Additional = proposal_overbill::where('id', $id)->first();
+        $Additional_ID = $Additional->Additional_ID;
+        $guest = $Additional->Company_ID;
+        $type = $Additional->type_Proposal;
+        $total = $Additional->total;
+        if ($type == 'Company') {
+            $data = companys::where('Profile_ID',$guest)->first();
+            $Identification = $data->Taxpayer_Identification;
+            $name =  'บริษัท '.$data->Company_Name.' จำกัด';
+            $name_ID = $data->Profile_ID;
+            $datasub = company_tax::where('Company_ID',$name_ID)->get();
+            $Address=$data->Address;
+            $CityID=$data->City;
+            $amphuresID = $data->Amphures;
+            $TambonID = $data->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $address = $Address.' '.$TambonID->name_th.' '.$amphuresID->name_th.' '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
+        }else {
+            $data = Guest::where('Profile_ID',$guest)->first();
+            $name =  'คุณ '.$data->First_name.' '.$data->Last_name;
+            $Identification = $data->Identification_Number;
+            $name_ID = $data->Profile_ID;
+            $datasub = guest_tax::where('Company_ID',$name_ID)->get();
+            $Address=$data->Address;
+            $CityID=$data->City;
+            $amphuresID = $data->Amphures;
+            $TambonID = $data->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $address = $Address.' '.$TambonID->name_th.' '.$amphuresID->name_th.' '.$provinceNames->name_th.' '.$TambonID->Zip_Code;
+        }
+        $currentDate = Carbon::now();
+        $ID = 'RE-';
+        $formattedDate = Carbon::parse($currentDate);       // วันที่
+        $month = $formattedDate->format('m'); // เดือน
+        $year = $formattedDate->format('y');
+        $lastRun = receive_payment::latest()->first();
+        $nextNumber = 1;
+
+        if ($lastRun == null) {
+            $nextNumber = $lastRun + 1;
+
+        }else{
+            $lastRunid = $lastRun->id;
+            $nextNumber = $lastRunid + 1;
+        }
+        $newRunNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        $REID = $ID.$year.$month.$newRunNumber;
+        $settingCompany = Master_company::orderBy('id', 'desc')->first();
+
+        return view('billingfolio.overbill.paid',compact('address','Identification','Additional','name','settingCompany','type','total','name_ID','REID','datasub'));
+    }
+    public function Cancel(Request $request ,$id){
+        $Quotation = proposal_overbill::find($id);
+        $Quotation->status_document = 0;
+        $Quotation->remark = $request->note;
+        $Quotation->save();
+        $data = proposal_overbill::where('id',$id)->first();
+        $Additional_ID = $data->Additional_ID;
+        $userid = Auth::user()->id;
+        $save = new log_company();
+        $save->Created_by = $userid;
+        $save->Company_ID = $Additional_ID;
+        $save->type = 'Cancel';
+        $save->Category = 'Cancel :: Additional';
+        $save->content = 'Cancel Document Additional ID : '.$Additional_ID.'+'.$request->note;
+        $save->save();
+        return redirect()->route('BillingFolioOver.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+    }
+    public function Delete(Request $request ,$id){
+        $data = proposal_overbill::where('id',$id)->first();
+        $Additional_ID = $data->Additional_ID;
+        try {
+            document_proposal_overbill::where('Additional_ID', $Additional_ID)->delete();
+            proposal_overbill::where('id',$id)->delete();
+        } catch (\Throwable $e) {
+            return redirect()->route('BillingFolioOver.index')->with('error',$e->getMessage());
+        }
+        return redirect()->route('BillingFolioOver.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+    }
     public function log($id){
         $Quotation = proposal_overbill::where('id', $id)->first();
         $QuotationID = $Quotation->Additional_ID;
@@ -2232,15 +2319,48 @@ class BillingFolioOverbill extends Controller
 
                     } if ($rolePermission == 1 && $isOperatedByCreator) {
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 4) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                            }
                         }
                     } elseif ($rolePermission == 2) {
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 4) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                                }
+                            }
                         }
                     } elseif ($rolePermission == 3) {
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 4) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                                }
+                            }
                         }
                     }
                     $data[] = [
@@ -2325,15 +2445,48 @@ class BillingFolioOverbill extends Controller
 
                 } if ($rolePermission == 1 && $isOperatedByCreator) {
                     if ($canEditProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        if ($value->status_document !== 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 4) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        }
                     }
                 } elseif ($rolePermission == 2) {
                     if ($canEditProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        if ($value->status_document !== 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 4) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 0) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                            }
+                        }
                     }
                 } elseif ($rolePermission == 3) {
                     if ($canEditProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        if ($value->status_document !== 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 4) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 0) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                            }
+                        }
                     }
                 }
                 $data[] = [
@@ -2796,15 +2949,48 @@ class BillingFolioOverbill extends Controller
 
                     } if ($rolePermission == 1 && $isOperatedByCreator) {
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 4) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                            }
                         }
                     } elseif ($rolePermission == 2) {
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 4) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                                }
+                            }
                         }
                     } elseif ($rolePermission == 3) {
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 4) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                                }
+                            }
                         }
                     }
                     $data[] = [
@@ -2890,15 +3076,48 @@ class BillingFolioOverbill extends Controller
 
                 } if ($rolePermission == 1 && $isOperatedByCreator) {
                     if ($canEditProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        if ($value->status_document !== 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 4) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        }
                     }
                 } elseif ($rolePermission == 2) {
                     if ($canEditProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        if ($value->status_document !== 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 4) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 0) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                            }
+                        }
                     }
                 } elseif ($rolePermission == 3) {
                     if ($canEditProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        if ($value->status_document !== 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 4) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 0) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                            }
+                        }
                     }
                 }
                 $data[] = [
@@ -2984,15 +3203,48 @@ class BillingFolioOverbill extends Controller
 
                     } if ($rolePermission == 1 && $isOperatedByCreator) {
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 4) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                            }
                         }
                     } elseif ($rolePermission == 2) {
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 4) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                                }
+                            }
                         }
                     } elseif ($rolePermission == 3) {
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 4) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                                }
+                            }
                         }
                     }
                     $data[] = [
@@ -3078,15 +3330,48 @@ class BillingFolioOverbill extends Controller
 
                 } if ($rolePermission == 1 && $isOperatedByCreator) {
                     if ($canEditProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        if ($value->status_document !== 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 4) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        }
                     }
                 } elseif ($rolePermission == 2) {
                     if ($canEditProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        if ($value->status_document !== 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 4) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 0) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                            }
+                        }
                     }
                 } elseif ($rolePermission == 3) {
                     if ($canEditProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        if ($value->status_document !== 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 4) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 0) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                            }
+                        }
                     }
                 }
                 $data[] = [
@@ -3173,15 +3458,48 @@ class BillingFolioOverbill extends Controller
 
                     } if ($rolePermission == 1 && $isOperatedByCreator) {
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 4) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                            }
                         }
                     } elseif ($rolePermission == 2) {
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 4) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                                }
+                            }
                         }
                     } elseif ($rolePermission == 3) {
                         if ($canEditProposal) {
-                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document !== 2) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                                if ($value->status_document == 3) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 4) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                                }
+                                if ($value->status_document == 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                                }
+                            }
                         }
                     }
                     $data[] = [
@@ -3267,15 +3585,48 @@ class BillingFolioOverbill extends Controller
 
                 } if ($rolePermission == 1 && $isOperatedByCreator) {
                     if ($canEditProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        if ($value->status_document !== 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 4) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                        }
                     }
                 } elseif ($rolePermission == 2) {
                     if ($canEditProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        if ($value->status_document !== 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 4) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 0) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                            }
+                        }
                     }
                 } elseif ($rolePermission == 3) {
                     if ($canEditProposal) {
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                        if ($value->status_document !== 2) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/edit/' . $value->id) . '">Edit</a></li>';
+                            if ($value->status_document == 3) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/Over/Generate/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 4) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Cancel(' . $value->id . ')">Cancel</a></li>';
+                            }
+                            if ($value->status_document == 0) {
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                            }
+                        }
                     }
                 }
                 $data[] = [

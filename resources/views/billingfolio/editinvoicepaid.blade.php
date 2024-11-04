@@ -290,7 +290,7 @@ white-space: nowrap
                         </div>
 
                         <div class="img">
-                            <img src="{{ asset('assets2/images/' . $settingCompany->image) }}" alt="together-resort" width="200px" />
+                            <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="together-resort" width="200px" />
                         </div>
                         </section>
                         <section>

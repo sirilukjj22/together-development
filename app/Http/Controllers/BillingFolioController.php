@@ -856,9 +856,9 @@ class BillingFolioController extends Controller
         if ($paymentType == 'cash') {
             $datanamebank = ' Cash ' ;
         }else if($paymentType == 'bankTransfer') {
-            $datanamebank = $bank +' Bank Transfer - Together Resort Ltd - Reservation Deposit' ;
+            $datanamebank = $bank .' Bank Transfer - Together Resort Ltd - Reservation Deposit' ;
         }else if($paymentType == 'creditCard') {
-            $datanamebank =  ' Credit Card No. '.$CardNumber +' Exp. Date : '.$Expiry ;
+            $datanamebank =  ' Credit Card No. '.$CardNumber.' Exp. Date : '.$Expiry ;
         }else if($paymentType == 'cheque') {
             $datanamebank =  ' Cheque Bank '.$databankname.' Cheque Number '.$cheque;
         }

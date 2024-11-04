@@ -23,6 +23,7 @@ use App\Models\Masters;
 use App\Models\receive_payment;
 use App\Models\log_company;
 use App\Models\document_quotation;
+use App\Models\master_promotion;
 use Illuminate\Support\Arr;
 use App\Models\master_document_sheet;
 use Auth;
@@ -37,6 +38,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Master_company;
 use App\Models\phone_guest;
 use App\Models\Guest;
+use App\Mail\QuotationEmail;
+use Illuminate\Support\Facades\Mail;
+use App\Models\master_document_email;
 class Document_invoice extends Controller
 {
     public function index()
@@ -425,6 +429,7 @@ class Document_invoice extends Controller
                             if ($canEditProposal) {
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $value->id) . '">Edit</a></li>';
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/to/Re/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $value->id) . '">Send Email</a></li>';
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="delete(' . $value->id . ')">Delete</a></li>';
                             }
                         } elseif ($rolePermission == 2) {
@@ -432,6 +437,7 @@ class Document_invoice extends Controller
                                 if ($canEditProposal) {
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $value->id) . '">Edit</a></li>';
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/to/Re/' . $value->id) . '">Generate</a></li>';
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $value->id) . '">Send Email</a></li>';
                                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="delete(' . $value->id . ')">Delete</a></li>';
                                 }
                             }
@@ -439,6 +445,7 @@ class Document_invoice extends Controller
                             if ($canEditProposal) {
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $value->id) . '">Edit</a></li>';
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/to/Re/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $value->id) . '">Send Email</a></li>';
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="delete(' . $value->id . ')">Delete</a></li>';
                             }
                         }
@@ -540,6 +547,7 @@ class Document_invoice extends Controller
                         if ($canEditProposal) {
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $value->id) . '">Edit</a></li>';
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/to/Re/' . $value->id) . '">Generate</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $value->id) . '">Send Email</a></li>';
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="delete(' . $value->id . ')">Delete</a></li>';
                         }
                     } elseif ($rolePermission == 2) {
@@ -547,6 +555,7 @@ class Document_invoice extends Controller
                             if ($canEditProposal) {
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $value->id) . '">Edit</a></li>';
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/to/Re/' . $value->id) . '">Generate</a></li>';
+                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $value->id) . '">Send Email</a></li>';
                                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="delete(' . $value->id . ')">Delete</a></li>';
                             }
                         }
@@ -554,6 +563,7 @@ class Document_invoice extends Controller
                         if ($canEditProposal) {
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/revised/' . $value->id) . '">Edit</a></li>';
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/to/Re/' . $value->id) . '">Generate</a></li>';
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $value->id) . '">Send Email</a></li>';
                             $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="delete(' . $value->id . ')">Delete</a></li>';
                         }
                     }
@@ -635,6 +645,7 @@ class Document_invoice extends Controller
                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $value->id) . '">View</a></li>';
                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Invoice/cover/document/PDF/' . $value->id) . '">Export</a></li>';
                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $value->id) . '">LOG</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $value->id) . '">Send Email</a></li>';
                     $btn_action .= '</ul>';
                     $btn_action .= '</div>';
 
@@ -712,6 +723,7 @@ class Document_invoice extends Controller
                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $value->id) . '">View</a></li>';
                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Invoice/cover/document/PDF/' . $value->id) . '">Export</a></li>';
                 $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $value->id) . '">LOG</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/viewinvoice/' . $value->id) . '">Send Email</a></li>';
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
 
@@ -2485,6 +2497,7 @@ class Document_invoice extends Controller
             'Contact_Name'=>$Contact_Name,
             'Contact_phone'=>$Contact_phone,
             'Contact_Email'=>$Contact_Email,
+            'SpecialDistext'=>$SpecialDistext,
         ];
         $view= $template->name;
         $pdf = FacadePdf::loadView('quotationpdf.'.$view,$data);
@@ -2688,7 +2701,7 @@ class Document_invoice extends Controller
             $addtax = 0;
             $before = 0;
             $balance =0;
-            $Nettotal = floatval(str_replace(',', '', $request->Nettotal));
+            $Nettotal = floatval(str_replace(',', '',$datarequest['Nettotal']));
             $paymentPercent = floatval($paymentPercent);
             $Subtotal = ($Nettotal*$paymentPercent)/100;
             $total = $Subtotal/1.07;
@@ -2702,10 +2715,8 @@ class Document_invoice extends Controller
             $before = $Subtotal-$addtax;
             // $balance = $Nettotal-$Subtotal;
             $balance = $Nettotal-$Subtotal;
-
         }
         $balanceold =$request->balance;
-
         $data= [
             'date'=>$date,
             'settingCompany'=>$settingCompany,
@@ -2930,5 +2941,296 @@ class Document_invoice extends Controller
         return response()->json([
             'data' => $data,
         ]);
+    }
+
+     //----------------------------ส่งอีเมล์---------------------
+     public function viewinvoice($id)
+    {
+        $invoices =document_invoices::where('id',$id)->first();
+        $idss =  $invoices->id;
+        $QuotationID = $invoices->Quotation_ID;
+        $Quotation_ID = $invoices->Quotation_ID;
+        $Refler_ID = $invoices->Refler_ID;
+        $InvoiceID =  $invoices->Invoice_ID;
+        $IssueDate=$invoices->IssueDate;
+        $Expiration=$invoices->Expiration;
+        $CompanyID = $invoices->company;
+        $Deposit  =$invoices->deposit;
+        $status = $invoices->document_status;
+        $valid = $invoices->valid;
+        $sequence = $invoices->sequence;
+        $Operated_by=$invoices->Operated_by;
+        $payment = $invoices->payment;
+        $paymentPercent = $invoices->paymentPercent;
+
+
+        if ($sequence == 1&&$status == 1) {
+            $Quotation = Quotation::where('Quotation_ID', $QuotationID)->latest()->first();
+            $Nettotal = $Quotation->Nettotal;
+
+        }else{
+            $Quotation = Quotation::where('Quotation_ID', $QuotationID)->latest()->first();
+            $Nettotal = $invoices->Nettotal;
+        }
+        if ($status == 0) {
+            $Quotation = Quotation::where('Refler_ID', $Refler_ID)->latest()->first();
+            $Nettotal = $invoices->Nettotal;
+        }
+
+
+        $day =$Quotation->day;
+        $night =$Quotation->night;
+        $adult = $Quotation->adult;
+        $children = $Quotation->children;
+        $type_Proposal = $Quotation->type_Proposal;
+        $settingCompany = Master_company::orderBy('id', 'desc')->first();
+        if ($Quotation->type_Proposal == 'Company') {
+            $CompanyID = $Quotation->Company_ID;
+            $Company = companys::where('Profile_ID',$CompanyID)->first();
+            $Company_typeID=$Company->Company_type;
+            $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+            if ($comtype->name_th =="บริษัทจำกัด") {
+                $comtypefullname = "บริษัท ". $Company->Company_Name . " จำกัด";
+            }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                $comtypefullname = "บริษัท ". $Company->Company_Name . " จำกัด (มหาชน)";
+            }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                $comtypefullname = "ห้างหุ้นส่วนจำกัด ". $Company->Company_Name ;
+            }else{
+                $comtypefullname = $comtype->name_th . $Company->Company_Name;
+            }
+            $CityID=$Company->City;
+            $amphuresID = $Company->Amphures;
+            $TambonID = $Company->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $company_fax = company_fax::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
+            $company_phone = company_phone::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
+            $Contact_name = representative::where('Company_ID',$CompanyID)->where('status',1)->first();
+            $profilecontact = $Contact_name->Profile_ID;
+            $Contact_phone = representative_phone::where('Company_ID',$CompanyID)->where('Profile_ID',$profilecontact)->where('Sequence','main')->first();
+        }else{
+            $CompanyID = $Quotation->Company_ID;
+            $Company = Guest::where('Profile_ID',$CompanyID)->first();
+            $prename = $Company->preface;
+            $First_name = $Company->First_name;
+            $Last_name = $Company->Last_name;
+            $Address = $Company->Address;
+            $Email = $Company->Email;
+            $Taxpayer_Identification = $Company->Identification_Number;
+            $prefix = master_document::where('id',$prename)->where('Category','Mprename')->where('status',1)->first();
+            $name = $prefix->name_th;
+            $comtypefullname = $name.' '.$First_name.' '.$Last_name;
+
+            $Contact_name =0;
+            $profilecontact = 0;
+            $Contact_phone=0;
+            $company_fax =0;
+            //-------------ที่อยู่
+            $CityID=$Company->City;
+            $amphuresID = $Company->Amphures;
+            $TambonID = $Company->Tambon;
+            $provinceNames = province::where('id',$CityID)->select('name_th','id')->first();
+            $amphuresID = amphures::where('id',$amphuresID)->select('name_th','id')->first();
+            $TambonID = districts::where('id',$TambonID)->select('name_th','id','Zip_Code')->first();
+            $Fax_number = '-';
+            $company_phone = phone_guest::where('Profile_ID',$CompanyID)->where('Sequence','main')->first();
+
+        }
+
+
+        $Checkin = $Quotation->checkin;
+        $Checkout = $Quotation->checkout;
+
+        if ($Checkin) {
+            $checkin = $Checkin;
+            $checkout = $Checkout;
+        }else{
+            $checkin = '-';
+            $checkout = '-';
+        }
+
+        if ($payment) {
+
+            $payment0 = number_format($payment);
+            $Subtotal =0;
+            $total =0;
+            $addtax = 0;
+            $before = 0;
+            $balance = 0;
+
+            $Subtotal = $payment;
+            $total = $payment;
+            $addtax = 0;
+            $before = $payment;
+            $balance = $Subtotal;
+        }
+        if ($paymentPercent) {
+            $payment0 = $paymentPercent.'%';
+            $Subtotal =0;
+            $total =0;
+            $addtax = 0;
+            $before = 0;
+            $balance = 0;
+            $Nettotal = floatval(str_replace(',', '', $Nettotal));
+            $paymentPercent = floatval($paymentPercent);
+            $Subtotal = ($Nettotal*$paymentPercent)/100;
+            $total = $Subtotal/1.07;
+            $addtax = $Subtotal-$total;
+            $before = $Subtotal-$addtax;
+            $balance = $Nettotal-$Subtotal;
+
+        }
+        $formattedNumber = number_format($balance, 2, '.', ',');
+        $id = $idss;
+        return view('document_invoice.viewinvoice',compact('Quotation_ID','InvoiceID','comtypefullname','Company','TambonID','amphuresID','provinceNames','company_phone','company_fax','Contact_name'
+        ,'Contact_phone','checkin','checkout','Quotation','QuotationID','Deposit','CompanyID','IssueDate','Expiration','day','night','adult','children','valid','Nettotal','payment'
+        ,'paymentPercent','Subtotal','before','formattedNumber','addtax','settingCompany','id'));
+    }
+     public function email($id){
+        $quotation = document_invoices::where('id',$id)->first();
+        $comid = $quotation->company;
+        $Quotation_ID= $quotation->Invoice_ID;
+        $type_Proposal = $quotation->type_Proposal;
+        $comtypefullname = null;
+        if ($type_Proposal == 'Guest') {
+            $companys = Guest::where('Profile_ID',$comid)->first();
+            $emailCom = $companys->Email;
+            $namefirst = $companys->First_name;
+            $namelast = $companys->Last_name;
+            $name = $namefirst.' '.$namelast;
+        }else{
+            $companys = companys::where('Profile_ID',$comid)->first();
+            $emailCom = $companys->Company_Email;
+            $contact = $companys->Profile_ID;
+            $Contact_name = representative::where('Company_ID',$contact)->where('status',1)->first();
+            $namefirst = $Contact_name->First_name;
+            $namelast = $Contact_name->Last_name;
+            $name = $namefirst.' '.$namelast;
+            $Company_typeID=$companys->Company_type;
+            $comtype = master_document::where('id',$Company_typeID)->select('name_th', 'id')->first();
+            if ($comtype->name_th =="บริษัทจำกัด") {
+                $comtypefullname = "Company : "." บริษัท ". $companys->Company_Name . " จำกัด";
+            }elseif ($comtype->name_th =="บริษัทมหาชนจำกัด") {
+                $comtypefullname = "Company : "." บริษัท ". $companys->Company_Name . " จำกัด (มหาชน)";
+            }elseif ($comtype->name_th =="ห้างหุ้นส่วนจำกัด") {
+                $comtypefullname = "Company : "." ห้างหุ้นส่วนจำกัด ". $companys->Company_Name ;
+            }else {
+                $comtypefullname = $comtype->name_th . $companys->Company_Name;
+            }
+        }
+
+        $Checkin = $quotation->checkin;
+        $Checkout = $quotation->checkout;
+        if ($Checkin) {
+            $checkin = $Checkin.' '.'-'.'';
+            $checkout = $Checkout;
+        }else{
+            $checkin = 'No Check in date';
+            $checkout = ' ';
+        }
+        $day =$quotation->day;
+        $night= $quotation->night;
+        if ($day == null) {
+            $day = ' ';
+            $night = ' ';
+        }else{
+            $day = '( '.$day.' วัน';
+            $night =$night.' คืน'.' )';
+        }
+        $promotiondata = master_promotion::where('status', 1)->where('type', 'Link')->select('name','type')->get();
+        $promotions = [];
+        foreach ($promotiondata as $promo) {
+            $promotions[] = 'Link : ' . $promo->name;
+        }
+
+        return view('document_invoice.email.index',compact('emailCom','Quotation_ID','name','comtypefullname','checkin','checkout','night','day','promotions',
+                        'quotation','type_Proposal'));
+    }
+
+    public function sendemail(Request $request,$id){
+        try {
+
+            $file = $request->all();
+
+            $quotation = document_invoices::where('id',$id)->first();
+
+            $QuotationID = $quotation->Invoice_ID;
+            $correct = $quotation->correct;
+            $type_Proposal = $quotation->type_Proposal;
+            $path = 'Log_PDF/invoice/';
+            if ($correct > 0) {
+                $pdf = $path.$QuotationID.'-'.$correct;
+                $pdfPath = $path.$QuotationID.'-'.$correct.'.pdf';
+            }else{
+                $pdf = $path.$QuotationID;
+                $pdfPath = $path.$QuotationID.'.pdf';
+            }
+            if ($type_Proposal == 'Company') {
+                $comid = $quotation->company;
+                $Quotation_ID= $quotation->Invoice_ID;
+                $companys = companys::where('Profile_ID',$comid)->first();
+                $emailCom = $companys->Company_Email;
+                $contact = $companys->Profile_ID;
+                $Contact_name = representative::where('Company_ID',$contact)->where('status',1)->first();
+                $emailCon = $Contact_name->Email;
+            }else{
+                $comid = $quotation->company;
+                $Quotation_ID= $quotation->Invoice_ID;
+                $companys = Guest::where('Profile_ID',$comid)->first();
+                $emailCon = $companys->Email;
+            }
+            $Title = $request->tital;
+            $detail = $request->detail;
+            $comment = $request->Comment;
+            $email = $request->email;
+            $promotiondata = master_promotion::where('status', 1)->select('name','type')->get();
+
+
+            $promotions = [];
+            foreach ($promotiondata as $promo) {
+                if ($promo->type == 'Document') {
+                    $promotion_path = 'promotion/';
+                    $promotions[] = $promotion_path . $promo->name;
+                }
+            }
+            $fileUploads = $request->file('files'); // ใช้ 'files' ถ้าฟิลด์ในฟอร์มเป็น 'files[]'
+
+            // ตรวจสอบว่ามีไฟล์ถูกอัปโหลดหรือไม่
+            if ($fileUploads) {
+                $filePaths = [];
+                foreach ($fileUploads as $file) {
+                    $filename = $file->getClientOriginalName();
+                    $file->move(public_path($path), $filename);
+                    $filePaths[] = public_path($path . $filename);
+                }
+            } else {
+                // หากไม่มีไฟล์ที่อัปโหลด ให้กำหนด $filePaths เป็นอาร์เรย์ว่าง
+                $filePaths = [];
+            }
+
+            $Data = [
+                'title' => $Title,
+                'detail' => $detail,
+                'comment' => $comment,
+                'email' => $email,
+                'pdfPath'=>$pdfPath,
+                'pdf'=>$pdf,
+            ];
+
+            $customEmail = new QuotationEmail($Data,$Title,$pdfPath,$filePaths,$promotions);
+            Mail::to($emailCon)->send($customEmail);
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $Quotation_ID;
+            $save->type = 'Send Email';
+            $save->Category = 'Send Email :: Proforma Invoice';
+            $save->content = 'Send Email Document Proforma Invoice ID : '.$Quotation_ID;
+            $save->save();
+            return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลและส่งอีเมลเรียบร้อยแล้ว');
+        } catch (\Throwable $e) {
+            return redirect()->route('invoice.index')->with('error', $e->getMessage());
+        }
     }
 }

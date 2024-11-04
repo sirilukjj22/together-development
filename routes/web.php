@@ -725,6 +725,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/invoice/delete/{id}','Delete')->name('invoice.delete');
         //--------------------------------------Re---------------------------------------
 
+        Route::get('/Document/invoice/viewinvoice/{id}','viewinvoice')->name('invoice.viewinvoice');
+
+        Route::get('/Document/invoice/send/email/{id}', 'email')->name('invoice.email');
+
+        Route::post('/Document/invoice/send/detail/email/{id}', 'sendemail')->name('invoice.sendemail');
+
         Route::get(' /Document/invoice/Generate/to/Re/{id}','GenerateRe')->name('invoice.GenerateRe');
 
         Route::post('invoice-search-table', 'search_table_invoice');
@@ -800,6 +806,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/BillingFolio/{Quotation_ID}/addProducttablecreatemain', 'addProducttablecreatemain')->name('BillingFolioOver.addProducttablecreatemain');
         Route::post('billingover-search-table', 'search_table_billingover');
         Route::post('billingover-paginate-table', 'paginate_table_billingover');
+        Route::get('/Document/BillingFolio/Proposal/Over/Generate/{id}','Generate')->name('BillingFolioOver.Generate');
+        Route::get('/Document/BillingFolio/Proposal/Over/Cancel/{id}','Cancel')->name('BillingFolioOver.Cancel');
+        Route::get('/Document/BillingFolio/Proposal/Over/Delete/{id}','Delete')->name('BillingFolioOver.Delete');
 
         Route::post('billingover-pending-search-table', 'search_table_billingover_pending');
         Route::post('billingover-pending-paginate-table', 'paginate_table_billingover_pending');

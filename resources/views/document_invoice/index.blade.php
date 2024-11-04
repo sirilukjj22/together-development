@@ -286,6 +286,7 @@
                                                                         @if ($canEditProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/to/Re/'.$item->id) }}">Generate</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Delete</a></li>
                                                                         @endif
                                                                     @elseif ($rolePermission == 2)
@@ -293,6 +294,7 @@
                                                                             @if ($canEditProposal == 1)
                                                                                 <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/to/Re/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                                                 <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Delete</a></li>
                                                                             @endif
                                                                         @endif
@@ -300,6 +302,7 @@
                                                                         @if ($canEditProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/invoice/revised/'.$item->id) }}">Edit</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/to/Re/'.$item->id) }}">Generate</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                                             <li><a class="dropdown-item py-2 rounded" onclick="Delete({{$item->id}})">Delete</a></li>
                                                                         @endif
                                                                     @endif
@@ -404,6 +407,7 @@
                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/'.$item->id) }}">View</a></li>
                                                                 <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Invoice/cover/document/PDF/'.$item->id) }}">Export</a></li>
                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/LOG/'.$item->id) }}">LOG</a></li>
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/viewinvoice/'.$item->id) }}">Send Email</a></li>
                                                             </ul>
                                                         </div>
                                                     </td>
