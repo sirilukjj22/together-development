@@ -58,6 +58,7 @@ Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('sms-api-forward', [SMSController::class, 'forward'])->name('sms-api-forward');
 Route::get('/Quotation/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'proposal'])->name('Proposal.link');
+Route::get('/Invoice/cover/document/PDF/{id}', [LinkPDFProposal::class, 'invoice'])->name('Invoice.link');
 
 Route::middleware(['auth'])->group(function () {
 

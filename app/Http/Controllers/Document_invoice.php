@@ -961,9 +961,9 @@ class Document_invoice extends Controller
                     $Fax_number = '-';
                     $company_phone = phone_guest::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
                 }
-                $id = $datarequest['Proposal_ID'];
+                $id = $datarequest['InvoiceID'];
                 $protocol = $request->secure() ? 'https' : 'http';
-                $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+                $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id";
 
                 // Generate the QR code as PNG
                 $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
@@ -1246,9 +1246,9 @@ class Document_invoice extends Controller
                         $Fax_number = '-';
                         $company_phone = phone_guest::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
                     }
-                    $id = $datarequest['Proposal_ID'];
+                    $id = $datarequest['InvoiceID'];
                     $protocol = $request->secure() ? 'https' : 'http';
-                    $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+                    $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id";
 
                     // Generate the QR code as PNG
                     $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
@@ -1745,9 +1745,9 @@ class Document_invoice extends Controller
                     $Fax_number = '-';
                     $company_phone = phone_guest::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
                 }
-                $id = $datarequest['Proposal_ID'];
+                $id = $datarequest['InvoiceID'];
                 $protocol = $request->secure() ? 'https' : 'http';
-                $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+                $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id";
 
                 // Generate the QR code as PNG
                 $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
@@ -2038,9 +2038,9 @@ class Document_invoice extends Controller
                         $Fax_number = '-';
                         $company_phone = phone_guest::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
                     }
-                    $id = $datarequest['Proposal_ID'];
+                    $id = $datarequest['InvoiceID'];
                     $protocol = $request->secure() ? 'https' : 'http';
-                    $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+                    $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id";
 
                     // Generate the QR code as PNG
                     $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
@@ -2337,7 +2337,7 @@ class Document_invoice extends Controller
             }
         }
         {//QRCODE
-            $id = $datarequest['Proposal_ID'];
+            $id = $datarequest['InvoiceID'];
             $protocol = $request->secure() ? 'https' : 'http';
             $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
             $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
@@ -2651,9 +2651,9 @@ class Document_invoice extends Controller
             $Fax_number = '-';
             $company_phone = phone_guest::where('Profile_ID',$Data_ID)->where('Sequence','main')->first();
         }
-        $id = $datarequest['Proposal_ID'];
+        $id = $datarequest['InvoiceID'];
         $protocol = $request->secure() ? 'https' : 'http';
-        $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
+        $linkQR = $protocol . '://' . $request->getHost() . "/Invoice/cover/document/PDF/$id";
 
         // Generate the QR code as PNG
         $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
