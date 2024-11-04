@@ -1741,7 +1741,7 @@ class RevenuesController extends Controller
                 $wp_year_query->whereBetween('date', [$F_YTD, $month_to]);
 
             } elseif ($request->filter_by == "year"  || $request->filter_by == "thisMonth") {
-                $agoda_year_query->whereBetween('date', [$year_from, $year_to]);
+                $wp_year_query->whereBetween('date', [$year_from, $year_to]);
             }
 
         $wp_year_query->select(DB::raw("SUM(wp_cash) as wp_cash, SUM(wp_transfer) as wp_transfer, SUM(wp_credit) as wp_credit"));
@@ -1787,7 +1787,7 @@ class RevenuesController extends Controller
                 $ev_year_query->whereBetween('date', [$F_YTD, $month_to]);
 
             } elseif ($request->filter_by == "year"  || $request->filter_by == "thisMonth") {
-                $agoda_year_query->whereBetween('date', [$year_from, $year_to]);
+                $ev_year_query->whereBetween('date', [$year_from, $year_to]);
             }
 
         $ev_year_query->select('total_elexa');
