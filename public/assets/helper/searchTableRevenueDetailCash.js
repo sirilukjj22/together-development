@@ -88,7 +88,7 @@ function getPage(page, perPage, table_n) {
     var table_name = table_n + 'Table';
     var filter_by = $('#filter-by').val();
     var dateString = $('#date').val();
-    var currentPage = $('#search-per-page-'+table_n).val();
+    var currentPage = page;
     var type = $('#status').val();
     var total = parseInt($('#get-total-' + table_n).val());
     var getUrl = table_n;

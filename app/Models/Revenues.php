@@ -92,8 +92,11 @@ class Revenues extends Model
                 $F_YTD = date('Y-01-01', strtotime($date_from));
                 $revenue_year_query->whereBetween('revenue.date', [$F_YTD, $date_to]);
 
-            } elseif ($filter_by == "year"  || $filter_by == "thisMonth") {
+            } elseif ($filter_by == "thisMonth") {
                 $revenue_year_query->whereBetween('revenue.date', [$year_now.'-01-01', $date_to]);
+
+            } elseif ($filter_by == "year") {
+                $revenue_year_query->whereBetween('revenue.date', [$year.'-01-01', $date_to]);
             }
 
         $revenue_year_query->select(DB::raw("(SUM(revenue_credit.credit_amount) - revenue.total_credit) as total_credit, SUM(revenue_credit.credit_amount) as credit_amount"), 'revenue.total_credit  as total');
@@ -171,8 +174,12 @@ class Revenues extends Model
             $F_YTD = date('Y-01-01', strtotime($date_from));
             $revenue_year_query->whereBetween('revenue.date', [$F_YTD, $date_to]);
 
-        } elseif ($filter_by == "year"  || $filter_by == "thisMonth") {
+        } elseif ($filter_by == "thisYear" || $filter_by == "thisMonth") {
             $revenue_year_query->whereBetween('revenue.date', [$year_now.'-01-01', $date_to]);
+
+        } 
+        elseif ($filter_by == "year") { // ยอด Agoda Outstanding ถ้าเปลี่ยนปียอด 
+            $revenue_year_query->whereBetween('revenue.date', [$year.'-01-01', $date_to]);
         }
 
         $revenue_year_query->select(DB::raw("(SUM(revenue_credit.agoda_charge) - SUM(revenue_credit.agoda_outstanding)) as total_credit_agoda, SUM(revenue_credit.agoda_charge) as agoda_charge, SUM(revenue_credit.agoda_outstanding) as agoda_outstanding"));
@@ -263,8 +270,11 @@ class Revenues extends Model
                 $F_YTD = date('Y-01-01', strtotime($date_from));
                 $revenue_year_query->whereBetween('revenue.date', [$F_YTD, $date_to]);
 
-            } elseif ($filter_by == "year"  || $filter_by == "thisMonth") {
+            } elseif ($filter_by == "thisYear" || $filter_by == "thisMonth") {
                 $revenue_year_query->whereBetween('revenue.date', [$year_now.'-01-01', $date_to]);
+    
+            } elseif ($filter_by == "year") { // ยอด Agoda Outstanding ถ้าเปลี่ยนปียอด 
+                $revenue_year_query->whereBetween('revenue.date', [$year.'-01-01', $date_to]);
             }
 
         $revenue_year_query->select(DB::raw("SUM(revenue_credit.ev_charge) as ev_charge, (SUM(revenue_credit.ev_fee) + SUM(ev_vat)) as ev_fee, SUM(revenue_credit.ev_revenue) as ev_revenue"));
