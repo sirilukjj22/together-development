@@ -2437,16 +2437,20 @@ class RevenuesController extends Controller
             $title = "Elexa EGAT Charge";
             $status = "mc_elexa_charge";
             $revenue_name = "";
-        } 
+        }
 
         ## Fee
         if($request->revenue_type == "credit_hotel_fee") {
-            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->whereIn('revenue_credit.status', [1, 2, 4, 6])
+            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->whereIn('revenue_credit.status', [1, 2, 6])
                 ->whereBetween('revenue.date', [$month_from, $month_to])
-                ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status')
+                ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status',
+                    DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as amount'))->groupBy('revenue.date')
                 ->paginate(10);
-            $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->whereIn('revenue_credit.status', [1, 2, 4, 6])
-                ->whereBetween('revenue.date', [$month_from, $month_to])->sum('revenue_credit.credit_amount');
+
+            $total_query = Revenues::leftJoin('revenue_credit', 'revenue.id', '=', 'revenue_credit.revenue_id')
+                ->whereIn('revenue_credit.status', [1, 2, 6])->whereBetween('revenue.date', [$month_from, $month_to])
+                ->groupBy('revenue.date')->select(DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as total_difference'))
+                ->get()->sum('total_difference');
             $title = "Credit Card Hotel Fee";
             $status = "credit_hotel_fee";
             $revenue_name = "fee";
@@ -2454,12 +2458,45 @@ class RevenuesController extends Controller
         } if($request->revenue_type == "agoda_fee") {
             $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
                 ->where('revenue_credit.revenue_type', 1)->whereBetween('revenue.date', [$month_from, $month_to])
-                ->select('revenue.date', 'revenue_credit.batch', 'revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding', 'revenue_credit.status')->paginate(10);
+                ->select('revenue.date', 'revenue_credit.batch', 'revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding', 'revenue_credit.status', 
+                    DB::raw('revenue_credit.agoda_charge - revenue_credit.agoda_outstanding as fee'))->paginate(10);
+
             $total_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
                 ->where('revenue_credit.revenue_type', 1)->whereBetween('revenue.date', [$month_from, $month_to])->sum(DB::raw('revenue_credit.agoda_charge - revenue_credit.agoda_outstanding'));
             $title = "Agoda Fee";
             $status = "agoda_fee";
             $revenue_name = "agoda_fee";
+
+        } if($request->revenue_type == "water_park_fee") {
+            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->whereIn('revenue_credit.status', [7])
+                ->whereBetween('revenue.date', [$month_from, $month_to])
+                ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status',
+                    DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as amount'))->groupBy('revenue.date')
+                ->paginate(10);
+
+            $total_query = Revenues::leftJoin('revenue_credit', 'revenue.id', '=', 'revenue_credit.revenue_id')
+                ->whereIn('revenue_credit.status', [7])->whereBetween('revenue.date', [$month_from, $month_to])
+                ->groupBy('revenue.date')->select(DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as total_difference'))
+                ->get()->sum('total_difference');
+            $title = "Credit Card Water Park Fee";
+            $status = "water_park_fee";
+            $revenue_name = "fee";
+
+        } if($request->revenue_type == "elexa_fee") {
+            $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->whereIn('revenue_credit.status', [8])
+                ->whereBetween('revenue.date', [$month_from, $month_to])
+                ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue', 
+                DB::raw('SUM(revenue_credit.ev_fee) + SUM(revenue_credit.ev_vat) as amount'))
+                ->groupBy('revenue.date')->paginate(10);
+
+            $total_query = Revenues::leftJoin('revenue_credit', 'revenue.id', '=', 'revenue_credit.revenue_id')
+                ->whereIn('revenue_credit.status', [8])->whereBetween('revenue.date', [$month_from, $month_to])
+                ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue', 
+                DB::raw('SUM(revenue_credit.ev_fee) + SUM(revenue_credit.ev_vat) as amount'))
+                ->groupBy('revenue.date')->get()->sum('amount');
+            $title = "Elexa EGAT Fee";
+            $status = "elexa_fee";
+            $revenue_name = "fee";
 
         }
 
@@ -2854,14 +2891,44 @@ class RevenuesController extends Controller
                     }
 
             } elseif ($request->table_name == "feeTable") {
-                $query_sms = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->whereIn('revenue_credit.status', [1, 2, 4, 6])
+                
+                if ($request->status == "elexa_fee") {
+                    $query_sms = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->whereIn('revenue_credit.status', [8])
                     ->whereBetween('revenue.date', [$adate, $adate2])
-                    ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status');
+                    ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue', 
+                    DB::raw('SUM(revenue_credit.ev_fee) + SUM(revenue_credit.ev_vat) as fee'))
+                    ->groupBy('revenue.date');
 
                     if ($perPage == 10) {
                         $data_query = $query_sms->limit($request->page.'0')->get();
                     } else {
                         $data_query = $query_sms->paginate($perPage);
+                    }
+
+                } else {
+                    $query_sms = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->whereIn('revenue_credit.status', [1, 2, 6])
+                    ->whereBetween('revenue.date', [$adate, $adate2])
+                    ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status', 
+                        DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as fee'))->groupBy('revenue.date');
+
+                    if ($perPage == 10) {
+                        $data_query = $query_sms->limit($request->page.'0')->get();
+                    } else {
+                        $data_query = $query_sms->paginate($perPage);
+                    }
+                }
+                
+
+            } elseif ($request->table_name == "agoda_feeTable") {
+                $query_revenue = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+                    ->where('revenue_credit.revenue_type', 1)->whereBetween('revenue.date', [$adate, $adate2])
+                    ->select('revenue.date', 'revenue_credit.batch', 'revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding', 'revenue_credit.status', 
+                        DB::raw('revenue_credit.agoda_charge - revenue_credit.agoda_outstanding as fee'));
+
+                    if ($perPage == 10) {
+                        $data_query = $query_revenue->limit($request->page.'0')->get();
+                    } else {
+                        $data_query = $query_revenue->paginate($perPage);
                     }
             }
         }
@@ -2874,7 +2941,7 @@ class RevenuesController extends Controller
         $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
 
         if (isset($data_query) && count($data_query) > 0) {
-            if (count($exp) > 1 && $exp[0]."_".$exp[1] != "manual_charge" && $request->status != "mc_agoda_charge" && $request->status != "mc_elexa_charge" && $request->status != "agoda_outstanding" && $request->status != "elexa_outstanding" && $request->table_name != "revenueCashTable" || $request->table_name == "revenueTable") { ## Manual Charge
+            if (count($exp) > 1 && $exp[0]."_".$exp[1] != "manual_charge" && $request->status != "mc_agoda_charge" && $request->status != "mc_elexa_charge" && $request->status != "agoda_outstanding" && $request->status != "elexa_outstanding" && $request->table_name != "revenueCashTable" && $request->table_name != "agoda_feeTable" && $request->table_name != "feeTable" || $request->table_name == "revenueTable") { ## Manual Charge
                 foreach ($data_query as $key => $value) {
                     if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
 
@@ -3011,6 +3078,24 @@ class RevenuesController extends Controller
                     }
                 }
 
+            } elseif ($request->table_name == "agoda_feeTable") { 
+
+                foreach ($data_query as $key => $value) {
+                    if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                        // ประเภทรายได้
+                        $revenue_name = 'Agoda Revenue';
+
+                        $data[] = [
+                            'number' => $key + 1,
+                            'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                            'stan' => $value->batch,
+                            'revenue_name' => $revenue_name,
+                            'amount' => number_format($value->fee, 2),
+                        ];
+                    }
+                }
+
             } elseif ($request->table_name == "feeTable") { 
 
                 foreach ($data_query as $key => $value) {
@@ -3029,7 +3114,7 @@ class RevenuesController extends Controller
                             'date' => Carbon::parse($value->date)->format('d/m/Y'),
                             'stan' => $value->batch,
                             'revenue_name' => $revenue_name,
-                            'amount' => number_format($value->credit_amount, 2),
+                            'amount' => number_format($value->fee, 2),
                         ];
                     }
                 }
@@ -3391,19 +3476,32 @@ class RevenuesController extends Controller
                 }
 
             } elseif ($request->table_name == "feeTable") {
-                $data_query = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
-                    ->whereIn('revenue_credit.status', [1, 2, 4, 6])->whereBetween('revenue.date', [$adate, $adate2])
-                    ->where(function($query) use ($search) {
-                        $query->where('date', 'like', '%' . $search . '%')
-                            ->orWhere('batch', 'like', '%' . $search . '%')
-                            ->orWhere('credit_amount', 'like', '%' . $search . '%');
-                    })
-                    ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status')
-                    ->paginate($perPage);
+
+                if ($request->status == "elexa_fee") {
+                    $data_query = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
+                        ->whereIn('revenue_credit.status', [8])->whereBetween('revenue.date', [$adate, $adate2])
+                        ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue', 
+                            DB::raw('SUM(revenue_credit.ev_fee) + SUM(revenue_credit.ev_vat) as fee'))
+                        ->groupBy('revenue.date')
+                        ->havingRaw("CAST(fee AS CHAR) like ?", ['%' . $search . '%'])
+                        ->paginate($perPage);
+                } else {
+                    $data_query = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
+                        ->whereIn('revenue_credit.status', [1, 2, 6])->whereBetween('revenue.date', [$adate, $adate2])
+                        ->select('revenue.date', 'revenue.total_credit', 'revenue_credit.batch', 'revenue_credit.revenue_type', 'revenue_credit.credit_amount', 'revenue_credit.status', 
+                            DB::raw('SUM(revenue_credit.credit_amount) - revenue.total_credit as fee'))->groupBy('revenue.date')
+                        ->havingRaw("CAST(fee AS CHAR) like ?", ['%' . $search . '%'])
+                        ->paginate($perPage);
+                }
+
+            } elseif ($request->table_name == "agoda_feeTable") {
+                $data_query = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
+                    ->whereBetween('revenue.date', [$adate, $adate2])
+                    ->select('revenue.date', 'revenue_credit.batch', 'revenue_credit.agoda_charge', 'revenue_credit.agoda_outstanding', 'revenue_credit.status', 
+                        DB::raw('revenue_credit.agoda_charge - revenue_credit.agoda_outstanding as fee'))
+                        ->havingRaw("CAST(fee AS CHAR) like ?", ['%' . $search . '%'])->paginate($perPage);
             }
         }
-
-        // dd($request);
 
         if (isset($data_query) && count($data_query) > 0) {
             if ($status > 0 || $request->status == "total_transaction") { ## Manual Charge
@@ -3532,6 +3630,21 @@ class RevenuesController extends Controller
                         ];
                     }
 
+            } elseif ($request->table_name == "agoda_feeTable") { 
+
+                foreach ($data_query as $key => $value) {
+                    // ประเภทรายได้
+                    $revenue_name = 'Agoda Revenue';
+
+                    $data[] = [
+                        'number' => $key + 1,
+                        'date' => Carbon::parse($value->date)->format('d/m/Y'),
+                        'stan' => $value->batch,
+                        'revenue_name' => $revenue_name,
+                        'amount' => number_format($value->fee, 2),
+                    ];
+                }
+
             } elseif ($request->table_name == "feeTable") { 
 
                 foreach ($data_query as $key => $value) {
@@ -3548,7 +3661,7 @@ class RevenuesController extends Controller
                             'date' => Carbon::parse($value->date)->format('d/m/Y'),
                             'stan' => $value->batch,
                             'revenue_name' => $revenue_name,
-                            'amount' => number_format($value->credit_amount, 2),
+                            'amount' => number_format($value->fee, 2),
                         ];
                 }
 

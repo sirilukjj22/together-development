@@ -22,22 +22,22 @@
                             <div>
                                 <div class="flex-end-g2">
                                     <label class="entriespage-label sm-500px-hidden">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-fee" onchange="getPage(1, this.value, 'fee')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "fee" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "fee" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "fee" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "fee" ? 'selected' : '' }}>100</option>
+                                    <select class="entriespage-button" id="search-per-page-agoda_fee" onchange="getPage(1, this.value, 'agoda_fee')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "agoda_fee" ? 'selected' : '' }}>10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "agoda_fee" ? 'selected' : '' }}>25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "agoda_fee" ? 'selected' : '' }}>50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "agoda_fee" ? 'selected' : '' }}>100</option>
                                     </select>
-                                    <input class="search-button search-data" id="fee" style="text-align:left;" placeholder="Search" />
+                                    <input class="search-button search-data" id="agoda_fee" style="text-align:left;" placeholder="Search" />
                                 </div>
                         </caption>
                         <div style="min-height: 70vh;">
-                            <table id="feeTable" class="example ui striped table nowrap unstackable hover">
+                            <table id="agoda_feeTable" class="example ui striped table nowrap unstackable hover">
                                 <thead>
                                     <tr>
                                         <th style="text-align: center;" data-priority="1">#</th>
                                         <th style="text-align: center;" data-priority="1">Date</th>
-                                        <th style="text-align: center;">Stan</th>
+                                        {{-- <th style="text-align: center;">Stan</th> --}}
                                         <th style="text-align: center;">Revenue Type</th>
                                         <th style="text-align: center;" data-priority="1">Amount</th>
                                     </tr>
@@ -47,9 +47,9 @@
                                         <tr style="text-align: center;">
                                             <td class="td-content-center">{{ $key + 1 }}</td>
                                             <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                            <td class="td-content-center">{{ $item->batch }}</td>
+                                            {{-- <td class="td-content-center">{{ $item->batch }}</td> --}}
                                             <td class="td-content-center">Agoda Revenue</td>
-                                            <td style="text-align: right;">{{ number_format($item->agoda_charge - $item->agoda_outstanding, 2) }}</td>
+                                            <td style="text-align: right;">{{ number_format($item->fee, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -57,9 +57,9 @@
                         </div>
                         <caption class="caption-bottom">
                             <div class="md-flex-bt-i-c">
-                                <p class="py2" id="fee-showingEntries">{{ showingEntriesTable($data_query, 'fee') }}</p>
+                                <p class="py2" id="agoda_fee-showingEntries">{{ showingEntriesTable($data_query, 'agoda_fee') }}</p>
                                 <div class="font-bold ">ยอดรวมทั้งหมด {{ number_format(!empty($total_query) ? $total_query : 0, 2) }} บาท</div>
-                                    <div id="fee-paginate">
+                                    <div id="agoda_fee-paginate">
                                         {!! paginateTable($data_query, 'agoda_fee') !!} <!-- ข้อมูล, ชื่อตาราง -->
                                     </div>
                             </div>
@@ -74,8 +74,8 @@
     <input type="hidden" id="date" name="date" value="{{ $search_date }}">
     <input type="hidden" id="status" value="{{ $status }}">
     <input type="time" id="time" name="time" value="<?php echo date('20:59:59'); ?>" hidden>
-    <input type="hidden" id="get-total-fee" value="{{ $data_query->total() }}">
-    <input type="hidden" id="currentPage-fee" value="1">
+    <input type="hidden" id="get-total-agoda_fee" value="{{ $data_query->total() }}">
+    <input type="hidden" id="currentPage-agoda_fee" value="1">
 
     @if (isset($_SERVER['HTTPS']) ? 'https' : 'http' == 'https')
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
@@ -188,9 +188,9 @@
                 columns: [
                     { data: 'number' },
                     { data: 'date' },
-                    { data: 'stan' },
+                    // { data: 'stan' },
                     { data: 'revenue_name' },
-                    { data: 'amount' }
+                    { data: 'amount' },
                 ],
 
             });

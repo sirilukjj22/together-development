@@ -37,7 +37,7 @@
                                     <tr>
                                         <th style="text-align: center;" data-priority="1">#</th>
                                         <th style="text-align: center;" data-priority="1">Date</th>
-                                        <th style="text-align: center;">Stan</th>
+                                        {{-- <th style="text-align: center;">Stan</th> --}}
                                         <th style="text-align: center;">Revenue Type</th>
                                         <th style="text-align: center;" data-priority="1">Amount</th>
                                     </tr>
@@ -47,7 +47,7 @@
                                         <tr style="text-align: center;">
                                             <td class="td-content-center">{{ $key + 1 }}</td>
                                             <td class="td-content-center">{{ Carbon\Carbon::parse($item->date)->format('d/m/Y') }}</td>
-                                            <td class="td-content-center">{{ $item->batch }}</td>
+                                            {{-- <td class="td-content-center">{{ $item->batch }}</td> --}}
                                             <td class="td-content-center">
                                                 @if ($item->status == 0)
                                                     -
@@ -61,7 +61,7 @@
                                                     Front Desk Revenue
                                                 @endif
                                             </td>
-                                            <td style="text-align: left;">{{ number_format($item->credit_amount, 2) }}</td>
+                                            <td style="text-align: left;">{{ number_format($item->amount, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -110,7 +110,7 @@
     <script src="{{ asset('assets/js/responsive.semanticui.js') }}"></script>
 
     <!-- สำหรับค้นหาในส่วนของตาราง -->
-    <script type="text/javascript" src="{{ asset('assets/helper/searchTableRevenue.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('assets/helper/searchTableRevenueFee.js')}}"></script>
 
     <script>
         $(document).ready(function() {
@@ -200,7 +200,7 @@
                 columns: [
                     { data: 'number' },
                     { data: 'date' },
-                    { data: 'stan' },
+                    // { data: 'stan' },
                     { data: 'revenue_name' },
                     { data: 'amount' }
                 ],
