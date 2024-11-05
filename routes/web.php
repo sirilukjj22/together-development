@@ -629,7 +629,7 @@ Route::middleware(['auth'])->group(function () {
         //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
         Route::get('/Dummy/Proposal/cover/document/PDF/{id}', 'sheetpdf')->name('DummyQuotation.sheet');
         //-----------------------------------ส่งเอกสาร-----------------------------------------------------------------------
-        Route::get('/Dummy/Proposal/send/documents', 'senddocuments')->name('DummyQuotation.senddocuments');
+        Route::post('/Dummy/Proposal/send/documents', 'senddocuments')->name('DummyQuotation.senddocuments');
 
         Route::get('/Dummy/Proposal/view/{id}','view')->name('DummyQuotation.view');
 

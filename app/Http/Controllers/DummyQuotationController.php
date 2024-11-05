@@ -2290,28 +2290,37 @@ class DummyQuotationController extends Controller
         return view('dummy_quotation.view',compact('settingCompany','Quotation','Quotation_ID','Company','Guest','Mevent','Mvat','Freelancer_member','selectproduct','unit','quantity'));
     }
     //-----------------------------send document---------------
-    public function senddocuments(Request $request){
-        $idsString = $request->query('ids');
-        // แปลง string เป็น array
-        $idArray = explode(',', $idsString);
+    public function senddocuments(Request $request)
+    {
+        // Retrieve `ids` from the POST request body
+        $idsArray = $request->input('ids');
+
+        // Retrieve the authenticated user ID
         $userid = Auth::user()->id;
-        $documents = dummy_quotation::whereIn('id', $idArray)->get();
+
+        // Fetch documents from the database using the array of IDs
+        $documents = dummy_quotation::whereIn('id', $idsArray)->get();
+
         foreach ($documents as $document) {
             $DummyNo = $document->DummyNo;
-            if ($document->status_document == 1) {
-                $document->status_document = 2; // สมมติว่าคุณต้องการตั้งค่าเป็น 1
-                $save = new log_company();
-                $save->Created_by = $userid;
-                $save->Company_ID = $DummyNo;
-                $save->type = 'Send documents';
-                $save->Category = 'Send documents :: Dummy Proposal';
-                $save->content = 'Send documents to proposal request'.'+'.'Document Dummy Proposal ID : '.$DummyNo;
-                $save->save();
-            }
+
+            // Update document status
+            $document->status_document = 2;
             $document->save();
+
+            // Log the document action
+            $log = new log_company();
+            $log->Created_by = $userid;
+            $log->Company_ID = $DummyNo;
+            $log->type = 'Send documents';
+            $log->Category = 'Send documents :: Dummy Proposal';
+            $log->content = 'Send documents to proposal request + Document Dummy Proposal ID: ' . $DummyNo;
+            $log->save();
         }
+
         return response()->json(['success' => true, 'message' => 'Documents updated successfully!']);
     }
+
     //-----------------------Generate-------------------------
     public function Generate(Request $request ,$id){
         try {

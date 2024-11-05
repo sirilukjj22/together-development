@@ -1422,36 +1422,26 @@
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.semanticui.js"></script>
     <script type="text/javascript" src="{{ asset('assets/helper/searchTabledummyproposal.js')}}"></script>
     <script>
-        document.getElementById('Submit_Documents').addEventListener('click', function() {
-            // Select all checked checkboxes
+         document.getElementById('Submit_Documents').addEventListener('click', function() {
             const checkedCheckboxes = document.querySelectorAll('.form-check-input:checked');
-
-            // Get all the IDs of checked checkboxes
             const ids = Array.from(checkedCheckboxes).map(checkbox => checkbox.value);
 
             if (ids.length > 0) {
-                // Create query string from ids array
-                const queryString = new URLSearchParams({ ids: ids }).toString();
-                const url = `{{ route('DummyQuotation.senddocuments') }}?${queryString}`;
+                const url = `{{ route('DummyQuotation.senddocuments') }}`;
 
                 fetch(url, {
-                    method: 'GET',
+                    method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
-                    }
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ ids: ids })
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        alert('Failed to submit documents.');
-                    }
+                    location.reload();
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while submitting documents.');
-                });
+                .catch(error => console.error('Error:', error));
             } else {
                 alert('Please select at least one checkbox.');
             }
