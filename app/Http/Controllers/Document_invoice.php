@@ -55,8 +55,7 @@ class Document_invoice extends Controller
             'document_invoice.Quotation_ID as QID',
             'document_invoice.document_status',  // Separate this field for clarity
             DB::raw('1 as status'),
-            DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (1, 2) THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
-            DB::raw('MIN(CASE WHEN document_invoice.document_status IN (1, 2) THEN CAST(REPLACE(document_invoice.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
+            DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (2) THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
         )
         ->groupBy('quotation.Quotation_ID','quotation.Operated_by','quotation.status_guest')
         ->paginate($perPage);
@@ -2337,7 +2336,7 @@ class Document_invoice extends Controller
             }
         }
         {//QRCODE
-            $id = $datarequest['InvoiceID'];
+            $id = $datarequest['Proposal_ID'];
             $protocol = $request->secure() ? 'https' : 'http';
             $linkQR = $protocol . '://' . $request->getHost() . "/Quotation/Quotation/cover/document/PDF/$id?page_shop=" . $request->input('page_shop');
             $qrCodeImage = QrCode::format('svg')->size(200)->generate($linkQR);
@@ -2707,13 +2706,6 @@ class Document_invoice extends Controller
             $total = $Subtotal/1.07;
             $addtax = $Subtotal-$total;
             $before = $Subtotal-$addtax;
-            $balance = $Nettotal-$Subtotal;
-
-            $Subtotal = ($Nettotal*$paymentPercent)/100;
-            $total = $Subtotal/1.07;
-            $addtax = $Subtotal-$total;
-            $before = $Subtotal-$addtax;
-            // $balance = $Nettotal-$Subtotal;
             $balance = $Nettotal-$Subtotal;
         }
         $balanceold =$request->balance;

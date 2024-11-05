@@ -3761,6 +3761,7 @@ class QuotationController extends Controller
                 $save->Operated_by = $userid;
                 $save->Refler_ID=$Quotation_ID;
                 $save->comment = $request->comment;
+                $save->Date_type = $request->Date_type;
                 if ($Add_discount == 0 && $SpecialDiscountBath == 0) {
                     $save->SpecialDiscount = $SpecialDiscount;
                     $save->SpecialDiscountBath = $SpecialDiscountBath;

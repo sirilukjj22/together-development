@@ -211,7 +211,7 @@
                             @csrf
                             <div class="row">
                                 <div class="col-lg-8 col-md-12 col-sm-12 image-container">
-                                    <img src="{{ asset('assets2/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
+                                    <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="Together Resort Logo" class="logo"/>
                                     <div class="info">
                                         <p class="titleh1">{{$settingCompany->name}}</p>
                                         <p>{{$settingCompany->address}}</p>
@@ -453,22 +453,31 @@
                                         </tr>
                                     </thead>
                                     <tbody id="display-selected-items">
+
                                         @if ($invoices)
+                                        @php
+                                            $lasttotal = 0;
+                                            $total = 0;
+                                            $invoice = DB::table('document_invoice')->where('Quotation_ID',$QuotationID)->whereIn('document_status', [1, 2])->get();
+                                            foreach ($invoice as $value) {
+                                                $total += $value->sumpayment;
+                                                $lasttotal = $value->Nettotal - $total;
+                                            }
+                                        @endphp
                                             <tr>
                                                 <td style="text-align:center">1</td>
                                                 <td style="text-align:left">
                                                         Proposal ID : {{$QuotationID}} <span id="Amount" style="display: none;"></span>
                                                         <span id="Amount1" style="display: none;"></span> กรุณาชำระมัดจำ งวดที่ <input type="hidden" name="Deposit"  style="width:2%;border-radius:5px;padding:2px 5px"  id="Deposit" value="{{$Deposit}}" disabled>{{$Deposit}}
                                                 </td>
-                                                <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$balance}}"></td>
+                                                <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$lasttotal}}"></td>
                                             </tr>
-
                                         @else
                                             <tr>
                                                 <td style="text-align:center">1</td>
                                                 <td style="text-align:left">Proposal ID : {{$QuotationID}}  <span id="Amount" style="display: none;"></span>
                                                     <span id="Amount1" style="display: none;"></span> กรุณาชำระมัดจำ งวดที่ <input type="hidden" name="Deposit" style="width:2%;border-radius:5px;padding:2px 5px"  id="Deposit" value="{{$Deposit}}" disabled>{{$Deposit}}</td>
-                                                <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Quotation->Nettotal}}"></td>
+                                                <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Nettotal}}"></td>
                                             </tr>
                                         @endif
                                         <tr>

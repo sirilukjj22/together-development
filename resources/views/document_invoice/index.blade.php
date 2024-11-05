@@ -105,11 +105,7 @@
                                                         @endif
                                                     </td>
                                                     <td style="text-align: center;">
-                                                        @if ($item->min_balance == 0 )
-                                                            0
-                                                        @else
-                                                        {{ number_format($item->min_balance) }}
-                                                        @endif
+                                                        {{ number_format($item->Nettotal - $item->total_payment) }}
                                                     </td>
                                                     <td style="text-align: center;">
                                                         @if (@$item->userConfirm->name == null)
@@ -138,7 +134,9 @@
 
                                                                     @if (($rolePermission == 1 || ($rolePermission == 2 && $item->Operated_by == $CreateBy)) && $canEditProposal == 1)
                                                                         @if(!empty($invoice) && $invoice->count() == 0)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                            @if ($item->Nettotal - $item->total_payment != 0)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                            @endif
                                                                         @else
                                                                             @php
                                                                                 $hasStatusReceiveZero = false;
@@ -153,20 +151,22 @@
                                                                                 @endif
                                                                             @endforeach
 
-                                                                            @if (!$hasStatusReceiveZero)
+                                                                            @if (!$hasStatusReceiveZero && $item->Nettotal - $item->total_payment != 0)
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
                                                                             @endif
                                                                         @endif
                                                                     @elseif ($rolePermission == 3 && $canEditProposal == 1)
                                                                         @if(!empty($invoice) && $invoice->count() == 0)
-                                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                            @if ($item->Nettotal - $item->total_payment != 0)
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                            @endif
                                                                         @else
                                                                             @php
                                                                                 $hasStatusReceiveZero = false;
                                                                             @endphp
 
                                                                             @foreach ($invoicecheck as $key2 => $item2)
-                                                                                @if ($item->QID == $item2->Quotation_ID && $item2->status_receive == 0)
+                                                                                @if ($item->QID == $item2->Quotation_ID && $item2->status_receive == 0 )
                                                                                     @php
                                                                                         $hasStatusReceiveZero = true;
                                                                                         break; // หยุดการลูปทันทีเมื่อพบเงื่อนไขที่ต้องการ
@@ -174,7 +174,7 @@
                                                                                 @endif
                                                                             @endforeach
 
-                                                                            @if (!$hasStatusReceiveZero)
+                                                                            @if (!$hasStatusReceiveZero  && $item->Nettotal - $item->total_payment != 0)
                                                                                 <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
                                                                             @endif
                                                                         @endif
@@ -262,7 +262,18 @@
                                                         <td style="text-align: center;">{{$item->paymentPercent	}} %</td>
                                                     @endif
 
-                                                    <td style="text-align: center;">{{ number_format($item->balance) }}</td>
+                                                    <td style="text-align: center;">
+                                                        @php
+                                                            // คำนวณผลรวมของ sumpayment
+                                                            $totals = DB::table('document_invoice')
+                                                                        ->where('Invoice_ID', $item->Invoice_ID)
+                                                                        ->whereIn('document_status', [1, 2])
+                                                                        ->sum('sumpayment');
+                                                            // ดึงค่า Nettotal ของ Invoice_ID ที่สนใจ
+                                                            $lasttotals = isset($item->Nettotal) ? $item->Nettotal - $totals : 0;
+                                                        @endphp
+                                                        {{ number_format($lasttotals) }}
+                                                    </td>
                                                     <td style="text-align: center;">
                                                         <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
                                                     </td>
@@ -390,7 +401,7 @@
                                                         <td style="text-align: center;">{{$item->paymentPercent	}} %</td>
                                                     @endif
 
-                                                    <td style="text-align: center;">{{ number_format($item->balance) }}</td>
+
                                                     <td style="text-align: center;">
                                                         <span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>
                                                     </td>
