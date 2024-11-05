@@ -361,6 +361,18 @@ class Masterpromotion extends Controller
         ]);
 
     }
+    public function status($id)
+    {
+        $event = master_promotion::find($id);
+        if ($event->status == 1 ) {
+            $status = 0;
+            $event->status = $status;
+        }elseif (($event->status == 0 )) {
+            $status = 1;
+            $event->status = $status;
+        }
+        $event->save();
+    }
 
 
 }
