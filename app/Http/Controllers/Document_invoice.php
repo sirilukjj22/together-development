@@ -81,37 +81,33 @@ class Document_invoice extends Controller
         $permissionid = Auth::user()->permission;
         if ($perPage == 10) {
             $data_query = Quotation::query()
-                ->leftJoin('document_invoice', 'quotation.Refler_ID', '=', 'document_invoice.Refler_ID')
-                ->where('quotation.Operated_by', $userid)
-                ->where('quotation.status_guest', 1)
-                ->select(
-                    'quotation.*',
-                    'document_invoice.Quotation_ID as QID',
-                    'document_invoice.document_status',  // Separate this field for clarity
-                    DB::raw('1 as status'),
-                    DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (1, 2) THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
-                    DB::raw('MIN(CASE WHEN document_invoice.document_status IN (1, 2) THEN CAST(REPLACE(document_invoice.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
-                )
-                ->groupBy('quotation.Quotation_ID','quotation.Operated_by','quotation.status_guest')
+            ->leftJoin('document_invoice', 'quotation.Refler_ID', '=', 'document_invoice.Refler_ID')
+            ->where('quotation.status_guest', 1)
+            ->select(
+                'quotation.*',
+                'document_invoice.Quotation_ID as QID',
+                'document_invoice.document_status',  // Separate this field for clarity
+                DB::raw('1 as status'),
+                DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (2) THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
+            )
+            ->groupBy('quotation.Quotation_ID','quotation.Operated_by','quotation.status_guest')
                 ->limit($request->page.'0')
                 ->get();
             $invoice = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->get();
             $invoicecheck = document_invoices::query()->where('Operated_by',$userid)->get();
         } else {
             $data_query = Quotation::query()
-                ->leftJoin('document_invoice', 'quotation.Refler_ID', '=', 'document_invoice.Refler_ID')
-                ->where('quotation.Operated_by', $userid)
-                ->where('quotation.status_guest', 1)
-                ->select(
-                    'quotation.*',
-                    'document_invoice.Quotation_ID as QID',
-                    'document_invoice.document_status',  // Separate this field for clarity
-                    DB::raw('1 as status'),
-                    DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (1, 2) THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
-                    DB::raw('MIN(CASE WHEN document_invoice.document_status IN (1, 2) THEN CAST(REPLACE(document_invoice.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
-                )
-                ->groupBy('quotation.Quotation_ID','quotation.Operated_by','quotation.status_guest')
-                ->paginate($perPage);
+            ->leftJoin('document_invoice', 'quotation.Refler_ID', '=', 'document_invoice.Refler_ID')
+            ->where('quotation.status_guest', 1)
+            ->select(
+                'quotation.*',
+                'document_invoice.Quotation_ID as QID',
+                'document_invoice.document_status',  // Separate this field for clarity
+                DB::raw('1 as status'),
+                DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (2) THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
+            )
+            ->groupBy('quotation.Quotation_ID','quotation.Operated_by','quotation.status_guest')
+            ->paginate($perPage);
             $invoice = document_invoices::query()->where('Operated_by',$userid)->where('document_status',1)->get();
             $invoicecheck = document_invoices::query()->where('Operated_by',$userid)->get();
         }
@@ -149,13 +145,16 @@ class Document_invoice extends Controller
 
                     if ($canViewProposal) {
                         $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/list/' . $value->id) . '">View Invoice</a></li>';
                     }
 
                     if ($rolePermission > 0) {
                         if ($rolePermission == 1 || $rolePermission == 2 && $isOperatedByCreator) {
                             if (!empty($invoice) && $invoice->count() == 0) {
                                 if ($canEditProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
+                                    if ($value->Nettotal - $value->total_payment != 0) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Create</a></li>';
+                                    }
                                 }
                             } else {
                                 if ($canEditProposal == 1) {
@@ -168,15 +167,17 @@ class Document_invoice extends Controller
                                         }
                                     }
 
-                                    if (!$hasStatusReceiveZero) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
+                                    if (!$hasStatusReceiveZero && $value->Nettotal - $value->total_payment != 0) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Create</a></li>';
                                     }
                                 }
                             }
                         } elseif ($rolePermission == 3) {
                             if (!empty($invoice) && $invoice->count() == 0) {
                                 if ($canEditProposal) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
+                                    if ($value->Nettotal - $value->total_payment != 0) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Create</a></li>';
+                                    }
                                 }
                             } else {
                                 if ($canEditProposal == 1) {
@@ -189,8 +190,8 @@ class Document_invoice extends Controller
                                         }
                                     }
 
-                                    if (!$hasStatusReceiveZero) {
-                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
+                                    if (!$hasStatusReceiveZero && $value->Nettotal - $value->total_payment != 0) {
+                                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Create</a></li>';
                                     }
                                 }
                             }
@@ -209,7 +210,7 @@ class Document_invoice extends Controller
                         'ExpirationDate' => $value->Expirationdate,
                         'Amount' => number_format($value->Nettotal),
                         'Deposit' => number_format($value->total_payment ?? 0, 2),
-                        'Balance' => number_format($value->min_balance ?? 0, 2),
+                        'Balance' => number_format($value->Nettotal - $value->total_payment ?? 0, 2),
                         'Approve' => $value->Confirm_by == null ? 'Auto' : @$value->userConfirm->name,
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
@@ -239,7 +240,6 @@ class Document_invoice extends Controller
                     'document_invoice.document_status',
                     DB::raw('1 as status'),
                     DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (1, 2) THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
-                    DB::raw('MIN(CASE WHEN document_invoice.document_status IN (1, 2) THEN CAST(REPLACE(document_invoice.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
                 )
                 ->where('quotation.Quotation_ID', 'LIKE', '%'.$search_value.'%')
                 ->groupBy('quotation.Quotation_ID',  'quotation.status_guest')
@@ -259,7 +259,6 @@ class Document_invoice extends Controller
                     'document_invoice.document_status',
                     DB::raw('1 as status'),
                     DB::raw('COALESCE(SUM(CASE WHEN document_invoice.document_status IN (1, 2) THEN document_invoice.sumpayment ELSE 0 END), 0) as total_payment'),
-                    DB::raw('MIN(CASE WHEN document_invoice.document_status IN (1, 2) THEN CAST(REPLACE(document_invoice.balance, ",", "") AS UNSIGNED) ELSE NULL END) as min_balance')
                 )
                 ->groupBy('quotation.Quotation_ID',  'quotation.status_guest')
                 ->paginate($perPageS);
@@ -288,19 +287,23 @@ class Document_invoice extends Controller
                 $canEditProposal = Auth::user()->roleMenuEdit('Proforma Invoice', Auth::user()->id);
                 $CreateBy = Auth::user()->id;
                 $isOperatedByCreator = $value->Operated_by == $CreateBy;
+
                 $btn_action = '<div class="dropdown">';
                 $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                 $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
 
                 if ($canViewProposal) {
                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Proposal/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/list/' . $value->id) . '">View Invoice</a></li>';
                 }
 
                 if ($rolePermission > 0) {
                     if ($rolePermission == 1 || $rolePermission == 2 && $isOperatedByCreator) {
                         if (!empty($invoice) && $invoice->count() == 0) {
                             if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
+                                if ($value->Nettotal - $value->total_payment != 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Create</a></li>';
+                                }
                             }
                         } else {
                             if ($canEditProposal == 1) {
@@ -313,15 +316,17 @@ class Document_invoice extends Controller
                                     }
                                 }
 
-                                if (!$hasStatusReceiveZero) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
+                                if (!$hasStatusReceiveZero && $value->Nettotal - $value->total_payment != 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Create</a></li>';
                                 }
                             }
                         }
                     } elseif ($rolePermission == 3) {
                         if (!empty($invoice) && $invoice->count() == 0) {
                             if ($canEditProposal) {
-                                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
+                                if ($value->Nettotal - $value->total_payment != 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Create</a></li>';
+                                }
                             }
                         } else {
                             if ($canEditProposal == 1) {
@@ -334,17 +339,17 @@ class Document_invoice extends Controller
                                     }
                                 }
 
-                                if (!$hasStatusReceiveZero) {
-                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Generate</a></li>';
+                                if (!$hasStatusReceiveZero && $value->Nettotal - $value->total_payment != 0) {
+                                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/Generate/' . $value->id) . '">Create</a></li>';
                                 }
                             }
                         }
                     }
                 }
 
-
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
+
 
                 $data[] = [
                     'number' => $key +1,
@@ -354,7 +359,7 @@ class Document_invoice extends Controller
                     'ExpirationDate' => $value->Expirationdate,
                     'Amount' => number_format($value->Nettotal),
                     'Deposit' => number_format($value->total_payment ?? 0, 2),
-                    'Balance' => number_format($value->min_balance ?? 0, 2),
+                    'Balance' => number_format($value->Nettotal - $value->total_payment ?? 0, 2),
                     'Approve' => $value->Confirm_by == null ? 'Auto' : @$value->userConfirm->name,
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
@@ -465,10 +470,7 @@ class Document_invoice extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->IssueDate,
                         'ExpirationDate' => $value->Expiration,
-                        'Amount' => number_format($value->Nettotal),
-                        'PaymentB'=>number_format($value->payment),
-                        'PaymentP'=>$payment,
-                        'Balance'=>number_format($value->balance),
+                        'Amount' => number_format($value->sumpayment),
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
                     ];
@@ -583,10 +585,7 @@ class Document_invoice extends Controller
                     'Company_Name' => $name,
                     'IssueDate' => $value->IssueDate,
                     'ExpirationDate' => $value->Expiration,
-                    'Amount' => number_format($value->Nettotal),
-                    'PaymentB'=>number_format($value->payment),
-                    'PaymentP'=>$payment,
-                    'Balance'=>number_format($value->balance),
+                    'Amount' => number_format($value->sumpayment),
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
                 ];
@@ -655,10 +654,7 @@ class Document_invoice extends Controller
                         'Company_Name' => $name,
                         'IssueDate' => $value->IssueDate,
                         'ExpirationDate' => $value->Expiration,
-                        'Amount' => number_format($value->Nettotal),
-                        'PaymentB'=>number_format($value->payment),
-                        'PaymentP'=>$payment,
-                        'Balance'=>number_format($value->balance),
+                        'Amount' => number_format($value->sumpayment),
                         'DocumentStatus' => $btn_status,
                         'btn_action' => $btn_action,
                     ];
@@ -733,10 +729,7 @@ class Document_invoice extends Controller
                     'Company_Name' => $name,
                     'IssueDate' => $value->IssueDate,
                     'ExpirationDate' => $value->Expiration,
-                    'Amount' => number_format($value->Nettotal),
-                    'PaymentB'=>number_format($value->payment),
-                    'PaymentP'=>$payment,
-                    'Balance'=>number_format($value->balance),
+                    'Amount' => number_format($value->sumpayment),
                     'DocumentStatus' => $btn_status,
                     'btn_action' => $btn_action,
                 ];
@@ -748,6 +741,164 @@ class Document_invoice extends Controller
         ]);
     }
 
+     //------------------tablepending----------------------
+    public function  paginate_table_invoice_select(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        $guest_profile = $request->guest_profile;
+        if ($perPage == 10) {
+            $data_query = document_invoices::query()->where('Quotation_ID',$guest_profile)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = document_invoices::query()->where('Quotation_ID',$guest_profile)->paginate($perPage);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                $checkbox = "";
+                $payment = "";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company00->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    if ($value->paymentPercent == null) {
+                        $payment = '<td>' .'0'. '</td>';
+                    }else {
+                        $payment = '<td>' .$value->paymentPercent. '</td>';
+                    }
+                    if ($value->document_status == 1) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                    }elseif ($value->document_status == 2) {
+                        $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
+                    }
+
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Invoice/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $value->id) . '">LOG</a></li>';
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => $key+1,
+                        'Invoice' => $value->Invoice_ID,
+                        'Proposal'=> $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->IssueDate,
+                        'ExpirationDate' => $value->Expiration,
+                        'Amount' => number_format($value->sumpayment),
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_invoice_select(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+        $permissionid = Auth::user()->permission;
+        $guest_profile = $request->guest_profile;
+        if ($search_value) {
+            $data_query = document_invoices::where('Quotation_ID',$guest_profile)
+                ->where(function($query) use ($search_value) {
+                    $query->where('Invoice_ID', 'LIKE', '%'.$search_value.'%')
+                        ->orWhere('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                        ->orWhere('IssueDate', 'LIKE', '%'.$search_value.'%')
+                        ->orWhere('Expiration', 'LIKE', '%'.$search_value.'%');
+                })
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = document_invoices::query()->where('Quotation_ID',$guest_profile)->paginate($perPageS);
+        }
+
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                $checkbox = "";
+                $payment = "";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company00->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                if ($value->paymentPercent == null) {
+                    $payment = '<td>' .'0'. '</td>';
+                }else {
+                    $payment = '<td>' .$value->paymentPercent. '</td>';
+                }
+
+                if ($value->document_status == 1) {
+                    $btn_status = '<span class="badge rounded-pill " style="background-color: #FF6633">Pending</span>';
+                }elseif ($value->document_status == 2) {
+                    $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
+                }
+
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $value->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Invoice/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $value->id) . '">LOG</a></li>';
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+
+                $data[] = [
+                    'number' => $key+1,
+                    'Invoice' => $value->Invoice_ID,
+                    'Proposal'=> $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->IssueDate,
+                    'ExpirationDate' => $value->Expiration,
+                    'Amount' => number_format($value->sumpayment),
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+
+
+    public function viewList($id)
+    {
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $proposal = document_invoices::query()->where('id',$id)->first();
+        $Quotation_ID = $proposal->Quotation_ID;
+        $invoice = document_invoices::query()->where('Quotation_ID',$Quotation_ID)->paginate($perPage);
+        return view('document_invoice.view_invoicelist',compact('invoice','Quotation_ID'));
+    }
 
     public function Generate($id){
 
@@ -1018,15 +1169,7 @@ class Document_invoice extends Controller
                     $total = $Subtotal/1.07;
                     $addtax = $Subtotal-$total;
                     $before = $Subtotal-$addtax;
-                    $balance = $Nettotal-$Subtotal;
-
-                    $Subtotal = ($Nettotal*$paymentPercent)/100;
-                    $total = $Subtotal/1.07;
-                    $addtax = $Subtotal-$total;
-                    $before = $Subtotal-$addtax;
-                    // $balance = $Nettotal-$Subtotal;
-                    $balance = $Nettotal-$Subtotal;
-
+                    $balance = $Subtotal;
                 }
                 $balanceold =$request->balance;
 
@@ -1304,14 +1447,7 @@ class Document_invoice extends Controller
                         $total = $Subtotal/1.07;
                         $addtax = $Subtotal-$total;
                         $before = $Subtotal-$addtax;
-                        $balance = $Nettotal-$Subtotal;
-
-                        $Subtotal = ($Nettotal*$paymentPercent)/100;
-                        $total = $Subtotal/1.07;
-                        $addtax = $Subtotal-$total;
-                        $before = $Subtotal-$addtax;
-                        // $balance = $Nettotal-$Subtotal;
-                        $balance = $Nettotal-$Subtotal;
+                        $balance = $Subtotal;
 
                     }
                     $balanceold =$datarequest['Balance'];
@@ -1552,7 +1688,7 @@ class Document_invoice extends Controller
             $total = $Subtotal/1.07;
             $addtax = $Subtotal-$total;
             $before = $Subtotal-$addtax;
-            $balance = $Nettotal-$Subtotal;
+            $balance = $Subtotal;
 
         }
         $formattedNumber = number_format($balance, 2, '.', ',');
@@ -1802,14 +1938,7 @@ class Document_invoice extends Controller
                     $total = $Subtotal/1.07;
                     $addtax = $Subtotal-$total;
                     $before = $Subtotal-$addtax;
-                    $balance = $Nettotal-$Subtotal;
-
-                    $Subtotal = ($Nettotal*$paymentPercent)/100;
-                    $total = $Subtotal/1.07;
-                    $addtax = $Subtotal-$total;
-                    $before = $Subtotal-$addtax;
-                    // $balance = $Nettotal-$Subtotal;
-                    $balance = $Nettotal-$Subtotal;
+                    $balance = $$Subtotal;
 
                 }
                 $balanceold =$request->balance;
@@ -2095,14 +2224,7 @@ class Document_invoice extends Controller
                         $total = $Subtotal/1.07;
                         $addtax = $Subtotal-$total;
                         $before = $Subtotal-$addtax;
-                        $balance = $Nettotal-$Subtotal;
-
-                        $Subtotal = ($Nettotal*$paymentPercent)/100;
-                        $total = $Subtotal/1.07;
-                        $addtax = $Subtotal-$total;
-                        $before = $Subtotal-$addtax;
-                        // $balance = $Nettotal-$Subtotal;
-                        $balance = $Nettotal-$Subtotal;
+                        $balance = $Subtotal;
 
                     }
                     $balanceold =$datarequest['Balance'];
@@ -2706,7 +2828,7 @@ class Document_invoice extends Controller
             $total = $Subtotal/1.07;
             $addtax = $Subtotal-$total;
             $before = $Subtotal-$addtax;
-            $balance = $Nettotal-$Subtotal;
+            $balance = $Subtotal;
         }
         $balanceold =$request->balance;
         $data= [

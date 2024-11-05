@@ -720,8 +720,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/Document/invoice/update/revised/{id}', 'update')->name('invoice.revised');
         Route::get('/Document/invoice/receive/{id}','receive')->name('invoice.receive');
         Route::post('/Document/invoice/receive/check/payment/{id}', 'payment')->name('invoice.payment');
-        //---------------------------------------LOG-----------------------------------------------------------
         Route::get('/Document/invoice/view/LOG/{id}','LOG')->name('invoice.LOG');
+        //---------------------------------------LOG-----------------------------------------------------------
+        Route::get('/Document/invoice/view/list/{id}','viewList')->name('invoice.viewList');
         //-------------------------------------delete------------------------------------
         Route::get('/Document/invoice/delete/{id}','Delete')->name('invoice.delete');
         //--------------------------------------Re---------------------------------------
@@ -742,6 +743,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('invoice-generate-search-table', 'search_table_invoice_generate');
         Route::post('invoice-generate-paginate-table', 'paginate_table_invoice_generate');
+
+        Route::post('invoice-select-search-table', 'search_table_invoice_select');
+        Route::post('invoice-select-paginate-table', 'paginate_table_invoice_select');
 
         //--------------------------LogPdf-----------
         Route::post('invoice-Log-search-table', 'search_table_paginate_log_pdf');

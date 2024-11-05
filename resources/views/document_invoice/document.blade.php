@@ -159,7 +159,7 @@
                             <div class="col-12 row mt-5">
                                 <div class="col-4"></div>
                                 <div class="col-4 "  style="display:flex; justify-content:center; align-items:center;">
-                                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('Proposal.index') }}'">
+                                    <button type="button" class="btn btn-secondary lift btn_modal btn-space" onclick="window.location.href='{{ route('invoice.index') }}'">
                                         Back
                                     </button>
                                 </div>

@@ -46,7 +46,7 @@
 
     <div class="main auth-div p-2 py-3 p-xl-5">
 
-        
+
 
         <!-- Body: Body -->
 
@@ -74,7 +74,7 @@
 
                             </div>
 
-                
+
 
                             <div class="mb-5">
 
@@ -82,7 +82,7 @@
 
                             </div>
 
-                
+
 
                             <!-- List Checked -->
 
@@ -96,7 +96,7 @@
 
                                 </li>
 
-                
+
 
                                 <li>
 
@@ -208,7 +208,7 @@
 
                 </div> <!-- End Row -->
 
-                
+
 
             </div>
 

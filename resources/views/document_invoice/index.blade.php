@@ -130,12 +130,13 @@
                                                                 @if ($rolePermission > 0)
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/list/'.$item->id) }}">View Invoice</a></li>
                                                                     @endif
 
                                                                     @if (($rolePermission == 1 || ($rolePermission == 2 && $item->Operated_by == $CreateBy)) && $canEditProposal == 1)
                                                                         @if(!empty($invoice) && $invoice->count() == 0)
                                                                             @if ($item->Nettotal - $item->total_payment != 0)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Create</a></li>
                                                                             @endif
                                                                         @else
                                                                             @php
@@ -152,13 +153,13 @@
                                                                             @endforeach
 
                                                                             @if (!$hasStatusReceiveZero && $item->Nettotal - $item->total_payment != 0)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Create</a></li>
                                                                             @endif
                                                                         @endif
                                                                     @elseif ($rolePermission == 3 && $canEditProposal == 1)
                                                                         @if(!empty($invoice) && $invoice->count() == 0)
                                                                             @if ($item->Nettotal - $item->total_payment != 0)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Create</a></li>
                                                                             @endif
                                                                         @else
                                                                             @php
@@ -175,13 +176,14 @@
                                                                             @endforeach
 
                                                                             @if (!$hasStatusReceiveZero  && $item->Nettotal - $item->total_payment != 0)
-                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Generate</a></li>
+                                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/Generate/'.$item->id) }}">Create</a></li>
                                                                             @endif
                                                                         @endif
                                                                     @endif
                                                                 @else
                                                                     @if ($canViewProposal == 1)
                                                                         <li><a class="dropdown-item py-2 rounded" target="_blank" href="{{ url('/Proposal/cover/document/PDF/'.$item->id) }}">Export</a></li>
+                                                                        <li><a class="dropdown-item py-2 rounded" href="{{ url('/Document/invoice/view/list/'.$item->id) }}">View Invoice</a></li>
                                                                     @endif
                                                                 @endif
 
@@ -229,9 +231,6 @@
                                                 <th class="text-center">Issue Date</th>
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Amount</th>
-                                                <th class="text-center">Payment</th>
-                                                <th class="text-center">Payment(%)</th>
-                                                <th class="text-center">Balance</th>
                                                 <th class="text-center">Document status</th>
                                                 <th class="text-center">Order</th>
                                             </tr>
@@ -253,26 +252,7 @@
                                                     <td style="text-align: center;">{{ $item->IssueDate }}</td>
                                                     <td style="text-align: center;">{{ $item->Expiration }}</td>
                                                     <td style="text-align: center;">
-                                                        {{ number_format($item->Nettotal) }}
-                                                    </td>
-                                                    <td style="text-align: center;"> {{ number_format($item->payment) }}</td>
-                                                    @if ($item->paymentPercent == null)
-                                                        <td style="text-align: center;">0</td>
-                                                    @else
-                                                        <td style="text-align: center;">{{$item->paymentPercent	}} %</td>
-                                                    @endif
-
-                                                    <td style="text-align: center;">
-                                                        @php
-                                                            // คำนวณผลรวมของ sumpayment
-                                                            $totals = DB::table('document_invoice')
-                                                                        ->where('Invoice_ID', $item->Invoice_ID)
-                                                                        ->whereIn('document_status', [1, 2])
-                                                                        ->sum('sumpayment');
-                                                            // ดึงค่า Nettotal ของ Invoice_ID ที่สนใจ
-                                                            $lasttotals = isset($item->Nettotal) ? $item->Nettotal - $totals : 0;
-                                                        @endphp
-                                                        {{ number_format($lasttotals) }}
+                                                        {{ number_format($item->sumpayment) }}
                                                     </td>
                                                     <td style="text-align: center;">
                                                         <span class="badge rounded-pill "style="background-color: #FF6633	">Pending</span>
@@ -368,9 +348,6 @@
                                                 <th class="text-center">Issue Date</th>
                                                 <th class="text-center">Expiration Date</th>
                                                 <th class="text-center">Amount</th>
-                                                <th class="text-center">Payment</th>
-                                                <th class="text-center">Payment(%)</th>
-                                                <th class="text-center">Balance</th>
                                                 <th class="text-center">Document status</th>
                                                 <th class="text-center">Order</th>
                                             </tr>
@@ -391,17 +368,7 @@
                                                     @endif
                                                     <td style="text-align: center;">{{ $item->IssueDate }}</td>
                                                     <td style="text-align: center;">{{ $item->Expiration }}</td>
-                                                    <td style="text-align: center;">
-                                                        {{ number_format($item->Nettotal) }}
-                                                    </td>
-                                                    <td style="text-align: center;"> {{ number_format($item->payment) }}</td>
-                                                    @if ($item->paymentPercent == null)
-                                                        <td style="text-align: center;">0</td>
-                                                    @else
-                                                        <td style="text-align: center;">{{$item->paymentPercent	}} %</td>
-                                                    @endif
-
-
+                                                    <td style="text-align: center;"> {{ number_format($item->sumpayment) }}</td>
                                                     <td style="text-align: center;">
                                                         <span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>
                                                     </td>
@@ -620,7 +587,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,4,5,6,7,8,9,10,11], className: 'dt-center td-content-center' },
+                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -637,9 +604,6 @@
                         { data: 'IssueDate' },
                         { data: 'ExpirationDate' },
                         { data: 'Amount' },
-                        { data: 'PaymentB' },
-                        { data: 'PaymentP' },
-                        { data: 'Balance' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
                     ],
@@ -694,7 +658,7 @@
                     $('#'+id+'-paginate').append(paginateSearch(count_total, id, getUrl));
                 },
                     columnDefs: [
-                                { targets: [0,4,5,6,7,8,9,10,11], className: 'dt-center td-content-center' },
+                                { targets: [0,4,5,6,7,8], className: 'dt-center td-content-center' },
                     ],
                     order: [0, 'asc'],
                     responsive: {
@@ -711,9 +675,6 @@
                         { data: 'IssueDate' },
                         { data: 'ExpirationDate' },
                         { data: 'Amount' },
-                        { data: 'PaymentB' },
-                        { data: 'PaymentP' },
-                        { data: 'Balance' },
                         { data: 'DocumentStatus' },
                         { data: 'btn_action' }
                     ],

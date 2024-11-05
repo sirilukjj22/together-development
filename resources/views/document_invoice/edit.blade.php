@@ -455,7 +455,7 @@
                                             <td style="text-align:center">1</td>
                                             <td style="text-align:left">Proposal ID : {{$QuotationID}}  <span id="Amount" style="display: none;"></span>
                                                 <span id="Amount1" style="display: none;"></span> กรุณาชำระมัดจำ งวดที่ <input type="hidden" name="Deposit" style="width:2%;border-radius:5px;padding:2px 5px"  id="Deposit" value="{{$Deposit}}" disabled>{{$Deposit}}</td>
-                                            <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$Quotation->Nettotal}}"></td>
+                                            <td style="text-align:right"><span id="Subtotal"></span>฿ <input type="hidden" name="Nettotal" id="Nettotal" value="{{$invoice->Nettotal}}"></td>
                                         </tr>
                                         <tr>
                                             <td><br></td>
@@ -646,7 +646,7 @@
             total = Subtotal/1.07;
             addtax = Subtotal-total;
             before = Subtotal-addtax;
-            balance = Nettotal-Subtotal;
+            balance = Subtotal;
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -735,10 +735,12 @@
             let before = 0;
             let balance =0;
             Subtotal = (Nettotal*Payment0)/100;
+            console.log(Nettotal);
+
             total = Subtotal/1.07;
             addtax = Subtotal-total;
             before = Subtotal-addtax;
-            balance = Nettotal-Subtotal;
+            balance = Subtotal;
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#Added').text(isNaN(addtax) ? '0' : addtax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
@@ -758,7 +760,7 @@
             total = Subtotal;
             addtax = 0;
             before = Subtotal;
-            balance = Nettotal-Subtotal;
+            balance = Subtotal;
             console.log(balance);
             $('#Subtotal').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             $('#SubtotalAll').text(isNaN(Subtotal) ? '0' : Subtotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
