@@ -1073,7 +1073,7 @@ class CompanyController extends Controller
         $Id_profile ="-";
         $N_Profile = $Profile_IDMain.$Id_profile.$Profile_ID;
         try {
-            if ($TaxSelectA == 'Company') {
+            if ($request->TaxSelectA == 'Company') {
                 $save = new company_tax();
                 $save->ComTax_ID =$N_Profile;
                 $save->Company_ID = $Profile_IDMain;
@@ -1116,7 +1116,7 @@ class CompanyController extends Controller
                 $save->first_name =$request->first_nameCom;
                 $save->last_name =$request->last_nameCom;
                 $save->Tax_Type = 'Individual';
-                if ($CountryOther != "Thailand") {
+                if ($request->countrydataA != "Thailand") {
                     $save->Country =$request->countrydataA;
                     $save->Address =$request->addressAgent;
                 }else {
