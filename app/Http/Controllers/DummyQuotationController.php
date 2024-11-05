@@ -5327,8 +5327,8 @@ class DummyQuotationController extends Controller
         $save->save();
         return redirect()->route('DummyQuotation.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
-    public function addProduct($Quotation_ID, Request $request) {
-        $value = $request->input('value');
+    public function addProduct($Quotation_ID) {
+        $value = $Quotation_ID;
         if ($value == 'Room_Type') {
 
             $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
@@ -5356,9 +5356,9 @@ class DummyQuotationController extends Controller
 
         ]);
     }
-    public function addProducttable($Quotation_ID, Request $request) {
+    public function addProducttable($Quotation_ID) {
 
-        $value = $request->input('value');
+        $value = $Quotation_ID;
         if ($value == 'Room_Type') {
 
             $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.Product_ID', 'asc')
@@ -5387,8 +5387,8 @@ class DummyQuotationController extends Controller
 
         ]);
     }
-    public function addProductselect($Quotation_ID, Request $request) {
-        $value = $request->input('value');
+    public function addProductselect($Quotation_ID) {
+        $value = $Quotation_ID;
         $products = master_product_item::leftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
         ->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')
         ->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
@@ -5402,8 +5402,8 @@ class DummyQuotationController extends Controller
 
         ]);
     }
-    public function addProducttableselect($Quotation_ID, Request $request) {
-        $value = $request->input('value');
+    public function addProducttableselect($Quotation_ID) {
+        $value = $Quotation_ID;
         $products = master_product_item::leftJoin('master_units', 'master_product_items.unit', '=', 'master_units.id')
         ->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')
         ->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
@@ -5417,8 +5417,8 @@ class DummyQuotationController extends Controller
 
         ]);
     }
-    public function addProducttablemain($Quotation_ID, Request $request) {
-        $value = $request->input('value');
+    public function addProducttablemain($Quotation_ID) {
+        $value = $Quotation_ID;
         $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
         ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
         return response()->json([
@@ -5426,8 +5426,8 @@ class DummyQuotationController extends Controller
 
         ]);
     }
-    public function addProducttablecreatemain($Quotation_ID, Request $request) {
-        $value = $request->input('value');
+    public function addProducttablecreatemain($Quotation_ID) {
+        $value = $Quotation_ID;
         $products = master_product_item::Leftjoin('master_units','master_product_items.unit','master_units.id')->Leftjoin('master_quantities','master_product_items.quantity','master_quantities.id')->orderBy('master_product_items.type', 'asc')->orderBy('master_product_items.id', 'asc')
         ->where('master_product_items.status',1)->select('master_product_items.*','master_units.name_th as unit_name','master_quantities.name_th as quantity_name')->get();
         return response()->json([

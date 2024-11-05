@@ -1385,7 +1385,7 @@
             var Quotation_ID = $('#Quotation_ID').val(); // Replace this with the actual ID you want to send
             var clickCounter = 1;
             $.ajax({
-                url: '{{ route("DummyQuotation.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+                url: '{{ route("DummyQuotation.addProduct", ["Quotation_ID" => ":id"]) }}'.replace(':id', status),
                 method: 'GET',
                 data: {
                     value: status
@@ -1501,7 +1501,7 @@
                         return;
                     }
                     $.ajax({
-                        url: '{{ route("DummyQuotation.addProductselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+                        url: '{{ route("DummyQuotation.addProductselect", ["Quotation_ID" => ":id"]) }}'.replace(':id', product),
                         method: 'GET',
                         data: {
                             value:product
@@ -1556,9 +1556,10 @@
             });
             $(document).on('click', '.confirm-button', function() {
                 var number = $('#randomKey').val();
+                var all = 'all';
 
                 $.ajax({
-                    url: '{{ route("DummyQuotation.addProducttablecreatemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', Quotation_ID),
+                    url: '{{ route("DummyQuotation.addProducttablecreatemain", ["Quotation_ID" => ":id"]) }}'.replace(':id', all),
                     method: 'GET',
                     data: {
                         value: "all"
