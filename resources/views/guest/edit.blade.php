@@ -218,7 +218,7 @@
                                     </div>
                                     <div class="col-lg-4 col-md-6 col-sm-12">
                                         <label for="identification_number">หมายเลขประจำตัว / Identification Number</label><br>
-                                        <input type="text" class="form-control" id="identification_number idcard" name="identification_number" value="{{ formatIdCard($Guest->Identification_Number) }}" required>
+                                        <input type="text" class="form-control idcard" id="identification_number" name="identification_number"maxlength="17"  value="{{ formatIdCard($Guest->Identification_Number) }}" placeholder="เลขประจำตัวผู้เสียภาษี" required>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
