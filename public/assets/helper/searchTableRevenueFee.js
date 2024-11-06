@@ -84,7 +84,7 @@ function paginateSearch($total, $table, $link) {
     return html;
 }
 
-function getPage(page, perPage, table_n) {
+function getPage(page, perPage, table_n) {    
     var table_name = table_n + 'Table';
     var filter_by = $('#filter-by').val();
     var dateString = $('#date').val();
@@ -97,45 +97,88 @@ function getPage(page, perPage, table_n) {
 
     $('#' + table_name).DataTable().destroy();
 
-    var table = $('#' + table_name).dataTable({
-        searching: false,
-        paging: false,
-        info: false,
-        ajax: {
-            url: '/revenue-paginate-table',
-            type: 'POST',
-            dataType: "json",
-            cache: false,
-            data: {
-                page: page,
-                perPage: perPage,
-                table_name: table_name,
-                filter_by: filter_by,
-                date: dateString,
-                status: type,
-                into_account: account
-            },
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        },
-        columnDefs: [
-            { targets: [0, 1], className: 'dt-center td-content-center' },
-        ],
-        order: [0, 'asc'],
-        responsive: {
-            details: {
-                type: 'column',
-                target: 'tr'
-            }
-        },
-        columns: [
-            { data: 'number' },
-            { data: 'date' },
-            { data: 'stan' },
-            { data: 'revenue_name' },
-            { data: 'agoda_fee' },
-        ],
-
-    }); 
+        if (table_name == "agoda_feeTable") {
+            var table = $('#' + table_name).dataTable({
+                searching: false,
+                paging: false,
+                info: false,
+                ajax: {
+                    url: '/revenue-paginate-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        page: page,
+                        perPage: perPage,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        date: dateString,
+                        status: type,
+                        into_account: account
+                    },
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                },
+                columnDefs: [
+                    { targets: [0, 1], className: 'dt-center td-content-center' },
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                columns: [
+                    { data: 'number' },
+                    { data: 'date' },
+                    // { data: 'stan' },
+                    { data: 'revenue_name' },
+                    { data: 'amount' },
+                ],
+        
+            });
+        } else {
+            var table = $('#' + table_name).dataTable({
+                searching: false,
+                paging: false,
+                info: false,
+                ajax: {
+                    url: '/revenue-paginate-table',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {
+                        page: page,
+                        perPage: perPage,
+                        table_name: table_name,
+                        filter_by: filter_by,
+                        date: dateString,
+                        status: type,
+                        into_account: account
+                    },
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                },
+                columnDefs: [
+                    { targets: [0, 1], className: 'dt-center td-content-center' },
+                    { targets: [2], className: 'text-start' },
+                ],
+                order: [0, 'asc'],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                columns: [
+                    { data: 'number' },
+                    { data: 'date' },
+                    // { data: 'stan' },
+                    { data: 'revenue_name' },
+                    { data: 'amount' },
+                ],
+        
+            });
+        } 
 
     $('#' + table_n + '-paginate').children().remove().end();
     $('#' + table_n + '-showingEntries').text(showingEntriesSearch(page, total, table_n));

@@ -96,7 +96,7 @@
                             <span class="dropdown">
                                 <button class="dropdown-toggle" type="button" id="dropdownMenuDaily" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
                                     <span id="txt-daily">
-                                        @if (isset($filter_by) && $filter_by == 'today' || !isset($filter_by) && $date_current == date('Y-m-d'))
+                                        @if ($filter_by == 'today' || $filter_by == 'date' || !isset($filter_by) && $date_current == date('Y-m-d'))
                                             Today
                                         @elseif (isset($filter_by) && $filter_by == 'yesterday' || date('Y-m-d', strtotime(date($date_current))) == date('Y-m-d', strtotime('-1 day')))
                                             Yesterday

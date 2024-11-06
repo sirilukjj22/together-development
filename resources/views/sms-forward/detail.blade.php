@@ -501,7 +501,7 @@
 
             var filter_by = $('#filter-by').val();
             var dateString = $('#date').val();
-            var type_status = $('#status').val();
+            var type_status = $('#search-status').val();
             var account = $('#into_account').val();
             var getUrl = window.location.pathname;
 
