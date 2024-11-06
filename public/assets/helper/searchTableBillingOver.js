@@ -258,15 +258,14 @@ function getPagePending(page, perPage, table_n)
                 }
             },
             columns: [
-                { data: 'number' },
-                { data: 'Additional_ID' },
-                { data: 'Proposal_ID' },
+                { data: 'number'},
+                { data: 'Receipt' },
+                { data: 'Proposal' },
                 { data: 'Company_Name' },
-                { data: 'IssueDate' },
-                { data: 'Type' },
-                { data: 'CheckIn' },
-                { data: 'CheckOut' },
-                { data: 'ExpirationDate' },
+                { data: 'Room' },
+                { data: 'Payment' },
+                { data: 'Amount' },
+                { data: 'Category' },
                 { data: 'Operated' },
                 { data: 'DocumentStatus' },
                 { data: 'btn_action' }

@@ -73,7 +73,7 @@
                                             <th class="text-center">Category</th>
                                             <th class="text-center">Operated By</th>
                                             <th class="text-center">Document status</th>
-                                            <th class="text-center">Order</th>
+                                            <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>

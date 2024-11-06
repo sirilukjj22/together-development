@@ -155,7 +155,7 @@
                                     <span aria-hidden="true">&times;</span>
                                     </span>
                                 </div>
-                                <form id="myForm" action="{{route('BillingFolio.savere')}} " method="POST">
+                                <form id="myForm" action="{{route('BillingFolioOver.savere')}} " method="POST">
                                     @csrf
                                     <input type="hidden" id="Additional" name="Additional" class="form-control" value="{{$Additional->Additional_ID}}">
                                     <div class="modal-body">
@@ -286,7 +286,7 @@
                                         </div>
 
                                         <div class="img">
-                                            <img src="{{ asset('assets2/images/' . $settingCompany->image) }}" alt="together-resort" width="200px" />
+                                            <img src="{{ asset('assets/images/' . $settingCompany->image) }}" alt="together-resort" width="200px" />
                                         </div>
                                         </section>
                                         <section>
@@ -447,7 +447,7 @@
 
 
 
-    {{-- <script>
+    <script>
         $(document).ready(function () {
             // เลือกทุก input ที่มี class 'expiryDate'
             $('.expiryDate').on('input', function () {
@@ -607,39 +607,11 @@
                 }
             });
         }
-        $(document).ready(function() {
-            // Listen for change on all elements with class 'paymentType'
-            $('.paymentType').on('change', function() {
-                var selectedType = $(this).val();
-                var parentContainer = $(this).closest('.payment-container'); // Find the parent container
-                // Hide all payment method sections within this specific container
-                parentContainer.find('.cashInput, .bankTransferInput, .creditCardInput, .chequeInput').hide();
-                // Show the relevant section based on the selected payment type
-                if (selectedType === 'cash') {
-                    parentContainer.find('.cashInput').show();
-                } else if (selectedType === 'bankTransfer') {
-                    parentContainer.find('.bankTransferInput').show();
-                } else if (selectedType === 'creditCard') {
-                    parentContainer.find('.creditCardInput').show();
-                } else if (selectedType === 'cheque') {
-                    parentContainer.find('.chequeInput').show();
-                }
-            });
-            // Format credit card number on input
-            $('.creditCardNumber').on('input', function() {
-                var input = $(this).val().replace(/\D/g, ''); // Remove all non-digit characters
-                input = input.substring(0, 16); // Limit input to 16 digits
-                // Format the input as xxxx-xxxx-xxxx-xxxx
-                var formattedInput = input.match(/.{1,4}/g)?.join('-') || input;
-                $(this).val(formattedInput);
-            });
-        });
     </script>
     <script>
         $(document).ready(function() {
             // ฟังก์ชัน Preview
             function Preview() {
-                var InvoiceID = $('#InvoiceID').val();
                 var idcheck = $('#Guest').val();
                 var reservationNo = $('#reservationNo').val();
                 var company = $('#company').val();
@@ -649,31 +621,16 @@
                 var departure = $('#departure').val();
                 var nameID = document.getElementById('idfirst').value;
                 var note = $('#note').val();
-                var bank = $('#bank').val();
-                var Expiry = $('#Expiry').val();
-                var CardNumber = $('#CardNumber').val();
-                var paymentType = $('#paymentType').val();
-                var chequeBank = $('#chequeBank').val();
-                var cheque = $('#cheque').val();
+                var datanamebank = ' Cash ' ;
 
-                if (paymentType == 'cash') {
-                    var datanamebank = ' Cash ' ;
-                }else if(paymentType == 'bankTransfer') {
-                    var datanamebank = bank +' Bank Transfer - Together Resort Ltd ' ;
-                }else if(paymentType == 'creditCard') {
-                    var datanamebank =  ' Credit Card No.'+ CardNumber +' Exp. Date : '+Expiry ;
-                }else if(paymentType == 'cheque') {
-                    var datanamebank =  ' Cheque Bank '+ chequeBank + ' Cheque Number '+ cheque +'' ;
-                }
                 // เลือก id ที่จะใช้
                 var id = idcheck ? idcheck : nameID;
-                var ids = InvoiceID;
                 console.log(id);
 
                 // AJAX เรียกข้อมูลจากเซิร์ฟเวอร์
                 jQuery.ajax({
                     type: "GET",
-                    url: `/Document/BillingFolio/Proposal/invoice/prewive/${id}/${ids}`,  // ใช้ template literal สร้าง URL
+                    url: `/Document/BillingFolio/Proposal/Additional/prewive/${id}`,  // ใช้ template literal สร้าง URL
                     datatype: "JSON",
                     async: false,
                     success: function(response) {
@@ -716,5 +673,5 @@
         function submit() {
             document.getElementById("myForm").submit();
         }
-    </script> --}}
+    </script>
 @endsection

@@ -46,7 +46,7 @@ class BillingFolioController extends Controller
     {
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $userid = Auth::user()->id;
-        $Approved = receive_payment::query()->paginate($perPage);
+        $Approved = receive_payment::query()->where('type','billing')->paginate($perPage);
         return view('billingfolio.index',compact('Approved'));
     }
     //---------------------------------table-----------------
@@ -57,11 +57,11 @@ class BillingFolioController extends Controller
         $data = [];
         $permissionid = Auth::user()->permission;
         if ($perPage == 10) {
-            $data_query = receive_payment::query()
+            $data_query = receive_payment::query()->where('type','billing')
                 ->limit($request->page.'0')
                 ->get();
         } else {
-            $data_query = receive_payment::query()
+            $data_query = receive_payment::query()->where('type','billing')
                 ->paginate($perPage);
         }
 
@@ -100,27 +100,25 @@ class BillingFolioController extends Controller
                     $btn_action = '<div class="dropdown">';
                     $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                     $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
                     if ($canViewProposal) {
                         $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/invoice/view/' . $value->id) . '">Export</a></li>';
-                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/invoice/log/' . $value->id) . '">Export</a></li>';
-                    }
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/log/' . $value->id) . '">LOG</a></li>';
 
-                    if ($rolePermission > 0) {
-                        if ($rolePermission == 1 || $rolePermission == 2 && $isOperatedByCreator) {
-
-                            if ($canEditProposal) {
-
-                            }
-
-                        } elseif ($rolePermission == 3) {
-
+                    } if ($rolePermission == 1 && $isOperatedByCreator) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 2) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                        }
+                    } elseif ($rolePermission == 3) {
+                        if ($canEditProposal) {
+                            $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
                         }
                     }
-
                     $btn_action .= '</ul>';
                     $btn_action .= '</div>';
-
 
                     $data[] = [
                         'number' => $key +1,
@@ -150,7 +148,7 @@ class BillingFolioController extends Controller
         $userid = Auth::user()->id;
 
         if ($search_value) {
-            $data_query = receive_payment::query()
+            $data_query = receive_payment::query()->where('type','billing')
             ->where(function ($query) use ($search_value) {
                 // ค้นหาในผู้ใช้ (userOperated) ตามชื่อ
                 $query->whereHas('userOperated', function ($q) use ($search_value) {
@@ -165,7 +163,7 @@ class BillingFolioController extends Controller
         } else {
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
 
-            $data_query = receive_payment::query()
+            $data_query = receive_payment::query()->where('type','billing')
                 ->paginate($perPageS);
         }
 
@@ -198,32 +196,25 @@ class BillingFolioController extends Controller
                 $btn_action = '<div class="dropdown">';
                 $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
                 $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
-
                 if ($canViewProposal) {
                     $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/invoice/view/' . $value->id) . '">Export</a></li>';
-                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Document/BillingFolio/Proposal/invoice/log/' . $value->id) . '">Export</a></li>';
-                }
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/log/' . $value->id) . '">LOG</a></li>';
 
-                if ($rolePermission > 0) {
-                    if ($rolePermission == 1 || $rolePermission == 2 && $isOperatedByCreator) {
-
-                        if ($canEditProposal) {
-
-                        }
-
-                    } elseif ($rolePermission == 3) {
-
+                } if ($rolePermission == 1 && $isOperatedByCreator) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 2) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
+                    }
+                } elseif ($rolePermission == 3) {
+                    if ($canEditProposal) {
+                        $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/BillingFolio/Proposal/invoice/Generate/Paid/Edit/' . $value->id) . '">Edit</a></li>';
                     }
                 }
-
                 $btn_action .= '</ul>';
                 $btn_action .= '</div>';
-
-
-
-                $btn_action .= '</ul>';
-                $btn_action .= '</div>';
-
                 $data[] = [
                     'number' => $key +1,
                     'Proposal' => $value->Receipt_ID,

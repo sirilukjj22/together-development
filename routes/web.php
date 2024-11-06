@@ -814,6 +814,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/BillingFolio/Proposal/Over/Generate/{id}','Generate')->name('BillingFolioOver.Generate');
         Route::get('/Document/BillingFolio/Proposal/Over/Cancel/{id}','Cancel')->name('BillingFolioOver.Cancel');
         Route::get('/Document/BillingFolio/Proposal/Over/Delete/{id}','Delete')->name('BillingFolioOver.Delete');
+        Route::get('/Document/BillingFolio/Proposal/Additional/prewive/{id}','PaidDataprewive')->name('BillingFolioOver.PaidDataprewive');
+
+        Route::post('/Document/BillingFolio/Proposal/Additional/Generate/save', 'savere')->name('BillingFolioOver.savere');
+        Route::get('/Document/BillingFolio/Proposal/Additional/receipt/Edit/{id}','EditPaid')->name('BillingFolioOver.EditPaid');
+        Route::get('/Document/BillingFolioOverbill/Proposal/invoice/export/{id}','export')->name('BillingFolioOver.export');
 
         Route::post('billingover-pending-search-table', 'search_table_billingover_pending');
         Route::post('billingover-pending-paginate-table', 'paginate_table_billingover_pending');
