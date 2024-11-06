@@ -5,10 +5,15 @@
 	// $password = "";
 	// $dbname = "together_db";
 
-	$servername = "localhost";
-	$username = "zkdpszwh_together_db";
-	$password = "together_123";
-	$dbname = "zkdpszwh_together_db";
+	// $servername = "localhost";
+	// $username = "zkdpszwh_together_db";
+	// $password = "together_123";
+	// $dbname = "zkdpszwh_together_db";
+
+	$servername = "103.230.120.52";
+	$username = "together_user2";
+	$password = "v[86I8iy[22";
+	$dbname = "togetherdb2";
 
 	// Create connection
 	$conn = new mysqli($servername, $username, $password, $dbname);

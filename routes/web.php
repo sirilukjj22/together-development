@@ -56,6 +56,7 @@ Route::get('login', [AuthController::class, 'index'])->name('login');
 Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post');
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('sms-forward', [SMSController::class, 'forward'])->name('sms-forward');
 Route::get('sms-api-forward', [SMSController::class, 'forward'])->name('sms-api-forward');
 Route::get('/Quotation/Quotation/cover/document/PDF/{id}', [LinkPDFProposal::class, 'proposal'])->name('Proposal.link');
 Route::get('/Invoice/cover/document/PDF/{id}', [LinkPDFProposal::class, 'invoice'])->name('Invoice.link');
