@@ -2561,8 +2561,8 @@ class RevenuesController extends Controller
             $revenue_name = "type";
 
         } if ($request->revenue_type == "total_transaction") {
-            $data_query = SMS_alerts::whereBetween('date', [$from, $to])->orWhereDate('date_into', $adate)->paginate(10);
-            $total_query = SMS_alerts::whereBetween('date', [$from, $to])->orWhereDate('date_into', $adate)->sum('amount');
+            $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->orderBy('date', 'asc')->paginate(10);
+            $total_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->orWhereDate('date_into', '>=', $month_from)->whereDate('date_into', '<=', $month_to)->orderBy('date', 'asc')->sum('amount');
             $title = "Total Trandaction";
             $status = 'total_transaction';
             $revenue_name = "type";
@@ -2765,7 +2765,7 @@ class RevenuesController extends Controller
             } elseif ($request->status == "elexa_outstanding") {
                 $query_revenue = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                     ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', 8)->whereBetween('revenue.date', [$adate, $adate2])
-                    ->select('revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue');
+                    ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue');
 
                     if ($perPage == 10) {
                         $data_query = $query_revenue->limit($request->page.'0')->get();
@@ -2774,7 +2774,8 @@ class RevenuesController extends Controller
                     }
             } elseif ($request->table_name == "typeTable") { 
                 if ($request->status == "transfer_revenue") {
-                    $query_sms = SMS_alerts::query()->whereDate('date_into', '>=', $from)->whereDate('date_into', '<=', $to)->whereNull('date_into')->where('transfer_status', 1);
+
+                    $query_sms = SMS_alerts::query()->whereDate('date_into', '>=', $from)->whereDate('date_into', '<=', $to)->where('transfer_status', 1);
     
                     if ($perPage == 10) {
                         $data_query = $query_sms->limit($request->page.'0')->get();
@@ -2819,7 +2820,7 @@ class RevenuesController extends Controller
                     }
 
                 } if ($request->status == "total_transaction") {
-                    $query_sms = SMS_alerts::query()->whereBetween('date', [$from, $to])->orWhereDate('date_into', $adate);
+                    $query_sms = SMS_alerts::query()->whereBetween('date', [$from, $to])->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate)->orderBy('date', 'asc');
     
                     if ($perPage == 10) {
                         $data_query = $query_sms->limit($request->page.'0')->get();
@@ -2848,11 +2849,11 @@ class RevenuesController extends Controller
                 }
 
             } elseif ($request->table_name == "verifiedTable") {
-                $date1 = date('Y-m-d', strtotime(date($request->year.'-'.$request->month.'-01')));
+                $date1 = date('Y-m-d', strtotime($request->year.'-'.$request->month.'-01'));
                 $date2 = date('Y-m-d', strtotime('last day of this month', strtotime(date(date($request->year.'-'.$request->month.'-'.$request->day)))));
 
                 if ($request->status == "verified") {
-                    $query_sms = Revenues::query()->whereBetween('date', [$date1, $date2])->where('status', 1);
+                    $query_sms = Revenues::query()->whereBetween('date', [$adate, $adate2])->where('status', 1);
     
                     if ($perPage == 10) {
                         $data_query = $query_sms->limit($request->page.'0')->get();
@@ -2861,7 +2862,7 @@ class RevenuesController extends Controller
                     }
 
                 } if ($request->status == "unverified") {
-                    $query_sms = Revenues::query()->whereBetween('date', [$date1, $date2])->where('status', 0);
+                    $query_sms = Revenues::query()->whereBetween('date', [$adate, $adate2])->where('status', 0);
     
                     if ($perPage == 10) {
                         $data_query = $query_sms->limit($request->page.'0')->get();
@@ -2917,7 +2918,6 @@ class RevenuesController extends Controller
                         $data_query = $query_sms->paginate($perPage);
                     }
                 }
-                
 
             } elseif ($request->table_name == "agoda_feeTable") {
                 $query_revenue = Revenues::query()->leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')->where('revenue_credit.status', 5)
@@ -3115,6 +3115,18 @@ class RevenuesController extends Controller
                             'stan' => $value->batch,
                             'revenue_name' => $revenue_name,
                             'amount' => number_format($value->fee, 2),
+                        ];
+                    }
+                }
+
+            } elseif ($request->table_name == "verifiedTable") { 
+
+                foreach ($data_query as $key => $value) {
+                    if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+                        $data[] = [
+                            'number' => $key + 1,
+                            'date' => Carbon::parse($value->date)->format('d/m/Y'),
                         ];
                     }
                 }
@@ -3321,23 +3333,23 @@ class RevenuesController extends Controller
                             $query->where('revenue_credit.ev_revenue', 'like', '%' . $search . '%')
                                 ->orWhere('revenue.date', 'like', '%' . $search . '%');
                         })
-                        ->select('revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->paginate($perPage);
+                        ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->paginate($perPage);
                 } else {
                     $data_query = Revenues::leftjoin('revenue_credit', 'revenue.id', 'revenue_credit.revenue_id')
                         ->where('revenue_credit.status', 8)->where('revenue_credit.revenue_type', 8)->whereBetween('revenue.date', [$adate, $adate2])
-                        ->select('revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->paginate($perPage);
+                        ->select('revenue.date', 'revenue_credit.ev_charge', 'revenue_credit.ev_fee', 'revenue_credit.ev_vat', 'revenue_credit.ev_revenue')->paginate($perPage);
                 }
 
             } elseif ($request->table_name == "typeTable") {
                 if ($request->status == "transfer_revenue") {
                     if (!empty($request->search_value)) {
-                        $data_query = SMS_alerts::whereDate('date_into', '>=', $from)->whereDate('date_into', '<=', $to)->whereNull('date_into')->where('transfer_status', 1)
+                        $data_query = SMS_alerts::whereDate('date_into', '>=', $from)->whereDate('date_into', '<=', $to)->where('transfer_status', 1)
                             ->where(function($query) use ($search) {
                                 $query->where('date', 'like', '%' . $search . '%')
                                     ->orWhere('amount', 'like', '%' . $search . '%');
                             })->paginate($perPage);
                     } else {
-                        $data_query = SMS_alerts::whereDate('date_into', '>=', $from)->whereDate('date_into', '<=', $to)->whereNull('date_into')->where('transfer_status', 1)->paginate($perPage);
+                        $data_query = SMS_alerts::whereDate('date_into', '>=', $from)->whereDate('date_into', '<=', $to)->where('transfer_status', 1)->paginate($perPage);
                     }
 
                 }  if ($request->status == "credit_hotel_transfer") {
@@ -3386,24 +3398,22 @@ class RevenuesController extends Controller
 
                 } if ($request->status == "total_transaction") {
                     if (!empty($request->search_value)) {
-                        $data_query = SMS_alerts::whereBetween('date', [$from, $to])->orWhereDate('date_into', $adate)
-                            ->where(function($query) use ($search) {
-                                $query->where('date', 'like', '%' . $search . '%')
-                                    ->orWhere('amount', 'like', '%' . $search . '%');
-                            })->paginate($perPage);
+                        $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->where('amount', 'like', '%' . $search . '%')
+                            ->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)
+                            ->where('amount', 'like', '%' . $search . '%')->paginate($perPage);
                     } else {
-                        $data_query = SMS_alerts::whereBetween('date', [$from, $to])->orWhereDate('date_into', $adate)->paginate($perPage);
+                        $data_query = SMS_alerts::whereBetween('date', [$from, $to])->whereNull('date_into')->orWhereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->paginate($perPage);
                     }
 
                 } if ($request->status == "transfer_transaction") {
                     if (!empty($request->search_value)) {
-                        $data_query = SMS_alerts::whereBetween('date_into', [$from, $to])->where('transfer_status', 1)
+                        $data_query = SMS_alerts::whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)
                             ->where(function($query) use ($search) {
                                 $query->where('date', 'like', '%' . $search . '%')
                                     ->orWhere('amount', 'like', '%' . $search . '%');
                             })->paginate($perPage);
                     } else {
-                        $data_query = SMS_alerts::whereBetween('date_into', [$from, $to])->where('transfer_status', 1)->paginate($perPage);
+                        $data_query = SMS_alerts::whereDate('date_into', '>=', $adate)->whereDate('date_into', '<=', $adate2)->where('transfer_status', 1)->paginate($perPage);
                     }
 
                 } if ($request->status == "no_income_type") {
@@ -3424,22 +3434,18 @@ class RevenuesController extends Controller
 
                 if ($request->status == "verified") {
                     if (!empty($request->search_value)) {
-                        $data_query = Revenues::whereBetween('date', [$date1, $date2])->where('status', 1)
-                            ->where(function($query) use ($search) {
-                                $query->where('date', 'like', '%' . $search . '%');
-                            })->paginate($perPage);
+                        $data_query = Revenues::whereBetween('date', [$adate, $adate2])->where('status', 1)
+                            ->where('date', 'like', '%' . $request->search_value . '%')->paginate($perPage);
                     } else {
-                        $data_query = Revenues::whereBetween('date', [$date1, $date2])->where('status', 1)->paginate($perPage);
+                        $data_query = Revenues::whereBetween('date', [$adate, $adate2])->where('status', 1)->paginate($perPage);
                     }
 
                 } if ($request->status == "unverified") {
                     if (!empty($request->search_value)) {
-                        $data_query = Revenues::whereBetween('date', [$date1, $date2])->where('status', 0)
-                            ->where(function($query) use ($search) {
-                                $query->where('date', 'like', '%' . $search . '%');
-                            })->paginate($perPage);
+                        $data_query = Revenues::whereBetween('date', [$adate, $adate2])->where('status', 0)
+                            ->where('date', 'like', '%' . $request->search_value . '%')->paginate($perPage);
                     } else {
-                        $data_query = Revenues::whereBetween('date', [$date1, $date2])->where('status', 0)->paginate($perPage);
+                        $data_query = Revenues::whereBetween('date', [$adate, $adate2])->where('status', 0)->paginate($perPage);
                     }
                 }
             } elseif ($request->table_name == "revenueCashTable") {
@@ -3504,7 +3510,7 @@ class RevenuesController extends Controller
         }
 
         if (isset($data_query) && count($data_query) > 0) {
-            if ($status > 0 || $request->status == "total_transaction") { ## Manual Charge
+            if ($status > 0 || $request->status == "total_transaction" || $request->status == "transfer_revenue" || $request->status == "no_income_revenue" || $request->status == "no_income_type" || $request->status == "transfer_transaction") { ## Manual Charge
                 foreach ($data_query as $key => $value) {
 
                     $img_bank = '';

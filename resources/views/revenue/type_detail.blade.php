@@ -8,7 +8,7 @@
                     <div class="span3">{{ $title }}</div>
                 </div>
                 <div class="col-auto">
-                    <a href="javascript:history.back(1)" type="button" class="btn btn-color-green text-white lift">ย้อนกลับ</a>
+                    <a href="javascript:history.back(1)" type="button" class="btn btn-color-green text-white lift">Back</a>
                 </div>
             </div> <!-- .row end -->
         </div>
@@ -243,7 +243,7 @@
                     columnDefs: [
                                 { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], className: 'dt-center td-content-center' },
                     ],
-                    order: [0, 'asc'],
+                    // order: [0, 'asc'],
                     responsive: {
                         details: {
                             type: 'column',
