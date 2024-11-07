@@ -150,6 +150,13 @@
                     <p class="mb-0">{{ session('success') }}</p>
                 </div>
                 @endif
+                @if (session("error"))
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">บันทึกไม่สำเร็จ!</h4>
+                        <hr>
+                        <p class="mb-0">{{ session('error') }}</p>
+                    </div>
+                @endif
                 <div class="col">
                     <ol class="breadcrumb d-inline-flex bg-transparent p-0 m-0">
                         <li></li>
