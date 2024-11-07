@@ -2376,7 +2376,7 @@ class DummyQuotationController extends Controller
             $log->Company_ID = $DummyNo;
             $log->type = 'Send documents';
             $log->Category = 'Send documents :: Dummy Proposal';
-            $log->content = 'Send documents to proposal request + Document Dummy Proposal ID: ' . $DummyNo;
+            $log->content = 'Send Document Dummy Proposal ID: ' . $DummyNo;
             $log->save();
         }
 

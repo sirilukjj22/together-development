@@ -919,12 +919,12 @@ class proposal_request extends Controller
             'quotation.id as quotation_id',
             'dummy_quotation.id as dummy_quotation_id'
         )
-        ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete'])
+        ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete','Send documents'])
         ->leftJoin('quotation', 'log_company.Company_ID', '=', 'quotation.Quotation_ID')
         ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
         ->orderBy('log_company.updated_at', 'desc')
         ->paginate($perPage);
-        $logcount = log_company::whereIn('type', ['Request Reject', 'Request Approval', 'Request Delete'])
+        $logcount = log_company::whereIn('type', ['Request Reject', 'Request Approval', 'Request Delete ','Send documents'])
         ->orderBy('updated_at', 'desc')
         ->count();
         $path = 'Log_PDF/proposal/';
@@ -953,7 +953,7 @@ class proposal_request extends Controller
                 ->orWhere('log_company.Company_ID', 'LIKE', '%'.$search_value.'%')
                 ->orWhere('log_company.type', 'LIKE', '%'.$search_value.'%');
             })
-            ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete'])
+            ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete','Send documents'])
             ->orderBy('log_company.updated_at', 'desc')
             ->paginate($perPage);
 
@@ -964,7 +964,7 @@ class proposal_request extends Controller
                 'Quotation.id as quotation_id',
                 'dummy_quotation.id as dummy_quotation_id'
             )
-            ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete'])
+            ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete','Send documents'])
             ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
             ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
             ->orderBy('log_company.updated_at', 'desc')
@@ -1018,7 +1018,7 @@ class proposal_request extends Controller
                 'Quotation.id as quotation_id',
                 'dummy_quotation.id as dummy_quotation_id'
             )
-            ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete'])
+            ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete','Send documents'])
             ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
             ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
             ->orderBy('log_company.updated_at', 'desc')
@@ -1030,7 +1030,7 @@ class proposal_request extends Controller
                 'Quotation.id as quotation_id',
                 'dummy_quotation.id as dummy_quotation_id'
             )
-            ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete'])
+            ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete','Send documents'])
             ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
             ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
             ->orderBy('log_company.updated_at', 'desc')

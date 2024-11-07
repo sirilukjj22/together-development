@@ -3300,10 +3300,10 @@ class QuotationController extends Controller
                 'Unitmain' => $data['Unitmain'] ?? null,
             ];
             {   //จัด product
-                $quantities = $datarequest['Quantitymain'] ?? [];
-                $discounts = $datarequest['discountmain'] ?? [];
-                $priceUnits = $datarequest['priceproductmain'] ?? [];
-                $Unitmain = $datarequest['Unitmain'] ?? [];
+                $quantities = $data['Quantitymain'] ?? [];
+                $discounts = $data['discountmain'] ?? [];
+                $priceUnits = $data['priceproductmain'] ?? [];
+                $Unitmain = $data['Unitmain'] ?? [];
                 $discounts = array_map(function($value) {
                     return ($value !== null) ? $value : "0";
                 }, $discounts);
@@ -3340,11 +3340,14 @@ class QuotationController extends Controller
                     $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
                 }
                 $Products = $datarequest['ProductIDmain'];
+
                 $Productslast = $datarequest['CheckProduct'];
+
                 $pax=$datarequest['pax'];
                 $productsCount = is_array($Products) ? count($Products) : 0;
                 $productslastCount = is_array($Productslast) ? count($Productslast) : 0;
                 if (is_array($Products) && is_array($Productslast)) {
+
                     $commonValues = array_intersect($Products, $Productslast);
                     if (!empty($commonValues)) {
                         $diffFromProducts = array_diff($Products, $Productslast);
@@ -3354,8 +3357,13 @@ class QuotationController extends Controller
                         $Products = array_merge($Productslast,$Products);
                     }
                 }else{
-                    $Products = $Productslast;
+                    if ($Productslast !== null) {
+                        $Products = $Productslast;
+                    } else {
+                        $Products = $Products;
+                    }
                 }
+
 
                 $productsArray = [];
                 foreach ($Products as $index => $ProductID) {
@@ -3791,6 +3799,87 @@ class QuotationController extends Controller
                 return redirect()->route('Proposal.edit',['id' => $Quotationid])->with('error', $e->getMessage());
             }
             try {
+                $quantities = $datarequest['Quantitymain'] ?? [];
+                $discounts = $datarequest['discountmain'] ?? [];
+                $priceUnits = $datarequest['priceproductmain'] ?? [];
+                $Unitmain = $datarequest['Unitmain'] ?? [];
+                $discounts = array_map(function($value) {
+                    return ($value !== null) ? $value : "0";
+                }, $discounts);
+
+                if (count($quantities) === count($priceUnits) && count($priceUnits) === count($discounts) && count($priceUnits) === count($Unitmain)) {
+                    $totalPrices = []; // เปลี่ยนจากตัวแปรเดียวเป็น array เพื่อเก็บผลลัพธ์แต่ละรายการ
+                    $discountedPrices = [];
+                    $discountedPricestotal = [];
+                    $totaldiscount = [];
+                    // คำนวณราคาสำหรับแต่ละรายการ
+                    for ($i = 0; $i < count($quantities); $i++) {
+                        $quantity = intval($quantities[$i]);
+                        $unitValue = intval($Unitmain[$i]); // เปลี่ยนชื่อเป็น $unitValue
+                        $priceUnit = floatval(str_replace(',', '', $priceUnits[$i]));
+                        $discount = floatval($discounts[$i]);
+
+                        $totaldiscount0 = (($priceUnit * $discount)/100);
+                        $totaldiscount[] = $totaldiscount0;
+
+                        $totalPrice = ($quantity * $unitValue) * $priceUnit;
+                        $totalPrices[] = $totalPrice;
+
+                        $discountedPrice = (($priceUnit * $discount) / 100);
+                        $discountedPrices[] =  $priceUnit - $discountedPrice;
+
+                        $total = ($quantity * $unitValue);
+
+                        $discountedPriceTotal = $total *($priceUnit -$discountedPrice);
+                        $discountedPricestotal[] = $discountedPriceTotal;
+
+                    }
+                }
+                foreach ($priceUnits as $key => $price) {
+                    $priceUnits[$key] = str_replace(array(',', '.00'), '', $price);
+                }
+                $Products = $datarequest['ProductIDmain'];
+                $Productslast = $datarequest['CheckProduct'];
+                $pax=$datarequest['pax'];
+                $productsCount = is_array($Products) ? count($Products) : 0;
+                $productslastCount = is_array($Productslast) ? count($Productslast) : 0;
+                if (is_array($Products) && is_array($Productslast)) {
+                    $commonValues = array_intersect($Products, $Productslast);
+                    if (!empty($commonValues)) {
+                        $diffFromProducts = array_diff($Products, $Productslast);
+                        $diffFromProductslast = array_diff($Productslast, $Products);
+                        $Products = array_merge($commonValues,$diffFromProducts,$diffFromProductslast);
+                    } else {
+                        $Products = array_merge($Productslast,$Products);
+                    }
+
+                }else{
+                    if ($Productslast !== null) {
+                        $Products = $Productslast;
+                    } else {
+                        $Products = $Products;
+                    }
+                }
+                $productsArray = [];
+                foreach ($Products as $index => $ProductID) {
+                    $saveProduct = [
+                        'Quotation_ID' => $Quotation_ID,
+                        'Company_ID' => $request->Company,
+                        'Product_ID' => $ProductID,
+                        'pax' => $pax[$index] ?? 0,
+                        'Issue_date' => $request->IssueDate,
+                        'discount' => $discounts[$index],
+                        'priceproduct' => $priceUnits[$index],
+                        'netpriceproduct' => $discountedPrices[$index],
+                        'totaldiscount' => $discountedPricestotal[$index],
+                        'ExpirationDate' => $request->Expiration,
+                        'freelanceraiffiliate' => $request->Freelancer_member,
+                        'Quantity' => $quantities[$index],
+                        'Unit' => $Unitmain[$index],
+                        'Document_issuer' => $userid,
+                    ];
+                    $productsArray[] = $saveProduct;
+                }
                 if ($Products !== null) {
                     $productold = document_quotation::where('Quotation_ID', $Quotation_ID)->delete();
                     foreach ($Products as $index => $ProductID) {
@@ -3860,7 +3949,11 @@ class QuotationController extends Controller
                     }
 
                 }else{
-                    $Products = $Productslast;
+                    if ($Productslast !== null) {
+                        $Products = $Productslast;
+                    } else {
+                        $Products = $Products;
+                    }
                 }
                 $quantities = $datarequest['Quantitymain'] ?? [];
                 $discounts = $datarequest['discountmain'] ?? [];

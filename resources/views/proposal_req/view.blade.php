@@ -93,7 +93,7 @@
                                         </div>
                                         <div class="col-lg-6 col-md-6 col-sm-12 mt-2">
                                             @if ($item['checkin'])
-                                                <b>Check in : </b><label> {{$item['checkin']}}</label><b style="margin-left: 20px"> Check out : </b><label> {{$item['checkout']}}</label><br>
+                                                <b>Check in : </b><label> {{$item['checkin']}}</label><br><b> Check out : </b><label> {{$item['checkout']}}</label><br>
                                             @else
                                                 <b>Check in : </b><label> {{$item['checkin'] ?? 'No Check in date'}}</label><br>
                                             @endif
@@ -138,14 +138,20 @@
                                                 <tr>
                                                     <th style="width: 5%">No</th>
                                                     <th>DESCRIPTION</th>
-                                                    <th style="width: 5%">QUANTITY</th>
-                                                    <th style="width: 5%">UNIT</th>
+                                                    <th style="width: 5%">Quantity</th>
+                                                    <th style="width: 5%">Unit</th>
                                                     <th style="width: 5%">Price / Unit</th>
-                                                    <th style="width: 5%">DISCOUNT</th>
-                                                    <th style="width: 5%">AMOUNT</th>
+                                                    <th style="width: 5%">Discount</th>
+                                                    <th style="width: 5%">Net Price / Unit</th>
+                                                    <th style="width: 5%">Amount</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @php
+                                                    $price50 = $sp50 = $priceless50 = $Add50 = $Net50 = 0;
+                                                    $price51 = $sp51 = $price52 = $sp52 = $Add52 = $pricebefore52 = 0;
+                                                    $allpax = $pax = $average = $allaverage =0;
+                                                @endphp
                                                 @foreach(@$itemdata->document as $key => $itemproduct)
                                                 @php
                                                     $productMatch = $product->firstWhere('Product_ID', $itemproduct->Product_ID);
@@ -173,23 +179,38 @@
                                                             </td>
                                                         @endif
                                                         <td style="text-align: center;">
+                                                            {{ number_format(@$itemproduct->netpriceproduct) }}
+                                                        </td>
+                                                        <td style="text-align: center;">
                                                             {{ number_format(@$itemproduct->totaldiscount) }}
                                                         </td>
                                                     </tr>
                                                     @php
-                                                        $price50 += @$itemproduct->totaldiscount;
-                                                        $sp = $itemdata->SpecialDiscountBath;
-                                                        $sp50 = $price50 - $itemdata->SpecialDiscountBath;
+                                                        // Ensure the variables are numeric (float or int) to avoid type errors
+                                                        $price50 += (float) @$itemproduct->totaldiscount;
+                                                        $sp = (float) $itemdata->SpecialDiscountBath;
+
+                                                        $sp50 = $price50 - $sp;
                                                         $priceless50 = $sp50 / 1.07;
                                                         $Add50 = $sp50 - $priceless50;
                                                         $Net50 = $priceless50 + $Add50;
 
-                                                        $price51 += @$itemproduct->totaldiscount;
-                                                        $sp51 = $price51 - $itemdata->SpecialDiscountBath;
-                                                        $price52 += @$itemproduct->totaldiscount;
-                                                        $sp52 = $price52 - $itemdata->SpecialDiscountBath;
-                                                        $Add52 = $sp52 * 7 / 100;
+                                                        // Repeating the same logic for price51 and price52
+                                                        $price51 += (float) @$itemproduct->totaldiscount;
+                                                        $sp51 = $price51 - $sp;
+
+                                                        $price52 += (float) @$itemproduct->totaldiscount;
+                                                        $sp52 = $price52 - $sp;
+                                                        $Add52 = $sp52 * 0.07; // You can also write 7 / 100 as 0.07 directly
                                                         $pricebefore52 = $price52 + $Add52;
+
+                                                        // Ensure pax and Unit are numeric
+                                                        $pax += (float) @$itemproduct->pax * (float) @$itemproduct->Unit;
+
+                                                        // Accumulate all pax and calculate average
+                                                        $allpax += $pax;
+                                                        $average += (float) @$itemproduct->totaldiscount;
+                                                        $allaverage = ($allpax > 0) ? $average / $allpax : 0; // Avoid division by zero
                                                     @endphp
                                                 @endif
                                             @endforeach
@@ -223,6 +244,8 @@
                                                             <span id="Before">Price Before Tax :</span><br>
                                                             <span id="Added">Value Added Tax : </span><br>
                                                             <span id="Net">Net Total : </span><br>
+                                                            <span id="Net">Number of Guests : </span><br>
+                                                            <span id="Net">Average per person : </span><br>
                                                         </div>
                                                         <div class="">
                                                             {{ number_format($price50, 2, '.', ',') }} <br>
@@ -233,6 +256,8 @@
                                                             {{ number_format($priceless50, 2, '.', ',') }}<br>
                                                             {{ number_format($Add50, 2, '.', ',') }}<br>
                                                             {{ number_format($Net50, 2, '.', ',') }}<br>
+                                                            {{ number_format($allpax) }}<br>
+                                                            {{ number_format($allaverage) }}<br>
                                                         </div>
                                                     </div>
                                                 </div>

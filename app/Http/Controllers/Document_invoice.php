@@ -893,11 +893,30 @@ class Document_invoice extends Controller
 
     public function viewList($id)
     {
-        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
-        $proposal = document_invoices::query()->where('id',$id)->first();
-        $Quotation_ID = $proposal->Quotation_ID;
-        $invoice = document_invoices::query()->where('Quotation_ID',$Quotation_ID)->paginate($perPage);
-        return view('document_invoice.view_invoicelist',compact('invoice','Quotation_ID'));
+            // Get the 'perPage' from query parameters, default to 10 if not present
+        $perPage = request()->get('perPage', 10);
+
+        // Initialize variables
+        $Quotation_ID = null;
+        $invoice = null;
+
+        // Try to find the proposal with the provided ID
+        $proposal = document_invoices::query()->where('id', $id)->first();
+
+        if ($proposal) {
+            // If the proposal is found, get the related Quotation_ID
+            $Quotation_ID = $proposal->Quotation_ID;
+
+            // Fetch all invoices with the same Quotation_ID and paginate them
+            $invoice = document_invoices::query()->where('Quotation_ID', $Quotation_ID)->paginate($perPage);
+        } else {
+            // Optionally, handle the case when the proposal is not found
+            // Redirect or return an error message
+            return redirect()->route('invoice.index')->with('error','ไม่มีข้อมูล.');
+        }
+
+        // Return the view with the data
+        return view('document_invoice.view_invoicelist', compact('invoice', 'Quotation_ID'));
     }
 
     public function Generate($id){
@@ -1013,7 +1032,7 @@ class Document_invoice extends Controller
             $Refler_ID = $QuotationID;
         }
         return view('document_invoice.create',compact('QuotationID','comtypefullname','provinceNames','amphuresID','InvoiceID','Contact_name','Company'
-        ,'Refler_ID','TambonID','company_phone','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','settingCompany','invoices','balance'));
+        ,'Refler_ID','TambonID','company_phone','company_fax','Contact_phone','Quotation','checkin','checkout','CompanyID','Deposit','settingCompany','invoices','balance','Nettotal'));
     }
     public function save(Request $request){
         try {
