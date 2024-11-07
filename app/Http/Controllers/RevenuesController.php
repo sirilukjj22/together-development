@@ -6,6 +6,7 @@ use App\Models\Revenue_credit;
 use App\Models\Revenues;
 use App\Models\SMS_alerts;
 use App\Models\TB_close_days;
+use App\Models\TB_outstanding_balance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; 
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
@@ -355,6 +356,12 @@ class RevenuesController extends Controller
 
         $total_verified = Revenues::whereMonth('date', date('m'))->whereYear('date', date('Y'))->where('status', 1)->count();
         $total_unverified = Revenues::whereMonth('date', date('m'))->whereYear('date', date('Y'))->where('status', 0)->count();
+
+        // Outstanding Balance From Last Year
+        $lastYear = date('Y', strtotime('-1 year'));
+        $agoda_outstanding_last_year = TB_outstanding_balance::where('year', $lastYear)->sum('agoda_balance');
+        $elexa_outstanding_last_year = TB_outstanding_balance::where('year', $lastYear)->sum('elexa_balance');
+
         $total_revenue_today = Revenues::whereDate('date', date('Y-m-d'))->select(
             DB::raw("
                 front_cash + front_transfer + front_credit as front_amount, 
@@ -510,6 +517,9 @@ class RevenuesController extends Controller
 
             'total_not_type',
             'total_not_type_revenue',
+
+            'agoda_outstanding_last_year',
+            'elexa_outstanding_last_year',
 
             'filter_by',
             'search_date'
@@ -1404,8 +1414,13 @@ class RevenuesController extends Controller
         $date2 = date('Y-m-d', strtotime('last day of this month', strtotime(date(date($Fyear.'-'.$Fmonth.'-01')))));
 
         // verified
-        $total_verified = Revenues::whereBetween('date', [$date1, $date2])->where('status', 1)->count();
-        $total_unverified = Revenues::whereBetween('date', [$date1, $date2])->where('status', 0)->count();
+        $total_verified = Revenues::whereBetween('date', [$month_from, $month_to])->where('status', 1)->count();
+        $total_unverified = Revenues::whereBetween('date', [$month_from, $month_to])->where('status', 0)->count();
+
+        // Outstanding Balance From Last Year
+        $lastYear = date('Y', strtotime('-1 year'));
+        $agoda_outstanding_last_year = TB_outstanding_balance::where('year', $lastYear)->sum('agoda_balance');
+        $elexa_outstanding_last_year = TB_outstanding_balance::where('year', $lastYear)->sum('elexa_balance');
 
         $total_revenue_today = Revenues::whereBetween('date', [$month_from, $month_to])->select(
             DB::raw("
@@ -1856,6 +1871,9 @@ class RevenuesController extends Controller
                         'total_other_month',
                         'total_other_year',
 
+                        'agoda_outstanding_last_year',
+                        'elexa_outstanding_last_year',
+
                         'btn_by_page',
 
                         'filter_by', 'search_date', 'customRang_start', 'customRang_end'
@@ -1929,6 +1947,9 @@ class RevenuesController extends Controller
                     'total_other_revenue',
                     'total_other_month',
                     'total_other_year',
+
+                    'agoda_outstanding_last_year',
+                    'elexa_outstanding_last_year',
         
                     'btn_by_page',
         
@@ -2583,19 +2604,19 @@ class RevenuesController extends Controller
         }
 
         ## Verified / Unverified
-        $date1 = date('Y-m-01', strtotime($month_from));
-        $date2 = date('Y-m-d', strtotime('last day of this month', strtotime($month_from)));
+        // $date1 = date('Y-m-01', strtotime($month_from));
+        // $date2 = date('Y-m-d', strtotime('last day of this month', strtotime($month_from)));
 
         if ($request->revenue_type == "verified") {
-            $data_query = Revenues::whereBetween('date', [$date1, $date2])->where('status', 1)->paginate(10);
-            $total_query = Revenues::whereBetween('date', [$date1, $date2])->where('status', 1)->count();
+            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('status', 1)->paginate(10);
+            $total_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('status', 1)->count();
             $title = "Verified";
             $status = 'verified';
             $revenue_name = "verified";
 
         } if ($request->revenue_type == "unverified") {
-            $data_query = Revenues::whereBetween('date', [$date1, $date2])->where('status', 0)->paginate(10);
-            $total_query = Revenues::whereBetween('date', [$date1, $date2])->where('status', 0)->count();
+            $data_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('status', 0)->paginate(10);
+            $total_query = Revenues::whereBetween('date', [$month_from, $month_to])->where('status', 0)->count();
             $title = "Unverified";
             $status = 'unverified';
             $revenue_name = "verified";

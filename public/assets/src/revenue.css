@@ -664,7 +664,7 @@ a:visited {
   background-color: rgb(232, 245, 217);
 }
 
-.table-revenue tbody tr:nth-child(44) td:nth-child(n + 2) {
+.table-revenue tbody tr:nth-child(52) td:nth-child(n + 2) {
   color: red;
 }
 

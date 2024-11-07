@@ -34,6 +34,8 @@ class Revenues extends Model
         'other_revenue',
         'total_transaction',
         'total_no_type',
+        'agoda_outstanding_last_year',
+        'elexa_outstanding_last_year',
         'remark',
         'status',
         'created_by',
