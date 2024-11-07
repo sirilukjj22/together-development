@@ -1142,6 +1142,8 @@
                     }
                     else if (response.Company_type.name_th === 'ห้างหุ้นส่วนจำกัด') {
                         var fullNameCompany = 'ห้างหุ้นส่วนจำกัด' + ' ' + response.company.Company_Name ;
+                    }else{
+                        var fullNameCompany =  response.Company_type.name_th+ response.company.Company_Name ;
                     }
                     var Address = response.company.Address + ' '+ 'ตำบล'+ response.Tambon.name_th;
                     var Address2 = 'อำเภอ'+response.amphures.name_th + ' ' + 'จังหวัด'+ response.province.name_th + ' ' + response.Tambon.Zip_Code;
