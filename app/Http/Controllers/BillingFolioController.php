@@ -1312,15 +1312,39 @@ class BillingFolioController extends Controller
             $datanamebank = $extractedData['category'] ?? null;
             $bank = $extractedData['Bank'] ?? null;
 
-            $company = $extractedData['company'] ?? null;
+            $id = $extractedData['company'] ?? null;
             $Amount = $extractedData['Amount'] ?? null;
             $Cheque = $extractedData['Cheque'] ?? null;
             $Credit = $extractedData['Credit'] ?? null;
             $Expire = $extractedData['Expire'] ?? null;
 
             $name= null;
-            if ($company) {
-                $name = 'ลูกค้า :'.$company;
+            if ($id) {
+                $parts = explode('-', $id);
+                $firstPart = $parts[0];
+                if ($firstPart == 'C') {
+                    $company =  companys::where('Profile_ID',$id)->first();
+                    if ($company) {
+
+                        $name = 'ลูกค้า : '.'บริษัท ' . $company->Company_Name . ' จำกัด' ;
+
+                    }else{
+                        $company =  company_tax::where('ComTax_ID',$id)->first();
+                        $name = $company && $company->Companny_name
+                                    ? ""
+                                    : 'ลูกค้า : '.'คุณ ' . $company->first_name . ' ' . $company->last_name;
+                    }
+                }else{
+                    $guestdata =  Guest::where('Profile_ID',$id)->first();
+                    if ($guestdata) {
+                        $name =  'ลูกค้า : '.'คุณ '.$guestdata->First_name.' '.$guestdata->Last_name;
+                    }else{
+                        $guestdata =  guest_tax::where('GuestTax_ID',$id)->first();
+                        $name = $guestdata && $guestdata->Company_name
+                                    ? ""
+                                    : 'ลูกค้า : '.'คุณ ' . $guestdata->first_name . ' ' . $guestdata->last_name;
+                    }
+                }
             }
 
             $cheque= null;

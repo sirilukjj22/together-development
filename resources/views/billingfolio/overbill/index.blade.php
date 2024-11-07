@@ -534,7 +534,7 @@
                                                                     @if ($rolePermission > 0)
                                                                         @if ($canViewProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolioOverbill/Proposal/invoice/export/'.$item->id) }}">Export</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/invoice/log/'.$item->id) }}">LOG</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/BillingFolio/Over/log/re/'.$item->id) }}">LOG</a></li>
                                                                         @endif
                                                                         @if ($rolePermission == 1 && $item->Operated_by == $CreateBy)
                                                                             @if ($canEditProposal == 1)
@@ -554,7 +554,7 @@
                                                                     @else
                                                                         @if ($canViewProposal == 1)
                                                                             <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolioOverbill/Proposal/invoice/export/'.$item->id) }}">Export</a></li>
-                                                                            <li><a class="dropdown-item py-2 rounded" target="_bank" href="{{ url('/Document/BillingFolio/Proposal/Additional/log/'.$item->id) }}">LOG</a></li>
+                                                                            <li><a class="dropdown-item py-2 rounded"  href="{{ url('/Document/BillingFolio/Over/log/re/'.$item->id) }}">LOG</a></li>
                                                                         @endif
                                                                     @endif
                                                                 </ul>

@@ -891,5 +891,126 @@
 
         return $html;
     }
+
+     //Log
+    function showingEntriesTableLogRe($data, $table)
+    {
+        $total = $data->total();
+        $currentPage = $data->currentPage();
+        $perPage = !empty($_GET['table']) && @$_GET['table'] == $table ? $_GET['perPage'] : 10;
+
+        $from = ($currentPage - 1) * $perPage + 1;
+        $to = min($currentPage * $perPage, $total);
+
+        $html = '';
+
+        $html .= 'Showing '.$from .' to '. $to .' of '. $total .' entries';
+
+        return $html;
+    }
+
+    function paginateTableLogRe($data, $table)
+    {
+        $currentPage = 1;
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $num = 0;
+        $html = '';
+
+        $html .= '<div class="pagination" style="white-space: nowrap;">
+                    <a href="#" onclick="getPageLogRe('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
+                    if ($data->total() > 0) {
+                        if ($currentPage > 3)
+                        {
+                            $html .= '<a class="" href="#" onclick="getPageLogRe(1, '.$perPage.', '."'$table'".')">1</a>';
+
+                            if ($currentPage > 4)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                        }
+
+                        for ($i = max(1, $currentPage - 2); $i <= min($data->lastPage(), $currentPage + 2); $i++)
+                        {
+                            if ($currentPage == $i) {
+                                $html .= '<a class="active" href="#" onclick="getPageLogRe('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            } else {
+                                $html .= '<a class="" href="#" onclick="getPageLogRe('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            }
+                        }
+
+                        if ($currentPage < $data->lastPage() - 2)
+                        {
+                            if ($currentPage < $data->lastPage() - 3)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                            $html .= '<a href="#" onclick="getPageLogRe(' .$data->lastPage(). ', ' . $perPage . ', '."'$table'".')">'.$data->lastPage().'</a>';
+                        }
+                    }
+        $html .= '<a href="#" onclick="getPageLogRe('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>
+                </div>';
+
+        return $html;
+    }
+    //Log
+    function showingEntriesTableLogDocRe($data, $table)
+    {
+        $total = $data->total();
+        $currentPage = $data->currentPage();
+        $perPage = !empty($_GET['table']) && @$_GET['table'] == $table ? $_GET['perPage'] : 10;
+
+        $from = ($currentPage - 1) * $perPage + 1;
+        $to = min($currentPage * $perPage, $total);
+
+        $html = '';
+
+        $html .= 'Showing '.$from .' to '. $to .' of '. $total .' entries';
+
+        return $html;
+    }
+
+    function paginateTableLogDocRe($data, $table)
+    {
+        $currentPage = 1;
+        $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+        $num = 0;
+        $html = '';
+
+        $html .= '<div class="pagination" style="white-space: nowrap;">
+                    <a href="#" onclick="getPageLogDocRe('.($currentPage == 1 ? 1 : $currentPage - 1).', '.$perPage.', '."'$table'".')" class="r-l-md">&laquo;</a>';
+                    if ($data->total() > 0) {
+                        if ($currentPage > 3)
+                        {
+                            $html .= '<a class="" href="#" onclick="getPageLogDocRe(1, '.$perPage.', '."'$table'".')">1</a>';
+
+                            if ($currentPage > 4)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                        }
+
+                        for ($i = max(1, $currentPage - 2); $i <= min($data->lastPage(), $currentPage + 2); $i++)
+                        {
+                            if ($currentPage == $i) {
+                                $html .= '<a class="active" href="#" onclick="getPageLogDocRe('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            } else {
+                                $html .= '<a class="" href="#" onclick="getPageLogDocRe('.$i.', '.$perPage.', '."'$table'".')">'.$i.'</a>';
+                            }
+                        }
+
+                        if ($currentPage < $data->lastPage() - 2)
+                        {
+                            if ($currentPage < $data->lastPage() - 3)
+                            {
+                                $html .= '<a class="" href="#">...</a>';
+                            }
+                            $html .= '<a href="#" onclick="getPageLogDocRe(' .$data->lastPage(). ', ' . $perPage . ', '."'$table'".')">'.$data->lastPage().'</a>';
+                        }
+                    }
+        $html .= '<a href="#" onclick="getPageLogDocRe('.($data->total() > 10 ? $currentPage + 1 : 1).', '.$perPage.', '."'$table'".')" class="r-r-md">&raquo;</a>
+                </div>';
+
+        return $html;
+    }
 ?>
 

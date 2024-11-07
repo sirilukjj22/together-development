@@ -821,6 +821,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/Document/BillingFolio/Proposal/Additional/receipt/Edit/{id}','EditPaid')->name('BillingFolioOver.EditPaid');
         Route::get('/Document/BillingFolioOverbill/Proposal/invoice/export/{id}','export')->name('BillingFolioOver.export');
 
+        Route::get('/Document/BillingFolio/Over/log/re/{id}', 'logre')->name('BillingFolioOver.logre');
+        Route::post('/Document/BillingFolio/Over/Generate/update/{id}', 'update_re')->name('BillingFolioOver.update_re');
         Route::post('billingover-pending-search-table', 'search_table_billingover_pending');
         Route::post('billingover-pending-paginate-table', 'paginate_table_billingover_pending');
 
@@ -839,6 +841,13 @@ Route::middleware(['auth'])->group(function () {
          //--------------------------Cancel-----------
          Route::post('billingover-Cancel-search-table', 'search_table_paginate_cancel');
          Route::post('billingover-Cancel-paginate-table', 'paginate_cancel_table_proposal');
+
+          //--------------------------LogPdf-----------
+        Route::post('billing-Logre-search-table', 'search_table_paginate_log_pdf');
+        Route::post('billing-Logre-paginate-table', 'paginate_log_pdf_table_billing');
+        //--------------------------LogDoc-----------
+        Route::post('billing-LogDocre-search-table', 'search_table_paginate_log_doc');
+        Route::post('billing-LogDocre-paginate-table', 'paginate_log_doc_table_billing');
     });
 
 

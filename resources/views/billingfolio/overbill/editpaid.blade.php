@@ -99,7 +99,7 @@ white-space: nowrap
                     <span aria-hidden="true">&times;</span>
                     </span>
                 </div>
-                <form id="myForm" action="{{url('/Document/BillingFolio/Proposal/invoice/Generate/update/'.$re->id)}}" method="POST">
+                <form id="myForm" action="{{url('/Document/BillingFolio/Over/Generate/update/'.$re->id)}}" method="POST">
                     @csrf
                     <input type="hidden" id="invoice" name="invoice" class="form-control" value="{{$Additional->Additional_ID}}">
                     <div class="modal-body">
@@ -116,9 +116,21 @@ white-space: nowrap
                                 <option value="{{$name_ID}}">{{$name}}</option>
                                 @foreach($datasub as $item)
                                     @if ($type == 'Company')
-                                        <option value="{{ $item->ComTax_ID }}">{{ 'บริษัท '.$item->Companny_name.' จำกัด' ?? 'คุณ '.$item->first_name.' '.$item->last_name }}</option>
+                                        <option value="{{ $item->ComTax_ID }}"{{$re->company == $item->ComTax_ID ? 'selected' : ''}}>
+                                            @if ($item->Companny_name)
+                                                {{'บริษัท '.$item->Companny_name.' จำกัด'}}
+                                            @else
+                                                {{'คุณ '.$item->first_name.' '.$item->last_name}}
+                                            @endif
+                                        </option>
                                     @else
-                                        <option value="{{ $item->GuestTax_ID }}">{{ $item->Company_name ?? $item->first_name.' '.$item->last_name }}</option>
+                                        <option value="{{ $item->GuestTax_ID }}"{{$re->company == $item->id ? 'selected' : ''}}>
+                                            @if ($item->Companny_name)
+                                                {{'บริษัท '.$item->Company_name.' จำกัด'}}
+                                            @else
+                                                {{'คุณ '.$item->first_name.' '.$item->last_name}}
+                                            @endif
+                                        </option>
                                     @endif
                                 @endforeach
                             </select>
@@ -181,7 +193,7 @@ white-space: nowrap
                             <span>Payment Details</span>
                         </h3>
 
-                        <div class="cashInput" id="cashInput" style="display: none;">
+                        <div class="cashInput" id="cashInput">
                             <label for="cashAmount" class="star-red">Cash Amount</label>
                             <input type="text" id="Amount" value="{{ number_format($sumpayment, 2) }}" name="Amount" class="cashAmount form-control" placeholder="Enter cash amount" disabled style="background-color: #59a89e81;">
                         </div>
@@ -548,6 +560,7 @@ white-space: nowrap
                 var paymentType = $('#paymentType').val();
                 var chequeBank = $('#chequeBank').val();
                 var cheque = $('#cheque').val();
+                var paymentDate = $('#paymentDate').val();
 
 
                     var datanamebank = ' Cash ' ;
@@ -584,7 +597,7 @@ white-space: nowrap
                         $('#date').text(date);
                         $('#dateM').text(Time);
 
-                        $('#displayPaymentDateEditBill').text(date);
+                        $('#displayPaymentDateEditBill').text(paymentDate);
                         $('#displayReferenceEditBill').text(reservationNo);
                         $('#displayNoteEditBill').text(note);
                         $('#displayDescriptionEditBill').text(datanamebank);
@@ -616,6 +629,7 @@ white-space: nowrap
                 var paymentType = $('#paymentType').val();
                 var chequeBank = $('#chequeBank').val();
                 var cheque = $('#cheque').val();
+                var paymentDate = $('#paymentDate').val();
 
 
                     var datanamebank = ' Cash ' ;
@@ -623,7 +637,6 @@ white-space: nowrap
                 // เลือก id ที่จะใช้
                 var id = idcheck ? idcheck : nameID;
                 var ids = InvoiceID;
-                console.log(id);
 
                 // AJAX เรียกข้อมูลจากเซิร์ฟเวอร์
                 jQuery.ajax({
@@ -652,7 +665,7 @@ white-space: nowrap
                         $('#date').text(date);
                         $('#dateM').text(Time);
 
-                        $('#displayPaymentDateEditBill').text(date);
+                        $('#displayPaymentDateEditBill').text(paymentDate);
                         $('#displayReferenceEditBill').text(reservationNo);
                         $('#displayNoteEditBill').text(note);
                         $('#displayDescriptionEditBill').text(datanamebank);

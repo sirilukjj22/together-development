@@ -622,6 +622,7 @@
                 var nameID = document.getElementById('idfirst').value;
                 var note = $('#note').val();
                 var datanamebank = ' Cash ' ;
+                var paymentDate = $('#paymentDate').val();
 
                 // เลือก id ที่จะใช้
                 var id = idcheck ? idcheck : nameID;
@@ -654,7 +655,7 @@
                         $('#date').text(date);
                         $('#dateM').text(Time);
                         $('#Invoicedate').text(valid);
-                        $('#displayPaymentDateEditBill').text(date);
+                        $('#displayPaymentDateEditBill').text(paymentDate);
                         $('#displayReferenceEditBill').text(reservationNo);
                         $('#displayNoteEditBill').text(note);
                         $('#displayDescriptionEditBill').text(datanamebank);
