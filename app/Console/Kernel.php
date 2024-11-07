@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('command:closeday')->everyMinute();
+        $schedule->command('command:outstandingbalance')->everyMinute();
     }
 
     /**
@@ -35,5 +36,6 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \App\Console\Commands\DeleteOldFreelancerChecked::class,
         \App\Console\Commands\CloseDay::class,
+        \App\Console\Commands\OutstandingBalanceFromLastYear::class,
     ];
 }

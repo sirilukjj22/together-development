@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Revenues;
 use Illuminate\Http\Request;
 
 class ReportAuditRevenueDateController extends Controller
@@ -13,7 +14,9 @@ class ReportAuditRevenueDateController extends Controller
      */
     public function index()
     {
-        return view('report.audit_revenue_date.index');
+        $data_query = Revenues::select('id', 'date', 'status')->paginate(10);
+
+        return view('report.audit_revenue_date.index', compact('data_query'));
     }
 
     /**
