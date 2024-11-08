@@ -639,23 +639,20 @@
             @endif
 
             <div class="table-2" style="overflow-x:auto;">
-                @if (isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "today" || isset($filter_by) && $filter_by == "yesterday" || isset($filter_by) && $filter_by == "tomorrow" || !isset($filter_by))
-                    @if ($total_revenue_today->status == 1)
-                        <div class="row mt-3 mb-2">
-                            <div class="col-12">
-                                <h5 class="float-start mr-1">สถานะ : </h5>
-                                <h5 class="text-danger"> ตรวจสอบเรียบร้อยแล้ว</h5>
-                            </div>
-                        </div>
-                    @endif
-                @endif
-                <div class="d-flex gap-3">
+                <div class="d-flex gap-3 mb-2">
                     <img src="image/Logo1-01.png" alt="logo of Together Resort" width="80" class="mb-1" />
       
                     <div class="text-capitalize d-grid gap-0">
                       <span class="f-semi">Together Resort Kaengkrachan</span>
                       <span>Hotel and water park revenue</span>
                       <span>Date On : {{ !empty($pickup_time) ? $pickup_time : date('d F Y') }}</span>
+                        @if (isset($filter_by) && $filter_by == "date" || isset($filter_by) && $filter_by == "today" || isset($filter_by) && $filter_by == "yesterday" || isset($filter_by) && $filter_by == "tomorrow" || !isset($filter_by))
+                            @if ($total_revenue_today->status == 1)
+                                <span>Status : <span class="text-danger">ตรวจสอบเรียบร้อยแล้ว</span></span>
+                            @else 
+                                <span>Status : -</span>
+                            @endif
+                        @endif
                     </div>
                 </div>
                 <table class="table-revenue">
@@ -1254,16 +1251,16 @@
                             <td class="text-end f-semi">Total Revenue & Outstanding Balance From Last Year</td>
                             <td class="to-day">
                                 @if ($filter_by == "week" || $filter_by == "customRang")
-                                    {{ number_format(($total_cash_bank + $total_charge_week) + ($total_wp_cash_bank + $total_wp_charge) + ($agoda_charge[0]['total'] + $ev_charge[0]['total']), 2) }}
+                                    {{ number_format(($total_cash_bank + $total_charge_week) + ($total_wp_cash_bank + $total_wp_charge) + ($agoda_charge[0]['total'] + $ev_charge[0]['total']) + $total_agoda_revenue, 2) }}
                                 @else
-                                    {{ number_format($filter_by == "date" ? ($today_cash_bank + $total_charge) + ($today_wp_cash_bank + $today_wp_charge) + $agoda_charge[0]['total_today'] + $ev_charge[0]['total_today'] : 0, 2) }}
+                                    {{ number_format($filter_by == "date" ? ($today_cash_bank + $total_charge) + ($today_wp_cash_bank + $today_wp_charge) + ($agoda_charge[0]['total_today'] + $ev_charge[0]['total_today']) + $today_agoda_revenue : 0, 2) }}
                                 @endif
                             </td>
                             <td class="m-t-d">
                                 {{ number_format($filter_by != "year" || $filter_by != "thisYear" ? (($summary_hotel_revenue_bank_month + $total_cash_month + $agoda_revenue_outstanding_month) + ($total_wp_cash_bank_month + $total_wp_charge_month) + $ev_charge[0]['total_month']) : 0, 2) }}
                             </td>
                             <td class="y-t-d">
-                                {{ number_format(($total_cash_bank_year + $total_charge_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $agoda_charge[0]['total_year'] + $ev_charge[0]['total_year'] + ($agoda_outstanding_last_year + $elexa_outstanding_last_year), 2) }}
+                                {{ number_format((($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $ev_charge[0]['total_year']), 2) }}
                             </td>
                           </tr>
           
