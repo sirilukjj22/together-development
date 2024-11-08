@@ -939,10 +939,10 @@ class proposal_request extends Controller
         if ($search_value) {
             $data_query = log_company::select(
                 'log_company.*',
-                'Quotation.id as quotation_id',
+                'quotation.id as quotation_id',
                 'dummy_quotation.id as dummy_quotation_id'
             )
-            ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
+            ->leftJoin('quotation', 'log_company.Company_ID', '=', 'quotation.Quotation_ID')
             ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
             ->where(function ($query) use ($search_value) {
                 // ค้นหาในผู้ใช้ (userOperated) ตามชื่อ
@@ -961,11 +961,11 @@ class proposal_request extends Controller
             $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
             $data_query = log_company::select(
                 'log_company.*',
-                'Quotation.id as quotation_id',
+                'quotation.id as quotation_id',
                 'dummy_quotation.id as dummy_quotation_id'
             )
             ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete','Send documents'])
-            ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
+            ->leftJoin('quotation', 'log_company.Company_ID', '=', 'quotation.Quotation_ID')
             ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
             ->orderBy('log_company.updated_at', 'desc')
             ->paginate($perPageS);
@@ -1015,26 +1015,25 @@ class proposal_request extends Controller
         if ($perPage == 10) {
             $data_query = log_company::select(
                 'log_company.*',
-                'Quotation.id as quotation_id',
+                'quotation.id as quotation_id',
                 'dummy_quotation.id as dummy_quotation_id'
             )
             ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete','Send documents'])
-            ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
+            ->leftJoin('quotation', 'log_company.Company_ID', '=', 'quotation.Quotation_ID')
             ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
             ->orderBy('log_company.updated_at', 'desc')
             ->limit($request->page.'0')->get();
         } else {
-            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
             $data_query = log_company::select(
                 'log_company.*',
-                'Quotation.id as quotation_id',
+                'quotation.id as quotation_id',
                 'dummy_quotation.id as dummy_quotation_id'
             )
             ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete','Send documents'])
-            ->leftJoin('Quotation', 'log_company.Company_ID', '=', 'Quotation.Quotation_ID')
+            ->leftJoin('quotation', 'log_company.Company_ID', '=', 'quotation.Quotation_ID')
             ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
             ->orderBy('log_company.updated_at', 'desc')
-            ->paginate($perPageS);
+            ->paginate($perPage);
         }
         $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
         $page_2 = $request->page.'0';

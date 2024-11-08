@@ -68,8 +68,8 @@ class Document_invoice extends Controller
         $Complete = document_invoices::query()->where('document_status',2)->where('status_receive',1)->paginate($perPage);
 
         $Completecount = document_invoices::query()->where('document_status',2)->where('status_receive',1)->count();
-        $Cancel = document_invoices::query()->where('Operated_by',$userid)->where('document_status',0)->get();
-        $Cancelcount =document_invoices::query()->where('Operated_by',$userid)->where('document_status',0)->count();
+        $Cancel = document_invoices::query()->where('document_status',0)->paginate($perPage);
+        $Cancelcount =document_invoices::query()->where('document_status',0)->count();
         return view('document_invoice.index',compact('Approved','Approvedcount','invoice','invoicecount','Complete','Completecount','Cancel','Cancelcount','invoicecheck'));
     }
     //---------------------------------table-----------------
@@ -890,6 +890,147 @@ class Document_invoice extends Controller
         ]);
     }
 
+    public function  paginate_cancel_table(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $userid = Auth::user()->id;
+        $data = [];
+        $permissionid = Auth::user()->permission;
+        if ($perPage == 10) {
+            $data_query = document_invoices::query()->where('document_status',0)->limit($request->page.'0')
+            ->get();
+        } else {
+            $data_query = document_invoices::query()->where('document_status',0)->paginate($perPage);
+        }
+        $page_1 = $request->page == 1 ? 1 : ($request->page - 1).'1';
+        $page_2 = $request->page.'0';
+        $perPage2 = $request->perPage > 10 ? $request->perPage : 10;
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                $checkbox = "";
+                $payment = "";
+                // สร้าง dropdown สำหรับการทำรายการ
+                if (($key + 1) >= (int)$page_1 && ($key + 1) <= (int)$page_2 || (int)$perPage > 10 && $key < (int)$perPage2) {
+
+
+                    if ($value->type_Proposal == 'Company') {
+                        $name = '<td>' .@$value->company00->Company_Name. '</td>';
+                    }else {
+                        $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                    }
+                    if ($value->paymentPercent == null) {
+                        $payment = '<td>' .'0'. '</td>';
+                    }else {
+                        $payment = '<td>' .$value->paymentPercent. '</td>';
+                    }
+
+                    $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
+
+                    $btn_action = '<div class="dropdown">';
+                    $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                    $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $value->id) . '">View</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Invoice/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $value->id) . '">LOG</a></li>';
+                    $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                    $btn_action .= '</ul>';
+                    $btn_action .= '</div>';
+
+                    $data[] = [
+                        'number' => $key+1,
+                        'Invoice' => $value->Invoice_ID,
+                        'Proposal'=> $value->Quotation_ID,
+                        'Company_Name' => $name,
+                        'IssueDate' => $value->IssueDate,
+                        'ExpirationDate' => $value->Expiration,
+                        'Amount' => number_format($value->sumpayment),
+                        'DocumentStatus' => $btn_status,
+                        'btn_action' => $btn_action,
+                    ];
+                }
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
+    public function search_table_paginate_cancel(Request $request)
+    {
+        $perPage = (int)$request->perPage;
+        $search_value = $request->search_value;
+        $guest_profile = $request->guest_profile;
+        $userid = Auth::user()->id;
+        $permissionid = Auth::user()->permission;
+
+        if ($search_value) {
+            $data_query = document_invoices::where('document_status', 0)
+                ->where(function($query) use ($search_value) {
+                    $query->where('Invoice_ID', 'LIKE', '%'.$search_value.'%')
+                          ->orWhere('Quotation_ID', 'LIKE', '%'.$search_value.'%')
+                          ->orWhere('IssueDate', 'LIKE', '%'.$search_value.'%')
+                          ->orWhere('Expiration', 'LIKE', '%'.$search_value.'%');
+                })
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+        }else{
+            $perPageS = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
+            $data_query = document_invoices::query()->where('document_status',0)->paginate($perPageS);
+        }
+
+
+        $data = [];
+        if (isset($data_query) && count($data_query) > 0) {
+            foreach ($data_query as $key => $value) {
+                $btn_action = "";
+                $btn_status = "";
+                $name ="";
+                $checkbox = "";
+                $payment = "";
+                if ($value->type_Proposal == 'Company') {
+                    $name = '<td>' .@$value->company00->Company_Name. '</td>';
+                }else {
+                    $name = '<td>' . @$value->guest->First_name . ' ' . @$value->guest->Last_name . '</td>';
+                }
+                if ($value->paymentPercent == null) {
+                    $payment = '<td>' .'0'. '</td>';
+                }else {
+                    $payment = '<td>' .$value->paymentPercent. '</td>';
+                }
+
+                $btn_status = '<span class="badge rounded-pill " style="background-color: #0ea5e9">Generate</span>';
+
+                $btn_action = '<div class="dropdown">';
+                $btn_action .= '<button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>';
+                $btn_action .= '<ul class="dropdown-menu border-0 shadow p-3">';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/' . $value->id) . '">View</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" target="_blank" href="' . url('/Invoice/cover/document/PDF/' . $value->id) . '">Export</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="' . url('/Document/invoice/view/LOG/' . $value->id) . '">LOG</a></li>';
+                $btn_action .= '<li><a class="dropdown-item py-2 rounded" href="javascript:void(0);" onclick="Delete(' . $value->id . ')">Delete</a></li>';
+                $btn_action .= '</ul>';
+                $btn_action .= '</div>';
+
+                $data[] = [
+                    'number' => $key+1,
+                    'Invoice' => $value->Invoice_ID,
+                    'Proposal'=> $value->Quotation_ID,
+                    'Company_Name' => $name,
+                    'IssueDate' => $value->IssueDate,
+                    'ExpirationDate' => $value->Expiration,
+                    'Amount' => number_format($value->sumpayment),
+                    'DocumentStatus' => $btn_status,
+                    'btn_action' => $btn_action,
+                ];
+            }
+        }
+        // dd($data);
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
 
     public function viewList($id)
     {
@@ -2674,15 +2815,24 @@ class Document_invoice extends Controller
     public function Delete($id){
         $document = document_invoices::where('id',$id)->first();
         $Quotation_ID = $document->Invoice_ID;
-        $correct = $document->correct;
+        $Quotation = $document->Quotation_ID;
         $path = 'Log_PDF/invoice/';
-        log::where('Quotation_ID',$Quotation_ID)->delete();
-        if ($correct == 0) {
-            unlink($path . $Quotation_ID . '.pdf');
-        } else {
-            unlink($path . $Quotation_ID . '-' . $correct . '.pdf');
+
+        $delete = log::where('Quotation_ID',$Quotation_ID)->get();
+        foreach ($delete as $value) {
+            if ($value->correct == 0) {
+                unlink($path . $Quotation_ID . '.pdf');
+            } else {
+                unlink($path . $Quotation_ID . '-' . $value->correct . '.pdf');
+            }
         }
-        // ตรวจสอบว่าไฟล์มีอยู่จริงก่อนลบ
+        $savelogin = new log_company();
+        $savelogin->Created_by = $userid;
+        $savelogin->Company_ID = $Invoice_ID;
+        $savelogin->type = 'Delete';
+        $savelogin->Category = 'Delete :: Invoice';
+        $savelogin->content = 'Delete Document Invoice ID : '.$value->Invoice_ID.'+'.'Based on : '.$Quotation ;
+        $savelogin->save();
         $quotation = document_invoices::find($id);
         $quotation->delete();
         return redirect()->route('invoice.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');

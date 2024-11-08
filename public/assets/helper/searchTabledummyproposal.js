@@ -894,11 +894,11 @@ function paginateSearchCancel($total, $table, $link)
     }
 
     html += '<div class="pagination" style="white-space: nowrap;">';
-    html += '<a href="#" class="r-l-md" onclick="getPageReject(' + previousPageUrl + ', ' + perPage + ', ' + "'" + table + "'" + ')">&laquo;</a>';
+    html += '<a href="#" class="r-l-md" onclick="getPageCancel(' + previousPageUrl + ', ' + perPage + ', ' + "'" + table + "'" + ')">&laquo;</a>';
     if (total > 0) {
         if (currentPage > 3)
         {
-            html += '<a class="" href="#" onclick="getPageReject(1, ' + perPage + ', ' + "'" + table + "'" + ')">1</a>';
+            html += '<a class="" href="#" onclick="getPageCancel(1, ' + perPage + ', ' + "'" + table + "'" + ')">1</a>';
 
             // if (currentPage > 3)
             // {
@@ -912,9 +912,9 @@ function paginateSearchCancel($total, $table, $link)
 
             if ($i == currentPage)
             {
-                html += '<a class="active" href="#" onclick="getPageReject(' + $i + ', ' + perPage + ', ' + "'" + table + "'" + ')">' + $i + '</a>';
+                html += '<a class="active" href="#" onclick="getPageCancel(' + $i + ', ' + perPage + ', ' + "'" + table + "'" + ')">' + $i + '</a>';
             } else {
-                html += '<a class="" href="#" onclick="getPageReject(' + $i + ', ' + perPage + ', ' + "'" + table + "'" + ')">'+ $i +'</a>';
+                html += '<a class="" href="#" onclick="getPageCancel(' + $i + ', ' + perPage + ', ' + "'" + table + "'" + ')">'+ $i +'</a>';
             }
         }
 
@@ -924,10 +924,10 @@ function paginateSearchCancel($total, $table, $link)
             {
                 html += '<a class="" href="#">...</a>';
             }
-            html += '<a href="#" onclick="getPageReject(' + Math.ceil(total / perPage) + ', ' + perPage + ', ' + "'" + table + "'" + ')">'+ Math.ceil(total / perPage) +'</a>';
+            html += '<a href="#" onclick="getPageCancel(' + Math.ceil(total / perPage) + ', ' + perPage + ', ' + "'" + table + "'" + ')">'+ Math.ceil(total / perPage) +'</a>';
         }
     }
-    html += '<a href="#" class="r-r-md" onclick="getPageReject(' + nextPageUrl + ', ' + perPage + ', ' + "'" + table + "'" + ')">&raquo;</a>';
+    html += '<a href="#" class="r-r-md" onclick="getPageCancel(' + nextPageUrl + ', ' + perPage + ', ' + "'" + table + "'" + ')">&raquo;</a>';
     html += '</div>';
 
     return html;
@@ -1132,5 +1132,6 @@ function getPageLogDoc(page, perPage, table_n)
     $('#' + table_n + '-paginate').append(paginateSearchLogDoc(total, table_n, getUrl));
 
 }
+
 
 

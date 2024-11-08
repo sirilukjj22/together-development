@@ -4851,36 +4851,94 @@ class QuotationController extends Controller
         ]);
     }
     public function cancel(Request $request ,$id){
-        $Quotation = Quotation::find($id);
-        $Quotation->status_document = 0;
-        $Quotation->remark = $request->note;
-        $Quotation->save();
         $data = Quotation::where('id',$id)->first();
         $Quotation_ID = $data->Quotation_ID;
         $userid = Auth::user()->id;
-        $save = new log_company();
-        $save->Created_by = $userid;
-        $save->Company_ID = $Quotation_ID;
-        $save->type = 'Cancel';
-        $save->Category = 'Cancel :: Proposal';
-        $save->content = 'Cancel Document Proposal ID : '.$Quotation_ID.'+'.$request->note;
-        $save->save();
+        try {
+            $Quotation = Quotation::find($id);
+            $Quotation->status_document = 0;
+            $Quotation->remark = $request->note;
+            $Quotation->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+        }
+
+
+        try {
+            $savelog = new log_company();
+            $savelog->Created_by = $userid;
+            $savelog->Company_ID = $Quotation_ID;
+            $savelog->type = 'Cancel';
+            $savelog->Category = 'Cancel :: Proposal';
+            $savelog->content = 'Cancel Document Proposal ID : '.$Quotation_ID.'+'.$request->note;
+            $savelog->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+        }
+        try {
+            $invoice = document_invoices::where('Quotation_ID',$data->Quotation_ID)->get();
+
+            foreach ($invoice as $value) {
+                $id = $value->id;
+                $Invoice_ID = $value->Invoice_ID;
+                $Quotation_ID = $value->Quotation_ID;
+                $save = document_invoices::find($id);
+                $save->document_status = 0;
+                $save->save();
+                $savelogin = new log_company();
+                $savelogin->Created_by = $userid;
+                $savelogin->Company_ID = $Invoice_ID;
+                $savelogin->type = 'Cancel';
+                $savelogin->Category = 'Cancel :: Invoice';
+                $savelogin->content = 'Cancel Document Invoice ID : '.$Invoice_ID.'+'.'Based on : '.$Quotation_ID ;
+                $savelogin->save();
+            }
+        } catch (\Throwable $e) {
+            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+        }
+
         return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
     public function Revice($id){
-        $Quotation = Quotation::find($id);
-        $Quotation->status_document = 1;
-        $Quotation->save();
-        $data = Quotation::where('id',$id)->first();
-        $Quotation_ID = $data->Quotation_ID;
-        $userid = Auth::user()->id;
-        $save = new log_company();
-        $save->Created_by = $userid;
-        $save->Company_ID = $Quotation_ID;
-        $save->type = 'Revice';
-        $save->Category = 'Revice :: Proposal';
-        $save->content = 'Revice Document Proposal ID : '.$Quotation_ID;
-        $save->save();
+
+        try {
+            $Quotation = Quotation::find($id);
+            $Quotation->status_document = 1;
+            $Quotation->save();
+            $data = Quotation::where('id',$id)->first();
+            $Quotation_ID = $data->Quotation_ID;
+            $userid = Auth::user()->id;
+            $save = new log_company();
+            $save->Created_by = $userid;
+            $save->Company_ID = $Quotation_ID;
+            $save->type = 'Revice';
+            $save->Category = 'Revice :: Proposal';
+            $save->content = 'Revice Document Proposal ID : '.$Quotation_ID;
+            $save->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+        }
+        try {
+            $invoice = document_invoices::where('Quotation_ID',$Quotation_ID)->get();
+            foreach ($invoice as $value) {
+                $id = $value->id;
+                $Invoice_ID = $value->Invoice_ID;
+                $Quotation_ID = $value->Quotation_ID;
+                $save = document_invoices::find($id);
+                $save->document_status = 1;
+                $save->save();
+
+                $savelogin = new log_company();
+                $savelogin->Created_by = $userid;
+                $savelogin->Company_ID = $Invoice_ID;
+                $savelogin->type = 'Revice';
+                $savelogin->Category = 'Revice :: Invoice';
+                $savelogin->content = 'Revice Document Invoice ID : '.$Invoice_ID.'+'.'Based on : '.$Quotation_ID ;
+                $savelogin->save();
+            }
+        } catch (\Throwable $e) {
+            return redirect()->route('Proposal.index')->with('error', $e->getMessage());
+        }
         return redirect()->route('Proposal.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
     }
     public function sheetpdf(Request $request ,$id) {

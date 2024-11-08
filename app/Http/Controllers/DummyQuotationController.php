@@ -64,8 +64,23 @@ class DummyQuotationController extends Controller
         $missingQuotationIDs = $DummyNo->diff($document_IDs);
         dummy_quotation::whereIn('DummyNo', $missingQuotationIDs)->delete();
         $User = User::select('name','id','permission')->whereIn('permission',[0,1,2])->get();
+        $log = log_company::select(
+            'log_company.*',
+            'quotation.id as quotation_id',
+            'dummy_quotation.id as dummy_quotation_id'
+        )
+        ->whereIn('log_company.type', ['Request Reject', 'Request Approval', 'Request Delete','Send documents'])
+        ->leftJoin('quotation', 'log_company.Company_ID', '=', 'quotation.Quotation_ID')
+        ->leftJoin('dummy_quotation', 'log_company.Company_ID', '=', 'dummy_quotation.DummyNo')
+        ->orderBy('log_company.updated_at', 'desc')
+        ->paginate($perPage);
+        $logcount = log_company::whereIn('type', ['Request Reject', 'Request Approval', 'Request Delete ','Send documents'])
+        ->orderBy('updated_at', 'desc')
+        ->count();
+        $path = 'Log_PDF/proposal/';
+        $userid = Auth::user()->id;
         return view('dummy_quotation.index',compact('Proposal','Proposalcount','Pending','Pendingcount','Awaiting','Awaitingcount','Approvedcount','Approved','Rejectcount',
-        'Reject','Cancelcount','Cancel','Generatecount','Generate','User'));
+        'Reject','Cancelcount','Cancel','Generatecount','Generate','User','logcount','log','path','userid'));
     }
     public function SearchAll(Request $request){
 

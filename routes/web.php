@@ -755,6 +755,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('invoice-LogDoc-search-table', 'search_table_paginate_log_doc');
         Route::post('invoice-LogDoc-paginate-table', 'paginate_log_doc_table_proposal');
 
+
+        Route::post('invoice-Cancel-search-table', 'search_table_paginate_cancel');
+        Route::post('invoice-Cancel-paginate-table', 'paginate_cancel_table');
          //----------------------------------document cover ใบปะหน้า--------------------------------------------------------
          Route::get('/Proposal/cover/document/PDF/{id}', 'sheetpdf')->name('invoice.sheet');
     });
