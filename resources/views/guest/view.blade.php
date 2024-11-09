@@ -24,7 +24,7 @@
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <div class="span3">Edit Guest</div>
+                    <div class="span3">View Guest</div>
                 </div>
                 <div class="col-auto">
                 </div>
