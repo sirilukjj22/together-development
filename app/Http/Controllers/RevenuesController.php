@@ -1829,37 +1829,61 @@ class RevenuesController extends Controller
             if ($request->export_pdf == 1) {
                 $pdf = FacadePdf::loadView('pdf.revenue.'.$by_page_pdf, 
                     compact(
-                        'total_revenue_today', 'total_day', 
-                        'total_verified', 'total_unverified', 'total_agoda_outstanding',
-                        'total_ev_outstanding', 'total_transfer', 
-
+                        'total_revenue_today', 
+                        'total_day', 
+                        'total_verified', 
+                        'total_unverified', 
+                        'total_agoda_outstanding',
+                        'total_ev_outstanding',
+                        'total_transfer', 
+            
                         'total_transfer2',
-
+            
                         'total_split',
+            
                         'total_split_transaction',
-
-                        'credit_revenue_today', 'credit_revenue', 'credit_revenue_month', 'credit_revenue_year',
-
-                        'today_front_revenue', 'total_front_revenue', 'total_front_month', 'total_front_year', 'front_charge',
-
-                        'today_guest_deposit', 'total_guest_deposit', 'total_guest_deposit_month', 'total_guest_deposit_year', 'guest_deposit_charge',
-
-                        'today_fb_revenue', 'total_fb_revenue', 'total_fb_month', 'total_fb_year', 'fb_charge',
-
-                        'today_agoda_revenue', 'total_agoda_revenue', 'total_agoda_month', 'total_agoda_year', 'agoda_charge',
-
+            
+                        'credit_revenue_today',
+                        'credit_revenue',
+                        'credit_revenue_month',
+                        'credit_revenue_year',
+            
+                        'today_front_revenue', 
+                        'total_front_revenue',
+                        'total_front_month',
+                        'total_front_year',
+                        'front_charge',
+            
+                        'today_guest_deposit',
+                        'total_guest_deposit',
+                        'total_guest_deposit_month',
+                        'total_guest_deposit_year',
+                        'guest_deposit_charge',
+            
+                        'today_fb_revenue',
+                        'total_fb_revenue',
+                        'total_fb_month',
+                        'total_fb_year',
+                        'fb_charge',
+            
+                        'today_agoda_revenue',
+                        'total_agoda_revenue',
+                        'total_agoda_month',
+                        'total_agoda_year',
+                        'agoda_charge',
+            
                         'total_credit_transaction',
-
+            
                         'today_wp_revenue',
                         'total_wp_revenue',
                         'total_wp_month',
                         'total_wp_year',
                         'wp_charge',
-
+            
                         'total_not_type',
-
+            
                         'total_not_type_revenue',
-
+            
                         'today_ev_revenue',
                         'total_ev_revenue',
                         'total_ev_month',
@@ -1873,9 +1897,9 @@ class RevenuesController extends Controller
 
                         'agoda_outstanding_last_year',
                         'elexa_outstanding_last_year',
-
+            
                         'btn_by_page',
-
+            
                         'filter_by', 'search_date', 'customRang_start', 'customRang_end'
                     )
                 );

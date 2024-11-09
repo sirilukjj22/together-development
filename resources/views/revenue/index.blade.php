@@ -697,7 +697,8 @@
                                 {{ number_format(isset($total_front_month) && $filter_by != "year" || $filter_by != "thisYear" ? $total_front_month->front_cash : 0, 2) }}
                             </td>
                             <td class="y-t-d">
-                                {{ number_format(isset($total_front_year) ? $total_front_year->front_cash : 0, 2) }}</td>
+                                {{ number_format(isset($total_front_year) ? $total_front_year->front_cash : 0, 2) }}
+                            </td>
                         </tr>
                         <tr>
                             <td>Bank Transfer</td>
@@ -816,8 +817,7 @@
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $front_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
-                            <td class="y-t-d">{{ number_format($front_charge[0]['revenue_credit_year'], 2) }}
-                            </td>
+                            <td class="y-t-d">{{ number_format($front_charge[0]['revenue_credit_year'], 2) }}</td>
                         </tr>
                         <tr>
                             <td>Credit Card Guest Deposit Charge</td>
@@ -899,8 +899,7 @@
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $agoda_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
-                            <td class="y-t-d">{{ number_format($agoda_charge[0]['revenue_credit_year'], 2) }}
-                            </td>
+                            <td class="y-t-d">{{ number_format($agoda_charge[0]['revenue_credit_year'], 2) }}</td>
                         </tr>
                         <tr>
                             <td>Agoda Fee</td>
@@ -991,7 +990,7 @@
                             <td class="y-t-d">
                                 {{ number_format($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year, 2) }}
                             </td>
-                          </tr>
+                        </tr>
                         <tr>
                             <td class="t-end f-semi">Cash</td>
                             <td class="to-day">
@@ -1127,8 +1126,7 @@
                                 @endif
                             </td>
                             <td class="m-t-d">{{ number_format($filter_by != "year" || $filter_by != "thisYear" ? $ev_charge[0]['revenue_credit_month'] : 0, 2) }}</td>
-                            <td class="y-t-d">{{ number_format($ev_charge[0]['revenue_credit_year'], 2) }}
-                            </td>
+                            <td class="y-t-d">{{ number_format($ev_charge[0]['revenue_credit_year'], 2) }}</td>
                         </tr>
                         <tr>
                             <td>Elexa Fee</td>
@@ -1239,15 +1237,13 @@
                                 {{ number_format(($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $ev_charge[0]['total_year'], 2) }}
                             </td>
                         </tr>
-          
-                          <tr>
+                        <tr>
                             <td class="text-end f-semi">Outstanding Balance From Last Year</td>
                             <td class="to-day">0.00</td>
                             <td class="m-t-d">0.00</td>
                             <td>{{ number_format($agoda_outstanding_last_year + $elexa_outstanding_last_year, 2) }}</td>
-                          </tr>
-          
-                          <tr>
+                        </tr>
+                        <tr>
                             <td class="text-end f-semi">Total Revenue & Outstanding Balance From Last Year</td>
                             <td class="to-day">
                                 @if ($filter_by == "week" || $filter_by == "customRang")
@@ -1262,7 +1258,7 @@
                             <td class="y-t-d">
                                 {{ number_format((($summary_hotel_revenue_bank_year + $total_cash_year + $agoda_revenue_outstanding_year) + ($total_wp_cash_bank_year + $total_wp_charge_year) + $ev_charge[0]['total_year']), 2) }}
                             </td>
-                          </tr>
+                        </tr>
           
                           <tr class="white-h-05em"></tr>
 
