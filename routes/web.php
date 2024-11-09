@@ -201,6 +201,7 @@ Route::middleware(['auth'])->group(function () {
     ## Report
     Route::controller(ReportAuditRevenueDateController::class)->middleware('role:report')->group(function () {
         Route::get('report-audit-revenue-date', 'index')->name('report-audit-revenue-date');
+        Route::post('report-audit-revenue-date-search', 'search')->name('report-audit-revenue-date-search');
     });
 
     ####################################################

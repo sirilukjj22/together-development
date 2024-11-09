@@ -1,5 +1,99 @@
 @extends('layouts.masterLayout')
 @section('content')
+
+<style>
+    /* Adjust container layout for responsiveness */
+
+
+    /* Form container styling */
+    .form-container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        width: 100%;
+        max-width: 100%; /* Form container takes up more space on larger screens */
+    }
+
+    .show-number {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-top: 2px;
+        height: 20%;
+    }
+
+    /* Heading styling */
+    h3 {
+        color: #495057;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Styling for buttons */
+    .btn {
+        border-radius: 8px;
+        border-color: #ced4da;
+        box-shadow: none;
+    }
+
+    /* Styling for filter buttons */
+    .btn-group button {
+        border-radius: 20px;
+        padding: 8px 20px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Selected button style */
+    .btn-group .btn-secondary,
+    .btn-group .selected {
+        background-color: rgba(45, 127, 123, 1);
+        color: white;
+    }
+
+    /* Hover effect for buttons */
+    .btn-group button:hover {
+        background-color: rgba(45, 127, 123, 1);
+        color: white;
+    }
+
+    /* Form input control styling */
+    .form-control {
+        border-radius: 8px;
+        border-color: #ced4da;
+        box-shadow: none;
+    }
+
+    /* Adjust container layout for smaller screens */
+    @media (max-width: 767px) {
+        .form-container {
+            max-width: 100%; /* Full width on small screens */
+        }
+    }
+
+    /* Ensure filter buttons take full width on small screens */
+    .btn-group .btn {
+        width: 100%; /* Full width for buttons on small screens */
+    }
+
+    /* Revert to original button width on medium and larger screens */
+    @media (min-width: 768px) {
+        .btn-group .btn {
+            width: auto; /* Revert button to auto width for medium screens */
+        }
+    }
+
+    /* Adjust filter button layout for small screens */
+    @media (max-width: 767px) {
+        .btn-group {
+            display: flex;
+            flex-direction: column; /* Stack buttons vertically on small screens */
+        }
+        .btn-group .btn {
+            width: 100%; /* Full width for each button */
+        }
+    }
+</style>
+
     <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
@@ -14,54 +108,63 @@
     </div>
     <div id="content-index" class="body d-flex py-lg-4 py-3">
         <div class="container-xl">
-            <div class="row clearfix">
-                <div class="col-md-12 col-12">
-                    <div class="card p-4 mb-4">
-                        <div style="min-height: 10vh;">
-                            <form class="row g-3">
-                                <div class="col-md-12">
-                                    <h5>Search</h5>
+            <div class="row clearfix mb-3">
+                <div class="col-12 d-flex flex-column flex-md-row justify-content-between">
+                    <!-- Form Container -->
+                    <div class="form-container mb-3 mb-md-0">
+                        <form action="{{ route('report-audit-revenue-date-search') }}" method="POST" enctype="multipart/form-data" class="row g-3">
+                            @csrf
+                            <div class="col-md-12">
+                                <h3>Search</h3>
+                            </div>
+                            <div class="col-12 d-flex flex-row gap-3">
+                                <label class="form-label">Filter by</label>
+                                <div class="btn-group col-lg-6 col-md-6 col-sm-6 w-100">
+                                    <button id="filter-date" type="button" class="btn {{ isset($filter_by) && $filter_by == 'date' ? 'selected' : '' }} w-100">Date</button>
+                                    <button id="filter-month" type="button" class="btn {{ isset($filter_by) && $filter_by == 'month' ? 'selected' : '' }} w-100">Month</button>
+                                    <button id="filter-year" type="button" class="btn {{ isset($filter_by) && $filter_by == 'year' ? 'selected' : '' }} w-100">Year</button>
+                                    <button id="filter-custom" type="button" class="btn {{ isset($filter_by) && $filter_by == 'custom' ? 'selected' : '' }} w-100">Custom Range</button>
                                 </div>
-                                <div class="col-12 d-flex flex-row gap-3">
-                                    <label for="TextInput1" class="form-label">Filter by</label>
+                            </div>
+                            <div id="box-start-date" class="col-md-6">
+                                <label for="startDate" class="form-label label-startDate">Start Date</label>
+                                <input type="month" class="form-control" id="startDate" name="startDate" value="{{ isset($startDate) ? $startDate : date('Y-m') }}" required>
+                            </div>
+                            <div id="box-end-date" class="col-md-6">
+                                <label for="endDate" class="form-label label-endDate">End Date</label>
+                                <input type="month" class="form-control" id="endDate" name="endDate" value="{{ isset($endDate) ? $endDate : date('Y-m') }}" required>
+                            </div>
+                            <div id="box-start-year" class="col-md-6">
+                                <label for="startDate" class="form-label label-startDate">Year</label>
+                                <input type="month" class="form-control" id="startDate" name="startDate" value="{{ isset($startDate) ? $startDate : date('Y-m') }}" required>
+                                s
+                            </div>
+            
+                            <!-- Radio buttons for status filter -->
+                            <div class="col-md-12 d-flex flex-row gap-3 mt-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusAll" value="all" {{ isset($status) && $status == 'all' ? 'checked' : 'checked' }}>
+                                    <label class="form-check-label" for="statusAll">All</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusVerified" value="1" {{ isset($status) && $status == '1' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="statusVerified">Verified</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusUnverified" value="0" {{ isset($status) && $status == '0' ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="statusUnverified">Unverified</label>
+                                </div>
+                            </div>
 
-                                    <div class="col-lg-6 col-md-6 col-sm-6">
-                                        <button class="btn btn-secondary">Date</button>
-                                        <button class="btn btn-outline-secondary">Month</button>
-                                        <button class="btn btn-outline-secondary">Year</button>
-                                        <button class="btn btn-outline-secondary">Custom Rang</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="TextInput1" class="form-label">Start Date</label>
-                                    <input type="date" class="form-control" id="TextInput1">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="TextInput2" class="form-label">End Date</label>
-                                    <input type="date" class="form-control" id="TextInput2">
-                                </div>
-                                <div class="col-md-8 d-flex flex-row gap-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
-                                        <label class="form-check-label" for="flexRadioDefault1">All</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                                        <label class="form-check-label" for="flexRadioDefault2">Verified</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDisabled">
-                                        <label class="form-check-label" for="flexRadioDisabled">Unverified</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 text-end">
-                                    <button type="submit" class="btn btn-primary">Search</button>
-                                </div>
-                            </form>                                                     
-                        </div>
-                    </div> <!-- .card end -->
+                            <input type="hidden" id="filter-by" name="filter_by" value="{{ isset($filter_by) ? $filter_by : 'month' }}">
+            
+                            <div class="col-md-12 text-end">
+                                <button type="submit" class="btn btn-color-green">Search</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div> <!-- .row end -->
+            </div> <!-- .row end -->                    
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
                     <div class="card p-4 mb-4">
@@ -142,28 +245,110 @@
     <!-- สำหรับค้นหาในส่วนของตาราง -->
     <script type="text/javascript" src="{{ asset('assets/helper/searchTableReportAudit.js')}}"></script>
 
-    <script>
-        $(document).ready(function() {
-            new DataTable('.example', {
-                responsive: true,
-                searching: false,
-                paging: false,
-                info: false,
-                columnDefs: [{
-                        className: 'dtr-control',
-                        orderable: true,
-                        target: null,
-                    },
-                ],
-                order: [0, 'asc'],
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
-                    }
+<script>
+    $(document).ready(function() {
+        new DataTable('.example', {
+            responsive: true,
+            searching: false,
+            paging: false,
+            info: false,
+            columnDefs: [{
+                    className: 'dtr-control',
+                    orderable: true,
+                    target: null,
+                },
+            ],
+            order: [0, 'asc'],
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            }
+        });
+
+        var filterBy = $('#filter-by').val();
+        var startDate = document.getElementById("startDate");
+        var endDate = document.getElementById("endDate");
+
+        if (filterBy == "date") {
+            startDate.type = "date";
+            $('#box-end-date').prop('hidden', true);
+        } 
+
+        if (filterBy == "month") {
+            startDate.type = "month";
+            endDate.type = "month";
+            $('#box-end-date').prop('hidden', false);
+        } 
+
+        if (filterBy == "year") {
+            startDate.type = "number";
+            startDate.min = 1900;
+            startDate.max = new Date().getFullYear();
+            $('#box-end-date').prop('hidden', true);
+        } 
+
+        if (filterBy == "custom") {
+            startDate.type = "date";
+            endDate.type = "date";
+            $('#box-end-date').prop('hidden', false);
+        } 
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const filterButtons = document.querySelectorAll(".btn-group button");
+        const startDate = document.getElementById("startDate");
+        const endDate = document.getElementById("endDate");
+
+        function resetFilters() {
+            startDate.type = "date";
+            endDate.type = "date";
+            startDate.disabled = false;
+            endDate.disabled = false;
+        }
+
+        filterButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                // Remove 'selected' class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove("selected"));
+                // Add 'selected' class to the clicked button
+                this.classList.add("selected");
+
+                // Adjust the input types based on selected filter
+                if (this.id === "filter-date") {
+                    resetFilters();
+                    startDate.type = "date";
+                    // endDate.type = "date";
+                    $('#box-end-date').prop('hidden', true);
+                    $('#filter-by').val("date");
+                } else if (this.id === "filter-month") {
+                    resetFilters();
+                    startDate.type = "month";
+                    endDate.type = "month";
+                    $('#box-end-date').prop('hidden', false);
+                    $('#filter-by').val("month");
+                } else if (this.id === "filter-year") {
+                    resetFilters();
+                    startDate.type = "number";
+                    endDate.type = "number";
+                    startDate.min = 1900;
+                    startDate.max = new Date().getFullYear();
+                    endDate.min = 1900;
+                    endDate.max = new Date().getFullYear();
+                    $('#box-end-date').prop('hidden', true);
+                    $('#filter-by').val("year");
+                } else if (this.id === "filter-custom") {
+                    resetFilters();
+                    startDate.type = "date";
+                    endDate.type = "date";
+                    $('#box-end-date').prop('hidden', false);
+                    $('#filter-by').val("custom");
                 }
             });
         });
-    </script>
+    });
+</script>
+
         
 @endsection

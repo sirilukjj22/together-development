@@ -56,8 +56,8 @@ $(document).ready(function () {
     selectToday(); // เรียกใช้ฟังก์ชันเลือกวันที่วันนี้
   });
 
-  // ฟังก์ชันสำหรับเลือกวันที่วันนี้และส่งค่า
-  function selectToday() {
+   // ฟังก์ชันสำหรับเลือกวันที่วันนี้และส่งค่า
+   function selectToday() {
     selectedDate = today.getDate();
     selectedMonth = today.getMonth();
     selectedYear = today.getFullYear();
@@ -65,12 +65,15 @@ $(document).ready(function () {
     const todayString = `${selectedDate} ${monthNames[selectedMonth]} ${selectedYear}`;
     updateCombinedSelectedBox(todayString); // อัปเดตด้วยวันที่วันนี้
 
-    $(".date").removeClass("active");
-    $(".today").addClass("active");
+    // บันทึกข้อมูลลงใน localStorage
+    localStorage.setItem("selectedDate", selectedDate);
+    localStorage.setItem("selectedMonth", selectedMonth);
+    localStorage.setItem("selectedYear", selectedYear);
 
-    $("#date").val(`${todayString}`);
+    // เรียกใช้ generateDatePicker เพื่อให้ปฏิทินแสดงหน้าของวันที่วันนี้
+    generateDatePicker(selectedMonth, selectedYear);
 
-    // alert(`Sending Today's Date: ${todayString}`);
+    alert(`Sending Today's Date: ${todayString}`);
   }
 
   // ฟังก์ชันสำหรับอัปเดตกล่องแสดงวันที่ที่เลือก
@@ -83,10 +86,42 @@ $(document).ready(function () {
       const dateString = `${selectedDate} ${monthNames[selectedMonth]} ${selectedYear}`;
       $("#selected-date-box").text(`${dateString}`);
       updateCombinedSelectedBox(dateString); // แสดงค่าล่าสุดคือวันที่ที่เลือก
+
+      // บันทึกวันที่ที่เลือกลงใน localStorage
+      localStorage.setItem("selectedDate", selectedDate);
+      localStorage.setItem("selectedMonth", selectedMonth);
+      localStorage.setItem("selectedYear", selectedYear);
     } else {
       $("#selected-date-box").text("Selected Date: None");
     }
   }
+
+  function loadStoredDateRange() {
+    if (
+      localStorage.getItem("selectedDate") !== null &&
+      localStorage.getItem("selectedMonth") !== null &&
+      localStorage.getItem("selectedYear") !== null
+    ) {
+      selectedDate = parseInt(localStorage.getItem("selectedDate"));
+      selectedMonth = parseInt(localStorage.getItem("selectedMonth"));
+      selectedYear = parseInt(localStorage.getItem("selectedYear"));
+
+      // สร้างข้อความวันที่จากข้อมูลที่บันทึกไว้
+      const dateString = `${selectedDate} ${monthNames[selectedMonth]} ${selectedYear}`;
+      $("#selected-date-box").text(dateString);
+      updateCombinedSelectedBox(dateString); // อัปเดตกล่องแสดงวันที่ที่เลือก
+
+      // เรียกใช้ generateDatePicker เพื่อแสดงเดือนและปีที่เลือกไว้ล่าสุด
+      generateDatePicker(selectedMonth, selectedYear);
+    } else {
+      // ถ้าไม่มีค่าใน localStorage ให้ใช้วันที่ปัจจุบัน
+      generateDatePicker(currentMonth, currentYear);
+    }
+  }
+
+  $(document).ready(function () {
+    loadStoredDateRange(); // เรียกใช้ฟังก์ชันโหลดช่วงวันที่ที่บันทึกไว้
+  });
 
   // ฟังก์ชันสำหรับอัปเดตเดือนที่เลือก
   function updateSelectedMonthBox() {
@@ -160,11 +195,21 @@ $(document).ready(function () {
       ) {
         dateElement.addClass("today");
       }
+
+      // ตรวจสอบถ้าเป็นวันที่ที่เลือกไว้ล่าสุด
+      if (
+        selectedDate === i &&
+        selectedMonth === month &&
+        selectedYear === year
+      ) {
+        dateElement.addClass("selected-range"); // เพิ่มสไตล์ selected-range
+      }
+
       $("#dates-grid").append(dateElement);
 
       dateElement.click(function () {
-        $(".date").removeClass("active");
-        $(this).addClass("active");
+        $(".date").removeClass("today selected-range");
+        $(this).addClass("selected-range");
         selectedDate = i;
         selectedMonth = month;
         selectedYear = year;

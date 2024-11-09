@@ -14,9 +14,10 @@ class ReportAuditRevenueDateController extends Controller
      */
     public function index()
     {
-        $data_query = Revenues::select('id', 'date', 'status')->paginate(10);
+        $filter_by = "month";
+        $data_query = Revenues::whereBetween('date', [date('Y-m-01'), date('Y-m-31')])->select('id', 'date', 'status')->paginate(10);
 
-        return view('report.audit_revenue_date.index', compact('data_query'));
+        return view('report.audit_revenue_date.index', compact('data_query', 'filter_by'));
     }
 
     /**
@@ -24,9 +25,39 @@ class ReportAuditRevenueDateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function search(Request $request)
     {
-        //
+        $filter_by = $request->filter_by;
+        $startDate = $request->startDate ?? 0;
+        $endDate = $request->endDate ?? 0;
+        $status = $request->status;
+
+        $query = Revenues::query();
+
+        if ($filter_by == "date") {
+            $query->where('date', $startDate);
+        }
+
+        if ($filter_by == "month") {
+            $query->whereBetween('date', [date($startDate.'-01'), date($endDate.'-31')]);
+        }
+
+        if ($filter_by == "year") {
+            $query->whereYear('date', $startDate);
+        }
+
+        if ($filter_by == "custom") {
+            $query->whereBetween('date', [$startDate, $endDate]);
+        }
+
+        if ($status != "all") {
+            $query->where('status', $status);
+        }
+        
+        $query->select('id', 'date', 'status');
+        $data_query = $query->paginate(10);
+
+        return view('report.audit_revenue_date.index', compact('data_query', 'filter_by', 'startDate', 'endDate', 'status'));
     }
 
     /**
