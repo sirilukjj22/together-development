@@ -1,12 +1,11 @@
 @extends('layouts.masterLayout')
 
 @section('content')
-    <div id="content-index" class="body-header d-flex py-3">
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Guest.</small>
-                    <div class=""><span class="span1">Guest (ลูกค้า)</span></div>
+                    <div class="span3">Guest</div>
                 </div>
                 <div class="col-auto">
                     <button type="button" class="btn btn-color-green lift btn_modal" onclick="window.location.href='{{ url('/guest-create') }}'">
@@ -16,7 +15,6 @@
             </div> <!-- .row end -->
         </div>
     </div>
-
     <div id="content-index" class="body d-flex py-lg-4 py-3">
         <div class="container-xl">
             <div class="row align-items-center mb-2" >
@@ -48,114 +46,112 @@
         <div class="container-xl">
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <caption class="caption-top">
-                                <div class="top-table-3c">
-                                    <div class="top-table-3c_1">
-                                        <div class="dropdown">
-                                            <button class="bd-button statusbtn enteriespage-button" style="min-width: 100px; text-align: left;" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="text-align: left;">
-                                                @if ($menu == 'guest.all')
-                                                    All
-                                                @elseif ($menu == 'guest.ac')
-                                                    Active
-                                                @elseif ($menu == 'guest.no')
-                                                    Disabled
-                                                @else
-                                                    Status
-                                                @endif
-                                        <i class="fas fa-angle-down arrow-dropdown"></i>
-                                            </button>
-                                            <ul class="dropdown-menu border-0 shadow p-3">
-                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.all') }}">All</a></li>
-                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.ac') }}">Active</a></li>
-                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.no') }}">Disabled</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <label class="entriespage-label">entries per page :</label>
-                                    <select class="entriespage-button" id="search-per-page-guest" onchange="getPage(1, this.value, 'guest')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "guest" ? 'selected' : '' }}>10</option>
-                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "guest" ? 'selected' : '' }}>25</option>
-                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "guest" ? 'selected' : '' }}>50</option>
-                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "guest" ? 'selected' : '' }}>100</option>
-                                    </select>
-                                    <input class="search-button search-data" id="guest" style="text-align:left;" placeholder="Search" />
-
-                                </div>
-                            </caption>
-                            <div style="min-height: 70vh;" class="mt-2">
-                                <table id="guestTable" class="example ui striped table nowrap unstackable hover">
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align: center;"data-priority="1">No</th>
-                                            <th style="text-align: center;"data-priority="1">Guest ID</th>
-                                            <th data-priority="1">Guest Name</th>
-                                            <th>Telephone</th>
-                                            <th class="text-center">Status</th>
-                                            <th class="text-center">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if(!empty($Guest))
-                                            @foreach ($Guest as $key => $item)
-                                            <tr>
-                                                <td style="text-align: center;">{{ $key + 1 }}</td>
-                                                <td style="text-align: center;">{{ $item->Profile_ID }}</td>
-                                                <td>{{ $item->First_name }} {{ $item->Last_name }}</td>
-                                                <td>
-                                                    {{$item->Phone_numbers}}
-                                                </td>
-                                                <td style="text-align: center;">
-                                                    <input type="hidden" id="status" value="{{ $item->status }}">
-
-                                                    @if ($item->status == 1)
-                                                        <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
-                                                    @else
-                                                        <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ปิดใช้งาน</button>
-                                                    @endif
-                                                </td>
-                                                @php
-                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                    $canViewProposal = @Auth::user()->roleMenuView('Guest', Auth::user()->id);
-                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
-                                                @endphp
-                                                <td style="text-align: center;">
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
-                                                        <ul class="dropdown-menu border-0 shadow p-3">
-                                                            @if ($rolePermission > 0)
-                                                                @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/view/'.$item->id) }}">View</a></li>
-                                                                @endif
-                                                                @if ($canEditProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/edit/'.$item->id) }}">Edit</a></li>
-                                                                @endif
-                                                            @else
-                                                                @if ($canViewProposal == 1)
-                                                                    <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/view/'.$item->id) }}">View</a></li>
-                                                                @endif
-                                                            @endif
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            @endforeach
+                    <div class="card p-4 mb-4">
+                        <caption class="caption-top">
+                            <div class="top-table-3c">
+                                <div class="top-table-3c_1">
+                                    <div class="dropdown">
+                                        <button class="bd-button statusbtn enteriespage-button" style="min-width: 100px; text-align: left;" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="text-align: left;">
+                                            @if ($menu == 'guest.all')
+                                                All
+                                            @elseif ($menu == 'guest.ac')
+                                                Active
+                                            @elseif ($menu == 'guest.no')
+                                                Disabled
+                                            @else
+                                                Status
                                             @endif
-                                    </tbody>
-                                </table>
-                            </div>
-                            <input type="hidden" id="get-total-guest" value="{{ $Guest->total() }}">
-                            <input type="hidden" id="currentPage-guest" value="1">
-                            <caption class="caption-bottom">
-                                <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="guest-showingEntries">{{ showingEntriesTable($Guest, 'guest') }}</p>
-                                        <div id="guest-paginate">
-                                            {!! paginateTable($Guest, 'guest') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                        </div>
+                                    <i class="fas fa-angle-down arrow-dropdown"></i>
+                                        </button>
+                                        <ul class="dropdown-menu border-0 shadow p-3">
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.all') }}">All</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.ac') }}">Active</a></li>
+                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('guest', 'guest.no') }}">Disabled</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </caption>
+                                <label class="entriespage-label">entries per page :</label>
+                                <select class="entriespage-button" id="search-per-page-guest" onchange="getPage(1, this.value, 'guest')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                    <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "guest" ? 'selected' : '' }}>10</option>
+                                    <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "guest" ? 'selected' : '' }}>25</option>
+                                    <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "guest" ? 'selected' : '' }}>50</option>
+                                    <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "guest" ? 'selected' : '' }}>100</option>
+                                </select>
+                                <input class="search-button search-data" id="guest" style="text-align:left;" placeholder="Search" />
+
+                            </div>
+                        </caption>
+                        <div style="min-height: 70vh;" class="mt-2">
+                            <table id="guestTable" class="example ui striped table nowrap unstackable hover">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center;"data-priority="1">No</th>
+                                        <th style="text-align: center;"data-priority="1">Guest ID</th>
+                                        <th data-priority="1">Guest Name</th>
+                                        <th>Telephone</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(!empty($Guest))
+                                        @foreach ($Guest as $key => $item)
+                                        <tr>
+                                            <td style="text-align: center;">{{ $key + 1 }}</td>
+                                            <td style="text-align: center;">{{ $item->Profile_ID }}</td>
+                                            <td>{{ $item->First_name }} {{ $item->Last_name }}</td>
+                                            <td>
+                                                {{$item->Phone_numbers}}
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <input type="hidden" id="status" value="{{ $item->status }}">
+
+                                                @if ($item->status == 1)
+                                                    <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
+                                                @else
+                                                    <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ปิดใช้งาน</button>
+                                                @endif
+                                            </td>
+                                            @php
+                                                $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                $canViewProposal = @Auth::user()->roleMenuView('Guest', Auth::user()->id);
+                                                $canEditProposal = @Auth::user()->roleMenuEdit('Guest', Auth::user()->id);
+                                            @endphp
+                                            <td style="text-align: center;">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                    <ul class="dropdown-menu border-0 shadow p-3">
+                                                        @if ($rolePermission > 0)
+                                                            @if ($canViewProposal == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/view/'.$item->id) }}">View</a></li>
+                                                            @endif
+                                                            @if ($canEditProposal == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/edit/'.$item->id) }}">Edit</a></li>
+                                                            @endif
+                                                        @else
+                                                            @if ($canViewProposal == 1)
+                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/guest/view/'.$item->id) }}">View</a></li>
+                                                            @endif
+                                                        @endif
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                        @endif
+                                </tbody>
+                            </table>
                         </div>
+                        <input type="hidden" id="get-total-guest" value="{{ $Guest->total() }}">
+                        <input type="hidden" id="currentPage-guest" value="1">
+                        <caption class="caption-bottom">
+                            <div class="md-flex-bt-i-c">
+                                <p class="py2" id="guest-showingEntries">{{ showingEntriesTable($Guest, 'guest') }}</p>
+                                    <div id="guest-paginate">
+                                        {!! paginateTable($Guest, 'guest') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                    </div>
+                            </div>
+                        </caption>
                     </div>
                 </div>
             </div>
