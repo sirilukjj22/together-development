@@ -1475,3 +1475,7 @@ textarea {
   margin-right: 8px;
   accent-color: #2c7f7a;
 }
+
+.example td{
+    vertical-align: middle;
+}

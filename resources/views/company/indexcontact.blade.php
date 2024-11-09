@@ -1,17 +1,17 @@
 @extends('layouts.masterLayout')
 
 @section('content')
-    <div id="content-index" class="body-header d-flex py-3">
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Company Contact.</small>
-                    <div class=""><span class="span1">Company Contact</span></div>
+                    <div class="span3">Company Contact</div>
+                </div>
+                <div class="col-auto">
                 </div>
             </div> <!-- .row end -->
         </div>
     </div>
-
     <div id="content-index" class="body d-flex py-lg-4 py-3">
         <div class="container-xl">
             <div class="row align-items-center mb-2" >
@@ -44,93 +44,91 @@
         <div class="container-xl">
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <caption class="caption-top">
-                                    <div class="flex-end-g2">
-                                        <label class="entriespage-label">entries per page :</label>
-                                        <select class="entriespage-button" id="search-per-page-company-Contact" onchange="getPageContact(1, this.value, 'company-Contact')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
-                                            <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>10</option>
-                                            <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>25</option>
-                                            <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>50</option>
-                                            <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>100</option>
-                                        </select>
-                                        <input class="search-button search-data" id="company-Contact" style="text-align:left;" placeholder="Search" />
-                                    </div>
-                            </caption>
-                            <div style="min-height: 70vh;" class="mt-2">
-                                <table id="company-ContactTable" class="example ui striped table nowrap unstackable hover">
-                                    <thead>
+                    <div class="card p-4 mb-4">
+                        <caption class="caption-top">
+                                <div class="flex-end-g2">
+                                    <label class="entriespage-label">entries per page :</label>
+                                    <select class="entriespage-button" id="search-per-page-company-Contact" onchange="getPageContact(1, this.value, 'company-Contact')"> <!-- ชือนำหน้าตาราง, ชื่อ Route -->
+                                        <option value="10" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 10 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>10</option>
+                                        <option value="25" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 25 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>25</option>
+                                        <option value="50" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 50 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>50</option>
+                                        <option value="100" class="bg-[#f7fffc] text-[#2C7F7A]" {{ !empty(@$_GET['perPage']) && @$_GET['perPage'] == 100 && @$_GET['table'] == "company-Contact" ? 'selected' : '' }}>100</option>
+                                    </select>
+                                    <input class="search-button search-data" id="company-Contact" style="text-align:left;" placeholder="Search" />
+                                </div>
+                        </caption>
+                        <div style="min-height: 70vh;" class="mt-2">
+                            <table id="company-ContactTable" class="example ui striped table nowrap unstackable hover">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center;"data-priority="1">No</th>
+                                        <th style="text-align: center;"data-priority="1">Contact ID</th>
+                                        <th class="text-center"data-priority="1">Company ID</th>
+                                        <th class="text-center">Branch</th>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(!empty($Company))
+                                        @foreach ($Company as $key => $item)
                                         <tr>
-                                            <th style="text-align: center;"data-priority="1">No</th>
-                                            <th style="text-align: center;"data-priority="1">Contact ID</th>
-                                            <th class="text-center"data-priority="1">Company ID</th>
-                                            <th class="text-center">Branch</th>
-                                            <th class="text-center">Name</th>
-                                            <th class="text-center">Status</th>
-                                            <th class="text-center">Action</th>
+                                            <td style="text-align: center;">{{ $key + 1 }}</td>
+                                            <td style="text-align: center;">{{ $item->Profile_ID }}</td>
+                                            <td style="text-align: center;">{{ $item->Company_ID }}</td>
+                                            <td style="text-align: center;">{{ $item->Branch }}</td>
+                                            <td style="text-align: center;">
+                                                คุณ {{ $item->First_name.' '.$item->Last_name }}
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if ($item->status == 1)
+                                                <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
+                                                @else
+                                                    <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ปิดใช้งาน</button>
+                                                @endif
+                                            </td>
+                                            @php
+                                                $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
+                                                $canViewProposal = @Auth::user()->roleMenuView('Company / Agent', Auth::user()->id);
+                                                $canEditProposal = @Auth::user()->roleMenuEdit('Company / Agent', Auth::user()->id);
+                                            @endphp
+                                            <td style="text-align: center;">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
+                                                    <ul class="dropdown-menu border-0 shadow p-3">
+                                                        @if ($canViewProposal == 1)
+                                                            <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/view/'.$item->id) }}">View</a></li>
+                                                        @endif
+                                                    </ul>
+                                                </div>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if(!empty($Company))
-                                            @foreach ($Company as $key => $item)
-                                            <tr>
-                                                <td style="text-align: center;">{{ $key + 1 }}</td>
-                                                <td style="text-align: center;">{{ $item->Profile_ID }}</td>
-                                                <td style="text-align: center;">{{ $item->Company_ID }}</td>
-                                                <td style="text-align: center;">{{ $item->Branch }}</td>
-                                                <td style="text-align: center;">
-                                                    คุณ {{ $item->First_name.' '.$item->Last_name }}
-                                                </td>
-                                                <td style="text-align: center;">
-                                                    @if ($item->status == 1)
-                                                    <button type="button" class="btn btn-light-success btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ใช้งาน</button>
-                                                    @else
-                                                        <button type="button" class="btn btn-light-danger btn-sm" value="{{ $item->id }}" onclick="btnstatus({{ $item->id }})">ปิดใช้งาน</button>
-                                                    @endif
-                                                </td>
-                                                @php
-                                                    $rolePermission = @Auth::user()->rolePermissionData(Auth::user()->id);
-                                                    $canViewProposal = @Auth::user()->roleMenuView('Company / Agent', Auth::user()->id);
-                                                    $canEditProposal = @Auth::user()->roleMenuEdit('Company / Agent', Auth::user()->id);
-                                                @endphp
-                                                <td style="text-align: center;">
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-color-green text-white rounded-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">List &nbsp;</button>
-                                                        <ul class="dropdown-menu border-0 shadow p-3">
-                                                            @if ($canViewProposal == 1)
-                                                                <li><a class="dropdown-item py-2 rounded" href="{{ url('/Company/view/'.$item->id) }}">View</a></li>
-                                                            @endif
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        @endif
-                                    </tbody>
-                                </table>
-                            </div>
-                            <input type="hidden" id="profile-company-Contact" value="{{ $Company_ID }}">
-                            <input type="hidden" id="get-total-company-Contact" value="{{ $Company->total() }}">
-                            <input type="hidden" id="currentPage-company-Contact" value="1">
-                            <caption class="caption-bottom">
-                                <div class="md-flex-bt-i-c">
-                                    <p class="py2" id="company-Contact-showingEntries">{{ showingEntriesTableContact($Company, 'company-Contact') }}</p>
-                                    <div id="company-Contact-paginate">
-                                        {!! paginateTableContact($Company, 'company-Contact') !!} <!-- ข้อมูล, ชื่อตาราง -->
-                                    </div>
-                                </div>
-                            </caption>
-                            @if ($count == 1)
-                                <div class="row mt-2">
-                                    <div class="col-lg-3 col-sm-12"></div>
-                                    <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
-                                        <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{url('/Company/edit/'.$CompanyID)}}'">{{ __('ย้อนกลับ') }}</button>
-                                    </div>
-                                    <div class="col-lg-3 col-sm-12"></div>
-                                </div>
-                            @endif
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
                         </div>
+                        <input type="hidden" id="profile-company-Contact" value="{{ $Company_ID }}">
+                        <input type="hidden" id="get-total-company-Contact" value="{{ $Company->total() }}">
+                        <input type="hidden" id="currentPage-company-Contact" value="1">
+                        <caption class="caption-bottom">
+                            <div class="md-flex-bt-i-c">
+                                <p class="py2" id="company-Contact-showingEntries">{{ showingEntriesTableContact($Company, 'company-Contact') }}</p>
+                                <div id="company-Contact-paginate">
+                                    {!! paginateTableContact($Company, 'company-Contact') !!} <!-- ข้อมูล, ชื่อตาราง -->
+                                </div>
+                            </div>
+                        </caption>
+                        @if ($count == 1)
+                            <div class="row mt-2">
+                                <div class="col-lg-3 col-sm-12"></div>
+                                <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
+                                    <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{url('/Company/edit/'.$CompanyID)}}'">{{ __('ย้อนกลับ') }}</button>
+                                </div>
+                                <div class="col-lg-3 col-sm-12"></div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

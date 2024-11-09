@@ -455,15 +455,16 @@
                                     <tbody id="display-selected-items">
 
                                         @if ($invoices)
-                                        @php
-                                            $lasttotal = 0;
-                                            $total = 0;
-                                            $invoice = DB::table('document_invoice')->where('Quotation_ID',$QuotationID)->whereIn('document_status', [1, 2])->get();
-                                            foreach ($invoice as $value) {
-                                                $total += $value->sumpayment;
-                                                $lasttotal = $value->Nettotal - $total;
-                                            }
-                                        @endphp
+                                            @php
+                                                $lasttotal = 0;
+                                                $total = 0;
+                                                $invoice = DB::table('document_invoice')->where('Quotation_ID',$QuotationID)->whereIn('document_status', [1, 2])->get();
+                                                $pd = DB::table('quotation')->where('Quotation_ID',$QuotationID)->first();
+                                                foreach ($invoice as $value) {
+                                                    $total += $value->sumpayment;
+                                                    $lasttotal = $pd->Nettotal - $total;
+                                                }
+                                            @endphp
                                             <tr>
                                                 <td style="text-align:center">1</td>
                                                 <td style="text-align:left">
@@ -659,6 +660,8 @@
         $(document).on('keyup', '#Payment0', function() {
             var Payment0 =  Number($(this).val());
             var Nettotal = parseFloat(document.getElementById('Nettotal').value);
+            console.log(Nettotal);
+
             let Subtotal =0;
             let total =0;
             let addtax = 0;

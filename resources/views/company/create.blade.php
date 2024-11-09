@@ -49,17 +49,17 @@
     }
 </style>
 @section('content')
-    <div id="content-index" class="body-header d-flex py-3">
+    <div id="content-index" class="body-header border-bottom d-flex py-3">
         <div class="container-xl">
             <div class="row align-items-center">
                 <div class="col sms-header">
-                    <small class="text-muted">Welcome to Create Company / Agent.</small>
-                    <div class=""><span class="span1">Create Company / Agent (เพิ่มบริษัทและตัวแทน)</span></div>
+                    <div class="span3">Create Company / Agent</div>
+                </div>
+                <div class="col-auto">
                 </div>
             </div> <!-- .row end -->
         </div>
     </div>
-
     <div id="content-index" class="body d-flex py-lg-4 py-3">
         <div class="container-xl">
             <div class="row align-items-center mb-2" >
@@ -89,293 +89,291 @@
         <div class="container-xl">
             <div class="row clearfix">
                 <div class="col-md-12 col-12">
-                    <div class="card mb-3">
-                        <div class="card-body">
+                    <div class="card p-4 mb-4">
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-12"></div>
+                            <div class="col-lg-1 col-md-1 col-sm-12">
+                                <input style=" float:right;" type="text" class="form-control" id="Profile_ID" name="Profile_ID" maxlength="70" required value="{{$N_Profile}}" disabled>
+                            </div>
+                        </div>
+                        <form id="myForm" action="{{route('Company.save')}}" method="POST" >
+                            {!! csrf_field() !!}
                             <div class="row">
-                                <div class="col-lg-11 col-md-11 col-sm-12"></div>
-                                <div class="col-lg-1 col-md-1 col-sm-12">
-                                    <input style=" float:right;" type="text" class="form-control" id="Profile_ID" name="Profile_ID" maxlength="70" required value="{{$N_Profile}}" disabled>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label for="Company_type">ประเภทบริษัท / Company Type</label>
+                                    <select name="Company_type" id="Company_type" class="select2" required>
+                                        <option value="" selected disabled>Company Type</option>
+                                        @foreach($MCompany_type as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-lg-8 col-md-6 col-sm-12">
+                                    <label for="Company_Name">ชื่อบริษัท / Company Name</label>
+                                    <input type="text" class="form-control" id="Company_Name" name="Company_Name" maxlength="70" placeholder="Company Name" required>
                                 </div>
                             </div>
-                            <form id="myForm" action="{{route('Company.save')}}" method="POST" >
-                                {!! csrf_field() !!}
-                                <div class="row">
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <label for="Company_type">ประเภทบริษัท / Company Type</label>
-                                        <select name="Company_type" id="Company_type" class="select2" required>
-                                            <option value="" selected disabled>Company Type</option>
-                                            @foreach($MCompany_type as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name_th }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-8 col-md-6 col-sm-12">
-                                        <label for="Company_Name">ชื่อบริษัท / Company Name</label>
-                                        <input type="text" class="form-control" id="Company_Name" name="Company_Name" maxlength="70" placeholder="Company Name" required>
-                                    </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <label for="Branch">สาขา / Company Branch <span>&nbsp;&nbsp;&nbsp; </span><input class="form-check-input" type="radio" name="flexRadioDefaultBranch" id="flexRadioDefaultBranch"> สำนักงานใหญ่</label>
+                                    <input type="text" id="Branch" class="form-control" name="Branch" maxlength="70" placeholder="Company Branch" required>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <label for="Branch">สาขา / Company Branch <span>&nbsp;&nbsp;&nbsp; </span><input class="form-check-input" type="radio" name="flexRadioDefaultBranch" id="flexRadioDefaultBranch"> สำนักงานใหญ่</label>
-                                        <input type="text" id="Branch" class="form-control" name="Branch" maxlength="70" placeholder="Company Branch" required>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <label for="Market" >กลุ่มตลาด / Market</label>
-                                        <select name="Mmarket" id="Mmarket"  class="select2" required>
-                                            <option value="" selected disabled>กลุ่มตลาด</option>
-                                            @foreach($Mmarket as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name_th }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <label for="Market" >กลุ่มตลาด / Market</label>
+                                    <select name="Mmarket" id="Mmarket"  class="select2" required>
+                                        <option value="" selected disabled>กลุ่มตลาด</option>
+                                        @foreach($Mmarket as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <label for="booking_channel">ช่องทางการจอง / Booking Channel</label><br>
-                                        <select name="booking_channel" id="booking_channel" class="select2" required>
-                                            <option value="" selected disabled>ช่องทางการจอง</option>
-                                            @foreach($booking_channel as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name_en }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <label for="country">ประเทศ / Country</label>
-                                        <select name="countrydata" id="countrySelect" class="select2" onchange="showcityInput()" required>
-                                            @foreach($country as $item)
-                                                <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == 'Thailand' ? 'selected' : '' }}>
-                                                    {{ $item->ct_nameENG }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <label for="booking_channel">ช่องทางการจอง / Booking Channel</label><br>
+                                    <select name="booking_channel" id="booking_channel" class="select2" required>
+                                        <option value="" selected disabled>ช่องทางการจอง</option>
+                                        @foreach($booking_channel as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name_en }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col">
-                                        <label for="address">ที่อยู่ / Address</label>
-                                        <textarea  type="text" id="address" name="address" rows="5" cols="25" class="form-control" aria-label="With textarea" required></textarea>
-                                    </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <label for="country">ประเทศ / Country</label>
+                                    <select name="countrydata" id="countrySelect" class="select2" onchange="showcityInput()" required>
+                                        @foreach($country as $item)
+                                            <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == 'Thailand' ? 'selected' : '' }}>
+                                                {{ $item->ct_nameENG }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-3 col-md-6 col-sm-12" >
-                                        <label for="city">จังหวัด / Province</label><br>
-                                        <select name="city" id="province" class="select2" onchange="select_province()" required>
-                                            <option value="" selected disabled>เลือกจังหวัด</option>
-                                            @foreach($provinceNames as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name_th }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <label for="Amphures">อำเภอ / District</label><br>
-                                        <select name="amphures" id="amphures" class="select2" onchange="select_amphures()" required>
-                                            <option value="" selected disabled>เลือกอำเภอ</option>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <label for="address">ที่อยู่ / Address</label>
+                                    <textarea  type="text" id="address" name="address" rows="5" cols="25" class="form-control" aria-label="With textarea" required></textarea>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-3 col-md-6 col-sm-12" >
+                                    <label for="city">จังหวัด / Province</label><br>
+                                    <select name="city" id="province" class="select2" onchange="select_province()" required>
+                                        <option value="" selected disabled>เลือกจังหวัด</option>
+                                        @foreach($provinceNames as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <label for="Amphures">อำเภอ / District</label><br>
+                                    <select name="amphures" id="amphures" class="select2" onchange="select_amphures()" required>
+                                        <option value="" selected disabled>เลือกอำเภอ</option>
 
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <label for="Tambon">ตำบล / Subdistrict </label><br>
-                                        <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()" required>
-                                            <option value="">เลือกตำบล</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-12">
-                                        <label for="zip_code">รหัสไปรษณีย์ / Postal Code</label>
-                                        <select name="zip_code" id="zip_code" class="select2" required>
-                                            <option value="">รหัสไปรษณีย์</option>
-                                        </select>
-                                    </div>
+                                    </select>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <label for="Company_Phone" class="flex-container">
-                                            โทรศัพท์บริษัท / Company Phone number
-                                        </label>
-                                        <button type="button" class="btn btn-color-green my-2" id="add-input">เพิ่มหมายเลขโทรศัพท์</button>
-                                        <div id="inputs-container">
-                                            <div class="input-group mb-3">
-                                                <input type="text" class="form-control phone"  name="phone_company[]" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
-                                                <button class="btn btn-outline-danger" type="button" id="remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <label for="Company_Phone" class="flex-container">
-                                            แฟกซ์ของบริษัท / Company Fax number
-                                        </label>
-                                        <button type="button" class="btn btn-color-green my-2" id="add-fax">เพิ่มหมายเลขแฟกซ์</button>
-                                        <div id="fax-container">
-                                            <div class="input-group mb-3">
-                                                <input type="text" class="form-control phone"  name="fax[]" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
-                                                <button class="btn btn-outline-danger" type="button" id="remove-fax"><i class="bi bi-x-circle" style="width:100%;"></i></button>
-                                            </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <label for="Tambon">ตำบล / Subdistrict </label><br>
+                                    <select name="Tambon" id="Tambon" class="select2" onchange="select_Tambon()" required>
+                                        <option value="">เลือกตำบล</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <label for="zip_code">รหัสไปรษณีย์ / Postal Code</label>
+                                    <select name="zip_code" id="zip_code" class="select2" required>
+                                        <option value="">รหัสไปรษณีย์</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <label for="Company_Phone" class="flex-container">
+                                        โทรศัพท์บริษัท / Company Phone number
+                                    </label>
+                                    <button type="button" class="btn btn-color-green my-2" id="add-input">เพิ่มหมายเลขโทรศัพท์</button>
+                                    <div id="inputs-container">
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control phone"  name="phone_company[]" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
+                                            <button class="btn btn-outline-danger" type="button" id="remove-input"><i class="bi bi-x-circle" style="width:100%;"></i></button>
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <label for="Company_Phone" class="flex-container">
+                                        แฟกซ์ของบริษัท / Company Fax number
+                                    </label>
+                                    <button type="button" class="btn btn-color-green my-2" id="add-fax">เพิ่มหมายเลขแฟกซ์</button>
+                                    <div id="fax-container">
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control phone"  name="fax[]" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
+                                            <button class="btn btn-outline-danger" type="button" id="remove-fax"><i class="bi bi-x-circle" style="width:100%;"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
 
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label for="Company_Email">ที่อยู่อีเมลของบริษัท / Company Email</label>
+                                    <input type="text" class="form-control" id="Company_Email" name="Company_Email" maxlength="70" placeholder="Company Email" required>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <label for="Company_Email">ที่อยู่อีเมลของบริษัท / Company Email</label>
-                                        <input type="text" class="form-control" id="Company_Email" name="Company_Email" maxlength="70" placeholder="Company Email" required>
-                                    </div>
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <label for="Company_Website">เว็บไซต์ของบริษัท / Company Website</label><br>
-                                        <input type="text" class="form-control" id="Company_Website" name="Company_Website" maxlength="70" placeholder="Company Website" required>
-                                    </div>
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <label for="Taxpayer_Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</label><br>
-                                        <input type="text" class="form-control  idcard" id="Taxpayer_Identification" name="Taxpayer_Identification" maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี" required>
-                                    </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label for="Company_Website">เว็บไซต์ของบริษัท / Company Website</label><br>
+                                    <input type="text" class="form-control" id="Company_Website" name="Company_Website" maxlength="70" placeholder="Company Website" required>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <label for="Discount_Contract_Rate">อัตราคิดลด / Discount Contract Rate</label><br>
-                                        <input type="text" placeholder="อัตราคิดลด" id="Discount_Contract_Rate" class="form-control" name="Discount_Contract_Rate" maxlength="70" disabled>
-                                    </div>
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <label for="contract_rate_start_date">Contract Rate Start Date</label><br>
-                                        <input type="date" id="contract_rate_start_date" class="form-control" name="contract_rate_start_date" onchange="Onclickreadonly()" disabled>
-                                    </div>
-                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                        <label for="contract_rate_end_date">Contract Rate End Date</label><br>
-                                        <input type="date" id="contract_rate_end_date" class="form-control" name="contract_rate_end_date" readonly disabled>
-                                    </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label for="Taxpayer_Identification">เลขประจำตัวผู้เสียภาษี / Tax identification number</label><br>
+                                    <input type="text" class="form-control  idcard" id="Taxpayer_Identification" name="Taxpayer_Identification" maxlength="17" placeholder="เลขประจำตัวผู้เสียภาษี" required>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-6 col-md-12 col-sm-12">
-                                        <label for="Lastest_Introduce_By">แนะนำล่าสุดโดย / Lastest Introduce By</label><br>
-                                        <input type="text" id="Lastest_Introduce_By" class="form-control" name="Lastest_Introduce_By" maxlength="70" required disabled>
-                                    </div>
-                                    <div class="col-lg-6 col-md-12 col-sm-12">
-                                        <label for="Lastest_Introduce_By">Company Commission</label><br>
-                                        <input type="text" id="Lastest_Introduce_By" class="form-control" name="Lastest_Introduce_By" maxlength="70" disabled>
-                                    </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label for="Discount_Contract_Rate">อัตราคิดลด / Discount Contract Rate</label><br>
+                                    <input type="text" placeholder="อัตราคิดลด" id="Discount_Contract_Rate" class="form-control" name="Discount_Contract_Rate" maxlength="70" disabled>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-12 col-md-12 col-sm-12">
-                                        <div class="custom-accordion">
-                                            <input type="checkbox" id="trigger1" />
-                                            <label for="trigger1">ติดต่อ / Contact</label>
-                                            <div class="custom-accordion-content">
-                                                <div class="row">
-                                                    <div class="col-lg-4 col-md-4 col-sm-4">
-                                                        <span for="Preface" style="padding: 5px;">คำนำหน้า / Title</span><br>
-                                                        <select name="Preface" id="Mprefix" class="select2">
-                                                            <option value="" selected disabled>Title</option>
-                                                            @foreach($Mprefix as $item)
-                                                                <option value="{{ $item->id }}">{{ $item->name_th }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-lg-7 col-md-7 col-sm-7"></div>
-                                                    <div class="col-lg-1 col-md-1 col-sm-12 ">
-                                                        <span>{{$A_Profile}}</span>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-2">
-                                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                                        <span >ชื่อ / First Name</span>
-                                                        <input type="text" class="form-control" id="first_nameAgent" name="first_nameAgent" maxlength="70" required>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                                        <span  >นามสกุล / Last Name</span>
-                                                        <input type="text" class="form-control" id="last_nameAgent" name="last_nameAgent" maxlength="70" required>
-                                                    </div>
-                                                </div>
-                                                <div  class="row mt-2">
-                                                    <div class="col-lg-4 col-md-4 col-sm-12">
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                                                            <span class="form-check-label" for="flexRadioDefault1">
-                                                                ที่อยู่ตามบริษัท
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-2">
-                                                    <div class="col">
-                                                        <span class="labelcontact" for="">ประเทศ / Address</span>
-                                                        <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row mt-2">
-                                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                                        <span class="labelcontact" for="">ประเทศ / Country</span>
-                                                        <select name="countrydataA" id="countrySelectA" class="select2" onchange="showcityAInput()" required>
-                                                            @foreach($country as $item)
-                                                                <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == 'Thailand' ? 'selected' : '' }}>
-                                                                    {{ $item->ct_nameENG }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                                        <span class="labelcontact" for="">จังหวัด / Province</span>
-                                                        <select name="cityA" id="provinceA" class="select2" onchange="provinceC()" style="width: 100%;" required>
-                                                            <option value=""></option>
-                                                            @foreach($provinceNames as $item)
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label for="contract_rate_start_date">Contract Rate Start Date</label><br>
+                                    <input type="date" id="contract_rate_start_date" class="form-control" name="contract_rate_start_date" onchange="Onclickreadonly()" disabled>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <label for="contract_rate_end_date">Contract Rate End Date</label><br>
+                                    <input type="date" id="contract_rate_end_date" class="form-control" name="contract_rate_end_date" readonly disabled>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-6 col-md-12 col-sm-12">
+                                    <label for="Lastest_Introduce_By">แนะนำล่าสุดโดย / Lastest Introduce By</label><br>
+                                    <input type="text" id="Lastest_Introduce_By" class="form-control" name="Lastest_Introduce_By" maxlength="70" required disabled>
+                                </div>
+                                <div class="col-lg-6 col-md-12 col-sm-12">
+                                    <label for="Lastest_Introduce_By">Company Commission</label><br>
+                                    <input type="text" id="Lastest_Introduce_By" class="form-control" name="Lastest_Introduce_By" maxlength="70" disabled>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="custom-accordion">
+                                        <input type="checkbox" id="trigger1" />
+                                        <label for="trigger1">ติดต่อ / Contact</label>
+                                        <div class="custom-accordion-content">
+                                            <div class="row">
+                                                <div class="col-lg-4 col-md-4 col-sm-4">
+                                                    <span for="Preface" style="padding: 5px;">คำนำหน้า / Title</span><br>
+                                                    <select name="Preface" id="Mprefix" class="select2">
+                                                        <option value="" selected disabled>Title</option>
+                                                        @foreach($Mprefix as $item)
                                                             <option value="{{ $item->id }}">{{ $item->name_th }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                                        <span class="labelcontact" for="">อำเภอ / District</span>
-                                                        <select name="amphuresA" id="amphuresA" class="select2" onchange="amphuresC()" style="width: 100%;" required>
-                                                            <option value=""></option>
-                                                        </select>
-                                                    </div>
+                                                        @endforeach
+                                                    </select>
                                                 </div>
-                                                <div class="row mt-2">
-                                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                                        <span class="labelcontact" for="">ตำบล / Subdistrict </span>
-                                                        <select name="TambonA" id="TambonA" class="select2" onchange="TambonC()" style="width: 100%;" required>
-                                                            <option value=""></option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                                        <span class="labelcontact" for="">รหัสไปรษณีย์ / Postal Code</span>
-                                                        <select name="zip_codeA" id="zip_codeA" class="select2" style="width: 100%;" required>
-                                                            <option value=""></option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-lg-4 col-md-6 col-sm-12">
-                                                        <span class="labelcontact" for="">Email</span>
-                                                        <input class="form-control" type="email" class="form-control" id="EmailAgent" name="EmailAgent" style="width: 100%;" maxlength="70" required>
-                                                    </div>
+                                                <div class="col-lg-7 col-md-7 col-sm-7"></div>
+                                                <div class="col-lg-1 col-md-1 col-sm-12 ">
+                                                    <span>{{$A_Profile}}</span>
                                                 </div>
-
-                                                <div class="row mt-2">
-                                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                                        <span for="Company_Phone" class="flex-container">
-                                                            โทรศัพท์/ Phone number
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <span >ชื่อ / First Name</span>
+                                                    <input type="text" class="form-control" id="first_nameAgent" name="first_nameAgent" maxlength="70" required>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <span  >นามสกุล / Last Name</span>
+                                                    <input type="text" class="form-control" id="last_nameAgent" name="last_nameAgent" maxlength="70" required>
+                                                </div>
+                                            </div>
+                                            <div  class="row mt-2">
+                                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                                        <span class="form-check-label" for="flexRadioDefault1">
+                                                            ที่อยู่ตามบริษัท
                                                         </span>
-                                                        <button type="button" class="btn btn-color-green my-2" id="add-phone">เพิ่มหมายเลขโทรศัพท์</button>
-                                                        <div id="phone-container">
-                                                            <div class="input-group mb-3">
-                                                                <input type="text" class="form-control phone" id="phone-main" name="phone[]" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
-                                                                <button class="btn btn-outline-danger" type="button" id="remove-phone" disabled><i class="bi bi-x-circle" style="width:100%;"></i></button>
-                                                            </div>
-                                                        </div>
-                                                        <div id="add-phone-orther"></div>
                                                     </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col">
+                                                    <span class="labelcontact" for="">ประเทศ / Address</span>
+                                                    <textarea type="text" id="addressAgent" name="addressAgent" rows="3" cols="25" class="form-control" aria-label="With textarea" required></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-2">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <span class="labelcontact" for="">ประเทศ / Country</span>
+                                                    <select name="countrydataA" id="countrySelectA" class="select2" onchange="showcityAInput()" required>
+                                                        @foreach($country as $item)
+                                                            <option value="{{ $item->ct_nameENG }}" {{ $item->ct_nameENG == 'Thailand' ? 'selected' : '' }}>
+                                                                {{ $item->ct_nameENG }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <span class="labelcontact" for="">จังหวัด / Province</span>
+                                                    <select name="cityA" id="provinceA" class="select2" onchange="provinceC()" style="width: 100%;" required>
+                                                        <option value=""></option>
+                                                        @foreach($provinceNames as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name_th }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <span class="labelcontact" for="">อำเภอ / District</span>
+                                                    <select name="amphuresA" id="amphuresA" class="select2" onchange="amphuresC()" style="width: 100%;" required>
+                                                        <option value=""></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <span class="labelcontact" for="">ตำบล / Subdistrict </span>
+                                                    <select name="TambonA" id="TambonA" class="select2" onchange="TambonC()" style="width: 100%;" required>
+                                                        <option value=""></option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <span class="labelcontact" for="">รหัสไปรษณีย์ / Postal Code</span>
+                                                    <select name="zip_codeA" id="zip_codeA" class="select2" style="width: 100%;" required>
+                                                        <option value=""></option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <span class="labelcontact" for="">Email</span>
+                                                    <input class="form-control" type="email" class="form-control" id="EmailAgent" name="EmailAgent" style="width: 100%;" maxlength="70" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-2">
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <span for="Company_Phone" class="flex-container">
+                                                        โทรศัพท์/ Phone number
+                                                    </span>
+                                                    <button type="button" class="btn btn-color-green my-2" id="add-phone">เพิ่มหมายเลขโทรศัพท์</button>
+                                                    <div id="phone-container">
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" class="form-control phone" id="phone-main" name="phone[]" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"required>
+                                                            <button class="btn btn-outline-danger" type="button" id="remove-phone" disabled><i class="bi bi-x-circle" style="width:100%;"></i></button>
+                                                        </div>
+                                                    </div>
+                                                    <div id="add-phone-orther"></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-3 col-sm-12"></div>
-                                    <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
-                                        <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{ route('Company','index') }}'">{{ __('ย้อนกลับ') }}</button>
-                                        <button type="submit" class="btn btn-color-green lift " onclick="confirmSubmit(event)">บันทึกข้อมูล</button>
-                                    </div>
-                                    <div class="col-lg-3 col-sm-12"></div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-3 col-sm-12"></div>
+                                <div class="col-lg-6 col-sm-12 d-flex justify-content-center align-items-center">
+                                    <button type="button" class="btn btn-secondary lift  btn-space"  onclick="window.location.href='{{ route('Company','index') }}'">{{ __('ย้อนกลับ') }}</button>
+                                    <button type="submit" class="btn btn-color-green lift " onclick="confirmSubmit(event)">บันทึกข้อมูล</button>
                                 </div>
-                            </form>
-                        </div>
+                                <div class="col-lg-3 col-sm-12"></div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -47,7 +47,18 @@ class BillingFolioController extends Controller
         $perPage = !empty($_GET['perPage']) ? $_GET['perPage'] : 10;
         $userid = Auth::user()->id;
         $Approved = receive_payment::query()->where('type','billing')->paginate($perPage);
-        return view('billingfolio.index',compact('Approved'));
+        $ApprovedCount = receive_payment::query()->where('type','billing')->count();
+        $ComplateCount = Quotation::query()->where('quotation.status_document', 9)->count();
+        $Complate = Quotation::query()
+        ->leftJoin('document_receive', 'quotation.Quotation_ID', '=', 'document_receive.Quotation_ID')
+        ->where('quotation.status_document', 9)
+        ->select(
+            'quotation.*',
+            DB::raw('COUNT(document_receive.Quotation_ID) as receive_count')
+        )
+        ->groupBy('quotation.Quotation_ID', 'quotation.status_document', 'quotation.status_receive')
+        ->paginate($perPage);
+        return view('billingfolio.index',compact('Approved','Complate','ComplateCount','ApprovedCount'));
     }
     //---------------------------------table-----------------
     public function  paginate_table_billing(Request $request)
@@ -1222,18 +1233,43 @@ class BillingFolioController extends Controller
                 $save->Category = 'Paid :: Receipt';
                 $save->content =$datacompany;
                 $save->save();
-                return redirect()->route('BillingFolio.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+
             }
 
         } catch (\Throwable $e) {
             return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
         }
-
+        try {
+            $invoiceid = $request->invoice;
+            $invoices = document_invoices::where('Invoice_ID', $invoiceid)->first();
+            $Quotation_ID = $invoices->Quotation_ID;
+            $receive = receive_payment::where('Quotation_ID',$Quotation_ID)->get();
+            $Amounttotal = 0;
+            foreach ($receive as $value) {
+                $Amounttotal += $value->Amount;
+            }
+            $proposal = Quotation::where('Quotation_ID',$Quotation_ID)->first();
+            $id = $proposal->id;
+            $Nettotal = $proposal->Nettotal;
+            $total = $Nettotal-$Amounttotal;
+            if ($total == 0) {
+                foreach ($receive as $value) {
+                   $value->document_status = 2;
+                   $value->save();
+                }
+                $update = Quotation::find($id);
+                $update->status_document = 9;
+                $update->status_receive = 9;
+                $update->save();
+                return redirect()->route('BillingFolio.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            }else{
+                return redirect()->route('BillingFolio.index')->with('success', 'บันทึกข้อมูลเรียบร้อย');
+            }
+        } catch (\Throwable $e) {
+            return redirect()->route('BillingFolio.index')->with('error', $e->getMessage());
+        }
     }
     public function update(Request $request , $id) {
-
-
-        // dd($data);
         $dataArray= receive_payment::where('id',$id)->first();
         $REID =  $dataArray->Receipt_ID;
         $sumpayment =  $dataArray->Amount;
